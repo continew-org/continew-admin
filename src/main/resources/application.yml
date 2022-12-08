@@ -1,0 +1,48 @@
+--- ### 项目配置
+continew-admin:
+  # 名称
+  name: ContiNew-Admin
+  # 应用名称
+  appName: @project.name@
+  # 版本
+  version: @project.version@
+
+--- ### 日志配置
+logging:
+  level:
+    top.charles7c: @logging.level@
+  file:
+    path: @logging.file.path@
+  config: classpath:logback-spring.xml
+
+--- ### 服务器配置
+server:
+  servlet:
+    # 应用访问路径
+    context-path: /
+
+--- ### Spring 配置
+spring:
+  application:
+    name: ${continew-admin.appName}
+  ## 环境配置
+  profiles:
+    # 启用的环境
+    # 配合 Maven Profile 选择不同配置文件进行启动，在 IntelliJ IDEA 右侧 Maven 工具窗口可以快速切换环境
+    active: @profiles.active@
+  ## JSON 配置
+  jackson:
+    # 时区配置
+    time-zone: GMT+8
+    # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 序列化配置（Bean -> JSON）
+    serialization:
+      # 是否格式化输出
+      indent_output: false
+      # 忽略无法转换的对象
+      fail_on_empty_beans: false
+    # 反序列化配置（JSON -> Bean）
+    deserialization:
+      # 忽略 JSON 中不存在的属性
+      fail_on_unknown_properties: false
