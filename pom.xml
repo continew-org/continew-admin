@@ -19,6 +19,21 @@ limitations under the License.
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>top.charles7c</groupId>
+    <artifactId>continew-admin</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。</description>
+    <url>https://github.com/Charles7c/continew-admin</url>
+
+    <modules>
+        <module>continew-admin-webapi</module>
+        <module>continew-admin-system</module>
+        <module>continew-admin-common</module>
+    </modules>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -26,16 +41,9 @@ limitations under the License.
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>top.charles7c</groupId>
-    <artifactId>continew-admin</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-
-    <name>${project.artifactId}</name>
-    <description>ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。</description>
-    <url>https://github.com/Charles7c/continew-admin</url>
-
     <properties>
         <!-- ### 基础环境相关 ### -->
+        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>1.8</java.version>
         <spotless.version>2.28.0</spotless.version>
         <maven.compiler.source>8</maven.compiler.source>
@@ -43,34 +51,34 @@ limitations under the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- 全局依赖版本管理 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- ################ 本项目子模块相关 ################ -->
+            <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
+            <dependency>
+                <groupId>top.charles7c</groupId>
+                <artifactId>continew-admin-webapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
+            <dependency>
+                <groupId>top.charles7c</groupId>
+                <artifactId>continew-admin-system</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 公共模块（存放公共工具类，公共配置等） -->
+            <dependency>
+                <groupId>top.charles7c</groupId>
+                <artifactId>continew-admin-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- ################ Spring Boot 相关 ################ -->
-        <!-- Spring Boot Web（提供 Spring MVC Web 开发能力，默认内置 Tomcat 服务器） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <!-- 移除内置 Tomcat 服务器 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- Undertow 服务器（采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-            <!-- 移除 websocket 依赖，后续使用 websocket 可考虑由 Netty 提供。另可解决日志警告：UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used -->
-            <exclusions>
-                <exclusion>
-                    <groupId>io.undertow</groupId>
-                    <artifactId>undertow-websockets-jsr</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -84,12 +92,6 @@ limitations under the License.
             <optional>true</optional>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Lombok（在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -99,28 +101,12 @@ limitations under the License.
     </dependencies>
 
     <build>
-        <!-- 设置构建的 jar 包名 -->
-        <finalName>${project.name}</finalName>
         <plugins>
             <!-- 代码等格式化插件 -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless.version}</version>
-                <configuration>
-                    <java>
-                        <importOrder>
-                            <order>java,javax,org,com,top.charles7c,</order>
-                        </importOrder>
-                        <removeUnusedImports/>
-                        <eclipse>
-                            <file>${project.basedir}/code-style/spotless-formatter.xml</file>
-                        </eclipse>
-                        <licenseHeader>
-                            <file>${project.basedir}/code-style/license-header</file>
-                        </licenseHeader>
-                    </java>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -129,38 +115,19 @@ limitations under the License.
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- 单元测试配置插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                    <!-- 根据启用环境执行对应 @Tag 的测试方法 -->
-                    <groups>${profiles.active}</groups>
-                    <!-- 排除标签 -->
-                    <excludedGroups>exclude</excludedGroups>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- 如果没有该项配置，devtools 不会生效，应用不会自动重启 -->
-                    <fork>true</fork>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
+                    <java>
+                        <importOrder>
+                            <order>java,javax,org,com,top.charles7c,</order>
+                        </importOrder>
+                        <removeUnusedImports/>
+                        <eclipse>
+                            <file>code-style/spotless-formatter.xml</file>
+                        </eclipse>
+                        <licenseHeader>
+                            <file>code-style/license-header</file>
+                        </licenseHeader>
+                    </java>
                 </configuration>
             </plugin>
         </plugins>
@@ -171,7 +138,7 @@ limitations under the License.
                 <includes>
                     <include>**/**</include>
                 </includes>
-                <!-- 启用过滤，即该资源中的变量将会被替换 -->
+                <!-- 启用过滤，即替换对应资源中的变量 -->
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -185,7 +152,7 @@ limitations under the License.
                 <!-- Spring Boot 启用环境 -->
                 <profiles.active>dev</profiles.active>
                 <!-- 日志级别 -->
-                <logging.level>debug</logging.level>
+                <logging.level>DEBUG</logging.level>
                 <!-- 日志存储位置 -->
                 <logging.file.path>./logs</logging.file.path>
             </properties>
@@ -198,7 +165,7 @@ limitations under the License.
             <id>prod</id>
             <properties>
                 <profiles.active>prod</profiles.active>
-                <logging.level>info</logging.level>
+                <logging.level>INFO</logging.level>
                 <logging.file.path>./logs</logging.file.path>
             </properties>
         </profile>

@@ -55,6 +55,7 @@
 
     <!-- 开发环境：只打印到控制台 -->
     <springProfile name="dev">
+        <!-- 如果配置的日志等级，和 application.yml 中的日志等级配置重叠，application.yml 配置优先级高 -->
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
@@ -63,6 +64,7 @@
     <!-- 生产环境：只输出到文件 -->
     <springProfile name="prod">
         <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
             <appender-ref ref="ASYNC_FILE"/>
         </root>
     </springProfile>
