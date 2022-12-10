@@ -38,21 +38,21 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @SpringBootApplication
 public class ContinewAdminApplication {
-    
+
     private static Environment env;
-    
+
     @SneakyThrows
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ContinewAdminApplication.class);
         ConfigurableApplicationContext context = application.run(args);
-        
+
         env = context.getEnvironment();
         log.info("------------------------------------------------------");
         log.info("{} backend service started successfully.", env.getProperty("continew-admin.name"));
         log.info("后端 API 地址：http://{}:{}", InetAddress.getLocalHost().getHostAddress(), env.getProperty("server.port"));
         log.info("------------------------------------------------------");
     }
-    
+
     /**
      * 访问首页提示
      *
