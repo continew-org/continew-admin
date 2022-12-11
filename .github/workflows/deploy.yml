@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  # 推送时执行
+  push:
+    branches: [dev]
+  # pr 时执行
+  pull_request:
+    branches: [dev]
+  # 可手动执行
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1、检出源码
+      - name: Checkout
+        uses: actions/checkout@master
+      # 2、安装 Java 环境
+      - name: Install Java
+        uses: actions/setup-java@master
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+          cache: 'maven'
+      # 3、打包
+      - name: Build
+        run: mvn -B package -P dev --file pom.xml
+      # 4、拷贝 jar 包到服务器
+      - name: Copy Jar
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          local: continew-admin-webapi/target/continew-admin.jar
+          remote: /docker/continew-admin/server/continew-admin.jar
+      # 5、启动后端服务
+      - name: Start
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /docker
+            docker-compose up --force-recreate --build -d continew-admin-server

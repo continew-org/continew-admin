@@ -3,9 +3,36 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
 ![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v0.0.1-%23ff3f59.svg)
 
+📚 [在线 API 文档](http://cnadmin.charles7c.top/doc.html)
+
 ### 简介
 
 ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Spring Boot、Undertow、Redis、Redisson、Hutool 等。
+
+### 开始
+
+```bash
+# 1.克隆本项目
+git clone https://github.com/Charles7c/continew-admin.git
+
+# 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
+
+# 3.修改配置文件中的 Redis 配置信息
+# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
+
+# 4.启动程序
+# 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew-Admin backend service started successfully.
+# 4.2 接口文档：http://localhost:8000/doc.html
+
+# 5.部署
+# 5.1 Docker 部署
+#   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
+#   5.1.2 执行 mvn package -P prod 进行项目打包，将 target 目录下的 continew-admin.jar 放到 /docker/continew-admin/server 目录下
+#   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
+#   5.1.4 修改 docker-compose.yml 中的 Redis 配置、continew-admin-server 配置、Nginx 配置
+#   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
+# 5.2 其他方式部署
+```
 
 ### 技术栈
 

@@ -1,0 +1,47 @@
+version: '3'
+services:
+  redis:
+    container_name: redis
+    image: redis:6.2.7
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - '6379:6379'
+    volumes:
+      - /docker/redis/conf/redis.conf:/usr/local/redis/config/redis.conf
+      - /docker/redis/data:/data
+      - /docker/redis/logs:/logs
+    command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 123456'
+    privileged: true
+  continew-admin-server:
+    container_name: continew-admin-server
+    build: ./continew-admin
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      REDIS_HOST: 172.17.0.1
+      REDIS_PORT: 6379
+      REDIS_PWD: 你的 Redis 密码
+      REDIS_DB: 你的 Redis 数据库索引
+    ports:
+      - '8000:8000'
+    volumes:
+      - /docker/continew-admin/server/logs:/logs
+    depends_on:
+      - redis
+    privileged: true
+  nginx:
+    container_name: nginx
+    image: nginx:1.22.1
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /docker/nginx/logs:/var/log/nginx
+      - /docker/nginx/cert:/etc/nginx/cert
+    privileged: true
