@@ -18,17 +18,22 @@ package top.charles7c.cnadmin;
 
 import java.net.InetAddress;
 
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import io.swagger.v3.oas.annotations.Hidden;
+
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
 
 /**
  * 启动程序
@@ -39,22 +44,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @SpringBootApplication
+@RequiredArgsConstructor
 @Import(cn.hutool.extra.spring.SpringUtil.class)
 @ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
-public class ContinewAdminApplication {
+public class ContinewAdminApplication implements ApplicationRunner {
 
-    private static Environment env;
+    private final ContinewAdminProperties properties;
+    private final ServerProperties serverProperties;
 
-    @SneakyThrows
     public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(ContinewAdminApplication.class);
-        ConfigurableApplicationContext context = application.run(args);
-
-        env = context.getEnvironment();
-        log.info("------------------------------------------------------");
-        log.info("{} backend service started successfully.", env.getProperty("continew-admin.name"));
-        log.info("后端 API 地址：http://{}:{}", InetAddress.getLocalHost().getHostAddress(), env.getProperty("server.port"));
-        log.info("------------------------------------------------------");
+        SpringApplication.run(ContinewAdminApplication.class, args);
     }
 
     /**
@@ -62,8 +61,19 @@ public class ContinewAdminApplication {
      *
      * @return /
      */
+    @Hidden
     @GetMapping("/")
     public String index() {
-        return String.format("%s backend service started successfully.", env.getProperty("continew-admin.name"));
+        return String.format("%s backend service started successfully.", properties.getName());
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        log.info("------------------------------------------------------");
+        log.info("{} backend service started successfully.", properties.getName());
+        log.info("后端 API 地址：http://{}:{}", hostAddress, serverProperties.getPort());
+        log.info("后端 API 文档：http://{}:{}/doc.html", hostAddress, serverProperties.getPort());
+        log.info("------------------------------------------------------");
     }
 }

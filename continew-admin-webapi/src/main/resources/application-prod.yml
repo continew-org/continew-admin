@@ -33,3 +33,8 @@ captcha:
   width: 111
   # 高度
   height: 36
+
+--- ### 接口文档配置
+springdoc:
+  swagger-ui:
+    enabled: false

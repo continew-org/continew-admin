@@ -23,6 +23,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -35,19 +37,29 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(description = "响应信息")
 public class R<V extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /** 是否成功 */
+    @Schema(description = "是否成功")
     private boolean success;
+
     /** 状态码 */
+    @Schema(description = "状态码")
     private int code;
+
     /** 状态信息 */
+    @Schema(description = "状态信息")
     private String msg;
+
     /** 返回数据 */
+    @Schema(description = "返回数据")
     private V data;
+
     /** 时间戳 */
+    @Schema(description = "时间戳")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp = LocalDateTime.now();
 

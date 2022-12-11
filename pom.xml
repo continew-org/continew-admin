@@ -43,6 +43,7 @@ limitations under the License.
 
     <properties>
         <!-- ### 工具库相关 ### -->
+        <knife4j.version>4.0.0-SNAPSHOT</knife4j.version>
         <redisson.version>3.18.1</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.10</hutool.version>
@@ -60,6 +61,15 @@ limitations under the License.
     <dependencyManagement>
         <dependencies>
             <!-- ################ 工具库相关 ################ -->
+            <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->
             <dependency>
                 <groupId>org.redisson</groupId>
@@ -151,7 +161,7 @@ limitations under the License.
                 <configuration>
                     <java>
                         <importOrder>
-                            <order>java,javax,lombok,org,com,cn,top.charles7c,</order>
+                            <order>java,javax,lombok,io,org,com,cn,top.charles7c,</order>
                         </importOrder>
                         <removeUnusedImports/>
                         <eclipse>
@@ -203,4 +213,16 @@ limitations under the License.
             </properties>
         </profile>
     </profiles>
+
+    <!-- 私服配置（待 Knife4j 正式发版后，移除该配置） -->
+    <repositories>
+        <repository>
+            <id>nexus-maven</id>
+            <name>nexus-maven</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

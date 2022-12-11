@@ -3,9 +3,22 @@ continew-admin:
   # 名称
   name: ContiNew-Admin
   # 应用名称
-  appName: @project.name@
+  appName: @project.parent.name@
   # 版本
   version: @project.version@
+  # 描述
+  description: @project.parent.description@
+  # URL
+  url: @project.parent.url@
+  ## 作者信息配置
+  author:
+    name: Charles7c
+    email: charles7c@126.com
+    url: https://blog.charles7c.top/about/me
+  ## 许可协议信息配置
+  license:
+    name: Apache-2.0
+    url: https://github.com/Charles7c/continew-admin/blob/dev/LICENSE
 
 --- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
@@ -14,6 +27,20 @@ logging:
   file:
     path: @logging.file.path@
   config: classpath:logback-spring.xml
+
+--- ### 接口文档配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    enabled: ${springdoc.swagger-ui.enabled}
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi
 
 --- ### 服务器配置
 server:

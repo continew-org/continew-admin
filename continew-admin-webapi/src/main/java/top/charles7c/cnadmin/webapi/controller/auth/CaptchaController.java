@@ -20,6 +20,10 @@ import java.time.Duration;
 
 import lombok.RequiredArgsConstructor;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,18 +43,15 @@ import top.charles7c.cnadmin.common.util.RedisUtils;
  * @author Charles7c
  * @since 2022/12/11 14:00
  */
+@Tag(name = "验证码 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/captcha")
+@RequestMapping(value = "/captcha", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CaptchaController {
 
     private final CaptchaProperties captchaProperties;
 
-    /**
-     * 获取图片验证码
-     *
-     * @return 验证码信息
-     */
+    @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
     public R<CaptchaVO> getImageCaptcha() {
         // 生成验证码

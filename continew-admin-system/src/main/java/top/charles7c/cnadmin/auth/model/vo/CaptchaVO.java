@@ -21,6 +21,8 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 验证码信息
  *
@@ -29,6 +31,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
+@Schema(description = "验证码信息")
 public class CaptchaVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,10 +39,12 @@ public class CaptchaVO implements Serializable {
     /**
      * 验证码唯一标识
      */
+    @Schema(description = "验证码唯一标识")
     private String uuid;
 
     /**
      * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
      */
+    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）")
     private String img;
 }
