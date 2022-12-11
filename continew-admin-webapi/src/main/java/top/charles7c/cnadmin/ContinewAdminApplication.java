@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package top.charles7c;
+package top.charles7c.cnadmin;
 
 import java.net.InetAddress;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 启动程序
@@ -37,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @SpringBootApplication
+@Import(cn.hutool.extra.spring.SpringUtil.class)
+@ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
 public class ContinewAdminApplication {
 
     private static Environment env;

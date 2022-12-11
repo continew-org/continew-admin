@@ -3,3 +3,33 @@ server:
   # HTTP 端口（默认 8080）
   port: 18000
 
+--- ### Redis 单机配置
+spring:
+  redis:
+    # 地址
+    host: ${REDIS_HOST:127.0.0.1}
+    # 端口（默认 6379）
+    port: ${REDIS_PORT:6379}
+    # 密码（未设置密码时可为空或注释掉）
+    password: ${REDIS_PWD:123456}
+    # 数据库索引
+    database: ${REDIS_DB:0}
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启 SSL
+    ssl: false
+
+--- ### 验证码配置
+captcha:
+  # 类型
+  type: SPEC
+  # 缓存键的前缀
+  keyPrefix: CAPTCHA
+  # 过期时间
+  expirationInMinutes: 2
+  # 内容长度
+  length: 4
+  # 宽度
+  width: 111
+  # 高度
+  height: 36

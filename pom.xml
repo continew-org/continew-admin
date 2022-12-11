@@ -42,6 +42,11 @@ limitations under the License.
     </parent>
 
     <properties>
+        <!-- ### 工具库相关 ### -->
+        <redisson.version>3.18.1</redisson.version>
+        <easy-captcha.version>1.6.2</easy-captcha.version>
+        <hutool.version>5.8.10</hutool.version>
+
         <!-- ### 基础环境相关 ### -->
         <revision>0.0.1-SNAPSHOT</revision>
         <java.version>1.8</java.version>
@@ -54,6 +59,28 @@ limitations under the License.
     <!-- 全局依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
+            <!-- ################ 工具库相关 ################ -->
+            <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${easy-captcha.version}</version>
+            </dependency>
+
+            <!-- Hutool（小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”） -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
             <!-- ################ 本项目子模块相关 ################ -->
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
@@ -92,6 +119,12 @@ limitations under the License.
             <optional>true</optional>
         </dependency>
 
+        <!-- Hutool（小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”） -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
         <!-- Lombok（在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -118,7 +151,7 @@ limitations under the License.
                 <configuration>
                     <java>
                         <importOrder>
-                            <order>java,javax,org,com,top.charles7c,</order>
+                            <order>java,javax,lombok,org,com,cn,top.charles7c,</order>
                         </importOrder>
                         <removeUnusedImports/>
                         <eclipse>

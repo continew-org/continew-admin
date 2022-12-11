@@ -52,11 +52,9 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     # 序列化配置（Bean -> JSON）
     serialization:
-      # 是否格式化输出
-      indent_output: false
-      # 忽略无法转换的对象
+      # 允许序列化无属性的 Bean
       fail_on_empty_beans: false
     # 反序列化配置（JSON -> Bean）
     deserialization:
-      # 忽略 JSON 中不存在的属性
+      # 允许反序列化不存在的属性
       fail_on_unknown_properties: false
