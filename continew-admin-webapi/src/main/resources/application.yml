@@ -41,6 +41,18 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: top.charles7c.cnadmin.webapi
+## 接口文档增强配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    # 是否显示默认的 footer（默认 true 显示）
+    enable-footer: false
+    # 是否自定义 footer（默认 false 非自定义）
+    enable-footer-custom: true
+    # 自定义 footer 内容，支持 Markdown 语法
+    footer-custom-content: '[Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) | Copyright © 2022-present [ContiNew-Admin](https://github.com/Charles7c/continew-admin)'
 
 --- ### 服务器配置
 server:

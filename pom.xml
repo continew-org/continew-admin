@@ -43,7 +43,7 @@ limitations under the License.
 
     <properties>
         <!-- ### 工具库相关 ### -->
-        <knife4j.version>4.0.0-SNAPSHOT</knife4j.version>
+        <knife4j.version>4.0.0</knife4j.version>
         <redisson.version>3.18.1</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.10</hutool.version>
@@ -213,16 +213,4 @@ limitations under the License.
             </properties>
         </profile>
     </profiles>
-
-    <!-- 私服配置（待 Knife4j 正式发版后，移除该配置） -->
-    <repositories>
-        <repository>
-            <id>nexus-maven</id>
-            <name>nexus-maven</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>
