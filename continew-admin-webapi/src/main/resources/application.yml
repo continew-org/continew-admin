@@ -3,13 +3,13 @@ continew-admin:
   # 名称
   name: ContiNew-Admin
   # 应用名称
-  appName: @project.parent.name@
+  appName: continew-admin
   # 版本
-  version: @project.version@
+  version: 0.0.1-SNAPSHOT
   # 描述
-  description: @project.parent.description@
+  description: ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。
   # URL
-  url: @project.parent.url@
+  url: https://github.com/Charles7c/continew-admin
   ## 作者信息配置
   author:
     name: Charles7c
@@ -53,6 +53,31 @@ knife4j:
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
     footer-custom-content: '[Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) | Copyright © 2022-present [ContiNew-Admin](https://github.com/Charles7c/continew-admin)'
+
+--- ### Sa-Token 配置
+sa-token:
+  # token名称（同时也是 cookie 名称）
+  token-name: Authorization
+  # token前缀（例如填写 Bearer 实际传参 Authorization: Bearer xxxx-xxxx-xxxx-xxxx）
+  token-prefix: Bearer
+  # token有效期（单位：秒，默认 30 天，-1 代表永不过期）
+  timeout: 86400
+  # token临时有效期（单位：秒，指定时间内无操作就视为 token 过期）
+  activity-timeout: 1800
+  # 是否打开自动续签（如果此值为 true，框架会在每次直接或间接调用 getLoginId() 时进行一次过期检查与续签操作）
+  auto-renew: true
+  # 是否允许同一账号并发登录（为 true 时允许一起登录，为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token（为 true 时所有登录共用一个 token，为 false 时每次登录新建一个 token）
+  is-share: false
+  # 是否尝试从 header 里读取 Token
+  is-read-header: true
+  # 是否尝试从 cookie 里读取 Token，此值为 false 后，StpUtil.login(id) 登录时也不会再往前端注入 Cookie，适合前后端分离模式
+  is-read-cookie: false
+  # 是否打印操作日志
+  is-log: false
+  # JWT秘钥
+  jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
 
 --- ### 服务器配置
 server:

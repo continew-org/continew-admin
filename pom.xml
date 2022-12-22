@@ -42,9 +42,11 @@ limitations under the License.
     </parent>
 
     <properties>
+        <sa-token.version>1.33.0</sa-token.version>
+
         <!-- ### 工具库相关 ### -->
         <knife4j.version>4.0.0</knife4j.version>
-        <redisson.version>3.18.1</redisson.version>
+        <redisson.version>3.19.0</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.10</hutool.version>
 
@@ -60,6 +62,34 @@ limitations under the License.
     <!-- 全局依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
+            <!-- ################ Sa-Token 相关 ################ -->
+            <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- Sa-Token 整合 JWT -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-jwt</artifactId>
+                <version>${sa-token.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.hutool</groupId>
+                        <artifactId>hutool-all</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Sa-Token 整合 Redis（使用 Jackson 序列化方式） -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
             <!-- ################ 工具库相关 ################ -->
             <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
             <dependency>

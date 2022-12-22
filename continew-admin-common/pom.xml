@@ -59,6 +59,31 @@ limitations under the License.
             </exclusions>
         </dependency>
 
+        <!-- Hibernate Validator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ################ Sa-Token 相关 ################ -->
+        <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Sa-Token 整合 JWT -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
+        </dependency>
+
+        <!-- Sa-Token 整合 Redis（使用 Jackson 序列化方式） -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-dao-redis-jackson</artifactId>
+        </dependency>
+
         <!-- ################ 工具库相关 ################ -->
         <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
         <dependency>

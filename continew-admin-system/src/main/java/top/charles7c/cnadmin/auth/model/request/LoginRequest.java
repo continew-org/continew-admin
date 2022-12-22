@@ -14,37 +14,53 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.vo;
+package top.charles7c.cnadmin.auth.model.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 验证码信息
+ * 登录信息
  *
  * @author Charles7c
- * @since 2022/12/11 13:55
+ * @since 2022/12/21 20:43
  */
 @Data
-@Accessors(chain = true)
-@Schema(description = "验证码信息")
-public class CaptchaVO implements Serializable {
+@Schema(description = "登录信息")
+public class LoginRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 用户名
+     */
+    @Schema(description = "用户名")
+    @NotBlank(message = "用户名不能为空")
+    private String username;
+
+    /**
+     * 密码
+     */
+    @Schema(description = "密码")
+    @NotBlank(message = "密码不能为空")
+    private String password;
+
+    /**
+     * 验证码
+     */
+    @Schema(description = "验证码")
+    @NotBlank(message = "验证码不能为空")
+    private String captcha;
 
     /**
      * 验证码标识
      */
     @Schema(description = "验证码标识")
+    @NotBlank(message = "验证码标识不能为空")
     private String uuid;
-
-    /**
-     * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
-     */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）")
-    private String img;
 }

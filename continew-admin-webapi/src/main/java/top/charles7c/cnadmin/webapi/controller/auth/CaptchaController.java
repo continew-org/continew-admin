@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wf.captcha.base.Captcha;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.util.IdUtil;
 
 import top.charles7c.cnadmin.auth.config.properties.CaptchaProperties;
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.util.RedisUtils;
  * @since 2022/12/11 14:00
  */
 @Tag(name = "验证码 API")
+@SaIgnore
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/captcha", produces = MediaType.APPLICATION_JSON_VALUE)

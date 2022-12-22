@@ -33,6 +33,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaIgnore;
+
 import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
 
 /**
@@ -62,6 +64,7 @@ public class ContinewAdminApplication implements ApplicationRunner {
      * @return /
      */
     @Hidden
+    @SaIgnore
     @GetMapping("/")
     public String index() {
         return String.format("%s backend service started successfully.", properties.getName());

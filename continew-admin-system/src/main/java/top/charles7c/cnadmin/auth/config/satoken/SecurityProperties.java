@@ -14,37 +14,26 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.vo;
-
-import java.io.Serializable;
+package top.charles7c.cnadmin.auth.config.satoken;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
- * 验证码信息
+ * Sa-Token 安全配置属性
  *
  * @author Charles7c
- * @since 2022/12/11 13:55
+ * @since 2022/12/19 22:14
  */
 @Data
-@Accessors(chain = true)
-@Schema(description = "验证码信息")
-public class CaptchaVO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Component
+@ConfigurationProperties(prefix = "security")
+public class SecurityProperties {
 
     /**
-     * 验证码标识
+     * 排除路径配置
      */
-    @Schema(description = "验证码标识")
-    private String uuid;
-
-    /**
-     * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
-     */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）")
-    private String img;
+    private String[] excludes = new String[0];
 }

@@ -14,37 +14,55 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.vo;
-
-import java.io.Serializable;
+package top.charles7c.cnadmin.auth.model.entity;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 
 /**
- * 验证码信息
+ * 用户实体
  *
  * @author Charles7c
- * @since 2022/12/11 13:55
+ * @since 2022/12/21 20:42
  */
 @Data
-@Accessors(chain = true)
-@Schema(description = "验证码信息")
-public class CaptchaVO implements Serializable {
+public class SysUser extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 验证码标识
+     * 用户 ID
      */
-    @Schema(description = "验证码标识")
-    private String uuid;
+    private Long userId;
 
     /**
-     * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
+     * 用户名
      */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）")
-    private String img;
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
+     * 性别（0未知 1男 2女）
+     */
+    private Integer gender;
+
+    /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
+     * 状态（1启用 2禁用）
+     */
+    private Integer status;
 }
