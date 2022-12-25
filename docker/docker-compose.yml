@@ -1,5 +1,21 @@
 version: '3'
 services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 你的root用户密码
+      # 初始化数据库（后续的初始化 SQL 会在这个库执行）
+      MYSQL_DATABASE: continew_admin
+      #MYSQL_USER: 你的数据库用户名
+      #MYSQL_PASSWORD: 你的数据库密码
+    ports:
+      - '3306:3306'
+    volumes:
+      - /docker/mysql/:/var/lib/mysql
+    privileged: true
   redis:
     container_name: redis
     image: redis:6.2.7
@@ -20,6 +36,11 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
+      DB_HOST: 172.17.0.1
+      DB_PORT: 3306
+      DB_USER: 你的数据库用户名
+      DB_PWD: 你的数据库密码
+      DB_NAME: continew_admin
       REDIS_HOST: 172.17.0.1
       REDIS_PORT: 6379
       REDIS_PWD: 你的 Redis 密码
@@ -30,6 +51,7 @@ services:
       - /docker/continew-admin/server/logs:/logs
     depends_on:
       - redis
+      - mariadb
     privileged: true
   nginx:
     container_name: nginx

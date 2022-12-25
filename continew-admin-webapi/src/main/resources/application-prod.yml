@@ -3,6 +3,56 @@ server:
   # HTTP 端口（默认 8080）
   port: 18000
 
+--- ### 数据源配置
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    ## 动态数据源配置（可配多主多从：m1、s1...、纯粹多库：mysql、oracle...、混合配置：m1、s1、oracle...）
+    dynamic:
+      # 是否启用 P6Spy（SQL 性能分析组件，默认 false，该插件有性能损耗，不建议生产环境使用）
+      p6spy: false
+      # 设置默认的数据源或者数据源组（默认 master）
+      primary: master
+      # 严格匹配数据源（true 未匹配到指定数据源时抛异常；false 使用默认数据源；默认 false）
+      strict: false
+      datasource:
+        # 主库配置（可配多个，构成多主）
+        master:
+          url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+          username: ${DB_USER:root}
+          password: ${DB_PWD:123456}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        # 从库配置（可配多个，构成多从）
+        slave_1:
+          url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+          username:
+          password:
+          lazy: true
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          type: ${spring.datasource.type}
+      hikari:
+        # 最大连接池数量
+        max-pool-size: 20
+        # 最小空闲线程数量
+        min-idle: 10
+        # 获取连接超时时间
+        connection-timeout: 10000
+        # 校验超时时间
+        validation-timeout: 5000
+        # 空闲连接最大存活时间（默认 10 分钟）
+        idle-timeout: 60000
+        # 此属性控制池中连接的最长生命周期，0 表示无限生命周期（默认 30 分钟）
+        max-lifetime: 900000
+        # 连接测试 query（配置检测连接是否有效）
+        connection-test-query: SELECT 1
+
+--- ### Liquibase 配置
+spring.liquibase:
+  # 是否启用
+  enabled: true
+  # 配置文件路径
+  change-log: classpath:/db/changelog/db.changelog-master.yaml
+
 --- ### Redis 单机配置
 spring:
   redis:
@@ -18,17 +68,6 @@ spring:
     timeout: 10s
     # 是否开启 SSL
     ssl: false
-
---- ### 安全配置
-security:
-  # 排除路径配置
-  excludes:
-    # 静态资源
-    - /*.html
-    - /**/*.html
-    - /**/*.css
-    - /**/*.js
-    - /webSocket/**
 
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:

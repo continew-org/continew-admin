@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.service;
+package top.charles7c.cnadmin.common.exception;
 
-import top.charles7c.cnadmin.auth.model.entity.SysUser;
+import lombok.NoArgsConstructor;
 
 /**
- * 用户业务接口
+ * 业务异常
  *
  * @author Charles7c
- * @since 2022/12/21 21:48
+ * @since 2022/12/23 22:55
  */
-public interface UserService {
+@NoArgsConstructor
+public class ServiceException extends RuntimeException {
 
-    /**
-     * 根据用户名查询
-     *
-     * @param username
-     *            用户名
-     * @return 用户信息
-     */
-    SysUser getByUsername(String username);
+    public ServiceException(String message) {
+        super(message);
+    }
+
 }

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/v0.0.1/continew-admin_table.sql
+  - include:
+      file: db/changelog/v0.0.1/continew-admin_column.sql
+  - include:
+      file: db/changelog/v0.0.1/continew-admin_data.sql

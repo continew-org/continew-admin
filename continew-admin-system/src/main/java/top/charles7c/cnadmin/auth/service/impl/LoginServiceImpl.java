@@ -21,13 +21,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 
-import top.charles7c.cnadmin.auth.model.entity.SysUser;
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.auth.service.UserService;
 import top.charles7c.cnadmin.common.consts.CommonConstants;
+import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.CheckUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
+import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 登录业务实现类
@@ -53,7 +56,8 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.exIfEqual(CommonConstants.STATUS_DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
-        StpUtil.login(userId);
+        LoginUser loginUser = BeanUtil.copyProperties(sysUser, LoginUser.class);
+        LoginHelper.login(loginUser);
 
         // 返回令牌
         return StpUtil.getTokenValue();

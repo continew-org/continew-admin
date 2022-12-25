@@ -19,10 +19,12 @@ package top.charles7c.cnadmin.common.handler;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -37,6 +39,8 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.StreamUtils;
 
 /**
  * 全局异常处理器
@@ -85,7 +89,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public R handleBindException(BindException e, HttpServletRequest request) {
         log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
-        return R.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        String message = StreamUtils.join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, "，");
+        return R.fail(HttpStatus.BAD_REQUEST.value(), message);
     }
 
     /**
@@ -95,7 +100,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
-        return R.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        String message = StreamUtils.join(e.getConstraintViolations(), ConstraintViolation::getMessage, "，");
+        return R.fail(HttpStatus.BAD_REQUEST.value(), message);
     }
 
     /**
@@ -105,7 +111,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
-        return R.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return R.fail(HttpStatus.BAD_REQUEST.value(), ExceptionUtils
+            .exToNull(() -> Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage()));
     }
 
     /**

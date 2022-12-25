@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.service.impl;
+package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.Date;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import top.charles7c.cnadmin.auth.model.entity.SysUser;
-import top.charles7c.cnadmin.auth.service.UserService;
-import top.charles7c.cnadmin.common.util.SecureUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
+import top.charles7c.cnadmin.system.mapper.UserMapper;
+import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 用户业务实现类
@@ -31,24 +33,13 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
  * @since 2022/12/21 21:49
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final UserMapper userMapper;
 
     @Override
     public SysUser getByUsername(String username) {
-        if (!"admin".equals(username)) {
-            return null;
-        }
-        SysUser sysUser = new SysUser();
-        sysUser.setUserId(1L);
-        sysUser.setUsername("admin");
-        sysUser.setPassword(SecureUtils.md5Salt("123456", sysUser.getUserId().toString()));
-        sysUser.setNickname("超级管理员");
-        sysUser.setGender(1);
-        sysUser.setStatus(1);
-        sysUser.setCreateUser(1L);
-        sysUser.setCreateTime(new Date());
-        sysUser.setUpdateUser(1L);
-        sysUser.setUpdateTime(new Date());
-        return sysUser;
+        return userMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUsername, username));
     }
 }

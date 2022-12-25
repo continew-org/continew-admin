@@ -44,6 +44,11 @@ limitations under the License.
     <properties>
         <sa-token.version>1.33.0</sa-token.version>
 
+        <!-- ### 持久层相关 ### -->
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <dynamic-ds.version>3.6.1</dynamic-ds.version>
+        <p6spy.version>3.9.1</p6spy.version>
+
         <!-- ### 工具库相关 ### -->
         <knife4j.version>4.0.0</knife4j.version>
         <redisson.version>3.19.0</redisson.version>
@@ -78,7 +83,7 @@ limitations under the License.
                 <exclusions>
                     <exclusion>
                         <groupId>cn.hutool</groupId>
-                        <artifactId>hutool-all</artifactId>
+                        <artifactId>hutool-jwt</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -88,6 +93,28 @@ limitations under the License.
                 <groupId>cn.dev33</groupId>
                 <artifactId>sa-token-dao-redis-jackson</artifactId>
                 <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- ################ 持久层相关 ################ -->
+            <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- Dynamic Datasource（基于 Spring Boot 的快速集成多数据源的启动器） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-ds.version}</version>
+            </dependency>
+
+            <!-- P6Spy（SQL 性能分析组件） -->
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
             </dependency>
 
             <!-- ################ 工具库相关 ################ -->

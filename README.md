@@ -7,7 +7,7 @@
 
 ### 简介
 
-ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Spring Boot、Undertow、Sa-Token、JWT、Redis、Redisson、Hutool 等。
+ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
 
 ### 开始
 
@@ -18,7 +18,7 @@ git clone https://github.com/Charles7c/continew-admin.git
 # 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
 
 # 3.修改配置文件中的 Redis 配置信息
-# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
+# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
 
 # 4.启动程序
 # 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew-Admin backend service started successfully.
@@ -29,7 +29,7 @@ git clone https://github.com/Charles7c/continew-admin.git
 #   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
 #   5.1.2 执行 mvn package -P prod 进行项目打包，将 target 目录下的 continew-admin.jar 放到 /docker/continew-admin/server 目录下
 #   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   5.1.4 修改 docker-compose.yml 中的 Redis 配置、continew-admin-server 配置、Nginx 配置
+#   5.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
 #   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
 # 5.2 其他方式部署
 ```
@@ -41,6 +41,13 @@ git clone https://github.com/Charles7c/continew-admin.git
 | [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.6        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | [Undertow](https://undertow.io/)                             | 2.2.20.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.33.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| [MariaDB](https://mariadb.org/)                              | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
+| [MyBatis Plus](https://baomidou.com/)                        | 3.5.2        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| [dynamic-datasource-spring-boot-starter](https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611) | 3.6.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
+| Hikari                                                       | 4.0.3        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| [mysql-connector-j](https://dev.mysql.com/doc/connector-j/8.0/en/) | 8.0.31       | MySQL Java 驱动。                                            |
+| [P6Spy](https://github.com/p6spy/p6spy)                      | 3.9.1        | SQL 性能分析组件。                                           |
+| [Liquibase](https://github.com/liquibase/liquibase)          | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | [Redis](https://redis.io/)                                   | 6.2.7        | 高性能的 key-value 数据库。                                  |
 | [Redisson](https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D) | 3.19.0       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
 | Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
@@ -58,52 +65,63 @@ git clone https://github.com/Charles7c/continew-admin.git
 ```bash
 continew-admin  # 全局通用项目配置及依赖版本管理
   ├─ continew-admin-webapi   # API 模块（存放 Controller 层代码，打包部署的模块）
-  │  ├─ src
-  │  │  ├─ main
-  │  │  │  ├─ java      # 工程源文件代码目录
-  │  │  │  │  └─ top
-  │  │  │  │    └─ charles7c
-  │  │  │  │      ├─ cnadmin
-  │  │  │  │      │  └─ webapi
-  │  │  │  │      │    └─ controller  
-  │  │  │  │      │      └─ auth    # 认证相关 API
-  │  │  │  │      └─ ContinewAdminApplication.java  # 启动入口
-  │  │  │  ├─ resources   # 工程配置目录
+  │  └─ src
+  │    └─ main
+  │      ├─ java        # 工程源文件代码目录
+  │      │  └─ top
+  │      │    └─ charles7c
+  │      │      └─ cnadmin
+  │      │        ├─ webapi
+  │      │        │  └─ controller  
+  │      │        │    └─ auth    # 认证相关 API
+  │      │        └─ ContinewAdminApplication.java  # 启动入口
+  │      └─ resources   # 工程配置目录
+  │        └─ db.changelog.v0.0.1    # 数据库脚本文件
   ├─ continew-admin-system    # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
-  │  ├─ src
-  │  │  ├─ main
-  │  │  │  ├─ java      # 工程源文件代码目录
-  │  │  │  │  └─ top
-  │  │  │  │    └─ charles7c
-  │  │  │  │      └─ cnadmin
-  │  │  │  │        └─ auth     # 认证相关业务及配置
-  │  │  │  │          ├─ config     # 认证相关配置
-  │  │  │  │          │  ├─ satoken     # Sa-Token 配置
-  │  │  │  │          │  └─ properties  # 认证相关配置属性
-  │  │  │  │          ├─ model      # 认证相关模型
-  │  │  │  │          │  ├─ entity      # 认证相关实体对象
-  │  │  │  │          │  ├─ request     # 认证相关请求对象
-  │  │  │  │          │  └─ vo          # 认证相关 VO（View Object）
-  │  │  │  │          └─ service    # 认证相关业务
-  │  │  │  │             └─ impl        # 认证相关业务实现
+  │  └─ src
+  │    └─ main
+  │      ├─ java        # 工程源文件代码目录
+  │      │  └─ top
+  │      │    └─ charles7c
+  │      │      └─ cnadmin
+  │      │        ├─ auth     # 认证相关业务及配置
+  │      │        │  ├─ config    # 认证相关配置
+  │      │        │  │  ├─ satoken    # Sa-Token 配置
+  │      │        │  │  └─ properties # 认证相关配置属性
+  │      │        │  ├─ model     # 认证相关模型
+  │      │        │  │  ├─ request    # 认证相关请求对象
+  │      │        │  │  └─ vo         # 认证相关 VO（View Object）
+  │      │        │  └─ service   # 认证相关业务接口及实现类
+  │      │        │     └─ impl       # 认证相关业务实现类
+  │      │        └─ system   # 系统管理相关业务及配置
+  │      │          ├─ mapper     # 系统管理相关 Mapper
+  │      │          ├─ model      # 系统管理相关模型
+  │      │          │  └─ entity      # 系统管理相关实体对象
+  │      │          └─ service    # 系统管理相关业务接口及实现类
+  │      │             └─ impl        # 系统管理相关业务实现类
+  │      └─ resources   # 工程配置目录
+  │         └─ mapper        # MyBatis Mapper XML 文件目录
   ├─ continew-admin-common   # 公共模块（存放公共工具类，公共配置等）
-  │  ├─ src
-  │  │  ├─ main
-  │  │  │  ├─ java      # 工程源文件代码目录
-  │  │  │  │  └─ top
-  │  │  │  │    └─ charles7c
-  │  │  │  │      └─ cnadmin
-  │  │  │  │        └─ common
-  │  │  │  │          ├─ config       # 公共配置
-  │  │  │  │          │  ├─ jackson      # Jackson 配置
-  │  │  │  │          │  └─ properties   # 公共配置属性
-  │  │  │  │          ├─ consts       # 公共常量
-  │  │  │  │          ├─ exception    # 公共异常
-  │  │  │  │          ├─ handler      # 公共处理器
-  │  │  │  │          ├─ model        # 公共模型
-  │  │  │  │          │  ├─ entity       # 公共实体对象
-  │  │  │  │          │  └─ vo           # 公共 VO（View Object）
-  │  │  │  │          └─ util         # 公共工具类
+  │  └─ src
+  │    └─ main
+  │      └─ java        # 工程源文件代码目录
+  │        └─ top
+  │          └─ charles7c
+  │            └─ cnadmin
+  │              └─ common
+  │                ├─ config       # 公共配置
+  │                │  ├─ jackson      # Jackson 配置
+  │                │  ├─ mybatis      # MyBatis Plus 配置
+  │                │  └─ properties   # 公共配置属性
+  │                ├─ consts       # 公共常量
+  │                ├─ exception    # 公共异常
+  │                ├─ handler      # 公共处理器
+  │                ├─ model        # 公共模型
+  │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
+  │                │  ├─ entity       # 公共实体对象
+  │                │  └─ vo           # 公共 VO（View Object）
+  │                └─ util         # 公共工具类
+  │                  └─ helper        # 公共 Helper（助手）
 ```
 
 ### License

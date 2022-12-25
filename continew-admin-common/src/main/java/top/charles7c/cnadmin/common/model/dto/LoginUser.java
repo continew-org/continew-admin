@@ -14,48 +14,65 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.model.entity;
+package top.charles7c.cnadmin.common.model.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-
 /**
- * 实体类基类
+ * 登录用户信息
  *
  * @author Charles7c
- * @since 2022/12/12 23:02
+ * @since 2022/12/24 13:01
  */
 @Data
-public class BaseEntity implements Serializable {
+public class LoginUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 创建人
+     * 用户 ID
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Long createUser;
+    private Long userId;
 
     /**
-     * 创建时间
+     * 用户名
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private String username;
 
     /**
-     * 修改人
+     * 昵称
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateUser;
+    private String nickname;
 
     /**
-     * 修改时间
+     * 性别（0未知 1男 2女）
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    private Integer gender;
+
+    /**
+     * 手机号码
+     */
+    private String phone;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 头像地址
+     */
+    private String avatar;
+
+    /**
+     * 备注
+     */
+    private String notes;
+
+    /**
+     * 状态（1启用 2禁用）
+     */
+    private Integer status;
 }

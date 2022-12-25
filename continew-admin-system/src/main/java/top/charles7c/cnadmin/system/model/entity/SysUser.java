@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.entity;
+package top.charles7c.cnadmin.system.model.entity;
+
+import java.util.Date;
 
 import lombok.Data;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 
@@ -27,6 +32,7 @@ import top.charles7c.cnadmin.common.model.entity.BaseEntity;
  * @since 2022/12/21 20:42
  */
 @Data
+@TableName("sys_user")
 public class SysUser extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -34,6 +40,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户 ID
      */
+    @TableId
     private Long userId;
 
     /**
@@ -42,14 +49,14 @@ public class SysUser extends BaseEntity {
     private String username;
 
     /**
-     * 密码
-     */
-    private String password;
-
-    /**
      * 昵称
      */
     private String nickname;
+
+    /**
+     * 密码
+     */
+    private String password;
 
     /**
      * 性别（0未知 1男 2女）
@@ -57,12 +64,32 @@ public class SysUser extends BaseEntity {
     private Integer gender;
 
     /**
-     * 头像
+     * 手机号码
+     */
+    private String phone;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 头像地址
      */
     private String avatar;
+
+    /**
+     * 备注
+     */
+    private String notes;
 
     /**
      * 状态（1启用 2禁用）
      */
     private Integer status;
+
+    /**
+     * 最后一次修改密码的时间
+     */
+    private Date pwdResetTime;
 }

@@ -79,6 +79,54 @@ sa-token:
   # JWT秘钥
   jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
 
+--- ### 安全配置
+security:
+  # 排除路径配置
+  excludes:
+    # 静态资源
+    - /*.html
+    - /**/*.html
+    - /**/*.css
+    - /**/*.js
+    - /webSocket/**
+
+--- ### MyBatis Plus 配置
+mybatis-plus:
+  # Mapper 接口扫描包配置（该配置为自定义配置，非 MP 配置，不支持多包，如有需要可通过注解配置或提升扫描包层级）
+  # 该配置目前的唯一使用场景为：@MapperScan("${mybatis-plus.mapper-package}")
+  mapper-package: top.charles7c.**.mapper
+  # Mapper XML 文件目录配置
+  mapper-locations: classpath*:/mapper/**/*Mapper.xml
+  # 类型别名扫描包配置
+  type-aliases-package: top.charles7c.**.model
+  check-config-location: true
+  configuration:
+    # 自动驼峰命名规则（camel case）映射
+    map-underscore-to-camel-case: true
+    # MyBatis 自动映射策略
+    # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
+    auto-mapping-behavior: PARTIAL
+    # MyBatis 自动映射时未知列或未知属性处理策
+    # NONE：不做处理 WARNING：打印相关警告 FAILING：抛出异常和详细信息
+    auto-mapping-unknown-column-behavior: NONE
+    # 日志配置
+    # 默认：org.apache.ibatis.logging.slf4j.Slf4jImpl
+    # 更详细（会有性能损耗）：org.apache.ibatis.logging.stdout.StdOutImpl
+    # 关闭（可单纯使用 p6spy 分析）：org.apache.ibatis.logging.nologging.NoLoggingImpl
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    banner: true
+    db-config:
+      # 主键类型（默认 assign_id 表示自行赋值）
+      # auto 代表使用数据库自增策略（需要在表中设置好自增约束）
+      id-type: AUTO
+      # 逻辑删除字段
+      logic-delete-field: isDeleted
+      # 逻辑删除全局值（默认 1，表示已删除）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（默认 0，表示未删除）
+      logic-not-delete-value: 0
+
 --- ### 服务器配置
 server:
   servlet:
