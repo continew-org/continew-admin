@@ -16,10 +16,14 @@
 
 package top.charles7c.cnadmin.common.util;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 异常工具类
@@ -27,8 +31,37 @@ import lombok.NoArgsConstructor;
  * @author Charles7c
  * @since 2022/12/21 20:56
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExceptionUtils {
+
+    /**
+     * 打印线程异常信息
+     *
+     * @param runnable
+     *            线程执行内容
+     * @param throwable
+     *            异常
+     */
+    public static void printException(Runnable runnable, Throwable throwable) {
+        if (throwable == null && runnable instanceof Future<?>) {
+            try {
+                Future<?> future = (Future<?>)runnable;
+                if (future.isDone()) {
+                    future.get();
+                }
+            } catch (CancellationException e) {
+                throwable = e;
+            } catch (ExecutionException e) {
+                throwable = e.getCause();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        if (throwable != null) {
+            log.error(throwable.getMessage(), throwable);
+        }
+    }
 
     /**
      * 如果有异常，返回 null

@@ -25,6 +25,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.extra.spring.SpringUtil;
+
 /**
  * 项目配置属性
  *
@@ -72,4 +75,13 @@ public class ContinewAdminProperties {
      */
     @NestedConfigurationProperty
     private License license;
+
+    /**
+     * 是否本地解析 IP 归属地
+     */
+    public static final boolean IP_ADDR_LOCAL_PARSE_ENABLED;
+
+    static {
+        IP_ADDR_LOCAL_PARSE_ENABLED = Convert.toBool(SpringUtil.getProperty("continew-admin.ipAddrLocalParseEnabled"));
+    }
 }

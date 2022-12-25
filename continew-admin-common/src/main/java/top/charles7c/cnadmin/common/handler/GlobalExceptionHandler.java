@@ -38,9 +38,12 @@ import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.exception.BadRequestException;
+import top.charles7c.cnadmin.common.exception.ServiceException;
+import top.charles7c.cnadmin.common.model.dto.OperationLog;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.StreamUtils;
+import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 
 /**
  * 全局异常处理器
@@ -58,6 +61,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public R handleException(Exception e, HttpServletRequest request) {
+        this.setException(e);
         log.error("请求地址'{}'，发生未知异常", request.getRequestURI(), e);
         return R.fail(e.getMessage());
     }
@@ -68,8 +72,20 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        this.setException(e);
         log.error("请求地址'{}'，发生系统异常", request.getRequestURI(), e);
         return R.fail(e.getMessage());
+    }
+
+    /**
+     * 拦截业务异常
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ServiceException.class)
+    public R handleServiceException(ServiceException e, HttpServletRequest request) {
+        this.setException(e);
+        log.error("请求地址'{}'，发生业务异常", request.getRequestURI(), e);
+        return R.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     /**
@@ -146,5 +162,18 @@ public class GlobalExceptionHandler {
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
         log.error("请求地址'{}'，认证失败'{}'，无法访问系统资源", request.getRequestURI(), e.getMessage());
         return R.fail(HttpStatus.UNAUTHORIZED.value(), "认证失败，无法访问系统资源");
+    }
+
+    /**
+     * 操作日志保存异常信息
+     *
+     * @param e
+     *            异常信息
+     */
+    private void setException(Exception e) {
+        OperationLog operationLog = LogContextHolder.get();
+        if (operationLog != null) {
+            operationLog.setException(e);
+        }
     }
 }

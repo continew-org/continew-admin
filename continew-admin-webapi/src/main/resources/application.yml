@@ -19,6 +19,8 @@ continew-admin:
   license:
     name: Apache-2.0
     url: https://github.com/Charles7c/continew-admin/blob/dev/LICENSE
+  # 是否本地解析 IP 归属地
+  ipAddrLocalParseEnabled: false
 
 --- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
@@ -27,6 +29,17 @@ logging:
   file:
     path: @logging.file.path@
   config: classpath:logback-spring.xml
+  ## 操作日志配置
+  operation:
+    # 是否启用操作日志
+    enabled: true
+    # 不记录操作日志的请求方式
+    #excludeMethods:
+    #  - GET
+    # 脱敏字段
+    desensitize:
+      - password
+      - Authorization
 
 --- ### 接口文档配置
 springdoc:
@@ -170,3 +183,12 @@ spring:
     deserialization:
       # 允许反序列化不存在的属性
       fail_on_unknown_properties: false
+
+--- ### 线程池配置
+thread-pool:
+  # 是否启用线程池
+  enabled: true
+  # 队列容量
+  queueCapacity: 128
+  # 活跃时间
+  keepAliveSeconds: 300

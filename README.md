@@ -77,22 +77,43 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        └─ db.changelog.v0.0.1    # 数据库脚本文件
-  ├─ continew-admin-system    # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
+  ├─ continew-admin-monitor  # 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）
   │  └─ src
   │    └─ main
   │      ├─ java        # 工程源文件代码目录
   │      │  └─ top
   │      │    └─ charles7c
   │      │      └─ cnadmin
-  │      │        ├─ auth     # 认证相关业务及配置
-  │      │        │  ├─ config    # 认证相关配置
+  │      │        └─ monitor
+  │      │          ├─ annotation    # 系统监控相关注解
+  │      │          ├─ config        # 系统监控相关配置
+  │      │          │  └─ properties   # 系统监控相关配置属性
+  │      │          ├─ enums         # 系统监控相关枚举
+  │      │          ├─ filter        # 系统监控相关过滤器
+  │      │          ├─ interceptor   # 系统监控相关拦截器
+  │      │          ├─ mapper        # 系统监控相关 Mapper
+  │      │          ├─ model         # 系统监控相关模型
+  │      │          │  └─ entity       # 系统监控相关实体对象
+  │      │          └─ service       # 系统监控相关业务接口及实现类
+  │      │             └─ impl         # 系统监控相关业务实现类
+  │      └─ resources   # 工程配置目录
+  │         └─ mapper        # MyBatis Mapper XML 文件目录
+  ├─ continew-admin-system   # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
+  │  └─ src
+  │    └─ main
+  │      ├─ java        # 工程源文件代码目录
+  │      │  └─ top
+  │      │    └─ charles7c
+  │      │      └─ cnadmin
+  │      │        ├─ auth     # 系统认证相关业务及配置
+  │      │        │  ├─ config    # 系统认证相关配置
   │      │        │  │  ├─ satoken    # Sa-Token 配置
-  │      │        │  │  └─ properties # 认证相关配置属性
-  │      │        │  ├─ model     # 认证相关模型
-  │      │        │  │  ├─ request    # 认证相关请求对象
-  │      │        │  │  └─ vo         # 认证相关 VO（View Object）
-  │      │        │  └─ service   # 认证相关业务接口及实现类
-  │      │        │     └─ impl       # 认证相关业务实现类
+  │      │        │  │  └─ properties # 系统认证相关配置属性
+  │      │        │  ├─ model     # 系统认证相关模型
+  │      │        │  │  ├─ request    # 系统认证相关请求对象
+  │      │        │  │  └─ vo         # 系统认证相关 VO（View Object）
+  │      │        │  └─ service   # 系统认证相关业务接口及实现类
+  │      │        │     └─ impl       # 系统认证相关业务实现类
   │      │        └─ system   # 系统管理相关业务及配置
   │      │          ├─ mapper     # 系统管理相关 Mapper
   │      │          ├─ model      # 系统管理相关模型
@@ -112,6 +133,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                ├─ config       # 公共配置
   │                │  ├─ jackson      # Jackson 配置
   │                │  ├─ mybatis      # MyBatis Plus 配置
+  │                │  ├─ threadpool   # 线程池配置
   │                │  └─ properties   # 公共配置属性
   │                ├─ consts       # 公共常量
   │                ├─ exception    # 公共异常
@@ -121,7 +143,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                │  ├─ entity       # 公共实体对象
   │                │  └─ vo           # 公共 VO（View Object）
   │                └─ util         # 公共工具类
-  │                  └─ helper        # 公共 Helper（助手）
+  │                  ├─ helper        # 公共 Helper（助手）
+  │                  └─ holder        # 公共 Holder（持有者）
 ```
 
 ### License
