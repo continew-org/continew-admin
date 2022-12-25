@@ -36,10 +36,10 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 ### 技术栈
 
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.6        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
-| [Undertow](https://undertow.io/)                             | 2.2.20.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
+| 名称                                                         | 版本           | 简介                                                         |
+| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+| [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.7        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
+| [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.33.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | [MariaDB](https://mariadb.org/)                              | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
 | [MyBatis Plus](https://baomidou.com/)                        | 3.5.2        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
