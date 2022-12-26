@@ -18,6 +18,8 @@ package top.charles7c.cnadmin.common.config;
 
 import java.util.concurrent.TimeUnit;
 
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
@@ -28,6 +30,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import top.charles7c.cnadmin.common.config.properties.CorsProperties;
+
 /**
  * Web MVC 配置
  *
@@ -36,7 +40,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @EnableWebMvc
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
+    private final CorsProperties corsProperties;
 
     /**
      * 静态资源处理器配置
@@ -54,13 +61,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
+        // 配置为 true 后则必须配置允许跨域的域名，且不允许配置为 *
         config.setAllowCredentials(true);
+        // 设置跨域允许时间
         config.setMaxAge(1800L);
 
-        // 允许跨域配置
-        config.addAllowedOriginPattern("*");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        // 配置允许跨域的域名
+        corsProperties.getAllowedOrigins().forEach(config::addAllowedOrigin);
+        // 配置允许跨域的请求方式
+        corsProperties.getAllowedMethods().forEach(config::addAllowedMethod);
+        // 配置允许跨域的请求头
+        corsProperties.getAllowedHeaders().forEach(config::addAllowedHeader);
 
         // 添加映射路径，拦截一切请求
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
