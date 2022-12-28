@@ -78,12 +78,6 @@ limitations under the License.
             <artifactId>sa-token-jwt</artifactId>
         </dependency>
 
-        <!-- Sa-Token 整合 Redis（使用 Jackson 序列化方式） -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-dao-redis-jackson</artifactId>
-        </dependency>
-
         <!-- ################ 持久层相关 ################ -->
         <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
         <dependency>

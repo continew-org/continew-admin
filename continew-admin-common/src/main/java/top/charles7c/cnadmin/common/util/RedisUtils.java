@@ -71,7 +71,7 @@ public class RedisUtils {
      *
      * @param key
      *            缓存键
-     * @return 剩余存活时间
+     * @return 剩余存活时间（单位：毫秒）
      */
     public static <T> long getTimeToLive(final String key) {
         RBucket<T> rBucket = REDISSON_CLIENT.getBucket(key);
