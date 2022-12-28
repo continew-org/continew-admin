@@ -50,7 +50,7 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 @Tag(name = "登录 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class LoginController {
 
     private final LoginService loginService;

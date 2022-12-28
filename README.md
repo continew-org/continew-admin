@@ -3,13 +3,17 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
 ![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v0.0.1-%23ff3f59.svg)
 
-📚 [在线 API 文档](http://cnadmin.charles7c.top/doc.html)
+📚 [演示地址](https://cnadmin.charles7c.top)
 
-### 简介
+## 简介
 
-ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
+ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Pro Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
 
-### 开始
+## 开始
+
+> 注意：下方步骤有重叠部分，无需重复执行。
+
+### 后端
 
 ```bash
 # 1.克隆本项目
@@ -34,10 +38,41 @@ git clone https://github.com/Charles7c/continew-admin.git
 # 5.2 其他方式部署
 ```
 
-### 技术栈
+### 前端
 
-| 名称                                                         | 版本           | 简介                                                         |
-| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+```bash
+# 1.克隆本项目
+git clone https://github.com/Charles7c/continew-admin.git
+
+# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
+
+# 3.配置淘宝源
+yarn config set registry https://registry.npm.taobao.org
+
+# 4.安装依赖
+yarn install
+
+# 5.启动程序
+# 5.1 启动成功：访问 http://localhost:5173/
+yarn dev
+
+# 6.部署
+# 6.1 Docker 部署
+#   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
+#   6.1.2 执行 yarn build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/web 目录下
+#   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
+#   6.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
+#   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
+# 6.2 其他方式部署
+```
+
+## 技术栈
+
+| 名称                                                         | 版本         | 简介                                                         |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
+| [Vue](https://cn.vuejs.org/)                                 | 3.2.45       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| [TypeScript](https://www.typescriptlang.org/zh/)             | 4.9.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.5.15       | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
 | [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.7        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.33.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -55,12 +90,13 @@ git clone https://github.com/Charles7c/continew-admin.git
 | [Hutool](https://www.hutool.cn/)                             | 5.8.10       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
 | [Lombok](https://projectlombok.org/)                         | 1.18.24      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
-### 项目结构
+## 项目结构
+
+### 后端
 
 采用按功能拆分模块的开发方式，项目目录结构如下：
 
 > 下方项目目录结构是按照模块的层次顺序进行介绍的，实际 IDE 中 `continew-admin-common` 模块会因为字母排序原因排在上方。
->
 
 ```bash
 continew-admin  # 全局通用项目配置及依赖版本管理
@@ -147,7 +183,41 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                  └─ holder        # 公共 Holder（持有者）
 ```
 
-### License
+### 前端
+
+```bash
+continew-admin
+  └─ continew-admin-ui       # 前端项目
+    ├─ src
+	│  ├─ api               # 请求接口
+	│  │  └─ auth             # 认证模块
+	│  ├─ assets            # 静态资源
+	│  │  └─ style            # 全局样式
+	│  ├─ assets            # 静态资源
+	│  ├─ components        # 通用业务组件
+	│  ├─ config            # 全局配置（包含 echarts 主题）
+	│  │  └─ settings.json    # 配置文件
+	│  ├─ directives        # 指令集（如需，可自行补充）
+	│  ├─ hooks             # 全局 hooks
+	│  ├─ layout            # 布局
+	│  ├─ locale            # 国际化语言包
+	│  ├─ mock              # 模拟数据
+	│  ├─ router            # 路由配置
+	│  ├─ store             # 状态管理中心
+	│  ├─ types             # Typescript 类型
+	│  ├─ utils             # 工具库
+	│  ├─ views             # 页面模板
+	│  │  └─ login            # 登录模块
+	│  ├─ App.vue           # 视图入口
+	│  └─ main.ts           # 入口文件
+    ├─ .env.development
+    ├─ .env.production
+    ├─ index.html
+    ├─ package.json
+    └─ tsconfig.json
+```
+
+## License
 
 - 遵循 [Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) 开源许可协议
 - Copyright © 2022-present Charles7c

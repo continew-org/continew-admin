@@ -11,14 +11,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  # 部署后端服务
+  deploy-server:
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
       - name: Checkout
         uses: actions/checkout@master
       # 2、安装 Java 环境
-      - name: Install Java
+      - name: Setup Java
         uses: actions/setup-java@master
         with:
           distribution: 'adopt'
@@ -26,7 +27,7 @@ jobs:
           cache: 'maven'
       # 3、打包
       - name: Build
-        run: mvn -B package -P dev --file pom.xml
+        run: mvn -B package -P prod --file pom.xml
       # 4、拷贝 jar 包到服务器
       - name: Copy Jar
         uses: garygrossgarten/github-action-scp@release
@@ -48,3 +49,46 @@ jobs:
           script: |
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
+
+  # 部署前端
+  deploy-web:
+    runs-on: ubuntu-latest
+    steps:
+      # 1、检出源码
+      - name: Checkout
+        uses: actions/checkout@master
+      # 2、安装 Node 环境
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+          cache-dependency-path: ./continew-admin-ui/yarn.lock
+      # 3、安装依赖
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: ./continew-admin-ui
+      # 4、打包
+      - name: Build
+        run: yarn build
+        working-directory: ./continew-admin-ui
+      # 5、拷贝文件到服务器
+      - name: Copy
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          local: ./continew-admin-ui/dist
+          remote: /docker/continew-admin/web
+      # 6、重启前端服务
+      - name: Restart
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            docker restart nginx
