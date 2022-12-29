@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -38,7 +38,7 @@ public class SysUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
+     * 用户ID
      */
     @TableId
     private Long userId;
@@ -91,5 +91,5 @@ public class SysUser extends BaseEntity {
     /**
      * 最后一次修改密码的时间
      */
-    private Date pwdResetTime;
+    private LocalDateTime pwdResetTime;
 }

@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.config;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -44,6 +48,7 @@ import top.charles7c.cnadmin.common.config.properties.CorsProperties;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final CorsProperties corsProperties;
+    private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     /**
      * 静态资源处理器配置
@@ -77,5 +82,21 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    /**
+     * 解决 Jackson2ObjectMapperBuilderCustomizer 配置不生效的问题
+     * <p>
+     * MappingJackson2HttpMessageConverter 对象在程序启动时创建了多个，移除多余的，保证只有一个
+     * </p>
+     */
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
+        if (Objects.isNull(mappingJackson2HttpMessageConverter)) {
+            converters.add(0, new MappingJackson2HttpMessageConverter());
+        } else {
+            converters.add(0, mappingJackson2HttpMessageConverter);
+        }
     }
 }

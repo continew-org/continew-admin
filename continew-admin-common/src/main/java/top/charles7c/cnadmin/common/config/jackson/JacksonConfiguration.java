@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,11 +59,6 @@ public class JacksonConfiguration {
         String timeFormatPattern = "HH:mm:ss";
 
         return builder -> {
-            // 针对 java.util.Date 的转换
-            builder.locale(Locale.CHINA);
-            builder.timeZone(TimeZone.getDefault());
-            builder.simpleDateFormat(dateTimeFormatPattern);
-
             // 针对 Long、BigInteger、BigDecimal 的转换
             JavaTimeModule javaTimeModule = new JavaTimeModule();
             javaTimeModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
@@ -85,6 +79,7 @@ public class JacksonConfiguration {
             javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
             javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
             builder.modules(javaTimeModule);
+            builder.timeZone(TimeZone.getDefault());
             log.info(">>>初始化 Jackson 配置<<<");
         };
     }

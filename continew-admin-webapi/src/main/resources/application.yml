@@ -173,7 +173,7 @@ spring:
   jackson:
     # 时区配置
     time-zone: GMT+8
-    # 日期格式化
+    # 日期格式化（针对 java.util.Date）
     date-format: yyyy-MM-dd HH:mm:ss
     # 序列化配置（Bean -> JSON）
     serialization:

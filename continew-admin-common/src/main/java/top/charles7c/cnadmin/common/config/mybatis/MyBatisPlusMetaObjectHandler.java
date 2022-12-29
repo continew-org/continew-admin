@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.common.config.mybatis;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.apache.ibatis.reflection.MetaObject;
 
@@ -59,7 +59,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
             }
 
             Long createUser = LoginHelper.getUserId();
-            Date createTime = new Date();
+            LocalDateTime createTime = LocalDateTime.now();
             if (metaObject.getOriginalObject() instanceof BaseEntity) {
                 // 继承了 BaseEntity 的类，填充创建信息
                 BaseEntity baseEntity = (BaseEntity)metaObject.getOriginalObject();
@@ -93,7 +93,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
             }
 
             Long updateUser = LoginHelper.getUserId();
-            Date updateTime = new Date();
+            LocalDateTime updateTime = LocalDateTime.now();
             if (metaObject.getOriginalObject() instanceof BaseEntity) {
                 // 继承了 BaseEntity 的类，填充修改信息
                 BaseEntity baseEntity = (BaseEntity)metaObject.getOriginalObject();

@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -37,7 +37,7 @@ public class OperationLog {
     /**
      * 操作时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 异常

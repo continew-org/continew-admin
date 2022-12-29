@@ -17,7 +17,7 @@
 package top.charles7c.cnadmin.common.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -45,7 +45,7 @@ public class BaseEntity implements Serializable {
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 修改人
@@ -57,5 +57,5 @@ public class BaseEntity implements Serializable {
      * 修改时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 }

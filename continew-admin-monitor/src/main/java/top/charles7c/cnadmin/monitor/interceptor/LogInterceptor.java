@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.interceptor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +37,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -104,7 +105,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logCreateTime() {
         OperationLog operationLog = new OperationLog();
         operationLog.setCreateUser(LoginHelper.getUserId());
-        operationLog.setCreateTime(new Date());
+        operationLog.setCreateTime(LocalDateTime.now());
         LogContextHolder.set(operationLog);
     }
 
@@ -119,7 +120,7 @@ public class LogInterceptor implements HandlerInterceptor {
             LogContextHolder.remove();
             SysLog sysLog = new SysLog();
             sysLog.setCreateTime(operationLog.getCreateTime());
-            sysLog.setElapsedTime(System.currentTimeMillis() - sysLog.getCreateTime().getTime());
+            sysLog.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(sysLog.getCreateTime()));
             sysLog.setLogLevel(LogLevelEnum.INFO);
 
             // 记录异常信息

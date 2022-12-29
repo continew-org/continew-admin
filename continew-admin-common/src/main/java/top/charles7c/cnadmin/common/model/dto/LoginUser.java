@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.common.model.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -32,7 +33,7 @@ public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
+     * 用户ID
      */
     private Long userId;
 
@@ -75,4 +76,14 @@ public class LoginUser implements Serializable {
      * 状态（1启用 2禁用）
      */
     private Integer status;
+
+    /**
+     * 最后一次修改密码的时间
+     */
+    private LocalDateTime pwdResetTime;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 }

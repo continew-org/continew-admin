@@ -27,8 +27,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.http.HttpStatus;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 /**
  * 响应信息
  *
@@ -60,7 +58,6 @@ public class R<V extends Serializable> implements Serializable {
 
     /** 时间戳 */
     @Schema(description = "时间戳")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp = LocalDateTime.now();
 
     /** 成功状态码 */

@@ -17,7 +17,7 @@
 package top.charles7c.cnadmin.monitor.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -122,5 +122,5 @@ public class SysLog implements Serializable {
     /**
      * 操作时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 }
