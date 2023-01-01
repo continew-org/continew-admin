@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.enums;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import com.baomidou.mybatisplus.annotation.IEnum;
 
 /**
- * 公共常量
+ * 启用/禁用状态枚举
  *
  * @author Charles7c
- * @since 2022/12/22 19:30
+ * @since 2022/12/29 22:38
  */
-public interface CommonConstants {
+@Getter
+@RequiredArgsConstructor
+public enum DisEnableStatusEnum implements IEnum<Integer> {
 
-    /**
-     * 状态-启用
-     */
-    Integer STATUS_ENABLE = 1;
+    /** 启用 */
+    ENABLE(1, "启用"),
 
-    /**
-     * 状态-禁用
-     */
-    Integer STATUS_DISABLE = 2;
+    /** 禁用 */
+    DISABLE(2, "禁用"),;
 
+    private final Integer value;
+    private final String description;
 }

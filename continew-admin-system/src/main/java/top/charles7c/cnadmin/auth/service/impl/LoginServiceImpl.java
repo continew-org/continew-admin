@@ -24,7 +24,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.common.consts.CommonConstants;
+import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.CheckUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
@@ -53,7 +53,7 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.exIfNull(sysUser, "用户名或密码错误");
         Long userId = sysUser.getUserId();
         CheckUtils.exIfNotEqual(sysUser.getPassword(), SecureUtils.md5Salt(password, userId.toString()), "用户名或密码错误");
-        CheckUtils.exIfEqual(CommonConstants.STATUS_DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        CheckUtils.exIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(sysUser, LoginUser.class);

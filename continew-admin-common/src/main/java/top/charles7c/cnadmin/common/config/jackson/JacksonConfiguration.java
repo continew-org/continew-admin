@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.config.jackson;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -30,6 +31,10 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -59,6 +64,15 @@ public class JacksonConfiguration {
         String timeFormatPattern = "HH:mm:ss";
 
         return builder -> {
+            // 针对通用枚举 IEnum 的转换
+            builder.serializerByType(IEnum.class, new JsonSerializer<IEnum<Integer>>() {
+                @Override
+                public void serialize(IEnum<Integer> value, JsonGenerator gen, SerializerProvider serializers)
+                    throws IOException {
+                    gen.writeNumber(value.getValue());
+                }
+            });
+
             // 针对 Long、BigInteger、BigDecimal 的转换
             JavaTimeModule javaTimeModule = new JavaTimeModule();
             javaTimeModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);

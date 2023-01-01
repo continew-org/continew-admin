@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+import top.charles7c.cnadmin.common.enums.GenderEnum;
+
 /**
  * 登录用户信息
  *
@@ -50,7 +52,7 @@ public class LoginUser implements Serializable {
     /**
      * 性别（0未知 1男 2女）
      */
-    private Integer gender;
+    private GenderEnum gender;
 
     /**
      * 手机号码
@@ -71,11 +73,6 @@ public class LoginUser implements Serializable {
      * 备注
      */
     private String notes;
-
-    /**
-     * 状态（1启用 2禁用）
-     */
-    private Integer status;
 
     /**
      * 最后一次修改密码的时间

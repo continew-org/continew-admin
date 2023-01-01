@@ -23,6 +23,8 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 
 /**
@@ -61,7 +63,7 @@ public class SysUser extends BaseEntity {
     /**
      * 性别（0未知 1男 2女）
      */
-    private Integer gender;
+    private GenderEnum gender;
 
     /**
      * 手机号码
@@ -86,7 +88,7 @@ public class SysUser extends BaseEntity {
     /**
      * 状态（1启用 2禁用）
      */
-    private Integer status;
+    private DisEnableStatusEnum status;
 
     /**
      * 最后一次修改密码的时间

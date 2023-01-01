@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 
+import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 
@@ -34,8 +35,6 @@ import top.charles7c.cnadmin.common.util.ExceptionUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
-    private static final String LOGIN_USER_KEY = "LOGIN_USER";
-
     /**
      * 用户登录并缓存用户信息
      *
@@ -43,9 +42,9 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void login(LoginUser loginUser) {
-        SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
+        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
         StpUtil.login(loginUser.getUserId());
-        StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
     }
 
     /**
@@ -54,13 +53,13 @@ public class LoginHelper {
      * @return /
      */
     public static LoginUser getLoginUser() {
-        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(LOGIN_USER_KEY);
+        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConstants.LOGIN_USER_CACHE_KEY);
         if (loginUser != null) {
             return loginUser;
         }
         try {
-            loginUser = (LoginUser)StpUtil.getTokenSession().get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
+            loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConstants.LOGIN_USER_CACHE_KEY);
+            SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
         } catch (Exception ignored) {
         }
         return loginUser;
