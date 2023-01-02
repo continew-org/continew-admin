@@ -75,21 +75,4 @@ public class ServletUtils {
         UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
         return userAgent.getBrowser().getName() + " " + userAgent.getVersion();
     }
-
-    /**
-     * 获取响应所有的头（header）信息
-     *
-     * @param response
-     *            响应对象{@link HttpServletResponse}
-     * @return header值
-     */
-    public static Map<String, Collection<String>> getHeaderMap(HttpServletResponse response) {
-        final Map<String, Collection<String>> headerMap = new HashMap<>();
-
-        final Collection<String> names = response.getHeaderNames();
-        for (String name : names) {
-            headerMap.put(name, response.getHeaders(name));
-        }
-        return headerMap;
-    }
 }

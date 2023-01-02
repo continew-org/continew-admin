@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import io.swagger.v3.oas.annotations.Operation;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -68,8 +67,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private final LogProperties operationLogProperties;
 
     @Override
-    public boolean preHandle(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-        @NotNull Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!checkIsNeedRecord(handler, request)) {
             return true;
         }
@@ -80,8 +78,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response,
-        @NotNull Object handler, Exception e) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
         // 记录请求耗时及异常信息
         SysLog sysLog = this.logElapsedTimeAndException();
         if (sysLog == null) {
@@ -142,7 +139,7 @@ public class LogInterceptor implements HandlerInterceptor {
      * @param handler
      *            处理器
      */
-    private void logDescription(@NotNull SysLog sysLog, Object handler) {
+    private void logDescription(SysLog sysLog, Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         Operation methodOperation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Operation.class);
         Log methodLog = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Log.class);
@@ -165,7 +162,7 @@ public class LogInterceptor implements HandlerInterceptor {
      * @param request
      *            请求对象
      */
-    private void logRequest(@NotNull SysLog sysLog, @NotNull HttpServletRequest request) {
+    private void logRequest(SysLog sysLog, HttpServletRequest request) {
         sysLog.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
             : request.getRequestURL().append("?").append(request.getQueryString()).toString());
         sysLog.setRequestMethod(request.getMethod());
@@ -191,7 +188,7 @@ public class LogInterceptor implements HandlerInterceptor {
      */
     private void logResponse(SysLog sysLog, HttpServletResponse response) {
         sysLog.setStatusCode(response.getStatus());
-        sysLog.setResponseHeader(this.desensitize(ServletUtils.getHeaderMap(response)));
+        sysLog.setResponseHeader(this.desensitize(ServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {

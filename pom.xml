@@ -46,7 +46,7 @@ limitations under the License.
         <sa-token.version>1.33.0</sa-token.version>
 
         <!-- ### 持久层相关 ### -->
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <dynamic-ds.version>3.6.1</dynamic-ds.version>
         <p6spy.version>3.9.1</p6spy.version>
 
@@ -55,7 +55,7 @@ limitations under the License.
         <knife4j.version>4.0.0</knife4j.version>
         <redisson.version>3.19.0</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
-        <hutool.version>5.8.10</hutool.version>
+        <hutool.version>5.8.11</hutool.version>
 
         <!-- ### 基础环境相关 ### -->
         <revision>0.0.1-SNAPSHOT</revision>
