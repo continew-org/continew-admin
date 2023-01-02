@@ -28,7 +28,7 @@ export function logout() {
 }
 
 export function getUserInfo() {
-  return axios.get<UserState>('/api/user/info');
+  return axios.get<UserState>('/auth/user/info');
 }
 
 export function getMenuList() {

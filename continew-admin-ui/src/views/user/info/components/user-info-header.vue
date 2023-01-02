@@ -5,7 +5,7 @@
         <template #trigger-icon>
           <icon-camera />
         </template>
-        <img :src="userInfo.avatar" />
+        <img :src="userInfo.avatar ?? getAvatar(userInfo.gender)" />
       </a-avatar>
       <a-typography-title :heading="6" style="margin: 0">
         {{ userInfo.nickname }}
@@ -34,6 +34,7 @@
 
 <script lang="ts" setup>
   import { useLoginStore } from '@/store';
+  import getAvatar from "@/utils/avatar";
 
   const userInfo = useLoginStore();
 </script>

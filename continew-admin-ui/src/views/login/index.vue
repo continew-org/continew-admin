@@ -60,6 +60,11 @@
     display: inline-flex;
     align-items: center;
 
+    img {
+      width: 32px;
+      height: 32px;
+    }
+
     &-text {
       margin-right: 4px;
       margin-left: 4px;

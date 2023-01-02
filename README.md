@@ -190,27 +190,28 @@ continew-admin  # 全局通用项目配置及依赖版本管理
 continew-admin
   └─ continew-admin-ui       # 前端项目
     ├─ src
-	│  ├─ api               # 请求接口
-	│  │  └─ auth             # 认证模块
-	│  ├─ assets            # 静态资源
-	│  │  └─ style            # 全局样式
-	│  ├─ assets            # 静态资源
-	│  ├─ components        # 通用业务组件
-	│  ├─ config            # 全局配置（包含 echarts 主题）
-	│  │  └─ settings.json    # 配置文件
-	│  ├─ directives        # 指令集（如需，可自行补充）
-	│  ├─ hooks             # 全局 hooks
-	│  ├─ layout            # 布局
-	│  ├─ locale            # 国际化语言包
-	│  ├─ mock              # 模拟数据
-	│  ├─ router            # 路由配置
-	│  ├─ store             # 状态管理中心
-	│  ├─ types             # Typescript 类型
-	│  ├─ utils             # 工具库
-	│  ├─ views             # 页面模板
-	│  │  └─ login            # 登录模块
-	│  ├─ App.vue           # 视图入口
-	│  └─ main.ts           # 入口文件
+    │  ├─ api               # 请求接口
+    │  │  └─ auth             # 认证模块
+    │  ├─ assets            # 静态资源
+    │  │  └─ style            # 全局样式
+    │  ├─ assets            # 静态资源
+    │  ├─ components        # 通用业务组件
+    │  ├─ config            # 全局配置（包含 echarts 主题）
+    │  │  └─ settings.json    # 配置文件
+    │  ├─ directives        # 指令集（如需，可自行补充）
+    │  ├─ hooks             # 全局 hooks
+    │  ├─ layout            # 布局
+    │  ├─ locale            # 国际化语言包
+    │  ├─ mock              # 模拟数据
+    │  ├─ router            # 路由配置
+    │  ├─ store             # 状态管理中心
+    │  ├─ types             # Typescript 类型
+    │  ├─ utils             # 工具库
+    │  ├─ views             # 页面模板
+    │  │  ├─ login            # 登录模块
+    │  │  └─ user             # 用户模块（用户设置、用户中心）
+    │  ├─ App.vue           # 视图入口
+    │  └─ main.ts           # 入口文件
     ├─ .env.development
     ├─ .env.production
     ├─ index.html

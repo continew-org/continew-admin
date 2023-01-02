@@ -36,13 +36,17 @@
       >
         <template #label="{ label }">{{ $t(label) }} :</template>
         <template #value="{ value, data }">
-          <a-tag
-            v-if="data.label === 'userSetting.label.certification'"
-            color="green"
-            size="small"
-          >
-            已认证
-          </a-tag>
+          <div v-if="data.label === 'userSetting.label.gender'">
+            <div v-if="loginStore.gender === 1">
+              男
+              <icon-man style="color: #19BBF1" />
+            </div>
+            <div v-else-if="loginStore.gender === 2">
+              女
+              <icon-woman style="color: #FA7FA9" />
+            </div>
+            <div v-else>未知</div>
+          </div>
           <span v-else>{{ value }}</span>
         </template>
       </a-descriptions>
@@ -59,12 +63,13 @@
   import { useLoginStore } from '@/store';
   import { userUploadApi } from '@/api/user-center';
   import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
+  import getAvatar from "@/utils/avatar";
 
   const loginStore = useLoginStore();
   const file = {
     uid: '-2',
     name: 'avatar.png',
-    url: loginStore.avatar,
+    url: loginStore.avatar ?? getAvatar(loginStore.gender),
   };
   const renderData = [
     {
@@ -72,16 +77,16 @@
       value: loginStore.nickname,
     },
     {
-      label: 'userSetting.label.certification',
-      value: loginStore.certification,
-    },
-    {
-      label: 'userSetting.label.accountId',
-      value: loginStore.accountId,
+      label: 'userSetting.label.gender',
+      value: loginStore.gender,
     },
     {
       label: 'userSetting.label.phone',
       value: loginStore.phone,
+    },
+    {
+      label: 'userSetting.label.email',
+      value: loginStore.email,
     },
     {
       label: 'userSetting.label.registrationDate',

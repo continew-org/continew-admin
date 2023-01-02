@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS `sys_user`  (
     INDEX `idx_updateUser`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
--- changeset Charles7c:2
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `log_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '日志ID',
     `log_level` varchar(255) DEFAULT NULL COMMENT '日志级别',

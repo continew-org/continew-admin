@@ -13,21 +13,25 @@ import useAppStore from '../app';
 
 const useLoginStore = defineStore('user', {
   state: (): UserState => ({
-    nickname: undefined,
-    avatar: undefined,
-    email: undefined,
+    userId: 1,
+    username: '',
+    nickname: '',
+    gender: 0,
     phone: undefined,
-    job: undefined,
-    jobName: undefined,
-    organization: undefined,
-    organizationName: undefined,
-    location: undefined,
-    locationName: undefined,
-    introduction: undefined,
-    personalWebsite: undefined,
+    email: '',
+    avatar: undefined,
+    notes: undefined,
+    pwdResetTime: undefined,
     registrationDate: undefined,
-    accountId: undefined,
-    certification: undefined,
+
+    job: 'backend',
+    jobName: '后端艺术家',
+    organization: 'Backend',
+    organizationName: '后端',
+    location: 'beijing',
+    locationName: '北京',
+    introduction: '低调星人',
+    personalWebsite: 'https://blog.charles7c.top',
     role: '',
   }),
 
@@ -38,29 +42,6 @@ const useLoginStore = defineStore('user', {
   },
 
   actions: {
-    switchRoles() {
-      return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user';
-        resolve(this.role);
-      });
-    },
-    // Set user's information
-    setInfo(partial: Partial<UserState>) {
-      this.$patch(partial);
-    },
-
-    // Reset user's information
-    resetInfo() {
-      this.$reset();
-    },
-
-    // Get user's information
-    async info() {
-      const res = await getUserInfo();
-
-      this.setInfo(res.data);
-    },
-
     // 获取图片验证码
     getImgCaptcha() {
       return getCaptcha();
@@ -91,6 +72,28 @@ const useLoginStore = defineStore('user', {
       clearToken();
       removeRouteListener();
       appStore.clearServerMenu();
+    },
+
+    // 获取用户信息
+    async info() {
+      const res = await getUserInfo();
+      this.setInfo(res.data);
+    },
+    // 设置用户信息
+    setInfo(partial: Partial<UserState>) {
+      this.$patch(partial);
+    },
+    // 重置用户信息
+    resetInfo() {
+      this.$reset();
+    },
+
+    // 切换角色
+    switchRoles() {
+      return new Promise((resolve) => {
+        this.role = this.role === 'user' ? 'admin' : 'user';
+        resolve(this.role);
+      });
     },
   },
 });

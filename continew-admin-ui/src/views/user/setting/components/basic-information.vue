@@ -7,18 +7,18 @@
     :wrapper-col-props="{ span: 16 }"
   >
     <a-form-item
-      field="email"
-      :label="$t('userSetting.basicInfo.form.label.email')"
+      :label="$t('userSetting.basicInfo.form.label.username')"
       :rules="[
         {
           required: true,
-          message: $t('userSetting.form.error.email.required'),
+          message: $t('userSetting.form.error.username.required'),
         },
       ]"
+      disabled
     >
       <a-input
-        v-model="formData.email"
-        :placeholder="$t('userSetting.basicInfo.placeholder.email')"
+        v-model="formData.username"
+        :placeholder="$t('userSetting.basicInfo.placeholder.username')"
       />
     </a-form-item>
     <a-form-item
@@ -37,80 +37,20 @@
       />
     </a-form-item>
     <a-form-item
-      field="countryRegion"
-      :label="$t('userSetting.basicInfo.form.label.countryRegion')"
+      field="gender"
+      :label="$t('userSetting.basicInfo.form.label.gender')"
       :rules="[
         {
           required: true,
-          message: $t('userSetting.form.error.countryRegion.required'),
+          message: $t('userSetting.form.error.gender.required'),
         },
       ]"
     >
-      <a-select
-        v-model="formData.countryRegion"
-        :placeholder="$t('userSetting.basicInfo.placeholder.area')"
-      >
-        <a-option value="China">中国</a-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item
-      field="area"
-      :label="$t('userSetting.basicInfo.form.label.area')"
-      :rules="[
-        {
-          required: true,
-          message: $t('userSetting.form.error.area.required'),
-        },
-      ]"
-    >
-      <a-cascader
-        v-model="formData.area"
-        :placeholder="$t('userSetting.basicInfo.placeholder.area')"
-        :options="[
-          {
-            label: '北京',
-            value: 'beijing',
-            children: [
-              {
-                label: '北京',
-                value: 'beijing',
-                children: [
-                  {
-                    label: '朝阳',
-                    value: 'chaoyang',
-                  },
-                ],
-              },
-            ],
-          },
-        ]"
-        allow-clear
-      />
-    </a-form-item>
-    <a-form-item
-      field="address"
-      :label="$t('userSetting.basicInfo.form.label.address')"
-    >
-      <a-input
-        v-model="formData.address"
-        :placeholder="$t('userSetting.basicInfo.placeholder.address')"
-      />
-    </a-form-item>
-    <a-form-item
-      field="profile"
-      :label="$t('userSetting.basicInfo.form.label.profile')"
-      :rules="[
-        {
-          maxLength: 200,
-          message: $t('userSetting.form.error.profile.maxLength'),
-        },
-      ]"
-      row-class="keep-margin"
-    >
-      <a-textarea
-        v-model="formData.profile"
-        :placeholder="$t('userSetting.basicInfo.placeholder.profile')"
-      />
+      <a-radio-group v-model="formData.gender">
+        <a-radio :value="1">男</a-radio>
+        <a-radio :value="2">女</a-radio>
+        <a-radio :value="0" disabled>未知</a-radio>
+      </a-radio-group>
     </a-form-item>
     <a-form-item>
       <a-space>
@@ -127,18 +67,19 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
+  import { useLoginStore } from '@/store';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { BasicInfoModel } from '@/api/user-center';
 
+  const loginStore = useLoginStore();
   const formRef = ref<FormInstance>();
   const formData = ref<BasicInfoModel>({
-    email: '',
-    nickname: '',
-    countryRegion: '',
-    area: '',
-    address: '',
-    profile: '',
+    username: loginStore.username,
+    nickname: loginStore.nickname,
+    gender: loginStore.gender,
   });
+
+  // 保存
   const validate = async () => {
     const res = await formRef.value?.validate();
     if (!res) {
@@ -146,6 +87,8 @@
       // you also can use html-type to submit
     }
   };
+
+  // 重置
   const reset = async () => {
     await formRef.value?.resetFields();
   };

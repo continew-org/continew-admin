@@ -144,7 +144,7 @@
             :size="32"
             :style="{ marginRight: '8px', cursor: 'pointer' }"
           >
-            <img alt="avatar" :src="avatar" />
+            <img alt="avatar" :src="loginStore.avatar ?? getAvatar(loginStore.gender)" />
           </a-avatar>
           <template #content>
             <a-doption>
@@ -194,6 +194,7 @@
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
+  import getAvatar from "@/utils/avatar";
   import MessageBox from '../message-box/index.vue';
 
   const appStore = useAppStore();
@@ -202,9 +203,6 @@
   const { changeLocale } = useLocale();
   const { isFullscreen, toggle: toggleFullScreen } = useFullscreen();
   const locales = [...LOCALE_OPTIONS];
-  const avatar = computed(() => {
-    return loginStore.avatar;
-  });
   const theme = computed(() => {
     return appStore.theme;
   });
@@ -267,6 +265,11 @@
     display: flex;
     align-items: center;
     padding-left: 20px;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .right-side {

@@ -29,17 +29,21 @@ import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.auth.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
+import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.config.properties.RsaProperties;
+import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.CheckUtils;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
+import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
 /**
  * 登录 API
@@ -84,5 +88,13 @@ public class LoginController {
         CheckUtils.exIfCondition(() -> !StpUtil.isLogin(), "Token 无效");
         StpUtil.logout();
         return R.ok();
+    }
+
+    @Operation(summary = "获取用户信息", description = "获取登录用户信息")
+    @GetMapping("/user/info")
+    public R<UserInfoVO> getUserInfo() {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        UserInfoVO userInfoVo = BeanUtil.copyProperties(loginUser, UserInfoVO.class);
+        return R.ok(userInfoVo);
     }
 }

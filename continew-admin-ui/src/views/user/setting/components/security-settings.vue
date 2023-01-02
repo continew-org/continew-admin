@@ -9,7 +9,10 @@
         </template>
         <template #description>
           <div class="content">
-            <a-typography-paragraph>
+            <a-typography-paragraph v-if="loginStore.pwdResetTime">
+              已设置
+            </a-typography-paragraph>
+            <a-typography-paragraph v-else class="tip">
               {{ $t('userSetting.SecuritySettings.placeholder.password') }}
             </a-typography-paragraph>
           </div>
@@ -25,36 +28,16 @@
       <a-list-item-meta>
         <template #avatar>
           <a-typography-paragraph>
-            {{ $t('userSetting.SecuritySettings.form.label.securityQuestion') }}
-          </a-typography-paragraph>
-        </template>
-        <template #description>
-          <div class="content">
-            <a-typography-paragraph class="tip">
-              {{
-                $t('userSetting.SecuritySettings.placeholder.securityQuestion')
-              }}
-            </a-typography-paragraph>
-          </div>
-          <div class="operation">
-            <a-link>
-              {{ $t('userSetting.SecuritySettings.button.settings') }}
-            </a-link>
-          </div>
-        </template>
-      </a-list-item-meta>
-    </a-list-item>
-    <a-list-item>
-      <a-list-item-meta>
-        <template #avatar>
-          <a-typography-paragraph>
             {{ $t('userSetting.SecuritySettings.form.label.phone') }}
           </a-typography-paragraph>
         </template>
         <template #description>
           <div class="content">
-            <a-typography-paragraph>
-              已绑定：188******00
+            <a-typography-paragraph v-if="loginStore.phone">
+              已绑定：{{ loginStore.phone }}
+            </a-typography-paragraph>
+            <a-typography-paragraph v-else class="tip">
+              {{ $t('userSetting.SecuritySettings.placeholder.phone') }}
             </a-typography-paragraph>
           </div>
           <div class="operation">
@@ -74,7 +57,10 @@
         </template>
         <template #description>
           <div class="content">
-            <a-typography-paragraph class="tip">
+            <a-typography-paragraph v-if="loginStore.email">
+              已绑定：{{ loginStore.email }}
+            </a-typography-paragraph>
+            <a-typography-paragraph v-else class="tip">
               {{ $t('userSetting.SecuritySettings.placeholder.email') }}
             </a-typography-paragraph>
           </div>
@@ -89,7 +75,11 @@
   </a-list>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import { useLoginStore } from '@/store';
+
+  const loginStore = useLoginStore();
+</script>
 
 <style scoped lang="less">
   :deep(.arco-list-item) {

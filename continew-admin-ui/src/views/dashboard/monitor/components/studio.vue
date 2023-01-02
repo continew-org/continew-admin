@@ -12,7 +12,7 @@
         <div v-if="userInfo">
           <a-space :size="12">
             <a-avatar :size="24">
-              <img :src="userInfo.avatar" />
+              <img :src="userInfo.avatar ?? getAvatar(userInfo.gender)" />
             </a-avatar>
             <a-typography-text>
               {{ userInfo.nickname }} {{ $t('monitor.studioPreview.studio') }}
@@ -29,6 +29,7 @@
 
 <script lang="ts" setup>
   import { useLoginStore } from '@/store';
+  import getAvatar from "@/utils/avatar";
 
   const userInfo = useLoginStore();
 </script>
