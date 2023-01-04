@@ -81,7 +81,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           local: ./continew-admin-ui/dist
-          remote: /docker/continew-admin/web
+          remote: /docker/continew-admin/tmp
       # 6、重启前端服务
       - name: Restart
         uses: appleboy/ssh-action@master
@@ -91,4 +91,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            rm -rf /docker/continew-admin/web/*
+            mv /docker/continew-admin/tmp/* /docker/continew-admin/web
             docker restart nginx
