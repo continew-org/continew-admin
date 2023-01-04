@@ -3,7 +3,7 @@
     <div class="logo">
       <img
         alt="logo"
-        src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/dfdba5317c0c20ce20e64fac803d52bc.svg~tplv-49unhts6dw-image.image"
+        src="/logo.svg"
       />
       <div class="logo-text">ContiNew Admin</div>
     </div>
@@ -59,11 +59,6 @@
     z-index: 1;
     display: inline-flex;
     align-items: center;
-
-    img {
-      width: 32px;
-      height: 32px;
-    }
 
     &-text {
       margin-right: 4px;
