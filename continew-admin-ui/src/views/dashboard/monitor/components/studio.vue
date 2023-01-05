@@ -12,7 +12,7 @@
         <div v-if="userInfo">
           <a-space :size="12">
             <a-avatar :size="24">
-              <img :src="userInfo.avatar ?? getAvatar(userInfo.gender)" />
+              <img :src="getAvatar(userInfo)" />
             </a-avatar>
             <a-typography-text>
               {{ userInfo.nickname }} {{ $t('monitor.studioPreview.studio') }}

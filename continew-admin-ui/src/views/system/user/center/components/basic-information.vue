@@ -7,44 +7,38 @@
     :wrapper-col-props="{ span: 16 }"
   >
     <a-form-item
-      :label="$t('userSetting.basicInfo.form.label.username')"
+      :label="$t('userCenter.basicInfo.form.label.username')"
       :rules="[
         {
           required: true,
-          message: $t('userSetting.form.error.username.required'),
+          message: $t('userCenter.form.error.username.required'),
         },
       ]"
       disabled
     >
       <a-input
         v-model="formData.username"
-        :placeholder="$t('userSetting.basicInfo.placeholder.username')"
+        :placeholder="$t('userCenter.basicInfo.placeholder.username')"
       />
     </a-form-item>
     <a-form-item
       field="nickname"
-      :label="$t('userSetting.basicInfo.form.label.nickname')"
+      :label="$t('userCenter.basicInfo.form.label.nickname')"
       :rules="[
         {
           required: true,
-          message: $t('userSetting.form.error.nickname.required'),
+          message: $t('userCenter.form.error.nickname.required'),
         },
       ]"
     >
       <a-input
         v-model="formData.nickname"
-        :placeholder="$t('userSetting.basicInfo.placeholder.nickname')"
+        :placeholder="$t('userCenter.basicInfo.placeholder.nickname')"
       />
     </a-form-item>
     <a-form-item
       field="gender"
-      :label="$t('userSetting.basicInfo.form.label.gender')"
-      :rules="[
-        {
-          required: true,
-          message: $t('userSetting.form.error.gender.required'),
-        },
-      ]"
+      :label="$t('userCenter.basicInfo.form.label.gender')"
     >
       <a-radio-group v-model="formData.gender">
         <a-radio :value="1">男</a-radio>
@@ -55,10 +49,10 @@
     <a-form-item>
       <a-space>
         <a-button type="primary" @click="validate">
-          {{ $t('userSetting.save') }}
+          {{ $t('userCenter.save') }}
         </a-button>
         <a-button type="secondary" @click="reset">
-          {{ $t('userSetting.reset') }}
+          {{ $t('userCenter.reset') }}
         </a-button>
       </a-space>
     </a-form-item>
@@ -69,7 +63,7 @@
   import { ref } from 'vue';
   import { useLoginStore } from '@/store';
   import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { BasicInfoModel } from '@/api/user-center';
+  import { BasicInfoModel } from '@/api/system/user-center';
 
   const loginStore = useLoginStore();
   const formRef = ref<FormInstance>();

@@ -8,6 +8,5 @@ export default {
   'messageBox.noContent': 'No Content',
   'messageBox.switchRoles': 'Switch Roles',
   'messageBox.userCenter': 'User Center',
-  'messageBox.userSettings': 'User Settings',
   'messageBox.logout': 'Logout',
 };

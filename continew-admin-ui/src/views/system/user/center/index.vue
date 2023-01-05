@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.user', 'menu.user.setting']" />
+    <Breadcrumb :items="['menu.user.center']" />
     <a-row style="margin-bottom: 16px">
       <a-col :span="24">
         <UserPanel />
@@ -9,10 +9,10 @@
     <a-row class="wrapper">
       <a-col :span="24">
         <a-tabs default-active-key="1" type="rounded">
-          <a-tab-pane key="1" :title="$t('userSetting.tab.basicInformation')">
+          <a-tab-pane key="1" :title="$t('userCenter.tab.basicInformation')">
             <BasicInformation />
           </a-tab-pane>
-          <a-tab-pane key="2" :title="$t('userSetting.tab.securitySettings')">
+          <a-tab-pane key="2" :title="$t('userCenter.tab.securitySettings')">
             <SecuritySettings />
           </a-tab-pane>
         </a-tabs>
@@ -29,7 +29,7 @@
 
 <script lang="ts">
   export default {
-    name: 'Setting',
+    name: 'UserCenter',
   };
 </script>
 

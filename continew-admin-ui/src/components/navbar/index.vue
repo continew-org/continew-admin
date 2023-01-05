@@ -144,7 +144,7 @@
             :size="32"
             :style="{ marginRight: '8px', cursor: 'pointer' }"
           >
-            <img alt="avatar" :src="loginStore.avatar ?? getAvatar(loginStore.gender)" />
+            <img alt="avatar" :src="getAvatar(loginStore)" />
           </a-avatar>
           <template #content>
             <a-doption>
@@ -156,18 +156,10 @@
               </a-space>
             </a-doption>
             <a-doption>
-              <a-space @click="$router.push({ name: 'Info' })">
-                <icon-user />
-                <span>
-                  {{ $t('messageBox.userCenter') }}
-                </span>
-              </a-space>
-            </a-doption>
-            <a-doption>
-              <a-space @click="$router.push({ name: 'Setting' })">
+              <a-space @click="$router.push({ name: 'UserCenter' })">
                 <icon-settings />
                 <span>
-                  {{ $t('messageBox.userSettings') }}
+                  {{ $t('messageBox.userCenter') }}
                 </span>
               </a-space>
             </a-doption>

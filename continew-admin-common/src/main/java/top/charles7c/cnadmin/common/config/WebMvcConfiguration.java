@@ -35,6 +35,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import top.charles7c.cnadmin.common.config.properties.CorsProperties;
+import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 
 /**
  * Web MVC 配置
@@ -48,6 +49,7 @@ import top.charles7c.cnadmin.common.config.properties.CorsProperties;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
     private final CorsProperties corsProperties;
+    private final LocalStorageProperties localStorageProperties;
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     /**
@@ -55,6 +57,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        LocalStorageProperties.LocalStoragePath path = localStorageProperties.getPath();
+        String avatarUtl = "file:" + path.getAvatar().replace("\\", "/");
+        String fileUrl = "file:" + path.getFile().replace("\\", "/");
+        registry.addResourceHandler(localStorageProperties.getFilePattern()).addResourceLocations(fileUrl)
+            .setCachePeriod(0);
+        registry.addResourceHandler(localStorageProperties.getAvatarPattern()).addResourceLocations(avatarUtl)
+            .setCachePeriod(0);
         registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
             .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());

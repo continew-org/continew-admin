@@ -13,7 +13,7 @@ export default function setupUserLoginInfoGuard(router: Router) {
         next();
       } else {
         try {
-          await loginStore.info();
+          await loginStore.getInfo();
           next();
         } catch (error) {
           await loginStore.logout();

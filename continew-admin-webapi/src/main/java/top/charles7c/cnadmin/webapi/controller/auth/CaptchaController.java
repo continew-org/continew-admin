@@ -60,7 +60,7 @@ public class CaptchaController {
         Captcha captcha = captchaProperties.getCaptcha();
 
         // 保存验证码
-        String uuid = IdUtil.simpleUUID();
+        String uuid = IdUtil.fastSimpleUUID();
         String captchaKey = RedisUtils.formatKey(captchaProperties.getKeyPrefix(), uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));

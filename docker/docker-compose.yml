@@ -48,7 +48,9 @@ services:
     ports:
       - '18000:18000'
     volumes:
-      - /docker/continew-admin/server/logs:/logs
+      - /docker/continew-admin/logs:/logs
+      - /docker/continew-admin/data/file:/data/file
+      - /docker/continew-admin/data/avatar:/data/avatar
     depends_on:
       - redis
       - mariadb

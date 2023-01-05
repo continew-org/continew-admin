@@ -75,7 +75,7 @@ const useLoginStore = defineStore('user', {
     },
 
     // 获取用户信息
-    async info() {
+    async getInfo() {
       const res = await getUserInfo();
       this.setInfo(res.data);
     },

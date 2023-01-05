@@ -2,19 +2,19 @@
   <a-card :bordered="false">
     <a-space :size="54">
       <a-upload
-        :custom-request="customRequest"
+        :custom-request="handleUpload"
         list-type="picture-card"
-        :file-list="fileList"
+        :file-list="avatarList"
         :show-upload-button="true"
         :show-file-list="false"
-        @change="uploadChange"
+        @change="changeAvatar"
       >
         <template #upload-button>
           <a-avatar :size="100" class="info-avatar">
             <template #trigger-icon>
               <icon-camera />
             </template>
-            <img v-if="fileList.length" :src="fileList[0].url" />
+            <img v-if="avatarList.length" :src="avatarList[0].url" />
           </a-avatar>
         </template>
       </a-upload>
@@ -36,7 +36,7 @@
       >
         <template #label="{ label }">{{ $t(label) }} :</template>
         <template #value="{ value, data }">
-          <div v-if="data.label === 'userSetting.label.gender'">
+          <div v-if="data.label === 'userCenter.label.gender'">
             <div v-if="loginStore.gender === 1">
               男
               <icon-man style="color: #19BBF1" />
@@ -61,74 +61,69 @@
     RequestOption,
   } from '@arco-design/web-vue/es/upload/interfaces';
   import { useLoginStore } from '@/store';
-  import { userUploadApi } from '@/api/user-center';
+  import { uploadAvatar } from '@/api/system/user-center';
   import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
   import getAvatar from "@/utils/avatar";
+  import { Message } from "@arco-design/web-vue";
 
   const loginStore = useLoginStore();
-  const file = {
+  const avatar = {
     uid: '-2',
     name: 'avatar.png',
-    url: loginStore.avatar ?? getAvatar(loginStore.gender),
+    url: getAvatar(loginStore),
   };
   const renderData = [
     {
-      label: 'userSetting.label.nickname',
+      label: 'userCenter.label.nickname',
       value: loginStore.nickname,
     },
     {
-      label: 'userSetting.label.gender',
+      label: 'userCenter.label.gender',
       value: loginStore.gender,
     },
     {
-      label: 'userSetting.label.phone',
+      label: 'userCenter.label.phone',
       value: loginStore.phone,
     },
     {
-      label: 'userSetting.label.email',
+      label: 'userCenter.label.email',
       value: loginStore.email,
     },
     {
-      label: 'userSetting.label.registrationDate',
+      label: 'userCenter.label.registrationDate',
       value: loginStore.registrationDate,
     },
   ] as DescData[];
-  const fileList = ref<FileItem[]>([file]);
-  const uploadChange = (fileItemList: FileItem[], fileItem: FileItem) => {
-    fileList.value = [fileItem];
-  };
-  const customRequest = (options: RequestOption) => {
-    // docs: https://axios-http.com/docs/cancellation
-    const controller = new AbortController();
+  const avatarList = ref<FileItem[]>([avatar]);
 
+  // 切换头像
+  const changeAvatar = (fileItemList: FileItem[], currentFile: FileItem) => {
+    avatarList.value = [currentFile];
+  };
+
+  // 上传头像
+  const handleUpload = (options: RequestOption) => {
+    const controller = new AbortController();
     (async function requestWrap() {
       const {
         onProgress,
         onError,
         onSuccess,
         fileItem,
-        name = 'file',
+        name = 'avatarFile',
       } = options;
       onProgress(20);
       const formData = new FormData();
       formData.append(name as string, fileItem.file as Blob);
-      const onUploadProgress = (event: ProgressEvent) => {
-        let percent;
-        if (event.total > 0) {
-          percent = (event.loaded / event.total) * 100;
-        }
-        onProgress(parseInt(String(percent), 10), event);
-      };
-
       try {
-        // https://github.com/axios/axios/issues/1630
-        // https://github.com/nuysoft/Mock/issues/127
-
-        const res = await userUploadApi(formData, {
-          controller,
-          onUploadProgress,
-        });
+        const res = await uploadAvatar(formData);
         onSuccess(res);
+        Message.success({
+          content: res.msg || '网络错误',
+          duration: 3 * 1000,
+        });
+        // 更换头像
+        loginStore.avatar = res.data.avatar;
       } catch (error) {
         onError(error);
       }

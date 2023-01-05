@@ -39,11 +39,11 @@ import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.config.properties.RsaProperties;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.common.util.CheckUtils;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 
 /**
  * 登录 API
@@ -67,14 +67,14 @@ public class LoginController {
         // 校验验证码
         String captchaKey = RedisUtils.formatKey(captchaProperties.getKeyPrefix(), loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
-        CheckUtils.exIfBlank(captcha, "验证码已失效");
+        ValidationUtils.exIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);
-        CheckUtils.exIfCondition(() -> !captcha.equalsIgnoreCase(loginRequest.getCaptcha()), "验证码错误");
+        ValidationUtils.exIfCondition(() -> !captcha.equalsIgnoreCase(loginRequest.getCaptcha()), "验证码错误");
 
         // 用户登录
         String rawPassword = ExceptionUtils
             .exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword(), RsaProperties.PRIVATE_KEY));
-        CheckUtils.exIfBlank(rawPassword, "密码解密失败");
+        ValidationUtils.exIfBlank(rawPassword, "密码解密失败");
         String token = loginService.login(loginRequest.getUsername(), rawPassword);
         return R.ok(new LoginVO().setToken(token));
     }
@@ -85,7 +85,7 @@ public class LoginController {
         in = ParameterIn.HEADER)
     @PostMapping("/logout")
     public R logout() {
-        CheckUtils.exIfCondition(() -> !StpUtil.isLogin(), "Token 无效");
+        ValidationUtils.exIfCondition(() -> !StpUtil.isLogin(), "Token 无效");
         StpUtil.logout();
         return R.ok();
     }

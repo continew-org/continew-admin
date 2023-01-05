@@ -26,9 +26,9 @@ import cn.hutool.core.bean.BeanUtil;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.util.CheckUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -50,10 +50,11 @@ public class LoginServiceImpl implements LoginService {
         SysUser sysUser = userService.getByUsername(username);
 
         // 校验
-        CheckUtils.exIfNull(sysUser, "用户名或密码错误");
+        ValidationUtils.exIfNull(sysUser, "用户名或密码错误");
         Long userId = sysUser.getUserId();
-        CheckUtils.exIfNotEqual(sysUser.getPassword(), SecureUtils.md5Salt(password, userId.toString()), "用户名或密码错误");
-        CheckUtils.exIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        ValidationUtils.exIfNotEqual(sysUser.getPassword(), SecureUtils.md5Salt(password, userId.toString()),
+            "用户名或密码错误");
+        ValidationUtils.exIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(sysUser, LoginUser.class);

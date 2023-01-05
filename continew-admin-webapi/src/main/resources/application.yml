@@ -92,17 +92,6 @@ sa-token:
   # JWT秘钥
   jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
 
---- ### 安全配置
-security:
-  # 排除路径配置
-  excludes:
-    # 静态资源
-    - /*.html
-    - /**/*.html
-    - /**/*.css
-    - /**/*.js
-    - /webSocket/**
-
 --- ### MyBatis Plus 配置
 mybatis-plus:
   # Mapper 接口扫描包配置（该配置为自定义配置，非 MP 配置，不支持多包，如有需要可通过注解配置或提升扫描包层级）

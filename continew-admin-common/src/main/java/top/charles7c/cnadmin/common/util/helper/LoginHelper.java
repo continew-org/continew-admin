@@ -66,6 +66,17 @@ public class LoginHelper {
     }
 
     /**
+     * 更新登录用户信息
+     *
+     * @param loginUser
+     *            登录用户信息
+     */
+    public static void updateLoginUser(LoginUser loginUser) {
+        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+    }
+
+    /**
      * 获取登录用户 ID
      *
      * @return /

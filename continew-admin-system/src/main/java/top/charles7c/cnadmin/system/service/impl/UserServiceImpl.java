@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import top.charles7c.cnadmin.system.mapper.UserMapper;
@@ -41,5 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser getByUsername(String username) {
         return userMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUsername, username));
+    }
+
+    @Override
+    public void updateAvatar(String avatar, Long userId) {
+        userMapper.update(null,
+            new LambdaUpdateWrapper<SysUser>().set(SysUser::getAvatar, avatar).eq(SysUser::getUserId, userId));
     }
 }

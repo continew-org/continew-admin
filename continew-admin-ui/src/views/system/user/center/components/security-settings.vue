@@ -4,7 +4,7 @@
       <a-list-item-meta>
         <template #avatar>
           <a-typography-paragraph>
-            {{ $t('userSetting.SecuritySettings.form.label.password') }}
+            {{ $t('userCenter.SecuritySettings.form.label.password') }}
           </a-typography-paragraph>
         </template>
         <template #description>
@@ -13,12 +13,12 @@
               已设置
             </a-typography-paragraph>
             <a-typography-paragraph v-else class="tip">
-              {{ $t('userSetting.SecuritySettings.placeholder.password') }}
+              {{ $t('userCenter.SecuritySettings.placeholder.password') }}
             </a-typography-paragraph>
           </div>
           <div class="operation">
             <a-link>
-              {{ $t('userSetting.SecuritySettings.button.update') }}
+              {{ $t('userCenter.SecuritySettings.button.update') }}
             </a-link>
           </div>
         </template>
@@ -28,7 +28,7 @@
       <a-list-item-meta>
         <template #avatar>
           <a-typography-paragraph>
-            {{ $t('userSetting.SecuritySettings.form.label.phone') }}
+            {{ $t('userCenter.SecuritySettings.form.label.phone') }}
           </a-typography-paragraph>
         </template>
         <template #description>
@@ -37,12 +37,12 @@
               已绑定：{{ loginStore.phone }}
             </a-typography-paragraph>
             <a-typography-paragraph v-else class="tip">
-              {{ $t('userSetting.SecuritySettings.placeholder.phone') }}
+              {{ $t('userCenter.SecuritySettings.placeholder.phone') }}
             </a-typography-paragraph>
           </div>
           <div class="operation">
             <a-link>
-              {{ $t('userSetting.SecuritySettings.button.update') }}
+              {{ $t('userCenter.SecuritySettings.button.update') }}
             </a-link>
           </div>
         </template>
@@ -52,7 +52,7 @@
       <a-list-item-meta>
         <template #avatar>
           <a-typography-paragraph>
-            {{ $t('userSetting.SecuritySettings.form.label.email') }}
+            {{ $t('userCenter.SecuritySettings.form.label.email') }}
           </a-typography-paragraph>
         </template>
         <template #description>
@@ -61,12 +61,12 @@
               已绑定：{{ loginStore.email }}
             </a-typography-paragraph>
             <a-typography-paragraph v-else class="tip">
-              {{ $t('userSetting.SecuritySettings.placeholder.email') }}
+              {{ $t('userCenter.SecuritySettings.placeholder.email') }}
             </a-typography-paragraph>
           </div>
           <div class="operation">
             <a-link>
-              {{ $t('userSetting.SecuritySettings.button.update') }}
+              {{ $t('userCenter.SecuritySettings.button.update') }}
             </a-link>
           </div>
         </template>

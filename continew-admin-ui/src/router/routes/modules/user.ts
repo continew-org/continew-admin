@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
 const USER: AppRouteRecordRaw = {
-  path: '/user',
+  path: '/system/user',
   name: 'user',
   component: DEFAULT_LAYOUT,
   meta: {
@@ -13,21 +13,11 @@ const USER: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: 'info',
-      name: 'Info',
-      component: () => import('@/views/user/info/index.vue'),
+      path: 'center',
+      name: 'UserCenter',
+      component: () => import('@/views/system/user/center/index.vue'),
       meta: {
-        locale: 'menu.user.info',
-        requiresAuth: true,
-        roles: ['*'],
-      },
-    },
-    {
-      path: 'setting',
-      name: 'Setting',
-      component: () => import('@/views/user/setting/index.vue'),
-      meta: {
-        locale: 'menu.user.setting',
+        locale: 'menu.user.center',
         requiresAuth: true,
         roles: ['*'],
       },

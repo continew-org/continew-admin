@@ -14,34 +14,23 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.service;
+package top.charles7c.cnadmin.common.consts;
 
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 用户业务接口
+ * 文件常量
  *
  * @author Charles7c
- * @since 2022/12/21 21:48
+ * @since 2023/1/2 21:19
  */
-public interface UserService {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class FileConstants {
 
     /**
-     * 根据用户名查询
-     *
-     * @param username
-     *            用户名
-     * @return 用户信息
+     * 头像支持的图片类型
      */
-    SysUser getByUsername(String username);
+    public static final String[] AVATAR_SUPPORTED_IMG_TYPES = {"jpg", "png", "gif", "jpeg"};
 
-    /**
-     * 修改头像
-     *
-     * @param avatar
-     *            头像路径
-     * @param userId
-     *            用户ID
-     */
-    void updateAvatar(String avatar, Long userId);
 }

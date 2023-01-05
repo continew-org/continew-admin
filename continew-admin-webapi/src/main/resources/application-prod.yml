@@ -69,6 +69,20 @@ spring:
     # 是否开启 SSL
     ssl: false
 
+--- ### 安全配置
+security:
+  # 排除路径配置
+  excludes:
+    # 静态资源
+    - /*.html
+    - /**/*.html
+    - /**/*.css
+    - /**/*.js
+    - /webSocket/**
+    # 本地存储资源
+    - /avatar/**
+    - /file/**
+
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:
   # 私钥
@@ -93,6 +107,39 @@ captcha:
 springdoc:
   swagger-ui:
     enabled: false
+
+--- ### 文件上传配置
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      # 单文件上传大小限制
+      max-file-size: 10MB
+      # 单次总上传文件大小限制
+      max-request-size: 20MB
+
+--- ### 本地存储配置
+local-storage:
+  # 文件模式
+  filePattern: /file/**
+  # 头像模式
+  avatarPattern: /avatar/**
+  # 文件上传大小限制
+  maxSizeInMb: 10
+  # 头像上传大小限制
+  avatarMaxSizeInMb: 5
+  ## Windows 系统本地存储配置
+  windows:
+    file: C:\continew-admin\data\file\
+    avatar: C:\continew-admin\data\avatar\
+  ## Linux 系统本地存储配置
+  linux:
+    file: /data/file/
+    avatar: /data/avatar/
+  ## Mac 系统本地存储配置
+  mac:
+    file: ~/data/file/
+    avatar: ~/data/avatar/
 
 --- ### 跨域配置
 cors:

@@ -33,8 +33,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.exception.BadRequestException;
@@ -162,6 +164,18 @@ public class GlobalExceptionHandler {
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
         log.error("请求地址'{}'，认证失败'{}'，无法访问系统资源", request.getRequestURI(), e.getMessage());
         return R.fail(HttpStatus.UNAUTHORIZED.value(), "认证失败，无法访问系统资源");
+    }
+
+    /**
+     * 拦截文件上传异常-超过上传大小限制
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletRequest request) {
+        String sizeLimit = StrUtil.subBetween(e.getMessage(), "The maximum size ", " for");
+        log.error("请求地址'{}'，上传文件失败，文件大小超过限制", request.getRequestURI(), e);
+        return R.fail(HttpStatus.BAD_REQUEST.value(),
+            String.format("请上传小于 %s MB 的文件", NumberUtil.parseLong(sizeLimit) / 1024 / 1024));
     }
 
     /**

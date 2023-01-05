@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.service;
+package top.charles7c.cnadmin.system.model.vo;
 
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import java.io.Serializable;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 用户业务接口
+ * 头像信息
  *
  * @author Charles7c
- * @since 2022/12/21 21:48
+ * @since 2023/1/2 16:29
  */
-public interface UserService {
+@Data
+@Accessors(chain = true)
+@Schema(description = "头像信息")
+public class AvatarVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 根据用户名查询
-     *
-     * @param username
-     *            用户名
-     * @return 用户信息
+     * 头像地址
      */
-    SysUser getByUsername(String username);
-
-    /**
-     * 修改头像
-     *
-     * @param avatar
-     *            头像路径
-     * @param userId
-     *            用户ID
-     */
-    void updateAvatar(String avatar, Long userId);
+    @Schema(description = "头像地址")
+    private String avatar;
 }

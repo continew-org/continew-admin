@@ -109,7 +109,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │      └─ cnadmin
   │      │        ├─ webapi
   │      │        │  └─ controller  
-  │      │        │    └─ auth    # 认证相关 API
+  │      │        │    ├─ auth    # 认证相关 API
+  │      │        │    └─ system  # 系统管理相关 API
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        └─ db.changelog.v0.0.1    # 数据库脚本文件
@@ -153,7 +154,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        └─ system   # 系统管理相关业务及配置
   │      │          ├─ mapper     # 系统管理相关 Mapper
   │      │          ├─ model      # 系统管理相关模型
-  │      │          │  └─ entity      # 系统管理相关实体对象
+  │      │          │  ├─ entity      # 系统管理相关实体对象
+  │      │          │  └─ vo          # 系统管理相关 VO（View Object）
   │      │          └─ service    # 系统管理相关业务接口及实现类
   │      │             └─ impl        # 系统管理相关业务实现类
   │      └─ resources   # 工程配置目录
@@ -181,7 +183,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                │  └─ vo           # 公共 VO（View Object）
   │                └─ util         # 公共工具类
   │                  ├─ helper        # 公共 Helper（助手）
-  │                  └─ holder        # 公共 Holder（持有者）
+  │                  ├─ holder        # 公共 Holder（持有者）
+  │                  └─ validate      # 公共校验器（参数校验，业务校验）
 ```
 
 ### 前端
@@ -189,12 +192,14 @@ continew-admin  # 全局通用项目配置及依赖版本管理
 ```bash
 continew-admin
   └─ continew-admin-ui      # 前端项目
+    ├─ public               # 公共静态资源（favicon.ico、logo.svg）
     ├─ src
     │  ├─ api               # 请求接口
-    │  │  └─ auth             # 认证模块
+    │  │  ├─ auth             # 认证模块
+    │  │  └─ system           # 系统管理模块
     │  ├─ assets            # 静态资源
-    │  │  └─ style            # 全局样式
-    │  ├─ assets            # 静态资源
+    │  │  ├─ images           # 图片资源
+    │  │  └─ style            # 样式资源
     │  ├─ components        # 通用业务组件
     │  ├─ config            # 全局配置（包含 echarts 主题）
     │  │  └─ settings.json    # 配置文件
@@ -205,11 +210,12 @@ continew-admin
     │  ├─ mock              # 模拟数据
     │  ├─ router            # 路由配置
     │  ├─ store             # 状态管理中心
-    │  ├─ types             # Typescript 类型
+    │  ├─ types             # TypeScript 类型
     │  ├─ utils             # 工具库
     │  ├─ views             # 页面模板
     │  │  ├─ login            # 登录模块
-    │  │  └─ user             # 用户模块（用户设置、用户中心）
+    │  │  └─ system           # 系统管理模块
+    │  │    └─ user             # 用户模块（用户中心）
     │  ├─ App.vue           # 视图入口
     │  └─ main.ts           # 入口文件
     ├─ .env.development

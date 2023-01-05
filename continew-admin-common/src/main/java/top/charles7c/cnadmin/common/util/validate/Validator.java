@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.util;
+package top.charles7c.cnadmin.common.util.validate;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.exception.BadRequestException;
-
 /**
- * 检查工具类
- *
  * @author Charles7c
- * @since 2022/12/21 20:56
+ * @since 2023/1/2 22:12
  */
 @Slf4j
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CheckUtils {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Validator {
 
     /**
      * 如果为空，抛出异常
@@ -42,11 +39,13 @@ public class CheckUtils {
      *            被检测的对象
      * @param message
      *            错误信息
+     * @param exceptionType
+     *            异常类型
      */
-    public static void exIfNull(Object obj, String message) {
+    protected static void exIfNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
         if (obj == null) {
             log.error(message);
-            throw new BadRequestException(message);
+            throw ReflectUtil.newInstance(exceptionType, message);
         }
     }
 
@@ -57,11 +56,13 @@ public class CheckUtils {
      *            被检测的字符串
      * @param message
      *            错误信息
+     * @param exceptionType
+     *            异常类型
      */
-    public static void exIfBlank(CharSequence str, String message) {
+    public static void exIfBlank(CharSequence str, String message, Class<? extends RuntimeException> exceptionType) {
         if (StrUtil.isBlank(str)) {
             log.error(message);
-            throw new BadRequestException(message);
+            throw ReflectUtil.newInstance(exceptionType, message);
         }
     }
 
@@ -74,11 +75,14 @@ public class CheckUtils {
      *            要比较的对象2
      * @param message
      *            错误信息
+     * @param exceptionType
+     *            异常类型
      */
-    public static void exIfEqual(Object obj1, Object obj2, String message) {
+    public static void exIfEqual(Object obj1, Object obj2, String message,
+        Class<? extends RuntimeException> exceptionType) {
         if (ObjectUtil.equals(obj1, obj2)) {
             log.error(message);
-            throw new BadRequestException(message);
+            throw ReflectUtil.newInstance(exceptionType, message);
         }
     }
 
@@ -91,11 +95,14 @@ public class CheckUtils {
      *            要比较的对象2
      * @param message
      *            错误信息
+     * @param exceptionType
+     *            异常类型
      */
-    public static void exIfNotEqual(Object obj1, Object obj2, String message) {
+    public static void exIfNotEqual(Object obj1, Object obj2, String message,
+        Class<? extends RuntimeException> exceptionType) {
         if (ObjectUtil.notEqual(obj1, obj2)) {
             log.error(message);
-            throw new BadRequestException(message);
+            throw ReflectUtil.newInstance(exceptionType, message);
         }
     }
 
@@ -106,11 +113,14 @@ public class CheckUtils {
      *            条件
      * @param message
      *            错误信息
+     * @param exceptionType
+     *            异常类型
      */
-    public static void exIfCondition(java.util.function.BooleanSupplier conditionSupplier, String message) {
+    public static void exIfCondition(java.util.function.BooleanSupplier conditionSupplier, String message,
+        Class<? extends RuntimeException> exceptionType) {
         if (conditionSupplier != null && conditionSupplier.getAsBoolean()) {
             log.error(message);
-            throw new BadRequestException(message);
+            throw ReflectUtil.newInstance(exceptionType, message);
         }
     }
 }
