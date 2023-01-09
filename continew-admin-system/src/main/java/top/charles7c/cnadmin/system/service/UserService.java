@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 
 /**
@@ -36,12 +38,21 @@ public interface UserService {
     SysUser getByUsername(String username);
 
     /**
-     * 修改头像
+     * 上传头像
      *
      * @param avatar
-     *            头像路径
+     *            头像文件
      * @param userId
-     *            用户ID
+     *            用户 ID
+     * @return 新头像路径
      */
-    void updateAvatar(String avatar, Long userId);
+    String uploadAvatar(MultipartFile avatar, Long userId);
+
+    /**
+     * 修改信息
+     *
+     * @param user
+     *            用户信息
+     */
+    void update(SysUser user);
 }

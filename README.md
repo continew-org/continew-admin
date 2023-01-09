@@ -155,6 +155,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          ├─ mapper     # 系统管理相关 Mapper
   │      │          ├─ model      # 系统管理相关模型
   │      │          │  ├─ entity      # 系统管理相关实体对象
+  │      │          │  ├─ request     # 系统管理相关请求对象
   │      │          │  └─ vo          # 系统管理相关 VO（View Object）
   │      │          └─ service    # 系统管理相关业务接口及实现类
   │      │             └─ impl        # 系统管理相关业务实现类

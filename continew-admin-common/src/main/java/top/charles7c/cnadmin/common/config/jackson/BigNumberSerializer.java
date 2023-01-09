@@ -44,12 +44,12 @@ public class BigNumberSerializer extends NumberSerializer {
     }
 
     @Override
-    public void serialize(Number value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+    public void serialize(Number value, JsonGenerator generator, SerializerProvider provider) throws IOException {
         // 序列化为字符串
         if (value.longValue() > MIN_SAFE_INTEGER && value.longValue() < MAX_SAFE_INTEGER) {
-            super.serialize(value, gen, provider);
+            super.serialize(value, generator, provider);
         } else {
-            gen.writeString(value.toString());
+            generator.writeString(value.toString());
         }
     }
 }

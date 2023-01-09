@@ -38,7 +38,11 @@ axios.interceptors.request.use(
 // add response interceptors
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
-    return response.data;
+    const res = response.data;
+    if (!res.success) {
+      Message.error(res.msg);
+    }
+    return res;
   },
   (error) => {
     const res = error.response.data;

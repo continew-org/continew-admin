@@ -19,6 +19,7 @@
       <a-input
         v-model="formData.username"
         :placeholder="$t('userCenter.basicInfo.placeholder.username')"
+        max-length="50"
       />
     </a-form-item>
     <a-form-item
@@ -34,6 +35,7 @@
       <a-input
         v-model="formData.nickname"
         :placeholder="$t('userCenter.basicInfo.placeholder.nickname')"
+        max-length="32"
       />
     </a-form-item>
     <a-form-item
@@ -48,7 +50,7 @@
     </a-form-item>
     <a-form-item>
       <a-space>
-        <a-button type="primary" @click="validate">
+        <a-button type="primary" :loading="loading" @click="save">
           {{ $t('userCenter.save') }}
         </a-button>
         <a-button type="secondary" @click="reset">
@@ -62,9 +64,13 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { useLoginStore } from '@/store';
+  import { updateBasicInfo } from '@/api/system/user-center';
+  import useLoading from '@/hooks/loading';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { BasicInfoModel } from '@/api/system/user-center';
+  import { Message } from "@arco-design/web-vue";
 
+  const { loading, setLoading } = useLoading();
   const loginStore = useLoginStore();
   const formRef = ref<FormInstance>();
   const formData = ref<BasicInfoModel>({
@@ -74,11 +80,21 @@
   });
 
   // 保存
-  const validate = async () => {
-    const res = await formRef.value?.validate();
-    if (!res) {
-      // do some thing
-      // you also can use html-type to submit
+  const save = async () => {
+    const errors = await formRef.value?.validate();
+    if (loading.value) return;
+    if (!errors) {
+      setLoading(true);
+      try {
+        const res = await updateBasicInfo({
+          nickname: formData.value.nickname,
+          gender: formData.value.gender,
+        });
+        await loginStore.getInfo();
+        if (res.success) Message.success(res.msg);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

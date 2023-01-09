@@ -13,6 +13,10 @@ export function uploadAvatar(data: FormData) {
   return axios.post<AvatarRes>('/system/user/center/avatar', data);
 }
 
-export function saveUserInfo() {
-  return axios.get('/api/user/save-info');
+export interface UpdateBasicInfoReq {
+  nickname: string;
+  gender: number;
+}
+export function updateBasicInfo(req: UpdateBasicInfoReq) {
+  return axios.patch('/system/user/center/basic/info', req);
 }

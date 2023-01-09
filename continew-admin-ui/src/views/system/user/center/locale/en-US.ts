@@ -1,10 +1,10 @@
 export default {
   'menu.user.center': 'User Center',
-  'userCenter.label.nickname': 'Nick Name',
-  'userCenter.label.gender': 'Gender',
-  'userCenter.label.phone': 'Phone',
-  'userCenter.label.email': 'Email',
-  'userCenter.label.registrationDate': 'Registration Date',
+  'userCenter.label.nickname': 'Nick Name :',
+  'userCenter.label.gender': 'Gender :',
+  'userCenter.label.phone': 'Phone :',
+  'userCenter.label.email': 'Email :',
+  'userCenter.label.registrationDate': 'Registration Date :',
 
   'userCenter.tab.basicInformation': 'Basic Information',
   'userCenter.basicInfo.form.label.username': 'Username',

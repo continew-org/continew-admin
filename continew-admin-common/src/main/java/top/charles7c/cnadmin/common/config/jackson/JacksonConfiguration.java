@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.common.config.jackson;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -30,11 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -55,7 +54,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 public class JacksonConfiguration {
 
     /**
-     * 全局配置序列化返回 JSON 处理
+     * 针对数值类型：Long、BigInteger、BigDecimal，时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
      */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
@@ -64,23 +63,14 @@ public class JacksonConfiguration {
         String timeFormatPattern = "HH:mm:ss";
 
         return builder -> {
-            // 针对通用枚举 IEnum 的转换
-            builder.serializerByType(IEnum.class, new JsonSerializer<IEnum<Integer>>() {
-                @Override
-                public void serialize(IEnum<Integer> value, JsonGenerator gen, SerializerProvider serializers)
-                    throws IOException {
-                    gen.writeNumber(value.getValue());
-                }
-            });
-
-            // 针对 Long、BigInteger、BigDecimal 的转换
+            // 针对数值类型：Long、BigInteger、BigDecimal 的序列化和反序列化
             JavaTimeModule javaTimeModule = new JavaTimeModule();
             javaTimeModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
             javaTimeModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
             javaTimeModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
             javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
 
-            // 针对 LocalDateTime、LocalDate、LocalTime 的转换
+            // 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
             javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
             javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
@@ -96,5 +86,22 @@ public class JacksonConfiguration {
             builder.timeZone(TimeZone.getDefault());
             log.info(">>>初始化 Jackson 配置<<<");
         };
+    }
+
+    /**
+     * 针对通用枚举接口 IEnum 的序列化和反序列化
+     */
+    @Bean
+    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(IEnum.class, IEnumSerializer.SERIALIZER_INSTANCE);
+
+        SimpleDeserializersWrapper deserializers = new SimpleDeserializersWrapper();
+        deserializers.addDeserializer(IEnum.class, IEnumDeserializer.SERIALIZER_INSTANCE);
+        simpleModule.setDeserializers(deserializers);
+
+        ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+        objectMapper.registerModule(simpleModule);
+        return objectMapper;
     }
 }

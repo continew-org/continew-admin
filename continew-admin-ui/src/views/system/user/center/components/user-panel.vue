@@ -19,7 +19,6 @@
         </template>
       </a-upload>
       <a-descriptions
-        :data="renderData"
         :column="2"
         align="right"
         layout="inline-horizontal"
@@ -34,21 +33,21 @@
           textAlign: 'left',
         }"
       >
-        <template #label="{ label }">{{ $t(label) }} :</template>
-        <template #value="{ value, data }">
-          <div v-if="data.label === 'userCenter.label.gender'">
-            <div v-if="loginStore.gender === 1">
-              男
-              <icon-man style="color: #19BBF1" />
-            </div>
-            <div v-else-if="loginStore.gender === 2">
-              女
-              <icon-woman style="color: #FA7FA9" />
-            </div>
-            <div v-else>未知</div>
+        <a-descriptions-item :label="$t('userCenter.label.nickname')">{{ loginStore.nickname }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.label.gender')">
+          <div v-if="loginStore.gender === 1">
+            男
+            <icon-man style="color: #19BBF1" />
           </div>
-          <span v-else>{{ value }}</span>
-        </template>
+          <div v-else-if="loginStore.gender === 2">
+            女
+            <icon-woman style="color: #FA7FA9" />
+          </div>
+          <div v-else>未知</div>
+        </a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.label.phone')">{{ loginStore.phone }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.label.email')">{{ loginStore.email }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.label.registrationDate')">{{ loginStore.registrationDate }}</a-descriptions-item>
       </a-descriptions>
     </a-space>
   </a-card>
@@ -62,7 +61,6 @@
   } from '@arco-design/web-vue/es/upload/interfaces';
   import { useLoginStore } from '@/store';
   import { uploadAvatar } from '@/api/system/user-center';
-  import type { DescData } from '@arco-design/web-vue/es/descriptions/interface';
   import getAvatar from "@/utils/avatar";
   import { Message } from "@arco-design/web-vue";
 
@@ -72,28 +70,6 @@
     name: 'avatar.png',
     url: getAvatar(loginStore),
   };
-  const renderData = [
-    {
-      label: 'userCenter.label.nickname',
-      value: loginStore.nickname,
-    },
-    {
-      label: 'userCenter.label.gender',
-      value: loginStore.gender,
-    },
-    {
-      label: 'userCenter.label.phone',
-      value: loginStore.phone,
-    },
-    {
-      label: 'userCenter.label.email',
-      value: loginStore.email,
-    },
-    {
-      label: 'userCenter.label.registrationDate',
-      value: loginStore.registrationDate,
-    },
-  ] as DescData[];
   const avatarList = ref<FileItem[]>([avatar]);
 
   // 切换头像
@@ -118,10 +94,7 @@
       try {
         const res = await uploadAvatar(formData);
         onSuccess(res);
-        Message.success({
-          content: res.msg || '网络错误',
-          duration: 3 * 1000,
-        });
+        if (res.success) Message.success(res.msg);
         // 更换头像
         loginStore.avatar = res.data.avatar;
       } catch (error) {

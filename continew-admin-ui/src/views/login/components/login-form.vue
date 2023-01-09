@@ -19,6 +19,8 @@
         <a-input
           v-model="loginForm.username"
           :placeholder="$t('login.form.username.placeholder')"
+          size="large"
+          max-length="50"
         >
           <template #prefix>
             <icon-user />
@@ -34,7 +36,9 @@
         <a-input-password
           v-model="loginForm.password"
           :placeholder="$t('login.form.password.placeholder')"
+          size="large"
           allow-clear
+          max-length="50"
         >
           <template #prefix>
             <icon-lock />
@@ -51,6 +55,7 @@
         <a-input
           v-model="loginForm.captcha"
           :placeholder="$t('login.form.captcha.placeholder')"
+          size="large"
           style="width: 63%"
           allow-clear
         >
@@ -70,7 +75,7 @@
             {{ $t('login.form.rememberMe') }}
           </a-checkbox>
         </div>
-        <a-button type="primary" html-type="submit" long :loading="loading">
+        <a-button type="primary" size="large" html-type="submit" long :loading="loading">
           {{ $t('login.form.login') }}
         </a-button>
       </a-space>

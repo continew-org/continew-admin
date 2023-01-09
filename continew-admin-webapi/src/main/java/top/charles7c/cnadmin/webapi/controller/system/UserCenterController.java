@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import java.io.File;
-
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
@@ -27,23 +25,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.consts.FileConstants;
-import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -76,25 +71,18 @@ public class UserCenterController {
         ValidationUtils.exIfCondition(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
             String.format("头像仅支持 %s 格式的图片", String.join("，", avatarSupportImgTypes)));
 
-        // 上传新头像
-        String avatarPath = localStorageProperties.getPath().getAvatar();
-        File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
-        CheckUtils.exIfNull(newAvatarFile, "上传头像失败");
-
-        // 更新用户头像
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        String newAvatar = newAvatarFile.getName();
-        userService.updateAvatar(newAvatar, loginUser.getUserId());
-
-        // 删除原头像
-        String oldAvatar = loginUser.getAvatar();
-        if (StrUtil.isNotBlank(loginUser.getAvatar())) {
-            FileUtil.del(avatarPath + oldAvatar);
-        }
-
-        // 更新登录用户信息
-        loginUser.setAvatar(newAvatar);
-        LoginHelper.updateLoginUser(loginUser);
+        // 上传头像
+        String newAvatar = userService.uploadAvatar(avatarFile, LoginHelper.getUserId());
         return R.ok("上传成功", new AvatarVO().setAvatar(newAvatar));
+    }
+
+    @Operation(summary = "修改基础信息", description = "修改用户基础信息")
+    @PatchMapping("/basic/info")
+    public R updateBasicInfo(@Validated @RequestBody UpdateBasicInfoRequest updateBasicInfoRequest) {
+        SysUser user = new SysUser();
+        user.setUserId(LoginHelper.getUserId());
+        BeanUtil.copyProperties(updateBasicInfoRequest, user);
+        userService.update(user);
+        return R.ok("修改成功");
     }
 }

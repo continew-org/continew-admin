@@ -167,11 +167,11 @@ spring:
     # 序列化配置（Bean -> JSON）
     serialization:
       # 允许序列化无属性的 Bean
-      fail_on_empty_beans: false
+      FAIL_ON_EMPTY_BEANS: false
     # 反序列化配置（JSON -> Bean）
     deserialization:
       # 允许反序列化不存在的属性
-      fail_on_unknown_properties: false
+      FAIL_ON_UNKNOWN_PROPERTIES: false
 
 --- ### 线程池配置
 thread-pool:
