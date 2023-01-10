@@ -70,7 +70,7 @@
           <a-checkbox
             checked="rememberMe"
             :model-value="loginConfig.rememberMe"
-            @change="(setRememberMe as any)"
+            @change="setRememberMe as any"
           >
             {{ $t('login.form.rememberMe') }}
           </a-checkbox>
