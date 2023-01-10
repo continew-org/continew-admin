@@ -19,6 +19,7 @@
       <a-input
         v-model="formData.username"
         :placeholder="$t('userCenter.basicInfo.placeholder.username')"
+        size="large"
         max-length="50"
       />
     </a-form-item>
@@ -35,6 +36,7 @@
       <a-input
         v-model="formData.nickname"
         :placeholder="$t('userCenter.basicInfo.placeholder.nickname')"
+        size="large"
         max-length="32"
       />
     </a-form-item>

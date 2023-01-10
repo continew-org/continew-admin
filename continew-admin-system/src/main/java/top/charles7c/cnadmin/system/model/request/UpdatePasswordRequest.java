@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.request;
+package top.charles7c.cnadmin.system.model.request;
 
 import java.io.Serializable;
 
@@ -25,42 +25,28 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 登录信息
+ * 修改密码信息
  *
  * @author Charles7c
- * @since 2022/12/21 20:43
+ * @since 2023/1/9 23:28
  */
 @Data
-@Schema(description = "登录信息")
-public class LoginRequest implements Serializable {
+@Schema(description = "修改密码信息")
+public class UpdatePasswordRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户名
+     * 当前密码（加密后）
      */
-    @Schema(description = "用户名")
-    @NotBlank(message = "用户名不能为空")
-    private String username;
+    @Schema(description = "当前密码（加密后）")
+    @NotBlank(message = "当前密码不能为空")
+    private String oldPassword;
 
     /**
-     * 密码（加密后）
+     * 新密码（加密后）
      */
-    @Schema(description = "密码（加密后）")
-    @NotBlank(message = "密码不能为空")
-    private String password;
-
-    /**
-     * 验证码
-     */
-    @Schema(description = "验证码")
-    @NotBlank(message = "验证码不能为空")
-    private String captcha;
-
-    /**
-     * 验证码标识
-     */
-    @Schema(description = "验证码标识")
-    @NotBlank(message = "验证码标识不能为空")
-    private String uuid;
+    @Schema(description = "新密码（加密后）")
+    @NotBlank(message = "新密码不能为空")
+    private String newPassword;
 }

@@ -30,15 +30,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.consts.FileConstants;
+import top.charles7c.cnadmin.common.consts.RegExpConstants;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
+import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -83,6 +88,26 @@ public class UserCenterController {
         user.setUserId(LoginHelper.getUserId());
         BeanUtil.copyProperties(updateBasicInfoRequest, user);
         userService.update(user);
+        return R.ok("修改成功");
+    }
+
+    @Operation(summary = "修改密码", description = "修改用户登录密码")
+    @PatchMapping("/password")
+    public R updatePassword(@Validated @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        // 解密
+        String rawOldPassword =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getOldPassword()));
+        ValidationUtils.exIfBlank(rawOldPassword, "当前密码解密失败");
+        String rawNewPassword =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
+        ValidationUtils.exIfBlank(rawNewPassword, "新密码解密失败");
+
+        // 校验
+        ValidationUtils.exIfCondition(() -> !ReUtil.isMatch(RegExpConstants.PASSWORD, rawNewPassword),
+            "密码长度6到32位，同时包含数字和字母");
+
+        // 修改密码
+        userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 }

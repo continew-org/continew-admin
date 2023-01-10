@@ -23,6 +23,9 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 
+import top.charles7c.cnadmin.common.config.properties.RsaProperties;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+
 /**
  * 加密/解密工具类
  *
@@ -43,6 +46,19 @@ public class SecureUtils {
      */
     public static String encryptByRsaPublicKey(String data, String publicKey) {
         return Base64.encode(SecureUtil.rsa(null, publicKey).encrypt(data, KeyType.PublicKey));
+    }
+
+    /**
+     * 私钥解密
+     *
+     * @param data
+     *            要解密的内容（Base64 加密过）
+     * @return 解密后的内容
+     */
+    public static String decryptByRsaPrivateKey(String data) {
+        String privateKey = RsaProperties.PRIVATE_KEY;
+        ValidationUtils.exIfBlank(privateKey, "请配置 RSA 私钥");
+        return decryptByRsaPrivateKey(data, privateKey);
     }
 
     /**

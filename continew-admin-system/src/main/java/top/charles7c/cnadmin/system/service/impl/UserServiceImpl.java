@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,8 +35,10 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.FileUtils;
+import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -91,9 +94,43 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(user);
 
         // 更新登录用户信息
-        SysUser sysUser = userMapper.selectById(user.getUserId());
+        SysUser sysUser = this.getById(user.getUserId());
         LoginUser loginUser = LoginHelper.getLoginUser();
         BeanUtil.copyProperties(sysUser, loginUser);
         LoginHelper.updateLoginUser(loginUser);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(String oldPassword, String newPassword, Long userId) {
+        SysUser sysUser = this.getById(userId);
+        ValidationUtils.exIfNotEqual(sysUser.getPassword(), SecureUtils.md5Salt(oldPassword, userId.toString()),
+            "当前密码错误");
+
+        // 更新密码和密码重置时间
+        LocalDateTime now = LocalDateTime.now();
+        userMapper.update(null,
+            new LambdaUpdateWrapper<SysUser>()
+                .set(SysUser::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
+                .set(SysUser::getPwdResetTime, now).eq(SysUser::getUserId, userId));
+
+        // 更新登录用户信息
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        loginUser.setPwdResetTime(now);
+        LoginHelper.updateLoginUser(loginUser);
+    }
+
+    /**
+     * 根据 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 用户信息
+     */
+    private SysUser getById(Long userId) {
+        ValidationUtils.exIfNull(userId, "用户不存在");
+        SysUser sysUser = userMapper.selectById(userId);
+        ValidationUtils.exIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
+        return sysUser;
     }
 }

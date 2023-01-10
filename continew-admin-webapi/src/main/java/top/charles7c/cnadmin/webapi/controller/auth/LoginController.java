@@ -36,7 +36,6 @@ import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.common.config.properties.RsaProperties;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -72,8 +71,8 @@ public class LoginController {
         ValidationUtils.exIfCondition(() -> !captcha.equalsIgnoreCase(loginRequest.getCaptcha()), "验证码错误");
 
         // 用户登录
-        String rawPassword = ExceptionUtils
-            .exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword(), RsaProperties.PRIVATE_KEY));
+        String rawPassword =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
         ValidationUtils.exIfBlank(rawPassword, "密码解密失败");
         String token = loginService.login(loginRequest.getUsername(), rawPassword);
         return R.ok(new LoginVO().setToken(token));

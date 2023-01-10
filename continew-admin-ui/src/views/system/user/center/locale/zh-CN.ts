@@ -18,9 +18,19 @@ export default {
   'userCenter.reset': '重置',
 
   'userCenter.tab.securitySettings': '安全设置',
-  'userCenter.SecuritySettings.form.label.password': '登录密码',
+  'userCenter.SecuritySettings.label.password': '登录密码',
   'userCenter.SecuritySettings.placeholder.password':
     '您暂未设置密码，密码至少6位字符，支持数字、字母和除空格外的特殊字符。',
+  'userCenter.SecuritySettings.form.password.modal.title': '修改登录密码',
+  'userCenter.SecuritySettings.form.password.oldPassword.label': '当前密码',
+  'userCenter.SecuritySettings.form.password.oldPassword.placeholder': '请输入当前密码',
+  'userCenter.SecuritySettings.form.password.newPassword.label': '新密码',
+  'userCenter.SecuritySettings.form.password.error.newPassword.required': '请输入新密码',
+  'userCenter.SecuritySettings.form.password.newPassword.placeholder': '密码长度6到32位，同时包含数字和字母',
+  'userCenter.SecuritySettings.form.password.rePassword.label': '确认新密码',
+  'userCenter.SecuritySettings.form.password.rePassword.placeholder': '请再次输入新密码',
+  'userCenter.SecuritySettings.form.password.error.rePassword.notequal': '两次输入的密码不一致',
+
   'userCenter.SecuritySettings.form.label.phone': '安全手机',
   'userCenter.SecuritySettings.placeholder.phone':
     '您暂未设置手机号，绑定手机号可以用来找回密码、接收通知、短信登录等。',

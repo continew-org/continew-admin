@@ -18,9 +18,19 @@ export default {
   'userCenter.reset': 'Reset',
 
   'userCenter.tab.securitySettings': 'Security Settings',
-  'userCenter.SecuritySettings.form.label.password': 'Login Password',
+  'userCenter.SecuritySettings.label.password': 'Login Password',
   'userCenter.SecuritySettings.placeholder.password':
     'You have not set a password yet. The password must contain at least six letters, digits, and special characters except Spaces.',
+  'userCenter.SecuritySettings.form.password.modal.title': 'Update login password',
+  'userCenter.SecuritySettings.form.password.oldPassword.label': 'Old password',
+  'userCenter.SecuritySettings.form.password.oldPassword.placeholder': 'Please enter old password',
+  'userCenter.SecuritySettings.form.password.newPassword.label': 'New password',
+  'userCenter.SecuritySettings.form.password.error.newPassword.required': 'Please enter new password',
+  'userCenter.SecuritySettings.form.password.newPassword.placeholder': 'Password contains 6 to 32 digits and letters',
+  'userCenter.SecuritySettings.form.password.rePassword.label': 'Confirm password',
+  'userCenter.SecuritySettings.form.password.rePassword.placeholder': 'Please enter new password again',
+  'userCenter.SecuritySettings.form.password.error.rePassword.notequal': 'Two passwords are different',
+
   'userCenter.SecuritySettings.form.label.phone': 'Phone',
   'userCenter.SecuritySettings.placeholder.phone':
     'You have not set a phone yet. The phone binding can be used to retrieve passwords and receive notifications and SMS login.',

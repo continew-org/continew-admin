@@ -105,9 +105,9 @@
   const loginConfig = useStorage('login-config', {
     rememberMe: true,
     username: 'admin', // 演示默认值
-    password: '123456', // 演示默认值
+    password: 'admin123', // 演示默认值
     // username: !debug ? '' : 'admin', // 演示默认值
-    // password: !debug ? '' : '123456', // 演示默认值
+    // password: !debug ? '' : 'admin123', // 演示默认值
   });
 
   const loginForm = reactive({

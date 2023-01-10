@@ -55,4 +55,16 @@ public interface UserService {
      *            用户信息
      */
     void update(SysUser user);
+
+    /**
+     * 修改密码
+     *
+     * @param oldPassword
+     *            当前密码
+     * @param newPassword
+     *            新密码
+     * @param userId
+     *            用户 ID
+     */
+    void updatePassword(String oldPassword, String newPassword, Long userId);
 }

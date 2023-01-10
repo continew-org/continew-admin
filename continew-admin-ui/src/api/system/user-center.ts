@@ -20,3 +20,11 @@ export interface UpdateBasicInfoReq {
 export function updateBasicInfo(req: UpdateBasicInfoReq) {
   return axios.patch('/system/user/center/basic/info', req);
 }
+
+export interface UpdatePasswordReq {
+  oldPassword: string;
+  newPassword: string;
+}
+export function updatePassword(req: UpdatePasswordReq) {
+  return axios.patch('/system/user/center/password', req);
+}
