@@ -2,23 +2,18 @@
   <a-form
     ref="formRef"
     :model="formData"
+    :rules="rules"
     class="form"
     :label-col-props="{ span: 8 }"
     :wrapper-col-props="{ span: 16 }"
   >
     <a-form-item
       :label="$t('userCenter.basicInfo.form.label.username')"
-      :rules="[
-        {
-          required: true,
-          message: $t('userCenter.form.error.username.required'),
-        },
-      ]"
       disabled
     >
       <a-input
         v-model="formData.username"
-        :placeholder="$t('userCenter.basicInfo.placeholder.username')"
+        :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
         size="large"
         max-length="50"
       />
@@ -26,16 +21,10 @@
     <a-form-item
       field="nickname"
       :label="$t('userCenter.basicInfo.form.label.nickname')"
-      :rules="[
-        {
-          required: true,
-          message: $t('userCenter.form.error.nickname.required'),
-        },
-      ]"
     >
       <a-input
         v-model="formData.nickname"
-        :placeholder="$t('userCenter.basicInfo.placeholder.nickname')"
+        :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
         size="large"
         max-length="32"
       />
@@ -53,10 +42,10 @@
     <a-form-item>
       <a-space>
         <a-button type="primary" :loading="loading" @click="save">
-          {{ $t('userCenter.save') }}
+          {{ $t('userCenter.basicInfo.form.save') }}
         </a-button>
         <a-button type="secondary" @click="reset">
-          {{ $t('userCenter.reset') }}
+          {{ $t('userCenter.basicInfo.form.reset') }}
         </a-button>
       </a-space>
     </a-form-item>
@@ -64,14 +53,16 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, computed } from "vue";
+  import { useI18n } from "vue-i18n";
   import { useLoginStore } from '@/store';
   import { updateBasicInfo } from '@/api/system/user-center';
   import useLoading from '@/hooks/loading';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { BasicInfoModel } from '@/api/system/user-center';
-  import { Message } from "@arco-design/web-vue";
+  import { FieldRule, Message } from "@arco-design/web-vue";
 
+  const { t } = useI18n();
   const { loading, setLoading } = useLoading();
   const loginStore = useLoginStore();
   const formRef = ref<FormInstance>();
@@ -79,6 +70,16 @@
     username: loginStore.username,
     nickname: loginStore.nickname,
     gender: loginStore.gender,
+  });
+  const rules = computed((): Record<string, FieldRule[]> => {
+    return {
+      username: [
+        { required: true, message: t('userCenter.basicInfo.form.error.required.username') }
+      ],
+      nickname: [
+        { required: true, message: t('userCenter.basicInfo.form.error.required.nickname') }
+      ],
+    }
   });
 
   // 保存

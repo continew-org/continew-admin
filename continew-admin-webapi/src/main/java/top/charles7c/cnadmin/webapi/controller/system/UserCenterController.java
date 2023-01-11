@@ -104,7 +104,8 @@ public class UserCenterController {
 
         // 校验
         ValidationUtils.exIfCondition(() -> !ReUtil.isMatch(RegExpConstants.PASSWORD, rawNewPassword),
-            "密码长度6到32位，同时包含数字和字母");
+            "密码长度 6 到 32 位，同时包含数字和字母");
+        ValidationUtils.exIfEqual(rawNewPassword, rawOldPassword, "新密码不能与当前密码相同");
 
         // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());

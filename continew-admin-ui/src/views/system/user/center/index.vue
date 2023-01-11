@@ -9,8 +9,8 @@
     <a-row class="wrapper">
       <a-col :span="24">
         <a-tabs default-active-key="1" type="rounded">
-          <a-tab-pane key="1" :title="$t('userCenter.tab.basicInformation')">
-            <BasicInformation />
+          <a-tab-pane key="1" :title="$t('userCenter.tab.basicInfo')">
+            <BasicInfo />
           </a-tab-pane>
           <a-tab-pane key="2" :title="$t('userCenter.tab.securitySettings')">
             <SecuritySettings />
@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
   import UserPanel from './components/user-panel.vue';
-  import BasicInformation from './components/basic-information.vue';
+  import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';
 </script>
 

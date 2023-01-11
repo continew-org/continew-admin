@@ -14,7 +14,7 @@
             <template #trigger-icon>
               <icon-camera />
             </template>
-            <img v-if="avatarList.length" :src="avatarList[0].url" />
+            <img v-if="avatarList.length" :src="avatarList[0].url"  :alt="$t('userCenter.panel.avatar')"/>
           </a-avatar>
         </template>
       </a-upload>
@@ -33,21 +33,21 @@
           textAlign: 'left',
         }"
       >
-        <a-descriptions-item :label="$t('userCenter.label.nickname')">{{ loginStore.nickname }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.label.gender')">
+        <a-descriptions-item :label="$t('userCenter.panel.label.nickname')">{{ loginStore.nickname }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.gender')">
           <div v-if="loginStore.gender === 1">
-            男
+            {{ $t('userCenter.panel.male') }}
             <icon-man style="color: #19BBF1" />
           </div>
           <div v-else-if="loginStore.gender === 2">
-            女
+            {{ $t('userCenter.panel.female') }}
             <icon-woman style="color: #FA7FA9" />
           </div>
-          <div v-else>未知</div>
+          <div v-else>{{ $t('userCenter.panel.unknown') }}</div>
         </a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.label.phone')">{{ loginStore.phone }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.label.email')">{{ loginStore.email }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.label.registrationDate')">{{ loginStore.registrationDate }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{ loginStore.phone }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{ loginStore.email }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.registrationDate')">{{ loginStore.registrationDate }}</a-descriptions-item>
       </a-descriptions>
     </a-space>
   </a-card>

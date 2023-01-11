@@ -216,7 +216,8 @@ continew-admin
     │  ├─ views             # 页面模板
     │  │  ├─ login            # 登录模块
     │  │  └─ system           # 系统管理模块
-    │  │    └─ user             # 用户模块（用户中心）
+    │  │    └─ user             # 用户模块
+    │  │      └─ center           # 个人中心
     │  ├─ App.vue           # 视图入口
     │  └─ main.ts           # 入口文件
     ├─ .env.development

@@ -5,7 +5,7 @@
         alt="logo"
         src="/logo.svg"
       />
-      <div class="logo-text">ContiNew Admin</div>
+      <div class="logo-text">{{ $t('title') }}</div>
     </div>
     <LoginBanner />
     <div class="content">
@@ -70,7 +70,6 @@
 </style>
 
 <style lang="less" scoped>
-  // responsive
   @media (max-width: @screen-lg) {
     .container {
       .banner {

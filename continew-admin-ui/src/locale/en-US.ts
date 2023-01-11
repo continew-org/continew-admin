@@ -28,6 +28,7 @@ import localeUserCenter from '@/views/system/user/center/locale/en-US';
 import localeSettings from './en-US/settings';
 
 export default {
+  'title': 'ContiNew Admin',
   'menu.dashboard': 'Dashboard',
   'menu.server.dashboard': 'Dashboard-Server',
   'menu.server.workplace': 'Workplace-Server',

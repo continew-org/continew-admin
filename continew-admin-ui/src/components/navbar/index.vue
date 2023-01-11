@@ -10,7 +10,7 @@
           :style="{ margin: 0, fontSize: '18px' }"
           :heading="5"
         >
-          ContiNew Admin
+          {{ $t('title') }}
         </a-typography-title>
         <icon-menu-fold
           v-if="!topMenu && appStore.device === 'mobile'"

@@ -1,41 +1,67 @@
 export default {
   'menu.user.center': 'User Center',
-  'userCenter.label.nickname': 'Nick Name :',
-  'userCenter.label.gender': 'Gender :',
-  'userCenter.label.phone': 'Phone :',
-  'userCenter.label.email': 'Email :',
-  'userCenter.label.registrationDate': 'Registration Date :',
-
-  'userCenter.tab.basicInformation': 'Basic Information',
-  'userCenter.basicInfo.form.label.username': 'Username',
-  'userCenter.basicInfo.placeholder.username': 'Please enter username',
-  'userCenter.form.error.username.required': 'Please enter username',
-  'userCenter.basicInfo.form.label.nickname': 'Nickname',
-  'userCenter.basicInfo.placeholder.nickname': 'Please enter nickname',
-  'userCenter.form.error.nickname.required': 'Please enter nickname',
-  'userCenter.basicInfo.form.label.gender': 'Gender',
-  'userCenter.save': 'Save',
-  'userCenter.reset': 'Reset',
-
+  'userCenter.tab.basicInfo': 'Basic Information',
   'userCenter.tab.securitySettings': 'Security Settings',
-  'userCenter.SecuritySettings.label.password': 'Login Password',
-  'userCenter.SecuritySettings.placeholder.password':
-    'You have not set a password yet. The password must contain at least six letters, digits, and special characters except Spaces.',
-  'userCenter.SecuritySettings.form.password.modal.title': 'Update login password',
-  'userCenter.SecuritySettings.form.password.oldPassword.label': 'Old password',
-  'userCenter.SecuritySettings.form.password.oldPassword.placeholder': 'Please enter old password',
-  'userCenter.SecuritySettings.form.password.newPassword.label': 'New password',
-  'userCenter.SecuritySettings.form.password.error.newPassword.required': 'Please enter new password',
-  'userCenter.SecuritySettings.form.password.newPassword.placeholder': 'Password contains 6 to 32 digits and letters',
-  'userCenter.SecuritySettings.form.password.rePassword.label': 'Confirm password',
-  'userCenter.SecuritySettings.form.password.rePassword.placeholder': 'Please enter new password again',
-  'userCenter.SecuritySettings.form.password.error.rePassword.notequal': 'Two passwords are different',
 
-  'userCenter.SecuritySettings.form.label.phone': 'Phone',
-  'userCenter.SecuritySettings.placeholder.phone':
+  // user-panel
+  'userCenter.panel.avatar': 'Avatar',
+  'userCenter.panel.label.nickname': 'Nick Name :',
+  'userCenter.panel.label.gender': 'Gender :',
+  'userCenter.panel.label.phone': 'Phone :',
+  'userCenter.panel.label.email': 'Email :',
+  'userCenter.panel.label.registrationDate': 'Registration Date :',
+  'userCenter.panel.male': 'male',
+  'userCenter.panel.female': 'female',
+  'userCenter.panel.unknown': 'unknown',
+
+  // basic-info
+  'userCenter.basicInfo.form.label.username': 'Username',
+  'userCenter.basicInfo.form.label.nickname': 'Nickname',
+  'userCenter.basicInfo.form.label.gender': 'Gender',
+
+  'userCenter.basicInfo.form.placeholder.username': 'Please enter username',
+  'userCenter.basicInfo.form.placeholder.nickname': 'Please enter nickname',
+
+  'userCenter.basicInfo.form.error.required.username': 'Please enter username',
+  'userCenter.basicInfo.form.error.required.nickname': 'Please enter nickname',
+
+  'userCenter.basicInfo.form.save': 'Save',
+  'userCenter.basicInfo.form.reset': 'Reset',
+
+  // security-settings
+  // update-pwd
+  'userCenter.securitySettings.updatePwd.label.password': 'Login Password',
+  'userCenter.securitySettings.updatePwd.placeholder.success.password': 'Has been set',
+  'userCenter.securitySettings.updatePwd.placeholder.error.password':
+    'You have not set a password yet. The password must contain at least six letters, digits, and special characters except Spaces.',
+
+  'userCenter.securitySettings.updatePwd.modal.title': 'Update login password',
+  'userCenter.securitySettings.updatePwd.form.label.oldPassword': 'Old password',
+  'userCenter.securitySettings.updatePwd.form.label.newPassword': 'New password',
+  'userCenter.securitySettings.updatePwd.form.label.rePassword': 'Confirm password',
+
+  'userCenter.securitySettings.updatePwd.form.placeholder.oldPassword': 'Please enter old password',
+  'userCenter.securitySettings.updatePwd.form.placeholder.newPassword': 'Password contains 6 to 32 digits and letters',
+  'userCenter.securitySettings.updatePwd.form.placeholder.rePassword': 'Please enter new password again',
+
+  'userCenter.securitySettings.updatePwd.form.error.required.oldPassword': 'Please enter old password',
+  'userCenter.securitySettings.updatePwd.form.error.required.newPassword': 'Please enter new password',
+  'userCenter.securitySettings.updatePwd.form.error.match.newPassword': 'Password contains 6 to 32 digits and letters',
+  'userCenter.securitySettings.updatePwd.form.error.validator.newPassword': 'New password cannot be the same as the old password',
+  'userCenter.securitySettings.updatePwd.form.error.required.rePassword': 'Please enter new password again',
+  'userCenter.securitySettings.updatePwd.form.error.validator.rePassword': 'Two passwords are different',
+
+  // update-phone
+  'userCenter.securitySettings.updatePhone.label.phone': 'Phone',
+  'userCenter.securitySettings.updatePhone.placeholder.success.phone': 'Has been bound',
+  'userCenter.securitySettings.updatePhone.placeholder.error.phone':
     'You have not set a phone yet. The phone binding can be used to retrieve passwords and receive notifications and SMS login.',
-  'userCenter.SecuritySettings.form.label.email': 'Email',
-  'userCenter.SecuritySettings.placeholder.email':
+
+  // update-email
+  'userCenter.securitySettings.updateEmail.label.email': 'Email',
+  'userCenter.securitySettings.updateEmail.placeholder.success.email': 'Has been bound',
+  'userCenter.securitySettings.updateEmail.placeholder.error.email':
     'You have not set a mailbox yet. The mailbox binding can be used to retrieve passwords and receive notifications.',
-  'userCenter.SecuritySettings.button.update': 'Update',
+
+  'userCenter.securitySettings.button.update': 'Update',
 };
