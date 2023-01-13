@@ -162,8 +162,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，认证失败'{}'，无法访问系统资源", request.getRequestURI(), e.getMessage());
-        return R.fail(HttpStatus.UNAUTHORIZED.value(), "认证失败，无法访问系统资源");
+        log.error("请求地址'{}'，认证失败，无法访问系统资源", request.getRequestURI(), e);
+        return R.fail(HttpStatus.UNAUTHORIZED.value(), "登录状态已过期，请重新登录");
     }
 
     /**

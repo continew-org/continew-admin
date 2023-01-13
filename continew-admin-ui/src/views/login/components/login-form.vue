@@ -37,7 +37,7 @@
           :placeholder="$t('login.form.placeholder.password')"
           size="large"
           allow-clear
-          max-length="50"
+          max-length="32"
         >
           <template #prefix>
             <icon-lock />
@@ -82,13 +82,13 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed, onMounted } from "vue";
+  import { ref, reactive, computed, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
-  import { FieldRule, Message } from "@arco-design/web-vue";
+  import { FieldRule, Message } from '@arco-design/web-vue';
   import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
   import { useI18n } from 'vue-i18n';
   // import debug from '@/utils/env';
-  import { encryptByRsa } from "@/utils/encrypt";
+  import { encryptByRsa } from '@/utils/encrypt';
   import { useStorage } from '@vueuse/core';
   import { useLoginStore } from '@/store';
   import useLoading from '@/hooks/loading';

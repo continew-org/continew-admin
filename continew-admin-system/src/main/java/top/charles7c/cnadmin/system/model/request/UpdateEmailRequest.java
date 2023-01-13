@@ -19,39 +19,48 @@ package top.charles7c.cnadmin.system.model.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.enums.GenderEnum;
+import org.hibernate.validator.constraints.Length;
+
+import cn.hutool.core.lang.RegexPool;
 
 /**
- * 修改基础信息
+ * 修改邮箱信息
  *
  * @author Charles7c
- * @since 2023/1/7 23:08
+ * @since 2023/1/12 20:18
  */
 @Data
-@Schema(description = "修改基础信息")
-public class UpdateBasicInfoRequest implements Serializable {
+@Schema(description = "修改邮箱信息")
+public class UpdateEmailRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 昵称
+     * 新邮箱
      */
-    @Schema(description = "昵称")
-    @NotBlank(message = "昵称不能为空")
-    @Size(max = 32, message = "昵称长度不能超过 32 个字符")
-    private String nickname;
+    @Schema(description = "新邮箱")
+    @NotBlank(message = "新邮箱不能为空")
+    @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误")
+    private String newEmail;
 
     /**
-     * 性别（0未知 1男 2女）
+     * 验证码
      */
-    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"})
-    @NotNull(message = "性别非法")
-    private GenderEnum gender;
+    @Schema(description = "验证码")
+    @NotBlank(message = "验证码不能为空")
+    @Length(max = 6, message = "验证码非法")
+    private String captcha;
+
+    /**
+     * 当前密码（加密后）
+     */
+    @Schema(description = "当前密码（加密后）")
+    @NotBlank(message = "当前密码不能为空")
+    private String currentPassword;
 }

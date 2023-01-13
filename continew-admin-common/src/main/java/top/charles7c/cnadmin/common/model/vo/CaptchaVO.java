@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.model.vo;
+package top.charles7c.cnadmin.common.model.vo;
 
 import java.io.Serializable;
 

@@ -32,12 +32,6 @@ limitations under the License.
     <description>系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）</description>
 
     <dependencies>
-        <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->
-        <dependency>
-            <groupId>com.github.whvcse</groupId>
-            <artifactId>easy-captcha</artifactId>
-        </dependency>
-
         <!-- 公共模块（存放公共工具类，公共配置等） -->
         <dependency>
             <groupId>top.charles7c</groupId>

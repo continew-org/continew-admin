@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.config.properties;
+package top.charles7c.cnadmin.common.config.properties;
 
 import java.awt.*;
 
@@ -43,65 +43,102 @@ import cn.hutool.core.util.StrUtil;
 public class CaptchaProperties {
 
     /**
-     * 类型
+     * 图片验证码配置
      */
-    private CaptchaTypeEnum type;
+    private CaptchaImage image;
 
     /**
-     * 缓存键的前缀
+     * 邮箱验证码配置
      */
-    private String keyPrefix;
+    private CaptchaMail mail;
 
     /**
-     * 过期时间
+     * 图片验证码配置
      */
-    private Long expirationInMinutes = 2L;
+    @Data
+    public static class CaptchaImage {
+        /**
+         * 类型
+         */
+        private CaptchaImageTypeEnum type;
 
-    /**
-     * 内容长度
-     */
-    private int length = 4;
+        /**
+         * 内容长度
+         */
+        private int length;
 
-    /**
-     * 宽度
-     */
-    private int width = 111;
+        /**
+         * 过期时间
+         */
+        private long expirationInMinutes;
 
-    /**
-     * 高度
-     */
-    private int height = 36;
+        /**
+         * 宽度
+         */
+        private int width = 111;
 
-    /**
-     * 字体
-     */
-    private String fontName;
+        /**
+         * 高度
+         */
+        private int height = 36;
 
-    /**
-     * 字体大小
-     */
-    private int fontSize = 25;
+        /**
+         * 字体
+         */
+        private String fontName;
 
-    /**
-     * 获取验证码对象
-     *
-     * @return 验证码对象
-     */
-    public Captcha getCaptcha() {
-        Captcha captcha = ReflectUtil.newInstance(type.getClazz(), this.width, this.height);
-        captcha.setLen(length);
-        if (StrUtil.isNotBlank(this.fontName)) {
-            captcha.setFont(new Font(this.fontName, Font.PLAIN, this.fontSize));
+        /**
+         * 字体大小
+         */
+        private int fontSize = 25;
+
+        /**
+         * 获取图片验证码对象
+         *
+         * @return 验证码对象
+         */
+        public Captcha getCaptcha() {
+            Captcha captcha = ReflectUtil.newInstance(type.getClazz(), this.width, this.height);
+            captcha.setLen(length);
+            if (StrUtil.isNotBlank(this.fontName)) {
+                captcha.setFont(new Font(this.fontName, Font.PLAIN, this.fontSize));
+            }
+            return captcha;
         }
-        return captcha;
     }
 
     /**
-     * 验证码类型枚举
+     * 邮箱验证码配置
+     */
+    @Data
+    public static class CaptchaMail {
+        /**
+         * 内容长度
+         */
+        private int length;
+
+        /**
+         * 过期时间
+         */
+        private long expirationInMinutes;
+
+        /**
+         * 限制时间
+         */
+        private long limitInSeconds;
+
+        /**
+         * 模板路径
+         */
+        private String templatePath;
+    }
+
+    /**
+     * 图片验证码类型枚举
      */
     @Getter
     @RequiredArgsConstructor
-    public enum CaptchaTypeEnum {
+    private enum CaptchaImageTypeEnum {
 
         /**
          * 算术

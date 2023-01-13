@@ -22,12 +22,14 @@
     </template>
   </a-list-item-meta>
 
-  <a-modal v-model:visible="visible" :title="$t('userCenter.securitySettings.updatePwd.modal.title')" @cancel="handleCancel" @before-ok="handleUpdate">
-    <a-form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-    >
+  <a-modal
+    v-model:visible="visible"
+    :title="$t('userCenter.securitySettings.updatePwd.modal.title')"
+    :mask-closable="false"
+    @cancel="handleCancel"
+    @before-ok="handleUpdate"
+  >
+    <a-form ref="formRef" :model="formData" :rules="rules">
       <a-form-item
         field="oldPassword"
         :validate-trigger="['change', 'blur']"
@@ -38,7 +40,7 @@
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.oldPassword')"
           size="large"
           allow-clear
-          max-length="50"
+          max-length="32"
         >
         </a-input-password>
       </a-form-item>
@@ -52,7 +54,7 @@
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.newPassword')"
           size="large"
           allow-clear
-          max-length="50"
+          max-length="32"
         >
         </a-input-password>
       </a-form-item>
@@ -66,7 +68,7 @@
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.rePassword')"
           size="large"
           allow-clear
-          max-length="50"
+          max-length="32"
         >
         </a-input-password>
       </a-form-item>
@@ -75,14 +77,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed } from "vue";
-  import { useI18n } from "vue-i18n";
+  import { ref, reactive, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { useLoginStore } from '@/store';
-  import { FormInstance } from "@arco-design/web-vue/es/form";
-  import useLoading from "@/hooks/loading";
-  import { FieldRule, Message } from "@arco-design/web-vue";
-  import { updatePassword } from "@/api/system/user-center";
-  import { encryptByRsa } from "@/utils/encrypt";
+  import { FormInstance } from '@arco-design/web-vue/es/form';
+  import useLoading from '@/hooks/loading';
+  import { FieldRule, Message } from '@arco-design/web-vue';
+  import { updatePassword } from '@/api/system/user-center';
+  import { encryptByRsa } from '@/utils/encrypt';
 
   const { t } = useI18n();
   const { loading, setLoading } = useLoading();
@@ -129,8 +131,8 @@
 
   // 确定修改
   const handleUpdate = async () => {
-    const errors = await formRef.value?.validate();
     if (loading.value) return false;
+    const errors = await formRef.value?.validate();
     if (errors) return false;
     setLoading(true);
     try {

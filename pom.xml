@@ -25,7 +25,7 @@ limitations under the License.
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。</description>
+    <description>ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建。</description>
     <url>https://github.com/Charles7c/continew-admin</url>
 
     <modules>

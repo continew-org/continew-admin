@@ -34,15 +34,18 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
+import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.consts.FileConstants;
 import top.charles7c.cnadmin.common.consts.RegExpConstants;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
+import top.charles7c.cnadmin.system.model.request.UpdateEmailRequest;
 import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -109,6 +112,26 @@ public class UserCenterController {
 
         // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
+        return R.ok("修改成功");
+    }
+
+    @Operation(summary = "修改邮箱", description = "修改用户邮箱")
+    @PatchMapping("/email")
+    public R updateEmail(@Validated @RequestBody UpdateEmailRequest updateEmailRequest) {
+        // 解密
+        String rawCurrentPassword =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateEmailRequest.getCurrentPassword()));
+        ValidationUtils.exIfBlank(rawCurrentPassword, "当前密码解密失败");
+
+        // 校验
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, updateEmailRequest.getNewEmail());
+        String captcha = RedisUtils.getCacheObject(captchaKey);
+        ValidationUtils.exIfBlank(captcha, "验证码已失效");
+        ValidationUtils.exIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
+        RedisUtils.deleteCacheObject(captchaKey);
+
+        // 修改邮箱
+        userService.updateEmail(updateEmailRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 }

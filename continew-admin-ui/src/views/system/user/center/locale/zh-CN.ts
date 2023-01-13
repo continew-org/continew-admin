@@ -63,5 +63,23 @@ export default {
   'userCenter.securitySettings.updateEmail.placeholder.error.email':
     '您暂未设置邮箱，绑定邮箱可以用来找回密码、接收通知等。',
 
+  'userCenter.securitySettings.updateEmail.modal.title': '修改邮箱',
+  'userCenter.securitySettings.updateEmail.form.label.newEmail': '新邮箱',
+  'userCenter.securitySettings.updateEmail.form.label.captcha': '验证码',
+  'userCenter.securitySettings.updateEmail.form.label.currentPassword': '当前密码',
+  'userCenter.securitySettings.updateEmail.form.sendCaptcha': '发送验证码',
+  'userCenter.securitySettings.updateEmail.form.reSendCaptcha': '重新发送',
+  'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha': '发送中...',
+
+  'userCenter.securitySettings.updateEmail.form.placeholder.newEmail': '请输入新邮箱',
+  'userCenter.securitySettings.updateEmail.form.placeholder.captcha': '请输入邮箱验证码',
+  'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword': '请输入当前密码',
+
+  'userCenter.securitySettings.updateEmail.form.error.required.newEmail': '请输入新邮箱',
+  'userCenter.securitySettings.updateEmail.form.error.match.newEmail': '请输入正确的邮箱',
+  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail': '新邮箱不能与当前邮箱相同',
+  'userCenter.securitySettings.updateEmail.form.error.required.captcha': '请输入邮箱验证码',
+  'userCenter.securitySettings.updateEmail.form.error.required.currentPassword': '请输入当前密码',
+
   'userCenter.securitySettings.button.update': '修改',
 };

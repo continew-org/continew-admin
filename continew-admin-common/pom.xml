@@ -59,6 +59,17 @@ limitations under the License.
             </exclusions>
         </dependency>
 
+        <!-- Java 邮件支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!-- FreeMarker（模板引擎） -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+
         <!-- Hibernate Validator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -125,6 +136,12 @@ limitations under the License.
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
         </dependency>
     </dependencies>
 </project>

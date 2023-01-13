@@ -38,18 +38,6 @@ public class ValidationUtils extends Validator {
     /**
      * 如果为空，抛出异常
      *
-     * @param obj
-     *            被检测的对象
-     * @param message
-     *            错误信息
-     */
-    public static void exIfNull(Object obj, String message) {
-        exIfNull(obj, message, EXCEPTION_TYPE);
-    }
-
-    /**
-     * 如果为空，抛出异常
-     *
      * @param str
      *            被检测的字符串
      * @param message
@@ -57,6 +45,18 @@ public class ValidationUtils extends Validator {
      */
     public static void exIfBlank(CharSequence str, String message) {
         exIfBlank(str, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param str
+     *            被检测的字符串
+     * @param message
+     *            错误信息
+     */
+    public static void exIfNotBlank(CharSequence str, String message) {
+        exIfNotBlank(str, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -85,6 +85,58 @@ public class ValidationUtils extends Validator {
      */
     public static void exIfNotEqual(Object obj1, Object obj2, String message) {
         exIfNotEqual(obj1, obj2, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果相同，抛出异常（不区分大小写）
+     *
+     * @param str1
+     *            要比较的字符串1
+     * @param str2
+     *            要比较的字符串2
+     * @param message
+     *            错误信息
+     */
+    public static void exIfEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
+        exIfEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不相同，抛出异常（不区分大小写）
+     *
+     * @param str1
+     *            要比较的字符串1
+     * @param str2
+     *            要比较的字符串2
+     * @param message
+     *            错误信息
+     */
+    public static void exIfNotEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
+        exIfNotEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void exIfNull(Object obj, String message) {
+        exIfNull(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void exIfNotNull(Object obj, String message) {
+        exIfNotNull(obj, message, EXCEPTION_TYPE);
     }
 
     /**

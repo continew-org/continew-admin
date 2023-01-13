@@ -2,14 +2,6 @@ import axios from 'axios';
 import type { RouteRecordNormalized } from 'vue-router';
 import { UserState } from '@/store/modules/login/types';
 
-export interface ImageCaptchaRes {
-  uuid: string;
-  img: string;
-}
-export function getImageCaptcha() {
-  return axios.get<ImageCaptchaRes>('/captcha/img');
-}
-
 export interface LoginReq {
   username: string;
   password: string;

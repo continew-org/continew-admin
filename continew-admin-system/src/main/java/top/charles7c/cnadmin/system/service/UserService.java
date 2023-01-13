@@ -67,4 +67,16 @@ public interface UserService {
      *            用户 ID
      */
     void updatePassword(String oldPassword, String newPassword, Long userId);
+
+    /**
+     * 修改邮箱
+     *
+     * @param newEmail
+     *            新邮箱
+     * @param currentPassword
+     *            当前密码
+     * @param userId
+     *            用户ID
+     */
+    void updateEmail(String newEmail, String currentPassword, Long userId);
 }

@@ -61,8 +61,8 @@
   } from '@arco-design/web-vue/es/upload/interfaces';
   import { useLoginStore } from '@/store';
   import { uploadAvatar } from '@/api/system/user-center';
-  import getAvatar from "@/utils/avatar";
-  import { Message } from "@arco-design/web-vue";
+  import getAvatar from '@/utils/avatar';
+  import { Message } from '@arco-design/web-vue';
 
   const loginStore = useLoginStore();
   const avatar = {

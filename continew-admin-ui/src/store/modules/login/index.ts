@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import {
-  getImageCaptcha as getCaptcha,
   login as userLogin,
   logout as userLogout,
   getUserInfo,
   LoginReq,
 } from '@/api/auth/login';
+import { getImageCaptcha as getCaptcha } from '@/api/common/captcha';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';

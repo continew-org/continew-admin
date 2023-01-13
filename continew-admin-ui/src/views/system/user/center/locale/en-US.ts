@@ -63,5 +63,23 @@ export default {
   'userCenter.securitySettings.updateEmail.placeholder.error.email':
     'You have not set a mailbox yet. The mailbox binding can be used to retrieve passwords and receive notifications.',
 
+  'userCenter.securitySettings.updateEmail.modal.title': 'Update email',
+  'userCenter.securitySettings.updateEmail.form.label.newEmail': 'New email',
+  'userCenter.securitySettings.updateEmail.form.label.captcha': 'Captcha',
+  'userCenter.securitySettings.updateEmail.form.label.currentPassword': 'Current password',
+  'userCenter.securitySettings.updateEmail.form.sendCaptcha': 'Send captcha',
+  'userCenter.securitySettings.updateEmail.form.reSendCaptcha': 'Resend captcha',
+  'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha': 'Sending...',
+
+  'userCenter.securitySettings.updateEmail.form.placeholder.newEmail': 'Please enter new email',
+  'userCenter.securitySettings.updateEmail.form.placeholder.captcha': 'Please enter email captcha',
+  'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword': 'Please enter current password',
+
+  'userCenter.securitySettings.updateEmail.form.error.required.newEmail': 'Please enter new email',
+  'userCenter.securitySettings.updateEmail.form.error.match.newEmail': 'Please enter the correct email',
+  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail': 'New email cannot be the same as the old email',
+  'userCenter.securitySettings.updateEmail.form.error.required.captcha': 'Please enter email captcha',
+  'userCenter.securitySettings.updateEmail.form.error.required.currentPassword': 'Please enter current password',
+
   'userCenter.securitySettings.button.update': 'Update',
 };

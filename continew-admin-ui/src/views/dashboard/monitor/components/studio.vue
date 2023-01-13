@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
   import { useLoginStore } from '@/store';
-  import getAvatar from "@/utils/avatar";
+  import getAvatar from '@/utils/avatar';
 
   const userInfo = useLoginStore();
 </script>

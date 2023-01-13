@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -65,20 +66,21 @@ import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 public class LogInterceptor implements HandlerInterceptor {
 
     private final LogProperties operationLogProperties;
+    private static final String ENCRYPT_SYMBOL = "****************";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (!checkIsNeedRecord(handler, request)) {
-            return true;
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+        @NonNull Object handler) {
+        if (checkIsNeedRecord(handler, request)) {
+            // 记录操作时间
+            this.logCreateTime();
         }
-
-        // 记录操作时间
-        this.logCreateTime();
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+        @NonNull Object handler, Exception e) {
         // 记录请求耗时及异常信息
         SysLog sysLog = this.logElapsedTimeAndException();
         if (sysLog == null) {
@@ -203,6 +205,7 @@ public class LogInterceptor implements HandlerInterceptor {
      *            待脱敏数据
      * @return 脱敏后的 JSON 字符串数据
      */
+    @SuppressWarnings("unchecked")
     private String desensitize(Map waitDesensitizeData) {
         String desensitizeDataStr = JSONUtil.toJsonStr(waitDesensitizeData);
         try {
@@ -211,9 +214,9 @@ public class LogInterceptor implements HandlerInterceptor {
             }
 
             for (String desensitizeProperty : operationLogProperties.getDesensitize()) {
-                waitDesensitizeData.computeIfPresent(desensitizeProperty, (k, v) -> "****************");
-                waitDesensitizeData.computeIfPresent(desensitizeProperty.toLowerCase(), (k, v) -> "****************");
-                waitDesensitizeData.computeIfPresent(desensitizeProperty.toUpperCase(), (k, v) -> "****************");
+                waitDesensitizeData.computeIfPresent(desensitizeProperty, (k, v) -> ENCRYPT_SYMBOL);
+                waitDesensitizeData.computeIfPresent(desensitizeProperty.toLowerCase(), (k, v) -> ENCRYPT_SYMBOL);
+                waitDesensitizeData.computeIfPresent(desensitizeProperty.toUpperCase(), (k, v) -> ENCRYPT_SYMBOL);
             }
             return JSONUtil.toJsonStr(waitDesensitizeData);
         } catch (Exception ignored) {

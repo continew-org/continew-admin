@@ -33,4 +33,14 @@ public class CacheConstants {
      */
     public static final String LOGIN_USER_CACHE_KEY = "LOGIN_USER";
 
+    /**
+     * 验证码缓存键
+     */
+    public static final String CAPTCHA_CACHE_KEY = "CAPTCHA";
+
+    /**
+     * 限流缓存键
+     */
+    public static final String LIMIT_CACHE_KEY = "LIMIT";
+
 }

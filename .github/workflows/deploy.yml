@@ -49,6 +49,7 @@ jobs:
           script: |
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
+            docker images  | grep none | awk '{print $3}' | xargs docker rmi
 
   # 部署前端
   deploy-web:

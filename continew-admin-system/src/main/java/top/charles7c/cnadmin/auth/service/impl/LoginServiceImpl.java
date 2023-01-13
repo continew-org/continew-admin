@@ -52,7 +52,7 @@ public class LoginServiceImpl implements LoginService {
         // 校验
         ValidationUtils.exIfNull(sysUser, "用户名或密码错误");
         Long userId = sysUser.getUserId();
-        ValidationUtils.exIfNotEqual(sysUser.getPassword(), SecureUtils.md5Salt(password, userId.toString()),
+        ValidationUtils.exIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), sysUser.getPassword(),
             "用户名或密码错误");
         ValidationUtils.exIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 

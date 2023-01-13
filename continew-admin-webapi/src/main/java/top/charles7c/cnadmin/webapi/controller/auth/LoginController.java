@@ -31,11 +31,12 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
-import top.charles7c.cnadmin.auth.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
+import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
+import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -64,11 +65,11 @@ public class LoginController {
     @PostMapping("/login")
     public R<LoginVO> login(@Validated @RequestBody LoginRequest loginRequest) {
         // 校验验证码
-        String captchaKey = RedisUtils.formatKey(captchaProperties.getKeyPrefix(), loginRequest.getUuid());
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.exIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);
-        ValidationUtils.exIfCondition(() -> !captcha.equalsIgnoreCase(loginRequest.getCaptcha()), "验证码错误");
+        ValidationUtils.exIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
 
         // 用户登录
         String rawPassword =
@@ -84,7 +85,6 @@ public class LoginController {
         in = ParameterIn.HEADER)
     @PostMapping("/logout")
     public R logout() {
-        ValidationUtils.exIfCondition(() -> !StpUtil.isLogin(), "Token 无效");
         StpUtil.logout();
         return R.ok();
     }

@@ -1,4 +1,4 @@
-# ContiNew-Admin 中后台管理框架
+# ContiNew Admin 中后台管理框架
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
 ![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v0.0.1-%23ff3f59.svg)
@@ -7,7 +7,7 @@
 
 ## 简介
 
-ContiNew-Admin (incubating) 中后台管理框架，Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Pro Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
+ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Pro Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
 
 ## 开始
 
@@ -21,11 +21,11 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 # 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
 
-# 3.修改配置文件中的 Redis 配置信息
+# 3.修改配置文件中的数据源配置信息、Redis 配置信息、邮件配置信息等
 # [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
 
 # 4.启动程序
-# 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew-Admin backend service started successfully.
+# 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew Admin backend service started successfully.
 # 4.2 接口文档：http://localhost:8000/doc.html
 
 # 5.部署
@@ -72,7 +72,7 @@ yarn dev
 | :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
 | [Vue](https://cn.vuejs.org/)                                 | 3.2.45       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | [TypeScript](https://www.typescriptlang.org/zh/)             | 4.9.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.5.15       | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
+| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.6.0        | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
 | [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.7        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.33.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -110,10 +110,14 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        ├─ webapi
   │      │        │  └─ controller  
   │      │        │    ├─ auth    # 认证相关 API
+  │      │        │    ├─ common  # 公共相关 API（例如：验证码 API 等）
   │      │        │    └─ system  # 系统管理相关 API
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
-  │        └─ db.changelog.v0.0.1    # 数据库脚本文件
+  │        ├─ db.changelog   # 数据库脚本文件
+  │        │  └─ v0.0.1        # v0.0.1 版本数据库脚本文件
+  │        └─ templates      # 模板文件
+  │          └─ mail           # 邮件模板
   ├─ continew-admin-monitor  # 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）
   │  └─ src
   │    └─ main
@@ -144,8 +148,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │      └─ cnadmin
   │      │        ├─ auth     # 系统认证相关业务及配置
   │      │        │  ├─ config    # 系统认证相关配置
-  │      │        │  │  ├─ satoken    # Sa-Token 配置
-  │      │        │  │  └─ properties # 系统认证相关配置属性
+  │      │        │  │  └─ satoken    # Sa-Token 配置
   │      │        │  ├─ model     # 系统认证相关模型
   │      │        │  │  ├─ request    # 系统认证相关请求对象
   │      │        │  │  └─ vo         # 系统认证相关 VO（View Object）
@@ -197,6 +200,7 @@ continew-admin
     ├─ src
     │  ├─ api               # 请求接口
     │  │  ├─ auth             # 认证模块
+    │  │  ├─ common           # 公共模块
     │  │  └─ system           # 系统管理模块
     │  ├─ assets            # 静态资源
     │  │  ├─ images           # 图片资源

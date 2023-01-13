@@ -28,3 +28,12 @@ export interface UpdatePasswordReq {
 export function updatePassword(req: UpdatePasswordReq) {
   return axios.patch('/system/user/center/password', req);
 }
+
+export interface UpdateEmailReq {
+  newEmail: string;
+  captcha: string;
+  currentPassword: string;
+}
+export function updateEmail(req: UpdateEmailReq) {
+  return axios.patch('/system/user/center/email', req);
+}

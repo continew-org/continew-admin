@@ -69,6 +69,48 @@ spring:
     # 是否开启 SSL
     ssl: false
 
+--- ### 邮件配置
+spring:
+  mail:
+    # 根据需要更换
+    host: smtp.126.com
+    port: 465
+    username: 你的邮箱
+    password: 你的邮箱授权码
+    default-encoding: utf-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+
+--- ### 验证码配置
+captcha:
+  ## 图片验证码配置
+  image:
+    # 类型
+    type: SPEC
+    # 内容长度
+    length: 4
+    # 过期时间
+    expirationInMinutes: 2
+    # 宽度
+    width: 111
+    # 高度
+    height: 36
+  ## 邮箱验证码配置
+  mail:
+    # 内容长度
+    length: 6
+    # 过期时间
+    expirationInMinutes: 5
+    # 限制时间
+    limitInSeconds: 60
+    # 模板路径
+    templatePath: mail/captcha.ftl
+
 --- ### 安全配置
 security:
   # 排除路径配置
@@ -94,21 +136,6 @@ security:
 rsa:
   # 私钥
   privateKey: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV
-
---- ### 验证码配置
-captcha:
-  # 类型
-  type: SPEC
-  # 缓存键的前缀
-  keyPrefix: CAPTCHA
-  # 过期时间
-  expirationInMinutes: 2
-  # 内容长度
-  length: 4
-  # 宽度
-  width: 111
-  # 高度
-  height: 36
 
 --- ### 接口文档配置
 springdoc:

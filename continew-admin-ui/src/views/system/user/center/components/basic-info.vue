@@ -53,14 +53,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from "vue";
-  import { useI18n } from "vue-i18n";
+  import { ref, computed } from 'vue';
+  import { useI18n } from 'vue-i18n';
   import { useLoginStore } from '@/store';
   import { updateBasicInfo } from '@/api/system/user-center';
   import useLoading from '@/hooks/loading';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import { BasicInfoModel } from '@/api/system/user-center';
-  import { FieldRule, Message } from "@arco-design/web-vue";
+  import { FieldRule, Message } from '@arco-design/web-vue';
 
   const { t } = useI18n();
   const { loading, setLoading } = useLoading();
@@ -84,8 +84,8 @@
 
   // 保存
   const save = async () => {
-    const errors = await formRef.value?.validate();
     if (loading.value) return;
+    const errors = await formRef.value?.validate();
     if (!errors) {
       setLoading(true);
       try {

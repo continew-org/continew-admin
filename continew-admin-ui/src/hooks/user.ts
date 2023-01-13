@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router';
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 import { Message } from '@arco-design/web-vue';
 
 import { useLoginStore } from '@/store';
