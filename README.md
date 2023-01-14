@@ -90,6 +90,31 @@ yarn dev
 | [Hutool](https://www.hutool.cn/)                             | 5.8.11       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
 | [Lombok](https://projectlombok.org/)                         | 1.18.24      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
+## 部分功能截图
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+    <tbody>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMl7cV.png" alt="登录页面" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMlHXT.png" alt="仪表盘" width="1920" /></td>
+        </tr>
+        <tr>
+            <td>
+            <p><img src="https://s1.ax1x.com/2023/01/14/pSMl4ts.png" alt="个人中心" width="1920" /></p>
+            </td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMlopq.png" alt="安全设置" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMlT10.png" alt="安全设置-修改密码" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMl5hn.png" alt="安全设置-修改邮箱" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSM33M6.png" alt="修改邮箱-发送验证码" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSM3lxx.png" alt="修改邮箱-邮箱验证码" width="1920" /></td>
+        </tr>
+    </tbody>
+</table>
+
 ## 项目结构
 
 ### 后端

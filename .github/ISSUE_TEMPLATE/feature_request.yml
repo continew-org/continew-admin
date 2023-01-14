@@ -1,0 +1,42 @@
+name: "\U0001F680 新 Feature 建议"
+description: Suggest an idea for this project
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您使用 ContiNew Admin！请您花些时间填写这份 Feature 调查。
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature 描述
+      description: 清楚而简洁地描述您的 Feature。另外，非常欢迎您对此 Feature 提交 PR。
+      placeholder: 例如：我希望增加 xxx 功能；现有的 xxx 功能不好用...
+    validations:
+      required: true
+  - type: textarea
+    id: suggested-solution
+    attributes:
+      label: 描述一下您想要的解决方案
+      description: 清楚而简洁地描述您想要的解决方案。
+    validations:
+      required: true
+  - type: textarea
+    id: alternative
+    attributes:
+      label: 描述一下您考虑过的替代方案
+      description: 清楚而简洁地描述您考虑过的任何替代解决方案或功能。
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 额外补充
+      description: 添加您在其他框架或场景遇见的效果截图或链接，以及一切能帮助理解 Feature 的信息。
+  - type: checkboxes
+    id: checkboxes
+    attributes:
+      label: 确认
+      description: 在提交 issue 之前，请确保执行过以下操作。
+      options:
+        - label: 阅读[文档](https://github.com/Charles7c/continew-admin#readme)
+          required: true
+        - label: 搜索是否有其他人提交过类似的 issue，如果对应 issue 尚未解决，您可以先订阅关注该 issue（为了方便后来者查找问题解决方法，请尽量避免创建重复的 issue）
+          required: true
