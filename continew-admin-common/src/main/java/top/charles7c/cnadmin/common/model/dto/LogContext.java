@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.annotation;
+package top.charles7c.cnadmin.common.model.dto;
 
-import java.lang.annotation.*;
+import java.time.LocalDateTime;
+
+import lombok.Data;
 
 /**
- * 系统日志注解（用于接口方法或类上）
+ * 系统日志上下文
  *
  * @author Charles7c
- * @since 2022/12/23 20:00
+ * @since 2022/12/25 8:59
  */
-@Documented
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Log {
+@Data
+public class LogContext {
 
     /**
-     * 日志描述
+     * 操作人
      */
-    String value() default "";
+    private Long createUser;
 
     /**
-     * 是否忽略日志记录
+     * 操作时间
      */
-    boolean ignore() default false;
+    private LocalDateTime createTime;
+
+    /**
+     * 异常
+     */
+    private Exception exception;
 }

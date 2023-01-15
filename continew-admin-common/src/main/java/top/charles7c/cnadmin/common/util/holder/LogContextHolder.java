@@ -19,10 +19,10 @@ package top.charles7c.cnadmin.common.util.holder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import top.charles7c.cnadmin.common.model.dto.OperationLog;
+import top.charles7c.cnadmin.common.model.dto.LogContext;
 
 /**
- * 操作日志上下文持有者
+ * 系统日志上下文持有者
  *
  * @author Charles7c
  * @since 2022/12/25 8:55
@@ -30,29 +30,29 @@ import top.charles7c.cnadmin.common.model.dto.OperationLog;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LogContextHolder {
 
-    private static final ThreadLocal<OperationLog> LOG_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<LogContext> LOG_THREAD_LOCAL = new ThreadLocal<>();
 
     /**
-     * 存储操作日志
+     * 存储系统日志上下文
      *
-     * @param operationLog
-     *            操作日志信息
+     * @param logContext
+     *            系统日志上下文信息
      */
-    public static void set(OperationLog operationLog) {
-        LOG_THREAD_LOCAL.set(operationLog);
+    public static void set(LogContext logContext) {
+        LOG_THREAD_LOCAL.set(logContext);
     }
 
     /**
-     * 获取操作日志
+     * 获取系统日志上下文
      *
-     * @return 操作日志信息
+     * @return 系统日志上下文信息
      */
-    public static OperationLog get() {
+    public static LogContext get() {
         return LOG_THREAD_LOCAL.get();
     }
 
     /**
-     * 移除操作日志
+     * 移除系统日志上下文
      */
     public static void remove() {
         LOG_THREAD_LOCAL.remove();

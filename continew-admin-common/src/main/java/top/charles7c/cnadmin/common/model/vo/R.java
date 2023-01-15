@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -36,9 +35,7 @@ import org.springframework.http.HttpStatus;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Schema(description = "响应信息")
-public class R<V extends Serializable> implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class R<V> {
 
     /** 是否成功 */
     @Schema(description = "是否成功")
@@ -72,39 +69,39 @@ public class R<V extends Serializable> implements Serializable {
         this.data = data;
     }
 
-    public static <V extends Serializable> R<V> ok() {
+    public static <V> R<V> ok() {
         return new R<>(true, SUCCESS_CODE, "操作成功", null);
     }
 
-    public static <V extends Serializable> R<V> ok(V data) {
+    public static <V> R<V> ok(V data) {
         return new R<>(true, SUCCESS_CODE, "操作成功", data);
     }
 
-    public static <V extends Serializable> R<V> ok(String msg) {
+    public static <V> R<V> ok(String msg) {
         return new R<>(true, SUCCESS_CODE, msg, null);
     }
 
-    public static <V extends Serializable> R<V> ok(String msg, V data) {
+    public static <V> R<V> ok(String msg, V data) {
         return new R<>(true, SUCCESS_CODE, msg, data);
     }
 
-    public static <V extends Serializable> R<V> fail() {
+    public static <V> R<V> fail() {
         return new R<>(false, FAIL_CODE, "操作失败", null);
     }
 
-    public static <V extends Serializable> R<V> fail(String msg) {
+    public static <V> R<V> fail(String msg) {
         return new R<>(false, FAIL_CODE, msg, null);
     }
 
-    public static <V extends Serializable> R<V> fail(V data) {
+    public static <V> R<V> fail(V data) {
         return new R<>(false, FAIL_CODE, "操作失败", data);
     }
 
-    public static <V extends Serializable> R<V> fail(String msg, V data) {
+    public static <V> R<V> fail(String msg, V data) {
         return new R<>(false, FAIL_CODE, msg, data);
     }
 
-    public static <V extends Serializable> R<V> fail(int code, String msg) {
+    public static <V> R<V> fail(int code, String msg) {
         return new R<>(false, code, msg, null);
     }
 }

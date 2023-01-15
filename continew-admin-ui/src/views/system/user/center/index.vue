@@ -15,6 +15,9 @@
           <a-tab-pane key="2" :title="$t('userCenter.tab.securitySettings')">
             <SecuritySettings />
           </a-tab-pane>
+          <a-tab-pane key="3" :title="$t('userCenter.tab.operationLog')">
+            <OperationLog />
+          </a-tab-pane>
         </a-tabs>
       </a-col>
     </a-row>
@@ -25,6 +28,7 @@
   import UserPanel from './components/user-panel.vue';
   import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';
+  import OperationLog from './components/operation-log.vue';
 </script>
 
 <script lang="ts">

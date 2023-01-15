@@ -32,10 +32,10 @@ limitations under the License.
     <description>系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）</description>
 
     <dependencies>
-        <!-- 公共模块（存放公共工具类，公共配置等） -->
+        <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
         <dependency>
             <groupId>top.charles7c</groupId>
-            <artifactId>continew-admin-common</artifactId>
+            <artifactId>continew-admin-system</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -28,7 +28,7 @@ import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 import top.charles7c.cnadmin.monitor.service.LogService;
 
 /**
- * 操作日志业务实现类
+ * 系统日志业务实现类
  *
  * @author Charles7c
  * @since 2022/12/23 20:12

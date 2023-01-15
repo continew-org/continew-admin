@@ -134,9 +134,10 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │      └─ cnadmin
   │      │        ├─ webapi
   │      │        │  └─ controller  
-  │      │        │    ├─ auth    # 认证相关 API
-  │      │        │    ├─ common  # 公共相关 API（例如：验证码 API 等）
-  │      │        │    └─ system  # 系统管理相关 API
+  │      │        │    ├─ auth     # 认证相关 API
+  │      │        │    ├─ common   # 公共相关 API（例如：验证码 API 等）
+  │      │        │    ├─ monitor  # 系统监控相关 API
+  │      │        │    └─ system   # 系统管理相关 API
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        ├─ db.changelog   # 数据库脚本文件
@@ -159,7 +160,9 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          ├─ interceptor   # 系统监控相关拦截器
   │      │          ├─ mapper        # 系统监控相关 Mapper
   │      │          ├─ model         # 系统监控相关模型
-  │      │          │  └─ entity       # 系统监控相关实体对象
+  │      │          │  ├─ entity       # 系统监控相关实体对象
+  │      │          │  ├─ query        # 系统监控相关查询条件
+  │      │          │  └─ vo           # 系统监控相关 VO（View Object）
   │      │          └─ service       # 系统监控相关业务接口及实现类
   │      │             └─ impl         # 系统监控相关业务实现类
   │      └─ resources   # 工程配置目录
@@ -197,6 +200,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │          └─ charles7c
   │            └─ cnadmin
   │              └─ common
+  │                ├─ annotation   # 公共注解
   │                ├─ config       # 公共配置
   │                │  ├─ jackson      # Jackson 配置
   │                │  ├─ mybatis      # MyBatis Plus 配置
@@ -209,6 +213,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                ├─ model        # 公共模型
   │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
   │                │  ├─ entity       # 公共实体对象
+  │                │  ├─ query        # 公共查询条件
   │                │  └─ vo           # 公共 VO（View Object）
   │                └─ util         # 公共工具类
   │                  ├─ helper        # 公共 Helper（助手）
@@ -226,6 +231,7 @@ continew-admin
     │  ├─ api               # 请求接口
     │  │  ├─ auth             # 认证模块
     │  │  ├─ common           # 公共模块
+    │  │  ├─ monitor          # 系统监控模块
     │  │  └─ system           # 系统管理模块
     │  ├─ assets            # 静态资源
     │  │  ├─ images           # 图片资源

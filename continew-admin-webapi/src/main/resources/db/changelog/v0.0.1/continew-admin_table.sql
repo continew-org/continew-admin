@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS `sys_user`  (
 
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `log_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '日志ID',
-    `log_level` varchar(255) DEFAULT NULL COMMENT '日志级别',
     `description` varchar(255) DEFAULT NULL COMMENT '日志描述',
     `request_url` varchar(512) NOT NULL DEFAULT '' COMMENT '请求URL',
     `request_method` varchar(10) DEFAULT NULL COMMENT '请求方式',
@@ -34,14 +33,15 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `request_body` text DEFAULT NULL COMMENT '请求体',
     `status_code` int(11) unsigned DEFAULT NULL COMMENT '状态码',
     `response_header` text DEFAULT NULL COMMENT '响应头',
-    `response_body` text DEFAULT NULL COMMENT '响应体',
+    `response_body` mediumtext DEFAULT NULL COMMENT '响应体',
     `elapsed_time` bigint(20) unsigned DEFAULT NULL COMMENT '请求耗时（ms）',
-    `request_ip` varchar(255) DEFAULT NULL COMMENT '请求IP',
-    `location` varchar(512) DEFAULT NULL COMMENT '操作地址',
+    `result` tinyint(1) unsigned DEFAULT 1 COMMENT '操作结果（1成功 2失败）',
+    `request_ip` varchar(255) DEFAULT NULL COMMENT '操作IP',
+    `location` varchar(512) DEFAULT NULL COMMENT '操作地点',
     `browser` varchar(255) DEFAULT NULL COMMENT '浏览器',
-    `exception` text DEFAULT NULL COMMENT '异常',
+    `exception` mediumtext DEFAULT NULL COMMENT '异常',
     `create_user` bigint(20) unsigned DEFAULT NULL COMMENT '操作人',
     `create_time` datetime NOT NULL COMMENT '操作时间',
     PRIMARY KEY (`log_id`) USING BTREE,
     INDEX `idx_createUser`(`create_user`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统日志表';

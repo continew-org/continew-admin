@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 
 /**
- * 操作日志 Mapper
+ * 系统日志 Mapper
  *
  * @author Charles7c
  * @since 2022/12/22 21:47

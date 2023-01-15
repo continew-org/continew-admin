@@ -2,6 +2,7 @@ export default {
   'menu.user.center': 'User Center',
   'userCenter.tab.basicInfo': 'Basic Information',
   'userCenter.tab.securitySettings': 'Security Settings',
+  'userCenter.tab.operationLog': 'Operation Log',
 
   // user-panel
   'userCenter.panel.avatar': 'Avatar',

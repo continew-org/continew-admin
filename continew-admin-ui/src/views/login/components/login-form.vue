@@ -133,7 +133,7 @@
     captchaImgBase64.value = data.img
   }
   onMounted(() => {
-    getCaptcha()
+    getCaptcha();
   })
 
   // 记住我

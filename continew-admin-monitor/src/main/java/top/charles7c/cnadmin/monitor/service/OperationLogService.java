@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.model.dto;
+package top.charles7c.cnadmin.monitor.service;
 
-import java.time.LocalDateTime;
-
-import lombok.Data;
+import top.charles7c.cnadmin.common.model.query.PageQuery;
+import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
+import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
 
 /**
- * 操作日志
+ * 操作日志业务接口
  *
  * @author Charles7c
- * @since 2022/12/25 8:59
+ * @since 2023/1/15 21:05
  */
-@Data
-public class OperationLog {
+public interface OperationLogService {
 
     /**
-     * 操作人
+     * 分页查询列表
+     *
+     * @param query
+     *            查询条件
+     * @param pageQuery
+     *            分页查询条件
+     * @return 分页信息
      */
-    private Long createUser;
-
-    /**
-     * 操作时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 异常
-     */
-    private Exception exception;
-
+    PageInfo<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery);
 }

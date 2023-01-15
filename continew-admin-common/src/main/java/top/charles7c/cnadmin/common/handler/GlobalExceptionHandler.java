@@ -41,7 +41,7 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.exception.ServiceException;
-import top.charles7c.cnadmin.common.model.dto.OperationLog;
+import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.StreamUtils;
@@ -179,15 +179,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 操作日志保存异常信息
+     * 在系统日志上下文中保存异常信息
      *
      * @param e
      *            异常信息
      */
     private void setException(Exception e) {
-        OperationLog operationLog = LogContextHolder.get();
-        if (operationLog != null) {
-            operationLog.setException(e);
+        LogContext logContext = LogContextHolder.get();
+        if (logContext != null) {
+            logContext.setException(e);
         }
     }
 }

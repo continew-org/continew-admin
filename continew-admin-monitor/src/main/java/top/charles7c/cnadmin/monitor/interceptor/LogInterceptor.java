@@ -42,20 +42,21 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 
-import top.charles7c.cnadmin.common.model.dto.OperationLog;
+import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.config.properties.LogProperties;
-import top.charles7c.cnadmin.monitor.enums.LogLevelEnum;
+import top.charles7c.cnadmin.monitor.enums.LogResultEnum;
 import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 
 /**
- * 操作日志拦截器
+ * 系统日志拦截器
  *
  * @author Charles7c
  * @since 2022/12/24 21:14
@@ -87,14 +88,14 @@ public class LogInterceptor implements HandlerInterceptor {
             return;
         }
 
-        // 记录描述
+        // 记录日志描述
         this.logDescription(sysLog, handler);
         // 记录请求信息
         this.logRequest(sysLog, request);
         // 记录响应信息
         this.logResponse(sysLog, response);
 
-        // 保存操作日志
+        // 保存系统日志
         SpringUtil.getApplicationContext().publishEvent(sysLog);
     }
 
@@ -102,31 +103,31 @@ public class LogInterceptor implements HandlerInterceptor {
      * 记录操作时间
      */
     private void logCreateTime() {
-        OperationLog operationLog = new OperationLog();
-        operationLog.setCreateUser(LoginHelper.getUserId());
-        operationLog.setCreateTime(LocalDateTime.now());
-        LogContextHolder.set(operationLog);
+        LogContext logContext = new LogContext();
+        logContext.setCreateUser(LoginHelper.getUserId());
+        logContext.setCreateTime(LocalDateTime.now());
+        LogContextHolder.set(logContext);
     }
 
     /**
      * 记录请求耗时及异常信息
      *
-     * @return 日志信息
+     * @return 系统日志信息
      */
     private SysLog logElapsedTimeAndException() {
-        OperationLog operationLog = LogContextHolder.get();
-        if (operationLog != null) {
+        LogContext logContext = LogContextHolder.get();
+        if (logContext != null) {
             LogContextHolder.remove();
             SysLog sysLog = new SysLog();
-            sysLog.setCreateTime(operationLog.getCreateTime());
+            sysLog.setCreateTime(logContext.getCreateTime());
             sysLog.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(sysLog.getCreateTime()));
-            sysLog.setLogLevel(LogLevelEnum.INFO);
+            sysLog.setResult(LogResultEnum.SUCCESS);
 
             // 记录异常信息
-            Exception exception = operationLog.getException();
+            Exception exception = logContext.getException();
             if (exception != null) {
-                sysLog.setLogLevel(LogLevelEnum.ERROR);
-                sysLog.setException(ExceptionUtil.stacktraceToString(operationLog.getException(), -1));
+                sysLog.setResult(LogResultEnum.FAILURE);
+                sysLog.setException(ExceptionUtil.stacktraceToString(exception, -1));
             }
             return sysLog;
         }
@@ -137,7 +138,7 @@ public class LogInterceptor implements HandlerInterceptor {
      * 记录日志描述
      *
      * @param sysLog
-     *            日志信息
+     *            系统日志信息
      * @param handler
      *            处理器
      */
@@ -148,7 +149,7 @@ public class LogInterceptor implements HandlerInterceptor {
 
         if (methodOperation != null) {
             sysLog.setDescription(
-                StrUtil.isNotBlank(methodOperation.summary()) ? methodOperation.summary() : "请在该接口方法上指定操作日志描述");
+                StrUtil.isNotBlank(methodOperation.summary()) ? methodOperation.summary() : "请在该接口方法上指定日志描述");
         }
         // 例如：@Log("获取验证码") -> 获取验证码
         if (methodLog != null && StrUtil.isNotBlank(methodLog.value())) {
@@ -160,7 +161,7 @@ public class LogInterceptor implements HandlerInterceptor {
      * 记录请求信息
      *
      * @param sysLog
-     *            日志信息
+     *            系统日志信息
      * @param request
      *            请求对象
      */
@@ -184,18 +185,21 @@ public class LogInterceptor implements HandlerInterceptor {
      * 记录响应信息
      *
      * @param sysLog
-     *            日志信息
+     *            系统日志信息
      * @param response
      *            响应对象
      */
     private void logResponse(SysLog sysLog, HttpServletResponse response) {
-        sysLog.setStatusCode(response.getStatus());
+        int status = response.getStatus();
+        sysLog.setStatusCode(status);
         sysLog.setResponseHeader(this.desensitize(ServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
             sysLog.setResponseBody(responseBody);
         }
+        // 操作失败：>= 400
+        sysLog.setResult(status >= HttpStatus.HTTP_BAD_REQUEST ? LogResultEnum.FAILURE : sysLog.getResult());
     }
 
     /**
@@ -258,7 +262,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 检查是否要记录操作日志
+     * 检查是否要记录系统日志
      *
      * @param handler
      *            /
@@ -267,28 +271,34 @@ public class LogInterceptor implements HandlerInterceptor {
      * @return true 需要记录，false 不需要记录
      */
     private boolean checkIsNeedRecord(Object handler, HttpServletRequest request) {
-        // 1、未启用时，不需要记录操作日志
+        // 1、未启用时，不需要记录系统日志
         if (!(handler instanceof HandlerMethod) || Boolean.FALSE.equals(operationLogProperties.getEnabled())) {
             return false;
         }
 
-        // 2、排除不需要记录日志的接口
+        // 2、检查是否需要记录内网 IP 操作
+        boolean isInnerIp = IpUtils.isInnerIP(ServletUtil.getClientIP(request));
+        if (isInnerIp && Boolean.FALSE.equals(operationLogProperties.getIncludeInnerIp())) {
+            return false;
+        }
+
+        // 3、排除不需要记录系统日志的接口
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         Log methodLog = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Log.class);
-        // 2.1 请求方式不要求记录且请求上没有 @Log 注解，则不记录操作日志
+        // 3.1 请求方式不要求记录且请求上没有 @Log 注解，则不记录系统日志
         if (operationLogProperties.getExcludeMethods().contains(request.getMethod()) && methodLog == null) {
             return false;
         }
-        // 2.2 如果接口上既没有 @Log 注解，也没有 @Operation 注解，则不记录操作日志
+        // 3.2 如果接口上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
         Operation methodOperation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Operation.class);
         if (methodLog == null && methodOperation == null) {
             return false;
         }
-        // 2.3 如果接口被隐藏，不记录操作日志
+        // 3.3 如果接口被隐藏，不记录系统日志
         if (methodOperation != null && methodOperation.hidden()) {
             return false;
         }
-        // 2.4 如果接口上有 @Log 注解，但是要求忽略该接口，则不记录操作日志
+        // 3.4 如果接口上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
         return methodLog == null || !methodLog.ignore();
     }
 }

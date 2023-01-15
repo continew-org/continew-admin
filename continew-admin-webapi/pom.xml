@@ -49,12 +49,6 @@ limitations under the License.
             <groupId>top.charles7c</groupId>
             <artifactId>continew-admin-monitor</artifactId>
         </dependency>
-
-        <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
-        <dependency>
-            <groupId>top.charles7c</groupId>
-            <artifactId>continew-admin-system</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

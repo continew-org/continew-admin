@@ -17,7 +17,7 @@
 package top.charles7c.cnadmin.monitor.service;
 
 /**
- * 操作日志业务接口
+ * 系统日志业务接口
  *
  * @author Charles7c
  * @since 2022/12/23 20:12

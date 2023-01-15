@@ -2,6 +2,7 @@ export default {
   'menu.user.center': '个人中心',
   'userCenter.tab.basicInfo': '基础信息',
   'userCenter.tab.securitySettings': '安全设置',
+  'userCenter.tab.operationLog': '操作日志',
 
   // user-panel
   'userCenter.panel.avatar': '头像',

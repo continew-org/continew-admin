@@ -14,113 +14,82 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.model.entity;
+package top.charles7c.cnadmin.monitor.model.vo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import top.charles7c.cnadmin.monitor.enums.LogResultEnum;
 
 /**
- * 系统日志实体
+ * 操作日志信息
  *
  * @author Charles7c
- * @since 2022/12/25 9:11
+ * @since 2023/1/14 18:27
  */
 @Data
-@TableName("sys_log")
-public class SysLog implements Serializable {
+@Schema(description = "操作日志信息")
+public class OperationLogVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 日志ID
      */
-    @TableId
+    @Schema(description = "日志ID")
     private Long logId;
 
     /**
-     * 日志描述
+     * 操作内容
      */
+    @Schema(description = "操作内容")
     private String description;
-
-    /**
-     * 请求URL
-     */
-    private String requestUrl;
-
-    /**
-     * 请求方式
-     */
-    private String requestMethod;
-
-    /**
-     * 请求头
-     */
-    private String requestHeader;
-
-    /**
-     * 请求体
-     */
-    private String requestBody;
-
-    /**
-     * 状态码
-     */
-    private Integer statusCode;
-
-    /**
-     * 响应头
-     */
-    private String responseHeader;
-
-    /**
-     * 响应体
-     */
-    private String responseBody;
-
-    /**
-     * 请求耗时（ms）
-     */
-    private Long elapsedTime;
 
     /**
      * 操作结果（1成功 2失败）
      */
+    @Schema(description = "操作结果（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
     private LogResultEnum result;
 
     /**
      * 操作IP
      */
+    @Schema(description = "操作IP")
     private String requestIp;
 
     /**
      * 操作地点
      */
+    @Schema(description = "操作地点")
     private String location;
 
     /**
      * 浏览器
      */
+    @Schema(description = "浏览器")
     private String browser;
-
-    /**
-     * 异常
-     */
-    private String exception;
 
     /**
      * 操作人
      */
+    @JsonIgnore
     private Long createUser;
+
+    /**
+     * 操作人
+     */
+    @Schema(description = "操作人")
+    private String createUserString;
 
     /**
      * 操作时间
      */
+    @Schema(description = "操作时间")
     private LocalDateTime createTime;
 }

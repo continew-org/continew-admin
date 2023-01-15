@@ -19,22 +19,24 @@ package top.charles7c.cnadmin.monitor.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import com.baomidou.mybatisplus.annotation.IEnum;
+
 /**
- * 操作日志级别枚举
+ * 操作结果枚举
  *
  * @author Charles7c
  * @since 2022/12/25 9:09
  */
 @Getter
 @RequiredArgsConstructor
-public enum LogLevelEnum {
+public enum LogResultEnum implements IEnum<Integer> {
 
-    /** 普通 */
-    INFO("普通"),
+    /** 成功 */
+    SUCCESS(1, "成功"),
 
-    /** 错误 */
-    ERROR("错误"),;
+    /** 失败 */
+    FAILURE(2, "失败"),;
 
-    /** 描述 */
+    private final Integer value;
     private final String description;
 }

@@ -25,28 +25,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 操作日志配置属性
+ * 系统日志配置属性
  *
  * @author Charles7c
  * @since 2022/12/24 23:04
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "logging.operation")
+@ConfigurationProperties(prefix = "logging.system")
 public class LogProperties {
 
     /**
-     * 是否启用操作日志
+     * 是否启用系统日志
      */
-    private Boolean enabled = false;
+    private Boolean enabled;
+
+    /**
+     * 是否记录内网 IP 操作
+     */
+    private Boolean includeInnerIp;
+
+    /**
+     * 哪些请求方式不记录系统日志
+     */
+    private List<String> excludeMethods = new ArrayList<>();
 
     /**
      * 脱敏字段
      */
     private List<String> desensitize = new ArrayList<>();
-
-    /**
-     * 不记录操作日志的请求方式
-     */
-    private List<String> excludeMethods = new ArrayList<>();
 }
