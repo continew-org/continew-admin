@@ -52,7 +52,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.config.properties.LogProperties;
-import top.charles7c.cnadmin.monitor.enums.LogResultEnum;
+import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 
 /**
@@ -73,7 +73,7 @@ public class LogInterceptor implements HandlerInterceptor {
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
         @NonNull Object handler) {
         if (checkIsNeedRecord(handler, request)) {
-            // 记录操作时间
+            // 记录时间
             this.logCreateTime();
         }
         return true;
@@ -100,7 +100,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 记录操作时间
+     * 记录时间
      */
     private void logCreateTime() {
         LogContext logContext = new LogContext();
@@ -121,12 +121,12 @@ public class LogInterceptor implements HandlerInterceptor {
             SysLog sysLog = new SysLog();
             sysLog.setCreateTime(logContext.getCreateTime());
             sysLog.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(sysLog.getCreateTime()));
-            sysLog.setResult(LogResultEnum.SUCCESS);
+            sysLog.setStatus(LogStatusEnum.SUCCESS);
 
             // 记录异常信息
             Exception exception = logContext.getException();
             if (exception != null) {
-                sysLog.setResult(LogResultEnum.FAILURE);
+                sysLog.setStatus(LogStatusEnum.FAILURE);
                 sysLog.setException(ExceptionUtil.stacktraceToString(exception, -1));
             }
             return sysLog;
@@ -175,8 +175,8 @@ public class LogInterceptor implements HandlerInterceptor {
             sysLog.setRequestBody(this.desensitize(
                 JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : ServletUtil.getParamMap(request)));
         }
-        sysLog.setRequestIp(ServletUtil.getClientIP(request));
-        sysLog.setLocation(IpUtils.getCityInfo(sysLog.getRequestIp()));
+        sysLog.setClientIp(ServletUtil.getClientIP(request));
+        sysLog.setLocation(IpUtils.getCityInfo(sysLog.getClientIp()));
         sysLog.setBrowser(ServletUtils.getBrowser(request));
         sysLog.setCreateUser(sysLog.getCreateUser() == null ? LoginHelper.getUserId() : sysLog.getCreateUser());
     }
@@ -199,7 +199,7 @@ public class LogInterceptor implements HandlerInterceptor {
             sysLog.setResponseBody(responseBody);
         }
         // 操作失败：>= 400
-        sysLog.setResult(status >= HttpStatus.HTTP_BAD_REQUEST ? LogResultEnum.FAILURE : sysLog.getResult());
+        sysLog.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : sysLog.getStatus());
     }
 
     /**
@@ -265,9 +265,9 @@ public class LogInterceptor implements HandlerInterceptor {
      * 检查是否要记录系统日志
      *
      * @param handler
-     *            /
+     *            处理器
      * @param request
-     *            /
+     *            请求对象
      * @return true 需要记录，false 不需要记录
      */
     private boolean checkIsNeedRecord(Object handler, HttpServletRequest request) {

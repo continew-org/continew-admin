@@ -1,20 +1,21 @@
 <template>
   <div class="container">
     <a-table
-      row-key="id"
+      row-key="logId"
       :loading="loading"
       :pagination="pagination"
       :columns="columns"
       :data="renderData"
       :bordered="false"
+      :stripe="true"
       size="large"
       @page-change="onPageChange"
     >
       <template #index="{ rowIndex }">
         {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
       </template>
-      <template #result="{ record }">
-        <a-space v-if="record.result === 1">
+      <template #status="{ record }">
+        <a-space v-if="record.status === 1">
           <a-tag color="green">
             <span class="circle pass"></span>
             成功
@@ -72,13 +73,13 @@
       dataIndex: 'description',
     },
     {
-      title: '操作结果',
-      dataIndex: 'result',
-      slotName: 'result',
+      title: '操作状态',
+      dataIndex: 'status',
+      slotName: 'status',
     },
     {
       title: '操作IP',
-      dataIndex: 'requestIp',
+      dataIndex: 'clientIp',
     },
     {
       title: '操作地点',

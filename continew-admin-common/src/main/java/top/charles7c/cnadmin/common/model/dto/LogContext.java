@@ -30,12 +30,12 @@ import lombok.Data;
 public class LogContext {
 
     /**
-     * 操作人
+     * 创建人
      */
     private Long createUser;
 
     /**
-     * 操作时间
+     * 创建时间
      */
     private LocalDateTime createTime;
 

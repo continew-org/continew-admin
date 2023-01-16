@@ -19,12 +19,15 @@ package top.charles7c.cnadmin.monitor.model.query;
 import static top.charles7c.cnadmin.common.annotation.Query.Type;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
 
@@ -47,4 +50,26 @@ public class OperationLogQuery implements Serializable {
     @Schema(description = "操作人")
     @Query(property = "createUser", type = Type.EQUAL)
     private Long uid;
+
+    /**
+     * 操作内容
+     */
+    @Schema(description = "操作内容")
+    @Query(type = Type.INNER_LIKE)
+    private String description;
+
+    /**
+     * 操作状态（1成功 2失败）
+     */
+    @Schema(description = "操作状态（1成功 2失败）")
+    @Query(type = Type.EQUAL)
+    private Integer status;
+
+    /**
+     * 操作时间
+     */
+    @Schema(description = "操作时间")
+    @Query(type = Type.BETWEEN)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private List<Date> createTime;
 }

@@ -35,13 +35,13 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `response_header` text DEFAULT NULL COMMENT '响应头',
     `response_body` mediumtext DEFAULT NULL COMMENT '响应体',
     `elapsed_time` bigint(20) unsigned DEFAULT NULL COMMENT '请求耗时（ms）',
-    `result` tinyint(1) unsigned DEFAULT 1 COMMENT '操作结果（1成功 2失败）',
-    `request_ip` varchar(255) DEFAULT NULL COMMENT '操作IP',
-    `location` varchar(512) DEFAULT NULL COMMENT '操作地点',
+    `status` tinyint(1) unsigned DEFAULT 1 COMMENT '操作状态（1成功 2失败）',
+    `client_ip` varchar(255) DEFAULT NULL COMMENT '客户端IP',
+    `location` varchar(512) DEFAULT NULL COMMENT 'IP归属地',
     `browser` varchar(255) DEFAULT NULL COMMENT '浏览器',
     `exception` mediumtext DEFAULT NULL COMMENT '异常',
-    `create_user` bigint(20) unsigned DEFAULT NULL COMMENT '操作人',
-    `create_time` datetime NOT NULL COMMENT '操作时间',
+    `create_user` bigint(20) unsigned DEFAULT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`log_id`) USING BTREE,
     INDEX `idx_createUser`(`create_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统日志表';

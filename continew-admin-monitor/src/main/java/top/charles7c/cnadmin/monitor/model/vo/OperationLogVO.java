@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import top.charles7c.cnadmin.monitor.enums.LogResultEnum;
+import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 
 /**
  * 操作日志信息
@@ -52,16 +52,16 @@ public class OperationLogVO implements Serializable {
     private String description;
 
     /**
-     * 操作结果（1成功 2失败）
+     * 操作状态（1成功 2失败）
      */
-    @Schema(description = "操作结果（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
-    private LogResultEnum result;
+    @Schema(description = "操作状态（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
+    private LogStatusEnum status;
 
     /**
      * 操作IP
      */
     @Schema(description = "操作IP")
-    private String requestIp;
+    private String clientIp;
 
     /**
      * 操作地点

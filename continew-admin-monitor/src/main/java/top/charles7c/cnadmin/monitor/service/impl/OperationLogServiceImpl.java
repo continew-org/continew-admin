@@ -69,7 +69,14 @@ public class OperationLogServiceImpl implements OperationLogService {
         // 分页查询
         IPage<SysLog> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
         PageInfo<OperationLogVO> pageInfo = PageInfo.build(page, OperationLogVO.class);
-        pageInfo.getList().forEach(this::fill);
+
+        // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
+        if (query.getUid() != null) {
+            SysUser sysUser = userMapper.selectById(query.getUid());
+            pageInfo.getList().forEach(o -> o.setCreateUserString(sysUser.getUsername()));
+        } else {
+            pageInfo.getList().forEach(this::fill);
+        }
         return pageInfo;
     }
 
@@ -85,6 +92,6 @@ public class OperationLogServiceImpl implements OperationLogService {
             return;
         }
         SysUser sysUser = userMapper.selectById(createUser);
-        vo.setCreateUserString(sysUser.getNickname());
+        vo.setCreateUserString(sysUser.getUsername());
     }
 }

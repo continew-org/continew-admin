@@ -9,7 +9,7 @@ const FORM: AppRouteRecordRaw = {
     locale: 'menu.form',
     icon: 'icon-settings',
     requiresAuth: true,
-    order: 3,
+    order: 4,
   },
   children: [
     {

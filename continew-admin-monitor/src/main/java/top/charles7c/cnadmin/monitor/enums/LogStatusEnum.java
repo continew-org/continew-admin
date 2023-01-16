@@ -22,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 /**
- * 操作结果枚举
+ * 操作状态枚举
  *
  * @author Charles7c
  * @since 2022/12/25 9:09
  */
 @Getter
 @RequiredArgsConstructor
-public enum LogResultEnum implements IEnum<Integer> {
+public enum LogStatusEnum implements IEnum<Integer> {
 
     /** 成功 */
     SUCCESS(1, "成功"),

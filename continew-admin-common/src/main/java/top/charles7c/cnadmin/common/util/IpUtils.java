@@ -43,16 +43,16 @@ import net.dreamlu.mica.ip2region.core.IpInfo;
 public class IpUtils {
 
     /**
-     * 太平洋网开放 API，查询 IP 归属地
+     * 太平洋网开放 API：查询 IP 归属地
      */
     private static final String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp?ip=%s&json=true";
 
     /**
-     * 根据IP获取详细地址
+     * 根据 IP 获取归属地信息
      *
      * @param ip
-     *            IP地址
-     * @return 详细地址
+     *            IP 地址
+     * @return 归属地信息
      */
     public static String getCityInfo(String ip) {
         if (ContinewAdminProperties.IP_ADDR_LOCAL_PARSE_ENABLED) {
@@ -63,11 +63,11 @@ public class IpUtils {
     }
 
     /**
-     * 根据 IP 获取详细地址（网络解析）
+     * 根据 IP 获取归属地信息（网络解析）
      *
      * @param ip
-     *            IP地址
-     * @return 详细地址
+     *            IP 地址
+     * @return 归属地信息
      */
     public static String getHttpCityInfo(String ip) {
         if (isInnerIP(ip)) {
@@ -79,11 +79,11 @@ public class IpUtils {
     }
 
     /**
-     * 根据 IP 获取详细地址（本地解析）
+     * 根据 IP 获取归属地信息（本地解析）
      *
      * @param ip
      *            IP 地址
-     * @return 详细地址
+     * @return 归属地信息
      */
     public static String getLocalCityInfo(String ip) {
         if (isInnerIP(ip)) {
@@ -98,11 +98,11 @@ public class IpUtils {
     }
 
     /**
-     * 是否为内网IPv4
+     * 是否为内网 IPv4
      *
      * @param ip
      *            IP 地址
-     * @return 是否为内网IP
+     * @return 是否为内网 IP
      */
     public static boolean isInnerIP(String ip) {
         ip = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : HtmlUtil.cleanHtmlTag(ip);

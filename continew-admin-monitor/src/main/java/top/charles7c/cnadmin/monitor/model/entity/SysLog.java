@@ -24,7 +24,7 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.cnadmin.monitor.enums.LogResultEnum;
+import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 
 /**
  * 系统日志实体
@@ -90,17 +90,17 @@ public class SysLog implements Serializable {
     private Long elapsedTime;
 
     /**
-     * 操作结果（1成功 2失败）
+     * 操作状态（1成功 2失败）
      */
-    private LogResultEnum result;
+    private LogStatusEnum status;
 
     /**
-     * 操作IP
+     * 客户端IP
      */
-    private String requestIp;
+    private String clientIp;
 
     /**
-     * 操作地点
+     * IP归属地
      */
     private String location;
 
@@ -115,12 +115,12 @@ public class SysLog implements Serializable {
     private String exception;
 
     /**
-     * 操作人
+     * 创建人
      */
     private Long createUser;
 
     /**
-     * 操作时间
+     * 创建时间
      */
     private LocalDateTime createTime;
 }

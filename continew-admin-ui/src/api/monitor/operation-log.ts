@@ -4,8 +4,8 @@ import qs from 'query-string';
 export interface OperationLogRecord {
   logId: string;
   description: string;
-  result: number,
-  requestIp: string,
+  status: number,
+  clientIp: string,
   location: string,
   browser: string,
   createUserString: string;
@@ -16,7 +16,7 @@ export interface OperationLogParams extends Partial<OperationLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
-  uid: string;
+  uid?: string;
 }
 
 export interface OperationLogListRes {

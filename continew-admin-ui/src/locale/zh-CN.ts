@@ -5,6 +5,11 @@ import localeWorkplace from '@/views/dashboard/workplace/locale/zh-CN';
 
 import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 
+import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
+import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/zh-CN';
+
+import localeLog from '@/views/monitor/log/operation/locale/zh-CN';
+
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 import localeCardList from '@/views/list/card/locale/zh-CN';
 
@@ -12,9 +17,6 @@ import localeStepForm from '@/views/form/step/locale/zh-CN';
 import localeGroupForm from '@/views/form/group/locale/zh-CN';
 
 import localeBasicProfile from '@/views/profile/basic/locale/zh-CN';
-
-import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
-import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/zh-CN';
 
 import localeSuccess from '@/views/result/success/locale/zh-CN';
 import localeError from '@/views/result/error/locale/zh-CN';
@@ -33,12 +35,13 @@ export default {
   'menu.server.dashboard': '仪表盘-服务端',
   'menu.server.workplace': '工作台-服务端',
   'menu.server.monitor': '实时监控-服务端',
+  'menu.visualization': '数据可视化',
+  'menu.monitor': '系统监控',
   'menu.list': '列表页',
-  'menu.result': '结果页',
-  'menu.exception': '异常页',
   'menu.form': '表单页',
   'menu.profile': '详情页',
-  'menu.visualization': '数据可视化',
+  'menu.result': '结果页',
+  'menu.exception': '异常页',
   'menu.user': '个人中心',
   'menu.arcoWebsite': 'Arco Design',
   'menu.faq': '常见问题',
@@ -48,15 +51,17 @@ export default {
   ...localeMessageBox,
   ...localeLogin,
   ...localeWorkplace,
-
   ...localeMonitor,
+  ...localeDataAnalysis,
+  ...localeMultiDAnalysis,
+
+  ...localeLog,
+
   ...localeSearchTable,
   ...localeCardList,
   ...localeStepForm,
   ...localeGroupForm,
   ...localeBasicProfile,
-  ...localeDataAnalysis,
-  ...localeMultiDAnalysis,
   ...localeSuccess,
   ...localeError,
   ...locale403,
