@@ -40,7 +40,12 @@ public class LogContext {
     private LocalDateTime createTime;
 
     /**
-     * 异常
+     * 错误信息
+     */
+    private String errorMsg;
+
+    /**
+     * 异常信息
      */
     private Exception exception;
 }

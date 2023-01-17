@@ -110,7 +110,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 记录请求耗时及异常信息
+     * 记录请求耗时及异常详情
      *
      * @return 系统日志信息
      */
@@ -123,11 +123,17 @@ public class LogInterceptor implements HandlerInterceptor {
             sysLog.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(sysLog.getCreateTime()));
             sysLog.setStatus(LogStatusEnum.SUCCESS);
 
-            // 记录异常信息
+            // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
+            String errorMsg = logContext.getErrorMsg();
+            if (StrUtil.isNotBlank(errorMsg)) {
+                sysLog.setStatus(LogStatusEnum.FAILURE);
+                sysLog.setErrorMsg(errorMsg);
+            }
+            // 记录异常详情
             Exception exception = logContext.getException();
             if (exception != null) {
                 sysLog.setStatus(LogStatusEnum.FAILURE);
-                sysLog.setException(ExceptionUtil.stacktraceToString(exception, -1));
+                sysLog.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
             }
             return sysLog;
         }

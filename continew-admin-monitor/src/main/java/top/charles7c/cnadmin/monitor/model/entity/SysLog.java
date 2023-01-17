@@ -110,9 +110,14 @@ public class SysLog implements Serializable {
     private String browser;
 
     /**
-     * 异常
+     * 错误信息
      */
-    private String exception;
+    private String errorMsg;
+
+    /**
+     * 异常详情
+     */
+    private String exceptionDetail;
 
     /**
      * 创建人

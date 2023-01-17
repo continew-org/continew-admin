@@ -22,10 +22,12 @@
           </a-tag>
         </a-space>
         <a-space v-else>
-          <a-tag color="red">
-            <span class="circle fail"></span>
-            失败
-          </a-tag>
+          <a-tooltip :content="record.errorMsg">
+            <a-tag color="red" style="cursor: pointer">
+              <span class="circle fail"></span>
+              失败
+            </a-tag>
+          </a-tooltip>
         </a-space>
       </template>
       <template #pagination-left>

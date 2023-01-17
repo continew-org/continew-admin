@@ -26,14 +26,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 
 /**
- * 操作日志信息
+ * 登录日志信息
  *
  * @author Charles7c
- * @since 2023/1/14 18:27
+ * @since 2023/1/16 23:19
  */
 @Data
-@Schema(description = "操作日志信息")
-public class OperationLogVO extends LogVO implements Serializable {
+@Schema(description = "登录日志信息")
+public class LoginLogVO extends LogVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,9 +44,9 @@ public class OperationLogVO extends LogVO implements Serializable {
     private Long logId;
 
     /**
-     * 操作内容
+     * 日志描述
      */
-    @Schema(description = "操作内容")
+    @Schema(description = "日志描述")
     private String description;
 
     /**
@@ -56,15 +56,15 @@ public class OperationLogVO extends LogVO implements Serializable {
     private LogStatusEnum status;
 
     /**
-     * 操作IP
+     * 登录IP
      */
-    @Schema(description = "操作IP")
+    @Schema(description = "登录IP")
     private String clientIp;
 
     /**
-     * 操作地点
+     * 登录地点
      */
-    @Schema(description = "操作地点")
+    @Schema(description = "登录地点")
     private String location;
 
     /**
@@ -80,8 +80,8 @@ public class OperationLogVO extends LogVO implements Serializable {
     private String errorMsg;
 
     /**
-     * 操作时间
+     * 登录时间
      */
-    @Schema(description = "操作时间")
+    @Schema(description = "登录时间")
     private LocalDateTime createTime;
 }

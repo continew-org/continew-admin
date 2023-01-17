@@ -22,6 +22,16 @@ const Monitor: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
+    {
+      path: 'log/login',
+      name: 'LoginLog',
+      component: () => import('@/views/monitor/log/login/index.vue'),
+      meta: {
+        locale: 'menu.log.login.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
   ],
 };
 

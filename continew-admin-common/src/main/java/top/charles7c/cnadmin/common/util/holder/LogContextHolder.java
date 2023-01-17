@@ -57,4 +57,31 @@ public class LogContextHolder {
     public static void remove() {
         LOG_THREAD_LOCAL.remove();
     }
+
+    /**
+     * 在系统日志上下文中保存异常信息
+     *
+     * @param e
+     *            异常信息
+     */
+    public static void setException(Exception e) {
+        LogContext logContext = get();
+        if (logContext != null) {
+            logContext.setErrorMsg(e.getMessage());
+            logContext.setException(e);
+        }
+    }
+
+    /**
+     * 在系统日志上下文中保存错误信息（非未知异常不记录异常信息，只记录错误信息）
+     *
+     * @param errorMsg
+     *            错误信息
+     */
+    public static void setErrorMsg(String errorMsg) {
+        LogContext logContext = get();
+        if (logContext != null) {
+            logContext.setErrorMsg(errorMsg);
+        }
+    }
 }

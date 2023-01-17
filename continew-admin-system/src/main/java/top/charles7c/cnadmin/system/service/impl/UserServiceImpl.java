@@ -141,14 +141,8 @@ public class UserServiceImpl implements UserService {
         LoginHelper.updateLoginUser(loginUser);
     }
 
-    /**
-     * 根据 ID 查询
-     *
-     * @param userId
-     *            用户 ID
-     * @return 用户信息
-     */
-    private SysUser getById(Long userId) {
+    @Override
+    public SysUser getById(Long userId) {
         ValidationUtils.exIfNull(userId, "用户不存在");
         SysUser sysUser = userMapper.selectById(userId);
         ValidationUtils.exIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));

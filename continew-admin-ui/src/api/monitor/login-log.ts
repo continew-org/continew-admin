@@ -1,9 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
 
-export interface OperationLogRecord {
+export interface LoginLogRecord {
   logId: string;
-  description: string;
   status: number;
   clientIp: string;
   location: string;
@@ -13,20 +12,19 @@ export interface OperationLogRecord {
   createTime: string;
 }
 
-export interface OperationLogParams extends Partial<OperationLogRecord> {
+export interface LoginLogParams extends Partial<LoginLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
-  uid?: string;
 }
 
-export interface OperationLogListRes {
-  list: OperationLogRecord[];
+export interface LoginLogListRes {
+  list: LoginLogRecord[];
   total: number;
 }
 
-export function queryOperationLogList(params: OperationLogParams) {
-  return axios.get<OperationLogListRes>('/monitor/log/operation', {
+export function queryLoginLogList(params: LoginLogParams) {
+  return axios.get<LoginLogListRes>('/monitor/log/login', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

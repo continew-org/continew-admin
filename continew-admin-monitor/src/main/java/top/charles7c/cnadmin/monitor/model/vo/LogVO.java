@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.service;
+package top.charles7c.cnadmin.monitor.model.vo;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
-import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
+import lombok.Data;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 操作日志业务接口
+ * 基础日志信息
  *
  * @author Charles7c
- * @since 2023/1/15 21:05
+ * @since 2023/1/17 21:43
  */
-public interface OperationLogService {
+@Data
+public class LogVO {
 
     /**
-     * 分页查询列表
-     *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
-     * @return 分页信息
+     * 创建人
      */
-    PageInfo<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery);
+    @JsonIgnore
+    private Long createUser;
+
+    /**
+     * 创建人
+     */
+    @Schema(description = "创建人")
+    private String createUserString;
 }

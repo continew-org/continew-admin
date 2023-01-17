@@ -30,29 +30,29 @@ import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
+import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
+import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
 import top.charles7c.cnadmin.monitor.service.LogService;
 
 /**
- * 操作日志 API
+ * 登录日志 API
  *
  * @author Charles7c
- * @since 2023/1/14 18:09
+ * @since 2023/1/16 23:17
  */
-@Tag(name = "操作日志 API")
+@Tag(name = "登录日志 API")
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/monitor/log/operation", produces = MediaType.APPLICATION_JSON_VALUE)
-public class OperationLogController {
+@RequestMapping(value = "/monitor/log/login", produces = MediaType.APPLICATION_JSON_VALUE)
+public class LoginLogController {
 
     private final LogService logService;
 
-    @Operation(summary = "分页查询操作日志列表")
+    @Operation(summary = "分页查询登录日志列表")
     @GetMapping
-    public R<PageInfo<OperationLogVO>> list(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
-        PageInfo<OperationLogVO> pageInfo = logService.list(query, pageQuery);
+    public R<PageInfo<LoginLogVO>> list(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
+        PageInfo<LoginLogVO> pageInfo = logService.list(query, pageQuery);
         return R.ok(pageInfo);
     }
 }

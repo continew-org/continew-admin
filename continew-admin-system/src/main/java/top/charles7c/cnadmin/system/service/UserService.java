@@ -79,4 +79,13 @@ public interface UserService {
      *            用户ID
      */
     void updateEmail(String newEmail, String currentPassword, Long userId);
+
+    /**
+     * 根据 ID 查询
+     *
+     * @param userId
+     *            用户ID
+     * @return 用户信息
+     */
+    SysUser getById(Long userId);
 }

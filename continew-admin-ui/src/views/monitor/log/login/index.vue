@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.monitor', 'menu.log.operation.list']" />
-    <a-card class="general-card" :title="$t('menu.log.operation.list')">
+    <Breadcrumb :items="['menu.monitor', 'menu.log.login.list']" />
+    <a-card class="general-card" :title="$t('menu.log.login.list')">
       <a-row style="margin-bottom: 15px">
         <a-col :span="24">
           <a-form
@@ -10,25 +10,13 @@
             layout="inline"
           >
             <a-form-item
-              field="description"
-              hide-label
-            >
-              <a-input
-                v-model="queryFormData.description"
-                placeholder="输入操作内容搜索"
-                allow-clear
-                style="width: 150px;"
-                @press-enter="toQuery"
-              />
-            </a-form-item>
-            <a-form-item
               field="status"
               hide-label
             >
               <a-select
                 v-model="queryFormData.status"
                 :options="statusOptions"
-                placeholder="操作状态搜索"
+                placeholder="登录状态搜索"
                 allow-clear
                 style="width: 150px;"
               />
@@ -89,6 +77,9 @@
             </a-tooltip>
           </a-space>
         </template>
+        <template #operations>
+          <a-button v-permission="['admin']" type="text" size="small">详情</a-button>
+        </template>
       </a-table>
     </a-card>
   </div>
@@ -97,7 +88,7 @@
 <script lang="ts" setup>
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/operation-log';
+  import { queryLoginLogList, LoginLogRecord, LoginLogParams } from '@/api/monitor/login-log';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -105,10 +96,9 @@
 
   const { loading, setLoading } = useLoading(true);
   const queryFormRef = ref<FormInstance>();
-  const renderData = ref<OperationLogRecord[]>([]);
+  const renderData = ref<LoginLogRecord[]>([]);
 
   const queryFormData = ref({
-    description: '',
     status: undefined,
     createTime: [],
   });
@@ -137,41 +127,41 @@
       slotName: 'index',
     },
     {
-      title: '操作时间',
-      dataIndex: 'createTime',
-    },
-    {
-      title: '操作人',
+      title: '用户昵称',
       dataIndex: 'createUserString',
     },
     {
-      title: '操作内容',
+      title: '登录行为',
       dataIndex: 'description',
     },
     {
-      title: '操作状态',
+      title: '登录状态',
       dataIndex: 'status',
       slotName: 'status',
     },
     {
-      title: '操作IP',
+      title: '登录IP',
       dataIndex: 'clientIp',
     },
     {
-      title: '操作地点',
+      title: '登录地点',
       dataIndex: 'location',
     },
     {
       title: '浏览器',
       dataIndex: 'browser',
     },
+    {
+      title: '登录时间',
+      dataIndex: 'createTime',
+    },
   ]);
   const fetchData = async (
-    params: OperationLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
+    params: LoginLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryOperationLogList(params);
+      const { data } = await queryLoginLogList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
@@ -193,7 +183,7 @@
       size: pagination.pageSize,
       sort: ['createTime,desc'],
       ...queryFormData.value,
-    } as unknown as OperationLogParams);
+    } as unknown as LoginLogParams);
   };
 
   // 重置
@@ -206,7 +196,7 @@
 
 <script lang="ts">
   export default {
-    name: 'OperationLog',
+    name: 'LoginLog',
   };
 </script>
 
