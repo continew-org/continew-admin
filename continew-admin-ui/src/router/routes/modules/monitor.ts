@@ -13,6 +13,16 @@ const Monitor: AppRouteRecordRaw = {
   },
   children: [
     {
+      path: 'log/login',
+      name: 'LoginLog',
+      component: () => import('@/views/monitor/log/login/index.vue'),
+      meta: {
+        locale: 'menu.log.login.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: 'log/operation',
       name: 'OperationLog',
       component: () => import('@/views/monitor/log/operation/index.vue'),
@@ -23,11 +33,11 @@ const Monitor: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'log/login',
-      name: 'LoginLog',
-      component: () => import('@/views/monitor/log/login/index.vue'),
+      path: 'log/system',
+      name: 'SystemLog',
+      component: () => import('@/views/monitor/log/system/index.vue'),
       meta: {
-        locale: 'menu.log.login.list',
+        locale: 'menu.log.system.list',
         requiresAuth: true,
         roles: ['*'],
       },

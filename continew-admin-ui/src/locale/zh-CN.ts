@@ -8,8 +8,9 @@ import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
 import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/zh-CN';
 
-import localeOperationLog from '@/views/monitor/log/operation/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
+import localeOperationLog from '@/views/monitor/log/operation/locale/zh-CN';
+import localeSystemLog from '@/views/monitor/log/system/locale/zh-CN';
 
 import localeSearchTable from '@/views/list/search-table/locale/zh-CN';
 import localeCardList from '@/views/list/card/locale/zh-CN';
@@ -56,8 +57,9 @@ export default {
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
 
-  ...localeOperationLog,
   ...localeLoginLog,
+  ...localeOperationLog,
+  ...localeSystemLog,
 
   ...localeSearchTable,
   ...localeCardList,

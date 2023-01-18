@@ -175,7 +175,7 @@ public class LogInterceptor implements HandlerInterceptor {
         sysLog.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
             : request.getRequestURL().append("?").append(request.getQueryString()).toString());
         sysLog.setRequestMethod(request.getMethod());
-        sysLog.setRequestHeader(this.desensitize(ServletUtil.getHeaderMap(request)));
+        sysLog.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         if (StrUtil.isNotBlank(requestBody)) {
             sysLog.setRequestBody(this.desensitize(
@@ -198,7 +198,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logResponse(SysLog sysLog, HttpServletResponse response) {
         int status = response.getStatus();
         sysLog.setStatusCode(status);
-        sysLog.setResponseHeader(this.desensitize(ServletUtil.getHeadersMap(response)));
+        sysLog.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {

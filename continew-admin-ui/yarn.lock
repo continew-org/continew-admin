@@ -8117,6 +8117,11 @@ vue-i18n@^9.2.2:
     "@intlify/vue-devtools" "9.2.2"
     "@vue/devtools-api" "^6.2.1"
 
+vue-json-pretty@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.npmmirror.com/vue-json-pretty/-/vue-json-pretty-2.2.3.tgz#7cf5c5af464ed5600c1883b6310aa848a8840a4d"
+  integrity sha512-tJo+4eFclQBt3gJ6EELXNdvo50wDKTZYthwmLpy9YS7UDldeJln5ff+IpdmUglfk+FqLVOX/re0+Ni/EOUPZgw==
+
 vue-router@^4.1.6:
   version "4.1.6"
   resolved "https://registry.npmmirror.com/vue-router/-/vue-router-4.1.6.tgz#b70303737e12b4814578d21d68d21618469375a1"

@@ -14,118 +14,96 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.model.entity;
+package top.charles7c.cnadmin.monitor.model.vo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 系统日志实体
+ * 系统日志信息
  *
  * @author Charles7c
- * @since 2022/12/25 9:11
+ * @since 2023/1/17 23:29
  */
 @Data
-@TableName("sys_log")
-public class SysLog implements Serializable {
+@Schema(description = "系统日志信息")
+public class SystemLogVO extends LogVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 日志ID
      */
-    @TableId
+    @Schema(description = "日志ID")
     private Long logId;
 
     /**
      * 日志描述
      */
+    @Schema(description = "日志描述")
     private String description;
-
-    /**
-     * 请求URL
-     */
-    private String requestUrl;
-
-    /**
-     * 请求方式
-     */
-    private String requestMethod;
-
-    /**
-     * 请求头
-     */
-    private String requestHeaders;
-
-    /**
-     * 请求体
-     */
-    private String requestBody;
 
     /**
      * 状态码
      */
+    @Schema(description = "状态码")
     private Integer statusCode;
 
     /**
-     * 响应头
+     * 请求方式
      */
-    private String responseHeaders;
+    @Schema(description = "请求方式")
+    private String requestMethod;
 
     /**
-     * 响应体
+     * 请求URL
      */
-    private String responseBody;
+    @Schema(description = "请求URL")
+    private String requestUrl;
 
     /**
      * 请求耗时（ms）
      */
+    @Schema(description = "请求耗时（ms）")
     private Long elapsedTime;
-
-    /**
-     * 操作状态（1成功 2失败）
-     */
-    private LogStatusEnum status;
 
     /**
      * 客户端IP
      */
+    @Schema(description = "客户端IP")
     private String clientIp;
 
     /**
      * IP归属地
      */
+    @Schema(description = "IP归属地")
     private String location;
 
     /**
      * 浏览器
      */
+    @Schema(description = "浏览器")
     private String browser;
 
     /**
      * 错误信息
      */
+    @Schema(description = "错误信息")
     private String errorMsg;
 
     /**
      * 异常详情
      */
+    @Schema(description = "异常详情")
     private String exceptionDetail;
-
-    /**
-     * 创建人
-     */
-    private Long createUser;
 
     /**
      * 创建时间
      */
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 }

@@ -8,8 +8,9 @@ import localeMonitor from '@/views/dashboard/monitor/locale/en-US';
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/en-US';
 import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/en-US';
 
-import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
 import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
+import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
+import localeSystemLog from '@/views/monitor/log/system/locale/en-US';
 
 import localeSearchTable from '@/views/list/search-table/locale/en-US';
 import localeCardList from '@/views/list/card/locale/en-US';
@@ -56,8 +57,9 @@ export default {
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
 
-  ...localeOperationLog,
   ...localeLoginLog,
+  ...localeOperationLog,
+  ...localeSystemLog,
 
   ...localeSearchTable,
   ...localeCardList,

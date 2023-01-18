@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
@@ -37,13 +38,13 @@ import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.mapper.LogMapper;
 import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.LogVO;
-import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
-import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
+import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
+import top.charles7c.cnadmin.monitor.model.vo.*;
 import top.charles7c.cnadmin.monitor.service.LogService;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -94,7 +95,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageInfo<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<SysLog> queryWrapper = QueryHelper.build(query);
-        queryWrapper.and(qw -> qw.like("request_url", "/auth/login").or().like("request_url", "/auth/logout"));
+        queryWrapper.lambda()
+            .and(qw -> qw.like(SysLog::getRequestUrl, "/auth/login").or().like(SysLog::getRequestUrl, "/auth/logout"));
 
         // 限定查询信息
         String[] fieldsName = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
@@ -109,6 +111,35 @@ public class LogServiceImpl implements LogService {
         // 填充数据
         pageInfo.getList().forEach(this::fill);
         return pageInfo;
+    }
+
+    @Override
+    public PageInfo<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery) {
+        QueryWrapper<SysLog> queryWrapper = QueryHelper.build(query);
+
+        // 限定查询信息
+        String[] fieldsName = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
+        List<String> columns = Arrays.stream(fieldsName).map(StrUtil::toUnderlineCase)
+            .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
+        queryWrapper.select(columns);
+
+        // 分页查询
+        IPage<SysLog> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
+        PageInfo<SystemLogVO> pageInfo = PageInfo.build(page, SystemLogVO.class);
+
+        // 填充数据
+        pageInfo.getList().forEach(this::fill);
+        return pageInfo;
+    }
+
+    @Override
+    public SystemLogDetailVO detail(Long logId) {
+        SysLog sysLog = logMapper.selectById(logId);
+        ValidationUtils.exIfNull(sysLog, String.format("ID为 [%s] 的日志已不存在", logId));
+
+        SystemLogDetailVO detailVO = BeanUtil.copyProperties(sysLog, SystemLogDetailVO.class);
+        this.fill(detailVO);
+        return detailVO;
     }
 
     /**

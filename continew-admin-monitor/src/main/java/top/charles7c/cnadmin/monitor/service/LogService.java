@@ -20,8 +20,11 @@ import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
+import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
 import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
 import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
+import top.charles7c.cnadmin.monitor.model.vo.SystemLogDetailVO;
+import top.charles7c.cnadmin.monitor.model.vo.SystemLogVO;
 
 /**
  * 系统日志业务接口
@@ -52,4 +55,24 @@ public interface LogService {
      * @return 登录日志分页信息
      */
     PageInfo<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery);
+
+    /**
+     * 分页查询系统日志列表
+     *
+     * @param query
+     *            查询条件
+     * @param pageQuery
+     *            分页查询条件
+     * @return 系统日志分页信息
+     */
+    PageInfo<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery);
+
+    /**
+     * 查看系统日志详情
+     *
+     * @param logId
+     *            日志ID
+     * @return 系统日志详情
+     */
+    SystemLogDetailVO detail(Long logId);
 }

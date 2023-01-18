@@ -77,9 +77,6 @@
             </a-tooltip>
           </a-space>
         </template>
-        <template #operations>
-          <a-button v-permission="['admin']" type="text" size="small">详情</a-button>
-        </template>
       </a-table>
     </a-card>
   </div>
