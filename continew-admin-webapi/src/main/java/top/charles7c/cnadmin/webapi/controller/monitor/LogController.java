@@ -24,35 +24,62 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
+import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
+import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
 import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
+import top.charles7c.cnadmin.monitor.model.vo.SystemLogDetailVO;
+import top.charles7c.cnadmin.monitor.model.vo.SystemLogVO;
 import top.charles7c.cnadmin.monitor.service.LogService;
 
 /**
- * 操作日志 API
+ * 日志管理 API
  *
  * @author Charles7c
- * @since 2023/1/14 18:09
+ * @since 2023/1/18 23:55
  */
-@Tag(name = "操作日志 API")
+@Tag(name = "日志管理 API")
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/monitor/log/operation", produces = MediaType.APPLICATION_JSON_VALUE)
-public class OperationLogController {
+@RequestMapping(value = "/monitor/log", produces = MediaType.APPLICATION_JSON_VALUE)
+public class LogController {
 
     private final LogService logService;
 
+    @Operation(summary = "分页查询登录日志列表")
+    @GetMapping("/login")
+    public R<PageInfo<LoginLogVO>> list(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
+        PageInfo<LoginLogVO> pageInfo = logService.list(query, pageQuery);
+        return R.ok(pageInfo);
+    }
+
     @Operation(summary = "分页查询操作日志列表")
-    @GetMapping
+    @GetMapping("/operation")
     public R<PageInfo<OperationLogVO>> list(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
         PageInfo<OperationLogVO> pageInfo = logService.list(query, pageQuery);
         return R.ok(pageInfo);
+    }
+
+    @Operation(summary = "分页查询系统日志列表")
+    @GetMapping("/system")
+    public R<PageInfo<SystemLogVO>> list(@Validated SystemLogQuery query, @Validated PageQuery pageQuery) {
+        PageInfo<SystemLogVO> pageInfo = logService.list(query, pageQuery);
+        return R.ok(pageInfo);
+    }
+
+    @Operation(summary = "查看系统日志详情")
+    @GetMapping("/system/{logId}")
+    public R<SystemLogDetailVO> detail(@PathVariable Long logId) {
+        SystemLogDetailVO detailVO = logService.detail(logId);
+        return R.ok(detailVO);
     }
 }

@@ -42,10 +42,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive } from "vue";
+  import { computed, ref, reactive } from 'vue';
   import { useLoginStore } from '@/store';
   import useLoading from '@/hooks/loading';
-  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/operation-log';
+  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
 
@@ -78,9 +78,10 @@
       title: '操作状态',
       dataIndex: 'status',
       slotName: 'status',
+      align: 'center',
     },
     {
-      title: '操作IP',
+      title: '操作 IP',
       dataIndex: 'clientIp',
     },
     {

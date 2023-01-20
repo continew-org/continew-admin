@@ -11,6 +11,7 @@ import {
 } from 'echarts/components';
 import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
+import DateRangePicker from './date-range-picker/index.vue';
 
 // Manually introduce ECharts modules to reduce packing size
 
@@ -31,5 +32,6 @@ export default {
   install(Vue: App) {
     Vue.component('Chart', Chart);
     Vue.component('Breadcrumb', Breadcrumb);
+    Vue.component('DateRangePicker', DateRangePicker);
   },
 };

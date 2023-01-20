@@ -7,12 +7,7 @@
         <a-col :span="24">
           <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
             <a-form-item field="createTime" hide-label>
-              <a-range-picker
-                v-model="queryFormData.createTime"
-                format="YYYY-MM-DD HH:mm:ss"
-                show-time
-                style="width: 100%"
-              />
+              <date-range-picker v-model="queryFormData.createTime" />
             </a-form-item>
             <a-button type="primary" @click="toQuery">
               <template #icon>
@@ -88,7 +83,7 @@
         <template #title>日志详情</template>
         <div style="margin: 10px 0 0 10px">
           <a-descriptions title="基础信息" :column="2" bordered>
-            <a-descriptions-item label="客户端IP">
+            <a-descriptions-item label="客户端 IP">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
@@ -100,7 +95,7 @@
               </a-skeleton>
               <span v-else>{{ renderDetailData.browser }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="IP归属地">
+            <a-descriptions-item label="IP 归属地">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
@@ -149,7 +144,7 @@
               </a-skeleton>
               <span v-else>{{ renderDetailData.requestMethod }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="请求URL" :span="2">
+            <a-descriptions-item label="请求 URL" :span="2">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
@@ -201,7 +196,6 @@
               <a-space v-else>
                 <VueJsonPretty
                   v-if="renderDetailData.requestHeaders"
-                  :path="'res'"
                   :data="JSON.parse(renderDetailData.requestHeaders)"
                   :show-length="true" />
                 <span v-else>无</span>
@@ -237,7 +231,7 @@
     querySystemLogList,
     SystemLogRecord,
     SystemLogParams,
-  } from '@/api/monitor/system-log';
+  } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { FormInstance } from '@arco-design/web-vue/es/form';
@@ -253,7 +247,6 @@
   const renderData = ref<SystemLogRecord[]>([]);
   const renderDetailData = ref<SystemLogDetailRecord>({
     logId: '',
-    description: '',
     requestUrl: '',
     requestMethod: '',
     requestHeaders: '',
@@ -265,7 +258,6 @@
     clientIp: '',
     location: '',
     browser: '',
-    createUserString: '',
     createTime: '',
   });
 
@@ -290,22 +282,24 @@
       title: '状态码',
       dataIndex: 'statusCode',
       slotName: 'statusCode',
+      align: 'center',
     },
     {
       title: '请求方式',
       dataIndex: 'requestMethod',
+      align: 'center',
     },
     {
-      title: '请求URI',
+      title: '请求 URI',
       dataIndex: 'requestUrl',
       slotName: 'requestUrl',
     },
     {
-      title: '客户端IP',
+      title: '客户端 IP',
       dataIndex: 'clientIp',
     },
     {
-      title: 'IP归属地',
+      title: 'IP 归属地',
       dataIndex: 'location',
     },
     {
@@ -316,6 +310,7 @@
       title: '请求耗时',
       dataIndex: 'elapsedTime',
       slotName: 'elapsedTime',
+      align: 'center',
     },
     {
       title: '创建时间',
@@ -324,6 +319,7 @@
     {
       title: '操作',
       slotName: 'operations',
+      align: 'center',
     },
   ]);
 

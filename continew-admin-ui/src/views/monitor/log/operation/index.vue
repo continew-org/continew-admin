@@ -37,12 +37,7 @@
               field="createTime"
               hide-label
             >
-              <a-range-picker
-                v-model="queryFormData.createTime"
-                format="YYYY-MM-DD HH:mm:ss"
-                show-time
-                style="width: 100%"
-              />
+              <date-range-picker v-model="queryFormData.createTime" />
             </a-form-item>
             <a-button type="primary" @click="toQuery">
               <template #icon>
@@ -97,7 +92,7 @@
 <script lang="ts" setup>
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/operation-log';
+  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -152,9 +147,10 @@
       title: '操作状态',
       dataIndex: 'status',
       slotName: 'status',
+      align: 'center',
     },
     {
-      title: '操作IP',
+      title: '操作 IP',
       dataIndex: 'clientIp',
     },
     {
@@ -166,6 +162,8 @@
       dataIndex: 'browser',
     },
   ]);
+
+  // 查询列表
   const fetchData = async (
     params: OperationLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
@@ -175,8 +173,6 @@
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
-    } catch (err) {
-      // you can report use errorHandler or other
     } finally {
       setLoading(false);
     }
