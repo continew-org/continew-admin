@@ -27,15 +27,16 @@
 
       <!-- 表格 -->
       <a-table
-        row-key="logId"
-        :loading="loading"
-        :pagination="pagination"
         :columns="columns"
         :data="renderData"
+        :pagination="paginationProps"
+        row-key="logId"
         :bordered="false"
         :stripe="true"
+        :loading="loading"
         size="large"
-        @page-change="onPageChange"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
       >
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -233,6 +234,7 @@
     SystemLogParams,
   } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
+  import { PaginationProps } from '@arco-design/web-vue';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import VueJsonPretty from 'vue-json-pretty';
@@ -244,6 +246,24 @@
   const detailLoading = ref(false);
   const exceptionDetail = ref();
   const queryFormRef = ref<FormInstance>();
+  const queryFormData = ref({
+    createTime: [],
+  });
+  // 查询
+  const toQuery = () => {
+    fetchData({
+      page: pagination.current,
+      size: pagination.pageSize,
+      sort: ['createTime,desc'],
+      ...queryFormData.value,
+    } as unknown as SystemLogParams);
+  };
+  // 重置
+  const resetQuery = async () => {
+    await queryFormRef.value?.resetFields();
+    await fetchData();
+  };
+
   const renderData = ref<SystemLogRecord[]>([]);
   const renderDetailData = ref<SystemLogDetailRecord>({
     logId: '',
@@ -260,17 +280,20 @@
     browser: '',
     createTime: '',
   });
-
-  const queryFormData = ref({
-    createTime: [],
-  });
-
   const basePagination: Pagination = {
     current: 1,
     pageSize: 10,
   };
   const pagination = reactive({
     ...basePagination,
+  });
+  const paginationProps = computed((): PaginationProps => {
+    return {
+      showTotal: true,
+      showPageSize: true,
+      total: pagination.total,
+      current: pagination.current,
+    }
   });
   const columns = computed<TableColumnData[]>(() => [
     {
@@ -323,7 +346,7 @@
     },
   ]);
 
-  // 查询列表
+  // 分页查询列表
   const fetchData = async (
     params: SystemLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
@@ -337,26 +360,13 @@
       setLoading(false);
     }
   };
-
-  const onPageChange = (current: number) => {
+  const handlePageChange = (current: number) => {
     fetchData({ page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
   };
-
-  // 查询
-  const toQuery = () => {
-    fetchData({
-      page: pagination.current,
-      size: pagination.pageSize,
-      sort: ['createTime,desc'],
-      ...queryFormData.value,
-    } as unknown as SystemLogParams);
+  const handlePageSizeChange = (pageSize: number) => {
+    fetchData({ page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
   };
-
-  // 重置
-  const resetQuery = async () => {
-    await queryFormRef.value?.resetFields();
-    await fetchData();
-  };
+  fetchData();
 
   // 查看详情
   const handleClick = async (logId: string) => {
@@ -375,14 +385,12 @@
   const handleCancel = () => {
     visible.value = false;
   }
-  fetchData();
 
   // 查看异常详情
   const handleExceptionDetail = async (record: SystemLogRecord) => {
     exceptionDetailVisible.value = true;
     exceptionDetail.value = record.exceptionDetail;
   };
-
   const handleExceptionDetailOk = () => {
     exceptionDetailVisible.value = false;
     exceptionDetail.value = null;

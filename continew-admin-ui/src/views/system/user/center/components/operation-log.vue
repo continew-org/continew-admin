@@ -1,15 +1,16 @@
 <template>
   <div class="container">
     <a-table
-      row-key="logId"
-      :loading="loading"
-      :pagination="pagination"
       :columns="columns"
       :data="renderData"
+      :pagination="paginationProps"
+      row-key="logId"
       :bordered="false"
       :stripe="true"
+      :loading="loading"
       size="large"
-      @page-change="onPageChange"
+      @page-change="handlePageChange"
+      @page-size-change="handlePageSizeChange"
     >
       <template #index="{ rowIndex }">
         {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -32,7 +33,7 @@
       </template>
       <template #pagination-left>
         <a-tooltip content="刷新">
-          <div class="action-icon" @click="onRefresh">
+          <div class="action-icon" @click="handleRefresh">
             <icon-refresh size="18" />
           </div>
         </a-tooltip>
@@ -43,22 +44,30 @@
 
 <script lang="ts" setup>
   import { computed, ref, reactive } from 'vue';
-  import { useLoginStore } from '@/store';
   import useLoading from '@/hooks/loading';
+  import { useLoginStore } from '@/store';
   import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
+  import { PaginationProps } from "@arco-design/web-vue";
 
   const { loading, setLoading } = useLoading(true);
   const loginStore = useLoginStore();
   const renderData = ref<OperationLogRecord[]>([]);
-
   const basePagination: Pagination = {
     current: 1,
     pageSize: 10,
   };
   const pagination = reactive({
     ...basePagination,
+  });
+  const paginationProps = computed((): PaginationProps => {
+    return {
+      showTotal: true,
+      showPageSize: true,
+      total: pagination.total,
+      current: pagination.current,
+    }
   });
   const columns = computed<TableColumnData[]>(() => [
     {
@@ -93,6 +102,8 @@
       dataIndex: 'browser',
     },
   ]);
+
+  // 分页查询列表
   const fetchData = async (
     params: OperationLogParams = { uid: loginStore.userId, page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
@@ -102,18 +113,17 @@
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
-    } catch (err) {
-      // you can report use errorHandler or other
     } finally {
       setLoading(false);
     }
   };
-
-  const onPageChange = (current: number) => {
+  const handlePageChange = (current: number) => {
     fetchData({ uid: loginStore.userId, page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
   };
-
-  const onRefresh = () => {
+  const handlePageSizeChange = (pageSize: number) => {
+    fetchData({ uid: loginStore.userId, page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
+  };
+  const handleRefresh = () => {
     fetchData({
       uid: loginStore.userId,
       page: pagination.current,
@@ -121,7 +131,6 @@
       sort: ['createTime,desc'],
     } as unknown as OperationLogParams);
   };
-
   fetchData();
 </script>
 
@@ -138,6 +147,7 @@
   }
   .action-icon {
     cursor: pointer;
+    margin-right: 10px;
   }
 
   .action-icon:hover {

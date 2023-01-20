@@ -43,15 +43,16 @@
         </a-col>
       </a-row>
       <a-table
-        row-key="logId"
-        :loading="loading"
-        :pagination="pagination"
         :columns="columns"
         :data="renderData"
+        :pagination="paginationProps"
+        row-key="logId"
         :bordered="false"
         :stripe="true"
+        :loading="loading"
         size="large"
-        @page-change="onPageChange"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
       >
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -82,14 +83,13 @@
   import useLoading from '@/hooks/loading';
   import { queryLoginLogList, LoginLogRecord, LoginLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
+  import { PaginationProps } from '@arco-design/web-vue';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { FormInstance } from '@arco-design/web-vue/es/form';
 
   const { loading, setLoading } = useLoading(true);
   const queryFormRef = ref<FormInstance>();
-  const renderData = ref<LoginLogRecord[]>([]);
-
   const queryFormData = ref({
     status: undefined,
     createTime: [],
@@ -105,12 +105,37 @@
     },
   ]);
 
+  // 查询
+  const toQuery = () => {
+    fetchData({
+      page: pagination.current,
+      size: pagination.pageSize,
+      sort: ['createTime,desc'],
+      ...queryFormData.value,
+    } as unknown as LoginLogParams);
+  };
+
+  // 重置
+  const resetQuery = async () => {
+    await queryFormRef.value?.resetFields();
+    await fetchData();
+  };
+
+  const renderData = ref<LoginLogRecord[]>([]);
   const basePagination: Pagination = {
     current: 1,
     pageSize: 10,
   };
   const pagination = reactive({
     ...basePagination,
+  });
+  const paginationProps = computed((): PaginationProps => {
+    return {
+      showTotal: true,
+      showPageSize: true,
+      total: pagination.total,
+      current: pagination.current,
+    }
   });
   const columns = computed<TableColumnData[]>(() => [
     {
@@ -150,7 +175,7 @@
     },
   ]);
 
-  // 查询列表
+  // 分页查询列表
   const fetchData = async (
     params: LoginLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
@@ -164,25 +189,11 @@
       setLoading(false);
     }
   };
-
-  const onPageChange = (current: number) => {
+  const handlePageChange = (current: number) => {
     fetchData({ page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
   };
-
-  // 查询
-  const toQuery = () => {
-    fetchData({
-      page: pagination.current,
-      size: pagination.pageSize,
-      sort: ['createTime,desc'],
-      ...queryFormData.value,
-    } as unknown as LoginLogParams);
-  };
-
-  // 重置
-  const resetQuery = async () => {
-    await queryFormRef.value?.resetFields();
-    await fetchData();
+  const handlePageSizeChange = (pageSize: number) => {
+    fetchData({ page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
   };
   fetchData();
 </script>
