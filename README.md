@@ -112,6 +112,17 @@ yarn dev
             <td><img src="https://s1.ax1x.com/2023/01/14/pSM33M6.png" alt="修改邮箱-发送验证码" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/14/pSM3lxx.png" alt="修改邮箱-邮箱验证码" width="1920" /></td>
         </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGOIhQ.png" alt="系统监控-在线用户" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGOTpj.png" alt="系统监控-登录日志" width="1920" /></td>
+        </tr>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGO71s.png" alt="系统监控-操作日志" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGOX7T.png" alt="个人中心-操作日志" width="1920" /></td>
+        </tr>
+        </tr>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGObXq.png" alt="系统监控-系统日志" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/21/pSGOLn0.png" alt="系统监控-系统日志-详情" width="1920" /></td>
+        </tr>
     </tbody>
 </table>
 
