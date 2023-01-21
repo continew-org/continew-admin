@@ -1,21 +1,21 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.monitor', 'menu.log.login.list']" />
-    <a-card class="general-card" :title="$t('menu.log.login.list')">
+    <Breadcrumb :items="['menu.monitor', 'menu.online.user.list']" />
+    <a-card class="general-card" :title="$t('menu.online.user.list')">
       <a-row style="margin-bottom: 15px">
         <a-col :span="24">
           <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
-            <a-form-item field="status" hide-label>
-              <a-select
-                v-model="queryFormData.status"
-                :options="statusOptions"
-                placeholder="登录状态搜索"
+            <a-form-item field="nickname" hide-label>
+              <a-input
+                v-model="queryFormData.nickname"
+                placeholder="输入用户昵称搜索"
                 allow-clear
                 style="width: 150px;"
+                @press-enter="toQuery"
               />
             </a-form-item>
-            <a-form-item field="createTime" hide-label>
-              <date-range-picker v-model="queryFormData.createTime" />
+            <a-form-item field="loginTime" hide-label>
+              <date-range-picker v-model="queryFormData.loginTime" />
             </a-form-item>
             <a-button type="primary" @click="toQuery">
               <template #icon>
@@ -47,21 +47,20 @@
         <template #index="{ rowIndex }">
           {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
         </template>
-        <template #status="{ record }">
-          <a-space v-if="record.status === 1">
-            <a-tag color="green">
-              <span class="circle pass"></span>
-              成功
-            </a-tag>
-          </a-space>
-          <a-space v-else>
-            <a-tooltip :content="record.errorMsg">
-              <a-tag color="red" style="cursor: pointer">
-                <span class="circle fail"></span>
-                失败
-              </a-tag>
-            </a-tooltip>
-          </a-space>
+        <template #nickname="{ record }">
+          {{ record.nickname }}（{{record.username}}）
+        </template>
+        <template #operations="{ record }">
+          <a-button
+            v-permission="['admin']"
+            type="text"
+            size="small"
+            :title="currentToken === record.token ? '不能强退当前登录' : ''"
+            :disabled="currentToken === record.token"
+            @click="handleClick(record.token)"
+          >
+            强退
+          </a-button>
         </template>
       </a-table>
     </a-card>
@@ -71,29 +70,22 @@
 <script lang="ts" setup>
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { queryLoginLogList, LoginLogRecord, LoginLogParams } from '@/api/monitor/log';
+  import { Message } from '@arco-design/web-vue';
+  import { queryOnlineUserList, OnlineUserRecord, OnlineUserParams, kickout } from '@/api/monitor/online';
   import { Pagination } from '@/types/global';
   import { PaginationProps } from '@arco-design/web-vue';
-  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { FormInstance } from '@arco-design/web-vue/es/form';
+  import { getToken } from '@/utils/auth';
 
   const { loading, setLoading } = useLoading(true);
+  const currentToken = computed(() => getToken());
   const queryFormRef = ref<FormInstance>();
   const queryFormData = ref({
+    nickname: '',
     status: undefined,
-    createTime: [],
+    loginTime: [],
   });
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: '成功',
-      value: 1,
-    },
-    {
-      label: '失败',
-      value: 2,
-    },
-  ]);
 
   // 查询
   const toQuery = () => {
@@ -102,7 +94,7 @@
       size: pagination.pageSize,
       sort: ['createTime,desc'],
       ...queryFormData.value,
-    } as unknown as LoginLogParams);
+    } as unknown as OnlineUserParams);
   };
 
   // 重置
@@ -111,7 +103,7 @@
     await fetchData();
   };
 
-  const renderData = ref<LoginLogRecord[]>([]);
+  const renderData = ref<OnlineUserRecord[]>([]);
   const basePagination: Pagination = {
     current: 1,
     pageSize: 10,
@@ -135,17 +127,8 @@
     },
     {
       title: '用户昵称',
-      dataIndex: 'createUserString',
-    },
-    {
-      title: '登录行为',
-      dataIndex: 'description',
-    },
-    {
-      title: '登录状态',
-      dataIndex: 'status',
-      slotName: 'status',
-      align: 'center',
+      dataIndex: 'nickname',
+      slotName: 'nickname',
     },
     {
       title: '登录 IP',
@@ -161,17 +144,22 @@
     },
     {
       title: '登录时间',
-      dataIndex: 'createTime',
+      dataIndex: 'loginTime',
+    },
+    {
+      title: '操作',
+      slotName: 'operations',
+      align: 'center',
     },
   ]);
 
   // 分页查询列表
   const fetchData = async (
-    params: LoginLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
+    params: OnlineUserParams = { page: 1, size: 10, sort: ['createTime,desc'] }
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryLoginLogList(params);
+      const { data } = await queryOnlineUserList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
@@ -186,11 +174,17 @@
     fetchData({ page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
   };
   fetchData();
+
+  // 强退
+  const handleClick = async (token: string) => {
+    const res = await kickout(token);
+    if (res.success) Message.success(res.msg);
+  };
 </script>
 
 <script lang="ts">
   export default {
-    name: 'LoginLog',
+    name: 'OnlineUser',
   };
 </script>
 

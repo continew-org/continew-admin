@@ -4,15 +4,8 @@
     <a-card class="general-card" :title="$t('menu.log.operation.list')">
       <a-row style="margin-bottom: 15px">
         <a-col :span="24">
-          <a-form
-            ref="queryFormRef"
-            :model="queryFormData"
-            layout="inline"
-          >
-            <a-form-item
-              field="description"
-              hide-label
-            >
+          <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
+            <a-form-item field="description" hide-label>
               <a-input
                 v-model="queryFormData.description"
                 placeholder="输入操作内容搜索"
@@ -21,10 +14,7 @@
                 @press-enter="toQuery"
               />
             </a-form-item>
-            <a-form-item
-              field="status"
-              hide-label
-            >
+            <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryFormData.status"
                 :options="statusOptions"
@@ -33,10 +23,7 @@
                 style="width: 150px;"
               />
             </a-form-item>
-            <a-form-item
-              field="createTime"
-              hide-label
-            >
+            <a-form-item field="createTime" hide-label>
               <date-range-picker v-model="queryFormData.createTime" />
             </a-form-item>
             <a-button type="primary" @click="toQuery">

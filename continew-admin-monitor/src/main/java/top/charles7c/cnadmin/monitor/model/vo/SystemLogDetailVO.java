@@ -36,9 +36,9 @@ public class SystemLogDetailVO extends LogVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志ID
+     * 日志 ID
      */
-    @Schema(description = "日志ID")
+    @Schema(description = "日志 ID")
     private Long logId;
 
     /**

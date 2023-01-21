@@ -38,9 +38,9 @@ public class LoginLogVO extends LogVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志ID
+     * 日志 ID
      */
-    @Schema(description = "日志ID")
+    @Schema(description = "日志 ID")
     private Long logId;
 
     /**
@@ -56,9 +56,9 @@ public class LoginLogVO extends LogVO implements Serializable {
     private LogStatusEnum status;
 
     /**
-     * 登录IP
+     * 登录 IP
      */
-    @Schema(description = "登录IP")
+    @Schema(description = "登录 IP")
     private String clientIp;
 
     /**

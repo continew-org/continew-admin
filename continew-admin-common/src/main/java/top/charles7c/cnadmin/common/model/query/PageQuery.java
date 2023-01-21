@@ -78,6 +78,10 @@ public class PageQuery implements Serializable {
         this.size = DEFAULT_SIZE;
     }
 
+    public int getPage() {
+        return page < 0 ? DEFAULT_PAGE : page;
+    }
+
     /**
      * 解析排序条件为 Spring 分页排序实体
      *

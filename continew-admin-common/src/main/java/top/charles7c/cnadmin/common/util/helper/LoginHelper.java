@@ -16,15 +16,24 @@
 
 package top.charles7c.cnadmin.common.util.helper;
 
+import java.time.LocalDateTime;
+
+import javax.servlet.http.HttpServletRequest;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.extra.servlet.ServletUtil;
 
 import top.charles7c.cnadmin.common.consts.CacheConstants;
+import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.IpUtils;
+import top.charles7c.cnadmin.common.util.ServletUtils;
+import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 
 /**
  * 登录助手
@@ -42,8 +51,22 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void login(LoginUser loginUser) {
-        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+        if (loginUser == null) {
+            return;
+        }
+
+        // 记录登录信息
+        HttpServletRequest request = ServletUtils.getRequest();
+        loginUser.setClientIp(ServletUtil.getClientIP(request));
+        loginUser.setLocation(IpUtils.getCityInfo(loginUser.getClientIp()));
+        loginUser.setBrowser(ServletUtils.getBrowser(request));
+        LogContext logContext = LogContextHolder.get();
+        loginUser.setLoginTime(logContext != null ? logContext.getCreateTime() : LocalDateTime.now());
+
+        // 登录保存用户信息
         StpUtil.login(loginUser.getUserId());
+        loginUser.setToken(StpUtil.getTokenValue());
+        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
         StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
     }
 

@@ -83,4 +83,29 @@ public class LoginUser implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 令牌
+     */
+    private String token;
+
+    /**
+     * 登录 IP
+     */
+    private String clientIp;
+
+    /**
+     * 登录地点
+     */
+    private String location;
+
+    /**
+     * 浏览器
+     */
+    private String browser;
+
+    /**
+     * 登录时间
+     */
+    private LocalDateTime loginTime;
 }

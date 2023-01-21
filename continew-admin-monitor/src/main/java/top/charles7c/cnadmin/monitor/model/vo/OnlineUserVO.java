@@ -23,48 +23,46 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
-
 /**
- * 操作日志信息
+ * 在线用户信息
  *
  * @author Charles7c
- * @since 2023/1/14 18:27
+ * @since 2023/1/20 21:54
  */
 @Data
-@Schema(description = "操作日志信息")
-public class OperationLogVO extends LogVO implements Serializable {
+@Schema(description = "在线用户信息")
+public class OnlineUserVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志 ID
+     * 令牌
      */
-    @Schema(description = "日志 ID")
-    private Long logId;
+    @Schema(description = "令牌")
+    private String token;
 
     /**
-     * 操作内容
+     * 用户名
      */
-    @Schema(description = "操作内容")
-    private String description;
+    @Schema(description = "用户名")
+    private String username;
 
     /**
-     * 操作状态（1成功 2失败）
+     * 昵称
      */
-    @Schema(description = "操作状态（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
-    private LogStatusEnum status;
+    @Schema(description = "昵称")
+    private String nickname;
 
     /**
-     * 操作IP
+     * 登录 IP
      */
-    @Schema(description = "操作IP")
+    @Schema(description = "登录 IP")
     private String clientIp;
 
     /**
-     * 操作地点
+     * 登录地点
      */
-    @Schema(description = "操作地点")
+    @Schema(description = "登录地点")
     private String location;
 
     /**
@@ -74,14 +72,8 @@ public class OperationLogVO extends LogVO implements Serializable {
     private String browser;
 
     /**
-     * 错误信息
+     * 登录时间
      */
-    @Schema(description = "错误信息")
-    private String errorMsg;
-
-    /**
-     * 操作时间
-     */
-    @Schema(description = "操作时间")
-    private LocalDateTime createTime;
+    @Schema(description = "登录时间")
+    private LocalDateTime loginTime;
 }

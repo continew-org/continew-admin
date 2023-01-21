@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -26,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 
 /**
  * 分页信息
@@ -91,6 +93,39 @@ public class PageInfo<V> {
         PageInfo<V> pageInfo = new PageInfo<>();
         pageInfo.setList(page.getRecords());
         pageInfo.setTotal(pageInfo.getTotal());
+        return pageInfo;
+    }
+
+    /**
+     * 基于列表数据构建分页信息
+     *
+     * @param page
+     *            页码
+     * @param size
+     *            每页记录数
+     * @param list
+     *            列表数据
+     * @param <V>
+     *            列表数据类型
+     * @return 分页信息
+     */
+    public static <V> PageInfo<V> build(int page, int size, List<V> list) {
+        PageInfo<V> pageInfo = new PageInfo<>();
+        if (CollUtil.isEmpty(list)) {
+            return pageInfo;
+        }
+
+        pageInfo.setTotal(list.size());
+        // 对列表数据进行分页
+        int fromIndex = (page - 1) * size;
+        int toIndex = page * size + size;
+        if (fromIndex > list.size()) {
+            pageInfo.setList(new ArrayList<>());
+        } else if (toIndex >= list.size()) {
+            pageInfo.setList(list.subList(fromIndex, list.size()));
+        } else {
+            pageInfo.setList(list.subList(fromIndex, toIndex));
+        }
         return pageInfo;
     }
 }

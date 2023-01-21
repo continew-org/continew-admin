@@ -71,7 +71,7 @@ public interface LogService {
      * 查看系统日志详情
      *
      * @param logId
-     *            日志ID
+     *            日志 ID
      * @return 系统日志详情
      */
     SystemLogDetailVO detail(Long logId);

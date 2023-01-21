@@ -39,7 +39,7 @@ public class SysLog implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志ID
+     * 日志 ID
      */
     @TableId
     private Long logId;

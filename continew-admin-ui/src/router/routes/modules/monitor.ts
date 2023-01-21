@@ -13,6 +13,16 @@ const Monitor: AppRouteRecordRaw = {
   },
   children: [
     {
+      path: '/online',
+      name: 'OnlineUser',
+      component: () => import('@/views/monitor/online/index.vue'),
+      meta: {
+        locale: 'menu.online.user.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: 'log/login',
       name: 'LoginLog',
       component: () => import('@/views/monitor/log/login/index.vue'),

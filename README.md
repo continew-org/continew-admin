@@ -251,10 +251,11 @@ continew-admin
     │  ├─ views             # 页面模板
     │  │  ├─ login            # 登录模块
     │  │  ├─ monitor          # 系统监控模块
-    │  │  │ └─ log              # 日志管理
-    │  │  │   ├─ login            # 登录日志
-    │  │  │   ├─ operation        # 操作日志
-    │  │  │   └─ system           # 系统日志
+    │  │  │  ├─ log              # 日志管理
+    │  │  │  │  ├─ login            # 登录日志
+    │  │  │  │  ├─ operation        # 操作日志
+    │  │  │  │  └─ system           # 系统日志
+    │  │  │  └─ online           # 在线用户
     │  │  └─ system           # 系统管理模块
     │  │    └─ user             # 用户模块
     │  │      └─ center           # 个人中心
