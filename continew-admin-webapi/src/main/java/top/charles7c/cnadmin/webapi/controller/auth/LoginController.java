@@ -67,14 +67,14 @@ public class LoginController {
         // 校验验证码
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
-        ValidationUtils.exIfBlank(captcha, "验证码已失效");
+        ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);
-        ValidationUtils.exIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
 
         // 用户登录
         String rawPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
-        ValidationUtils.exIfBlank(rawPassword, "密码解密失败");
+        ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
         String token = loginService.login(loginRequest.getUsername(), rawPassword);
         return R.ok(new LoginVO().setToken(token));
     }

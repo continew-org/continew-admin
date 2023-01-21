@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
-        CheckUtils.exIfNull(newAvatarFile, "上传头像失败");
+        CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
         assert newAvatarFile != null;
 
         // 更新用户头像
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long userId) {
         SysUser sysUser = this.getById(userId);
-        ValidationUtils.exIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), sysUser.getPassword(),
+        ValidationUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), sysUser.getPassword(),
             "当前密码错误");
 
         // 更新密码和密码重置时间
@@ -125,11 +125,11 @@ public class UserServiceImpl implements UserService {
     public void updateEmail(String newEmail, String currentPassword, Long userId) {
         // 校验
         SysUser sysUser = this.getById(userId);
-        ValidationUtils.exIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), sysUser.getPassword(),
+        ValidationUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), sysUser.getPassword(),
             "当前密码错误");
         Long count = userMapper.selectCount(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getEmail, newEmail));
-        ValidationUtils.exIfCondition(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
-        ValidationUtils.exIfEqual(newEmail, sysUser.getEmail(), "新邮箱不能与当前邮箱相同");
+        ValidationUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
+        ValidationUtils.throwIfEqual(newEmail, sysUser.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
         userMapper.update(null,
@@ -143,9 +143,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SysUser getById(Long userId) {
-        ValidationUtils.exIfNull(userId, "用户不存在");
+        ValidationUtils.throwIfNull(userId, "用户不存在");
         SysUser sysUser = userMapper.selectById(userId);
-        ValidationUtils.exIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
+        ValidationUtils.throwIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
         return sysUser;
     }
 }

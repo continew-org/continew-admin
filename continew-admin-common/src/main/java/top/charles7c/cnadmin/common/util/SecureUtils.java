@@ -57,7 +57,7 @@ public class SecureUtils {
      */
     public static String decryptByRsaPrivateKey(String data) {
         String privateKey = RsaProperties.PRIVATE_KEY;
-        ValidationUtils.exIfBlank(privateKey, "请配置 RSA 私钥");
+        ValidationUtils.throwIfBlank(privateKey, "请配置 RSA 私钥");
         return decryptByRsaPrivateKey(data, privateKey);
     }
 

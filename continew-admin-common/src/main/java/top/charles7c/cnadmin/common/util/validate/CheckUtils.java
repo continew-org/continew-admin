@@ -43,8 +43,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfBlank(CharSequence str, String message) {
-        exIfBlank(str, message, EXCEPTION_TYPE);
+    public static void throwIfBlank(CharSequence str, String message) {
+        throwIfBlank(str, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -55,8 +55,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfNotBlank(CharSequence str, String message) {
-        exIfNotBlank(str, message, EXCEPTION_TYPE);
+    public static void throwIfNotBlank(CharSequence str, String message) {
+        throwIfNotBlank(str, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -69,8 +69,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfEqual(Object obj1, Object obj2, String message) {
-        exIfEqual(obj1, obj2, message, EXCEPTION_TYPE);
+    public static void throwIfEqual(Object obj1, Object obj2, String message) {
+        throwIfEqual(obj1, obj2, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -83,8 +83,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfNotEqual(Object obj1, Object obj2, String message) {
-        exIfNotEqual(obj1, obj2, message, EXCEPTION_TYPE);
+    public static void throwIfNotEqual(Object obj1, Object obj2, String message) {
+        throwIfNotEqual(obj1, obj2, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -97,8 +97,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
-        exIfEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
+    public static void throwIfEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
+        throwIfEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -111,8 +111,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfNotEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
-        exIfNotEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
+    public static void throwIfNotEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
+        throwIfNotEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -123,8 +123,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfNull(Object obj, String message) {
-        exIfNull(obj, message, EXCEPTION_TYPE);
+    public static void throwIfNull(Object obj, String message) {
+        throwIfNull(obj, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -135,8 +135,8 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfNotNull(Object obj, String message) {
-        exIfNotNull(obj, message, EXCEPTION_TYPE);
+    public static void throwIfNotNull(Object obj, String message) {
+        throwIfNotNull(obj, message, EXCEPTION_TYPE);
     }
 
     /**
@@ -147,7 +147,7 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void exIfCondition(java.util.function.BooleanSupplier conditionSupplier, String message) {
-        exIfCondition(conditionSupplier, message, EXCEPTION_TYPE);
+    public static void throwIf(java.util.function.BooleanSupplier conditionSupplier, String message) {
+        throwIf(conditionSupplier, message, EXCEPTION_TYPE);
     }
 }

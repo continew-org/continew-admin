@@ -135,7 +135,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public SystemLogDetailVO detail(Long logId) {
         SysLog sysLog = logMapper.selectById(logId);
-        ValidationUtils.exIfNull(sysLog, String.format("ID为 [%s] 的日志已不存在", logId));
+        ValidationUtils.throwIfNull(sysLog, String.format("ID为 [%s] 的日志已不存在", logId));
 
         SystemLogDetailVO detailVO = BeanUtil.copyProperties(sysLog, SystemLogDetailVO.class);
         this.fill(detailVO);

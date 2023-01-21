@@ -70,13 +70,13 @@ public class UserCenterController {
     @PostMapping("/avatar")
     public R<AvatarVO> uploadAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) {
         // 校验
-        ValidationUtils.exIfCondition(avatarFile::isEmpty, "头像不能为空");
+        ValidationUtils.throwIf(avatarFile::isEmpty, "头像不能为空");
         Long avatarMaxSizeInMb = localStorageProperties.getAvatarMaxSizeInMb();
-        ValidationUtils.exIfCondition(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
+        ValidationUtils.throwIf(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
             String.format("请上传小于 %s MB 的图片", avatarMaxSizeInMb));
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
-        ValidationUtils.exIfCondition(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
+        ValidationUtils.throwIf(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
             String.format("头像仅支持 %s 格式的图片", String.join("，", avatarSupportImgTypes)));
 
         // 上传头像
@@ -100,15 +100,15 @@ public class UserCenterController {
         // 解密
         String rawOldPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getOldPassword()));
-        ValidationUtils.exIfBlank(rawOldPassword, "当前密码解密失败");
+        ValidationUtils.throwIfBlank(rawOldPassword, "当前密码解密失败");
         String rawNewPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
-        ValidationUtils.exIfBlank(rawNewPassword, "新密码解密失败");
+        ValidationUtils.throwIfBlank(rawNewPassword, "新密码解密失败");
 
         // 校验
-        ValidationUtils.exIfCondition(() -> !ReUtil.isMatch(RegExpConstants.PASSWORD, rawNewPassword),
+        ValidationUtils.throwIf(() -> !ReUtil.isMatch(RegExpConstants.PASSWORD, rawNewPassword),
             "密码长度 6 到 32 位，同时包含数字和字母");
-        ValidationUtils.exIfEqual(rawNewPassword, rawOldPassword, "新密码不能与当前密码相同");
+        ValidationUtils.throwIfEqual(rawNewPassword, rawOldPassword, "新密码不能与当前密码相同");
 
         // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
@@ -121,13 +121,13 @@ public class UserCenterController {
         // 解密
         String rawCurrentPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateEmailRequest.getCurrentPassword()));
-        ValidationUtils.exIfBlank(rawCurrentPassword, "当前密码解密失败");
+        ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
 
         // 校验
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, updateEmailRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
-        ValidationUtils.exIfBlank(captcha, "验证码已失效");
-        ValidationUtils.exIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfBlank(captcha, "验证码已失效");
+        ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
 
         // 修改邮箱

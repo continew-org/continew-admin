@@ -186,7 +186,7 @@ public class MailUtils {
      */
     public static void send(Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject,
         String content, boolean isHtml, File... files) throws MessagingException {
-        CheckUtils.exIfCondition(() -> CollUtil.isEmpty(tos), "请至少指定一名收件人");
+        CheckUtils.throwIf(() -> CollUtil.isEmpty(tos), "请至少指定一名收件人");
         MimeMessage mimeMessage = MAIL_SENDER.createMimeMessage();
         MimeMessageHelper messageHelper =
             new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.displayName());

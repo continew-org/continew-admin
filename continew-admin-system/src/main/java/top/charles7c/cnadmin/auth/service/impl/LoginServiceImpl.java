@@ -50,11 +50,11 @@ public class LoginServiceImpl implements LoginService {
         SysUser sysUser = userService.getByUsername(username);
 
         // 校验
-        ValidationUtils.exIfNull(sysUser, "用户名或密码错误");
+        ValidationUtils.throwIfNull(sysUser, "用户名或密码错误");
         Long userId = sysUser.getUserId();
-        ValidationUtils.exIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), sysUser.getPassword(),
+        ValidationUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), sysUser.getPassword(),
             "用户名或密码错误");
-        ValidationUtils.exIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        ValidationUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(sysUser, LoginUser.class);
