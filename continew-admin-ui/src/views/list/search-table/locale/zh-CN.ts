@@ -18,7 +18,10 @@ export default {
   'searchTable.form.search': '查询',
   'searchTable.form.reset': '重置',
   'searchTable.form.selectDefault': '全部',
-  'searchTable.operation.create': '新建',
+  'searchTable.operation.create': '新增',
+  'searchTable.operation.update': '修改',
+  'searchTable.operation.delete': '删除',
+  'searchTable.operation.export': '导出',
   'searchTable.operation.import': '批量导入',
   'searchTable.operation.download': '下载',
   // columns

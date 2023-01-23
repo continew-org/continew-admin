@@ -18,7 +18,10 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
+import cn.hutool.core.lang.tree.Tree;
+
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
+import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 
 /**
@@ -37,4 +40,44 @@ public interface DeptService {
      * @return 列表数据
      */
     List<DeptVO> list(DeptQuery query);
+
+    /**
+     * 构建树
+     *
+     * @param list
+     *            原始列表数据
+     * @return 树列表
+     */
+    List<DeptVO> buildListTree(List<DeptVO> list);
+
+    /**
+     * 构建树
+     *
+     * @param list
+     *            原始列表数据
+     * @return 树列表
+     */
+    List<Tree<Long>> buildTree(List<DeptVO> list);
+
+    /**
+     * 新增
+     *
+     * @param request
+     *            创建信息
+     * @return 新增记录 ID
+     */
+    Long create(CreateDeptRequest request);
+
+    /**
+     * 检查部门名称是否存在
+     *
+     * @param deptName
+     *            部门名称
+     * @param parentId
+     *            上级部门 ID
+     * @param deptId
+     *            部门 ID
+     * @return 是否存在
+     */
+    boolean checkDeptNameExist(String deptName, Long parentId, Long deptId);
 }

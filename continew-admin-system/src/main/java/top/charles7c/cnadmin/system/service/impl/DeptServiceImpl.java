@@ -24,17 +24,23 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
 
+import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.SysDept;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
+import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -60,31 +66,11 @@ public class DeptServiceImpl implements DeptService {
         List<SysDept> list = deptMapper.selectList(queryWrapper);
         List<DeptVO> voList = BeanUtil.copyToList(list, DeptVO.class);
         voList.forEach(this::fill);
-        return buildTree(voList);
+        return voList;
     }
 
-    /**
-     * 填充数据
-     *
-     * @param vo
-     *            VO
-     */
-    private void fill(DeptVO vo) {
-        Long updateUser = vo.getUpdateUser();
-        if (updateUser == null) {
-            return;
-        }
-        vo.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(vo.getUpdateUser())).getNickname());
-    }
-
-    /**
-     * 构建树
-     *
-     * @param list
-     *            原始列表数据
-     * @return 树列表
-     */
-    private List<DeptVO> buildTree(List<DeptVO> list) {
+    @Override
+    public List<DeptVO> buildListTree(List<DeptVO> list) {
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>();
         }
@@ -133,5 +119,44 @@ public class DeptServiceImpl implements DeptService {
     private List<DeptVO> getChildren(DeptVO dept, List<DeptVO> list) {
         return list.stream().filter(d -> Objects.equals(d.getParentId(), dept.getDeptId()))
             .map(d -> d.setChildren(this.getChildren(d, list))).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Tree<Long>> buildTree(List<DeptVO> list) {
+        return TreeUtils.build(list, (dept, tree) -> {
+            tree.setId(dept.getDeptId());
+            tree.setName(dept.getDeptName());
+            tree.setParentId(dept.getParentId());
+            tree.setWeight(dept.getDeptSort());
+        });
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long create(CreateDeptRequest request) {
+        SysDept sysDept = BeanUtil.copyProperties(request, SysDept.class);
+        sysDept.setStatus(DisEnableStatusEnum.ENABLE);
+        deptMapper.insert(sysDept);
+        return sysDept.getDeptId();
+    }
+
+    @Override
+    public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
+        return deptMapper.exists(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getDeptName, deptName)
+            .eq(SysDept::getParentId, parentId).ne(deptId != null, SysDept::getDeptId, deptId));
+    }
+
+    /**
+     * 填充数据
+     *
+     * @param vo
+     *            VO
+     */
+    private void fill(DeptVO vo) {
+        Long updateUser = vo.getUpdateUser();
+        if (updateUser == null) {
+            return;
+        }
+        vo.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(vo.getUpdateUser())).getNickname());
     }
 }

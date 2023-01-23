@@ -19,6 +19,9 @@ export default {
   'searchTable.form.reset': 'Reset',
   'searchTable.form.selectDefault': 'All',
   'searchTable.operation.create': 'Create',
+  'searchTable.operation.update': 'Update',
+  'searchTable.operation.delete': 'Delete',
+  'searchTable.operation.export': 'Export',
   'searchTable.operation.import': 'Import',
   'searchTable.operation.download': 'Download',
   // columns

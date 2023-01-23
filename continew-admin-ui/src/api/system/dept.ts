@@ -1,11 +1,10 @@
 import axios from 'axios';
-
 import qs from 'query-string';
 
 export interface DeptRecord {
   deptId: string;
   deptName: string;
-  parentId: string;
+  parentId: number;
   deptSort: number;
   description: string;
   status: number;
@@ -14,10 +13,9 @@ export interface DeptRecord {
   children: Array<DeptRecord>,
 }
 
-export interface DeptParams extends Partial<DeptRecord> {
-  page: number;
-  size: number;
-  sort: Array<string>;
+export interface DeptParams {
+  deptName?: string;
+  status?: number;
 }
 
 export function getDeptList(params: DeptParams) {
@@ -27,4 +25,14 @@ export function getDeptList(params: DeptParams) {
       return qs.stringify(obj);
     },
   });
+}
+
+export interface CreateDeptReq {
+  parentId: number;
+  deptName: string;
+  deptSort: number;
+  description: string;
+}
+export function createDept(req: CreateDeptReq) {
+  return axios.post('/system/dept', req);
 }

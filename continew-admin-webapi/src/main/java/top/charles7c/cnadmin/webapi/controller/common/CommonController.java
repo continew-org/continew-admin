@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.webapi.controller.system;
+package top.charles7c.cnadmin.webapi.controller.common;
 
 import java.util.List;
 
@@ -25,46 +25,37 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 
 /**
- * 部门管理 API
+ * 公共 API
  *
  * @author Charles7c
- * @since 2023/1/22 17:50
+ * @since 2023/1/22 21:48
  */
-@Tag(name = "部门管理 API")
+@Tag(name = "公共 API")
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/system/dept", produces = MediaType.APPLICATION_JSON_VALUE)
-public class DeptController {
+@RequestMapping(value = "/common", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CommonController {
 
     private final DeptService deptService;
 
-    @Operation(summary = "查询部门列表")
-    @GetMapping
-    public R<List<DeptVO>> list(@Validated DeptQuery query) {
+    @Operation(summary = "查询部门树")
+    @GetMapping("/tree/dept")
+    public R<List<Tree<Long>>> deptTree(@Validated DeptQuery query) {
         List<DeptVO> list = deptService.list(query);
-        return R.ok(deptService.buildListTree(list));
-    }
-
-    @Operation(summary = "新增部门")
-    @PostMapping
-    public R<Long> create(@Validated @RequestBody CreateDeptRequest request) {
-        // 校验
-        String deptName = request.getDeptName();
-        boolean isExist = deptService.checkDeptNameExist(deptName, request.getParentId(), null);
-        if (isExist) {
-            return R.fail(String.format("新增失败，'%s'已存在", deptName));
-        }
-
-        return R.ok("新增成功", deptService.create(request));
+        List<Tree<Long>> deptTree = deptService.buildTree(list);
+        return R.ok(deptTree);
     }
 }
