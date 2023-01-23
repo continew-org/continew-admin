@@ -8,6 +8,8 @@ import localeMonitor from '@/views/dashboard/monitor/locale/en-US';
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/en-US';
 import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/en-US';
 
+import localeDept from '@/views/system/dept/locale/en-US';
+
 import localeOnlineUser from '@/views/monitor/online/locale/en-US';
 import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
 import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
@@ -39,6 +41,7 @@ export default {
   'menu.server.workplace': 'Workplace-Server',
   'menu.server.monitor': 'Monitor-Server',
   'menu.visualization': 'Data Visualization',
+  'menu.system': 'System management',
   'menu.monitor': 'Monitor',
   'menu.list': 'List',
   'menu.form': 'Form',
@@ -57,6 +60,8 @@ export default {
   ...localeMonitor,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
+
+  ...localeDept,
 
   ...localeOnlineUser,
   ...localeLoginLog,

@@ -71,7 +71,7 @@
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
   import { Message } from '@arco-design/web-vue';
-  import { queryOnlineUserList, OnlineUserRecord, OnlineUserParams, kickout } from '@/api/monitor/online';
+  import { getOnlineUserList, OnlineUserRecord, OnlineUserParams, kickout } from '@/api/monitor/online';
   import { Pagination } from '@/types/global';
   import { PaginationProps } from '@arco-design/web-vue';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
@@ -83,7 +83,6 @@
   const queryFormRef = ref<FormInstance>();
   const queryFormData = ref({
     nickname: '',
-    status: undefined,
     loginTime: [],
   });
 
@@ -159,7 +158,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryOnlineUserList(params);
+      const { data } = await getOnlineUserList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;

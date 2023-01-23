@@ -47,7 +47,7 @@ export interface LoginLogListRes {
   list: LoginLogRecord[];
   total: number;
 }
-export function queryLoginLogList(params: LoginLogParams) {
+export function getLoginLogList(params: LoginLogParams) {
   return axios.get<LoginLogListRes>('/monitor/log/login', {
     params,
     paramsSerializer: (obj) => {
@@ -66,7 +66,7 @@ export interface OperationLogListRes {
   list: OperationLogRecord[];
   total: number;
 }
-export function queryOperationLogList(params: OperationLogParams) {
+export function getOperationLogList(params: OperationLogParams) {
   return axios.get<OperationLogListRes>('/monitor/log/operation', {
     params,
     paramsSerializer: (obj) => {
@@ -85,7 +85,7 @@ export interface SystemLogListRes {
   list: SystemLogRecord[];
   total: number;
 }
-export function querySystemLogList(params: SystemLogParams) {
+export function getSystemLogList(params: SystemLogParams) {
   return axios.get<SystemLogListRes>('/monitor/log/system', {
     params,
     paramsSerializer: (obj) => {
@@ -94,6 +94,6 @@ export function querySystemLogList(params: SystemLogParams) {
   });
 }
 
-export function querySystemLogDetail(logId: string) {
+export function getSystemLogDetail(logId: string) {
   return axios.get<SystemLogDetailRecord>(`/monitor/log/system/${logId}`);
 }

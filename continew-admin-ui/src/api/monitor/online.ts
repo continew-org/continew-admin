@@ -21,7 +21,7 @@ export interface OnlineUserListRes {
   total: number;
 }
 
-export function queryOnlineUserList(params: OnlineUserParams) {
+export function getOnlineUserList(params: OnlineUserParams) {
   return axios.get<OnlineUserListRes>('/monitor/online/user', {
     params,
     paramsSerializer: (obj) => {

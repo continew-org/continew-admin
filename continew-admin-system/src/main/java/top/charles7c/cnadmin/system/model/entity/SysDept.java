@@ -16,69 +16,46 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
-import java.time.LocalDateTime;
-
 import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 
 /**
- * 用户实体
+ * 部门实体
  *
  * @author Charles7c
- * @since 2022/12/21 20:42
+ * @since 2023/1/22 13:50
  */
 @Data
-@TableName("sys_user")
-public class SysUser extends BaseEntity {
+@TableName("sys_dept")
+public class SysDept extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
+     * 部门 ID
      */
     @TableId
-    private Long userId;
+    private Long deptId;
 
     /**
-     * 用户名
+     * 部门名称
      */
-    private String username;
+    private String deptName;
 
     /**
-     * 昵称
+     * 上级部门 ID
      */
-    private String nickname;
+    private Long parentId;
 
     /**
-     * 密码
+     * 部门排序
      */
-    private String password;
-
-    /**
-     * 性别（0未知 1男 2女）
-     */
-    private GenderEnum gender;
-
-    /**
-     * 手机号码
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 头像地址
-     */
-    private String avatar;
+    private Integer deptSort;
 
     /**
      * 描述
@@ -89,9 +66,4 @@ public class SysUser extends BaseEntity {
      * 状态（1启用 2禁用）
      */
     private DisEnableStatusEnum status;
-
-    /**
-     * 最后一次修改密码的时间
-     */
-    private LocalDateTime pwdResetTime;
 }

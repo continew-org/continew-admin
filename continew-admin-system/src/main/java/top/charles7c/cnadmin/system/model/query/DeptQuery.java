@@ -14,46 +14,42 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.model.query;
+package top.charles7c.cnadmin.system.model.query;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springdoc.api.annotations.ParameterObject;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
 
 /**
- * 登录日志查询条件
+ * 部门查询条件
  *
  * @author Charles7c
- * @since 2023/1/16 23:25
+ * @since 2023/1/22 17:52
  */
 @Data
 @ParameterObject
-@Schema(description = "登录日志查询条件")
-public class LoginLogQuery implements Serializable {
+@Schema(description = "部门查询条件")
+public class DeptQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 登录状态（1成功 2失败）
+     * 部门名称
      */
-    @Schema(description = "登录状态（1成功 2失败）")
-    @Query
-    private Integer status;
+    @Schema(description = "部门名称")
+    @Query(type = Query.Type.INNER_LIKE)
+    private String deptName;
 
     /**
-     * 登录时间
+     * 状态（1启用 2禁用）
      */
-    @Schema(description = "登录时间")
-    @Query(type = Query.Type.BETWEEN)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private List<Date> createTime;
+    @Schema(description = "状态（1启用 2禁用）")
+    @Query
+    private Integer status;
 }

@@ -171,7 +171,7 @@
             captchaBtnNameKey.value = t('userCenter.securitySettings.updateEmail.form.reSendCaptcha');
             captchaDisable.value = false;
           }
-        }, 1000)
+        }, 1000);
       }
     } catch (err) {
       resetCaptcha();

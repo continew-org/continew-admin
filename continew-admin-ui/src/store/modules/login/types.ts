@@ -7,7 +7,7 @@ export interface UserState {
   phone?: string;
   email: string;
   avatar?: string;
-  notes?: string;
+  description?: string;
   pwdResetTime?: string;
   registrationDate?: string;
 

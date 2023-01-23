@@ -9,7 +9,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     locale: 'menu.exception',
     requiresAuth: true,
     icon: 'icon-exclamation-circle',
-    order: 7,
+    order: 8,
   },
   children: [
     {

@@ -9,7 +9,7 @@ const RESULT: AppRouteRecordRaw = {
     locale: 'menu.result',
     icon: 'icon-check-circle',
     requiresAuth: true,
-    order: 6,
+    order: 7,
   },
   children: [
     {

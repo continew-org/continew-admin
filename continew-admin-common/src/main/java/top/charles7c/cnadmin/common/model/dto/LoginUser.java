@@ -70,9 +70,9 @@ public class LoginUser implements Serializable {
     private String avatar;
 
     /**
-     * 备注
+     * 描述
      */
-    private String notes;
+    private String description;
 
     /**
      * 最后一次修改密码的时间

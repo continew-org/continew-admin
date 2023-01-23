@@ -20,7 +20,7 @@ const useLoginStore = defineStore('user', {
     phone: undefined,
     email: '',
     avatar: undefined,
-    notes: undefined,
+    description: undefined,
     pwdResetTime: undefined,
     registrationDate: undefined,
 

@@ -8,6 +8,8 @@ import localeMonitor from '@/views/dashboard/monitor/locale/zh-CN';
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/zh-CN';
 import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/zh-CN';
 
+import localeDept from '@/views/system/dept/locale/zh-CN';
+
 import localeOnlineUser from '@/views/monitor/online/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
 import localeOperationLog from '@/views/monitor/log/operation/locale/zh-CN';
@@ -39,6 +41,7 @@ export default {
   'menu.server.workplace': '工作台-服务端',
   'menu.server.monitor': '实时监控-服务端',
   'menu.visualization': '数据可视化',
+  'menu.system': '系统管理',
   'menu.monitor': '系统监控',
   'menu.list': '列表页',
   'menu.form': '表单页',
@@ -57,6 +60,8 @@ export default {
   ...localeMonitor,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
+
+  ...localeDept,
 
   ...localeOnlineUser,
   ...localeLoginLog,

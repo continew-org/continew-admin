@@ -227,9 +227,9 @@
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
   import {
-    querySystemLogDetail,
+    getSystemLogDetail,
     SystemLogDetailRecord,
-    querySystemLogList,
+    getSystemLogList,
     SystemLogRecord,
     SystemLogParams,
   } from '@/api/monitor/log';
@@ -352,7 +352,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await querySystemLogList(params);
+      const { data } = await getSystemLogList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
@@ -373,7 +373,7 @@
     visible.value = true;
     detailLoading.value = true;
     try {
-      const { data } = await querySystemLogDetail(logId);
+      const { data } = await getSystemLogDetail(logId);
       renderDetailData.value = data;
     } finally {
       detailLoading.value = false;

@@ -71,7 +71,7 @@
 <script lang="ts" setup>
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { queryLoginLogList, LoginLogRecord, LoginLogParams } from '@/api/monitor/log';
+  import { getLoginLogList, LoginLogRecord, LoginLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import { PaginationProps } from '@arco-design/web-vue';
   import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
@@ -171,7 +171,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryLoginLogList(params);
+      const { data } = await getLoginLogList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;

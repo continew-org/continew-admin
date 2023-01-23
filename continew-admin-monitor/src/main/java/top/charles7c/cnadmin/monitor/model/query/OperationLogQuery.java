@@ -62,7 +62,7 @@ public class OperationLogQuery implements Serializable {
      * 操作状态（1成功 2失败）
      */
     @Schema(description = "操作状态（1成功 2失败）")
-    @Query(type = Type.EQUAL)
+    @Query
     private Integer status;
 
     /**

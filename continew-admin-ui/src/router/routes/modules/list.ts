@@ -9,7 +9,7 @@ const LIST: AppRouteRecordRaw = {
     locale: 'menu.list',
     requiresAuth: true,
     icon: 'icon-list',
-    order: 3,
+    order: 4,
   },
   children: [
     {

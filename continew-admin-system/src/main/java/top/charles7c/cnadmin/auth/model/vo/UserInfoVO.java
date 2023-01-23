@@ -87,10 +87,10 @@ public class UserInfoVO implements Serializable {
     private String avatar;
 
     /**
-     * 备注
+     * 描述
      */
-    @Schema(description = "备注")
-    private String notes;
+    @Schema(description = "描述")
+    private String description;
 
     /**
      * 最后一次修改密码的时间

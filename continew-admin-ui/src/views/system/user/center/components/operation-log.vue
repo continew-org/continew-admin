@@ -46,7 +46,7 @@
   import { computed, ref, reactive } from 'vue';
   import useLoading from '@/hooks/loading';
   import { useLoginStore } from '@/store';
-  import { queryOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
+  import { getOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
   import { Pagination } from '@/types/global';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { PaginationProps } from "@arco-design/web-vue";
@@ -109,7 +109,7 @@
   ) => {
     setLoading(true);
     try {
-      const { data } = await queryOperationLogList(params);
+      const { data } = await getOperationLogList(params);
       renderData.value = data.list;
       pagination.current = params.page;
       pagination.total = data.total;
