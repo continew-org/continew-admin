@@ -20,11 +20,12 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
@@ -45,7 +46,7 @@ public class UpdateBasicInfoRequest implements Serializable {
      */
     @Schema(description = "昵称")
     @NotBlank(message = "昵称不能为空")
-    @Size(max = 32, message = "昵称长度不能超过 32 个字符")
+    @Length(max = 32, message = "昵称长度不能超过 32 个字符")
     private String nickname;
 
     /**

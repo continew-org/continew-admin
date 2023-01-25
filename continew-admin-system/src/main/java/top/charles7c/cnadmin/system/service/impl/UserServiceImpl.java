@@ -30,15 +30,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
+import top.charles7c.cnadmin.common.consts.FileConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.SysUser;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -64,6 +65,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long userId) {
+        Long avatarMaxSizeInMb = localStorageProperties.getAvatarMaxSizeInMb();
+        CheckUtils.throwIf(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
+            String.format("请上传小于 %s MB 的图片", avatarMaxSizeInMb));
+        String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
+        String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
+        CheckUtils.throwIf(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
+            String.format("头像仅支持 %s 格式的图片", String.join("，", avatarSupportImgTypes)));
+
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
@@ -103,8 +112,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long userId) {
+        CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         SysUser sysUser = this.getById(userId);
-        ValidationUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), sysUser.getPassword(),
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), sysUser.getPassword(),
             "当前密码错误");
 
         // 更新密码和密码重置时间
@@ -123,13 +133,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long userId) {
-        // 校验
         SysUser sysUser = this.getById(userId);
-        ValidationUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), sysUser.getPassword(),
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), sysUser.getPassword(),
             "当前密码错误");
         Long count = userMapper.selectCount(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getEmail, newEmail));
-        ValidationUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
-        ValidationUtils.throwIfEqual(newEmail, sysUser.getEmail(), "新邮箱不能与当前邮箱相同");
+        CheckUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
+        CheckUtils.throwIfEqual(newEmail, sysUser.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
         userMapper.update(null,
@@ -143,9 +152,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SysUser getById(Long userId) {
-        ValidationUtils.throwIfNull(userId, "用户不存在");
         SysUser sysUser = userMapper.selectById(userId);
-        ValidationUtils.throwIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
+        CheckUtils.throwIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
         return sysUser;
     }
 }

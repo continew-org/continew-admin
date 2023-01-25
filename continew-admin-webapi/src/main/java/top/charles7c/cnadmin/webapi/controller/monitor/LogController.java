@@ -47,7 +47,6 @@ import top.charles7c.cnadmin.monitor.service.LogService;
  * @since 2023/1/18 23:55
  */
 @Tag(name = "日志管理 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/monitor/log", produces = MediaType.APPLICATION_JSON_VALUE)

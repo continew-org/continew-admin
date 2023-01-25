@@ -33,6 +33,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  * @since 2023/1/24 19:51
  */
 @Data
+@Schema(description = "修改状态信息")
 public class UpdateStatusRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,7 +41,7 @@ public class UpdateStatusRequest implements Serializable {
     /**
      * 状态（1启用 2禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
     @NotNull(message = "状态非法")
     private DisEnableStatusEnum status;
 }

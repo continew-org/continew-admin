@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 
 /**
- * 业务检查工具类（抛出 500 ServiceException）
+ * 业务参数校验工具类（抛出 500 ServiceException）
  *
  * @author Charles7c
  * @see ServiceException

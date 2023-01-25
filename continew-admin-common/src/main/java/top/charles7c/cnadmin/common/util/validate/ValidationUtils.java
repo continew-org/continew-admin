@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 
 /**
- * 校验工具类（抛出 400 BadRequestException）
+ * 基本参数校验工具类（抛出 400 BadRequestException）
  *
  * @author Charles7c
  * @since 2022/12/21 20:56

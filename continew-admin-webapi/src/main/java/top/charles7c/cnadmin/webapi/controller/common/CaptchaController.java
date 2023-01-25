@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.*;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
 /**
  * 验证码 API
@@ -89,12 +89,11 @@ public class CaptchaController {
     public R getMailCaptcha(
         @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email)
         throws MessagingException {
-        // 校验
         String limitCacheKey = CacheConstants.LIMIT_CACHE_KEY;
         String captchaCacheKey = CacheConstants.CAPTCHA_CACHE_KEY;
         String limitCaptchaKey = RedisUtils.formatKey(limitCacheKey, captchaCacheKey, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
-        ValidationUtils.throwIf(() -> limitTimeInMillisecond > 0,
+        CheckUtils.throwIf(() -> limitTimeInMillisecond > 0,
             String.format("发送邮箱验证码过于频繁，请您 %ds 后再试", limitTimeInMillisecond / 1000));
 
         // 生成验证码

@@ -19,11 +19,12 @@ package top.charles7c.cnadmin.system.model.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.hibernate.validator.constraints.Length;
 
 /**
  * 创建部门信息
@@ -60,6 +61,6 @@ public class CreateDeptRequest implements Serializable {
      * 描述
      */
     @Schema(description = "描述")
-    @Size(max = 200, message = "描述长度不能超过 200 个字符")
+    @Length(max = 200, message = "描述长度不能超过 200 个字符")
     private String description;
 }

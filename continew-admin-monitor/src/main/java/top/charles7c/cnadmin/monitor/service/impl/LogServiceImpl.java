@@ -38,7 +38,7 @@ import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.monitor.mapper.LogMapper;
 import top.charles7c.cnadmin.monitor.model.entity.SysLog;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
@@ -135,7 +135,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public SystemLogDetailVO detail(Long logId) {
         SysLog sysLog = logMapper.selectById(logId);
-        ValidationUtils.throwIfNull(sysLog, String.format("ID为 [%s] 的日志已不存在", logId));
+        CheckUtils.throwIfNull(sysLog, String.format("ID为 [%s] 的日志已不存在", logId));
 
         SystemLogDetailVO detailVO = BeanUtil.copyProperties(sysLog, SystemLogDetailVO.class);
         this.fill(detailVO);

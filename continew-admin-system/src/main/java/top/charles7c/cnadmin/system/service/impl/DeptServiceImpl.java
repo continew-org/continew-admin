@@ -37,6 +37,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.SysDept;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
@@ -75,7 +76,7 @@ public class DeptServiceImpl implements DeptService {
             return new ArrayList<>();
         }
 
-        // 去重
+        // 去除重复子部门列表
         List<DeptVO> deDuplicationDeptList = deDuplication(list);
         return deDuplicationDeptList.stream().map(d -> d.setChildren(this.getChildren(d, list)))
             .collect(Collectors.toList());
@@ -134,6 +135,11 @@ public class DeptServiceImpl implements DeptService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long create(CreateDeptRequest request) {
+        String deptName = request.getDeptName();
+        boolean isExist = this.checkDeptNameExist(deptName, request.getParentId(), null);
+        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
+
+        // 保存部门信息
         SysDept sysDept = BeanUtil.copyProperties(request, SysDept.class);
         sysDept.setStatus(DisEnableStatusEnum.ENABLE);
         deptMapper.insert(sysDept);

@@ -43,7 +43,6 @@ import top.charles7c.cnadmin.system.service.DeptService;
  * @since 2023/1/22 17:50
  */
 @Tag(name = "部门管理 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/system/dept", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,17 +60,12 @@ public class DeptController {
     @Operation(summary = "新增部门")
     @PostMapping
     public R<Long> create(@Validated @RequestBody CreateDeptRequest request) {
-        // 校验
-        String deptName = request.getDeptName();
-        boolean isExist = deptService.checkDeptNameExist(deptName, request.getParentId(), null);
-        if (isExist) {
-            return R.fail(String.format("新增失败，'%s'已存在", deptName));
-        }
-
-        return R.ok("新增成功", deptService.create(request));
+        Long id = deptService.create(request);
+        return R.ok("新增成功", id);
     }
 
     @Operation(summary = "修改部门状态")
+    @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
     @PatchMapping("/{ids}")
     public R updateStatus(@PathVariable List<Long> ids, @Validated @RequestBody UpdateStatusRequest request) {
         deptService.updateStatus(ids, request.getStatus());

@@ -35,7 +35,6 @@ import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -58,7 +57,6 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 public class LoginController {
 
     private final LoginService loginService;
-    private final CaptchaProperties captchaProperties;
 
     @SaIgnore
     @Operation(summary = "用户登录", description = "根据用户名和密码进行登录认证")

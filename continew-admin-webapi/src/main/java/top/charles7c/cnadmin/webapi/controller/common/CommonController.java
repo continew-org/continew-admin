@@ -43,7 +43,6 @@ import top.charles7c.cnadmin.system.service.DeptService;
  * @since 2023/1/22 21:48
  */
 @Tag(name = "公共 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/common", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +50,7 @@ public class CommonController {
 
     private final DeptService deptService;
 
-    @Operation(summary = "查询部门树")
+    @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> deptTree(@Validated DeptQuery query) {
         List<DeptVO> list = deptService.list(query);

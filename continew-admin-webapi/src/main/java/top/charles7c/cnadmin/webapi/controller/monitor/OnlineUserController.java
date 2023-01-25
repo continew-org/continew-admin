@@ -43,7 +43,7 @@ import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageInfo;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.monitor.model.query.OnlineUserQuery;
 import top.charles7c.cnadmin.monitor.model.vo.*;
 
@@ -54,7 +54,6 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
  * @since 2023/1/20 21:51
  */
 @Tag(name = "在线用户 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/monitor/online/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,7 +66,7 @@ public class OnlineUserController {
         List<String> tokenKeyList = StpUtil.searchTokenValue("", 0, -1, false);
         for (String tokenKey : tokenKeyList) {
             String token = StrUtil.subAfter(tokenKey, ":", true);
-            // 忽略已过期或失效 token
+            // 忽略已过期或失效 Token
             if (StpUtil.stpLogic.getTokenActivityTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
                 continue;
             }
@@ -118,7 +117,7 @@ public class OnlineUserController {
     @DeleteMapping("/{token}")
     public R kickout(@PathVariable String token) {
         String currentToken = StpUtil.getTokenValue();
-        ValidationUtils.throwIfEqual(token, currentToken, "不能强退当前登录");
+        CheckUtils.throwIfEqual(token, currentToken, "不能强退当前登录");
 
         StpUtil.kickoutByTokenValue(token);
         return R.ok("强退成功");

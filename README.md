@@ -226,6 +226,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
   │                │  ├─ entity       # 公共实体对象
   │                │  ├─ query        # 公共查询条件
+  │                │  ├─ request      # 公共请求对象
   │                │  └─ vo           # 公共 VO（View Object）
   │                └─ util         # 公共工具类
   │                  ├─ helper        # 公共 Helper（助手）
