@@ -141,6 +141,20 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStatus(List<Long> ids, DisEnableStatusEnum status) {
+        deptMapper.update(null,
+            Wrappers.<SysDept>lambdaUpdate().set(SysDept::getStatus, status).in(SysDept::getDeptId, ids));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        deptMapper.deleteBatchIds(ids);
+        deptMapper.delete(Wrappers.<SysDept>lambdaQuery().in(SysDept::getParentId, ids));
+    }
+
+    @Override
     public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
         return deptMapper.exists(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getDeptName, deptName)
             .eq(SysDept::getParentId, parentId).ne(deptId != null, SysDept::getDeptId, deptId));

@@ -21,12 +21,15 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import top.charles7c.cnadmin.common.model.request.UpdateStatusRequest;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
@@ -66,5 +69,20 @@ public class DeptController {
         }
 
         return R.ok("新增成功", deptService.create(request));
+    }
+
+    @Operation(summary = "修改部门状态")
+    @PatchMapping("/{ids}")
+    public R updateStatus(@PathVariable List<Long> ids, @Validated @RequestBody UpdateStatusRequest request) {
+        deptService.updateStatus(ids, request.getStatus());
+        return R.ok(String.format("%s成功", request.getStatus().getDescription()));
+    }
+
+    @Operation(summary = "删除部门")
+    @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
+    @DeleteMapping("/{ids}")
+    public R delete(@PathVariable List<Long> ids) {
+        deptService.delete(ids);
+        return R.ok("删除成功");
     }
 }

@@ -2,12 +2,12 @@ import axios from 'axios';
 import qs from 'query-string';
 
 export interface DeptRecord {
-  deptId: string;
+  deptId?: number;
   deptName: string;
-  parentId: number;
+  parentId?: number;
   deptSort: number;
   description: string;
-  status: number;
+  status?: number;
   updateUserString: string;
   updateTime: string;
   children: Array<DeptRecord>,
@@ -35,4 +35,15 @@ export interface CreateDeptReq {
 }
 export function createDept(req: CreateDeptReq) {
   return axios.post('/system/dept', req);
+}
+
+export interface UpdateDeptStatusReq {
+  status: number;
+}
+export function updateDeptStatus(ids: Array<number>, req: UpdateDeptStatusReq) {
+  return axios.patch(`/system/dept/${ids}`, req);
+}
+
+export function deleteDept(ids: Array<number>) {
+  return axios.delete(`/system/dept/${ids}`);
 }

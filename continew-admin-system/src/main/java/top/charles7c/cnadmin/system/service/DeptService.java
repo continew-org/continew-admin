@@ -20,6 +20,7 @@ import java.util.List;
 
 import cn.hutool.core.lang.tree.Tree;
 
+import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
@@ -67,6 +68,24 @@ public interface DeptService {
      * @return 新增记录 ID
      */
     Long create(CreateDeptRequest request);
+
+    /**
+     * 修改状态
+     *
+     * @param ids
+     *            ID 列表
+     * @param status
+     *            状态
+     */
+    void updateStatus(List<Long> ids, DisEnableStatusEnum status);
+
+    /**
+     * 删除
+     *
+     * @param ids
+     *            ID 列表
+     */
+    void delete(List<Long> ids);
 
     /**
      * 检查部门名称是否存在

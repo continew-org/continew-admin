@@ -19,7 +19,7 @@
               <a-form-item field="status" hide-label>
                 <a-select
                   v-model="queryFormData.status"
-                  :options="treeData"
+                  :options="statusOptions"
                   placeholder="状态搜索"
                   allow-clear
                   style="width: 150px"
@@ -163,9 +163,10 @@
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
+                @change="handleChangeStatus(record, record.status)"
               />
             </template>
-            <template #operations>
+            <template #operations="{ record }">
               <a-button
                 v-permission="['admin']"
                 type="text"
@@ -178,18 +179,18 @@
                 </template>
                 修改
               </a-button>
-              <a-button
-                v-permission="['admin']"
-                type="text"
-                size="small"
-                disabled
-                title="尚未开发"
-              >
-                <template #icon>
-                  <icon-delete />
-                </template>
-                删除
-              </a-button>
+              <a-popconfirm content="确定删除吗，如果存在下级部门则一并删除，此操作不能撤销！" type="error" @ok="handleDelete(record)">
+                <a-button
+                  v-permission="['admin']"
+                  type="text"
+                  size="small"
+                >
+                  <template #icon>
+                    <icon-delete />
+                  </template>
+                  删除
+                </a-button>
+              </a-popconfirm>
             </template>
           </a-table>
 
@@ -215,6 +216,7 @@
                   :allow-search="true"
                   :allow-clear="true"
                   :filter-tree-node="filterDept"
+                  :fallback-option="false"
                   placeholder="请选择上级部门"
                 />
               </a-form-item>
@@ -271,10 +273,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, reactive, ref, watch } from 'vue';
+  import { computed, nextTick, ref, watch } from 'vue';
   import useLoading from '@/hooks/loading';
   import { FieldRule, Message, TableInstance, TreeNodeData } from '@arco-design/web-vue';
-  import { getDeptList, DeptRecord, DeptParams, createDept } from '@/api/system/dept';
+  import {
+    getDeptList,
+    DeptRecord,
+    DeptParams,
+    createDept,
+    updateDeptStatus,
+    deleteDept,
+  } from '@/api/system/dept';
   import getDeptTree from '@/api/common';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
   import { FormInstance } from '@arco-design/web-vue/es/form';
@@ -393,6 +402,29 @@
   };
   fetchData();
 
+  // 改变状态
+  const handleChangeStatus = async (record: DeptRecord, val: number) => {
+    if (record.deptId) {
+      const res = await updateDeptStatus([record.deptId], { status: val });
+      if (res.success) {
+        Message.success(res.msg);
+      } else {
+        record.status = (record.status === 1) ? 2 : 1;
+      }
+    }
+  };
+
+  // 删除
+  const handleDelete = async (record: DeptRecord) => {
+    if (record.deptId) {
+      const res = await deleteDept([record.deptId]);
+      if (res.success) {
+        Message.success(res.msg);
+        await fetchData();
+      }
+    }
+  };
+
   const handleSelectDensity = (
     val: string | number | Record<string, any> | undefined,
     e: Event
@@ -460,13 +492,19 @@
   );
 
   const visible = ref(false);
+  const type = ref('新增');
   const treeData = ref<TreeNodeData[]>();
   const formRef = ref<FormInstance>();
-  const formData = reactive({
-    parentId: undefined,
+  const formData = ref<DeptRecord>({
+    deptId: undefined,
     deptName: '',
+    parentId: undefined,
     deptSort: 999,
     description: '',
+    status: undefined,
+    updateUserString: '',
+    updateTime: '',
+    children: [],
   });
   const rules = computed((): Record<string, FieldRule[]> => {
     return {
@@ -494,20 +532,20 @@
     const errors = await formRef.value?.validate();
     if (errors) return false;
     const res = await createDept({
-      parentId: formData.parentId || 0,
-      deptName: formData.deptName,
-      deptSort: formData.deptSort,
-      description: formData.description,
+      parentId: formData.value.parentId || 0,
+      deptName: formData.value.deptName,
+      deptSort: formData.value.deptSort,
+      description: formData.value.description,
     });
     if (!res.success) return false;
     Message.success(res.msg);
     handleCancel();
-    fetchData();
+    await fetchData();
     return true;
   };
   const handleCancel = () => {
     visible.value = false;
-    formRef.value?.resetFields()
+    formRef.value?.resetFields();
   };
 </script>
 
