@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Data;
@@ -25,8 +23,7 @@ import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -38,7 +35,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Data
 @Accessors(chain = true)
 @Schema(description = "部门信息")
-public class DeptVO implements Serializable {
+public class DeptVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
@@ -77,24 +74,6 @@ public class DeptVO implements Serializable {
      */
     @Schema(description = "状态（1启用 2禁用）")
     private DisEnableStatusEnum status;
-
-    /**
-     * 修改人
-     */
-    @JsonIgnore
-    private Long updateUser;
-
-    /**
-     * 修改人昵称
-     */
-    @Schema(description = "修改人昵称")
-    private String updateUserString;
-
-    /**
-     * 修改时间
-     */
-    @Schema(description = "修改时间")
-    private LocalDateTime updateTime;
 
     /**
      * 子部门列表

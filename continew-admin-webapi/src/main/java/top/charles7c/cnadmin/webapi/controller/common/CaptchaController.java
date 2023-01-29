@@ -42,7 +42,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
-import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -64,7 +64,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 public class CaptchaController {
 
     private final CaptchaProperties captchaProperties;
-    private final ContinewAdminProperties properties;
+    private final ContiNewAdminProperties properties;
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")

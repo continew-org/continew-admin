@@ -14,56 +14,48 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.common.base;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import top.charles7c.cnadmin.common.base.BaseEntity;
-import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 
 /**
- * 部门实体
+ * 实体类基类
  *
  * @author Charles7c
- * @since 2023/1/22 13:50
+ * @since 2022/12/12 23:02
  */
 @Data
-@TableName("sys_dept")
-public class SysDept extends BaseEntity {
+public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
+     * 创建人
      */
-    @TableId
-    private Long deptId;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createUser;
 
     /**
-     * 部门名称
+     * 创建时间
      */
-    private String deptName;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 
     /**
-     * 上级部门 ID
+     * 修改人
      */
-    private Long parentId;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateUser;
 
     /**
-     * 部门排序
+     * 修改时间
      */
-    private Integer deptSort;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 状态（1启用 2禁用）
-     */
-    private DisEnableStatusEnum status;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 }

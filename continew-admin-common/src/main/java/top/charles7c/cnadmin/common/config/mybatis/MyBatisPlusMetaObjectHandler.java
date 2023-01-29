@@ -24,8 +24,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import cn.hutool.core.util.ObjectUtil;
 
+import top.charles7c.cnadmin.common.base.BaseEntity;
 import top.charles7c.cnadmin.common.exception.ServiceException;
-import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
 /**

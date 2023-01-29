@@ -33,6 +33,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 
+import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
@@ -54,9 +55,10 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl implements DeptService {
+public class DeptServiceImpl
+    extends BaseServiceImpl<DeptMapper, SysDept, DeptVO, DeptVO, DeptQuery, CreateDeptRequest, CreateDeptRequest>
+    implements DeptService {
 
-    private final DeptMapper deptMapper;
     private final UserService userService;
 
     @Override
@@ -64,7 +66,7 @@ public class DeptServiceImpl implements DeptService {
         QueryWrapper<SysDept> queryWrapper = QueryHelper.build(query);
         queryWrapper.lambda().orderByAsc(SysDept::getParentId).orderByAsc(SysDept::getDeptSort)
             .orderByDesc(SysDept::getUpdateTime);
-        List<SysDept> list = deptMapper.selectList(queryWrapper);
+        List<SysDept> list = baseMapper.selectList(queryWrapper);
         List<DeptVO> voList = BeanUtil.copyToList(list, DeptVO.class);
         voList.forEach(this::fill);
         return voList;
@@ -142,27 +144,27 @@ public class DeptServiceImpl implements DeptService {
         // 保存部门信息
         SysDept sysDept = BeanUtil.copyProperties(request, SysDept.class);
         sysDept.setStatus(DisEnableStatusEnum.ENABLE);
-        deptMapper.insert(sysDept);
+        baseMapper.insert(sysDept);
         return sysDept.getDeptId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(List<Long> ids, DisEnableStatusEnum status) {
-        deptMapper.update(null,
+        baseMapper.update(null,
             Wrappers.<SysDept>lambdaUpdate().set(SysDept::getStatus, status).in(SysDept::getDeptId, ids));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        deptMapper.deleteBatchIds(ids);
-        deptMapper.delete(Wrappers.<SysDept>lambdaQuery().in(SysDept::getParentId, ids));
+        super.delete(ids);
+        baseMapper.delete(Wrappers.<SysDept>lambdaQuery().in(SysDept::getParentId, ids));
     }
 
     @Override
     public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
-        return deptMapper.exists(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getDeptName, deptName)
+        return baseMapper.exists(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getDeptName, deptName)
             .eq(SysDept::getParentId, parentId).ne(deptId != null, SysDept::getDeptId, deptId));
     }
 

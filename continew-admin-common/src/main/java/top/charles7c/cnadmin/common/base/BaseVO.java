@@ -14,48 +14,43 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.model.entity;
+package top.charles7c.cnadmin.common.base;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 实体类基类
+ * VO 基类
  *
  * @author Charles7c
- * @since 2022/12/12 23:02
+ * @since 2023/1/26 10:40
  */
 @Data
-public class BaseEntity implements Serializable {
+public class BaseVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 创建人
+     * 修改人
      */
-    @TableField(fill = FieldFill.INSERT)
-    private Long createUser;
-
-    /**
-     * 创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @JsonIgnore
+    private Long updateUser;
 
     /**
      * 修改人
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateUser;
+    @Schema(description = "修改人")
+    private String updateUserString;
 
     /**
      * 修改时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @Schema(description = "修改时间")
     private LocalDateTime updateTime;
 }

@@ -23,9 +23,9 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import top.charles7c.cnadmin.common.base.BaseEntity;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
-import top.charles7c.cnadmin.common.model.entity.BaseEntity;
 
 /**
  * 用户实体

@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Configuration;
 
 import cn.hutool.core.util.RandomUtil;
 
-import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 
 /**
  * 接口文档配置
@@ -44,7 +44,7 @@ import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
 @ConditionalOnProperty(name = "springdoc.swagger-ui.enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfiguration {
 
-    private final ContinewAdminProperties continewAdminProperties;
+    private final ContiNewAdminProperties continewAdminProperties;
 
     /**
      * 接口文档配置

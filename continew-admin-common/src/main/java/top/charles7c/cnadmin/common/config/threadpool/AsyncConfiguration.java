@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.config;
+package top.charles7c.cnadmin.common.config.threadpool;
 
 import java.util.Arrays;
 import java.util.concurrent.Executor;

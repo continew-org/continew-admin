@@ -33,9 +33,11 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import top.charles7c.cnadmin.common.config.properties.CorsProperties;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
+import top.charles7c.cnadmin.common.handler.CrudRequestMappingHandlerMapping;
 
 /**
  * Web MVC 配置
@@ -107,5 +109,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         } else {
             converters.add(0, mappingJackson2HttpMessageConverter);
         }
+    }
+
+    /**
+     * CRUD 请求映射器处理器映射器
+     */
+    @Bean
+    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+        return new CrudRequestMappingHandlerMapping();
     }
 }

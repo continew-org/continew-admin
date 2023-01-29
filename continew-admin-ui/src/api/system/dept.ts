@@ -19,7 +19,7 @@ export interface DeptParams {
 }
 
 export function getDeptList(params: DeptParams) {
-  return axios.get<DeptRecord[]>('/system/dept', {
+  return axios.get<DeptRecord[]>('/system/dept/all', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

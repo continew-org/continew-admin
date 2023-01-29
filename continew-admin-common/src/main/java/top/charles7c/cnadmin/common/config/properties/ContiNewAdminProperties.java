@@ -37,7 +37,7 @@ import cn.hutool.extra.spring.SpringUtil;
 @Data
 @Component
 @ConfigurationProperties(prefix = "continew-admin")
-public class ContinewAdminProperties {
+public class ContiNewAdminProperties {
 
     /**
      * 名称

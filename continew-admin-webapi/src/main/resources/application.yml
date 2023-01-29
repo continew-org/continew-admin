@@ -160,6 +160,8 @@ spring:
     # 启用的环境
     # 配合 Maven Profile 选择不同配置文件进行启动，在 IntelliJ IDEA 右侧 Maven 工具窗口可以快速切换环境
     active: @profiles.active@
+  main:
+    allow-bean-definition-overriding: true
   ## JSON 配置
   jackson:
     # 时区配置

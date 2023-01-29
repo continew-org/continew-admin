@@ -14,56 +14,42 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.common.base;
+
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.base.BaseEntity;
-import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 部门实体
+ * 详情 VO 基类
  *
  * @author Charles7c
- * @since 2023/1/22 13:50
+ * @since 2023/1/26 10:40
  */
 @Data
-@TableName("sys_dept")
-public class SysDept extends BaseEntity {
+public class BaseDetailVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
+     * 创建人
      */
-    @TableId
-    private Long deptId;
+    @JsonIgnore
+    private Long createUser;
 
     /**
-     * 部门名称
+     * 创建人
      */
-    private String deptName;
+    @Schema(description = "创建人")
+    private String createUserString;
 
     /**
-     * 上级部门 ID
+     * 创建时间
      */
-    private Long parentId;
-
-    /**
-     * 部门排序
-     */
-    private Integer deptSort;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 状态（1启用 2禁用）
-     */
-    private DisEnableStatusEnum status;
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
 }

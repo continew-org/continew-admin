@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 
-import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 
 /**
  * 启动程序
@@ -51,7 +51,7 @@ import top.charles7c.cnadmin.common.config.properties.ContinewAdminProperties;
 @ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
 public class ContinewAdminApplication implements ApplicationRunner {
 
-    private final ContinewAdminProperties properties;
+    private final ContiNewAdminProperties properties;
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
