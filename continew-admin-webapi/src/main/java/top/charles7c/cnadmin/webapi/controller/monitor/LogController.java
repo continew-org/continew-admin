@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +48,7 @@ import top.charles7c.cnadmin.monitor.service.LogService;
 @Tag(name = "日志管理 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/monitor/log", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/monitor/log")
 public class LogController {
 
     private final LogService logService;

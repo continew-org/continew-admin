@@ -21,7 +21,6 @@ import java.util.List;
 import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.base.BaseService;
-import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
@@ -32,7 +31,7 @@ import top.charles7c.cnadmin.system.model.vo.DeptVO;
  * @author Charles7c
  * @since 2023/1/22 17:54
  */
-public interface DeptService extends BaseService<DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> {
+public interface DeptService extends BaseService<DeptVO, DeptVO, DeptQuery, DeptRequest> {
 
     /**
      * 构建树
@@ -51,16 +50,6 @@ public interface DeptService extends BaseService<DeptVO, DeptVO, DeptQuery, Dept
      * @return 树列表
      */
     List<Tree<Long>> buildTree(List<DeptVO> list);
-
-    /**
-     * 修改状态
-     *
-     * @param ids
-     *            ID 列表
-     * @param status
-     *            状态
-     */
-    void updateStatus(List<Long> ids, DisEnableStatusEnum status);
 
     /**
      * 检查部门名称是否存在

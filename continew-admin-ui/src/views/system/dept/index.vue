@@ -281,7 +281,7 @@
     DeptRecord,
     DeptParams,
     createDept,
-    updateDeptStatus,
+    updateDept,
     deleteDept,
   } from '@/api/system/dept';
   import getDeptTree from '@/api/common';
@@ -405,7 +405,7 @@
   // 改变状态
   const handleChangeStatus = async (record: DeptRecord, val: number) => {
     if (record.deptId) {
-      const res = await updateDeptStatus([record.deptId], { status: val });
+      const res = await updateDept({ deptId: record.deptId, status: val });
       if (res.success) {
         Message.success(res.msg);
       } else {

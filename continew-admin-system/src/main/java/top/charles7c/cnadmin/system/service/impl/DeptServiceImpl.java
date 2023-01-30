@@ -55,8 +55,8 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends
-    BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> implements DeptService {
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptVO, DeptQuery, DeptRequest>
+    implements DeptService {
 
     private final UserService userService;
 
@@ -112,24 +112,24 @@ public class DeptServiceImpl extends
     /**
      * 获取指定部门的子部门列表
      *
-     * @param dept
+     * @param deptVO
      *            指定部门
      * @param list
      *            部门列表
      * @return 子部门列表
      */
-    private List<DeptVO> getChildren(DeptVO dept, List<DeptVO> list) {
-        return list.stream().filter(d -> Objects.equals(d.getParentId(), dept.getDeptId()))
+    private List<DeptVO> getChildren(DeptVO deptVO, List<DeptVO> list) {
+        return list.stream().filter(d -> Objects.equals(d.getParentId(), deptVO.getDeptId()))
             .map(d -> d.setChildren(this.getChildren(d, list))).collect(Collectors.toList());
     }
 
     @Override
     public List<Tree<Long>> buildTree(List<DeptVO> list) {
-        return TreeUtils.build(list, (dept, tree) -> {
-            tree.setId(dept.getDeptId());
-            tree.setName(dept.getDeptName());
-            tree.setParentId(dept.getParentId());
-            tree.setWeight(dept.getDeptSort());
+        return TreeUtils.build(list, (d, tree) -> {
+            tree.setId(d.getDeptId());
+            tree.setName(d.getDeptName());
+            tree.setParentId(d.getParentId());
+            tree.setWeight(d.getDeptSort());
         });
     }
 
@@ -145,13 +145,6 @@ public class DeptServiceImpl extends
         deptDO.setStatus(DisEnableStatusEnum.ENABLE);
         baseMapper.insert(deptDO);
         return deptDO.getDeptId();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateStatus(List<Long> ids, DisEnableStatusEnum status) {
-        baseMapper.update(null,
-            Wrappers.<DeptDO>lambdaUpdate().set(DeptDO::getStatus, status).in(DeptDO::getDeptId, ids));
     }
 
     @Override
@@ -178,7 +171,6 @@ public class DeptServiceImpl extends
         if (createUser == null) {
             return;
         }
-        deptVO.setCreateUserString(
-            ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
+        deptVO.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
     }
 }

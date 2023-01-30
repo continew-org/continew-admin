@@ -44,14 +44,12 @@ import top.charles7c.cnadmin.common.model.vo.R;
  * @param <Q>
  *            查询条件
  * @param <C>
- *            创建信息
- * @param <U>
- *            修改信息
+ *            创建或修改信息
  * @author Charles7c
  * @since 2023/1/26 10:45
  */
 @NoArgsConstructor
-public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D, Q, C, U> {
+public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q, C extends BaseRequest> {
 
     @Autowired
     protected S baseService;
@@ -63,9 +61,10 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      *            查询条件
      * @param pageQuery
      *            分页查询条件
-     * @return 分页列表信息
+     * @return 分页信息
      */
     @Operation(summary = "分页查询列表")
+    @ResponseBody
     @GetMapping
     protected R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
@@ -80,6 +79,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      * @return 列表信息
      */
     @Operation(summary = "查询列表")
+    @ResponseBody
     @GetMapping("/all")
     protected R<List<V>> list(@Validated Q query) {
         List<V> list = baseService.list(query);
@@ -95,6 +95,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      */
     @Operation(summary = "查看详情")
     @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
+    @ResponseBody
     @GetMapping("/{id}")
     protected R<D> detail(@PathVariable Long id) {
         D detail = baseService.detail(id);
@@ -109,8 +110,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      * @return 自增 ID
      */
     @Operation(summary = "新增")
+    @ResponseBody
     @PostMapping
-    protected R<Long> create(@Validated @RequestBody C request) {
+    protected R<Long> create(@Validated(BaseRequest.Create.class) @RequestBody C request) {
         Long id = baseService.create(request);
         return R.ok("新增成功", id);
     }
@@ -118,17 +120,15 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
     /**
      * 修改
      *
-     * @param id
-     *            ID
      * @param request
      *            修改信息
      * @return /
      */
     @Operation(summary = "修改")
-    @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
-    @PutMapping("/{id}")
-    protected R update(@PathVariable Long id, @Validated @RequestBody U request) {
-        baseService.update(id, request);
+    @ResponseBody
+    @PutMapping
+    protected R update(@Validated(BaseRequest.Update.class) @RequestBody C request) {
+        baseService.update(request);
         return R.ok("修改成功");
     }
 
@@ -141,6 +141,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      */
     @Operation(summary = "删除")
     @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
+    @ResponseBody
     @DeleteMapping("/{ids}")
     protected R delete(@PathVariable List<Long> ids) {
         baseService.delete(ids);

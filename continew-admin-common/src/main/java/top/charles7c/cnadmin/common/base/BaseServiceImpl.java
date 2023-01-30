@@ -40,10 +40,19 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
  *            Mapper 接口
  * @param <T>
  *            实体类
+ * @param <V>
+ *            列表信息
+ * @param <D>
+ *            详情信息
+ * @param <Q>
+ *            查询条件
+ * @param <C>
+ *            创建或修改信息
  * @author Charles7c
  * @since 2023/1/26 21:52
  */
-public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C, U> implements BaseService<V, D, Q, C, U> {
+public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C extends BaseRequest>
+    implements BaseService<V, D, Q, C> {
 
     @Autowired
     protected M baseMapper;
@@ -68,8 +77,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C, U>
 
     @Override
     public D detail(Long id) {
-        T entity = baseMapper.selectById(id);
-        CheckUtils.throwIfNull(entity, String.format("ID为 [%s] 的记录已不存在", id));
+        T entity = this.getById(id);
         return BeanUtil.copyProperties(entity, detailVoClass);
     }
 
@@ -79,7 +87,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C, U>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(Long id, U request) {
+    public void update(C request) {
         T entity = BeanUtil.copyProperties(request, entityClass);
         baseMapper.updateById(entity);
     }
@@ -88,6 +96,19 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C, U>
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         baseMapper.deleteBatchIds(ids);
+    }
+
+    /**
+     * 根据 ID 查询
+     *
+     * @param id
+     *            ID
+     * @return 实体信息
+     */
+    protected T getById(Long id) {
+        T entity = baseMapper.selectById(id);
+        CheckUtils.throwIfNull(entity, String.format("ID为 [%s] 的记录已不存在", id));
+        return entity;
     }
 
     /**

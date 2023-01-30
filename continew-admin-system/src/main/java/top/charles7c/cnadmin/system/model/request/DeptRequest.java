@@ -16,15 +16,18 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
+
+import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
  * 创建或修改部门信息
@@ -34,15 +37,23 @@ import org.hibernate.validator.constraints.Length;
  */
 @Data
 @Schema(description = "创建或修改部门信息")
-public class DeptRequest implements Serializable {
+public class DeptRequest extends BaseRequest {
 
     private static final long serialVersionUID = 1L;
 
     /**
+     * 部门 ID
+     */
+    @Schema(description = "部门 ID")
+    @Null(message = "新增时，ID 必须为空", groups = Create.class)
+    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
+    private Long deptId;
+
+    /**
      * 上级部门 ID
      */
-    @Schema(description = "上级部门 ID", defaultValue = "0")
-    private Long parentId = 0L;
+    @Schema(description = "上级部门 ID")
+    private Long parentId;
 
     /**
      * 部门名称
@@ -54,8 +65,8 @@ public class DeptRequest implements Serializable {
     /**
      * 部门排序
      */
-    @Schema(description = "部门排序", defaultValue = "999")
-    private Integer deptSort = 999;
+    @Schema(description = "部门排序")
+    private Integer deptSort;
 
     /**
      * 描述
@@ -63,4 +74,10 @@ public class DeptRequest implements Serializable {
     @Schema(description = "描述")
     @Length(max = 200, message = "描述长度不能超过 200 个字符")
     private String description;
+
+    /**
+     * 状态（1启用 2禁用）
+     */
+    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    private DisEnableStatusEnum status;
 }

@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.common.base;
 
-import java.util.Collections;
 import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
@@ -32,13 +31,11 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
  * @param <Q>
  *            查询条件
  * @param <C>
- *            创建信息
- * @param <U>
- *            修改信息
+ *            创建或修改信息
  * @author Charles7c
  * @since 2023/1/26 16:54
  */
-public interface BaseService<V, D, Q, C, U> {
+public interface BaseService<V, D, Q, C extends BaseRequest> {
 
     /**
      * 分页查询列表
@@ -49,9 +46,7 @@ public interface BaseService<V, D, Q, C, U> {
      *            分页查询条件
      * @return 分页列表信息
      */
-    default PageDataVO<V> page(Q query, PageQuery pageQuery) {
-        return new PageDataVO<>();
-    }
+    PageDataVO<V> page(Q query, PageQuery pageQuery);
 
     /**
      * 查询列表
@@ -60,9 +55,7 @@ public interface BaseService<V, D, Q, C, U> {
      *            查询条件
      * @return 列表信息
      */
-    default List<V> list(Q query) {
-        return Collections.emptyList();
-    }
+    List<V> list(Q query);
 
     /**
      * 查看详情
@@ -71,9 +64,7 @@ public interface BaseService<V, D, Q, C, U> {
      *            ID
      * @return 详情信息
      */
-    default D detail(Long id) {
-        return null;
-    }
+    D detail(Long id);
 
     /**
      * 新增
@@ -82,19 +73,15 @@ public interface BaseService<V, D, Q, C, U> {
      *            创建信息
      * @return 自增 ID
      */
-    default Long create(C request) {
-        return null;
-    }
+    Long create(C request);
 
     /**
      * 修改
      *
-     * @param id
-     *            ID
      * @param request
      *            修改信息
      */
-    default void update(Long id, U request) {}
+    void update(C request);
 
     /**
      * 删除
@@ -102,5 +89,5 @@ public interface BaseService<V, D, Q, C, U> {
      * @param ids
      *            ID 列表
      */
-    default void delete(List<Long> ids) {}
+    void delete(List<Long> ids);
 }

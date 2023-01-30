@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +55,7 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
 @Tag(name = "在线用户 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/monitor/online/user", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/monitor/online/user")
 public class OnlineUserController {
 
     @Operation(summary = "分页查询在线用户列表")

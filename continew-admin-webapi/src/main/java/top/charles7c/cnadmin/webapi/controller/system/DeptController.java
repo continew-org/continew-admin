@@ -21,8 +21,6 @@ import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
-import top.charles7c.cnadmin.common.model.request.UpdateStatusRequest;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.DeptRequest;
@@ -45,21 +42,13 @@ import top.charles7c.cnadmin.system.service.DeptService;
  */
 @Tag(name = "部门管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dept", api = {Api.ALL})
-public class DeptController extends BaseController<DeptService, DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> {
+@CrudRequestMapping(value = "/system/dept", api = {Api.LIST, Api.DETAIL, Api.CREATE, Api.UPDATE, Api.DELETE})
+public class DeptController extends BaseController<DeptService, DeptVO, DeptVO, DeptQuery, DeptRequest> {
 
     @Override
     @Operation(summary = "查询部门列表树")
     public R<List<DeptVO>> list(@Validated DeptQuery query) {
         List<DeptVO> list = baseService.list(query);
         return R.ok(baseService.buildListTree(list));
-    }
-
-    @Operation(summary = "修改部门状态")
-    @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
-    @PatchMapping("/{ids}")
-    public R updateStatus(@PathVariable List<Long> ids, @Validated @RequestBody UpdateStatusRequest request) {
-        baseService.updateStatus(ids, request.getStatus());
-        return R.ok(String.format("%s成功", request.getStatus().getDescription()));
     }
 }

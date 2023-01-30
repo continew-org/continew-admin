@@ -27,21 +27,22 @@ export function getDeptList(params: DeptParams) {
   });
 }
 
-export interface CreateDeptReq {
+export interface DeptReq {
   parentId: number;
   deptName: string;
   deptSort: number;
   description: string;
 }
-export function createDept(req: CreateDeptReq) {
+export function createDept(req: DeptReq) {
   return axios.post('/system/dept', req);
 }
 
-export interface UpdateDeptStatusReq {
-  status: number;
+export interface UpdateDeptReq extends Partial<DeptReq> {
+  deptId: number;
+  status?: number;
 }
-export function updateDeptStatus(ids: Array<number>, req: UpdateDeptStatusReq) {
-  return axios.patch(`/system/dept/${ids}`, req);
+export function updateDept(req: UpdateDeptReq) {
+  return axios.put(`/system/dept`, req);
 }
 
 export function deleteDept(ids: Array<number>) {

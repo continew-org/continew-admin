@@ -23,7 +23,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +52,7 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 @Tag(name = "登录 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/auth")
 public class LoginController {
 
     private final LoginService loginService;

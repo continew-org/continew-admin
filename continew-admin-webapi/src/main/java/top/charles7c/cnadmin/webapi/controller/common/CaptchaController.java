@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +59,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/common/captcha", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/common/captcha")
 public class CaptchaController {
 
     private final CaptchaProperties captchaProperties;
