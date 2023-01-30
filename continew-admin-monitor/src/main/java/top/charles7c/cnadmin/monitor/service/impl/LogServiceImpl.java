@@ -154,6 +154,6 @@ public class LogServiceImpl implements LogService {
             return;
         }
         logVO.setCreateUserString(
-            ExceptionUtils.exToNull(() -> userService.getById(logVO.getCreateUser())).getNickname());
+            ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
     }
 }

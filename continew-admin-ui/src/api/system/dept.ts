@@ -8,8 +8,8 @@ export interface DeptRecord {
   deptSort: number;
   description: string;
   status?: number;
-  updateUserString: string;
-  updateTime: string;
+  createUserString: string;
+  createTime: string;
   children: Array<DeptRecord>,
 }
 

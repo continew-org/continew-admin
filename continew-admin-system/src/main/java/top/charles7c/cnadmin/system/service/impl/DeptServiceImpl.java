@@ -64,7 +64,7 @@ public class DeptServiceImpl extends
     public List<DeptVO> list(DeptQuery query) {
         QueryWrapper<DeptDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.lambda().orderByAsc(DeptDO::getParentId).orderByAsc(DeptDO::getDeptSort)
-            .orderByDesc(DeptDO::getUpdateTime);
+            .orderByDesc(DeptDO::getCreateTime);
         List<DeptDO> deptList = baseMapper.selectList(queryWrapper);
         List<DeptVO> list = BeanUtil.copyToList(deptList, DeptVO.class);
         list.forEach(this::fill);
@@ -174,11 +174,11 @@ public class DeptServiceImpl extends
      *            部门信息
      */
     private void fill(DeptVO deptVO) {
-        Long updateUser = deptVO.getUpdateUser();
-        if (updateUser == null) {
+        Long createUser = deptVO.getCreateUser();
+        if (createUser == null) {
             return;
         }
-        deptVO.setUpdateUserString(
-            ExceptionUtils.exToNull(() -> userService.getById(deptVO.getUpdateUser())).getNickname());
+        deptVO.setCreateUserString(
+            ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
     }
 }

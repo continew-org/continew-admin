@@ -37,20 +37,20 @@ public class BaseVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 修改人
+     * 创建人
      */
     @JsonIgnore
-    private Long updateUser;
+    private Long createUser;
 
     /**
-     * 修改人
+     * 创建人
      */
-    @Schema(description = "修改人")
-    private String updateUserString;
+    @Schema(description = "创建人")
+    private String createUserString;
 
     /**
-     * 修改时间
+     * 创建时间
      */
-    @Schema(description = "修改时间")
-    private LocalDateTime updateTime;
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
 }

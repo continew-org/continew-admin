@@ -36,20 +36,20 @@ public class BaseDetailVO extends BaseVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 创建人
+     * 修改人
      */
     @JsonIgnore
-    private Long createUser;
+    private Long updateUser;
 
     /**
-     * 创建人
+     * 修改人
      */
-    @Schema(description = "创建人")
-    private String createUserString;
+    @Schema(description = "修改人")
+    private String updateUserString;
 
     /**
-     * 创建时间
+     * 修改时间
      */
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
+    @Schema(description = "修改时间")
+    private LocalDateTime updateTime;
 }

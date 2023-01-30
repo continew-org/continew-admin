@@ -369,12 +369,12 @@
       dataIndex: 'description',
     },
     {
-      title: '修改人',
-      dataIndex: 'updateUserString',
+      title: '创建人',
+      dataIndex: 'createUserString',
     },
     {
-      title: '修改时间',
-      dataIndex: 'updateTime',
+      title: '创建时间',
+      dataIndex: 'createTime',
     },
     {
       title: '操作',
@@ -502,8 +502,8 @@
     deptSort: 999,
     description: '',
     status: undefined,
-    updateUserString: '',
-    updateTime: '',
+    createUserString: '',
+    createTime: '',
     children: [],
   });
   const rules = computed((): Record<string, FieldRule[]> => {
