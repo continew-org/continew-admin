@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  */
 @Data
 @TableName("sys_dept")
-public class SysDept extends BaseEntity {
+public class DeptDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 

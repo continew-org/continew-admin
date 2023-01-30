@@ -29,7 +29,7 @@ import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
@@ -53,10 +53,10 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C, U>
     protected Class<D> detailVoClass = currentDetailVoClass();
 
     @Override
-    public PageInfo<V> page(Q query, PageQuery pageQuery) {
+    public PageDataVO<V> page(Q query, PageQuery pageQuery) {
         QueryWrapper<T> queryWrapper = QueryHelper.build(query);
         IPage<T> page = baseMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        return PageInfo.build(page, voClass);
+        return PageDataVO.build(page, voClass);
     }
 
     @Override

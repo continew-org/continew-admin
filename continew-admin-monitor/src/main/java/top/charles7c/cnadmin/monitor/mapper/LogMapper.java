@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.monitor.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import top.charles7c.cnadmin.monitor.model.entity.SysLog;
+import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 
 /**
  * 系统日志 Mapper
@@ -26,4 +26,4 @@ import top.charles7c.cnadmin.monitor.model.entity.SysLog;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
-public interface LogMapper extends BaseMapper<SysLog> {}
+public interface LogMapper extends BaseMapper<LogDO> {}

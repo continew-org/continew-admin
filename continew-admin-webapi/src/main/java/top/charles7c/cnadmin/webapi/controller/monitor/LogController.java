@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
@@ -56,23 +56,23 @@ public class LogController {
 
     @Operation(summary = "分页查询登录日志列表")
     @GetMapping("/login")
-    public R<PageInfo<LoginLogVO>> list(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
-        PageInfo<LoginLogVO> pageInfo = logService.list(query, pageQuery);
-        return R.ok(pageInfo);
+    public R<PageDataVO<LoginLogVO>> list(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataVO<LoginLogVO> pageDataVO = logService.list(query, pageQuery);
+        return R.ok(pageDataVO);
     }
 
     @Operation(summary = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public R<PageInfo<OperationLogVO>> list(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
-        PageInfo<OperationLogVO> pageInfo = logService.list(query, pageQuery);
-        return R.ok(pageInfo);
+    public R<PageDataVO<OperationLogVO>> list(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataVO<OperationLogVO> pageDataVO = logService.list(query, pageQuery);
+        return R.ok(pageDataVO);
     }
 
     @Operation(summary = "分页查询系统日志列表")
     @GetMapping("/system")
-    public R<PageInfo<SystemLogVO>> list(@Validated SystemLogQuery query, @Validated PageQuery pageQuery) {
-        PageInfo<SystemLogVO> pageInfo = logService.list(query, pageQuery);
-        return R.ok(pageInfo);
+    public R<PageDataVO<SystemLogVO>> list(@Validated SystemLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataVO<SystemLogVO> pageDataVO = logService.list(query, pageQuery);
+        return R.ok(pageDataVO);
     }
 
     @Operation(summary = "查看系统日志详情")

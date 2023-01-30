@@ -41,7 +41,7 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
     private final LocalStorageProperties localStorageProperties;
 
     @Override
-    public SysUser getByUsername(String username) {
-        return userMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUsername, username));
+    public UserDO getByUsername(String username) {
+        return userMapper.selectOne(Wrappers.<UserDO>lambdaQuery().eq(UserDO::getUsername, username));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         // 更新用户头像
         String newAvatar = newAvatarFile.getName();
         userMapper.update(null,
-            new LambdaUpdateWrapper<SysUser>().set(SysUser::getAvatar, newAvatar).eq(SysUser::getUserId, userId));
+            new LambdaUpdateWrapper<UserDO>().set(UserDO::getAvatar, newAvatar).eq(UserDO::getUserId, userId));
 
         // 删除原头像
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -99,13 +99,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(SysUser user) {
+    public void update(UserDO user) {
         userMapper.updateById(user);
 
         // 更新登录用户信息
-        SysUser sysUser = this.getById(user.getUserId());
+        UserDO userDO = this.getById(user.getUserId());
         LoginUser loginUser = LoginHelper.getLoginUser();
-        BeanUtil.copyProperties(sysUser, loginUser);
+        BeanUtil.copyProperties(userDO, loginUser);
         LoginHelper.updateLoginUser(loginUser);
     }
 
@@ -113,16 +113,15 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long userId) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
-        SysUser sysUser = this.getById(userId);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), sysUser.getPassword(),
-            "当前密码错误");
+        UserDO userDO = this.getById(userId);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), userDO.getPassword(), "当前密码错误");
 
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
         userMapper.update(null,
-            new LambdaUpdateWrapper<SysUser>()
-                .set(SysUser::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
-                .set(SysUser::getPwdResetTime, now).eq(SysUser::getUserId, userId));
+            new LambdaUpdateWrapper<UserDO>()
+                .set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
+                .set(UserDO::getPwdResetTime, now).eq(UserDO::getUserId, userId));
 
         // 更新登录用户信息
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -133,16 +132,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long userId) {
-        SysUser sysUser = this.getById(userId);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), sysUser.getPassword(),
+        UserDO userDO = this.getById(userId);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), userDO.getPassword(),
             "当前密码错误");
-        Long count = userMapper.selectCount(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getEmail, newEmail));
+        Long count = userMapper.selectCount(Wrappers.<UserDO>lambdaQuery().eq(UserDO::getEmail, newEmail));
         CheckUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
-        CheckUtils.throwIfEqual(newEmail, sysUser.getEmail(), "新邮箱不能与当前邮箱相同");
+        CheckUtils.throwIfEqual(newEmail, userDO.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
         userMapper.update(null,
-            new LambdaUpdateWrapper<SysUser>().set(SysUser::getEmail, newEmail).eq(SysUser::getUserId, userId));
+            new LambdaUpdateWrapper<UserDO>().set(UserDO::getEmail, newEmail).eq(UserDO::getUserId, userId));
 
         // 更新登录用户信息
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -151,9 +150,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SysUser getById(Long userId) {
-        SysUser sysUser = userMapper.selectById(userId);
-        CheckUtils.throwIfNull(sysUser, String.format("ID为 [%s] 的用户已不存在", userId));
-        return sysUser;
+    public UserDO getById(Long userId) {
+        UserDO userDO = userMapper.selectById(userId);
+        CheckUtils.throwIfNull(userDO, String.format("ID为 [%s] 的用户已不存在", userId));
+        return userDO;
     }
 }

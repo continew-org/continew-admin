@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.entity.UserDO;
 
 /**
  * 用户业务接口
@@ -35,7 +35,7 @@ public interface UserService {
      *            用户名
      * @return 用户信息
      */
-    SysUser getByUsername(String username);
+    UserDO getByUsername(String username);
 
     /**
      * 上传头像
@@ -54,7 +54,7 @@ public interface UserService {
      * @param user
      *            用户信息
      */
-    void update(SysUser user);
+    void update(UserDO user);
 
     /**
      * 修改密码
@@ -87,5 +87,5 @@ public interface UserService {
      *            用户ID
      * @return 用户信息
      */
-    SysUser getById(Long userId);
+    UserDO getById(Long userId);
 }

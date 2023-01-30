@@ -39,7 +39,7 @@ import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.request.UpdateEmailRequest;
 import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
@@ -74,10 +74,10 @@ public class UserCenterController {
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
     public R updateBasicInfo(@Validated @RequestBody UpdateBasicInfoRequest updateBasicInfoRequest) {
-        SysUser user = new SysUser();
-        user.setUserId(LoginHelper.getUserId());
-        BeanUtil.copyProperties(updateBasicInfoRequest, user);
-        userService.update(user);
+        UserDO userDO = new UserDO();
+        userDO.setUserId(LoginHelper.getUserId());
+        BeanUtil.copyProperties(updateBasicInfoRequest, userDO);
+        userService.update(userDO);
         return R.ok("修改成功");
     }
 

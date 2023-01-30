@@ -17,7 +17,7 @@
 package top.charles7c.cnadmin.monitor.service;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
@@ -43,7 +43,7 @@ public interface LogService {
      *            分页查询条件
      * @return 操作日志分页信息
      */
-    PageInfo<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery);
+    PageDataVO<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询登录日志列表
@@ -54,7 +54,7 @@ public interface LogService {
      *            分页查询条件
      * @return 登录日志分页信息
      */
-    PageInfo<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery);
+    PageDataVO<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询系统日志列表
@@ -65,7 +65,7 @@ public interface LogService {
      *            分页查询条件
      * @return 系统日志分页信息
      */
-    PageInfo<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery);
+    PageDataVO<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery);
 
     /**
      * 查看系统日志详情

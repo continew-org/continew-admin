@@ -35,7 +35,7 @@ import top.charles7c.cnadmin.common.enums.GenderEnum;
  */
 @Data
 @TableName("sys_user")
-public class SysUser extends BaseEntity {
+public class UserDO extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 

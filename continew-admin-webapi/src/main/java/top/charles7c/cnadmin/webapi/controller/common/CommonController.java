@@ -54,7 +54,7 @@ public class CommonController {
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> deptTree(@Validated DeptQuery query) {
         List<DeptVO> list = deptService.list(query);
-        List<Tree<Long>> deptTree = deptService.buildTree(list);
-        return R.ok(deptTree);
+        List<Tree<Long>> deptTreeList = deptService.buildTree(list);
+        return R.ok(deptTreeList);
     }
 }

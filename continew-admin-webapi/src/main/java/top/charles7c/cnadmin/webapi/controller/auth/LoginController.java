@@ -91,7 +91,7 @@ public class LoginController {
     @GetMapping("/user/info")
     public R<UserInfoVO> getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        UserInfoVO userInfoVo = BeanUtil.copyProperties(loginUser, UserInfoVO.class);
-        return R.ok(userInfoVo);
+        UserInfoVO userInfoVO = BeanUtil.copyProperties(loginUser, UserInfoVO.class);
+        return R.ok(userInfoVO);
     }
 }

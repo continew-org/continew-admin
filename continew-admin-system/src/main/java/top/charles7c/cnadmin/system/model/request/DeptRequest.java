@@ -27,14 +27,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 创建部门信息
+ * 创建或修改部门信息
  *
  * @author Charles7c
  * @since 2023/1/24 00:21
  */
 @Data
-@Schema(description = "创建部门信息")
-public class CreateDeptRequest implements Serializable {
+@Schema(description = "创建或修改部门信息")
+public class DeptRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

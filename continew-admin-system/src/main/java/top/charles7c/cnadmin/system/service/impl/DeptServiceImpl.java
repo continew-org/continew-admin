@@ -40,9 +40,9 @@ import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
-import top.charles7c.cnadmin.system.model.entity.SysDept;
+import top.charles7c.cnadmin.system.model.entity.DeptDO;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
+import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -55,21 +55,20 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl
-    extends BaseServiceImpl<DeptMapper, SysDept, DeptVO, DeptVO, DeptQuery, CreateDeptRequest, CreateDeptRequest>
-    implements DeptService {
+public class DeptServiceImpl extends
+    BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> implements DeptService {
 
     private final UserService userService;
 
     @Override
     public List<DeptVO> list(DeptQuery query) {
-        QueryWrapper<SysDept> queryWrapper = QueryHelper.build(query);
-        queryWrapper.lambda().orderByAsc(SysDept::getParentId).orderByAsc(SysDept::getDeptSort)
-            .orderByDesc(SysDept::getUpdateTime);
-        List<SysDept> list = baseMapper.selectList(queryWrapper);
-        List<DeptVO> voList = BeanUtil.copyToList(list, DeptVO.class);
-        voList.forEach(this::fill);
-        return voList;
+        QueryWrapper<DeptDO> queryWrapper = QueryHelper.build(query);
+        queryWrapper.lambda().orderByAsc(DeptDO::getParentId).orderByAsc(DeptDO::getDeptSort)
+            .orderByDesc(DeptDO::getUpdateTime);
+        List<DeptDO> deptList = baseMapper.selectList(queryWrapper);
+        List<DeptVO> list = BeanUtil.copyToList(deptList, DeptVO.class);
+        list.forEach(this::fill);
+        return list;
     }
 
     @Override
@@ -79,8 +78,8 @@ public class DeptServiceImpl
         }
 
         // 去除重复子部门列表
-        List<DeptVO> deDuplicationDeptList = deDuplication(list);
-        return deDuplicationDeptList.stream().map(d -> d.setChildren(this.getChildren(d, list)))
+        List<DeptVO> deDuplicationList = deDuplication(list);
+        return deDuplicationList.stream().map(d -> d.setChildren(this.getChildren(d, list)))
             .collect(Collectors.toList());
     }
 
@@ -92,7 +91,7 @@ public class DeptServiceImpl
      * @return 去重后部门列表
      */
     private List<DeptVO> deDuplication(List<DeptVO> list) {
-        List<DeptVO> deptList = new ArrayList<>();
+        List<DeptVO> deDuplicationList = new ArrayList<>();
         for (DeptVO outerDept : list) {
             boolean flag = true;
             for (DeptVO innerDept : list) {
@@ -104,10 +103,10 @@ public class DeptServiceImpl
             }
 
             if (flag) {
-                deptList.add(outerDept);
+                deDuplicationList.add(outerDept);
             }
         }
-        return deptList;
+        return deDuplicationList;
     }
 
     /**
@@ -136,49 +135,50 @@ public class DeptServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(CreateDeptRequest request) {
+    public Long create(DeptRequest request) {
         String deptName = request.getDeptName();
         boolean isExist = this.checkDeptNameExist(deptName, request.getParentId(), null);
         CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
 
         // 保存部门信息
-        SysDept sysDept = BeanUtil.copyProperties(request, SysDept.class);
-        sysDept.setStatus(DisEnableStatusEnum.ENABLE);
-        baseMapper.insert(sysDept);
-        return sysDept.getDeptId();
+        DeptDO deptDO = BeanUtil.copyProperties(request, DeptDO.class);
+        deptDO.setStatus(DisEnableStatusEnum.ENABLE);
+        baseMapper.insert(deptDO);
+        return deptDO.getDeptId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(List<Long> ids, DisEnableStatusEnum status) {
         baseMapper.update(null,
-            Wrappers.<SysDept>lambdaUpdate().set(SysDept::getStatus, status).in(SysDept::getDeptId, ids));
+            Wrappers.<DeptDO>lambdaUpdate().set(DeptDO::getStatus, status).in(DeptDO::getDeptId, ids));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         super.delete(ids);
-        baseMapper.delete(Wrappers.<SysDept>lambdaQuery().in(SysDept::getParentId, ids));
+        baseMapper.delete(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getParentId, ids));
     }
 
     @Override
     public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
-        return baseMapper.exists(Wrappers.<SysDept>lambdaQuery().eq(SysDept::getDeptName, deptName)
-            .eq(SysDept::getParentId, parentId).ne(deptId != null, SysDept::getDeptId, deptId));
+        return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
+            .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
     }
 
     /**
      * 填充数据
      *
-     * @param vo
-     *            VO
+     * @param deptVO
+     *            部门信息
      */
-    private void fill(DeptVO vo) {
-        Long updateUser = vo.getUpdateUser();
+    private void fill(DeptVO deptVO) {
+        Long updateUser = deptVO.getUpdateUser();
         if (updateUser == null) {
             return;
         }
-        vo.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(vo.getUpdateUser())).getNickname());
+        deptVO.setUpdateUserString(
+            ExceptionUtils.exToNull(() -> userService.getById(deptVO.getUpdateUser())).getNickname());
     }
 }

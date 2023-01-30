@@ -33,7 +33,7 @@ import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.model.request.UpdateStatusRequest;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
+import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 
@@ -46,8 +46,7 @@ import top.charles7c.cnadmin.system.service.DeptService;
 @Tag(name = "部门管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dept", api = {Api.ALL})
-public class DeptController
-    extends BaseController<DeptService, DeptVO, DeptVO, DeptQuery, CreateDeptRequest, CreateDeptRequest> {
+public class DeptController extends BaseController<DeptService, DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> {
 
     @Override
     @Operation(summary = "查询部门列表树")

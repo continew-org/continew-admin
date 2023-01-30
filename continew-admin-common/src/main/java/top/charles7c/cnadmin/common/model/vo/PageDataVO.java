@@ -40,7 +40,7 @@ import cn.hutool.core.collection.CollUtil;
 @Data
 @Accessors(chain = true)
 @Schema(description = "分页信息")
-public class PageInfo<V> {
+public class PageDataVO<V> {
 
     /**
      * 列表数据
@@ -52,7 +52,7 @@ public class PageInfo<V> {
      * 总记录数
      */
     @Schema(description = "总记录数")
-    private long total;
+    private Long total;
 
     /**
      * 基于 MyBatis Plus 分页数据构建分页信息，并将源数据转换为指定类型数据
@@ -67,14 +67,14 @@ public class PageInfo<V> {
      *            目标列表数据类型
      * @return 分页信息
      */
-    public static <T, V> PageInfo<V> build(IPage<T> page, Class<V> targetClass) {
+    public static <T, V> PageDataVO<V> build(IPage<T> page, Class<V> targetClass) {
         if (page == null) {
             return null;
         }
-        PageInfo<V> pageInfo = new PageInfo<>();
-        pageInfo.setList(BeanUtil.copyToList(page.getRecords(), targetClass));
-        pageInfo.setTotal(page.getTotal());
-        return pageInfo;
+        PageDataVO<V> pageDataVO = new PageDataVO<>();
+        pageDataVO.setList(BeanUtil.copyToList(page.getRecords(), targetClass));
+        pageDataVO.setTotal(page.getTotal());
+        return pageDataVO;
     }
 
     /**
@@ -86,14 +86,14 @@ public class PageInfo<V> {
      *            列表数据类型
      * @return 分页信息
      */
-    public static <V> PageInfo<V> build(IPage<V> page) {
+    public static <V> PageDataVO<V> build(IPage<V> page) {
         if (page == null) {
             return null;
         }
-        PageInfo<V> pageInfo = new PageInfo<>();
-        pageInfo.setList(page.getRecords());
-        pageInfo.setTotal(pageInfo.getTotal());
-        return pageInfo;
+        PageDataVO<V> pageDataVO = new PageDataVO<>();
+        pageDataVO.setList(page.getRecords());
+        pageDataVO.setTotal(page.getTotal());
+        return pageDataVO;
     }
 
     /**
@@ -109,23 +109,23 @@ public class PageInfo<V> {
      *            列表数据类型
      * @return 分页信息
      */
-    public static <V> PageInfo<V> build(int page, int size, List<V> list) {
-        PageInfo<V> pageInfo = new PageInfo<>();
+    public static <V> PageDataVO<V> build(int page, int size, List<V> list) {
+        PageDataVO<V> pageDataVO = new PageDataVO<>();
         if (CollUtil.isEmpty(list)) {
-            return pageInfo;
+            return pageDataVO;
         }
 
-        pageInfo.setTotal(list.size());
+        pageDataVO.setTotal((long)list.size());
         // 对列表数据进行分页
         int fromIndex = (page - 1) * size;
         int toIndex = page * size + size;
         if (fromIndex > list.size()) {
-            pageInfo.setList(new ArrayList<>());
+            pageDataVO.setList(new ArrayList<>());
         } else if (toIndex >= list.size()) {
-            pageInfo.setList(list.subList(fromIndex, list.size()));
+            pageDataVO.setList(list.subList(fromIndex, list.size()));
         } else {
-            pageInfo.setList(list.subList(fromIndex, toIndex));
+            pageDataVO.setList(list.subList(fromIndex, toIndex));
         }
-        return pageInfo;
+        return pageDataVO;
     }
 }

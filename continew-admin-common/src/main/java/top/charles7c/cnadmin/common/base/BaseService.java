@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 
 /**
  * 业务接口基类
@@ -49,8 +49,8 @@ public interface BaseService<V, D, Q, C, U> {
      *            分页查询条件
      * @return 分页列表信息
      */
-    default PageInfo<V> page(Q query, PageQuery pageQuery) {
-        return new PageInfo<>();
+    default PageDataVO<V> page(Q query, PageQuery pageQuery) {
+        return new PageDataVO<>();
     }
 
     /**

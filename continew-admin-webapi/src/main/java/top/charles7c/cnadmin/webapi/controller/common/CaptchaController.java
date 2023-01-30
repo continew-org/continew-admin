@@ -80,8 +80,8 @@ public class CaptchaController {
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
 
         // 返回验证码
-        CaptchaVO captchaVo = new CaptchaVO().setUuid(uuid).setImg(captcha.toBase64());
-        return R.ok(captchaVo);
+        CaptchaVO captchaVO = new CaptchaVO().setUuid(uuid).setImg(captcha.toBase64());
+        return R.ok(captchaVO);
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")

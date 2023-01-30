@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import top.charles7c.cnadmin.system.model.entity.SysDept;
+import top.charles7c.cnadmin.system.model.entity.DeptDO;
 
 /**
  * 部门 Mapper
@@ -26,4 +26,4 @@ import top.charles7c.cnadmin.system.model.entity.SysDept;
  * @author Charles7c
  * @since 2023/1/22 17:56
  */
-public interface DeptMapper extends BaseMapper<SysDept> {}
+public interface DeptMapper extends BaseMapper<DeptDO> {}

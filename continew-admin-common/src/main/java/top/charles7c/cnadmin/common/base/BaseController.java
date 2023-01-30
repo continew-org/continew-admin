@@ -29,7 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 
 /**
@@ -67,9 +67,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C, U>, V, D,
      */
     @Operation(summary = "分页查询列表")
     @GetMapping
-    protected R<PageInfo<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
-        PageInfo<V> pageInfo = baseService.page(query, pageQuery);
-        return R.ok(pageInfo);
+    protected R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
+        PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
+        return R.ok(pageDataVO);
     }
 
     /**

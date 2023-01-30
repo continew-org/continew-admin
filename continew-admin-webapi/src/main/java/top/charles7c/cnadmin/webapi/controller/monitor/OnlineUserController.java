@@ -41,7 +41,7 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.consts.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageInfo;
+import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.monitor.model.query.OnlineUserQuery;
@@ -61,7 +61,7 @@ public class OnlineUserController {
 
     @Operation(summary = "分页查询在线用户列表")
     @GetMapping
-    public R<PageInfo<OnlineUserVO>> list(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<OnlineUserVO>> list(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
         List<LoginUser> loginUserList = new ArrayList<>();
         List<String> tokenKeyList = StpUtil.searchTokenValue("", 0, -1, false);
         for (String tokenKey : tokenKeyList) {
@@ -82,10 +82,10 @@ public class OnlineUserController {
         }
 
         // 构建分页数据
-        List<OnlineUserVO> onlineUserList = BeanUtil.copyToList(loginUserList, OnlineUserVO.class);
-        CollUtil.sort(onlineUserList, Comparator.comparing(OnlineUserVO::getLoginTime).reversed());
-        PageInfo<OnlineUserVO> pageInfo = PageInfo.build(pageQuery.getPage(), pageQuery.getSize(), onlineUserList);
-        return R.ok(pageInfo);
+        List<OnlineUserVO> list = BeanUtil.copyToList(loginUserList, OnlineUserVO.class);
+        CollUtil.sort(list, Comparator.comparing(OnlineUserVO::getLoginTime).reversed());
+        PageDataVO<OnlineUserVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        return R.ok(pageDataVO);
     }
 
     /**

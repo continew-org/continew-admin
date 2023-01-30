@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.entity.UserDO;
 
 /**
  * 用户 Mapper
@@ -26,4 +26,4 @@ import top.charles7c.cnadmin.system.model.entity.SysUser;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
-public interface UserMapper extends BaseMapper<SysUser> {}
+public interface UserMapper extends BaseMapper<UserDO> {}

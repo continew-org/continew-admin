@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
-import top.charles7c.cnadmin.system.model.entity.SysUser;
+import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -46,14 +46,14 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String login(String username, String password) {
-        SysUser sysUser = userService.getByUsername(username);
-        CheckUtils.throwIfNull(sysUser, "用户名或密码错误");
-        Long userId = sysUser.getUserId();
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), sysUser.getPassword(), "用户名或密码错误");
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, sysUser.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        UserDO userDO = userService.getByUsername(username);
+        CheckUtils.throwIfNull(userDO, "用户名或密码错误");
+        Long userId = userDO.getUserId();
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), userDO.getPassword(), "用户名或密码错误");
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, userDO.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
-        LoginUser loginUser = BeanUtil.copyProperties(sysUser, LoginUser.class);
+        LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
         LoginHelper.login(loginUser);
 
         // 返回令牌

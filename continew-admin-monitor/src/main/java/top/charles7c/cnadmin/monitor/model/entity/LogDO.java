@@ -34,7 +34,7 @@ import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
  */
 @Data
 @TableName("sys_log")
-public class SysLog implements Serializable {
+public class LogDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

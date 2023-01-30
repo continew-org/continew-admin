@@ -23,7 +23,7 @@ import cn.hutool.core.lang.tree.Tree;
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.CreateDeptRequest;
+import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 
 /**
@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.system.model.vo.DeptVO;
  * @author Charles7c
  * @since 2023/1/22 17:54
  */
-public interface DeptService extends BaseService<DeptVO, DeptVO, DeptQuery, CreateDeptRequest, CreateDeptRequest> {
+public interface DeptService extends BaseService<DeptVO, DeptVO, DeptQuery, DeptRequest, DeptRequest> {
 
     /**
      * 构建树

@@ -53,7 +53,7 @@ import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.config.properties.LogProperties;
 import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
-import top.charles7c.cnadmin.monitor.model.entity.SysLog;
+import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 
 /**
  * 系统日志拦截器
@@ -83,20 +83,20 @@ public class LogInterceptor implements HandlerInterceptor {
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
         @NonNull Object handler, Exception e) {
         // 记录请求耗时及异常信息
-        SysLog sysLog = this.logElapsedTimeAndException();
-        if (sysLog == null) {
+        LogDO logDO = this.logElapsedTimeAndException();
+        if (logDO == null) {
             return;
         }
 
         // 记录日志描述
-        this.logDescription(sysLog, handler);
+        this.logDescription(logDO, handler);
         // 记录请求信息
-        this.logRequest(sysLog, request);
+        this.logRequest(logDO, request);
         // 记录响应信息
-        this.logResponse(sysLog, response);
+        this.logResponse(logDO, response);
 
         // 保存系统日志
-        SpringUtil.getApplicationContext().publishEvent(sysLog);
+        SpringUtil.getApplicationContext().publishEvent(logDO);
     }
 
     /**
@@ -114,28 +114,28 @@ public class LogInterceptor implements HandlerInterceptor {
      *
      * @return 系统日志信息
      */
-    private SysLog logElapsedTimeAndException() {
+    private LogDO logElapsedTimeAndException() {
         LogContext logContext = LogContextHolder.get();
         if (logContext != null) {
             LogContextHolder.remove();
-            SysLog sysLog = new SysLog();
-            sysLog.setCreateTime(logContext.getCreateTime());
-            sysLog.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(sysLog.getCreateTime()));
-            sysLog.setStatus(LogStatusEnum.SUCCESS);
+            LogDO logDO = new LogDO();
+            logDO.setCreateTime(logContext.getCreateTime());
+            logDO.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(logDO.getCreateTime()));
+            logDO.setStatus(LogStatusEnum.SUCCESS);
 
             // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
             String errorMsg = logContext.getErrorMsg();
             if (StrUtil.isNotBlank(errorMsg)) {
-                sysLog.setStatus(LogStatusEnum.FAILURE);
-                sysLog.setErrorMsg(errorMsg);
+                logDO.setStatus(LogStatusEnum.FAILURE);
+                logDO.setErrorMsg(errorMsg);
             }
             // 记录异常详情
             Exception exception = logContext.getException();
             if (exception != null) {
-                sysLog.setStatus(LogStatusEnum.FAILURE);
-                sysLog.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
+                logDO.setStatus(LogStatusEnum.FAILURE);
+                logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
             }
-            return sysLog;
+            return logDO;
         }
         return null;
     }
@@ -143,69 +143,69 @@ public class LogInterceptor implements HandlerInterceptor {
     /**
      * 记录日志描述
      *
-     * @param sysLog
+     * @param logDO
      *            系统日志信息
      * @param handler
      *            处理器
      */
-    private void logDescription(SysLog sysLog, Object handler) {
+    private void logDescription(LogDO logDO, Object handler) {
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         Operation methodOperation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Operation.class);
         Log methodLog = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Log.class);
 
         if (methodOperation != null) {
-            sysLog.setDescription(
+            logDO.setDescription(
                 StrUtil.isNotBlank(methodOperation.summary()) ? methodOperation.summary() : "请在该接口方法上指定日志描述");
         }
         // 例如：@Log("获取验证码") -> 获取验证码
         if (methodLog != null && StrUtil.isNotBlank(methodLog.value())) {
-            sysLog.setDescription(methodLog.value());
+            logDO.setDescription(methodLog.value());
         }
     }
 
     /**
      * 记录请求信息
      *
-     * @param sysLog
+     * @param logDO
      *            系统日志信息
      * @param request
      *            请求对象
      */
-    private void logRequest(SysLog sysLog, HttpServletRequest request) {
-        sysLog.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
+    private void logRequest(LogDO logDO, HttpServletRequest request) {
+        logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
             : request.getRequestURL().append("?").append(request.getQueryString()).toString());
-        sysLog.setRequestMethod(request.getMethod());
-        sysLog.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
+        logDO.setRequestMethod(request.getMethod());
+        logDO.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         if (StrUtil.isNotBlank(requestBody)) {
-            sysLog.setRequestBody(this.desensitize(
+            logDO.setRequestBody(this.desensitize(
                 JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : ServletUtil.getParamMap(request)));
         }
-        sysLog.setClientIp(ServletUtil.getClientIP(request));
-        sysLog.setLocation(IpUtils.getCityInfo(sysLog.getClientIp()));
-        sysLog.setBrowser(ServletUtils.getBrowser(request));
-        sysLog.setCreateUser(sysLog.getCreateUser() == null ? LoginHelper.getUserId() : sysLog.getCreateUser());
+        logDO.setClientIp(ServletUtil.getClientIP(request));
+        logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
+        logDO.setBrowser(ServletUtils.getBrowser(request));
+        logDO.setCreateUser(logDO.getCreateUser() == null ? LoginHelper.getUserId() : logDO.getCreateUser());
     }
 
     /**
      * 记录响应信息
      *
-     * @param sysLog
+     * @param logDO
      *            系统日志信息
      * @param response
      *            响应对象
      */
-    private void logResponse(SysLog sysLog, HttpServletResponse response) {
+    private void logResponse(LogDO logDO, HttpServletResponse response) {
         int status = response.getStatus();
-        sysLog.setStatusCode(status);
-        sysLog.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
+        logDO.setStatusCode(status);
+        logDO.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
-            sysLog.setResponseBody(responseBody);
+            logDO.setResponseBody(responseBody);
         }
         // 操作失败：>= 400
-        sysLog.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : sysLog.getStatus());
+        logDO.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : logDO.getStatus());
     }
 
     /**
