@@ -31,7 +31,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
  * @since 2022/12/12 23:02
  */
 @Data
-public class BaseEntity implements Serializable {
+public class BaseDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

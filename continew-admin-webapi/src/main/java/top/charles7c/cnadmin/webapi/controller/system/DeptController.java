@@ -46,7 +46,7 @@ import top.charles7c.cnadmin.system.service.DeptService;
 public class DeptController extends BaseController<DeptService, DeptVO, DeptVO, DeptQuery, DeptRequest> {
 
     @Override
-    @Operation(summary = "查询部门列表树")
+    @Operation(summary = "查询列表树")
     public R<List<DeptVO>> list(@Validated DeptQuery query) {
         List<DeptVO> list = baseService.list(query);
         return R.ok(baseService.buildListTree(list));

@@ -16,6 +16,9 @@
 
 package top.charles7c.cnadmin.monitor.model.vo;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @since 2023/1/17 21:43
  */
 @Data
-public class LogVO {
+public class LogVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 创建人
@@ -42,4 +47,10 @@ public class LogVO {
      */
     @Schema(description = "创建人")
     private String createUserString;
+
+    /**
+     * 创建时间
+     */
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
 }

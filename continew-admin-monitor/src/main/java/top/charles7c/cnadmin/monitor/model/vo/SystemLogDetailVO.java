@@ -16,9 +16,6 @@
 
 package top.charles7c.cnadmin.monitor.model.vo;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Data
 @Schema(description = "系统日志详情信息")
-public class SystemLogDetailVO extends LogVO implements Serializable {
+public class SystemLogDetailVO extends LogVO {
 
     private static final long serialVersionUID = 1L;
 
@@ -112,10 +109,4 @@ public class SystemLogDetailVO extends LogVO implements Serializable {
      */
     @Schema(description = "浏览器")
     private String browser;
-
-    /**
-     * 创建时间
-     */
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
 }

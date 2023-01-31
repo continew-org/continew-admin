@@ -16,9 +16,6 @@
 
 package top.charles7c.cnadmin.monitor.model.vo;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,7 +30,7 @@ import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
  */
 @Data
 @Schema(description = "操作日志信息")
-public class OperationLogVO extends LogVO implements Serializable {
+public class OperationLogVO extends LogVO {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,6 +45,12 @@ public class OperationLogVO extends LogVO implements Serializable {
      */
     @Schema(description = "操作内容")
     private String description;
+
+    /**
+     * 所属模块
+     */
+    @Schema(description = "所属模块")
+    private String module;
 
     /**
      * 操作状态（1成功 2失败）
@@ -78,10 +81,4 @@ public class OperationLogVO extends LogVO implements Serializable {
      */
     @Schema(description = "错误信息")
     private String errorMsg;
-
-    /**
-     * 操作时间
-     */
-    @Schema(description = "操作时间")
-    private LocalDateTime createTime;
 }

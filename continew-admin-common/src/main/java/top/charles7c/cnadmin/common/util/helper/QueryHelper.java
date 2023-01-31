@@ -159,7 +159,7 @@ public class QueryHelper {
         // 如果没有单独指定属性名，就和使用该注解的属性的名称一致
         // 注意：数据库规范中列采用下划线连接法命名，程序规范中变量采用驼峰法命名
         String property = queryAnnotation.property();
-        fieldName = StrUtil.isNotBlank(property) ? property : fieldName;
+        fieldName = StrUtil.blankToDefault(property, fieldName);
         String columnName = StrUtil.toUnderlineCase(fieldName);
         switch (queryAnnotation.type()) {
             case EQUAL:

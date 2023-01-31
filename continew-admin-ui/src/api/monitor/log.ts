@@ -17,6 +17,7 @@ export interface LoginLogRecord extends LogRecord {
 }
 
 export interface OperationLogRecord extends LogRecord {
+  module: string;
   description: string;
   status: number;
   errorMsg: string;

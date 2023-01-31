@@ -84,6 +84,10 @@
       dataIndex: 'description',
     },
     {
+      title: '所属模块',
+      dataIndex: 'module',
+    },
+    {
       title: '操作状态',
       dataIndex: 'status',
       slotName: 'status',

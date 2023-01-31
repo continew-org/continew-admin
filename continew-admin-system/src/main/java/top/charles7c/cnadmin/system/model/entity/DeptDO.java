@@ -21,7 +21,7 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.cnadmin.common.base.BaseEntity;
+import top.charles7c.cnadmin.common.base.BaseDO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  */
 @Data
 @TableName("sys_dept")
-public class DeptDO extends BaseEntity {
+public class DeptDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 

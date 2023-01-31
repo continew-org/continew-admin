@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
@@ -53,6 +54,7 @@ public class LogController {
 
     private final LogService logService;
 
+    @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表")
     @GetMapping("/login")
     public R<PageDataVO<LoginLogVO>> list(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
@@ -60,6 +62,7 @@ public class LogController {
         return R.ok(pageDataVO);
     }
 
+    @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表")
     @GetMapping("/operation")
     public R<PageDataVO<OperationLogVO>> list(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
@@ -67,6 +70,7 @@ public class LogController {
         return R.ok(pageDataVO);
     }
 
+    @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表")
     @GetMapping("/system")
     public R<PageDataVO<SystemLogVO>> list(@Validated SystemLogQuery query, @Validated PageQuery pageQuery) {
@@ -74,6 +78,7 @@ public class LogController {
         return R.ok(pageDataVO);
     }
 
+    @Log(module = "系统日志")
     @Operation(summary = "查看系统日志详情")
     @GetMapping("/system/{logId}")
     public R<SystemLogDetailVO> detail(@PathVariable Long logId) {

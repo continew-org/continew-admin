@@ -50,6 +50,11 @@ public class LogDO implements Serializable {
     private String description;
 
     /**
+     * 所属模块
+     */
+    private String module;
+
+    /**
      * 请求URL
      */
     private String requestUrl;

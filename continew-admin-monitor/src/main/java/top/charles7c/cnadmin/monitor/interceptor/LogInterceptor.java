@@ -26,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -39,6 +39,7 @@ import org.springframework.web.util.WebUtils;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -88,8 +89,11 @@ public class LogInterceptor implements HandlerInterceptor {
             return;
         }
 
+        HandlerMethod handlerMethod = (HandlerMethod)handler;
+        // 记录所属模块
+        this.logModule(logDO, handlerMethod);
         // 记录日志描述
-        this.logDescription(logDO, handler);
+        this.logDescription(logDO, handlerMethod);
         // 记录请求信息
         this.logRequest(logDO, request);
         // 记录响应信息
@@ -141,23 +145,50 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     /**
+     * 记录所属模块
+     *
+     * @param logDO
+     *            系统日志信息
+     * @param handlerMethod
+     *            处理器方法
+     */
+    private void logModule(LogDO logDO, HandlerMethod handlerMethod) {
+        Tag classTag = handlerMethod.getBeanType().getDeclaredAnnotation(Tag.class);
+        Log classLog = handlerMethod.getBeanType().getDeclaredAnnotation(Log.class);
+        Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
+
+        // 例如：@Tag(name = "部门管理") -> 部门管理
+        // （本框架代码规范）例如：@Tag(name = "部门管理 API") -> 部门管理
+        if (classTag != null) {
+            String name = classTag.name();
+            logDO.setModule(StrUtil.isNotBlank(name) ? name.replace("API", "").trim() : "请在该接口类上指定所属模块");
+        }
+        // 例如：@Log(module = "部门管理") -> 部门管理
+        if (classLog != null && StrUtil.isNotBlank(classLog.module())) {
+            logDO.setModule(classLog.module());
+        }
+        if (methodLog != null && StrUtil.isNotBlank(methodLog.module())) {
+            logDO.setModule(methodLog.module());
+        }
+    }
+
+    /**
      * 记录日志描述
      *
      * @param logDO
      *            系统日志信息
-     * @param handler
-     *            处理器
+     * @param handlerMethod
+     *            处理器方法
      */
-    private void logDescription(LogDO logDO, Object handler) {
-        HandlerMethod handlerMethod = (HandlerMethod)handler;
-        Operation methodOperation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Operation.class);
-        Log methodLog = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Log.class);
+    private void logDescription(LogDO logDO, HandlerMethod handlerMethod) {
+        Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
+        Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
 
+        // 例如：@Operation(summary="新增部门") -> 新增部门
         if (methodOperation != null) {
-            logDO.setDescription(
-                StrUtil.isNotBlank(methodOperation.summary()) ? methodOperation.summary() : "请在该接口方法上指定日志描述");
+            logDO.setDescription(StrUtil.blankToDefault(methodOperation.summary(), "请在该接口方法上指定日志描述"));
         }
-        // 例如：@Log("获取验证码") -> 获取验证码
+        // 例如：@Log("新增部门") -> 新增部门
         if (methodLog != null && StrUtil.isNotBlank(methodLog.value())) {
             logDO.setDescription(methodLog.value());
         }
@@ -184,7 +215,7 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setClientIp(ServletUtil.getClientIP(request));
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
         logDO.setBrowser(ServletUtils.getBrowser(request));
-        logDO.setCreateUser(logDO.getCreateUser() == null ? LoginHelper.getUserId() : logDO.getCreateUser());
+        logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
     }
 
     /**
@@ -290,13 +321,13 @@ public class LogInterceptor implements HandlerInterceptor {
 
         // 3、排除不需要记录系统日志的接口
         HandlerMethod handlerMethod = (HandlerMethod)handler;
-        Log methodLog = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Log.class);
-        // 3.1 请求方式不要求记录且请求上没有 @Log 注解，则不记录系统日志
+        Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
+        // 3.1 请求方式不要求记录且接口方法上没有 @Log 注解，则不记录系统日志
         if (operationLogProperties.getExcludeMethods().contains(request.getMethod()) && methodLog == null) {
             return false;
         }
-        // 3.2 如果接口上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
-        Operation methodOperation = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Operation.class);
+        // 3.2 如果接口方法上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
+        Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
         if (methodLog == null && methodOperation == null) {
             return false;
         }
@@ -304,7 +335,7 @@ public class LogInterceptor implements HandlerInterceptor {
         if (methodOperation != null && methodOperation.hidden()) {
             return false;
         }
-        // 3.4 如果接口上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
+        // 3.4 如果接口方法上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
         return methodLog == null || !methodLog.ignore();
     }
 }

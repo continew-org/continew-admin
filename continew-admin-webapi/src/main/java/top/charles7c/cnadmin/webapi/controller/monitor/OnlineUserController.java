@@ -58,7 +58,7 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
 @RequestMapping("/monitor/online/user")
 public class OnlineUserController {
 
-    @Operation(summary = "分页查询在线用户列表")
+    @Operation(summary = "分页查询列表")
     @GetMapping
     public R<PageDataVO<OnlineUserVO>> list(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
         List<LoginUser> loginUserList = new ArrayList<>();

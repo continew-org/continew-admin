@@ -93,7 +93,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID
      * @return 详情信息
      */
-    @Operation(summary = "查看详情")
+    @Operation(summary = "查看数据详情")
     @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
@@ -109,7 +109,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            创建信息
      * @return 自增 ID
      */
-    @Operation(summary = "新增")
+    @Operation(summary = "新增数据")
     @ResponseBody
     @PostMapping
     protected R<Long> create(@Validated(BaseRequest.Create.class) @RequestBody C request) {
@@ -124,7 +124,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            修改信息
      * @return /
      */
-    @Operation(summary = "修改")
+    @Operation(summary = "修改数据")
     @ResponseBody
     @PutMapping
     protected R update(@Validated(BaseRequest.Update.class) @RequestBody C request) {
@@ -139,7 +139,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID 列表
      * @return /
      */
-    @Operation(summary = "删除")
+    @Operation(summary = "删除数据")
     @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
     @ResponseBody
     @DeleteMapping("/{ids}")

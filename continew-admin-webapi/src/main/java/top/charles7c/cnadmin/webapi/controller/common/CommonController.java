@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
@@ -49,6 +50,7 @@ public class CommonController {
 
     private final DeptService deptService;
 
+    @Log(ignore = true)
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> deptTree(@Validated DeptQuery query) {
