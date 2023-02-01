@@ -66,6 +66,7 @@ public class DeptRequest extends BaseRequest {
      * 部门排序
      */
     @Schema(description = "部门排序")
+    @NotNull(message = "部门排序不能为空")
     private Integer deptSort;
 
     /**

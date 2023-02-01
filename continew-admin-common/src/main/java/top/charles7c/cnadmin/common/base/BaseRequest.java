@@ -18,6 +18,8 @@ package top.charles7c.cnadmin.common.base;
 
 import java.io.Serializable;
 
+import javax.validation.groups.Default;
+
 import lombok.Data;
 
 /**
@@ -34,10 +36,10 @@ public class BaseRequest implements Serializable {
     /**
      * 分组校验-创建
      */
-    public @interface Create {}
+    public interface Create extends Default {}
 
     /**
      * 分组校验-修改
      */
-    public @interface Update {}
+    public interface Update extends Default {}
 }
