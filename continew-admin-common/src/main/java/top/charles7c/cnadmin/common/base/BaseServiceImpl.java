@@ -76,7 +76,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     }
 
     @Override
-    public D detail(Long id) {
+    public D get(Long id) {
         T entity = this.getById(id);
         return BeanUtil.copyProperties(entity, detailVoClass);
     }

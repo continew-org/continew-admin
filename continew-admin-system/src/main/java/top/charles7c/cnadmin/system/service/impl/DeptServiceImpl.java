@@ -33,7 +33,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 
+import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
@@ -43,6 +45,7 @@ import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.DeptDO;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.DeptRequest;
+import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -55,7 +58,7 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptVO, DeptQuery, DeptRequest>
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptDetailVO, DeptQuery, DeptRequest>
     implements DeptService {
 
     private final UserService userService;
@@ -69,6 +72,34 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         List<DeptVO> list = BeanUtil.copyToList(deptList, DeptVO.class);
         list.forEach(this::fill);
         return list;
+    }
+
+    @Override
+    public DeptDetailVO get(Long id) {
+        DeptDetailVO deptDetailVO = super.get(id);
+        this.fillDetail(deptDetailVO);
+        return deptDetailVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long create(DeptRequest request) {
+        String deptName = request.getDeptName();
+        boolean isExist = this.checkDeptNameExist(deptName, request.getParentId(), null);
+        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
+
+        // 保存部门信息
+        DeptDO deptDO = BeanUtil.copyProperties(request, DeptDO.class);
+        deptDO.setStatus(DisEnableStatusEnum.ENABLE);
+        baseMapper.insert(deptDO);
+        return deptDO.getDeptId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        super.delete(ids);
+        baseMapper.delete(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getParentId, ids));
     }
 
     @Override
@@ -134,27 +165,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long create(DeptRequest request) {
-        String deptName = request.getDeptName();
-        boolean isExist = this.checkDeptNameExist(deptName, request.getParentId(), null);
-        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
-
-        // 保存部门信息
-        DeptDO deptDO = BeanUtil.copyProperties(request, DeptDO.class);
-        deptDO.setStatus(DisEnableStatusEnum.ENABLE);
-        baseMapper.insert(deptDO);
-        return deptDO.getDeptId();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
-        super.delete(ids);
-        baseMapper.delete(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getParentId, ids));
-    }
-
-    @Override
     public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
         return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
             .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
@@ -163,14 +173,30 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     /**
      * 填充数据
      *
-     * @param deptVO
-     *            部门信息
+     * @param baseVO
+     *            待填充列表信息
      */
-    private void fill(DeptVO deptVO) {
-        Long createUser = deptVO.getCreateUser();
+    private void fill(BaseVO baseVO) {
+        Long createUser = baseVO.getCreateUser();
         if (createUser == null) {
             return;
         }
-        deptVO.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
+        baseVO.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
+    }
+
+    /**
+     * 填充详情数据
+     *
+     * @param baseDetailVO
+     *            待填充详情信息
+     */
+    private void fillDetail(BaseDetailVO baseDetailVO) {
+        this.fill(baseDetailVO);
+
+        Long updateUser = baseDetailVO.getUpdateUser();
+        if (updateUser == null) {
+            return;
+        }
+        baseDetailVO.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(updateUser)).getNickname());
     }
 }

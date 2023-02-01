@@ -37,7 +37,7 @@ public @interface CrudRequestMapping {
     /**
      * API 列表
      */
-    Api[] api() default {Api.PAGE, Api.DETAIL, Api.CREATE, Api.UPDATE, Api.DELETE};
+    Api[] api() default {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE};
 
     /**
      * API 枚举
@@ -58,7 +58,7 @@ public @interface CrudRequestMapping {
         /**
          * 详情
          */
-        DETAIL,
+        GET,
         /**
          * 新增
          */

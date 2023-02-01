@@ -1,154 +1,71 @@
 <template>
   <div class="container">
     <Breadcrumb :items="['menu.system', 'menu.system.dept.list']" />
-    <a-card class="general-card">
+    <a-card class="general-card" :title="$t('menu.system.dept.list')">
       <a-row :gutter="20">
         <a-col>
-          <!-- 工具栏 -->
-          <div class="head-container">
-            <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
+          <!-- 搜索栏 -->
+          <div class="query-container">
+            <a-form ref="queryRef" :model="queryParams" layout="inline">
               <a-form-item field="deptName" hide-label>
                 <a-input
-                  v-model="queryFormData.deptName"
+                  v-model="queryParams.deptName"
                   placeholder="输入部门名称搜索"
                   allow-clear
                   style="width: 150px"
-                  @press-enter="toQuery"
+                  @press-enter="handleQuery"
                 />
               </a-form-item>
               <a-form-item field="status" hide-label>
                 <a-select
-                  v-model="queryFormData.status"
+                  v-model="queryParams.status"
                   :options="statusOptions"
                   placeholder="状态搜索"
                   allow-clear
                   style="width: 150px"
                 />
               </a-form-item>
-              <a-button type="primary" @click="toQuery">
-                <template #icon>
-                  <icon-search />
-                </template>
-                查询
-              </a-button>
-              <a-button @click="resetQuery">
-                <template #icon>
-                  <icon-refresh />
-                </template>
-                重置
-              </a-button>
+              <a-form-item hide-label>
+                <a-space>
+                  <a-button type="primary" @click="handleQuery">
+                    <template #icon><icon-search /></template>查询
+                  </a-button>
+                  <a-button @click="resetQuery">
+                    <template #icon><icon-refresh /></template>重置
+                  </a-button>
+                </a-space>
+              </a-form-item>
             </a-form>
           </div>
 
-          <!-- 工具栏 -->
+          <!-- 操作栏 -->
           <a-row style="margin-bottom: 16px">
             <a-col :span="12">
               <a-space>
                 <a-button type="primary" @click="toCreate">
-                  <template #icon>
-                    <icon-plus />
-                  </template>
-                  {{ $t('searchTable.operation.create') }}
+                  <template #icon><icon-plus /></template>新增
                 </a-button>
-                <a-button
-                  type="primary"
-                  status="success"
-                  disabled
-                  title="尚未开发"
-                >
-                  <template #icon>
-                    <icon-edit />
-                  </template>
-                  {{ $t('searchTable.operation.update') }}
-                </a-button>
-                <a-button
-                  type="primary"
-                  status="danger"
-                  disabled
-                  title="尚未开发"
-                >
-                  <template #icon>
-                    <icon-delete />
-                  </template>
-                  {{ $t('searchTable.operation.delete') }}
+                <a-button type="primary" status="danger" :disabled="multiple" @click="handleBatchDelete">
+                  <template #icon><icon-delete /></template>删除
                 </a-button>
               </a-space>
             </a-col>
-            <a-col
-              :span="12"
-              style="display: flex; align-items: center; justify-content: end"
-            >
-              <a-button
-                type="primary"
-                status="warning"
-                disabled
-                title="尚未开发"
-              >
-                <template #icon>
-                  <icon-download />
-                </template>
-                {{ $t('searchTable.operation.export') }}
+            <a-col :span="12" style="display: flex; align-items: center; justify-content: end">
+              <a-button type="primary" status="warning" disabled title="尚未开放">
+                <template #icon><icon-download /></template>导出
               </a-button>
-              <a-tooltip :content="$t('searchTable.actions.refresh')">
-                <div class="action-icon" @click="toQuery">
-                  <icon-refresh size="18" />
-                </div>
-              </a-tooltip>
-              <a-dropdown @select="handleSelectDensity">
-                <a-tooltip :content="$t('searchTable.actions.density')">
-                  <div class="action-icon"><icon-line-height size="18" /></div>
-                </a-tooltip>
-                <template #content>
-                  <a-doption
-                    v-for="item in densityList"
-                    :key="item.value"
-                    :value="item.value"
-                    :class="{ active: item.value === size }"
-                  >
-                    <span>{{ item.name }}</span>
-                  </a-doption>
-                </template>
-              </a-dropdown>
-              <a-tooltip :content="$t('searchTable.actions.columnSetting')">
-                <a-popover
-                  trigger="click"
-                  position="bl"
-                  @popup-visible-change="popupVisibleChange"
-                >
-                  <div class="action-icon"><icon-settings size="18" /></div>
-                  <template #content>
-                    <div id="tableSetting">
-                      <div
-                        v-for="(item, index) in showColumns"
-                        :key="item.dataIndex"
-                        class="setting"
-                      >
-                        <div style="margin-right: 4px; cursor: move">
-                          <icon-drag-arrow />
-                        </div>
-                        <div>
-                          <a-checkbox
-                            v-model="item.checked"
-                            @change="handleChange($event, item as TableColumnData, index)"
-                          >
-                          </a-checkbox>
-                        </div>
-                        <div class="title">
-                          {{ item.title === '#' ? '序列号' : item.title }}
-                        </div>
-                      </div>
-                    </div>
-                  </template>
-                </a-popover>
-              </a-tooltip>
             </a-col>
           </a-row>
 
-          <!-- 表格渲染 -->
+          <!-- 列表区域 -->
           <a-table
             ref="tableRef"
-            :columns="cloneColumns as TableColumnData[]"
-            :data="renderData"
+            :data="deptList"
+            :row-selection="{
+              type: 'checkbox',
+              showCheckedAll: true,
+              onlyCurrent: false,
+            }"
             :pagination="false"
             :default-expand-all-rows="true"
             :hide-expand-button-on-empty="true"
@@ -156,116 +73,157 @@
             :bordered="false"
             :stripe="true"
             :loading="loading"
-            :size="size"
+            size="large"
+            @selection-change="handleSelectionChange"
           >
-            <template #status="{ record }">
-              <a-switch
-                v-model="record.status"
-                :checked-value="1"
-                :unchecked-value="2"
-                @change="handleChangeStatus(record, record.status)"
-              />
-            </template>
-            <template #operations="{ record }">
-              <a-button
-                v-permission="['admin']"
-                type="text"
-                size="small"
-                disabled
-                title="尚未开发"
-              >
-                <template #icon>
-                  <icon-edit />
+            <template #columns>
+              <a-table-column title="部门名称" data-index="deptName">
+                <template #cell="{ record }">
+                  <a-button type="text" size="small" @click="toDetail(record.deptId)">{{ record.deptName }}</a-button>
                 </template>
-                修改
-              </a-button>
-              <a-popconfirm content="确定删除吗，如果存在下级部门则一并删除，此操作不能撤销！" type="error" @ok="handleDelete(record)">
-                <a-button
-                  v-permission="['admin']"
-                  type="text"
-                  size="small"
-                >
-                  <template #icon>
-                    <icon-delete />
-                  </template>
-                  删除
-                </a-button>
-              </a-popconfirm>
+              </a-table-column>
+              <a-table-column title="部门排序" align="center" data-index="deptSort" />
+              <a-table-column title="状态" align="center" data-index="status">
+                <template #cell="{ record }">
+                  <a-switch
+                    v-model="record.status"
+                    :checked-value="1"
+                    :unchecked-value="2"
+                    @change="handleChangeStatus(record)"
+                  />
+                </template>
+              </a-table-column>
+              <a-table-column title="描述" data-index="description" />
+              <a-table-column title="创建人" data-index="createUserString" />
+              <a-table-column title="创建时间" data-index="createTime" />
+              <a-table-column title="操作" align="center">
+                <template #cell="{ record }">
+                  <a-button v-permission="['admin']" type="text" size="small" @click="toUpdate(record.deptId)">
+                    <template #icon><icon-edit /></template>修改
+                  </a-button>
+                  <a-popconfirm content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！" type="warning" @ok="handleDelete([record.deptId])">
+                    <a-button v-permission="['admin']" type="text" size="small">
+                      <template #icon><icon-delete /></template>删除
+                    </a-button>
+                  </a-popconfirm>
+                </template>
+              </a-table-column>
             </template>
           </a-table>
 
-          <!-- 窗口 -->
+          <!-- 对话框区域 -->
           <a-modal
-            title="新增部门"
-            :width="570"
+            :title="title"
             :visible="visible"
+            :width="570"
             :mask-closable="false"
             unmount-on-close
+            render-to-body
             @ok="handleOk"
             @cancel="handleCancel"
           >
-            <a-form ref="formRef" :model="formData" :rules="rules">
-              <a-form-item
-                field="parentId"
-                :validate-trigger="['change', 'blur']"
-                label="上级部门"
-              >
+            <a-form ref="formRef" :model="form" :rules="rules">
+              <a-form-item label="上级部门" field="parentId">
                 <a-tree-select
-                  v-model="formData.parentId"
+                  v-model="form.parentId"
                   :data="treeData"
-                  :allow-search="true"
-                  :allow-clear="true"
-                  :filter-tree-node="filterDept"
-                  :fallback-option="false"
                   placeholder="请选择上级部门"
+                  allow-clear
+                  allow-search
+                  :filter-tree-node="filterDeptTree"
+                  :fallback-option="false"
                 />
               </a-form-item>
-              <a-form-item
-                field="deptName"
-                :validate-trigger="['change', 'blur']"
-                label="部门名称"
-              >
-                <a-input
-                  v-model="formData.deptName"
-                  placeholder="请输入部门名称"
-                  size="large"
-                  allow-clear
-                >
-                </a-input>
+              <a-form-item label="部门名称" field="deptName">
+                <a-input v-model="form.deptName" placeholder="请输入部门名称" size="large" />
               </a-form-item>
-              <a-form-item
-                field="deptSort"
-                :validate-trigger="['change', 'blur']"
-                label="部门排序"
-              >
+              <a-form-item label="部门排序" field="deptSort">
                 <a-input-number
-                  v-model="formData.deptSort"
+                  v-model="form.deptSort"
                   :min="1"
                   placeholder="请输入部门排序"
                   mode="button"
                   size="large"
-                >
-                </a-input-number>
+                />
               </a-form-item>
-              <a-form-item
-                field="description"
-                :validate-trigger="['change', 'blur']"
-                label="描述"
-              >
+              <a-form-item label="描述" field="description">
                 <a-textarea
-                  v-model="formData.description"
-                  placeholder="请输入描述"
-                  size="large"
+                  v-model="form.description"
                   :max-length="200"
-                  show-word-limit
+                  placeholder="请输入描述"
                   :auto-size="{
                     minRows:3,
                   }"
-                >
-                </a-textarea >
+                  show-word-limit
+                  size="large"
+                />
               </a-form-item>
             </a-form>
           </a-modal>
+
+          <!-- 抽屉区域 -->
+          <a-drawer
+            title="部门详情"
+            :visible="detailVisible"
+            :width="570"
+            :footer="false"
+            unmount-on-close
+            render-to-body
+            @cancel="handleDetailCancel"
+          >
+            <a-descriptions
+              title="基础信息"
+              :column="2"
+              bordered
+              size="large"
+            >
+              <a-descriptions-item label="部门名称">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.deptName }}</span>
+              </a-descriptions-item>
+              <a-descriptions-item label="状态">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>
+                  <a-tag v-if="dept.status === 1" color="green"><span class="circle pass"></span>启用</a-tag>
+                  <a-tag v-else color="red"><span class="circle fail"></span>禁用</a-tag>
+                </span>
+              </a-descriptions-item>
+              <a-descriptions-item label="创建人">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.createUserString }}</span>
+              </a-descriptions-item>
+              <a-descriptions-item label="创建时间">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.createTime }}</span>
+              </a-descriptions-item>
+              <a-descriptions-item label="修改人">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.updateUserString }}</span>
+              </a-descriptions-item>
+              <a-descriptions-item label="修改时间">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.updateTime }}</span>
+              </a-descriptions-item>
+              <a-descriptions-item label="描述">
+                <a-skeleton v-if="detailLoading" :animation="true">
+                  <a-skeleton-line :rows="1" />
+                </a-skeleton>
+                <span v-else>{{ dept.description }}</span>
+              </a-descriptions-item>
+            </a-descriptions>
+          </a-drawer>
         </a-col>
       </a-row>
     </a-card>
@@ -273,279 +231,254 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, nextTick, ref, watch } from 'vue';
-  import useLoading from '@/hooks/loading';
-  import { FieldRule, Message, TableInstance, TreeNodeData } from '@arco-design/web-vue';
+  import { getCurrentInstance, ref, toRefs, reactive, computed, nextTick, watch } from 'vue';
+  import { SelectOptionData, TreeNodeData } from '@arco-design/web-vue';
   import {
-    getDeptList,
     DeptRecord,
     DeptParams,
+    listDept,
+    getDept,
     createDept,
     updateDept,
     deleteDept,
   } from '@/api/system/dept';
-  import getDeptTree from '@/api/common';
-  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
-  import cloneDeep from 'lodash/cloneDeep';
-  import Sortable from 'sortablejs';
-  import { useI18n } from 'vue-i18n';
+  import listDeptTree from '@/api/common';
 
-  type SizeProps = 'mini' | 'small' | 'medium' | 'large';
-  type Column = TableColumnData & { checked?: true };
-  const cloneColumns = ref<Column[]>([]);
-  const showColumns = ref<Column[]>([]);
-  const size = ref<SizeProps>('large');
-  const { t } = useI18n();
-  const densityList = computed(() => [
-    {
-      name: t('searchTable.size.mini'),
-      value: 'mini',
-    },
-    {
-      name: t('searchTable.size.small'),
-      value: 'small',
-    },
-    {
-      name: t('searchTable.size.medium'),
-      value: 'medium',
-    },
-    {
-      name: t('searchTable.size.large'),
-      value: 'large',
-    },
-  ]);
-  const { loading, setLoading } = useLoading(true);
-  const tableRef = ref<TableInstance>();
-  const queryFormRef = ref<FormInstance>();
-  const queryFormData = ref({
-    deptName: undefined,
-    status: undefined,
-  });
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: '启用',
-      value: 1,
-    },
-    {
-      label: '禁用',
-      value: 2,
-    },
-  ]);
+  const { proxy } = getCurrentInstance() as any;
 
-  // 查询
-  const toQuery = () => {
-    fetchData({
-      ...queryFormData.value,
-    } as unknown as DeptParams);
-  };
-
-  // 重置
-  const resetQuery = async () => {
-    await queryFormRef.value?.resetFields();
-    await fetchData();
-  };
-
-  const renderData = ref<DeptRecord[]>([]);
-  const columns = computed<TableColumnData[]>(() => [
-    {
-      title: '部门名称',
-      dataIndex: 'deptName',
-    },
-    {
-      title: '部门排序',
-      dataIndex: 'deptSort',
-      align: 'center',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      slotName: 'status',
-      align: 'center',
-    },
-    {
-      title: '描述',
-      dataIndex: 'description',
-    },
-    {
-      title: '创建人',
-      dataIndex: 'createUserString',
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-    },
-    {
-      title: '操作',
-      slotName: 'operations',
-      align: 'center',
-    },
-  ]);
-
-  // 分页查询列表
-  const fetchData = async (
-    params: DeptParams = {
-      ...queryFormData.value
-    }
-  ) => {
-    setLoading(true);
-    try {
-      const { data } = await getDeptList(params);
-      renderData.value = data;
-    } finally {
-      setLoading(false);
-    }
-    setTimeout(() => {
-      tableRef.value?.expandAll();
-    }, 0);
-  };
-  fetchData();
-
-  // 改变状态
-  const handleChangeStatus = async (record: DeptRecord, val: number) => {
-    if (record.deptId) {
-      const res = await updateDept({ deptId: record.deptId, status: val });
-      if (res.success) {
-        Message.success(res.msg);
-      } else {
-        record.status = (record.status === 1) ? 2 : 1;
-      }
-    }
-  };
-
-  // 删除
-  const handleDelete = async (record: DeptRecord) => {
-    if (record.deptId) {
-      const res = await deleteDept([record.deptId]);
-      if (res.success) {
-        Message.success(res.msg);
-        await fetchData();
-      }
-    }
-  };
-
-  const handleSelectDensity = (
-    val: string | number | Record<string, any> | undefined,
-    e: Event
-  ) => {
-    size.value = val as SizeProps;
-  };
-
-  const handleChange = (
-    checked: boolean | (string | boolean | number)[],
-    column: Column,
-    index: number
-  ) => {
-    if (!checked) {
-      cloneColumns.value = showColumns.value.filter(
-        (item) => item.dataIndex !== column.dataIndex
-      );
-    } else {
-      cloneColumns.value.splice(index, 0, column);
-    }
-  };
-
-  const exchangeArray = <T extends Array<any>>(
-    array: T,
-    beforeIdx: number,
-    newIdx: number,
-    isDeep = false
-  ): T => {
-    const newArray = isDeep ? cloneDeep(array) : array;
-    if (beforeIdx > -1 && newIdx > -1) {
-      // 先替换后面的，然后拿到替换的结果替换前面的
-      newArray.splice(
-        beforeIdx,
-        1,
-        newArray.splice(newIdx, 1, newArray[beforeIdx]).pop()
-      );
-    }
-    return newArray;
-  };
-
-  const popupVisibleChange = (val: boolean) => {
-    if (val) {
-      nextTick(() => {
-        const el = document.getElementById('tableSetting') as HTMLElement;
-        const sortable = new Sortable(el, {
-          onEnd(e: any) {
-            const { oldIndex, newIndex } = e;
-            exchangeArray(cloneColumns.value, oldIndex, newIndex);
-            exchangeArray(showColumns.value, oldIndex, newIndex);
-          },
-        });
-      });
-    }
-  };
-
-  watch(
-    () => columns.value,
-    (val) => {
-      cloneColumns.value = cloneDeep(val);
-      cloneColumns.value.forEach((item, index) => {
-        item.checked = true;
-      });
-      showColumns.value = cloneDeep(cloneColumns.value);
-    },
-    { deep: true, immediate: true }
-  );
-
-  const visible = ref(false);
-  const type = ref('新增');
-  const treeData = ref<TreeNodeData[]>();
-  const formRef = ref<FormInstance>();
-  const formData = ref<DeptRecord>({
-    deptId: undefined,
+  const deptList = ref<DeptRecord[]>([]);
+  const dept = ref<DeptRecord>({
     deptName: '',
-    parentId: undefined,
-    deptSort: 999,
+    deptSort: 0,
     description: '',
-    status: undefined,
+    status: 1,
     createUserString: '',
     createTime: '',
-    children: [],
+    updateUserString: '',
+    updateTime: '',
   });
-  const rules = computed((): Record<string, FieldRule[]> => {
-    return {
-      deptName: [
-        { required: true, message: '请输入部门名称' }
-      ],
-      deptSort: [
-        { required: true, message: '请输入部门排序' }
-      ],
-    };
+  const ids = ref<Array<number>>([]);
+  const title = ref('');
+  const multiple = ref(true);
+  const loading = ref(false);
+  const detailLoading = ref(false);
+  const visible = ref(false);
+  const detailVisible = ref(false);
+  const statusOptions = ref<SelectOptionData[]>([
+    { label: '启用', value: 1 },
+    { label: '禁用', value: 2 },
+  ]);
+  const treeData = ref<TreeNodeData[]>();
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      deptName: undefined,
+      status: undefined,
+    },
+    // 表单数据
+    form: {} as DeptRecord,
+    // 表单验证规则
+    rules: {
+      deptName: [{ required: true, message: '请输入部门名称' }],
+      deptSort: [{ required: true, message: '请输入部门排序' }],
+    },
   });
-  // 创建
-  const toCreate = async () => {
-    visible.value = true;
-    const { data } = await getDeptTree({});
-    treeData.value = data;
+  const { queryParams, form, rules } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: DeptParams = { ...queryParams.value }) => {
+    loading.value = true;
+    listDept(params).then((res) => {
+      deptList.value = res.data;
+      loading.value = false;
+      setTimeout(() => {
+        proxy.$refs.tableRef.expandAll();
+      }, 0);
+    });
   };
-  const filterDept = (searchValue: string, nodeData: TreeNodeData) => {
+  getList();
+
+  /**
+   * 多选
+   *
+   * @param rowKeys ID 列表
+   */
+  const handleSelectionChange = (rowKeys: Array<any>) => {
+    ids.value = rowKeys;
+    multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DeptRecord) => {
+    const tip = record.status === 1 ? '启用' : '禁用';
+    updateDept(record).then((res) => {
+      proxy.$message.success(`${tip}成功`);
+    }).catch(() => {
+      record.status = (record.status === 1) ? 2 : 1;
+    });
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 打开新增对话框
+   */
+  const toCreate = () => {
+    reset();
+    listDeptTree({}).then((res) => {
+      treeData.value = res.data;
+    });
+    title.value = '新增部门';
+    visible.value = true;
+  };
+
+  /**
+   * 打开修改对话框
+   *
+   * @param id ID
+   */
+  const toUpdate = async (id: number) => {
+    reset();
+    listDeptTree({}).then((res) => {
+      treeData.value = res.data;
+      title.value = '修改部门';
+      visible.value = true;
+    });
+    getDept(id).then((res) => {
+      form.value = res.data;
+    });
+  };
+
+  /**
+   * 查看详情
+   *
+   * @param id ID
+   */
+  const toDetail = async (id: number) => {
+    detailLoading.value = true;
+    detailVisible.value = true;
+    getDept(id).then((res) => {
+      dept.value = res.data;
+      detailLoading.value = false;
+    });
+  };
+
+  /**
+   * 重置表单
+   */
+  const reset = () => {
+    form.value = {
+      deptId: undefined,
+      deptName: '',
+      parentId: undefined,
+      deptSort: 999,
+      description: '',
+    };
+    proxy.$refs.formRef?.resetFields();
+  };
+
+  /**
+   * 过滤部门树
+   *
+   * @param searchValue 搜索值
+   * @param nodeData 节点值
+   */
+  const filterDeptTree = (searchValue: string, nodeData: TreeNodeData) => {
     if (nodeData.title) {
       return nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
     }
     return false;
   };
-  const handleOk = async () => {
-    const errors = await formRef.value?.validate();
-    if (errors) return false;
-    const res = await createDept({
-      parentId: formData.value.parentId || 0,
-      deptName: formData.value.deptName,
-      deptSort: formData.value.deptSort,
-      description: formData.value.description,
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        if (form.value.deptId !== undefined) {
+          updateDept(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        } else {
+          createDept(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        }
+      }
     });
-    if (!res.success) return false;
-    Message.success(res.msg);
-    handleCancel();
-    await fetchData();
-    return true;
   };
+
+  /**
+   * 取消
+   */
   const handleCancel = () => {
     visible.value = false;
-    formRef.value?.resetFields();
+    proxy.$refs.formRef.resetFields();
+  };
+
+  /**
+   * 关闭详情
+   */
+  const handleDetailCancel = () => {
+    detailVisible.value = false;
+  };
+
+  /**
+   * 批量删除
+   */
+  const handleBatchDelete = () => {
+    if (ids.value.length === 0) {
+      proxy.$message.info('请选择要删除的数据！');
+    } else {
+      proxy.$modal.warning({
+        title: '警告',
+        titleAlign: 'start',
+        content: '确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！',
+        hideCancel: false,
+        onOk: () => {
+          handleDelete(ids.value);
+        },
+      });
+    }
+  };
+
+  /**
+   * 删除
+   *
+   * @param ids ID 列表
+   */
+  const handleDelete = (ids: Array<number>) => {
+    deleteDept(ids).then((res) => {
+      proxy.$message.success(res.msg);
+      getList();
+    });
   };
 </script>
 
@@ -560,12 +493,8 @@
     padding: 0 20px 20px 20px;
   }
 
-  .general-card {
-    padding-top: 25px;
-  }
-
-  .head-container {
-    margin-bottom: 15px;
+  .query-container {
+    margin-bottom: 12px;
   }
 
   :deep(.arco-table-th) {

@@ -64,7 +64,7 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *            ID
      * @return 详情信息
      */
-    D detail(Long id);
+    D get(Long id);
 
     /**
      * 新增

@@ -69,8 +69,8 @@ public class PageQuery implements Serializable {
     /** 默认页码：1 */
     private static final int DEFAULT_PAGE = 1;
 
-    /** 默认每页记录数：int 最大值 */
-    private static final int DEFAULT_SIZE = Integer.MAX_VALUE;
+    /** 默认每页记录数：10 */
+    private static final int DEFAULT_SIZE = 10;
     private static final String DELIMITER = ",";
 
     public PageQuery() {

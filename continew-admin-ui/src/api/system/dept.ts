@@ -6,11 +6,13 @@ export interface DeptRecord {
   deptName: string;
   parentId?: number;
   deptSort: number;
-  description: string;
+  description?: string;
   status?: number;
-  createUserString: string;
-  createTime: string;
-  children: Array<DeptRecord>,
+  createUserString?: string;
+  createTime?: string;
+  updateUserString?: string;
+  updateTime?: string;
+  children?: Array<DeptRecord>,
 }
 
 export interface DeptParams {
@@ -18,7 +20,7 @@ export interface DeptParams {
   status?: number;
 }
 
-export function getDeptList(params: DeptParams) {
+export function listDept(params: DeptParams) {
   return axios.get<DeptRecord[]>('/system/dept/all', {
     params,
     paramsSerializer: (obj) => {
@@ -27,24 +29,18 @@ export function getDeptList(params: DeptParams) {
   });
 }
 
-export interface DeptReq {
-  parentId: number;
-  deptName: string;
-  deptSort: number;
-  description: string;
+export function getDept(id: number) {
+  return axios.get<DeptRecord>(`/system/dept/${id}`);
 }
-export function createDept(req: DeptReq) {
+
+export function createDept(req: DeptRecord) {
   return axios.post('/system/dept', req);
 }
 
-export interface UpdateDeptReq extends Partial<DeptReq> {
-  deptId: number;
-  status?: number;
-}
-export function updateDept(req: UpdateDeptReq) {
+export function updateDept(req: DeptRecord) {
   return axios.put(`/system/dept`, req);
 }
 
-export function deleteDept(ids: Array<number>) {
+export function deleteDept(ids: number | Array<number>) {
   return axios.delete(`/system/dept/${ids}`);
 }

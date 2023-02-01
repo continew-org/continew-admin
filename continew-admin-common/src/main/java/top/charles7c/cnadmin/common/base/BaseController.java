@@ -93,12 +93,12 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID
      * @return 详情信息
      */
-    @Operation(summary = "查看数据详情")
+    @Operation(summary = "查看详情")
     @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
-    protected R<D> detail(@PathVariable Long id) {
-        D detail = baseService.detail(id);
+    protected R<D> get(@PathVariable Long id) {
+        D detail = baseService.get(id);
         return R.ok(detail);
     }
 
