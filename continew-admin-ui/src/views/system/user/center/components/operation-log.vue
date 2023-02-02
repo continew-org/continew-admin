@@ -1,35 +1,45 @@
 <template>
   <div class="container">
+    <!-- 列表区域 -->
     <a-table
-      :columns="columns"
-      :data="renderData"
-      :pagination="paginationProps"
+      ref="tableRef"
       row-key="logId"
+      :loading="loading"
+      :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+      :data="operationLogList"
       :bordered="false"
       :stripe="true"
-      :loading="loading"
       size="large"
       @page-change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     >
-      <template #index="{ rowIndex }">
-        {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
-      </template>
-      <template #status="{ record }">
-        <a-space v-if="record.status === 1">
-          <a-tag color="green">
-            <span class="circle pass"></span>
-            成功
-          </a-tag>
-        </a-space>
-        <a-space v-else>
-          <a-tooltip :content="record.errorMsg">
-            <a-tag color="red" style="cursor: pointer">
-              <span class="circle fail"></span>
-              失败
-            </a-tag>
-          </a-tooltip>
-        </a-space>
+      <template #columns>
+        <a-table-column title="序号">
+          <template #cell="{ rowIndex }">
+            {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+          </template>
+        </a-table-column>
+        <a-table-column title="操作时间" data-index="createTime" />
+        <a-table-column title="操作内容" data-index="description" />
+        <a-table-column title="所属模块" data-index="module" />
+        <a-table-column title="操作状态" align="center">
+          <template #cell="{ record }">
+            <a-tag v-if="record.status === 1" color="green"><span class="circle pass" />成功</a-tag>
+            <a-tooltip v-else :content="record.errorMsg">
+              <a-tag color="red" style="cursor: pointer">
+                <span class="circle fail" />失败
+              </a-tag>
+            </a-tooltip>
+          </template>
+        </a-table-column>
+        <a-table-column title="操作 IP" data-index="clientIp" />
+        <a-table-column title="操作地点" data-index="location" />
+        <a-table-column title="浏览器" data-index="browser" />
       </template>
       <template #pagination-left>
         <a-tooltip content="刷新">
@@ -43,99 +53,72 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive } from 'vue';
-  import useLoading from '@/hooks/loading';
+  import { ref, toRefs, reactive } from 'vue';
+  import {
+    OperationLogParam,
+    OperationLogRecord,
+    listOperationLog,
+  } from '@/api/monitor/log';
   import { useLoginStore } from '@/store';
-  import { getOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
-  import { Pagination } from '@/types/global';
-  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  import { PaginationProps } from "@arco-design/web-vue";
 
-  const { loading, setLoading } = useLoading(true);
   const loginStore = useLoginStore();
-  const renderData = ref<OperationLogRecord[]>([]);
-  const basePagination: Pagination = {
-    current: 1,
-    pageSize: 10,
-  };
-  const pagination = reactive({
-    ...basePagination,
-  });
-  const paginationProps = computed((): PaginationProps => {
-    return {
-      showTotal: true,
-      showPageSize: true,
-      total: pagination.total,
-      current: pagination.current,
-    }
-  });
-  const columns = computed<TableColumnData[]>(() => [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      slotName: 'index',
-    },
-    {
-      title: '操作时间',
-      dataIndex: 'createTime',
-    },
-    {
-      title: '操作内容',
-      dataIndex: 'description',
-    },
-    {
-      title: '所属模块',
-      dataIndex: 'module',
-    },
-    {
-      title: '操作状态',
-      dataIndex: 'status',
-      slotName: 'status',
-      align: 'center',
-    },
-    {
-      title: '操作 IP',
-      dataIndex: 'clientIp',
-    },
-    {
-      title: '操作地点',
-      dataIndex: 'location',
-    },
-    {
-      title: '浏览器',
-      dataIndex: 'browser',
-    },
-  ]);
 
-  // 分页查询列表
-  const fetchData = async (
-    params: OperationLogParams = { uid: loginStore.userId, page: 1, size: 10, sort: ['createTime,desc'] }
-  ) => {
-    setLoading(true);
-    try {
-      const { data } = await getOperationLogList(params);
-      renderData.value = data.list;
-      pagination.current = params.page;
-      pagination.total = data.total;
-    } finally {
-      setLoading(false);
-    }
-  };
-  const handlePageChange = (current: number) => {
-    fetchData({ uid: loginStore.userId, page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
-  };
-  const handlePageSizeChange = (pageSize: number) => {
-    fetchData({ uid: loginStore.userId, page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
-  };
-  const handleRefresh = () => {
-    fetchData({
+  const operationLogList = ref<OperationLogRecord[]>([]);
+  const total = ref(0);
+  const loading = ref(false);
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
       uid: loginStore.userId,
-      page: pagination.current,
-      size: pagination.pageSize,
+      page: 1,
+      size: 10,
       sort: ['createTime,desc'],
-    } as unknown as OperationLogParams);
+    },
+  });
+  const { queryParams } = toRefs(data);
+
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: OperationLogParam = { ...queryParams.value }) => {
+    loading.value = true;
+    listOperationLog(params).then((res) => {
+      operationLogList.value = res.data.list;
+      total.value = res.data.total;
+      loading.value = false;
+    });
   };
-  fetchData();
+  getList();
+
+  /**
+   * 刷新
+   */
+  const handleRefresh = () => {
+    getList();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
 </script>
 
 <style scoped lang="less">
@@ -153,7 +136,6 @@
     cursor: pointer;
     margin-right: 10px;
   }
-
   .action-icon:hover {
     color: #0960bd;
   }

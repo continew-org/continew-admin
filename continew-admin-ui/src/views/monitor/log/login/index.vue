@@ -94,8 +94,8 @@
   const total = ref(0);
   const loading = ref(false);
   const statusOptions = ref<SelectOptionData[]>([
-    { label: '启用', value: 1 },
-    { label: '禁用', value: 2 },
+    { label: '成功', value: 1 },
+    { label: '失败', value: 2 },
   ]);
 
   const data = reactive({

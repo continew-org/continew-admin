@@ -2,21 +2,23 @@
   <div class="container">
     <Breadcrumb :items="['menu.monitor', 'menu.log.operation.list']" />
     <a-card class="general-card" :title="$t('menu.log.operation.list')">
-      <a-row style="margin-bottom: 15px">
-        <a-col :span="24">
-          <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
+      <!-- 头部区域 -->
+      <div class="head-container">
+        <!-- 搜索栏 -->
+        <div class="query-container">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
             <a-form-item field="description" hide-label>
               <a-input
-                v-model="queryFormData.description"
+                v-model="queryParams.description"
                 placeholder="输入操作内容搜索"
                 allow-clear
                 style="width: 150px;"
-                @press-enter="toQuery"
+                @press-enter="handleQuery"
               />
             </a-form-item>
             <a-form-item field="status" hide-label>
               <a-select
-                v-model="queryFormData.status"
+                v-model="queryParams.status"
                 :options="statusOptions"
                 placeholder="操作状态搜索"
                 allow-clear
@@ -24,53 +26,63 @@
               />
             </a-form-item>
             <a-form-item field="createTime" hide-label>
-              <date-range-picker v-model="queryFormData.createTime" />
+              <date-range-picker v-model="queryParams.createTime" />
             </a-form-item>
-            <a-button type="primary" @click="toQuery">
-              <template #icon>
-                <icon-search />
-              </template>
-              查询
-            </a-button>
-            <a-button @click="resetQuery">
-              <template #icon>
-                <icon-refresh />
-              </template>
-              重置
-            </a-button>
+            <a-form-item hide-label>
+              <a-space>
+                <a-button type="primary" @click="handleQuery">
+                  <template #icon><icon-search /></template>查询
+                </a-button>
+                <a-button @click="resetQuery">
+                  <template #icon><icon-refresh /></template>重置
+                </a-button>
+              </a-space>
+            </a-form-item>
           </a-form>
-        </a-col>
-      </a-row>
+        </div>
+      </div>
+
+      <!-- 列表区域 -->
       <a-table
-        :columns="columns"
-        :data="renderData"
-        :pagination="paginationProps"
+        ref="tableRef"
         row-key="logId"
+        :loading="loading"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        :data="operationLogList"
         :bordered="false"
         :stripe="true"
-        :loading="loading"
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <template #index="{ rowIndex }">
-          {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
-        </template>
-        <template #status="{ record }">
-          <a-space v-if="record.status === 1">
-            <a-tag color="green">
-              <span class="circle pass"></span>
-              成功
-            </a-tag>
-          </a-space>
-          <a-space v-else>
-            <a-tooltip :content="record.errorMsg">
-              <a-tag color="red" style="cursor: pointer">
-                <span class="circle fail"></span>
-                失败
-              </a-tag>
-            </a-tooltip>
-          </a-space>
+        <template #columns>
+          <a-table-column title="序号">
+            <template #cell="{ rowIndex }">
+              {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+            </template>
+          </a-table-column>
+          <a-table-column title="操作时间" data-index="createTime" />
+          <a-table-column title="操作人" data-index="createUserString" />
+          <a-table-column title="操作内容" data-index="description" />
+          <a-table-column title="所属模块" data-index="module" />
+          <a-table-column title="操作状态" align="center">
+            <template #cell="{ record }">
+              <a-tag v-if="record.status === 1" color="green"><span class="circle pass" />成功</a-tag>
+              <a-tooltip v-else :content="record.errorMsg">
+                <a-tag color="red" style="cursor: pointer">
+                  <span class="circle fail" />失败
+                </a-tag>
+              </a-tooltip>
+            </template>
+          </a-table-column>
+          <a-table-column title="操作 IP" data-index="clientIp" />
+          <a-table-column title="操作地点" data-index="location" />
+          <a-table-column title="浏览器" data-index="browser" />
         </template>
       </a-table>
     </a-card>
@@ -78,128 +90,86 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive } from 'vue';
-  import useLoading from '@/hooks/loading';
-  import { getOperationLogList, OperationLogRecord, OperationLogParams } from '@/api/monitor/log';
-  import { Pagination } from '@/types/global';
-  import { PaginationProps } from '@arco-design/web-vue';
-  import type { SelectOptionData } from '@arco-design/web-vue/es/select/interface';
-  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
+  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { SelectOptionData } from '@arco-design/web-vue';
+  import {
+    OperationLogParam,
+    OperationLogRecord,
+    listOperationLog,
+  } from '@/api/monitor/log';
 
-  const { loading, setLoading } = useLoading(true);
-  const queryFormRef = ref<FormInstance>();
-  const queryFormData = ref({
-    description: '',
-    status: undefined,
-    createTime: [],
-  });
-  const statusOptions = computed<SelectOptionData[]>(() => [
-    {
-      label: '成功',
-      value: 1,
-    },
-    {
-      label: '失败',
-      value: 2,
-    },
+  const { proxy } = getCurrentInstance() as any;
+
+  const operationLogList = ref<OperationLogRecord[]>([]);
+  const total = ref(0);
+  const loading = ref(false);
+  const statusOptions = ref<SelectOptionData[]>([
+    { label: '成功', value: 1 },
+    { label: '失败', value: 2 },
   ]);
 
-  // 查询
-  const toQuery = () => {
-    fetchData({
-      page: pagination.current,
-      size: pagination.pageSize,
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      description: undefined,
+      status: undefined,
+      createTime: undefined,
+      page: 1,
+      size: 10,
       sort: ['createTime,desc'],
-      ...queryFormData.value,
-    } as unknown as OperationLogParams);
-  };
-
-  // 重置
-  const resetQuery = async () => {
-    await queryFormRef.value?.resetFields();
-    await fetchData();
-  };
-
-  const renderData = ref<OperationLogRecord[]>([]);
-  const basePagination: Pagination = {
-    current: 1,
-    pageSize: 10,
-  };
-  const pagination = reactive({
-    ...basePagination,
+    },
   });
-  const paginationProps = computed((): PaginationProps => {
-    return {
-      showTotal: true,
-      showPageSize: true,
-      total: pagination.total,
-      current: pagination.current,
-    }
-  });
-  const columns = computed<TableColumnData[]>(() => [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      slotName: 'index',
-    },
-    {
-      title: '操作时间',
-      dataIndex: 'createTime',
-    },
-    {
-      title: '操作人',
-      dataIndex: 'createUserString',
-    },
-    {
-      title: '操作内容',
-      dataIndex: 'description',
-    },
-    {
-      title: '所属模块',
-      dataIndex: 'module',
-    },
-    {
-      title: '操作状态',
-      dataIndex: 'status',
-      slotName: 'status',
-      align: 'center',
-    },
-    {
-      title: '操作 IP',
-      dataIndex: 'clientIp',
-    },
-    {
-      title: '操作地点',
-      dataIndex: 'location',
-    },
-    {
-      title: '浏览器',
-      dataIndex: 'browser',
-    },
-  ]);
+  const { queryParams } = toRefs(data);
 
-  // 分页查询列表
-  const fetchData = async (
-    params: OperationLogParams = { page: 1, size: 10, sort: ['createTime,desc'] }
-  ) => {
-    setLoading(true);
-    try {
-      const { data } = await getOperationLogList(params);
-      renderData.value = data.list;
-      pagination.current = params.page;
-      pagination.total = data.total;
-    } finally {
-      setLoading(false);
-    }
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: OperationLogParam = { ...queryParams.value }) => {
+    loading.value = true;
+    listOperationLog(params).then((res) => {
+      operationLogList.value = res.data.list;
+      total.value = res.data.total;
+      loading.value = false;
+    });
   };
+  getList();
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
   const handlePageChange = (current: number) => {
-    fetchData({ page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
+    queryParams.value.page = current;
+    getList();
   };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
   const handlePageSizeChange = (pageSize: number) => {
-    fetchData({ page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
+    queryParams.value.size = pageSize;
+    getList();
   };
-  fetchData();
 </script>
 
 <script lang="ts">
@@ -211,6 +181,9 @@
 <style scoped lang="less">
   .container {
     padding: 0 20px 20px 20px;
+    .head-container {
+      margin-bottom: 16px
+    }
   }
   :deep(.arco-table-th) {
     &:last-child {

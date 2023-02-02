@@ -61,7 +61,7 @@ export function listLoginLogList(params: LoginLogParam) {
   });
 }
 
-export interface OperationLogParams extends Partial<OperationLogRecord> {
+export interface OperationLogParam extends Partial<OperationLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
@@ -73,7 +73,7 @@ export interface OperationLogListRes {
   total: number;
 }
 
-export function getOperationLogList(params: OperationLogParams) {
+export function listOperationLog(params: OperationLogParam) {
   return axios.get<OperationLogListRes>(`${BASE_URL}/operation`, {
     params,
     paramsSerializer: (obj) => {
