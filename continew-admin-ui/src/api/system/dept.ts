@@ -1,6 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
 
+const BASE_URL = '/system/dept';
+
 export interface DeptRecord {
   deptId?: number;
   deptName: string;
@@ -21,7 +23,7 @@ export interface DeptParams {
 }
 
 export function listDept(params: DeptParams) {
-  return axios.get<DeptRecord[]>('/system/dept/all', {
+  return axios.get<DeptRecord[]>(`${BASE_URL}/all`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -30,17 +32,17 @@ export function listDept(params: DeptParams) {
 }
 
 export function getDept(id: number) {
-  return axios.get<DeptRecord>(`/system/dept/${id}`);
+  return axios.get<DeptRecord>(`${BASE_URL}/${id}`);
 }
 
 export function createDept(req: DeptRecord) {
-  return axios.post('/system/dept', req);
+  return axios.post(BASE_URL, req);
 }
 
 export function updateDept(req: DeptRecord) {
-  return axios.put(`/system/dept`, req);
+  return axios.put(BASE_URL, req);
 }
 
 export function deleteDept(ids: number | Array<number>) {
-  return axios.delete(`/system/dept/${ids}`);
+  return axios.delete(`${BASE_URL}/${ids}`);
 }

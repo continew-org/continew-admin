@@ -132,6 +132,7 @@
                   allow-search
                   :filter-tree-node="filterDeptTree"
                   :fallback-option="false"
+                  size="large"
                 />
               </a-form-item>
               <a-form-item label="部门名称" field="deptName">
