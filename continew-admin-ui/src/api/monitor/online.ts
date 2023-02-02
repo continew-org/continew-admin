@@ -1,7 +1,7 @@
-import axios from "axios";
-import qs from "query-string";
+import axios from 'axios';
+import qs from 'query-string';
 
-const BASE_URL = "/monitor/online/user";
+const BASE_URL = '/monitor/online/user';
 
 export interface OnlineUserRecord {
   token: string;

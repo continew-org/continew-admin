@@ -1,6 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
 
+const BASE_URL = '/monitor/log';
+
 export interface LogRecord {
   logId: string;
   clientIp: string;
@@ -39,21 +41,23 @@ export interface SystemLogDetailRecord extends SystemLogRecord {
   responseBody: string;
 }
 
-export interface LoginLogParams extends Partial<LoginLogRecord> {
+export interface LoginLogParam extends Partial<LoginLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
 }
+
 export interface LoginLogListRes {
   list: LoginLogRecord[];
   total: number;
 }
-export function getLoginLogList(params: LoginLogParams) {
-  return axios.get<LoginLogListRes>('/monitor/log/login', {
+
+export function listLoginLogList(params: LoginLogParam) {
+  return axios.get<LoginLogListRes>(`${BASE_URL}/login`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    },
+    }
   });
 }
 
@@ -63,16 +67,18 @@ export interface OperationLogParams extends Partial<OperationLogRecord> {
   sort: Array<string>;
   uid?: string;
 }
+
 export interface OperationLogListRes {
   list: OperationLogRecord[];
   total: number;
 }
+
 export function getOperationLogList(params: OperationLogParams) {
-  return axios.get<OperationLogListRes>('/monitor/log/operation', {
+  return axios.get<OperationLogListRes>(`${BASE_URL}/operation`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    },
+    }
   });
 }
 
@@ -86,15 +92,16 @@ export interface SystemLogListRes {
   list: SystemLogRecord[];
   total: number;
 }
+
 export function getSystemLogList(params: SystemLogParams) {
-  return axios.get<SystemLogListRes>('/monitor/log/system', {
+  return axios.get<SystemLogListRes>(`${BASE_URL}/system`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    },
+    }
   });
 }
 
 export function getSystemLogDetail(logId: string) {
-  return axios.get<SystemLogDetailRecord>(`/monitor/log/system/${logId}`);
+  return axios.get<SystemLogDetailRecord>(`${BASE_URL}/system/${logId}`);
 }

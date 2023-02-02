@@ -60,7 +60,7 @@ public class OnlineUserController {
 
     @Operation(summary = "分页查询列表")
     @GetMapping
-    public R<PageDataVO<OnlineUserVO>> list(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<OnlineUserVO>> page(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
         List<LoginUser> loginUserList = new ArrayList<>();
         List<String> tokenKeyList = StpUtil.searchTokenValue("", 0, -1, false);
         for (String tokenKey : tokenKeyList) {

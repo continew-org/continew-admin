@@ -5,6 +5,7 @@
     :show-time="showTime"
     :shortcuts="shortcuts"
     shortcuts-position="left"
+    style="height: 31px"
   />
 </template>
 

@@ -90,9 +90,9 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
-    listOnlineUser,
-    OnlineUserRecord,
     OnlineUserParam,
+    OnlineUserRecord,
+    listOnlineUser,
     kickout
   } from '@/api/monitor/online';
   import { getToken } from '@/utils/auth';
