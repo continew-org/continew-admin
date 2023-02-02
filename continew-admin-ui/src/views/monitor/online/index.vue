@@ -2,65 +2,85 @@
   <div class="container">
     <Breadcrumb :items="['menu.monitor', 'menu.online.user.list']" />
     <a-card class="general-card" :title="$t('menu.online.user.list')">
-      <a-row style="margin-bottom: 15px">
-        <a-col :span="24">
-          <a-form ref="queryFormRef" :model="queryFormData" layout="inline">
+      <!-- 头部区域 -->
+      <div class="head-container">
+        <!-- 搜索栏 -->
+        <div class="query-container">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
             <a-form-item field="nickname" hide-label>
               <a-input
-                v-model="queryFormData.nickname"
+                v-model="queryParams.nickname"
                 placeholder="输入用户昵称搜索"
                 allow-clear
                 style="width: 150px;"
-                @press-enter="toQuery"
+                @press-enter="handleQuery"
               />
             </a-form-item>
             <a-form-item field="loginTime" hide-label>
-              <date-range-picker v-model="queryFormData.loginTime" />
+              <date-range-picker v-model="queryParams.loginTime" />
             </a-form-item>
-            <a-button type="primary" @click="toQuery">
-              <template #icon>
-                <icon-search />
-              </template>
-              查询
-            </a-button>
-            <a-button @click="resetQuery">
-              <template #icon>
-                <icon-refresh />
-              </template>
-              重置
-            </a-button>
+            <a-form-item hide-label>
+              <a-space>
+                <a-button type="primary" @click="handleQuery">
+                  <template #icon><icon-search /></template>查询
+                </a-button>
+                <a-button @click="resetQuery">
+                  <template #icon><icon-refresh /></template>重置
+                </a-button>
+              </a-space>
+            </a-form-item>
           </a-form>
-        </a-col>
-      </a-row>
+        </div>
+      </div>
+
+      <!-- 列表区域 -->
       <a-table
-        :columns="columns"
-        :data="renderData"
-        :pagination="paginationProps"
-        row-key="logId"
+        ref="tableRef"
+        row-key="token"
+        :loading="loading"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        :data="onlineUserList"
         :bordered="false"
         :stripe="true"
-        :loading="loading"
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
-        <template #index="{ rowIndex }">
-          {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
-        </template>
-        <template #nickname="{ record }">
-          {{ record.nickname }}（{{record.username}}）
-        </template>
-        <template #operations="{ record }">
-          <a-button
-            v-permission="['admin']"
-            type="text"
-            size="small"
-            :title="currentToken === record.token ? '不能强退当前登录' : ''"
-            :disabled="currentToken === record.token"
-            @click="handleClick(record.token)"
-          >
-            强退
-          </a-button>
+        <template #columns>
+          <a-table-column title="序号">
+            <template #cell="{ rowIndex }">
+              {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
+            </template>
+          </a-table-column>
+          <a-table-column title="用户昵称">
+            <template #cell="{ record }">
+              {{ record.nickname }}（{{record.username}}）
+            </template>
+          </a-table-column>
+          <a-table-column title="登录 IP" data-index="clientIp" />
+          <a-table-column title="登录地点" data-index="location" />
+          <a-table-column title="浏览器" data-index="browser" />
+          <a-table-column title="登录时间" data-index="loginTime" />
+          <a-table-column title="操作" align="center">
+            <template #cell="{ record }">
+              <a-popconfirm content="确定要强退该用户吗？" type="warning" @ok="handleKickout(record.token)">
+                <a-button
+                  v-permission="['admin']"
+                  type="text"
+                  size="small"
+                  :disabled="currentToken === record.token"
+                  :title="currentToken === record.token ? '不能强退当前登录用户' : ''"
+                >
+                  <template #icon><icon-delete /></template>强退
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-table-column>
         </template>
       </a-table>
     </a-card>
@@ -68,116 +88,94 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, reactive } from 'vue';
-  import useLoading from '@/hooks/loading';
-  import { Message } from '@arco-design/web-vue';
-  import { getOnlineUserList, OnlineUserRecord, OnlineUserParams, kickout } from '@/api/monitor/online';
-  import { Pagination } from '@/types/global';
-  import { PaginationProps } from '@arco-design/web-vue';
-  import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
+  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import {
+    listOnlineUser,
+    OnlineUserRecord,
+    OnlineUserParam,
+    kickout
+  } from '@/api/monitor/online';
   import { getToken } from '@/utils/auth';
 
-  const { loading, setLoading } = useLoading(true);
-  const currentToken = computed(() => getToken());
-  const queryFormRef = ref<FormInstance>();
-  const queryFormData = ref({
-    nickname: '',
-    loginTime: [],
-  });
+  const { proxy } = getCurrentInstance() as any;
 
-  // 查询
-  const toQuery = () => {
-    fetchData({
-      page: pagination.current,
-      size: pagination.pageSize,
+  const onlineUserList = ref<OnlineUserRecord[]>([]);
+  const total = ref(0);
+  const loading = ref(false);
+  const currentToken = getToken();
+
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      nickname: undefined,
+      loginTime: undefined,
+      page: 1,
+      size: 10,
       sort: ['createTime,desc'],
-      ...queryFormData.value,
-    } as unknown as OnlineUserParams);
-  };
-
-  // 重置
-  const resetQuery = async () => {
-    await queryFormRef.value?.resetFields();
-    await fetchData();
-  };
-
-  const renderData = ref<OnlineUserRecord[]>([]);
-  const basePagination: Pagination = {
-    current: 1,
-    pageSize: 10,
-  };
-  const pagination = reactive({
-    ...basePagination,
+    },
   });
-  const paginationProps = computed((): PaginationProps => {
-    return {
-      showTotal: true,
-      showPageSize: true,
-      total: pagination.total,
-      current: pagination.current,
-    }
-  });
-  const columns = computed<TableColumnData[]>(() => [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      slotName: 'index',
-    },
-    {
-      title: '用户昵称',
-      dataIndex: 'nickname',
-      slotName: 'nickname',
-    },
-    {
-      title: '登录 IP',
-      dataIndex: 'clientIp',
-    },
-    {
-      title: '登录地点',
-      dataIndex: 'location',
-    },
-    {
-      title: '浏览器',
-      dataIndex: 'browser',
-    },
-    {
-      title: '登录时间',
-      dataIndex: 'loginTime',
-    },
-    {
-      title: '操作',
-      slotName: 'operations',
-      align: 'center',
-    },
-  ]);
+  const { queryParams } = toRefs(data);
 
-  // 分页查询列表
-  const fetchData = async (
-    params: OnlineUserParams = { page: 1, size: 10, sort: ['createTime,desc'] }
-  ) => {
-    setLoading(true);
-    try {
-      const { data } = await getOnlineUserList(params);
-      renderData.value = data.list;
-      pagination.current = params.page;
-      pagination.total = data.total;
-    } finally {
-      setLoading(false);
-    }
+  /**
+   * 查询列表
+   *
+   * @param params 查询参数
+   */
+  const getList = (params: OnlineUserParam = { ...queryParams.value }) => {
+    loading.value = true;
+    listOnlineUser(params).then((res) => {
+      onlineUserList.value = res.data.list;
+      total.value = res.data.total;
+      loading.value = false;
+    });
   };
+  getList();
+
+  /**
+   * 强退
+   *
+   * @param token Token
+   */
+  const handleKickout = (token: string) => {
+    kickout(token).then((res) => {
+      getList();
+      proxy.$message.success(res.msg);
+    });
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
+  };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
   const handlePageChange = (current: number) => {
-    fetchData({ page: current, size: pagination.pageSize, sort: ['createTime,desc'] });
+    queryParams.value.page = current;
+    getList();
   };
-  const handlePageSizeChange = (pageSize: number) => {
-    fetchData({ page: pagination.current, size: pageSize, sort: ['createTime,desc'] });
-  };
-  fetchData();
 
-  // 强退
-  const handleClick = async (token: string) => {
-    const res = await kickout(token);
-    if (res.success) Message.success(res.msg);
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
   };
 </script>
 
@@ -190,6 +188,9 @@
 <style scoped lang="less">
   .container {
     padding: 0 20px 20px 20px;
+    .head-container {
+      margin-bottom: 16px
+    }
   }
   :deep(.arco-table-th) {
     &:last-child {

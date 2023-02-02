@@ -1,11 +1,10 @@
 <template>
   <a-range-picker
-    style="width: 100%"
-    :shortcuts="shortcuts"
-    shortcuts-position="left"
+    :placeholder="placeholder"
     :format="format"
     :show-time="showTime"
-    :placeholder="placeholder"
+    :shortcuts="shortcuts"
+    shortcuts-position="left"
   />
 </template>
 
