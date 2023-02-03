@@ -92,16 +92,14 @@ yarn dev
 
 ## 部分功能截图
 
-<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
     <tbody>
         <tr>
             <td><img src="https://s1.ax1x.com/2023/01/14/pSMl7cV.png" alt="登录页面" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/14/pSMlHXT.png" alt="仪表盘" width="1920" /></td>
         </tr>
         <tr>
-            <td>
-            <p><img src="https://s1.ax1x.com/2023/01/14/pSMl4ts.png" alt="个人中心" width="1920" /></p>
-            </td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSMl4ts.png" alt="个人中心" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/14/pSMlopq.png" alt="安全设置" width="1920" /></td>
         </tr>
         <tr>
@@ -116,10 +114,11 @@ yarn dev
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGOIhQ.png" alt="系统监控-在线用户" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGOTpj.png" alt="系统监控-登录日志" width="1920" /></td>
         </tr>
+        <tr>
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGO71s.png" alt="系统监控-操作日志" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGOX7T.png" alt="个人中心-操作日志" width="1920" /></td>
         </tr>
-        </tr>
+        <tr>
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGObXq.png" alt="系统监控-系统日志" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/01/21/pSGOLn0.png" alt="系统监控-系统日志-详情" width="1920" /></td>
         </tr>
