@@ -69,7 +69,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public PageDataVO<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery) {
+    public PageDataVO<OperationLogVO> page(OperationLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
@@ -93,7 +93,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public PageDataVO<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery) {
+    public PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.lambda()
             .and(qw -> qw.like(LogDO::getRequestUrl, "/auth/login").or().like(LogDO::getRequestUrl, "/auth/logout"));
@@ -114,7 +114,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public PageDataVO<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery) {
+    public PageDataVO<SystemLogVO> page(SystemLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
@@ -133,7 +133,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public SystemLogDetailVO detail(Long logId) {
+    public SystemLogDetailVO get(Long logId) {
         LogDO logDO = logMapper.selectById(logId);
         CheckUtils.throwIfNull(logDO, String.format("ID为 [%s] 的日志已不存在", logId));
 

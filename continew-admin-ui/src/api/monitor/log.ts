@@ -4,7 +4,7 @@ import qs from 'query-string';
 const BASE_URL = '/monitor/log';
 
 export interface LogRecord {
-  logId: string;
+  logId?: number;
   clientIp: string;
   location: string;
   browser: string;
@@ -52,7 +52,7 @@ export interface LoginLogListRes {
   total: number;
 }
 
-export function listLoginLogList(params: LoginLogParam) {
+export function listLoginLog(params: LoginLogParam) {
   return axios.get<LoginLogListRes>(`${BASE_URL}/login`, {
     params,
     paramsSerializer: (obj) => {
@@ -82,7 +82,7 @@ export function listOperationLog(params: OperationLogParam) {
   });
 }
 
-export interface SystemLogParams extends Partial<SystemLogRecord> {
+export interface SystemLogParam extends Partial<SystemLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
@@ -93,7 +93,7 @@ export interface SystemLogListRes {
   total: number;
 }
 
-export function getSystemLogList(params: SystemLogParams) {
+export function listSystemLog(params: SystemLogParam) {
   return axios.get<SystemLogListRes>(`${BASE_URL}/system`, {
     params,
     paramsSerializer: (obj) => {
@@ -102,6 +102,6 @@ export function getSystemLogList(params: SystemLogParams) {
   });
 }
 
-export function getSystemLogDetail(logId: string) {
+export function getSystemLog(logId: number) {
   return axios.get<SystemLogDetailRecord>(`${BASE_URL}/system/${logId}`);
 }

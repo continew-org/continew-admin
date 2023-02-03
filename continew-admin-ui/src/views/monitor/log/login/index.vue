@@ -83,9 +83,9 @@
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { SelectOptionData } from '@arco-design/web-vue';
   import {
-    LoginLogRecord,
     LoginLogParam,
-    listLoginLogList,
+    LoginLogRecord,
+    listLoginLog,
   } from '@/api/monitor/log';
 
   const { proxy } = getCurrentInstance() as any;
@@ -117,7 +117,7 @@
    */
   const getList = (params: LoginLogParam = { ...queryParams.value }) => {
     loading.value = true;
-    listLoginLogList(params).then((res) => {
+    listLoginLog(params).then((res) => {
       loginLogList.value = res.data.list;
       total.value = res.data.total;
       loading.value = false;

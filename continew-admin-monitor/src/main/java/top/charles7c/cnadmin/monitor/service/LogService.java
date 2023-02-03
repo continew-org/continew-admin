@@ -43,7 +43,7 @@ public interface LogService {
      *            分页查询条件
      * @return 操作日志分页信息
      */
-    PageDataVO<OperationLogVO> list(OperationLogQuery query, PageQuery pageQuery);
+    PageDataVO<OperationLogVO> page(OperationLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询登录日志列表
@@ -54,7 +54,7 @@ public interface LogService {
      *            分页查询条件
      * @return 登录日志分页信息
      */
-    PageDataVO<LoginLogVO> list(LoginLogQuery query, PageQuery pageQuery);
+    PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询系统日志列表
@@ -65,7 +65,7 @@ public interface LogService {
      *            分页查询条件
      * @return 系统日志分页信息
      */
-    PageDataVO<SystemLogVO> list(SystemLogQuery query, PageQuery pageQuery);
+    PageDataVO<SystemLogVO> page(SystemLogQuery query, PageQuery pageQuery);
 
     /**
      * 查看系统日志详情
@@ -74,5 +74,5 @@ public interface LogService {
      *            日志 ID
      * @return 系统日志详情
      */
-    SystemLogDetailVO detail(Long logId);
+    SystemLogDetailVO get(Long logId);
 }
