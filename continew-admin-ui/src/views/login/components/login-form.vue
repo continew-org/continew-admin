@@ -2,66 +2,46 @@
   <div class="login-form-wrapper">
     <div class="login-form-title">{{ $t('login.form.title') }}</div>
     <div class="login-form-sub-title">{{ $t('login.form.subTitle') }}</div>
-    <div class="login-form-error-msg">{{ errorMessage }}</div>
     <a-form
       ref="formRef"
-      :model="formData"
+      :model="form"
       :rules="rules"
-      class="login-form"
       layout="vertical"
+      class="login-form"
       @submit="handleLogin"
     >
-      <a-form-item
-        field="username"
-        :validate-trigger="['change', 'blur']"
-        hide-label
-      >
+      <a-form-item field="username" hide-label>
         <a-input
-          v-model="formData.username"
+          v-model="form.username"
           :placeholder="$t('login.form.placeholder.username')"
-          size="large"
           max-length="50"
+          size="large"
         >
-          <template #prefix>
-            <icon-user />
-          </template>
+          <template #prefix><icon-user /></template>
         </a-input>
       </a-form-item>
-      <a-form-item
-        field="password"
-        :validate-trigger="['change', 'blur']"
-        hide-label
-      >
+      <a-form-item field="password" hide-label>
         <a-input-password
-          v-model="formData.password"
+          v-model="form.password"
           :placeholder="$t('login.form.placeholder.password')"
-          size="large"
-          allow-clear
           max-length="32"
+          allow-clear
+          size="large"
         >
-          <template #prefix>
-            <icon-lock />
-          </template>
+          <template #prefix><icon-lock /></template>
         </a-input-password>
       </a-form-item>
-      <a-form-item
-        class="login-form-captcha"
-        field="captcha"
-        :validate-trigger="['change', 'blur']"
-        hide-label
-      >
+      <a-form-item class="login-form-captcha" field="captcha" hide-label>
         <a-input
-          v-model="formData.captcha"
+          v-model="form.captcha"
           :placeholder="$t('login.form.placeholder.captcha')"
+          allow-clear
           size="large"
           style="width: 63%"
-          allow-clear
         >
-          <template #prefix>
-            <icon-check-circle />
-          </template>
+          <template #prefix><icon-check-circle /></template>
         </a-input>
-        <img :src="captchaImgBase64" @click="getCaptcha" :alt="$t('login.form.captcha')">
+        <img :src="captchaImgBase64" :alt="$t('login.form.captcha')" @click="getCaptcha">
       </a-form-item>
       <a-space :size="16" direction="vertical">
         <div class="login-form-remember-me">
@@ -73,7 +53,7 @@
             {{ $t('login.form.rememberMe') }}
           </a-checkbox>
         </div>
-        <a-button type="primary" size="large" html-type="submit" long :loading="loading">
+        <a-button :loading="loading" type="primary" size="large" long html-type="submit">
           {{ $t('login.form.login') }}
         </a-button>
       </a-space>
@@ -82,23 +62,23 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { FieldRule, Message } from '@arco-design/web-vue';
-  import { ValidatedError } from '@arco-design/web-vue/es/form/interface';
+import { getCurrentInstance, ref, toRefs, reactive, computed } from "vue";
+  import { FieldRule, ValidatedError } from '@arco-design/web-vue';
+  import { LoginReq } from '@/api/auth/login';
   import { useI18n } from 'vue-i18n';
-  // import debug from '@/utils/env';
-  import { encryptByRsa } from '@/utils/encrypt';
+  import { useRouter } from 'vue-router';
   import { useStorage } from '@vueuse/core';
   import { useLoginStore } from '@/store';
-  import useLoading from '@/hooks/loading';
+  import { encryptByRsa } from '@/utils/encrypt';
+  // import debug from '@/utils/env';
 
+  const { proxy } = getCurrentInstance() as any;
+
+  const captchaImgBase64 = ref('');
+  const loginStore = useLoginStore();
+  const loading = ref(false);
   const { t } = useI18n();
   const router = useRouter();
-  const { loading, setLoading } = useLoading();
-  const loginStore = useLoginStore();
-  const errorMessage = ref('');
-  const captchaImgBase64 = ref('');
   const loginConfig = useStorage('login-config', {
     rememberMe: true,
     username: 'admin', // 演示默认值
@@ -106,59 +86,56 @@
     // username: !debug ? '' : 'admin', // 演示默认值
     // password: !debug ? '' : 'admin123', // 演示默认值
   });
-  const formData = reactive({
-    username: loginConfig.value.username,
-    password: loginConfig.value.password,
-    captcha: '',
-    uuid: '',
-  });
-  const rules = computed((): Record<string, FieldRule[]> => {
-    return {
-      username: [
-        { required: true, message: t('login.form.error.required.username') }
-      ],
-      password: [
-        { required: true, message: t('login.form.error.required.password') }
-      ],
-      captcha: [
-        { required: true, message: t('login.form.error.required.captcha') }
-      ],
-    }
-  });
 
-  // 获取验证码
-  const getCaptcha = async () => {
-    const { data } = await loginStore.getImgCaptcha()
-    formData.uuid = data.uuid
-    captchaImgBase64.value = data.img
-  }
-  onMounted(() => {
-    getCaptcha();
-  })
+  const data = reactive({
+    // 表单数据
+    form: {
+      username: loginConfig.value.username,
+      password: loginConfig.value.password,
+      captcha: '',
+      uuid: '',
+    } as LoginReq,
+    // 表单验证规则
+    rules: computed((): Record<string, FieldRule[]> => {
+      return {
+        username: [{ required: true, message: t('login.form.error.required.username') }],
+        password: [{ required: true, message: t('login.form.error.required.password') }],
+        captcha: [{ required: true, message: t('login.form.error.required.captcha') }],
+      }
+    }),
+  });
+  const { form, rules } = toRefs(data);
 
-  // 记住我
-  const setRememberMe = (value: boolean) => {
-    loginConfig.value.rememberMe = value;
+  /**
+   * 获取验证码
+   */
+  const getCaptcha = () => {
+    loginStore.getImgCaptcha().then((res) => {
+      form.value.uuid = res.data.uuid;
+      captchaImgBase64.value = res.data.img;
+    });
   };
+  getCaptcha();
 
-  // 登录处理
-  const handleLogin = async ({
-    errors,
-    values,
-  }: {
+  /**
+   * 登录
+   *
+   * @param errors 表单验证错误
+   * @param values 表单数据
+   */
+  const handleLogin = ({ errors, values, }: {
     errors: Record<string, ValidatedError> | undefined;
     values: Record<string, any>;
   }) => {
     if (loading.value) return;
     if (!errors) {
-      setLoading(true);
-      try {
-        await loginStore.login({
-          username: values.username,
-          password: encryptByRsa(values.password) || '',
-          captcha: values.captcha,
-          uuid: values.uuid
-        });
+      loading.value = true;
+      loginStore.login({
+        username: values.username,
+        password: encryptByRsa(values.password) || '',
+        captcha: values.captcha,
+        uuid: values.uuid
+      }).then(() => {
         const { redirect, ...othersQuery } = router.currentRoute.value.query;
         router.push({
           name: (redirect as string) || 'Workplace',
@@ -166,21 +143,32 @@
             ...othersQuery,
           },
         });
-        Message.success(t('login.form.login.success'));
         const { rememberMe } = loginConfig.value;
         const { username } = values;
         loginConfig.value.username = rememberMe ? username : '';
-      } catch (err) {
-        await getCaptcha();
-      } finally {
-        setLoading(false);
-      }
+        proxy.$message.success(t('login.form.login.success'));
+      }).catch(() => {
+        getCaptcha();
+      }).finally(() => {
+        loading.value = false;
+      });
     }
+  };
+
+  /**
+   * 记住我
+   *
+   * @param value 是否记住我
+   */
+  const setRememberMe = (value: boolean) => {
+    loginConfig.value.rememberMe = value;
   };
 </script>
 
 <style lang="less" scoped>
   .login-form {
+    margin-top: 32px;
+
     &-wrapper {
       width: 320px;
     }
@@ -196,12 +184,6 @@
       color: var(--color-text-3);
       font-size: 16px;
       line-height: 24px;
-    }
-
-    &-error-msg {
-      height: 32px;
-      color: rgb(var(--red-6));
-      line-height: 32px;
     }
 
     &-captcha img {

@@ -1,10 +1,7 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img
-        alt="logo"
-        src="/logo.svg"
-      />
+      <img src="/logo.svg" alt="logo" />
       <div class="logo-text">{{ $t('title') }}</div>
     </div>
     <LoginBanner />
@@ -67,9 +64,7 @@
       font-size: 20px;
     }
   }
-</style>
 
-<style lang="less" scoped>
   @media (max-width: @screen-lg) {
     .container {
       .banner {
