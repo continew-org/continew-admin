@@ -62,6 +62,16 @@ body {
   }
 }
 
+.app-container {
+  padding: 0 20px 20px 20px;
+  .header {
+    margin-bottom: 16px;
+    &-query {
+      margin-bottom: 8px;
+    }
+  }
+}
+
 .general-card {
   border-radius: 4px;
   border: none;
@@ -77,6 +87,14 @@ body {
 
 .split-line {
   border-color: rgb(var(--gray-2));
+}
+
+:deep(.arco-table-th) {
+  &:last-child {
+    .arco-table-th-item-title {
+      margin-left: 16px;
+    }
+  }
 }
 
 .arco-table-cell {

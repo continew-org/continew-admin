@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="app-container">
     <Breadcrumb :items="['menu.monitor', 'menu.online.user.list']" />
     <a-card class="general-card" :title="$t('menu.online.user.list')">
       <!-- 头部区域 -->
-      <div class="head-container">
+      <div class="header">
         <!-- 搜索栏 -->
-        <div class="query-container">
+        <div class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
             <a-form-item field="nickname" hide-label>
               <a-input
@@ -126,6 +126,7 @@
     listOnlineUser(params).then((res) => {
       onlineUserList.value = res.data.list;
       total.value = res.data.total;
+    }).finally(() => {
       loading.value = false;
     });
   };
@@ -185,18 +186,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  .container {
-    padding: 0 20px 20px 20px;
-    .head-container {
-      margin-bottom: 16px
-    }
-  }
-  :deep(.arco-table-th) {
-    &:last-child {
-      .arco-table-th-item-title {
-        margin-left: 16px;
-      }
-    }
-  }
-</style>
+<style scoped lang="less"></style>

@@ -83,8 +83,8 @@
     rememberMe: true,
     username: 'admin', // 演示默认值
     password: 'admin123', // 演示默认值
-    // username: !debug ? '' : 'admin', // 演示默认值
-    // password: !debug ? '' : 'admin123', // 演示默认值
+    // username: debug ? 'admin' : '', // 演示默认值
+    // password: debug ? 'admin123' : '', // 演示默认值
   });
 
   const data = reactive({
@@ -168,36 +168,30 @@
 <style lang="less" scoped>
   .login-form {
     margin-top: 32px;
-
     &-wrapper {
       width: 320px;
     }
-
     &-title {
       color: var(--color-text-1);
       font-weight: 500;
       font-size: 24px;
       line-height: 32px;
     }
-
     &-sub-title {
       color: var(--color-text-3);
       font-size: 16px;
       line-height: 24px;
     }
-
     &-captcha img {
       width: 111px;
       height: 36px;
       margin: 0 0 0 10px;
       cursor: pointer;
     }
-
     &-remember-me {
       display: flex;
       justify-content: space-between;
     }
-
     &-register-btn {
       color: var(--color-text-3) !important;
     }

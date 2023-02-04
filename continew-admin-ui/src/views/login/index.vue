@@ -26,12 +26,10 @@
   .container {
     display: flex;
     height: 100vh;
-
     .banner {
       width: 550px;
       background: linear-gradient(163.85deg, #1d2129 0%, #00308f 100%);
     }
-
     .content {
       position: relative;
       display: flex;
@@ -40,7 +38,6 @@
       justify-content: center;
       padding-bottom: 40px;
     }
-
     .footer {
       position: absolute;
       right: 0;

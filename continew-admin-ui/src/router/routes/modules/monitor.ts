@@ -7,8 +7,8 @@ const Monitor: AppRouteRecordRaw = {
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.monitor',
-    requiresAuth: true,
     icon: 'icon-computer',
+    requiresAuth: true,
     order: 3,
   },
   children: [
