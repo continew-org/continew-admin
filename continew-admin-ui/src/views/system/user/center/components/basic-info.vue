@@ -1,39 +1,30 @@
 <template>
   <a-form
     ref="formRef"
-    :model="formData"
+    :model="form"
     :rules="rules"
-    class="form"
     :label-col-props="{ span: 8 }"
     :wrapper-col-props="{ span: 16 }"
+    class="form"
   >
-    <a-form-item
-      :label="$t('userCenter.basicInfo.form.label.username')"
-      disabled
-    >
+    <a-form-item :label="$t('userCenter.basicInfo.form.label.username')" disabled>
       <a-input
-        v-model="formData.username"
+        v-model="form.username"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
-        size="large"
         max-length="50"
+        size="large"
       />
     </a-form-item>
-    <a-form-item
-      field="nickname"
-      :label="$t('userCenter.basicInfo.form.label.nickname')"
-    >
+    <a-form-item :label="$t('userCenter.basicInfo.form.label.nickname')" field="nickname">
       <a-input
-        v-model="formData.nickname"
+        v-model="form.nickname"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
         size="large"
         max-length="32"
       />
     </a-form-item>
-    <a-form-item
-      field="gender"
-      :label="$t('userCenter.basicInfo.form.label.gender')"
-    >
-      <a-radio-group v-model="formData.gender">
+    <a-form-item :label="$t('userCenter.basicInfo.form.label.gender')" field="gender">
+      <a-radio-group v-model="form.gender">
         <a-radio :value="1">男</a-radio>
         <a-radio :value="2">女</a-radio>
         <a-radio :value="0" disabled>未知</a-radio>
@@ -41,10 +32,10 @@
     </a-form-item>
     <a-form-item>
       <a-space>
-        <a-button type="primary" :loading="loading" @click="save">
+        <a-button :loading="loading" type="primary" @click="handleSave">
           {{ $t('userCenter.basicInfo.form.save') }}
         </a-button>
-        <a-button type="secondary" @click="reset">
+        <a-button @click="handleReset">
           {{ $t('userCenter.basicInfo.form.reset') }}
         </a-button>
       </a-space>
@@ -53,57 +44,61 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
+  import { FieldRule } from '@arco-design/web-vue';
+  import { BasicInfoModel, updateBasicInfo } from "@/api/system/user-center";
   import { useI18n } from 'vue-i18n';
   import { useLoginStore } from '@/store';
-  import { updateBasicInfo } from '@/api/system/user-center';
-  import useLoading from '@/hooks/loading';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
-  import { BasicInfoModel } from '@/api/system/user-center';
-  import { FieldRule, Message } from '@arco-design/web-vue';
+
+  const { proxy } = getCurrentInstance() as any;
 
   const { t } = useI18n();
-  const { loading, setLoading } = useLoading();
   const loginStore = useLoginStore();
-  const formRef = ref<FormInstance>();
-  const formData = ref<BasicInfoModel>({
-    username: loginStore.username,
-    nickname: loginStore.nickname,
-    gender: loginStore.gender,
-  });
-  const rules = computed((): Record<string, FieldRule[]> => {
-    return {
-      username: [
-        { required: true, message: t('userCenter.basicInfo.form.error.required.username') }
-      ],
-      nickname: [
-        { required: true, message: t('userCenter.basicInfo.form.error.required.nickname') }
-      ],
-    }
-  });
+  const loading = ref(false);
 
-  // 保存
-  const save = async () => {
+  const data = reactive({
+    // 表单数据
+    form: {
+      username: loginStore.username,
+      nickname: loginStore.nickname,
+      gender: loginStore.gender,
+    } as BasicInfoModel,
+    // 表单验证规则
+    rules: computed((): Record<string, FieldRule[]> => {
+      return {
+        username: [{ required: true, message: t('userCenter.basicInfo.form.error.required.username') }],
+        nickname: [{ required: true, message: t('userCenter.basicInfo.form.error.required.nickname') }],
+      };
+    }),
+  });
+  const { form, rules } = toRefs(data);
+
+  /**
+   * 保存
+   */
+  const handleSave = () => {
     if (loading.value) return;
-    const errors = await formRef.value?.validate();
-    if (!errors) {
-      setLoading(true);
-      try {
-        const res = await updateBasicInfo({
-          nickname: formData.value.nickname,
-          gender: formData.value.gender,
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        loading.value = true;
+        updateBasicInfo({
+          nickname: form.value.nickname,
+          gender: form.value.gender,
+        }).then((res) => {
+          loginStore.getInfo();
+          proxy.$message.success(t('userCenter.basicInfo.form.save.success'));
+        }).finally(() => {
+          loading.value = false;
         });
-        await loginStore.getInfo();
-        if (res.success) Message.success(res.msg);
-      } finally {
-        setLoading(false);
       }
-    }
+    });
   };
 
-  // 重置
-  const reset = async () => {
-    await formRef.value?.resetFields();
+  /**
+   * 重置
+   */
+  const handleReset = () => {
+    proxy.$refs.formRef.resetFields();
   };
 </script>
 

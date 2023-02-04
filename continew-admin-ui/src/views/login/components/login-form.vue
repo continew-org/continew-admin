@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance, ref, toRefs, reactive, computed } from "vue";
+  import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { FieldRule, ValidatedError } from '@arco-design/web-vue';
   import { LoginReq } from '@/api/auth/login';
   import { useI18n } from 'vue-i18n';
@@ -101,7 +101,7 @@ import { getCurrentInstance, ref, toRefs, reactive, computed } from "vue";
         username: [{ required: true, message: t('login.form.error.required.username') }],
         password: [{ required: true, message: t('login.form.error.required.password') }],
         captcha: [{ required: true, message: t('login.form.error.required.captcha') }],
-      }
+      };
     }),
   });
   const { form, rules } = toRefs(data);

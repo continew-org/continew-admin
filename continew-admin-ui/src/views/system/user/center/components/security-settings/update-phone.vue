@@ -15,7 +15,7 @@
         </a-typography-paragraph>
       </div>
       <div class="operation">
-        <a-link>
+        <a-link :title="$t('userCenter.securitySettings.button.update')">
           {{ $t('userCenter.securitySettings.button.update') }}
         </a-link>
       </div>

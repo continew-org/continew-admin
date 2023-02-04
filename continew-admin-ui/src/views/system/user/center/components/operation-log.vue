@@ -88,6 +88,7 @@
     listOperationLog(params).then((res) => {
       operationLogList.value = res.data.list;
       total.value = res.data.total;
+    }).finally(() => {
       loading.value = false;
     });
   };
@@ -125,6 +126,7 @@
   .container {
     padding: 0 20px 20px 20px;
   }
+
   :deep(.arco-table-th) {
     &:last-child {
       .arco-table-th-item-title {
@@ -132,10 +134,12 @@
       }
     }
   }
+
   .action-icon {
     cursor: pointer;
     margin-right: 10px;
   }
+
   .action-icon:hover {
     color: #0960bd;
   }

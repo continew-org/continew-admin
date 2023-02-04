@@ -27,6 +27,7 @@ export default {
   'userCenter.basicInfo.form.error.required.nickname': 'Please enter nickname',
 
   'userCenter.basicInfo.form.save': 'Save',
+  'userCenter.basicInfo.form.save.success': 'Save success',
   'userCenter.basicInfo.form.reset': 'Reset',
 
   // security-settings

@@ -27,6 +27,7 @@ export default {
   'userCenter.basicInfo.form.error.required.nickname': '请输入昵称',
 
   'userCenter.basicInfo.form.save': '保存',
+  'userCenter.basicInfo.form.save.success': '保存成功',
   'userCenter.basicInfo.form.reset': '重置',
 
   // security-settings

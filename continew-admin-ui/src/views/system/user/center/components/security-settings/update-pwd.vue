@@ -15,7 +15,7 @@
         </a-typography-paragraph>
       </div>
       <div class="operation">
-        <a-link @click="toUpdate">
+        <a-link :title="$t('userCenter.securitySettings.button.update')" @click="toUpdate">
           {{ $t('userCenter.securitySettings.button.update') }}
         </a-link>
       </div>
@@ -23,90 +23,74 @@
   </a-list-item-meta>
 
   <a-modal
-    v-model:visible="visible"
     :title="$t('userCenter.securitySettings.updatePwd.modal.title')"
+    :visible="visible"
     :mask-closable="false"
+    @ok="handleUpdate"
     @cancel="handleCancel"
-    @before-ok="handleUpdate"
   >
-    <a-form ref="formRef" :model="formData" :rules="rules">
-      <a-form-item
-        field="oldPassword"
-        :validate-trigger="['change', 'blur']"
-        :label="$t('userCenter.securitySettings.updatePwd.form.label.oldPassword')"
-      >
+    <a-form ref="formRef" :model="form" :rules="rules">
+      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.oldPassword')" field="oldPassword">
         <a-input-password
-          v-model="formData.oldPassword"
+          v-model="form.oldPassword"
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.oldPassword')"
-          size="large"
-          allow-clear
           max-length="32"
-        >
-        </a-input-password>
+          allow-clear
+          size="large"
+        />
       </a-form-item>
-      <a-form-item
-        field="newPassword"
-        :validate-trigger="['change', 'blur']"
-        :label="$t('userCenter.securitySettings.updatePwd.form.label.newPassword')"
-      >
+      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.newPassword')" field="newPassword">
         <a-input-password
-          v-model="formData.newPassword"
+          v-model="form.newPassword"
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.newPassword')"
-          size="large"
-          allow-clear
           max-length="32"
-        >
-        </a-input-password>
+          allow-clear
+          size="large"
+        />
       </a-form-item>
-      <a-form-item
-        field="rePassword"
-        :validate-trigger="['change', 'blur']"
-        :label="$t('userCenter.securitySettings.updatePwd.form.label.rePassword')"
-      >
+      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.rePassword')" field="rePassword">
         <a-input-password
-          v-model="formData.rePassword"
+          v-model="form.rePassword"
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.rePassword')"
-          size="large"
-          allow-clear
           max-length="32"
-        >
-        </a-input-password>
+          allow-clear
+          size="large"
+        />
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, computed } from 'vue';
+  import { getCurrentInstance, ref, reactive, computed } from 'vue';
+  import { FieldRule } from '@arco-design/web-vue';
+  import { updatePassword } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
   import { useLoginStore } from '@/store';
-  import { FormInstance } from '@arco-design/web-vue/es/form';
-  import useLoading from '@/hooks/loading';
-  import { FieldRule, Message } from '@arco-design/web-vue';
-  import { updatePassword } from '@/api/system/user-center';
   import { encryptByRsa } from '@/utils/encrypt';
 
+  const { proxy } = getCurrentInstance() as any;
+
   const { t } = useI18n();
-  const { loading, setLoading } = useLoading();
   const loginStore = useLoginStore();
   const visible = ref(false);
-  const formRef = ref<FormInstance>();
-  const formData = reactive({
+
+  // 表单数据
+  const form = reactive({
     oldPassword: '',
     newPassword: '',
     rePassword: '',
   });
+  // 表单验证规则
   const rules = computed((): Record<string, FieldRule[]> => {
     return {
-      oldPassword: [
-        { required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.oldPassword') }
-      ],
+      oldPassword: [{ required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.oldPassword') }],
       newPassword: [
         { required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.newPassword') },
         { match: /^(?=.*\d)(?=.*[a-z]).{6,32}$/, message: t('userCenter.securitySettings.updatePwd.form.error.match.newPassword') },
         {
           validator: (value, callback) => {
-            if (value === formData.oldPassword) {
+            if (value === form.oldPassword) {
               callback(t('userCenter.securitySettings.updatePwd.form.error.validator.newPassword'))
             } else {
               callback()
@@ -118,7 +102,7 @@
         { required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.rePassword') },
         {
           validator: (value, callback) => {
-            if (value !== formData.newPassword) {
+            if (value !== form.newPassword) {
               callback(t('userCenter.securitySettings.updatePwd.form.error.validator.rePassword'))
             } else {
               callback()
@@ -126,34 +110,37 @@
           }
         }
       ],
-    }
+    };
   });
 
-  // 确定修改
-  const handleUpdate = async () => {
-    if (loading.value) return false;
-    const errors = await formRef.value?.validate();
-    if (errors) return false;
-    setLoading(true);
-    try {
-      const res = await updatePassword({
-        oldPassword: encryptByRsa(formData.oldPassword) || '',
-        newPassword: encryptByRsa(formData.newPassword) || '',
-      });
-      if (res.success) Message.success(res.msg);
-    } finally {
-      setLoading(false);
-    }
-    return true;
-  };
-
-  // 取消修改
+  /**
+   * 取消
+   */
   const handleCancel = () => {
     visible.value = false;
-    formRef.value?.resetFields()
+    proxy.$refs.formRef.resetFields();
   };
 
-  // 打开修改窗口
+  /**
+   * 修改
+   */
+  const handleUpdate = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        updatePassword({
+          oldPassword: encryptByRsa(form.oldPassword) || '',
+          newPassword: encryptByRsa(form.newPassword) || '',
+        }).then((res) => {
+          handleCancel();
+          proxy.$message.success(res.msg);
+        });
+      }
+    });
+  };
+
+  /**
+   * 打开修改对话框
+   */
   const toUpdate = () => {
     visible.value = true;
   };
