@@ -45,6 +45,9 @@
                 <a-button type="primary" @click="toCreate">
                   <template #icon><icon-plus /></template>新增
                 </a-button>
+                <a-button type="primary" status="success" :disabled="single" :title="single ? '请选择一条要修改的数据' : ''" @click="toUpdate(ids[0])">
+                  <template #icon><icon-edit /></template>修改
+                </a-button>
                 <a-button type="primary" status="danger" :disabled="multiple" :title="multiple ? '请选择要删除的数据' : ''" @click="handleBatchDelete">
                   <template #icon><icon-delete /></template>删除
                 </a-button>
@@ -260,6 +263,7 @@
   });
   const ids = ref<Array<number>>([]);
   const title = ref('');
+  const single = ref(true);
   const multiple = ref(true);
   const loading = ref(false);
   const detailLoading = ref(false);
@@ -345,15 +349,16 @@
    *
    * @param id ID
    */
-  const toUpdate = async (id: number) => {
+  const toUpdate = (id: number) => {
     reset();
     listDeptTree({}).then((res) => {
       treeData.value = res.data;
-      title.value = '修改部门';
-      visible.value = true;
     });
+
     getDept(id).then((res) => {
       form.value = res.data;
+      title.value = '修改部门';
+      visible.value = true;
     });
   };
 
@@ -385,6 +390,7 @@
    * @param id ID
    */
   const toDetail = async (id: number) => {
+    if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
     getDept(id).then((res) => {
@@ -453,6 +459,7 @@
    */
   const handleSelectionChange = (rowKeys: Array<any>) => {
     ids.value = rowKeys;
+    single.value = rowKeys.length !== 1;
     multiple.value = !rowKeys.length;
   };
 
