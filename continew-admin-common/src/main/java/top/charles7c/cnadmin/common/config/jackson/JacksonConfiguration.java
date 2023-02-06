@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -42,6 +41,8 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+
+import top.charles7c.cnadmin.common.base.BaseEnum;
 
 /**
  * Jackson 配置
@@ -89,15 +90,15 @@ public class JacksonConfiguration {
     }
 
     /**
-     * 针对通用枚举接口 IEnum 的序列化和反序列化
+     * 针对枚举基类 BaseEnum 的序列化和反序列化
      */
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(IEnum.class, IEnumSerializer.SERIALIZER_INSTANCE);
+        simpleModule.addSerializer(BaseEnum.class, BaseEnumSerializer.SERIALIZER_INSTANCE);
 
         SimpleDeserializersWrapper deserializers = new SimpleDeserializersWrapper();
-        deserializers.addDeserializer(IEnum.class, IEnumDeserializer.SERIALIZER_INSTANCE);
+        deserializers.addDeserializer(BaseEnum.class, BaseEnumDeserializer.SERIALIZER_INSTANCE);
         simpleModule.setDeserializers(deserializers);
 
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();

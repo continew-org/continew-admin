@@ -148,7 +148,7 @@
           captchaLoading.value = false;
           captchaDisable.value = true;
           captchaBtnNameKey.value = `${t('userCenter.securitySettings.updateEmail.form.reSendCaptcha')}(${captchaTime.value -= 1}s)`;
-          captchaTimer.value = window.setInterval(function() {
+          captchaTimer.value = window.setInterval(() => {
             captchaTime.value -= 1;
             captchaBtnNameKey.value = `${t('userCenter.securitySettings.updateEmail.form.reSendCaptcha')}(${captchaTime.value}s)`;
             if (captchaTime.value < 0) {

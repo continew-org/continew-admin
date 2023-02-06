@@ -22,6 +22,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -45,11 +46,13 @@ public class BaseDetailVO extends BaseVO {
      * 修改人
      */
     @Schema(description = "修改人")
+    @ExcelProperty(value = "修改人")
     private String updateUserString;
 
     /**
      * 修改时间
      */
     @Schema(description = "修改时间")
+    @ExcelProperty(value = "修改时间")
     private LocalDateTime updateTime;
 }

@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.enums;
+package top.charles7c.cnadmin.common.base;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.io.Serializable;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import com.baomidou.mybatisplus.annotation.IEnum;
 
 /**
- * 操作状态枚举
+ * 枚举基类
  *
+ * @param <V>
+ *            value 类型
+ * @param <D>
+ *            description 类型
  * @author Charles7c
- * @since 2022/12/25 9:09
+ * @since 2023/2/5 20:44
  */
-@Getter
-@RequiredArgsConstructor
-public enum LogStatusEnum implements BaseEnum<Integer, String> {
+public interface BaseEnum<V extends Serializable, D extends Serializable> extends IEnum<V> {
 
-    /** 成功 */
-    SUCCESS(1, "成功"),
-
-    /** 失败 */
-    FAILURE(2, "失败"),;
-
-    private final Integer value;
-    private final String description;
+    /**
+     * 枚举描述
+     */
+    D getDescription();
 }

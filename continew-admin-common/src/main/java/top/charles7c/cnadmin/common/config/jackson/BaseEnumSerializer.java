@@ -18,26 +18,27 @@ package top.charles7c.cnadmin.common.config.jackson;
 
 import java.io.IOException;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 
+import top.charles7c.cnadmin.common.base.BaseEnum;
+
 /**
- * 通用枚举接口 IEnum 序列化器
+ * 通用枚举接口 BaseEnum 序列化器
  *
  * @author Charles7c
  * @since 2023/1/8 13:56
  */
 @JacksonStdImpl
-public class IEnumSerializer extends JsonSerializer<IEnum> {
+public class BaseEnumSerializer extends JsonSerializer<BaseEnum> {
 
     /** 静态实例 */
-    public static final IEnumSerializer SERIALIZER_INSTANCE = new IEnumSerializer();
+    public static final BaseEnumSerializer SERIALIZER_INSTANCE = new BaseEnumSerializer();
 
     @Override
-    public void serialize(IEnum value, JsonGenerator generator, SerializerProvider serializers) throws IOException {
+    public void serialize(BaseEnum value, JsonGenerator generator, SerializerProvider serializers) throws IOException {
         generator.writeObject(value.getValue());
     }
 }

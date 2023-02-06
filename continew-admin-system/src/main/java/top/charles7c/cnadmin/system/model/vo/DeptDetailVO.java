@@ -17,11 +17,14 @@
 package top.charles7c.cnadmin.system.model.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
+import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -31,7 +34,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  * @since 2023/2/1 22:19
  */
 @Data
-@Accessors(chain = true)
+@ExcelIgnoreUnannotated
 @Schema(description = "部门详情信息")
 public class DeptDetailVO extends BaseDetailVO {
 
@@ -41,12 +44,14 @@ public class DeptDetailVO extends BaseDetailVO {
      * 部门 ID
      */
     @Schema(description = "部门 ID")
+    @ExcelProperty(value = "部门ID")
     private Long deptId;
 
     /**
      * 部门名称
      */
     @Schema(description = "部门名称")
+    @ExcelProperty(value = "部门名称")
     private String deptName;
 
     /**
@@ -65,11 +70,13 @@ public class DeptDetailVO extends BaseDetailVO {
      * 描述
      */
     @Schema(description = "描述")
+    @ExcelProperty(value = "描述")
     private String description;
 
     /**
      * 状态（1启用 2禁用）
      */
     @Schema(description = "状态（1启用 2禁用）")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 }

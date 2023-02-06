@@ -51,6 +51,7 @@ limitations under the License.
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
+        <easyexcel.version>3.2.0</easyexcel.version>
         <ip2region.version>2.7.6</ip2region.version>
         <knife4j.version>4.0.0</knife4j.version>
         <redisson.version>3.19.0</redisson.version>
@@ -113,6 +114,13 @@ limitations under the License.
             </dependency>
 
             <!-- ################ 工具库相关 ################ -->
+            <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
             <!-- 第三方封装 Ip2region（离线 IP 数据管理框架和定位库，支持亿级别的数据段，10 微秒级别的查询性能，提供了许多主流编程语言的 xdb 数据管理引擎的实现） -->
             <dependency>
                 <groupId>net.dreamlu</groupId>

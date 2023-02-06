@@ -17,12 +17,12 @@ export interface DeptRecord {
   children?: Array<DeptRecord>,
 }
 
-export interface DeptParams {
+export interface DeptParam {
   deptName?: string;
   status?: number;
 }
 
-export function listDept(params: DeptParams) {
+export function listDept(params: DeptParam) {
   return axios.get<DeptRecord[]>(`${BASE_URL}/all`, {
     params,
     paramsSerializer: (obj) => {
@@ -45,4 +45,14 @@ export function updateDept(req: DeptRecord) {
 
 export function deleteDept(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
+}
+
+export function exportDept(params: DeptParam) {
+  return axios.get(`${BASE_URL}/export`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
+    responseType: 'blob',
+  });
 }

@@ -36,11 +36,17 @@ export interface HttpResponse<T = unknown> {
 
 // response interceptors
 axios.interceptors.response.use((response: AxiosResponse<HttpResponse>) => {
+    // 二进制数据则直接返回
+    if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
+      return response;
+    }
+
+    // 操作成功则直接返回
     const res = response.data;
     if (res.success) {
       return res;
     }
-
+    // 操作失败，弹出错误提示
     Message.error({
       content: res.msg,
       duration: 3000

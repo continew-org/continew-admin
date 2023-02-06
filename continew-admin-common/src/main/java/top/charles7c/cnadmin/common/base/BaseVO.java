@@ -23,6 +23,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -46,11 +47,13 @@ public class BaseVO implements Serializable {
      * 创建人
      */
     @Schema(description = "创建人")
+    @ExcelProperty(value = "创建人")
     private String createUserString;
 
     /**
      * 创建时间
      */
     @Schema(description = "创建时间")
+    @ExcelProperty(value = "创建时间")
     private LocalDateTime createTime;
 }

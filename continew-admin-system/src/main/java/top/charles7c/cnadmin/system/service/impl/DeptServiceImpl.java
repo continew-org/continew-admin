@@ -17,9 +17,12 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +40,7 @@ import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.util.ExcelUtils;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
@@ -65,13 +69,25 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
 
     @Override
     public List<DeptVO> list(DeptQuery query) {
+        List<DeptDO> deptList = this.listDept(query);
+        List<DeptVO> list = BeanUtil.copyToList(deptList, DeptVO.class);
+        list.forEach(this::fill);
+        return list;
+    }
+
+    /**
+     * 查询列表
+     *
+     * @param query
+     *            查询条件
+     * @return 列表信息
+     */
+    private List<DeptDO> listDept(DeptQuery query) {
         QueryWrapper<DeptDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.lambda().orderByAsc(DeptDO::getParentId).orderByAsc(DeptDO::getDeptSort)
             .orderByDesc(DeptDO::getCreateTime);
         List<DeptDO> deptList = baseMapper.selectList(queryWrapper);
-        List<DeptVO> list = BeanUtil.copyToList(deptList, DeptVO.class);
-        list.forEach(this::fill);
-        return list;
+        return CollUtil.isNotEmpty(deptList) ? deptList : Collections.emptyList();
     }
 
     @Override
@@ -168,6 +184,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
         return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
             .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
+    }
+
+    @Override
+    public void export(DeptQuery query, HttpServletResponse response) {
+        List<DeptDO> deptList = this.listDept(query);
+        List<DeptDetailVO> list = BeanUtil.copyToList(deptList, DeptDetailVO.class);
+        list.forEach(this::fillDetail);
+        ExcelUtils.export(list, "部门数据", DeptDetailVO.class, response);
     }
 
     /**

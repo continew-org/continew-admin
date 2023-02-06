@@ -51,12 +51,12 @@
                 <a-button type="primary" status="danger" :disabled="multiple" :title="multiple ? '请选择要删除的数据' : ''" @click="handleBatchDelete">
                   <template #icon><icon-delete /></template>删除
                 </a-button>
+                <a-button :loading="exportLoading" type="primary" status="warning" @click="handleExport">
+                  <template #icon><icon-download /></template>导出
+                </a-button>
               </a-space>
             </a-col>
             <a-col :span="12" style="display: flex; align-items: center; justify-content: end">
-              <a-button type="primary" status="warning" disabled title="尚未开放">
-                <template #icon><icon-download /></template>导出
-              </a-button>
             </a-col>
           </a-row>
         </div>
@@ -239,12 +239,13 @@
   import { SelectOptionData, TreeNodeData } from '@arco-design/web-vue';
   import {
     DeptRecord,
-    DeptParams,
+    DeptParam,
     listDept,
     getDept,
     createDept,
     updateDept,
     deleteDept,
+    exportDept,
   } from '@/api/system/dept';
   import listDeptTree from '@/api/common';
 
@@ -267,6 +268,7 @@
   const multiple = ref(true);
   const loading = ref(false);
   const detailLoading = ref(false);
+  const exportLoading = ref(false);
   const visible = ref(false);
   const detailVisible = ref(false);
   const statusOptions = ref<SelectOptionData[]>([
@@ -296,7 +298,7 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: DeptParams = { ...queryParams.value }) => {
+  const getList = (params: DeptParam = { ...queryParams.value }) => {
     loading.value = true;
     listDept(params).then((res) => {
       deptList.value = res.data;
@@ -308,29 +310,6 @@
     });
   };
   getList();
-
-  /**
-   * 确定
-   */
-  const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
-      if (!valid) {
-        if (form.value.deptId !== undefined) {
-          updateDept(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        } else {
-          createDept(form.value).then((res) => {
-            handleCancel();
-            getList();
-            proxy.$message.success(res.msg);
-          });
-        }
-      }
-    });
-  };
 
   /**
    * 打开新增对话框
@@ -385,6 +364,29 @@
   };
 
   /**
+   * 确定
+   */
+  const handleOk = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        if (form.value.deptId !== undefined) {
+          updateDept(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        } else {
+          createDept(form.value).then((res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          });
+        }
+      }
+    });
+  };
+
+  /**
    * 查看详情
    *
    * @param id ID
@@ -405,20 +407,6 @@
    */
   const handleDetailCancel = () => {
     detailVisible.value = false;
-  };
-
-  /**
-   * 修改状态
-   *
-   * @param record 记录信息
-   */
-  const handleChangeStatus = (record: DeptRecord) => {
-    const tip = record.status === 1 ? '启用' : '禁用';
-    updateDept(record).then((res) => {
-      proxy.$message.success(`${tip}成功`);
-    }).catch(() => {
-      record.status = (record.status === 1) ? 2 : 1;
-    });
   };
 
   /**
@@ -461,6 +449,52 @@
     ids.value = rowKeys;
     single.value = rowKeys.length !== 1;
     multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 导出
+   */
+  const handleExport = () => {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    exportDept({ ...queryParams.value }).then(async(res) => {
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
+      const contentDisposition = res.headers['content-disposition']
+      const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
+      const result = pattern.exec(contentDisposition) || '';
+      // 对名字进行解码
+      const fileName = window.decodeURI(result[1])
+      // 创建下载的链接
+      const downloadElement = document.createElement('a');
+      const href = window.URL.createObjectURL(blob);
+      downloadElement.style.display = 'none';
+      downloadElement.href = href;
+      // 下载后文件名
+      downloadElement.download = fileName;
+      document.body.appendChild(downloadElement);
+      // 点击下载
+      downloadElement.click();
+      // 下载完成，移除元素
+      document.body.removeChild(downloadElement);
+      // 释放掉 blob 对象
+      window.URL.revokeObjectURL(href);
+    }).finally(() => {
+      exportLoading.value = false;
+    });
+  };
+
+  /**
+   * 修改状态
+   *
+   * @param record 记录信息
+   */
+  const handleChangeStatus = (record: DeptRecord) => {
+    const tip = record.status === 1 ? '启用' : '禁用';
+    updateDept(record).then((res) => {
+      proxy.$message.success(`${tip}成功`);
+    }).catch(() => {
+      record.status = (record.status === 1) ? 2 : 1;
+    });
   };
 
   /**

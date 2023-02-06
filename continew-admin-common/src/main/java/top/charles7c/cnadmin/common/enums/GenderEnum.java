@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
+import top.charles7c.cnadmin.common.base.BaseEnum;
 
 /**
  * 性别枚举
@@ -29,7 +29,7 @@ import com.baomidou.mybatisplus.annotation.IEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GenderEnum implements IEnum<Integer> {
+public enum GenderEnum implements BaseEnum<Integer, String> {
 
     /** 未知 */
     UNKNOWN(0, "未知"),

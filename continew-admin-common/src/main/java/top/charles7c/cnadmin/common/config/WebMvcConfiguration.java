@@ -86,6 +86,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         corsProperties.getAllowedMethods().forEach(config::addAllowedMethod);
         // 配置允许跨域的请求头
         corsProperties.getAllowedHeaders().forEach(config::addAllowedHeader);
+        // 配置允许跨域的响应头
+        corsProperties.getExposedHeaders().forEach(config::addExposedHeader);
 
         // 添加映射路径，拦截一切请求
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

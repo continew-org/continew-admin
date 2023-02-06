@@ -49,4 +49,9 @@ public class CorsProperties {
      * 允许跨域的请求头
      */
     private List<String> allowedHeaders = new ArrayList<>();
+
+    /**
+     * 允许跨域的响应头
+     */
+    private List<String> exposedHeaders = new ArrayList<>();
 }

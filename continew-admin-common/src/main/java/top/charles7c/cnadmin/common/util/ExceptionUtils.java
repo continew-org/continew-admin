@@ -92,6 +92,17 @@ public class ExceptionUtils {
     }
 
     /**
+     * 如果有异常，返回空字符串
+     *
+     * @param exSupplier
+     *            可能会出现异常的方法执行
+     * @return /
+     */
+    public static String exToBlank(ExSupplier<String> exSupplier) {
+        return exToDefault(exSupplier, "");
+    }
+
+    /**
      * 如果有异常，返回默认值
      *
      * @param exSupplier

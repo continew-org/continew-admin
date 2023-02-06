@@ -20,6 +20,8 @@ import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -51,5 +53,11 @@ public class DeptController extends BaseController<DeptService, DeptVO, DeptDeta
     public R<List<DeptVO>> list(@Validated DeptQuery query) {
         List<DeptVO> list = baseService.list(query);
         return R.ok(baseService.buildListTree(list));
+    }
+
+    @Operation(summary = "导出部门数据")
+    @GetMapping("/export")
+    public void export(@Validated DeptQuery query, HttpServletResponse response) {
+        baseService.export(query, response);
     }
 }

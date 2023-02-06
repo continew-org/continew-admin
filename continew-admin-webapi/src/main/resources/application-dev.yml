@@ -187,3 +187,5 @@ cors:
   allowedMethods: '*'
   # 配置允许跨域的请求头
   allowedHeaders: '*'
+  # 配置允许跨域的响应头
+  exposedHeaders: '*'

@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.common.config.jackson;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -28,20 +27,23 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 
+import top.charles7c.cnadmin.common.base.BaseEnum;
+
 /**
- * 通用枚举接口 IEnum 反序列化器
+ * 通用枚举基类 BaseEnum 反序列化器
  *
  * @author Charles7c
  * @since 2023/1/8 13:56
  */
 @JacksonStdImpl
-public class IEnumDeserializer extends JsonDeserializer<IEnum> {
+public class BaseEnumDeserializer extends JsonDeserializer<BaseEnum> {
 
     /** 静态实例 */
-    public static final IEnumDeserializer SERIALIZER_INSTANCE = new IEnumDeserializer();
+    public static final BaseEnumDeserializer SERIALIZER_INSTANCE = new BaseEnumDeserializer();
 
     @Override
-    public IEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public BaseEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+        throws IOException {
         Class<?> targetClass = jsonParser.getCurrentValue().getClass();
         String fieldName = jsonParser.getCurrentName();
         String value = jsonParser.getText();
@@ -49,7 +51,7 @@ public class IEnumDeserializer extends JsonDeserializer<IEnum> {
     }
 
     /**
-     * 通过某字段对应值获取枚举，获取不到时为 {@code null}
+     * 通过某字段对应值获取枚举实例，获取不到时为 {@code null}
      *
      * @param targetClass
      *            目标类型
@@ -57,17 +59,17 @@ public class IEnumDeserializer extends JsonDeserializer<IEnum> {
      *            字段值
      * @param fieldName
      *            字段名
-     * @return 对应枚举 ，获取不到时为 {@code null}
+     * @return 对应枚举实例 ，获取不到时为 {@code null}
      */
-    public IEnum getEnum(Class<?> targetClass, String value, String fieldName) {
+    private BaseEnum getEnum(Class<?> targetClass, String value, String fieldName) {
         Field field = ReflectUtil.getField(targetClass, fieldName);
         Class<?> fieldTypeClass = field.getType();
         Object[] enumConstants = fieldTypeClass.getEnumConstants();
         for (Object enumConstant : enumConstants) {
-            if (ClassUtil.isAssignable(IEnum.class, fieldTypeClass)) {
-                IEnum iEnum = (IEnum)enumConstant;
-                if (iEnum.getValue().equals(Integer.valueOf(value))) {
-                    return iEnum;
+            if (ClassUtil.isAssignable(BaseEnum.class, fieldTypeClass)) {
+                BaseEnum baseEnum = (BaseEnum)enumConstant;
+                if (baseEnum.getValue().equals(Integer.valueOf(value))) {
+                    return baseEnum;
                 }
             }
         }

@@ -18,6 +18,8 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.base.BaseService;
@@ -64,4 +66,14 @@ public interface DeptService extends BaseService<DeptVO, DeptDetailVO, DeptQuery
      * @return 是否存在
      */
     boolean checkDeptNameExist(String deptName, Long parentId, Long deptId);
+
+    /**
+     * 导出
+     *
+     * @param query
+     *            查询条件
+     * @param response
+     *            响应对象
+     */
+    void export(DeptQuery query, HttpServletResponse response);
 }

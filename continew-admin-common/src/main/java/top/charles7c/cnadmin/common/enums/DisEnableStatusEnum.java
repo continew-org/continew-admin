@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
+import top.charles7c.cnadmin.common.base.BaseEnum;
 
 /**
  * 启用/禁用状态枚举
@@ -29,7 +29,7 @@ import com.baomidou.mybatisplus.annotation.IEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DisEnableStatusEnum implements IEnum<Integer> {
+public enum DisEnableStatusEnum implements BaseEnum<Integer, String> {
 
     /** 启用 */
     ENABLE(1, "启用"),
