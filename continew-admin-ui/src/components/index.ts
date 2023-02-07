@@ -12,6 +12,7 @@ import {
 import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
 import DateRangePicker from './date-range-picker/index.vue';
+import RightToolbar from './right-toolbar/index.vue';
 
 // Manually introduce ECharts modules to reduce packing size
 
@@ -33,5 +34,6 @@ export default {
     Vue.component('Chart', Chart);
     Vue.component('Breadcrumb', Breadcrumb);
     Vue.component('DateRangePicker', DateRangePicker);
+    Vue.component('RightToolbar', RightToolbar);
   },
 };

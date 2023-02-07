@@ -6,7 +6,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryRef" :model="queryParams" layout="inline" v-show="showQuery">
             <a-form-item field="deptName" hide-label>
               <a-input
                 v-model="queryParams.deptName"
@@ -56,7 +56,8 @@
                 </a-button>
               </a-space>
             </a-col>
-            <a-col :span="12" style="display: flex; align-items: center; justify-content: end">
+            <a-col :span="12">
+              <right-toolbar v-model:show-query="showQuery" @refresh="getList"></right-toolbar>
             </a-col>
           </a-row>
         </div>
@@ -266,6 +267,7 @@
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
+  const showQuery = ref(true);
   const loading = ref(false);
   const detailLoading = ref(false);
   const exportLoading = ref(false);
@@ -478,6 +480,13 @@
       document.body.removeChild(downloadElement);
       // 释放掉 blob 对象
       window.URL.revokeObjectURL(href);
+    }).catch(() => {
+      proxy.$notification.warning({
+        title: '警告',
+        content: "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，不仅会导致关键判断出错，也会导致导出的文件无法打开。",
+        duration: 10000,
+        closable: true,
+      });
     }).finally(() => {
       exportLoading.value = false;
     });
