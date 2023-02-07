@@ -14,7 +14,8 @@ export interface DeptRecord {
   createTime?: string;
   updateUserString?: string;
   updateTime?: string;
-  children?: Array<DeptRecord>,
+  children?: Array<DeptRecord>;
+  parentName?: string;
 }
 
 export interface DeptParam {

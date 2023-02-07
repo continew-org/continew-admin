@@ -94,4 +94,9 @@ public class UserDO extends BaseDO {
      * 最后一次修改密码的时间
      */
     private LocalDateTime pwdResetTime;
+
+    /**
+     * 部门 ID
+     */
+    private Long deptId;
 }

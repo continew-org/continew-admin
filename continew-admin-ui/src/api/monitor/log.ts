@@ -65,7 +65,7 @@ export interface OperationLogParam extends Partial<OperationLogRecord> {
   page: number;
   size: number;
   sort: Array<string>;
-  uid?: string;
+  uid?: number;
 }
 
 export interface OperationLogListRes {

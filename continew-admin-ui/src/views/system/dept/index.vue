@@ -5,8 +5,8 @@
       <!-- 头部区域 -->
       <div class="header">
         <!-- 搜索栏 -->
-        <div class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline" v-show="showQuery">
+        <div class="header-query" v-if="showQuery">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
             <a-form-item field="deptName" hide-label>
               <a-input
                 v-model="queryParams.deptName"
@@ -190,6 +190,12 @@
             </a-skeleton>
             <span v-else>{{ dept.deptName }}</span>
           </a-descriptions-item>
+          <a-descriptions-item label="上级部门">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dept.parentName || '无' }}</span>
+          </a-descriptions-item>
           <a-descriptions-item label="状态">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
@@ -198,6 +204,12 @@
               <a-tag v-if="dept.status === 1" color="green"><span class="circle pass"></span>启用</a-tag>
               <a-tag v-else color="red"><span class="circle fail"></span>禁用</a-tag>
             </span>
+          </a-descriptions-item>
+          <a-descriptions-item label="部门排序">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dept.deptSort }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
@@ -262,6 +274,7 @@
     createTime: '',
     updateUserString: '',
     updateTime: '',
+    parentName: '',
   });
   const ids = ref<Array<number>>([]);
   const title = ref('');

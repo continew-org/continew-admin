@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
@@ -79,4 +80,11 @@ public class DeptDetailVO extends BaseDetailVO {
     @Schema(description = "状态（1启用 2禁用）")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
+
+    /**
+     * 上级部门
+     */
+    @Schema(description = "上级部门")
+    @TableField(exist = false)
+    private String parentName;
 }

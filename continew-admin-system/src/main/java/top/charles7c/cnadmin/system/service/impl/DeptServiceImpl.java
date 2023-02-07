@@ -36,7 +36,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 
-import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
@@ -211,16 +210,17 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     /**
      * 填充详情数据
      *
-     * @param baseDetailVO
+     * @param detailVO
      *            待填充详情信息
      */
-    private void fillDetail(BaseDetailVO baseDetailVO) {
-        this.fill(baseDetailVO);
+    private void fillDetail(DeptDetailVO detailVO) {
+        this.fill(detailVO);
 
-        Long updateUser = baseDetailVO.getUpdateUser();
+        Long updateUser = detailVO.getUpdateUser();
         if (updateUser == null) {
             return;
         }
-        baseDetailVO.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(updateUser)).getNickname());
+        detailVO.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getById(updateUser)).getNickname());
+        detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getDeptName()));
     }
 }

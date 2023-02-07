@@ -26,10 +26,12 @@ import cn.hutool.core.bean.BeanUtil;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
+import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
+import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -43,6 +45,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class LoginServiceImpl implements LoginService {
 
     private final UserService userService;
+    private final DeptService deptService;
 
     @Override
     public String login(String username, String password) {
@@ -54,6 +57,7 @@ public class LoginServiceImpl implements LoginService {
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
+        loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getDeptName()));
         LoginHelper.login(loginUser);
 
         // 返回令牌

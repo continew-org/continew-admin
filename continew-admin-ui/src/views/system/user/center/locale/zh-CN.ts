@@ -10,6 +10,7 @@ export default {
   'userCenter.panel.label.gender': '性别 :',
   'userCenter.panel.label.phone': '手机号码 :',
   'userCenter.panel.label.email': '邮箱 :',
+  'userCenter.panel.label.deptName': '所属部门 :',
   'userCenter.panel.label.registrationDate': '注册日期 :',
   'userCenter.panel.male': '男',
   'userCenter.panel.female': '女',

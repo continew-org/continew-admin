@@ -46,6 +46,7 @@
         </a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{ loginStore.phone }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{ loginStore.email }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{ loginStore.deptName }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.registrationDate')">{{ loginStore.registrationDate }}</a-descriptions-item>
       </a-descriptions>
     </a-space>

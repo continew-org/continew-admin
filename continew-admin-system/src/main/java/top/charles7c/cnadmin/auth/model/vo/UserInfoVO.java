@@ -111,6 +111,18 @@ public class UserInfoVO implements Serializable {
     private LocalDate registrationDate;
 
     /**
+     * 部门ID
+     */
+    @Schema(description = "部门ID")
+    private Long deptId;
+
+    /**
+     * 所属部门
+     */
+    @Schema(description = "所属名称")
+    private String deptName;
+
+    /**
      * 用户角色（临时 mock 用，写完角色体系后移除）
      */
     private String role = "admin";

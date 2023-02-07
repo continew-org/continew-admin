@@ -13,7 +13,7 @@ import useAppStore from '../app';
 
 const useLoginStore = defineStore('user', {
   state: (): UserState => ({
-    userId: '',
+    userId: 0,
     username: '',
     nickname: '',
     gender: 0,
@@ -23,11 +23,11 @@ const useLoginStore = defineStore('user', {
     description: undefined,
     pwdResetTime: undefined,
     registrationDate: undefined,
+    deptId: 0,
+    deptName: '',
 
     job: 'backend',
     jobName: '后端艺术家',
-    organization: 'Backend',
-    organizationName: '后端',
     location: 'beijing',
     locationName: '北京',
     introduction: '低调星人',

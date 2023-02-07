@@ -80,6 +80,16 @@ public class LoginUser implements Serializable {
     private LocalDateTime pwdResetTime;
 
     /**
+     * 部门 ID
+     */
+    private Long deptId;
+
+    /**
+     * 部门名称
+     */
+    private String deptName;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

@@ -1,6 +1,6 @@
 export type RoleType = '' | '*' | 'admin' | 'user';
 export interface UserState {
-  userId: string;
+  userId: number;
   username: string;
   nickname: string;
   gender: number;
@@ -10,11 +10,11 @@ export interface UserState {
   description?: string;
   pwdResetTime?: string;
   registrationDate?: string;
+  deptId?: number;
+  deptName?: string;
 
   job?: string;
   jobName?: string;
-  organization?: string;
-  organizationName?: string;
   location?: string;
   locationName?: string;
   introduction?: string;

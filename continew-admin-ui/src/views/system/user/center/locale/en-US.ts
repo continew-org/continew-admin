@@ -10,6 +10,7 @@ export default {
   'userCenter.panel.label.gender': 'Gender :',
   'userCenter.panel.label.phone': 'Phone :',
   'userCenter.panel.label.email': 'Email :',
+  'userCenter.panel.label.deptName': 'Dept Name :',
   'userCenter.panel.label.registrationDate': 'Registration Date :',
   'userCenter.panel.male': 'male',
   'userCenter.panel.female': 'female',
