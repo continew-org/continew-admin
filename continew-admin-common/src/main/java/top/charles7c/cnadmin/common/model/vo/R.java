@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
-import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,7 +53,7 @@ public class R<V> {
 
     /** 时间戳 */
     @Schema(description = "时间戳")
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private long timestamp = System.currentTimeMillis();
 
     /** 成功状态码 */
     private static final int SUCCESS_CODE = HttpStatus.OK.value();
