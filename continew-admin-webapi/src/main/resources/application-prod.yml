@@ -30,21 +30,17 @@ spring:
           lazy: true
           driver-class-name: com.mysql.cj.jdbc.Driver
           type: ${spring.datasource.type}
+      # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
       hikari:
-        # 最大连接池数量
+        # 最大连接数量（默认 10，根据实际环境调整）
+        # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
         max-pool-size: 20
-        # 最小空闲线程数量
-        min-idle: 10
-        # 获取连接超时时间
+        # 获取连接超时时间（默认 30000 毫秒，30 秒）
         connection-timeout: 30000
-        # 校验超时时间
-        validation-timeout: 5000
-        # 空闲连接最大存活时间（默认 10 分钟）
+        # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
         idle-timeout: 600000
-        # 此属性控制池中连接的最长生命周期，0 表示无限生命周期（默认 30 分钟）
-        max-lifetime: 900000
-        # 连接测试 query（配置检测连接是否有效）
-        connection-test-query: SELECT 1
+        # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
+        max-lifetime: 1800000
 
 --- ### Liquibase 配置
 spring.liquibase:
