@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, provide } from 'vue';
+  import { ref, computed, watch, provide, onMounted } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
   import { useAppStore, useLoginStore } from '@/store';
   import NavBar from '@/components/navbar/index.vue';
@@ -56,6 +56,7 @@
   import useResponsive from '@/hooks/responsive';
   import PageLayout from './page-layout.vue';
 
+  const isInit = ref(false);
   const appStore = useAppStore();
   const loginStore = useLoginStore();
   const router = useRouter();
@@ -82,6 +83,7 @@
     return { ...paddingLeft, ...paddingTop };
   });
   const setCollapsed = (val: boolean) => {
+    if (!isInit.value) return; // for page initialization menu state problem
     appStore.updateSettings({ menuCollapse: val });
   };
   watch(
@@ -97,6 +99,9 @@
   };
   provide('toggleDrawerMenu', () => {
     drawerVisible.value = !drawerVisible.value;
+  });
+  onMounted(() => {
+    isInit.value = true;
   });
 </script>
 

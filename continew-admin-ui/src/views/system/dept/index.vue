@@ -496,7 +496,7 @@
     }).catch(() => {
       proxy.$notification.warning({
         title: '警告',
-        content: "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，不仅会导致关键判断出错，也会导致导出的文件无法打开。",
+        content: "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，这不仅会导致关键判断出错，也会导致导出的文件无法打开。",
         duration: 10000,
         closable: true,
       });
