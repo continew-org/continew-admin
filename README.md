@@ -272,6 +272,7 @@ continew-admin
     │  │  │  └─ online           # 在线用户
     │  │  └─ system           # 系统管理模块
     │  │    ├─ dept             # 部门管理
+    │  │    ├─ role             # 角色管理
     │  │    └─ user             # 用户模块
     │  │      └─ center           # 个人中心
     │  ├─ App.vue           # 视图入口

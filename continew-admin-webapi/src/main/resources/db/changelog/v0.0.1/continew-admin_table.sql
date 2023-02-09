@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS `sys_dept`  (
     `dept_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '部门ID',
     `dept_name` varchar(255) NOT NULL COMMENT '部门名称',
     `parent_id` bigint(20) unsigned DEFAULT 0 COMMENT '上级部门ID',
-    `dept_sort` int(11) unsigned DEFAULT 999 COMMENT '部门排序',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
+    `dept_sort` int(11) unsigned DEFAULT 999 COMMENT '部门排序',
     `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1启用 2禁用）',
     `create_user` bigint(20) unsigned NOT NULL COMMENT '创建人',
     `create_time` datetime NOT NULL COMMENT '创建时间',
@@ -38,10 +38,34 @@ CREATE TABLE IF NOT EXISTS `sys_user`  (
     PRIMARY KEY (`user_id`) USING BTREE,
     UNIQUE INDEX `uk_username`(`username`) USING BTREE,
     UNIQUE INDEX `uk_email`(`email`) USING BTREE,
-    INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_dept_id`(`dept_id`) USING BTREE,
+    INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+CREATE TABLE IF NOT EXISTS `sys_role`  (
+    `role_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '角色ID',
+    `role_name` varchar(255) NOT NULL COMMENT '角色名称',
+    `role_code` varchar(255) DEFAULT NULL COMMENT '角色编码',
+    `data_scope` tinyint(1) DEFAULT 4 COMMENT '数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定数据权限）',
+    `data_scope_dept_ids` json DEFAULT NULL COMMENT '数据权限范围（部门ID数组）',
+    `description` varchar(512) DEFAULT NULL COMMENT '描述',
+    `role_sort` int(11) unsigned DEFAULT 999 COMMENT '角色排序',
+    `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1启用 2禁用）',
+    `create_user` bigint(20) unsigned NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint(20) unsigned NOT NULL COMMENT '修改人',
+    `update_time` datetime NOT NULL COMMENT '修改时间',
+    PRIMARY KEY (`role_id`) USING BTREE,
+    INDEX `idx_create_user`(`create_user`) USING BTREE,
+    INDEX `idx_update_user`(`update_user`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
+
+CREATE TABLE IF NOT EXISTS `sys_user_role`  (
+    `user_id` bigint(20) unsigned NOT NULL COMMENT '用户ID',
+    `role_id` bigint(20) unsigned NOT NULL COMMENT '角色ID',
+    PRIMARY KEY (`user_id`,`role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和角色关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `log_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '日志ID',

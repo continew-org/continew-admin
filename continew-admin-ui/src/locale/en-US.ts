@@ -8,6 +8,7 @@ import localeMonitor from '@/views/dashboard/monitor/locale/en-US';
 import localeDataAnalysis from '@/views/visualization/data-analysis/locale/en-US';
 import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/en-US';
 
+import localeRole from '@/views/system/role/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
 
 import localeOnlineUser from '@/views/monitor/online/locale/en-US';
@@ -61,6 +62,7 @@ export default {
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
 
+  ...localeRole,
   ...localeDept,
 
   ...localeOnlineUser,

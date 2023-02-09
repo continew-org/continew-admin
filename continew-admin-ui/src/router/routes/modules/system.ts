@@ -13,6 +13,16 @@ const System: AppRouteRecordRaw = {
   },
   children: [
     {
+      path: '/system/role',
+      name: 'Role',
+      component: () => import('@/views/system/role/index.vue'),
+      meta: {
+        locale: 'menu.system.role.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: '/system/dept',
       name: 'Dept',
       component: () => import('@/views/system/dept/index.vue'),
