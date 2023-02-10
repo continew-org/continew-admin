@@ -314,7 +314,7 @@ public class LogInterceptor implements HandlerInterceptor {
         }
 
         // 2、检查是否需要记录内网 IP 操作
-        boolean isInnerIp = IpUtils.isInnerIP(ServletUtil.getClientIP(request));
+        boolean isInnerIp = IpUtils.isInnerIp(ServletUtil.getClientIP(request));
         if (isInnerIp && Boolean.FALSE.equals(operationLogProperties.getIncludeInnerIp())) {
             return false;
         }

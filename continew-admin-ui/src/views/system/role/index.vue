@@ -115,7 +115,7 @@
               <span v-else-if="record.dataScope === 2">本部门及以下数据权限</span>
               <span v-else-if="record.dataScope === 3">本部门数据权限</span>
               <span v-else-if="record.dataScope === 4">仅本人数据权限</span>
-              <span v-else>自定数据权限</span>
+              <span v-else>自定义数据权限</span>
             </template>
           </a-table-column>
           <a-table-column
@@ -290,7 +290,7 @@
               <span v-else-if="role.dataScope === 2">本部门及以下数据权限</span>
               <span v-else-if="role.dataScope === 3">本部门数据权限</span>
               <span v-else-if="role.dataScope === 4">仅本人数据权限</span>
-              <span v-else>自定数据权限</span>
+              <span v-else>自定义数据权限</span>
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
@@ -394,7 +394,7 @@
     { label: '本部门及以下数据权限', value: 2 },
     { label: '本部门数据权限', value: 3 },
     { label: '仅本人数据权限', value: 4 },
-    { label: '自定数据权限', value: 5 },
+    { label: '自定义数据权限', value: 5 },
   ]);
   const treeData = ref<TreeNodeData[]>();
 

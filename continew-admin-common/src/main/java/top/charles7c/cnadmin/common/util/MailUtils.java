@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.common.util;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -33,10 +34,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
+import top.charles7c.cnadmin.common.consts.CharConstants;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
 /**
@@ -186,7 +187,7 @@ public class MailUtils {
      */
     public static void send(Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject,
         String content, boolean isHtml, File... files) throws MessagingException {
-        CheckUtils.throwIf(() -> CollUtil.isEmpty(tos), "请至少指定一名收件人");
+        CheckUtils.throwIfEmpty(tos, "请至少指定一名收件人");
         MimeMessage mimeMessage = MAIL_SENDER.createMimeMessage();
         MimeMessageHelper messageHelper =
             new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.displayName());
@@ -228,14 +229,14 @@ public class MailUtils {
      */
     private static List<String> splitAddress(String addresses) {
         if (StrUtil.isBlank(addresses)) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<String> result;
-        if (StrUtil.contains(addresses, CharUtil.COMMA)) {
-            result = StrUtil.splitTrim(addresses, CharUtil.COMMA);
-        } else if (StrUtil.contains(addresses, ';')) {
-            result = StrUtil.splitTrim(addresses, ';');
+        if (StrUtil.contains(addresses, CharConstants.COMMA)) {
+            result = StrUtil.splitTrim(addresses, CharConstants.COMMA);
+        } else if (StrUtil.contains(addresses, CharConstants.SEMICOLON)) {
+            result = StrUtil.splitTrim(addresses, CharConstants.SEMICOLON);
         } else {
             result = CollUtil.newArrayList(addresses);
         }

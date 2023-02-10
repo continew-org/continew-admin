@@ -38,6 +38,54 @@ public class CheckUtils extends Validator {
     /**
      * 如果为空，抛出异常
      *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void throwIfNull(Object obj, String message) {
+        throwIfNull(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void throwIfNotNull(Object obj, String message) {
+        throwIfNotNull(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void throwIfEmpty(Object obj, String message) {
+        throwIfEmpty(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     */
+    public static void throwIfNotEmpty(Object obj, String message) {
+        throwIfNotEmpty(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果为空，抛出异常
+     *
      * @param str
      *            被检测的字符串
      * @param message
@@ -113,30 +161,6 @@ public class CheckUtils extends Validator {
      */
     public static void throwIfNotEqualIgnoreCase(CharSequence str1, CharSequence str2, String message) {
         throwIfNotEqualIgnoreCase(str1, str2, message, EXCEPTION_TYPE);
-    }
-
-    /**
-     * 如果为空，抛出异常
-     *
-     * @param obj
-     *            被检测的对象
-     * @param message
-     *            错误信息
-     */
-    public static void throwIfNull(Object obj, String message) {
-        throwIfNull(obj, message, EXCEPTION_TYPE);
-    }
-
-    /**
-     * 如果不为空，抛出异常
-     *
-     * @param obj
-     *            被检测的对象
-     * @param message
-     *            错误信息
-     */
-    public static void throwIfNotNull(Object obj, String message) {
-        throwIfNotNull(obj, message, EXCEPTION_TYPE);
     }
 
     /**

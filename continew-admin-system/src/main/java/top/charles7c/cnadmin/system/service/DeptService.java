@@ -55,19 +55,6 @@ public interface DeptService extends BaseService<DeptVO, DeptDetailVO, DeptQuery
     List<Tree<Long>> buildTree(List<DeptVO> list);
 
     /**
-     * 检查部门名称是否存在
-     *
-     * @param deptName
-     *            部门名称
-     * @param parentId
-     *            上级部门 ID
-     * @param deptId
-     *            部门 ID
-     * @return 是否存在
-     */
-    boolean checkDeptNameExist(String deptName, Long parentId, Long deptId);
-
-    /**
      * 导出
      *
      * @param query

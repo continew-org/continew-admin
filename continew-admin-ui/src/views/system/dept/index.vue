@@ -5,7 +5,7 @@
       <!-- 头部区域 -->
       <div class="header">
         <!-- 搜索栏 -->
-        <div class="header-query" v-if="showQuery">
+        <div v-if="showQuery" class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
             <a-form-item field="deptName" hide-label>
               <a-input
@@ -45,19 +45,39 @@
                 <a-button type="primary" @click="toCreate">
                   <template #icon><icon-plus /></template>新增
                 </a-button>
-                <a-button type="primary" status="success" :disabled="single" :title="single ? '请选择一条要修改的数据' : ''" @click="toUpdate(ids[0])">
+                <a-button
+                  type="primary"
+                  status="success"
+                  :disabled="single"
+                  :title="single ? '请选择一条要修改的数据' : ''"
+                  @click="toUpdate(ids[0])"
+                >
                   <template #icon><icon-edit /></template>修改
                 </a-button>
-                <a-button type="primary" status="danger" :disabled="multiple" :title="multiple ? '请选择要删除的数据' : ''" @click="handleBatchDelete">
+                <a-button
+                  type="primary"
+                  status="danger"
+                  :disabled="multiple"
+                  :title="multiple ? '请选择要删除的数据' : ''"
+                  @click="handleBatchDelete"
+                >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
-                <a-button :loading="exportLoading" type="primary" status="warning" @click="handleExport">
+                <a-button
+                  :loading="exportLoading"
+                  type="primary"
+                  status="warning"
+                  @click="handleExport"
+                >
                   <template #icon><icon-download /></template>导出
                 </a-button>
               </a-space>
             </a-col>
             <a-col :span="12">
-              <right-toolbar v-model:show-query="showQuery" @refresh="getList"></right-toolbar>
+              <right-toolbar
+                v-model:show-query="showQuery"
+                @refresh="getList"
+              />
             </a-col>
           </a-row>
         </div>
@@ -85,10 +105,16 @@
         <template #columns>
           <a-table-column title="部门名称" data-index="deptName">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.deptId)">{{ record.deptName }}</a-link>
+              <a-link @click="toDetail(record.deptId)">{{
+                record.deptName
+              }}</a-link>
             </template>
           </a-table-column>
-          <a-table-column title="部门排序" align="center" data-index="deptSort" />
+          <a-table-column
+            title="部门排序"
+            align="center"
+            data-index="deptSort"
+          />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
               <a-switch
@@ -104,11 +130,26 @@
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button v-permission="['admin']" type="text" size="small" title="修改" @click="toUpdate(record.deptId)">
+              <a-button
+                v-permission="['admin']"
+                type="text"
+                size="small"
+                title="修改"
+                @click="toUpdate(record.deptId)"
+              >
                 <template #icon><icon-edit /></template>修改
               </a-button>
-              <a-popconfirm content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！" type="warning" @ok="handleDelete([record.deptId])">
-                <a-button v-permission="['admin']" type="text" size="small" title="删除">
+              <a-popconfirm
+                content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！"
+                type="warning"
+                @ok="handleDelete([record.deptId])"
+              >
+                <a-button
+                  v-permission="['admin']"
+                  type="text"
+                  size="small"
+                  title="删除"
+                >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
               </a-popconfirm>
@@ -142,7 +183,11 @@
             />
           </a-form-item>
           <a-form-item label="部门名称" field="deptName">
-            <a-input v-model="form.deptName" placeholder="请输入部门名称" size="large" />
+            <a-input
+              v-model="form.deptName"
+              placeholder="请输入部门名称"
+              size="large"
+            />
           </a-form-item>
           <a-form-item label="部门排序" field="deptSort">
             <a-input-number
@@ -159,7 +204,7 @@
               :max-length="200"
               placeholder="请输入描述"
               :auto-size="{
-                minRows:3,
+                minRows: 3,
               }"
               show-word-limit
               size="large"
@@ -178,12 +223,7 @@
         render-to-body
         @cancel="handleDetailCancel"
       >
-        <a-descriptions
-          title="基础信息"
-          :column="2"
-          bordered
-          size="large"
-        >
+        <a-descriptions title="基础信息" :column="2" bordered size="large">
           <a-descriptions-item label="部门名称">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
@@ -201,8 +241,12 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dept.status === 1" color="green"><span class="circle pass"></span>启用</a-tag>
-              <a-tag v-else color="red"><span class="circle fail"></span>禁用</a-tag>
+              <a-tag v-if="dept.status === 1" color="green">
+                <span class="circle pass"></span>启用
+              </a-tag>
+              <a-tag v-else color="red">
+                <span class="circle fail"></span>禁用
+              </a-tag>
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="部门排序">
@@ -315,14 +359,16 @@
    */
   const getList = (params: DeptParam = { ...queryParams.value }) => {
     loading.value = true;
-    listDept(params).then((res) => {
-      deptList.value = res.data;
-      setTimeout(() => {
-        proxy.$refs.tableRef.expandAll();
-      }, 0);
-    }).finally(() => {
-      loading.value = false;
-    });
+    listDept(params)
+      .then((res) => {
+        deptList.value = res.data;
+        setTimeout(() => {
+          proxy.$refs.tableRef.expandAll();
+        }, 0);
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 
@@ -410,11 +456,13 @@
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
-    getDept(id).then((res) => {
-      dept.value = res.data;
-    }).finally(() => {
-      detailLoading.value = false;
-    });
+    getDept(id)
+      .then((res) => {
+        dept.value = res.data;
+      })
+      .finally(() => {
+        detailLoading.value = false;
+      });
   };
 
   /**
@@ -434,7 +482,8 @@
       proxy.$modal.warning({
         title: '警告',
         titleAlign: 'start',
-        content: '确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！',
+        content:
+          '确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！',
         hideCancel: false,
         onOk: () => {
           handleDelete(ids.value);
@@ -472,37 +521,43 @@
   const handleExport = () => {
     if (exportLoading.value) return;
     exportLoading.value = true;
-    exportDept({ ...queryParams.value }).then(async(res) => {
-      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8'});
-      const contentDisposition = res.headers['content-disposition']
-      const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
-      const result = pattern.exec(contentDisposition) || '';
-      // 对名字进行解码
-      const fileName = window.decodeURI(result[1])
-      // 创建下载的链接
-      const downloadElement = document.createElement('a');
-      const href = window.URL.createObjectURL(blob);
-      downloadElement.style.display = 'none';
-      downloadElement.href = href;
-      // 下载后文件名
-      downloadElement.download = fileName;
-      document.body.appendChild(downloadElement);
-      // 点击下载
-      downloadElement.click();
-      // 下载完成，移除元素
-      document.body.removeChild(downloadElement);
-      // 释放掉 blob 对象
-      window.URL.revokeObjectURL(href);
-    }).catch(() => {
-      proxy.$notification.warning({
-        title: '警告',
-        content: "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，这不仅会导致关键判断出错，也会导致导出的文件无法打开。",
-        duration: 10000,
-        closable: true,
+    exportDept({ ...queryParams.value })
+      .then(async (res) => {
+        const blob = new Blob([res.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
+        });
+        const contentDisposition = res.headers['content-disposition'];
+        const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
+        const result = pattern.exec(contentDisposition) || '';
+        // 对名字进行解码
+        const fileName = window.decodeURI(result[1]);
+        // 创建下载的链接
+        const downloadElement = document.createElement('a');
+        const href = window.URL.createObjectURL(blob);
+        downloadElement.style.display = 'none';
+        downloadElement.href = href;
+        // 下载后文件名
+        downloadElement.download = fileName;
+        document.body.appendChild(downloadElement);
+        // 点击下载
+        downloadElement.click();
+        // 下载完成，移除元素
+        document.body.removeChild(downloadElement);
+        // 释放掉 blob 对象
+        window.URL.revokeObjectURL(href);
+      })
+      .catch(() => {
+        proxy.$notification.warning({
+          title: '警告',
+          content:
+            "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，这不仅会导致关键判断出错，也会导致导出的文件无法打开。",
+          duration: 10000,
+          closable: true,
+        });
+      })
+      .finally(() => {
+        exportLoading.value = false;
       });
-    }).finally(() => {
-      exportLoading.value = false;
-    });
   };
 
   /**
@@ -512,11 +567,13 @@
    */
   const handleChangeStatus = (record: DeptRecord) => {
     const tip = record.status === 1 ? '启用' : '禁用';
-    updateDept(record).then((res) => {
-      proxy.$message.success(`${tip}成功`);
-    }).catch(() => {
-      record.status = (record.status === 1) ? 2 : 1;
-    });
+    updateDept(record)
+      .then((res) => {
+        proxy.$message.success(`${tip}成功`);
+      })
+      .catch(() => {
+        record.status = record.status === 1 ? 2 : 1;
+      });
   };
 
   /**
@@ -527,7 +584,9 @@
    */
   const filterDeptTree = (searchValue: string, nodeData: TreeNodeData) => {
     if (nodeData.title) {
-      return nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1;
+      return (
+        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+      );
     }
     return false;
   };

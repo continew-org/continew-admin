@@ -81,6 +81,13 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
         return BeanUtil.copyProperties(entity, detailVoClass);
     }
 
+    /**
+     * 新增
+     *
+     * @param request
+     *            创建信息
+     * @return 自增 ID
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public abstract Long create(C request);

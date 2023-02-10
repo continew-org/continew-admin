@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `sys_role`  (
     `role_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '角色ID',
     `role_name` varchar(255) NOT NULL COMMENT '角色名称',
     `role_code` varchar(255) DEFAULT NULL COMMENT '角色编码',
-    `data_scope` tinyint(1) DEFAULT 4 COMMENT '数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定数据权限）',
+    `data_scope` tinyint(1) DEFAULT 4 COMMENT '数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）',
     `data_scope_dept_ids` json DEFAULT NULL COMMENT '数据权限范围（部门ID数组）',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `role_sort` int(11) unsigned DEFAULT 999 COMMENT '角色排序',

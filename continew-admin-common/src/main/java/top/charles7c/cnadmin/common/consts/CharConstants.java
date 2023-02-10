@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.base;
+package top.charles7c.cnadmin.common.consts;
 
-import java.io.Serializable;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
+import cn.hutool.core.text.CharPool;
 
 /**
- * 枚举基类
+ * 字符常量
  *
- * @param <V>
- *            value 类型
- * @param <D>
- *            description 类型
  * @author Charles7c
- * @since 2023/2/5 20:44
+ * @since 2023/2/10 20:14
  */
-public interface BaseEnum<V extends Serializable, D extends Serializable> extends IEnum<V> {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class CharConstants implements CharPool {
 
     /**
-     * 枚举描述
-     *
-     * @return 枚举描述
+     * 分号
      */
-    D getDescription();
+    public static final String SEMICOLON = ";";
 }

@@ -100,7 +100,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public Long create(DeptRequest request) {
         String deptName = request.getDeptName();
-        boolean isExist = this.checkDeptNameExist(deptName, request.getParentId(), null);
+        boolean isExist = this.checkNameExist(deptName, request.getParentId(), request.getDeptId());
         CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
 
         // 保存部门信息
@@ -108,6 +108,16 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         deptDO.setStatus(DisEnableStatusEnum.ENABLE);
         baseMapper.insert(deptDO);
         return deptDO.getDeptId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(DeptRequest request) {
+        String deptName = request.getDeptName();
+        boolean isExist = this.checkNameExist(deptName, request.getParentId(), request.getDeptId());
+        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
+
+        super.update(request);
     }
 
     @Override
@@ -180,17 +190,27 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     }
 
     @Override
-    public boolean checkDeptNameExist(String deptName, Long parentId, Long deptId) {
-        return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
-            .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
-    }
-
-    @Override
     public void export(DeptQuery query, HttpServletResponse response) {
         List<DeptDO> deptList = this.listDept(query);
         List<DeptDetailVO> list = BeanUtil.copyToList(deptList, DeptDetailVO.class);
         list.forEach(this::fillDetail);
         ExcelUtils.export(list, "部门数据", DeptDetailVO.class, response);
+    }
+
+    /**
+     * 检查名称是否存在
+     *
+     * @param deptName
+     *            部门名称
+     * @param parentId
+     *            上级部门 ID
+     * @param deptId
+     *            部门 ID
+     * @return 是否存在
+     */
+    private boolean checkNameExist(String deptName, Long parentId, Long deptId) {
+        return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
+            .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
     }
 
     /**

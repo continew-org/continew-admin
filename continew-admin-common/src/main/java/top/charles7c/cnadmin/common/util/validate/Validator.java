@@ -37,6 +37,62 @@ public class Validator {
     /**
      * 如果为空，抛出异常
      *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     * @param exceptionType
+     *            异常类型
+     */
+    protected static void throwIfNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
+        throwIf(() -> obj == null, message, exceptionType);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     * @param exceptionType
+     *            异常类型
+     */
+    protected static void throwIfNotNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
+        throwIf(() -> obj != null, message, exceptionType);
+    }
+
+    /**
+     * 如果为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     * @param exceptionType
+     *            异常类型
+     */
+    protected static void throwIfEmpty(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
+        throwIf(() -> ObjectUtil.isEmpty(obj), message, exceptionType);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param message
+     *            错误信息
+     * @param exceptionType
+     *            异常类型
+     */
+    protected static void throwIfNotEmpty(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
+        throwIf(() -> ObjectUtil.isNotEmpty(obj), message, exceptionType);
+    }
+
+    /**
+     * 如果为空，抛出异常
+     *
      * @param str
      *            被检测的字符串
      * @param message
@@ -130,34 +186,6 @@ public class Validator {
     protected static void throwIfNotEqualIgnoreCase(CharSequence str1, CharSequence str2, String message,
         Class<? extends RuntimeException> exceptionType) {
         throwIf(() -> !StrUtil.equalsIgnoreCase(str1, str2), message, exceptionType);
-    }
-
-    /**
-     * 如果为空，抛出异常
-     *
-     * @param obj
-     *            被检测的对象
-     * @param message
-     *            错误信息
-     * @param exceptionType
-     *            异常类型
-     */
-    protected static void throwIfNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
-        throwIf(() -> obj == null, message, exceptionType);
-    }
-
-    /**
-     * 如果不为空，抛出异常
-     *
-     * @param obj
-     *            被检测的对象
-     * @param message
-     *            错误信息
-     * @param exceptionType
-     *            异常类型
-     */
-    protected static void throwIfNotNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
-        throwIf(() -> obj != null, message, exceptionType);
     }
 
     /**

@@ -16,9 +16,6 @@
 
 package top.charles7c.cnadmin.common.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -29,6 +26,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
@@ -50,7 +48,7 @@ public class SwaggerConfiguration {
      * 接口文档配置
      */
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI openApi() {
         return new OpenAPI().info(
             new Info().title(continewAdminProperties.getName() + " 接口文档").version(continewAdminProperties.getVersion())
                 .description(continewAdminProperties.getDescription()).termsOfService(continewAdminProperties.getUrl())
@@ -66,11 +64,8 @@ public class SwaggerConfiguration {
     public GlobalOpenApiCustomizer orderGlobalOpenApiCustomizer() {
         return openApi -> {
             if (openApi.getTags() != null) {
-                openApi.getTags().forEach(tag -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("x-order", RandomUtil.randomInt(0, 100));
-                    tag.setExtensions(map);
-                });
+                openApi.getTags()
+                    .forEach(tag -> tag.setExtensions(MapUtil.of("x-order", RandomUtil.randomInt(0, 100))));
             }
         };
     }

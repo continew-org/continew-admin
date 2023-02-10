@@ -57,7 +57,7 @@ export function listLoginLog(params: LoginLogParam) {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    }
+    },
   });
 }
 
@@ -78,7 +78,7 @@ export function listOperationLog(params: OperationLogParam) {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    }
+    },
   });
 }
 
@@ -98,7 +98,7 @@ export function listSystemLog(params: SystemLogParam) {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    }
+    },
   });
 }
 

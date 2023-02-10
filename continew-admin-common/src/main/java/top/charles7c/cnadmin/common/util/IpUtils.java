@@ -70,7 +70,7 @@ public class IpUtils {
      * @return 归属地信息
      */
     public static String getHttpCityInfo(String ip) {
-        if (isInnerIP(ip)) {
+        if (isInnerIp(ip)) {
             return "内网IP";
         }
         String api = String.format(IP_URL, ip);
@@ -86,7 +86,7 @@ public class IpUtils {
      * @return 归属地信息
      */
     public static String getLocalCityInfo(String ip) {
-        if (isInnerIP(ip)) {
+        if (isInnerIp(ip)) {
             return "内网IP";
         }
         Ip2regionSearcher ip2regionSearcher = SpringUtil.getBean(Ip2regionSearcher.class);
@@ -104,7 +104,7 @@ public class IpUtils {
      *            IP 地址
      * @return 是否为内网 IP
      */
-    public static boolean isInnerIP(String ip) {
+    public static boolean isInnerIp(String ip) {
         ip = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : HtmlUtil.cleanHtmlTag(ip);
         return NetUtil.isInnerIP(ip);
     }

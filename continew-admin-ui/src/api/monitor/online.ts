@@ -29,7 +29,7 @@ export function listOnlineUser(params: OnlineUserParam) {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
-    }
+    },
   });
 }
 

@@ -205,7 +205,12 @@ public class RedisUtils {
         return String.join(":", subKeys);
     }
 
-    public static NameMapper getNameMapper() {
+    /**
+     * 根据集群或单机配置，获取名称映射器
+     *
+     * @return 名称映射器
+     */
+    private static NameMapper getNameMapper() {
         Config config = REDISSON_CLIENT.getConfig();
         if (config.isClusterConfig()) {
             return config.useClusterServers().getNameMapper();

@@ -66,9 +66,9 @@ public class RoleRequest extends BaseRequest {
     private String roleCode;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定数据权限）
+     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
      */
-    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定数据权限）", type = "Integer",
+    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）", type = "Integer",
         allowableValues = {"1", "2", "3", "4", "5"})
     private DataScopeEnum dataScope;
 

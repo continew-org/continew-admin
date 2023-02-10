@@ -62,17 +62,17 @@ public class DeptDetailVO extends BaseDetailVO {
     private Long parentId;
 
     /**
-     * 部门排序
-     */
-    @Schema(description = "部门排序")
-    private Integer deptSort;
-
-    /**
      * 描述
      */
     @Schema(description = "描述")
     @ExcelProperty(value = "描述")
     private String description;
+
+    /**
+     * 部门排序
+     */
+    @Schema(description = "部门排序")
+    private Integer deptSort;
 
     /**
      * 状态（1启用 2禁用）

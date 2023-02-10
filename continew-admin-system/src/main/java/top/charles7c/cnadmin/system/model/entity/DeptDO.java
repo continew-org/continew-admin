@@ -53,14 +53,14 @@ public class DeptDO extends BaseDO {
     private Long parentId;
 
     /**
-     * 部门排序
-     */
-    private Integer deptSort;
-
-    /**
      * 描述
      */
     private String description;
+
+    /**
+     * 部门排序
+     */
+    private Integer deptSort;
 
     /**
      * 状态（1启用 2禁用）
