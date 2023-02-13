@@ -69,10 +69,10 @@ public class QueryHelper {
     }
 
     /**
-     * 获取指定类的所有属性（包括私有的和父类的）
+     * 获取指定类型的所有属性（包括私有的和父类的）
      *
      * @param clazz
-     *            指定类
+     *            指定类型
      * @param fieldList
      *            属性列表
      * @param <Q>

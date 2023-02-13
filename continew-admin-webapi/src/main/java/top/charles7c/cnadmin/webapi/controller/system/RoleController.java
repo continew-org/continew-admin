@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +36,5 @@ import top.charles7c.cnadmin.system.service.RoleService;
  */
 @Tag(name = "角色管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/role", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping("/system/role")
 public class RoleController extends BaseController<RoleService, RoleVO, RoleDetailVO, RoleQuery, RoleRequest> {}

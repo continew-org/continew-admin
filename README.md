@@ -72,7 +72,7 @@ yarn dev
 | :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
 | [Vue](https://cn.vuejs.org/)                                 | 3.2.45       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | [TypeScript](https://www.typescriptlang.org/zh/)             | 4.9.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.6.0        | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
+| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.6.1        | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
 | [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.8        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.34.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -229,6 +229,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                │  ├─ query        # 公共查询条件
   │                │  ├─ request      # 公共请求对象
   │                │  └─ vo           # 公共 VO（View Object）
+  │                ├─ service      # 公共业务接口
   │                └─ util         # 公共工具类
   │                  ├─ helper        # 公共 Helper（助手）
   │                  ├─ holder        # 公共 Holder（持有者）

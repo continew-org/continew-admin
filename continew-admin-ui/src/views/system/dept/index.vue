@@ -302,7 +302,6 @@
     createDept,
     updateDept,
     deleteDept,
-    exportDept,
   } from '@/api/system/dept';
   import listDeptTree from '@/api/common';
 
@@ -341,6 +340,7 @@
     queryParams: {
       deptName: undefined,
       status: undefined,
+      sort: ['parentId,asc', 'deptSort,asc', 'createTime,desc'],
     },
     // 表单数据
     form: {} as DeptRecord,
@@ -410,8 +410,9 @@
       deptId: undefined,
       deptName: '',
       parentId: undefined,
-      deptSort: 999,
       description: '',
+      deptSort: 999,
+      status: 1,
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -521,40 +522,8 @@
   const handleExport = () => {
     if (exportLoading.value) return;
     exportLoading.value = true;
-    exportDept({ ...queryParams.value })
-      .then(async (res) => {
-        const blob = new Blob([res.data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8',
-        });
-        const contentDisposition = res.headers['content-disposition'];
-        const pattern = new RegExp('filename=([^;]+\\.[^\\.;]+);*');
-        const result = pattern.exec(contentDisposition) || '';
-        // 对名字进行解码
-        const fileName = window.decodeURI(result[1]);
-        // 创建下载的链接
-        const downloadElement = document.createElement('a');
-        const href = window.URL.createObjectURL(blob);
-        downloadElement.style.display = 'none';
-        downloadElement.href = href;
-        // 下载后文件名
-        downloadElement.download = fileName;
-        document.body.appendChild(downloadElement);
-        // 点击下载
-        downloadElement.click();
-        // 下载完成，移除元素
-        document.body.removeChild(downloadElement);
-        // 释放掉 blob 对象
-        window.URL.revokeObjectURL(href);
-      })
-      .catch(() => {
-        proxy.$notification.warning({
-          title: '警告',
-          content:
-            "如果您正在访问演示环境，点击导出会报错。这是由于演示环境开启了 Mock.js，而 Mock.js 会将 responseType 设置为 ''，这不仅会导致关键判断出错，也会导致导出的文件无法打开。",
-          duration: 10000,
-          closable: true,
-        });
-      })
+    proxy
+      .download('/system/dept/export', { ...queryParams.value }, '部门数据')
       .finally(() => {
         exportLoading.value = false;
       });

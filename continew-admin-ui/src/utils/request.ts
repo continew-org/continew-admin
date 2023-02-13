@@ -1,16 +1,17 @@
-import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse } from "axios";
-import { Message } from "@arco-design/web-vue";
-import { getToken } from "@/utils/auth";
+import axios from 'axios';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Message } from '@arco-design/web-vue';
+import { getToken } from '@/utils/auth';
 
 // default config
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-  axios.defaults.timeout = 60000 // 1 分钟
+  axios.defaults.timeout = 60000; // 1 分钟
 }
 
 // request interceptors
-axios.interceptors.request.use((config: AxiosRequestConfig) => {
+axios.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
     const token = getToken();
     if (token) {
       if (!config.headers) {
@@ -35,9 +36,13 @@ export interface HttpResponse<T = unknown> {
 }
 
 // response interceptors
-axios.interceptors.response.use((response: AxiosResponse<HttpResponse>) => {
+axios.interceptors.response.use(
+  (response: AxiosResponse<HttpResponse>) => {
     // 二进制数据则直接返回
-    if(response.request.responseType ===  'blob' || response.request.responseType ===  'arraybuffer'){
+    if (
+      response.request.responseType === 'blob' ||
+      response.request.responseType === 'arraybuffer'
+    ) {
       return response;
     }
 
@@ -49,7 +54,7 @@ axios.interceptors.response.use((response: AxiosResponse<HttpResponse>) => {
     // 操作失败，弹出错误提示
     Message.error({
       content: res.msg,
-      duration: 3000
+      duration: 3000,
     });
     //
     // if (res.code === 401) {
@@ -61,8 +66,8 @@ axios.interceptors.response.use((response: AxiosResponse<HttpResponse>) => {
     console.error(`err: ${error}`);
     const res = error.response.data;
     Message.error({
-      content: res.msg || "网络错误",
-      duration: 3000
+      content: res.msg || '网络错误',
+      duration: 3000,
     });
     return Promise.reject(error);
   }

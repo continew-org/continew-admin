@@ -18,6 +18,8 @@ package top.charles7c.cnadmin.common.base;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import lombok.NoArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
+import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 
@@ -76,13 +79,15 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *
      * @param query
      *            查询条件
+     * @param sortQuery
+     *            排序查询条件
      * @return 列表信息
      */
     @Operation(summary = "查询列表")
     @ResponseBody
-    @GetMapping("/all")
-    protected R<List<V>> list(@Validated Q query) {
-        List<V> list = baseService.list(query);
+    @GetMapping("/list")
+    protected R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
+        List<V> list = baseService.list(query, sortQuery);
         return R.ok(list);
     }
 
@@ -146,5 +151,21 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     protected R delete(@PathVariable List<Long> ids) {
         baseService.delete(ids);
         return R.ok("删除成功");
+    }
+
+    /**
+     * 导出
+     *
+     * @param query
+     *            查询条件
+     * @param sortQuery
+     *            排序查询条件
+     * @param response
+     *            响应对象
+     */
+    @Operation(summary = "导出数据")
+    @GetMapping("/export")
+    protected void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
+        baseService.export(query, sortQuery, response);
     }
 }

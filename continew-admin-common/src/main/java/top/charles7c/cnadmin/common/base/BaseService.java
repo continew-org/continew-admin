@@ -18,7 +18,10 @@ package top.charles7c.cnadmin.common.base;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import top.charles7c.cnadmin.common.model.query.PageQuery;
+import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 
 /**
@@ -53,9 +56,11 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *
      * @param query
      *            查询条件
+     * @param sortQuery
+     *            排序查询条件
      * @return 列表信息
      */
-    List<V> list(Q query);
+    List<V> list(Q query, SortQuery sortQuery);
 
     /**
      * 查看详情
@@ -90,4 +95,16 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *            ID 列表
      */
     void delete(List<Long> ids);
+
+    /**
+     * 导出
+     *
+     * @param query
+     *            查询条件
+     * @param sortQuery
+     *            排序查询条件
+     * @param response
+     *            响应对象
+     */
+    void export(Q query, SortQuery sortQuery, HttpServletResponse response);
 }

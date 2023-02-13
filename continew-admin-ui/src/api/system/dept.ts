@@ -7,8 +7,8 @@ export interface DeptRecord {
   deptId?: number;
   deptName: string;
   parentId?: number;
-  deptSort: number;
   description?: string;
+  deptSort: number;
   status?: number;
   createUserString?: string;
   createTime?: string;
@@ -24,7 +24,7 @@ export interface DeptParam {
 }
 
 export function listDept(params: DeptParam) {
-  return axios.get<DeptRecord[]>(`${BASE_URL}/all`, {
+  return axios.get<DeptRecord[]>(`${BASE_URL}/list`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -46,14 +46,4 @@ export function updateDept(req: DeptRecord) {
 
 export function deleteDept(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
-}
-
-export function exportDept(params: DeptParam) {
-  return axios.get(`${BASE_URL}/export`, {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-    responseType: 'blob',
-  });
 }

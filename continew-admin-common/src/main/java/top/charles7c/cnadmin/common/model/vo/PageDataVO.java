@@ -102,7 +102,7 @@ public class PageDataVO<V> {
      * @param page
      *            页码
      * @param size
-     *            每页记录数
+     *            每页条数
      * @param list
      *            列表数据
      * @param <V>

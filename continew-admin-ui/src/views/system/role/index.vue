@@ -63,6 +63,14 @@
                 >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
+                <a-button
+                  :loading="exportLoading"
+                  type="primary"
+                  status="warning"
+                  @click="handleExport"
+                >
+                  <template #icon><icon-download /></template>导出
+                </a-button>
               </a-space>
             </a-col>
             <a-col :span="12">
@@ -383,6 +391,7 @@
   const showQuery = ref(true);
   const loading = ref(false);
   const detailLoading = ref(false);
+  const exportLoading = ref(false);
   const visible = ref(false);
   const detailVisible = ref(false);
   const statusOptions = ref<SelectOptionData[]>([
@@ -478,6 +487,7 @@
       dataScopeDeptIds: undefined,
       description: '',
       roleSort: 999,
+      status: 1,
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -578,6 +588,19 @@
     ids.value = rowKeys;
     single.value = rowKeys.length !== 1;
     multiple.value = !rowKeys.length;
+  };
+
+  /**
+   * 导出
+   */
+  const handleExport = () => {
+    if (exportLoading.value) return;
+    exportLoading.value = true;
+    proxy
+      .download('/system/role/export', { ...queryParams.value }, '角色数据')
+      .finally(() => {
+        exportLoading.value = false;
+      });
   };
 
   /**

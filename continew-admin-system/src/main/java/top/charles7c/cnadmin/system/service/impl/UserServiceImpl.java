@@ -36,6 +36,7 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.consts.FileConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
+import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -52,7 +53,7 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, CommonUserService {
 
     private final UserMapper userMapper;
     private final LocalStorageProperties localStorageProperties;
@@ -154,5 +155,10 @@ public class UserServiceImpl implements UserService {
         UserDO userDO = userMapper.selectById(userId);
         CheckUtils.throwIfNull(userDO, String.format("ID为 [%s] 的用户已不存在", userId));
         return userDO;
+    }
+
+    @Override
+    public String getNicknameById(Long userId) {
+        return this.getById(userId).getNickname();
     }
 }

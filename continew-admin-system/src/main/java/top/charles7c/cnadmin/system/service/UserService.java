@@ -84,7 +84,7 @@ public interface UserService {
      * 根据 ID 查询
      *
      * @param userId
-     *            用户ID
+     *            用户 ID
      * @return 用户信息
      */
     UserDO getById(Long userId);
