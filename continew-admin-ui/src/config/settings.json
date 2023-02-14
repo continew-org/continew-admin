@@ -4,6 +4,7 @@
   "navbar": true,
   "menu": true,
   "topMenu": false,
+  "menuAccordion": true,
   "hideMenu": false,
   "menuCollapse": false,
   "footer": true,

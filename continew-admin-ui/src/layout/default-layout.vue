@@ -18,7 +18,7 @@
           @collapse="setCollapsed"
         >
           <div class="menu-wrapper">
-            <Menu />
+            <Menu :accordion="accordion" />
           </div>
         </a-layout-sider>
         <a-drawer
@@ -30,7 +30,7 @@
           :closable="false"
           @cancel="drawerCancel"
         >
-          <Menu />
+          <Menu :accordion="accordion" />
         </a-drawer>
         <a-layout class="layout-content" :style="paddingStyle">
           <TabBar v-if="appStore.tabBar" />
@@ -66,6 +66,7 @@
   const navbarHeight = `60px`;
   const navbar = computed(() => appStore.navbar);
   const renderMenu = computed(() => appStore.menu && !appStore.topMenu);
+  const accordion = computed(() => appStore.menuAccordion);
   const hideMenu = computed(() => appStore.hideMenu);
   const footer = computed(() => appStore.footer);
   const menuWidth = computed(() => {

@@ -1,7 +1,7 @@
 import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
-const USER: AppRouteRecordRaw = {
+const UserCenter: AppRouteRecordRaw = {
   path: '/login/user',
   name: 'user',
   component: DEFAULT_LAYOUT,
@@ -9,7 +9,6 @@ const USER: AppRouteRecordRaw = {
     locale: 'menu.user',
     icon: 'icon-user',
     requiresAuth: true,
-    order: 9,
   },
   children: [
     {
@@ -20,9 +19,10 @@ const USER: AppRouteRecordRaw = {
         locale: 'menu.user.center',
         requiresAuth: true,
         roles: ['*'],
+        hideInMenu: true,
       },
     },
   ],
 };
 
-export default USER;
+export default UserCenter;

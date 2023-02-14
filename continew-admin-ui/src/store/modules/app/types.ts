@@ -6,6 +6,7 @@ export interface AppState {
   navbar: boolean;
   menu: boolean;
   topMenu: boolean;
+  menuAccordion: boolean;
   hideMenu: boolean;
   menuCollapse: boolean;
   footer: boolean;

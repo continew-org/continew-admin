@@ -1,5 +1,5 @@
-import { DEFAULT_LAYOUT } from '../base';
-import { AppRouteRecordRaw } from '../types';
+import { DEFAULT_LAYOUT } from '../../base';
+import { AppRouteRecordRaw } from '../../types';
 
 const EXCEPTION: AppRouteRecordRaw = {
   path: '/exception',
@@ -9,13 +9,13 @@ const EXCEPTION: AppRouteRecordRaw = {
     locale: 'menu.exception',
     requiresAuth: true,
     icon: 'icon-exclamation-circle',
-    order: 8,
+    order: 104,
   },
   children: [
     {
       path: '403',
       name: '403',
-      component: () => import('@/views/exception/403/index.vue'),
+      component: () => import('@/views/arco-design/exception/403/index.vue'),
       meta: {
         locale: 'menu.exception.403',
         requiresAuth: true,
@@ -25,7 +25,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     {
       path: '404',
       name: '404',
-      component: () => import('@/views/exception/404/index.vue'),
+      component: () => import('@/views/arco-design/exception/404/index.vue'),
       meta: {
         locale: 'menu.exception.404',
         requiresAuth: true,
@@ -35,7 +35,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     {
       path: '500',
       name: '500',
-      component: () => import('@/views/exception/500/index.vue'),
+      component: () => import('@/views/arco-design/exception/500/index.vue'),
       meta: {
         locale: 'menu.exception.500',
         requiresAuth: true,

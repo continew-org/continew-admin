@@ -9,7 +9,7 @@ const System: AppRouteRecordRaw = {
     locale: 'menu.system',
     icon: 'icon-settings',
     requiresAuth: true,
-    order: 2,
+    order: 1,
   },
   children: [
     {

@@ -13,6 +13,7 @@ export default {
   'settings.navbar.alerts': 'alerts',
   'settings.menu': 'Menu',
   'settings.topMenu': 'Top Menu',
+  'settings.accordion': 'Accordion',
   'settings.tabBar': 'Tab Bar',
   'settings.footer': 'Footer',
   'settings.otherSettings': 'Other Settings',

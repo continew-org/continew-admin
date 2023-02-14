@@ -3,10 +3,10 @@ import localeLogin from '@/views/login/locale/en-US';
 
 import localeWorkplace from '@/views/dashboard/workplace/locale/en-US';
 
-import localeMonitor from '@/views/dashboard/monitor/locale/en-US';
+import localeMonitor from '@/views/arco-design/visualization/monitor/locale/en-US';
 
-import localeDataAnalysis from '@/views/visualization/data-analysis/locale/en-US';
-import localeMultiDAnalysis from '@/views/visualization/multi-dimension-data-analysis/locale/en-US';
+import localeDataAnalysis from '@/views/arco-design/visualization/data-analysis/locale/en-US';
+import localeMultiDAnalysis from '@/views/arco-design/visualization/multi-dimension-data-analysis/locale/en-US';
 
 import localeRole from '@/views/system/role/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
@@ -16,20 +16,20 @@ import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
 import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
 import localeSystemLog from '@/views/monitor/log/system/locale/en-US';
 
-import localeSearchTable from '@/views/list/search-table/locale/en-US';
-import localeCardList from '@/views/list/card/locale/en-US';
+import localeSearchTable from '@/views/arco-design/list/search-table/locale/en-US';
+import localeCardList from '@/views/arco-design/list/card/locale/en-US';
 
-import localeStepForm from '@/views/form/step/locale/en-US';
-import localeGroupForm from '@/views/form/group/locale/en-US';
+import localeStepForm from '@/views/arco-design/form/step/locale/en-US';
+import localeGroupForm from '@/views/arco-design/form/group/locale/en-US';
 
-import localeBasicProfile from '@/views/profile/basic/locale/en-US';
+import localeBasicProfile from '@/views/arco-design/profile/basic/locale/en-US';
 
-import localeSuccess from '@/views/result/success/locale/en-US';
-import localeError from '@/views/result/error/locale/en-US';
+import localeSuccess from '@/views/arco-design/result/success/locale/en-US';
+import localeError from '@/views/arco-design/result/error/locale/en-US';
 
-import locale403 from '@/views/exception/403/locale/en-US';
-import locale404 from '@/views/exception/404/locale/en-US';
-import locale500 from '@/views/exception/500/locale/en-US';
+import locale403 from '@/views/arco-design/exception/403/locale/en-US';
+import locale404 from '@/views/arco-design/exception/404/locale/en-US';
+import locale500 from '@/views/arco-design/exception/500/locale/en-US';
 
 import localeUserCenter from '@/views/system/user/center/locale/en-US';
 
@@ -41,19 +41,24 @@ export default {
   'menu.server.dashboard': 'Dashboard-Server',
   'menu.server.workplace': 'Workplace-Server',
   'menu.server.monitor': 'Monitor-Server',
-  'menu.visualization': 'Data Visualization',
+
   'menu.system': 'System management',
   'menu.monitor': 'Monitor',
+
   'menu.list': 'List',
   'menu.form': 'Form',
   'menu.profile': 'Profile',
   'menu.result': 'Result',
   'menu.exception': 'Exception',
+  'menu.visualization': 'Data Visualization',
   'menu.user': 'User Center',
-  'menu.arcoWebsite': 'Arco Design',
-  'menu.faq': 'FAQ',
+
+  'menu.arcoWebsite': 'Arco Design Vue',
+  'menu.github': 'GitHub',
+
   'navbar.docs': 'Docs',
   'navbar.action.locale': 'Switch to English',
+
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

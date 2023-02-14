@@ -1,5 +1,5 @@
-import { DEFAULT_LAYOUT } from '../base';
-import { AppRouteRecordRaw } from '../types';
+import { DEFAULT_LAYOUT } from '../../base';
+import { AppRouteRecordRaw } from '../../types';
 
 const RESULT: AppRouteRecordRaw = {
   path: '/result',
@@ -9,13 +9,13 @@ const RESULT: AppRouteRecordRaw = {
     locale: 'menu.result',
     icon: 'icon-check-circle',
     requiresAuth: true,
-    order: 7,
+    order: 103,
   },
   children: [
     {
       path: 'success',
       name: 'Success',
-      component: () => import('@/views/result/success/index.vue'),
+      component: () => import('@/views/arco-design/result/success/index.vue'),
       meta: {
         locale: 'menu.result.success',
         requiresAuth: true,
@@ -25,7 +25,7 @@ const RESULT: AppRouteRecordRaw = {
     {
       path: 'error',
       name: 'Error',
-      component: () => import('@/views/result/error/index.vue'),
+      component: () => import('@/views/arco-design/result/error/index.vue'),
       meta: {
         locale: 'menu.result.error',
         requiresAuth: true,

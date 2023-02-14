@@ -1,5 +1,5 @@
-import { DEFAULT_LAYOUT } from '../base';
-import { AppRouteRecordRaw } from '../types';
+import { DEFAULT_LAYOUT } from '../../base';
+import { AppRouteRecordRaw } from '../../types';
 
 const LIST: AppRouteRecordRaw = {
   path: '/list',
@@ -9,13 +9,13 @@ const LIST: AppRouteRecordRaw = {
     locale: 'menu.list',
     requiresAuth: true,
     icon: 'icon-list',
-    order: 4,
+    order: 100,
   },
   children: [
     {
       path: 'search-table', // The midline path complies with SEO specifications
       name: 'SearchTable',
-      component: () => import('@/views/list/search-table/index.vue'),
+      component: () => import('@/views/arco-design/list/search-table/index.vue'),
       meta: {
         locale: 'menu.list.searchTable',
         requiresAuth: true,
@@ -25,7 +25,7 @@ const LIST: AppRouteRecordRaw = {
     {
       path: 'card',
       name: 'Card',
-      component: () => import('@/views/list/card/index.vue'),
+      component: () => import('@/views/arco-design/list/card/index.vue'),
       meta: {
         locale: 'menu.list.cardList',
         requiresAuth: true,

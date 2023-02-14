@@ -13,6 +13,7 @@ export default {
   'settings.navbar.alerts': '消息通知',
   'settings.menu': '菜单栏',
   'settings.topMenu': '顶部菜单栏',
+  'settings.accordion': '菜单栏手风琴',
   'settings.tabBar': '多页签',
   'settings.footer': '底部',
   'settings.otherSettings': '其他设置',

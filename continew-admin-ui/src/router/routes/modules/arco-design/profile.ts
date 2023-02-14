@@ -1,5 +1,5 @@
-import { DEFAULT_LAYOUT } from '../base';
-import { AppRouteRecordRaw } from '../types';
+import { DEFAULT_LAYOUT } from '../../base';
+import { AppRouteRecordRaw } from '../../types';
 
 const PROFILE: AppRouteRecordRaw = {
   path: '/profile',
@@ -9,13 +9,13 @@ const PROFILE: AppRouteRecordRaw = {
     locale: 'menu.profile',
     requiresAuth: true,
     icon: 'icon-file',
-    order: 6,
+    order: 102,
   },
   children: [
     {
       path: 'basic',
       name: 'Basic',
-      component: () => import('@/views/profile/basic/index.vue'),
+      component: () => import('@/views/arco-design/profile/basic/index.vue'),
       meta: {
         locale: 'menu.profile.basic',
         requiresAuth: true,

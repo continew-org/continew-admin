@@ -9,7 +9,7 @@ const Monitor: AppRouteRecordRaw = {
     locale: 'menu.monitor',
     icon: 'icon-computer',
     requiresAuth: true,
-    order: 3,
+    order: 2,
   },
   children: [
     {
