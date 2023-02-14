@@ -39,6 +39,8 @@ spring:
         connection-timeout: 30000
         # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
         idle-timeout: 600000
+        # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
+        keepaliveTime: 30000
         # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
         max-lifetime: 1800000
 
