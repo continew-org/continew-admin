@@ -12,7 +12,7 @@
     <property name="LOG_PATH" value="${LOG_PATH:-./logs}" />
     <!-- 字符集 -->
     <property name="LOG_CHARSET" value="utf-8" />
-    <!-- 控制台输出格式(带颜色) -->
+    <!-- 控制台输出格式（带颜色） -->
     <!-- 格式化输出：%d 表示日期；%thread 表示线程名；%-5level：级别从左显示 5 个字符宽度；%msg：日志消息；%n 是换行符 -->
     <property name="CONSOLE_LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %green([%thread]) %boldMagenta(%logger{50}) - %msg%n" />
     <!-- 文件输出格式 -->
@@ -22,6 +22,14 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出日志到控制台（不带颜色） -->
+    <appender name="CONSOLE_PROD" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>${LOG_CHARSET}</charset>
         </encoder>
     </appender>
@@ -43,7 +51,7 @@
         </rollingPolicy>
     </appender>
 
-    <!-- 异步输出日志到文件 -->
+    <!-- 输出日志到文件（异步） -->
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志，默认：如果队列的 80% 已满，则会丢弃 TRACT、DEBUG、INFO 级别的日志 -->
         <discardingThreshold>0</discardingThreshold>
@@ -61,10 +69,10 @@
         </root>
     </springProfile>
 
-    <!-- 生产环境：只输出到文件 -->
+    <!-- 生产环境：打印到控制台并输出到文件 -->
     <springProfile name="prod">
         <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="CONSOLE_PROD"/>
             <appender-ref ref="ASYNC_FILE"/>
         </root>
     </springProfile>
