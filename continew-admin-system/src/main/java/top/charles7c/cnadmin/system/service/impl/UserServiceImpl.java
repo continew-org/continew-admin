@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.system.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +43,9 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
+import top.charles7c.cnadmin.system.mapper.UserRoleMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
+import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -56,6 +59,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class UserServiceImpl implements UserService, CommonUserService {
 
     private final UserMapper userMapper;
+    private final UserRoleMapper userRoleMapper;
     private final LocalStorageProperties localStorageProperties;
 
     @Override
@@ -155,6 +159,16 @@ public class UserServiceImpl implements UserService, CommonUserService {
         UserDO userDO = userMapper.selectById(userId);
         CheckUtils.throwIfNull(userDO, String.format("ID为 [%s] 的用户已不存在", userId));
         return userDO;
+    }
+
+    @Override
+    public Long countByDeptIds(List<Long> deptIds) {
+        return userMapper.selectCount(Wrappers.<UserDO>lambdaQuery().in(UserDO::getDeptId, deptIds));
+    }
+
+    @Override
+    public Long countByRoleIds(List<Long> roleIds) {
+        return userRoleMapper.selectCount(Wrappers.<UserRoleDO>lambdaQuery().in(UserRoleDO::getRoleId, roleIds));
     }
 
     @Override

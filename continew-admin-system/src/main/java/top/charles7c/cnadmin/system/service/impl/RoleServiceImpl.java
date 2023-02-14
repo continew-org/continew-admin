@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import top.charles7c.cnadmin.system.model.request.RoleRequest;
 import top.charles7c.cnadmin.system.model.vo.RoleDetailVO;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.RoleService;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 角色业务实现类
@@ -44,6 +47,8 @@ import top.charles7c.cnadmin.system.service.RoleService;
 @RequiredArgsConstructor
 public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO, RoleDetailVO, RoleQuery, RoleRequest>
     implements RoleService {
+
+    private final UserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -65,6 +70,13 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(() -> isExist, String.format("修改失败，'%s'已存在", roleName));
 
         super.update(request);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        CheckUtils.throwIf(() -> userService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
+        super.delete(ids);
     }
 
     /**

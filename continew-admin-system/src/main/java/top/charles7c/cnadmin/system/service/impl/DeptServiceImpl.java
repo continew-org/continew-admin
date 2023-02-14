@@ -43,6 +43,7 @@ import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 部门业务实现类
@@ -54,6 +55,8 @@ import top.charles7c.cnadmin.system.service.DeptService;
 @RequiredArgsConstructor
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptDetailVO, DeptQuery, DeptRequest>
     implements DeptService {
+
+    private final UserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -80,6 +83,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
+        CheckUtils.throwIf(() -> userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         super.delete(ids);
         baseMapper.delete(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getParentId, ids));
     }

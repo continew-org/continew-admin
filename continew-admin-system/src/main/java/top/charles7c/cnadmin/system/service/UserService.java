@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import top.charles7c.cnadmin.system.model.entity.UserDO;
@@ -88,4 +90,22 @@ public interface UserService {
      * @return 用户信息
      */
     UserDO getById(Long userId);
+
+    /**
+     * 根据部门 ID 列表查询
+     *
+     * @param deptIds
+     *            部门 ID 列表
+     * @return 用户数量
+     */
+    Long countByDeptIds(List<Long> deptIds);
+
+    /**
+     * 根据角色 ID 列表查询
+     *
+     * @param roleIds
+     *            角色 ID 列表
+     * @return 用户数量
+     */
+    Long countByRoleIds(List<Long> roleIds);
 }
