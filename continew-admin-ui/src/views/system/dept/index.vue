@@ -100,6 +100,7 @@
         :stripe="true"
         :loading="loading"
         size="large"
+        @select="handleSelect"
         @selection-change="handleSelectionChange"
       >
         <template #columns>
@@ -169,7 +170,7 @@
         @ok="handleOk"
         @cancel="handleCancel"
       >
-        <a-form ref="formRef" :model="form" :rules="rules">
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
           <a-form-item label="上级部门" field="parentId">
             <a-tree-select
               v-model="form.parentId"
@@ -179,15 +180,10 @@
               allow-search
               :filter-tree-node="filterDeptTree"
               :fallback-option="false"
-              size="large"
             />
           </a-form-item>
           <a-form-item label="部门名称" field="deptName">
-            <a-input
-              v-model="form.deptName"
-              placeholder="请输入部门名称"
-              size="large"
-            />
+            <a-input v-model="form.deptName" placeholder="请输入部门名称" />
           </a-form-item>
           <a-form-item label="部门排序" field="deptSort">
             <a-input-number
@@ -195,7 +191,6 @@
               placeholder="请输入部门排序"
               :min="1"
               mode="button"
-              size="large"
             />
           </a-form-item>
           <a-form-item label="描述" field="description">
@@ -207,7 +202,6 @@
                 minRows: 3,
               }"
               show-word-limit
-              size="large"
             />
           </a-form-item>
         </a-form>
@@ -241,12 +235,8 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dept.status === 1" color="green">
-                <span class="circle pass"></span>启用
-              </a-tag>
-              <a-tag v-else color="red">
-                <span class="circle fail"></span>禁用
-              </a-tag>
+              <a-tag v-if="dept.status === 1" color="green">启用</a-tag>
+              <a-tag v-else color="red">禁用</a-tag>
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="部门排序">
@@ -293,7 +283,11 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { SelectOptionData, TreeNodeData } from '@arco-design/web-vue';
+  import {
+    SelectOptionData,
+    TreeNodeData,
+    TableData,
+  } from '@arco-design/web-vue';
   import {
     DeptRecord,
     DeptParam,
@@ -506,7 +500,32 @@
   };
 
   /**
-   * 多选
+   * 点击行选择器
+   */
+  const handleSelect = (rowKeys: any, rowKey: any, record: TableData) => {
+    if (rowKeys.find((key: any) => key === rowKey)) {
+      if (record.children) {
+        record.children.forEach((r) => {
+          proxy.$refs.tableRef.select(r.deptId);
+          rowKeys.push(r.deptId);
+          if (r.children) {
+            handleSelect(rowKeys, rowKey, r);
+          }
+        });
+      }
+    } else if (record.children) {
+      record.children.forEach((r) => {
+        rowKeys.splice(rowKeys.findIndex((key: number | undefined) => key === r.deptId), 1);
+        proxy.$refs.tableRef.select(r.deptId, false);
+        if (r.children) {
+          handleSelect(rowKeys, rowKey, r);
+        }
+      });
+    }
+  };
+
+  /**
+   * 已选择的数据行发生改变
    *
    * @param rowKeys ID 列表
    */
@@ -537,7 +556,7 @@
   const handleChangeStatus = (record: DeptRecord) => {
     const tip = record.status === 1 ? '启用' : '禁用';
     updateDept(record)
-      .then((res) => {
+      .then(() => {
         proxy.$message.success(`${tip}成功`);
       })
       .catch(() => {
