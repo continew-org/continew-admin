@@ -50,14 +50,14 @@ public class PageQuery extends SortQuery {
      * 页码
      */
     @Schema(description = "页码")
-    @Min(value = 1, message = "页码最小值为 1")
+    @Min(value = 1, message = "页码最小值为 {value}")
     private Integer page;
 
     /**
      * 每页条数
      */
     @Schema(description = "每页条数")
-    @Range(min = 1, max = 1000, message = "每页条数（取值范围 1-1000）")
+    @Range(min = 1, max = 1000, message = "每页条数（取值范围 {min}-{max}）")
     private Integer size;
 
     /** 默认页码：1 */

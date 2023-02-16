@@ -82,7 +82,7 @@ public class RoleRequest extends BaseRequest {
      * 描述
      */
     @Schema(description = "描述")
-    @Length(max = 200, message = "描述长度不能超过 200 个字符")
+    @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
 
     /**

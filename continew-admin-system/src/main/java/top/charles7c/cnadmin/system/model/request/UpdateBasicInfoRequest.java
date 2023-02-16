@@ -46,7 +46,7 @@ public class UpdateBasicInfoRequest implements Serializable {
      */
     @Schema(description = "昵称")
     @NotBlank(message = "昵称不能为空")
-    @Length(max = 32, message = "昵称长度不能超过 32 个字符")
+    @Length(max = 32, message = "昵称长度不能超过 {max} 个字符")
     private String nickname;
 
     /**
