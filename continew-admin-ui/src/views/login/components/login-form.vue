@@ -7,6 +7,7 @@
       :model="form"
       :rules="rules"
       layout="vertical"
+      size="large"
       class="login-form"
       @submit="handleLogin"
     >
@@ -15,7 +16,6 @@
           v-model="form.username"
           :placeholder="$t('login.form.placeholder.username')"
           max-length="50"
-          size="large"
         >
           <template #prefix><icon-user /></template>
         </a-input>
@@ -26,7 +26,6 @@
           :placeholder="$t('login.form.placeholder.password')"
           max-length="32"
           allow-clear
-          size="large"
         >
           <template #prefix><icon-lock /></template>
         </a-input-password>
@@ -36,12 +35,15 @@
           v-model="form.captcha"
           :placeholder="$t('login.form.placeholder.captcha')"
           allow-clear
-          size="large"
           style="width: 63%"
         >
           <template #prefix><icon-check-circle /></template>
         </a-input>
-        <img :src="captchaImgBase64" :alt="$t('login.form.captcha')" @click="getCaptcha">
+        <img
+          :src="captchaImgBase64"
+          :alt="$t('login.form.captcha')"
+          @click="getCaptcha"
+        />
       </a-form-item>
       <a-space :size="16" direction="vertical">
         <div class="login-form-remember-me">
@@ -53,7 +55,12 @@
             {{ $t('login.form.rememberMe') }}
           </a-checkbox>
         </div>
-        <a-button :loading="loading" type="primary" size="large" long html-type="submit">
+        <a-button
+          :loading="loading"
+          type="primary"
+          long
+          html-type="submit"
+        >
           {{ $t('login.form.login') }}
         </a-button>
       </a-space>
@@ -98,9 +105,15 @@
     // 表单验证规则
     rules: computed((): Record<string, FieldRule[]> => {
       return {
-        username: [{ required: true, message: t('login.form.error.required.username') }],
-        password: [{ required: true, message: t('login.form.error.required.password') }],
-        captcha: [{ required: true, message: t('login.form.error.required.captcha') }],
+        username: [
+          { required: true, message: t('login.form.error.required.username') },
+        ],
+        password: [
+          { required: true, message: t('login.form.error.required.password') },
+        ],
+        captcha: [
+          { required: true, message: t('login.form.error.required.captcha') },
+        ],
       };
     }),
   });
@@ -123,35 +136,42 @@
    * @param errors 表单验证错误
    * @param values 表单数据
    */
-  const handleLogin = ({ errors, values, }: {
+  const handleLogin = ({
+    errors,
+    values,
+  }: {
     errors: Record<string, ValidatedError> | undefined;
     values: Record<string, any>;
   }) => {
     if (loading.value) return;
     if (!errors) {
       loading.value = true;
-      loginStore.login({
-        username: values.username,
-        password: encryptByRsa(values.password) || '',
-        captcha: values.captcha,
-        uuid: values.uuid
-      }).then(() => {
-        const { redirect, ...othersQuery } = router.currentRoute.value.query;
-        router.push({
-          name: (redirect as string) || 'Workplace',
-          query: {
-            ...othersQuery,
-          },
+      loginStore
+        .login({
+          username: values.username,
+          password: encryptByRsa(values.password) || '',
+          captcha: values.captcha,
+          uuid: values.uuid,
+        })
+        .then(() => {
+          const { redirect, ...othersQuery } = router.currentRoute.value.query;
+          router.push({
+            name: (redirect as string) || 'Workplace',
+            query: {
+              ...othersQuery,
+            },
+          });
+          const { rememberMe } = loginConfig.value;
+          const { username } = values;
+          loginConfig.value.username = rememberMe ? username : '';
+          proxy.$message.success(t('login.form.login.success'));
+        })
+        .catch(() => {
+          getCaptcha();
+        })
+        .finally(() => {
+          loading.value = false;
         });
-        const { rememberMe } = loginConfig.value;
-        const { username } = values;
-        loginConfig.value.username = rememberMe ? username : '';
-        proxy.$message.success(t('login.form.login.success'));
-      }).catch(() => {
-        getCaptcha();
-      }).finally(() => {
-        loading.value = false;
-      });
     }
   };
 

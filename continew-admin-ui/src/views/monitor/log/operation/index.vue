@@ -12,7 +12,7 @@
                 v-model="queryParams.description"
                 placeholder="输入操作内容搜索"
                 allow-clear
-                style="width: 150px;"
+                style="width: 150px"
                 @press-enter="handleQuery"
               />
             </a-form-item>
@@ -22,7 +22,7 @@
                 :options="statusOptions"
                 placeholder="操作状态搜索"
                 allow-clear
-                style="width: 150px;"
+                style="width: 150px"
               />
             </a-form-item>
             <a-form-item field="createTime" hide-label>
@@ -128,12 +128,14 @@
    */
   const getList = (params: OperationLogParam = { ...queryParams.value }) => {
     loading.value = true;
-    listOperationLog(params).then((res) => {
-      operationLogList.value = res.data.list;
-      total.value = res.data.total;
-    }).finally(() => {
-      loading.value = false;
-    });
+    listOperationLog(params)
+      .then((res) => {
+        operationLogList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 

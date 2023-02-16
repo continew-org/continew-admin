@@ -188,27 +188,18 @@
         @ok="handleOk"
         @cancel="handleCancel"
       >
-        <a-form ref="formRef" :model="form" :rules="rules">
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
           <a-form-item label="角色名称" field="roleName">
-            <a-input
-              v-model="form.roleName"
-              placeholder="请输入角色名称"
-              size="large"
-            />
+            <a-input v-model="form.roleName" placeholder="请输入角色名称" />
           </a-form-item>
           <a-form-item label="角色编码" field="roleCode">
-            <a-input
-              v-model="form.roleCode"
-              placeholder="请输入角色编码"
-              size="large"
-            />
+            <a-input v-model="form.roleCode" placeholder="请输入角色编码" />
           </a-form-item>
           <a-form-item label="数据权限" field="dataScope">
             <a-select
               v-model="form.dataScope"
               :options="dataScopeOptions"
               placeholder="请选择数据权限"
-              size="large"
             />
           </a-form-item>
           <a-form-item
@@ -226,7 +217,6 @@
               tree-check-strictly
               :filter-tree-node="filterDeptTree"
               :fallback-option="false"
-              size="large"
             />
           </a-form-item>
           <a-form-item label="角色排序" field="roleSort">
@@ -235,7 +225,6 @@
               placeholder="请输入角色排序"
               :min="1"
               mode="button"
-              size="large"
             />
           </a-form-item>
           <a-form-item label="描述" field="description">
@@ -247,7 +236,6 @@
                 minRows: 3,
               }"
               show-word-limit
-              size="large"
             />
           </a-form-item>
         </a-form>
@@ -281,12 +269,8 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="role.status === 1" color="green">
-                <span class="circle pass"></span>启用
-              </a-tag>
-              <a-tag v-else color="red">
-                <span class="circle fail"></span>禁用
-              </a-tag>
+              <a-tag v-if="role.status === 1" color="green">启用</a-tag>
+              <a-tag v-else color="red">禁用</a-tag>
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="数据权限">
@@ -580,7 +564,7 @@
   };
 
   /**
-   * 多选
+   * 已选择的数据行发生改变时触发
    *
    * @param rowKeys ID 列表
    */

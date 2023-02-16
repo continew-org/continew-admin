@@ -29,13 +29,12 @@
     @ok="handleUpdate"
     @cancel="handleCancel"
   >
-    <a-form ref="formRef" :model="form" :rules="rules">
+    <a-form ref="formRef" :model="form" :rules="rules" size="large">
       <a-form-item :label="$t('userCenter.securitySettings.updateEmail.form.label.newEmail')" field="newEmail">
         <a-input
           v-model="form.newEmail"
           :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.newEmail')"
           allow-clear
-          size="large"
         />
       </a-form-item>
       <a-form-item :label="$t('userCenter.securitySettings.updateEmail.form.label.captcha')" field="captcha">
@@ -44,13 +43,11 @@
           :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.captcha')"
           max-length="6"
           allow-clear
-          size="large"
           style="width: 80%"
         />
         <a-button
           :loading="captchaLoading"
           type="primary"
-          size="large"
           :disabled="captchaDisable"
           class="captcha-btn"
           @click="handleSendCaptcha"
@@ -64,7 +61,6 @@
           :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.currentPassword')"
           max-length="32"
           allow-clear
-          size="large"
         />
       </a-form-item>
     </a-form>

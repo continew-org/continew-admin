@@ -29,14 +29,13 @@
     @ok="handleUpdate"
     @cancel="handleCancel"
   >
-    <a-form ref="formRef" :model="form" :rules="rules">
+    <a-form ref="formRef" :model="form" :rules="rules" size="large">
       <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.oldPassword')" field="oldPassword">
         <a-input-password
           v-model="form.oldPassword"
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.oldPassword')"
           max-length="32"
           allow-clear
-          size="large"
         />
       </a-form-item>
       <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.newPassword')" field="newPassword">
@@ -45,7 +44,6 @@
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.newPassword')"
           max-length="32"
           allow-clear
-          size="large"
         />
       </a-form-item>
       <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.rePassword')" field="rePassword">
@@ -54,7 +52,6 @@
           :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.rePassword')"
           max-length="32"
           allow-clear
-          size="large"
         />
       </a-form-item>
     </a-form>

@@ -5,6 +5,7 @@
     :rules="rules"
     :label-col-props="{ span: 8 }"
     :wrapper-col-props="{ span: 16 }"
+    size="large"
     class="form"
   >
     <a-form-item :label="$t('userCenter.basicInfo.form.label.username')" disabled>
@@ -12,14 +13,12 @@
         v-model="form.username"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
         max-length="50"
-        size="large"
       />
     </a-form-item>
     <a-form-item :label="$t('userCenter.basicInfo.form.label.nickname')" field="nickname">
       <a-input
         v-model="form.nickname"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
-        size="large"
         max-length="32"
       />
     </a-form-item>
@@ -46,7 +45,7 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
-  import { BasicInfoModel, updateBasicInfo } from "@/api/system/user-center";
+  import { BasicInfoModel, updateBasicInfo } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
   import { useLoginStore } from '@/store';
 
@@ -66,8 +65,18 @@
     // 表单验证规则
     rules: computed((): Record<string, FieldRule[]> => {
       return {
-        username: [{ required: true, message: t('userCenter.basicInfo.form.error.required.username') }],
-        nickname: [{ required: true, message: t('userCenter.basicInfo.form.error.required.nickname') }],
+        username: [
+          {
+            required: true,
+            message: t('userCenter.basicInfo.form.error.required.username'),
+          },
+        ],
+        nickname: [
+          {
+            required: true,
+            message: t('userCenter.basicInfo.form.error.required.nickname'),
+          },
+        ],
       };
     }),
   });
@@ -84,12 +93,14 @@
         updateBasicInfo({
           nickname: form.value.nickname,
           gender: form.value.gender,
-        }).then((res) => {
-          loginStore.getInfo();
-          proxy.$message.success(t('userCenter.basicInfo.form.save.success'));
-        }).finally(() => {
-          loading.value = false;
-        });
+        })
+          .then((res) => {
+            loginStore.getInfo();
+            proxy.$message.success(t('userCenter.basicInfo.form.save.success'));
+          })
+          .finally(() => {
+            loading.value = false;
+          });
       }
     });
   };
