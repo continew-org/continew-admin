@@ -25,14 +25,14 @@
    * 切换搜索栏（显示或隐藏）
    */
   const toggleSearch = () => {
-    emits("update:showQuery", !props.showQuery);
+    emits('update:showQuery', !props.showQuery);
   };
 
   /**
    * 刷新
    */
   const handleRefresh = () => {
-    emits("refresh");
+    emits('refresh');
   };
 </script>
 

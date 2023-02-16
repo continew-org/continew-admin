@@ -67,6 +67,37 @@ CREATE TABLE IF NOT EXISTS `sys_user_role`  (
     PRIMARY KEY (`user_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和角色关联表';
 
+CREATE TABLE IF NOT EXISTS `sys_menu`  (
+    `menu_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '菜单ID',
+    `menu_name` varchar(255) NOT NULL COMMENT '菜单名称',
+    `parent_id` bigint(20) unsigned DEFAULT 0 COMMENT '上级菜单ID',
+    `menu_type` tinyint(1) unsigned DEFAULT 1 COMMENT '菜单类型（1目录 2菜单 3按钮）',
+    `path` varchar(512) DEFAULT NULL COMMENT '路由地址',
+    `name` varchar(255) DEFAULT NULL COMMENT '组件名称',
+    `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+    `icon` varchar(255) DEFAULT NULL COMMENT '菜单图标',
+    `is_external` bit(1) DEFAULT b'0' COMMENT '是否外链',
+    `is_cache` bit(1) DEFAULT b'0' COMMENT '是否缓存',
+    `is_hidden` bit(1) DEFAULT b'0' COMMENT '是否隐藏',
+    `permission` varchar(255) DEFAULT NULL COMMENT '权限标识',
+    `menu_sort` int(11) unsigned DEFAULT 999 COMMENT '菜单排序',
+    `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1启用 2禁用）',
+    `create_user` bigint(20) unsigned NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint(20) unsigned NOT NULL COMMENT '修改人',
+    `update_time` datetime NOT NULL COMMENT '修改时间',
+    PRIMARY KEY (`menu_id`) USING BTREE,
+    INDEX `idx_parent_id`(`parent_id`) USING BTREE,
+    INDEX `idx_create_user`(`create_user`) USING BTREE,
+    INDEX `idx_update_user`(`update_user`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
+
+CREATE TABLE IF NOT EXISTS `sys_role_menu`  (
+    `role_id` bigint(20) unsigned NOT NULL COMMENT '角色ID',
+    `menu_id` bigint(20) unsigned NOT NULL COMMENT '菜单ID',
+    PRIMARY KEY (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和菜单关联表';
+
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `log_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '日志ID',
     `description` varchar(255) NOT NULL COMMENT '日志描述',

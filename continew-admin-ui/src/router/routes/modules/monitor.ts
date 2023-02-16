@@ -13,7 +13,7 @@ const Monitor: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: '/online',
+      path: '/monitor/online',
       name: 'OnlineUser',
       component: () => import('@/views/monitor/online/index.vue'),
       meta: {
@@ -23,7 +23,7 @@ const Monitor: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'log/login',
+      path: '/monitor/log/login',
       name: 'LoginLog',
       component: () => import('@/views/monitor/log/login/index.vue'),
       meta: {
@@ -33,7 +33,7 @@ const Monitor: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'log/operation',
+      path: '/monitor/log/operation',
       name: 'OperationLog',
       component: () => import('@/views/monitor/log/operation/index.vue'),
       meta: {
@@ -43,7 +43,7 @@ const Monitor: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'log/system',
+      path: '/monitor/log/system',
       name: 'SystemLog',
       component: () => import('@/views/monitor/log/system/index.vue'),
       meta: {

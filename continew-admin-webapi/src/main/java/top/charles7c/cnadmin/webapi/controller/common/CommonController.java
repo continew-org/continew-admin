@@ -34,8 +34,11 @@ import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
+import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
+import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.MenuService;
 
 /**
  * 公共 API
@@ -50,13 +53,23 @@ import top.charles7c.cnadmin.system.service.DeptService;
 public class CommonController {
 
     private final DeptService deptService;
+    private final MenuService menuService;
 
     @Log(ignore = true)
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> listDeptTree(@Validated DeptQuery query, @Validated SortQuery sortQuery) {
         List<DeptVO> list = deptService.list(query, sortQuery);
-        List<Tree<Long>> deptTreeList = deptService.buildTree(list);
-        return R.ok(deptTreeList);
+        List<Tree<Long>> treeList = deptService.buildTree(list);
+        return R.ok(treeList);
+    }
+
+    @Log(ignore = true)
+    @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
+    @GetMapping("/tree/menu")
+    public R<List<Tree<Long>>> listMenuTree(@Validated MenuQuery query, @Validated SortQuery sortQuery) {
+        List<MenuVO> list = menuService.list(query, sortQuery);
+        List<Tree<Long>> treeList = menuService.buildTree(list);
+        return R.ok(treeList);
     }
 }

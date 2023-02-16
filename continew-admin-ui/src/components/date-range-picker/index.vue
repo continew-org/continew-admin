@@ -35,37 +35,37 @@
         label: '今天',
         value: (): Date[] => [
           dayjs().startOf('day').toDate(),
-          dayjs().toDate()
-        ]
+          dayjs().toDate(),
+        ],
       },
       {
         label: '昨天',
         value: (): Date[] => [
           dayjs().subtract(1, 'day').startOf('day').toDate(),
-          dayjs().subtract(1, 'day').endOf('day').toDate()
-        ]
+          dayjs().subtract(1, 'day').endOf('day').toDate(),
+        ],
       },
       {
         label: '本周',
         value: (): Date[] => [
           dayjs().startOf('week').add(1, 'day').toDate(),
-          dayjs().toDate()
-        ]
+          dayjs().toDate(),
+        ],
       },
       {
         label: '本月',
         value: (): Date[] => [
           dayjs().startOf('month').toDate(),
-          dayjs().toDate()
-        ]
+          dayjs().toDate(),
+        ],
       },
       {
         label: '本年',
         value: (): Date[] => [
           dayjs().startOf('year').toDate(),
-          dayjs().toDate()
-        ]
-      }
+          dayjs().toDate(),
+        ],
+      },
     ];
   });
 </script>

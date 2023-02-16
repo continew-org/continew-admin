@@ -249,6 +249,7 @@ continew-admin
     │  │  ├─ monitor          # 系统监控模块
     │  │  └─ system           # 系统管理模块
     │  ├─ assets            # 静态资源
+    │  │  ├─ icons            # 图标资源
     │  │  ├─ images           # 图片资源
     │  │  └─ style            # 样式资源
     │  ├─ components        # 通用业务组件

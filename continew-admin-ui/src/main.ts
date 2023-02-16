@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
+// eslint-disable-next-line import/no-unresolved
+import 'virtual:svg-icons-register';
 import globalComponents from '@/components';
 import router from './router';
 import store from './store';

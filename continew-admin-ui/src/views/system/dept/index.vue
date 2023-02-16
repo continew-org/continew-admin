@@ -163,7 +163,6 @@
       <a-modal
         :title="title"
         :visible="visible"
-        :width="570"
         :mask-closable="false"
         unmount-on-close
         render-to-body
@@ -297,7 +296,7 @@
     updateDept,
     deleteDept,
   } from '@/api/system/dept';
-  import listDeptTree from '@/api/common';
+  import { listDeptTree } from '@/api/common';
 
   const { proxy } = getCurrentInstance() as any;
 

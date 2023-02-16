@@ -5,6 +5,7 @@ import configVisualizerPlugin from './plugin/visualizer';
 import configArcoResolverPlugin from './plugin/arcoResolver';
 import configStyleImportPlugin from './plugin/styleImport';
 import configImageminPlugin from './plugin/imagemin';
+import createSvgIcon from './plugin/svg-icon';
 
 export default mergeConfig(
   {
@@ -15,6 +16,7 @@ export default mergeConfig(
       configArcoResolverPlugin(),
       configStyleImportPlugin(),
       configImageminPlugin(),
+      createSvgIcon(true),
     ],
     build: {
       rollupOptions: {

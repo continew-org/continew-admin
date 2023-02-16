@@ -23,6 +23,16 @@ const System: AppRouteRecordRaw = {
       },
     },
     {
+      path: '/system/menu',
+      name: 'Menu',
+      component: () => import('@/views/system/menu/index.vue'),
+      meta: {
+        locale: 'menu.system.menu.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: '/system/dept',
       name: 'Dept',
       component: () => import('@/views/system/dept/index.vue'),

@@ -1,6 +1,6 @@
 export default {
   path: 'https://arco.design/vue/docs/start',
-  name: 'arcoWebsite',
+  name: 'ArcoWebsite',
   meta: {
     locale: 'menu.arcoWebsite',
     icon: 'icon-link',

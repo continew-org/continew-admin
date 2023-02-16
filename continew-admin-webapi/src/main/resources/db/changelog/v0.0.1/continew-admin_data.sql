@@ -22,3 +22,29 @@ INSERT IGNORE INTO `sys_role` VALUES (2, '测试人员', 'test', 4, NULL, '系�
 -- 初始化默认用户和角色关联数据
 INSERT IGNORE INTO `sys_user_role` VALUES (1, 1);
 INSERT IGNORE INTO `sys_user_role` VALUES (2, 2);
+
+-- 初始化默认菜单
+INSERT IGNORE INTO `sys_menu` VALUES (1000, '系统管理', 0, 1, 'system', NULL, NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1010, '角色管理', 1000, 2, '/system/role', 'Role', 'system/role/index', NULL, b'0', b'0', b'0', 'system:role:list', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1011, '角色新增', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:create', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1012, '角色修改', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:update', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1013, '角色删除', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:delete', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1014, '角色导出', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:export', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1030, '菜单管理', 1000, 2, '/system/menu', 'Menu', 'system/menu/index', NULL, b'0', b'0', b'0', 'system:menu:list', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1031, '菜单新增', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:create', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1032, '菜单修改', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:update', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1033, '菜单删除', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:delete', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1034, '菜单导出', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:export', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1050, '部门管理', 1000, 2, '/system/dept', 'Dept', 'system/dept/index', NULL, b'0', b'0', b'0', 'system:dept:list', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1051, '部门新增', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:create', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1052, '部门修改', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:update', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1053, '部门删除', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:delete', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1054, '部门导出', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:export', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2000, '系统监控', 0, 1, 'monitor', NULL, NULL, 'computer', b'0', b'0', b'0', NULL, 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2010, '在线用户', 2000, 2, '/monitor/online', 'OnlineUser', 'monitor/online/index', NULL, b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2011, '强退用户', 2010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'monitor:online:user:delete', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2030, '登录日志', 2000, 2, '/monitor/log/login', 'LoginLog', 'monitor/log/login/index', NULL, b'0', b'0', b'0', 'monitor:log:login:list', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2050, '操作日志', 2000, 2, '/monitor/log/operation', 'OperationLog', 'monitor/log/operation/index', NULL, b'0', b'0', b'0', 'monitor:log:operation:list', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (2070, '系统日志', 2000, 2, '/monitor/log/system', 'SystemLog', 'monitor/log/system/index', NULL, b'0', b'0', b'0', 'monitor:log:system:list', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (10000, 'Arco Design Vue', 0, 1, 'https://arco.design/vue/docs/start', NULL, NULL, 'link', b'1', b'0', b'0', NULL, 100, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (10001, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 101, 1, 1, NOW(), 1, NOW());
