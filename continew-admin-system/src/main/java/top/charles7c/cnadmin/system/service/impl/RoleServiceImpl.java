@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -54,7 +52,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public Long create(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExist = this.checkNameExist(roleName, request.getRoleId());
+        boolean isExist = this.checkNameExists(roleName, request.getRoleId());
         CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", roleName));
 
         // 保存信息
@@ -66,7 +64,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExist = this.checkNameExist(roleName, request.getRoleId());
+        boolean isExist = this.checkNameExists(roleName, request.getRoleId());
         CheckUtils.throwIf(() -> isExist, String.format("修改失败，'%s'已存在", roleName));
 
         super.update(request);
@@ -82,14 +80,13 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     /**
      * 检查名称是否存在
      *
-     * @param roleName
-     *            角色名称
-     * @param roleId
-     *            角色 ID
+     * @param name
+     *            名称
+     * @param id
+     *            ID
      * @return 是否存在
      */
-    private boolean checkNameExist(String roleName, Long roleId) {
-        return baseMapper.exists(Wrappers.<RoleDO>lambdaQuery().eq(RoleDO::getRoleName, roleName).ne(roleId != null,
-            RoleDO::getRoleId, roleId));
+    private boolean checkNameExists(String name, Long id) {
+        return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
     }
 }

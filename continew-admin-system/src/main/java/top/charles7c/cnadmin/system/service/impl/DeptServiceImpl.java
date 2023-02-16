@@ -26,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 
@@ -62,8 +60,8 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public Long create(DeptRequest request) {
         String deptName = request.getDeptName();
-        boolean isExist = this.checkNameExist(deptName, request.getParentId(), request.getDeptId());
-        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
+        boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
+        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", deptName));
 
         // 保存信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -74,8 +72,8 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(DeptRequest request) {
         String deptName = request.getDeptName();
-        boolean isExist = this.checkNameExist(deptName, request.getParentId(), request.getDeptId());
-        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", deptName));
+        boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
+        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", deptName));
 
         super.update(request);
     }
@@ -85,7 +83,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(() -> userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         super.delete(ids);
-        baseMapper.delete(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getParentId, ids));
+        super.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
     }
 
     @Override
@@ -109,18 +107,18 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      */
     private List<DeptVO> deDuplication(List<DeptVO> list) {
         List<DeptVO> deDuplicationList = new ArrayList<>();
-        for (DeptVO outerDept : list) {
+        for (DeptVO outer : list) {
             boolean flag = true;
-            for (DeptVO innerDept : list) {
+            for (DeptVO inner : list) {
                 // 忽略重复子列表
-                if (innerDept.getDeptId().equals(outerDept.getParentId())) {
+                if (inner.getDeptId().equals(outer.getParentId())) {
                     flag = false;
                     break;
                 }
             }
 
             if (flag) {
-                deDuplicationList.add(outerDept);
+                deDuplicationList.add(outer);
             }
         }
         return deDuplicationList;
@@ -153,17 +151,17 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     /**
      * 检查名称是否存在
      *
-     * @param deptName
-     *            部门名称
+     * @param name
+     *            名称
      * @param parentId
-     *            上级部门 ID
-     * @param deptId
-     *            部门 ID
+     *            上级 ID
+     * @param id
+     *            ID
      * @return 是否存在
      */
-    private boolean checkNameExist(String deptName, Long parentId, Long deptId) {
-        return baseMapper.exists(Wrappers.<DeptDO>lambdaQuery().eq(DeptDO::getDeptName, deptName)
-            .eq(DeptDO::getParentId, parentId).ne(deptId != null, DeptDO::getDeptId, deptId));
+    private boolean checkNameExists(String name, Long parentId, Long id) {
+        return super.lambdaQuery().eq(DeptDO::getDeptName, name).eq(DeptDO::getParentId, parentId)
+            .ne(id != null, DeptDO::getDeptId, id).exists();
     }
 
     @Override

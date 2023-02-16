@@ -32,6 +32,11 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -245,5 +250,52 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
      */
     protected Class<D> currentDetailVoClass() {
         return (Class<D>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 3);
+    }
+
+    /**
+     * 链式查询
+     *
+     * @return QueryWrapper 的包装类
+     */
+    protected QueryChainWrapper<T> query() {
+        return ChainWrappers.queryChain(baseMapper);
+    }
+
+    /**
+     * 链式查询（lambda 式）
+     *
+     * @return LambdaQueryWrapper 的包装类
+     */
+    protected LambdaQueryChainWrapper<T> lambdaQuery() {
+        return ChainWrappers.lambdaQueryChain(baseMapper, entityClass);
+    }
+
+    /**
+     * 链式查询（lambda 式）
+     *
+     * @param entity
+     *            实体对象
+     * @return LambdaQueryWrapper 的包装类
+     */
+    protected LambdaQueryChainWrapper<T> lambdaQuery(T entity) {
+        return ChainWrappers.lambdaQueryChain(baseMapper, entity);
+    }
+
+    /**
+     * 链式更改
+     *
+     * @return UpdateWrapper 的包装类
+     */
+    protected UpdateChainWrapper<T> update() {
+        return ChainWrappers.updateChain(baseMapper);
+    }
+
+    /**
+     * 链式更改（lambda 式）
+     *
+     * @return LambdaUpdateWrapper 的包装类
+     */
+    protected LambdaUpdateChainWrapper<T> lambdaUpdate() {
+        return ChainWrappers.lambdaUpdateChain(baseMapper);
     }
 }
