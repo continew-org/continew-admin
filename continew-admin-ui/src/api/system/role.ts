@@ -7,10 +7,11 @@ export interface RoleRecord {
   roleId?: number;
   roleName: string;
   roleCode?: string;
-  dataScope: number;
-  dataScopeDeptIds?: string;
+  roleSort?: number;
   description?: string;
-  roleSort: number;
+  menuIds?: Array<number>;
+  dataScope: number;
+  deptIds?: Array<number>;
   status?: number;
   createUserString?: string;
   createTime?: string;

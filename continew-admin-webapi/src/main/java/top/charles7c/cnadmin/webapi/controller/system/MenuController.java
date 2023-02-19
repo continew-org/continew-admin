@@ -43,7 +43,7 @@ import top.charles7c.cnadmin.system.service.MenuService;
  */
 @Tag(name = "菜单管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/menu", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/menu", api = {Api.LIST, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class MenuController extends BaseController<MenuService, MenuVO, MenuVO, MenuQuery, MenuRequest> {
 
     @Override

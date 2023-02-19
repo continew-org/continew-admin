@@ -14,42 +14,40 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.query;
+package top.charles7c.cnadmin.system.model.entity;
 
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.springdoc.api.annotations.ParameterObject;
-
-import top.charles7c.cnadmin.common.annotation.Query;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
- * 角色查询条件
+ * 角色和部门实体
  *
  * @author Charles7c
- * @since 2023/2/8 23:04
+ * @since 2023/2/18 21:57
  */
 @Data
-@ParameterObject
-@Schema(description = "角色查询条件")
-public class RoleQuery implements Serializable {
+@NoArgsConstructor
+@TableName("sys_role_dept")
+public class RoleDeptDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色名称
+     * 角色 ID
      */
-    @Schema(description = "角色名称")
-    @Query(blurry = "roleName,roleCode")
-    private String roleName;
+    private Long roleId;
 
     /**
-     * 状态（1启用 2禁用）
+     * 部门 ID
      */
-    @Schema(description = "状态（1启用 2禁用）")
-    @Query
-    private Integer status;
+    private Long deptId;
+
+    public RoleDeptDO(Long roleId, Long deptId) {
+        this.roleId = roleId;
+        this.deptId = deptId;
+    }
 }

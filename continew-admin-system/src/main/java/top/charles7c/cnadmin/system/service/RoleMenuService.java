@@ -14,40 +14,34 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.system.service;
 
-import java.io.Serializable;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.List;
 
 /**
- * 角色和菜单实体
+ * 角色和菜单业务接口
  *
  * @author Charles7c
- * @since 2023/2/15 20:20
+ * @since 2023/2/19 10:40
  */
-@Data
-@NoArgsConstructor
-@TableName("sys_role_menu")
-public class RoleMenuDO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public interface RoleMenuService {
 
     /**
-     * 角色 ID
+     * 保存
+     *
+     * @param menuIds
+     *            菜单 ID 列表
+     * @param roleId
+     *            角色 ID
      */
-    private Long roleId;
+    void save(List<Long> menuIds, Long roleId);
 
     /**
-     * 菜单 ID
+     * 根据角色 ID 查询
+     *
+     * @param roleId
+     *            角色 ID
+     * @return 菜单 ID 列表
      */
-    private Long menuId;
-
-    public RoleMenuDO(Long roleId, Long menuId) {
-        this.roleId = roleId;
-        this.menuId = menuId;
-    }
+    List<Long> listMenuIdByRoleId(Long roleId);
 }

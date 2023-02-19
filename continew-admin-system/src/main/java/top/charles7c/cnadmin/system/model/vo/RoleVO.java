@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -68,18 +66,6 @@ public class RoleVO extends BaseVO {
     private DataScopeEnum dataScope;
 
     /**
-     * 数据权限范围（部门 ID 数组）
-     */
-    @Schema(description = "数据权限范围（部门 ID 数组）")
-    private List<Long> dataScopeDeptIds;
-
-    /**
-     * 描述
-     */
-    @Schema(description = "描述")
-    private String description;
-
-    /**
      * 角色排序
      */
     @Schema(description = "角色排序")
@@ -90,6 +76,12 @@ public class RoleVO extends BaseVO {
      */
     @Schema(description = "状态（1启用 2禁用）")
     private DisEnableStatusEnum status;
+
+    /**
+     * 描述
+     */
+    @Schema(description = "描述")
+    private String description;
 
     /**
      * 是否禁用修改

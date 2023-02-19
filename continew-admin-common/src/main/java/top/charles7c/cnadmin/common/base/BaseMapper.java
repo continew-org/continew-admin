@@ -14,40 +14,30 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.common.base;
 
-import java.io.Serializable;
+import java.util.Collection;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 
 /**
- * 角色和菜单实体
+ * Mapper 基类
  *
+ * @param <T>
+ *            实体类
  * @author Charles7c
- * @since 2023/2/15 20:20
+ * @since 2023/2/19 20:47
  */
-@Data
-@NoArgsConstructor
-@TableName("sys_role_menu")
-public class RoleMenuDO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.BaseMapper<T> {
 
     /**
-     * 角色 ID
+     * 批量插入记录
+     *
+     * @param entityList
+     *            实体列表
+     * @return 是否成功
      */
-    private Long roleId;
-
-    /**
-     * 菜单 ID
-     */
-    private Long menuId;
-
-    public RoleMenuDO(Long roleId, Long menuId) {
-        this.roleId = roleId;
-        this.menuId = menuId;
+    default boolean insertBatch(Collection<T> entityList) {
+        return Db.saveBatch(entityList);
     }
 }

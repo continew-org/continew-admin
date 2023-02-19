@@ -72,19 +72,6 @@ public class RoleDetailVO extends BaseDetailVO {
     private DataScopeEnum dataScope;
 
     /**
-     * 数据权限范围（部门 ID 数组）
-     */
-    @Schema(description = "数据权限范围（部门 ID 数组）")
-    private List<Long> dataScopeDeptIds;
-
-    /**
-     * 描述
-     */
-    @Schema(description = "描述")
-    @ExcelProperty(value = "描述")
-    private String description;
-
-    /**
      * 角色排序
      */
     @Schema(description = "角色排序")
@@ -97,4 +84,23 @@ public class RoleDetailVO extends BaseDetailVO {
     @Schema(description = "状态（1启用 2禁用）")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
+
+    /**
+     * 描述
+     */
+    @Schema(description = "描述")
+    @ExcelProperty(value = "描述")
+    private String description;
+
+    /**
+     * 功能权限：菜单 ID 列表
+     */
+    @Schema(description = "功能权限：菜单 ID 列表")
+    private List<Long> menuIds;
+
+    /**
+     * 权限范围：部门 ID 列表
+     */
+    @Schema(description = "权限范围：部门 ID 列表")
+    private List<Long> deptIds;
 }

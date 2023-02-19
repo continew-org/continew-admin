@@ -44,7 +44,7 @@ import top.charles7c.cnadmin.system.service.DeptService;
  */
 @Tag(name = "部门管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dept", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/dept", api = {Api.LIST, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class DeptController extends BaseController<DeptService, DeptVO, DeptDetailVO, DeptQuery, DeptRequest> {
 
     @Override

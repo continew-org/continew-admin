@@ -78,7 +78,7 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *            创建信息
      * @return 自增 ID
      */
-    Long create(C request);
+    Long add(C request);
 
     /**
      * 修改

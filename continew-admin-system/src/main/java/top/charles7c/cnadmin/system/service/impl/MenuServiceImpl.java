@@ -53,14 +53,14 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(MenuRequest request) {
+    public Long add(MenuRequest request) {
         String menuName = request.getMenuName();
         boolean isExists = this.checkNameExists(menuName, request.getParentId(), request.getMenuId());
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", menuName));
 
         // 保存信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
-        return super.create(request);
+        return super.add(request);
     }
 
     @Override

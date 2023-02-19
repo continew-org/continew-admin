@@ -66,17 +66,11 @@ public class RoleRequest extends BaseRequest {
     private String roleCode;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     * 角色排序
      */
-    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）", type = "Integer",
-        allowableValues = {"1", "2", "3", "4", "5"})
-    private DataScopeEnum dataScope;
-
-    /**
-     * 数据权限范围（部门 ID 数组）
-     */
-    @Schema(description = "数据权限范围（部门 ID 数组）")
-    private List<Long> dataScopeDeptIds;
+    @Schema(description = "角色排序")
+    @NotNull(message = "角色排序不能为空")
+    private Integer roleSort;
 
     /**
      * 描述
@@ -86,11 +80,23 @@ public class RoleRequest extends BaseRequest {
     private String description;
 
     /**
-     * 角色排序
+     * 功能权限：菜单 ID 列表
      */
-    @Schema(description = "角色排序")
-    @NotNull(message = "角色排序不能为空")
-    private Integer roleSort;
+    @Schema(description = "功能权限：菜单 ID 列表")
+    private List<Long> menuIds;
+
+    /**
+     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     */
+    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）", type = "Integer",
+        allowableValues = {"1", "2", "3", "4", "5"})
+    private DataScopeEnum dataScope;
+
+    /**
+     * 权限范围：部门 ID 列表
+     */
+    @Schema(description = "权限范围：部门 ID 列表")
+    private List<Long> deptIds;
 
     /**
      * 状态（1启用 2禁用）

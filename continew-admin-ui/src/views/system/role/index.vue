@@ -178,9 +178,10 @@
       </a-table>
 
       <!-- 表单区域 -->
-      <a-modal
+      <a-drawer
         :title="title"
         :visible="visible"
+        :width="570"
         :mask-closable="false"
         unmount-on-close
         render-to-body
@@ -188,61 +189,91 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="角色名称" field="roleName">
-            <a-input v-model="form.roleName" placeholder="请输入角色名称" />
-          </a-form-item>
-          <a-form-item label="角色编码" field="roleCode">
-            <a-input v-model="form.roleCode" placeholder="请输入角色编码" />
-          </a-form-item>
-          <a-form-item label="数据权限" field="dataScope">
-            <a-select
-              v-model="form.dataScope"
-              :options="dataScopeOptions"
-              placeholder="请选择数据权限"
-            />
-          </a-form-item>
-          <a-form-item
-            v-if="form.dataScope === 5"
-            label="数据范围"
-            field="dataScopeDeptIds"
-          >
-            <a-tree-select
-              v-model="form.dataScopeDeptIds"
-              :data="treeData"
-              placeholder="请选择数据范围"
-              allow-search
-              allow-clear
-              tree-checkable
-              tree-check-strictly
-              :filter-tree-node="filterDeptTree"
-              :fallback-option="false"
-            />
-          </a-form-item>
-          <a-form-item label="角色排序" field="roleSort">
-            <a-input-number
-              v-model="form.roleSort"
-              placeholder="请输入角色排序"
-              :min="1"
-              mode="button"
-            />
-          </a-form-item>
-          <a-form-item label="描述" field="description">
-            <a-textarea
-              v-model="form.description"
-              :max-length="200"
-              placeholder="请输入描述"
-              :auto-size="{
-                minRows: 3,
-              }"
-              show-word-limit
-            />
-          </a-form-item>
+          <fieldset>
+            <legend>基础信息</legend>
+            <a-form-item label="角色名称" field="roleName">
+              <a-input v-model="form.roleName" placeholder="请输入角色名称" />
+            </a-form-item>
+            <a-form-item label="角色编码" field="roleCode">
+              <a-input v-model="form.roleCode" placeholder="请输入角色编码" />
+            </a-form-item>
+            <a-form-item label="角色排序" field="roleSort">
+              <a-input-number
+                v-model="form.roleSort"
+                placeholder="请输入角色排序"
+                :min="1"
+                mode="button"
+              />
+            </a-form-item>
+            <a-form-item label="描述" field="description">
+              <a-textarea
+                v-model="form.description"
+                :max-length="200"
+                placeholder="请输入描述"
+                :auto-size="{
+                  minRows: 3,
+                }"
+                show-word-limit
+              />
+            </a-form-item>
+          </fieldset>
+          <fieldset>
+            <legend>功能权限</legend>
+            <a-form-item label="功能权限">
+              <a-space style="margin-top: 2px">
+                <a-checkbox v-model="menuExpandAll" @change="handleExpandAll('menu')">展开/折叠</a-checkbox>
+                <a-checkbox v-model="menuCheckAll" @change="handleCheckAll('menu')">全选/全不选</a-checkbox>
+                <a-checkbox v-model="menuCheckStrictly">父子联动</a-checkbox>
+              </a-space>
+              <template #extra>
+                <a-spin v-if="menuLoading" />
+                <a-tree
+                  v-if="!menuLoading"
+                  ref="menuRef"
+                  :data="menuOptions"
+                  :default-checked-keys="form.menuIds"
+                  :check-strictly="!menuCheckStrictly"
+                  :default-expand-all="menuExpandAll"
+                  checkable
+                />
+              </template>
+            </a-form-item>
+          </fieldset>
+          <fieldset>
+            <legend>数据权限</legend>
+            <a-form-item label="数据权限" field="dataScope">
+              <a-select
+                v-model="form.dataScope"
+                :options="dataScopeOptions"
+                placeholder="请选择数据权限"
+              />
+            </a-form-item>
+            <a-form-item v-if="form.dataScope === 5" label="权限范围">
+              <a-space style="margin-top: 2px">
+                <a-checkbox v-model="deptExpandAll" @change="handleExpandAll('dept')">展开/折叠</a-checkbox>
+                <a-checkbox v-model="deptCheckAll" @change="handleCheckAll('dept')">全选/全不选</a-checkbox>
+                <a-checkbox v-model="deptCheckStrictly">父子联动</a-checkbox>
+              </a-space>
+              <template #extra>
+                <a-spin v-if="deptLoading" />
+                <a-tree
+                  v-if="!deptLoading"
+                  ref="deptRef"
+                  :data="deptOptions"
+                  :default-checked-keys="form.deptIds"
+                  :check-strictly="!deptCheckStrictly"
+                  :default-expand-all="deptExpandAll"
+                  checkable
+                />
+              </template>
+            </a-form-item>
+          </fieldset>
         </a-form>
-      </a-modal>
+      </a-drawer>
 
       <!-- 详情区域 -->
       <a-drawer
-        title="部门详情"
+        title="角色详情"
         :visible="detailVisible"
         :width="570"
         :footer="false"
@@ -250,88 +281,96 @@
         render-to-body
         @cancel="handleDetailCancel"
       >
-        <a-descriptions title="基础信息" :column="2" bordered size="large">
-          <a-descriptions-item label="角色名称">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.roleName }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="角色编码">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.roleCode }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="状态">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>
-              <a-tag v-if="role.status === 1" color="green">启用</a-tag>
-              <a-tag v-else color="red">禁用</a-tag>
-            </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="数据权限">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>
-              <span v-if="role.dataScope === 1">全部数据权限</span>
-              <span v-else-if="role.dataScope === 2">本部门及以下数据权限</span>
-              <span v-else-if="role.dataScope === 3">本部门数据权限</span>
-              <span v-else-if="role.dataScope === 4">仅本人数据权限</span>
-              <span v-else>自定义数据权限</span>
-            </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.createUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="创建时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.createTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.updateUserString }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="修改时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.updateTime }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="描述">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ role.description }}</span>
-          </a-descriptions-item>
-        </a-descriptions>
-        <a-descriptions
+        <a-card title="基础信息" :bordered="false">
+          <a-descriptions :column="2" bordered size="large">
+            <a-descriptions-item label="角色名称">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.roleName }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="角色编码">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.roleCode }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="状态">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>
+                <a-tag v-if="role.status === 1" color="green">启用</a-tag>
+                <a-tag v-else color="red">禁用</a-tag>
+              </span>
+            </a-descriptions-item>
+            <a-descriptions-item label="数据权限">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>
+                <span v-if="role.dataScope === 1">全部数据权限</span>
+                <span v-else-if="role.dataScope === 2">本部门及以下数据权限</span>
+                <span v-else-if="role.dataScope === 3">本部门数据权限</span>
+                <span v-else-if="role.dataScope === 4">仅本人数据权限</span>
+                <span v-else>自定义数据权限</span>
+              </span>
+            </a-descriptions-item>
+            <a-descriptions-item label="创建人">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.createUserString }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="创建时间">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.createTime }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="修改人">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.updateUserString }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="修改时间">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.updateTime }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="描述">
+              <a-skeleton v-if="detailLoading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ role.description }}</span>
+            </a-descriptions-item>
+          </a-descriptions>
+        </a-card>
+        <a-card :loading="menuLoading" title="功能权限" :bordered="false">
+          <a-tree
+            :data="menuOptions"
+            :checked-keys="role.menuIds"
+            :default-expand-all="false"
+            check-strictly
+            checkable
+          />
+        </a-card>
+        <a-card
           v-if="role.dataScope === 5"
+          :loading="deptLoading"
           title="数据权限"
-          :column="2"
-          bordered
-          size="large"
-          style="margin-top: 25px"
+          :bordered="false"
         >
-          <a-descriptions-item label="数据范围">
-            <a-tree-select
-              v-model="role.dataScopeDeptIds"
-              :data="treeData"
-              tree-checkable
-              disabled
-            />
-          </a-descriptions-item>
-        </a-descriptions>
+          <a-tree
+            :data="deptOptions"
+            :checked-keys="role.deptIds"
+            default-expand-all
+            check-strictly
+            checkable
+          />
+        </a-card>
       </a-drawer>
     </a-card>
   </div>
@@ -349,7 +388,7 @@
     updateRole,
     deleteRole,
   } from '@/api/system/role';
-  import { listDeptTree } from '@/api/common';
+  import { listMenuTree, listDeptTree } from '@/api/common';
 
   const { proxy } = getCurrentInstance() as any;
 
@@ -357,14 +396,15 @@
   const role = ref<RoleRecord>({
     roleName: '',
     roleCode: '',
-    dataScope: 1,
-    description: '',
-    roleSort: 0,
     status: 1,
+    dataScope: 1,
     createUserString: '',
     createTime: '',
     updateUserString: '',
     updateTime: '',
+    description: '',
+    menuIds: undefined,
+    deptIds: undefined,
   });
   const total = ref(0);
   const ids = ref<Array<number>>([]);
@@ -388,7 +428,16 @@
     { label: '仅本人数据权限', value: 4 },
     { label: '自定义数据权限', value: 5 },
   ]);
-  const treeData = ref<TreeNodeData[]>();
+  const menuLoading = ref(false);
+  const deptLoading = ref(false);
+  const menuOptions = ref<TreeNodeData[]>([]);
+  const deptOptions = ref<TreeNodeData[]>([]);
+  const menuExpandAll = ref(false);
+  const deptExpandAll = ref(true);
+  const menuCheckAll = ref(false);
+  const deptCheckAll = ref(false);
+  const menuCheckStrictly = ref(true);
+  const deptCheckStrictly = ref(true);
 
   const data = reactive({
     // 查询参数
@@ -405,7 +454,6 @@
     rules: {
       roleName: [{ required: true, message: '请输入角色名称' }],
       dataScope: [{ required: true, message: '请选择数据权限' }],
-      dataScopeDeptIds: [{ required: true, message: '请选择数据范围' }],
       roleSort: [{ required: true, message: '请输入角色排序' }],
     },
   });
@@ -434,11 +482,10 @@
    */
   const toCreate = () => {
     reset();
-    listDeptTree({ status: 1 }).then((res) => {
-      treeData.value = res.data;
-    });
+    getMenuTree();
     title.value = '新增角色';
     visible.value = true;
+    getDeptTree();
   };
 
   /**
@@ -448,9 +495,10 @@
    */
   const toUpdate = (id: number) => {
     reset();
-    listDeptTree({}).then((res) => {
-      treeData.value = res.data;
-    });
+    menuCheckStrictly.value = false;
+    deptCheckStrictly.value = false;
+    getMenuTree();
+    getDeptTree();
     getRole(id).then((res) => {
       form.value = res.data;
       title.value = '修改角色';
@@ -459,18 +507,59 @@
   };
 
   /**
+   * 查询菜单树
+   */
+  const getMenuTree = () => {
+    if (menuOptions.value.length <= 0) {
+      menuLoading.value = true;
+    }
+    listMenuTree({})
+      .then((res) => {
+        menuOptions.value = res.data;
+      })
+      .finally(() => {
+        menuLoading.value = false;
+      });
+  };
+
+  /**
+   * 查询部门树
+   */
+  const getDeptTree = () => {
+    if (deptOptions.value.length <= 0) {
+      deptLoading.value = true;
+    }
+    listDeptTree({})
+      .then((res) => {
+        deptOptions.value = res.data;
+      })
+      .finally(() => {
+        deptLoading.value = false;
+      });
+  };
+
+  /**
    * 重置表单
    */
   const reset = () => {
+    menuExpandAll.value = false;
+    menuCheckAll.value = false;
+    menuCheckStrictly.value = true;
+    deptExpandAll.value = true;
+    deptCheckAll.value = false;
+    deptCheckStrictly.value = true;
+    proxy.$refs.menuRef?.expandAll(menuExpandAll.value);
+    proxy.$refs.deptRef?.expandAll(deptExpandAll.value);
     form.value = {
       roleId: undefined,
       roleName: '',
       roleCode: undefined,
       dataScope: 4,
-      dataScopeDeptIds: undefined,
       description: '',
       roleSort: 999,
       status: 1,
+      menuIds: [],
+      deptIds: [],
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -484,18 +573,54 @@
   };
 
   /**
+   * 获取所有选中的菜单
+   */
+  const getMenuAllCheckedKeys = () => {
+    // 获取目前被选中的菜单
+    const checkedNodes = proxy.$refs.menuRef.getCheckedNodes();
+    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
+
+    // 获取半选中的菜单
+    const halfCheckedNodes = proxy.$refs.menuRef.getHalfCheckedNodes();
+    const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key);
+    // eslint-disable-next-line prefer-spread
+    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+    return checkedKeys;
+  };
+
+  /**
+   * 获取所有选中的部门
+   */
+  const getDeptAllCheckedKeys = () => {
+    // 获取目前被选中的部门
+    const checkedNodes = proxy.$refs.deptRef.getCheckedNodes();
+    const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
+
+    // 获取半选中的部门
+    const halfCheckedNodes = proxy.$refs.deptRef.getHalfCheckedNodes();
+    const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key);
+    // eslint-disable-next-line prefer-spread
+    checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+    return checkedKeys;
+  };
+
+  /**
    * 确定
    */
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.roleId !== undefined) {
+          form.value.menuIds = getMenuAllCheckedKeys();
+          form.value.deptIds = getDeptAllCheckedKeys();
           updateRole(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
+          form.value.menuIds = getMenuAllCheckedKeys();
+          form.value.deptIds = getDeptAllCheckedKeys();
           createRole(form.value).then((res) => {
             handleCancel();
             getList();
@@ -513,6 +638,8 @@
    */
   const toDetail = async (id: number) => {
     if (detailLoading.value) return;
+    getMenuTree();
+    getDeptTree();
     detailLoading.value = true;
     detailVisible.value = true;
     getRole(id)
@@ -603,18 +730,29 @@
   };
 
   /**
-   * 过滤部门树
+   * 展开/折叠
    *
-   * @param searchValue 搜索值
-   * @param nodeData 节点值
+   * @param type 类型（菜单/部门）
    */
-  const filterDeptTree = (searchValue: string, nodeData: TreeNodeData) => {
-    if (nodeData.title) {
-      return (
-        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
-      );
+  const handleExpandAll = (type: string) => {
+    if (type === 'menu') {
+      proxy.$refs.menuRef.expandAll(menuExpandAll.value);
+    } else if (type === 'dept') {
+      proxy.$refs.deptRef.expandAll(deptExpandAll.value);
     }
-    return false;
+  };
+
+  /**
+   * 全选/全不选
+   *
+   * @param type 类型（菜单/部门）
+   */
+  const handleCheckAll = (type: string) => {
+    if (type === 'menu') {
+      proxy.$refs.menuRef.checkAll(menuCheckAll.value);
+    } else if (type === 'dept') {
+      proxy.$refs.deptRef.checkAll(deptCheckAll.value);
+    }
   };
 
   /**

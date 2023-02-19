@@ -1,28 +1,6 @@
 -- liquibase formatted sql
 
 -- changeset Charles7c:1
--- 初始化默认部门
-INSERT IGNORE INTO `sys_dept` VALUES (1, 'Xxx科技有限公司', 0, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (2, '天津总部', 1, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (3, '研发部', 2, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (4, 'UI部', 2, '系统初始部门', 2, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (5, '测试部', 2, '系统初始部门', 3, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (6, '运维部', 2, '系统初始部门', 4, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (7, '研发一组', 3, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (8, '研发二组', 3, '系统初始部门', 2, 2, 1, NOW(), 1, NOW());
-
--- 初始化默认用户：admin/admin123；test/123456
-INSERT IGNORE INTO `sys_user` VALUES (1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, '18888888888', 'charles7c@126.com', NULL, '系统初始用户', 1, NOW(), 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_user` VALUES (2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 0, NULL, NULL, NULL, '系统初始用户', 2, NOW(), 2, 1, NOW(), 1, NOW());
-
--- 初始化默认角色
-INSERT IGNORE INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, NULL, '系统初始角色', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_role` VALUES (2, '测试人员', 'test', 4, NULL, '系统初始角色', 2, 2, 1, NOW(), 1, NOW());
-
--- 初始化默认用户和角色关联数据
-INSERT IGNORE INTO `sys_user_role` VALUES (1, 1);
-INSERT IGNORE INTO `sys_user_role` VALUES (2, 2);
-
 -- 初始化默认菜单
 INSERT IGNORE INTO `sys_menu` VALUES (1000, '系统管理', 0, 1, 'system', NULL, NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1010, '角色管理', 1000, 2, '/system/role', 'Role', 'system/role/index', NULL, b'0', b'0', b'0', 'system:role:list', 2, 1, 1, NOW(), 1, NOW());
@@ -48,3 +26,46 @@ INSERT IGNORE INTO `sys_menu` VALUES (2050, '操作日志', 2000, 2, '/monitor/l
 INSERT IGNORE INTO `sys_menu` VALUES (2070, '系统日志', 2000, 2, '/monitor/log/system', 'SystemLog', 'monitor/log/system/index', NULL, b'0', b'0', b'0', 'monitor:log:system:list', 4, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (10000, 'Arco Design Vue', 0, 1, 'https://arco.design/vue/docs/start', NULL, NULL, 'link', b'1', b'0', b'0', NULL, 100, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (10001, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 101, 1, 1, NOW(), 1, NOW());
+
+-- 初始化默认部门
+INSERT IGNORE INTO `sys_dept` VALUES (1, 'Xxx科技有限公司', 0, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (2, '天津总部', 1, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (3, '研发部', 2, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (4, 'UI部', 2, '系统初始部门', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (5, '测试部', 2, '系统初始部门', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (6, '运维部', 2, '系统初始部门', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (7, '研发一组', 3, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (8, '研发二组', 3, '系统初始部门', 2, 2, 1, NOW(), 1, NOW());
+
+-- 初始化默认角色
+INSERT IGNORE INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_role` VALUES (2, '测试人员', 'test', 5, '系统初始角色', 2, 2, 1, NOW(), 1, NOW());
+
+-- 初始化默认用户：admin/admin123；test/123456
+INSERT IGNORE INTO `sys_user` VALUES (1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, '18888888888', 'charles7c@126.com', NULL, '系统初始用户', 1, NOW(), 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_user` VALUES (2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 0, NULL, NULL, NULL, '系统初始用户', 2, NOW(), 2, 1, NOW(), 1, NOW());
+
+-- 初始化默认角色和菜单关联数据
+INSERT INTO `sys_role_menu` VALUES (2, 1000);
+INSERT INTO `sys_role_menu` VALUES (2, 1010);
+INSERT INTO `sys_role_menu` VALUES (2, 1011);
+INSERT INTO `sys_role_menu` VALUES (2, 1012);
+INSERT INTO `sys_role_menu` VALUES (2, 1013);
+INSERT INTO `sys_role_menu` VALUES (2, 1014);
+INSERT INTO `sys_role_menu` VALUES (2, 1030);
+INSERT INTO `sys_role_menu` VALUES (2, 1031);
+INSERT INTO `sys_role_menu` VALUES (2, 1032);
+INSERT INTO `sys_role_menu` VALUES (2, 1033);
+INSERT INTO `sys_role_menu` VALUES (2, 1034);
+INSERT INTO `sys_role_menu` VALUES (2, 1050);
+INSERT INTO `sys_role_menu` VALUES (2, 1051);
+INSERT INTO `sys_role_menu` VALUES (2, 1052);
+INSERT INTO `sys_role_menu` VALUES (2, 1053);
+INSERT INTO `sys_role_menu` VALUES (2, 1054);
+
+-- 初始化默认角色和部门关联数据
+INSERT INTO `sys_role_dept` VALUES (2, 5);
+
+-- 初始化默认用户和角色关联数据
+INSERT IGNORE INTO `sys_user_role` VALUES (1, 1);
+INSERT IGNORE INTO `sys_user_role` VALUES (2, 2);

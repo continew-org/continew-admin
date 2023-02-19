@@ -58,14 +58,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(DeptRequest request) {
+    public Long add(DeptRequest request) {
         String deptName = request.getDeptName();
         boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", deptName));
 
         // 保存信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
-        return super.create(request);
+        return super.add(request);
     }
 
     @Override

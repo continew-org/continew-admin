@@ -16,14 +16,10 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
-import java.util.List;
-
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
@@ -61,12 +57,6 @@ public class RoleDO extends BaseDO {
      * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
      */
     private DataScopeEnum dataScope;
-
-    /**
-     * 数据权限范围（部门 ID 数组）
-     */
-    @TableField(typeHandler = JacksonTypeHandler.class)
-    private List<Long> dataScopeDeptIds;
 
     /**
      * 描述

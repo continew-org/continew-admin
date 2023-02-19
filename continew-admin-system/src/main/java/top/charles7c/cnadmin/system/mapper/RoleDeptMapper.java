@@ -14,40 +14,31 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.system.mapper;
 
-import java.io.Serializable;
+import java.util.List;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import top.charles7c.cnadmin.common.base.BaseMapper;
+import top.charles7c.cnadmin.system.model.entity.RoleDeptDO;
 
 /**
- * 角色和菜单实体
+ * 角色和部门 Mapper
  *
  * @author Charles7c
- * @since 2023/2/15 20:20
+ * @since 2023/2/18 21:57
  */
-@Data
-@NoArgsConstructor
-@TableName("sys_role_menu")
-public class RoleMenuDO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
 
     /**
-     * 角色 ID
+     * 根据角色 ID 查询
+     *
+     * @param roleId
+     *            角色 ID
+     * @return 部门 ID 列表
      */
-    private Long roleId;
-
-    /**
-     * 菜单 ID
-     */
-    private Long menuId;
-
-    public RoleMenuDO(Long roleId, Long menuId) {
-        this.roleId = roleId;
-        this.menuId = menuId;
-    }
+    @Select("SELECT `dept_id` FROM `sys_role_dept` WHERE `role_id` = #{roleId}")
+    List<Long> selectDeptIdsByRoleId(@Param("roleId") Long roleId);
 }

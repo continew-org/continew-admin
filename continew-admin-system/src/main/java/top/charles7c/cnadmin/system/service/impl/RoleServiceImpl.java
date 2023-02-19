@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,16 +25,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.consts.Constants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.request.RoleRequest;
+import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.model.vo.RoleDetailVO;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
-import top.charles7c.cnadmin.system.service.RoleService;
-import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.cnadmin.system.service.*;
 
 /**
  * 角色业务实现类
@@ -46,18 +48,26 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO, RoleDetailVO, RoleQuery, RoleRequest>
     implements RoleService {
 
+    private final RoleMenuService roleMenuService;
+    private final RoleDeptService roleDeptService;
+    private final MenuService menuService;
     private final UserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(RoleRequest request) {
+    public Long add(RoleRequest request) {
         String roleName = request.getRoleName();
         boolean isExist = this.checkNameExists(roleName, request.getRoleId());
         CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", roleName));
 
-        // 保存信息
+        // 新增角色
         request.setStatus(DisEnableStatusEnum.ENABLE);
-        return super.create(request);
+        Long roleId = super.add(request);
+        // 保存角色和菜单关联
+        roleMenuService.save(request.getMenuIds(), roleId);
+        // 保存角色和部门关联
+        roleDeptService.save(request.getDeptIds(), roleId);
+        return roleId;
     }
 
     @Override
@@ -67,7 +77,13 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         boolean isExist = this.checkNameExists(roleName, request.getRoleId());
         CheckUtils.throwIf(() -> isExist, String.format("修改失败，'%s'已存在", roleName));
 
+        // 更新角色
         super.update(request);
+        Long roleId = request.getRoleId();
+        // 保存角色和菜单关联
+        roleMenuService.save(request.getMenuIds(), roleId);
+        // 保存角色和部门关联
+        roleDeptService.save(request.getDeptIds(), roleId);
     }
 
     @Override
@@ -88,5 +104,22 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      */
     private boolean checkNameExists(String name, Long id) {
         return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
+    }
+
+    @Override
+    public void fillDetail(Object detailObj) {
+        super.fillDetail(detailObj);
+        if (detailObj instanceof RoleDetailVO) {
+            RoleDetailVO detailVO = (RoleDetailVO)detailObj;
+            Long roleId = detailVO.getRoleId();
+            if (Constants.ADMIN_ROLE_CODE.equals(detailVO.getRoleCode())) {
+                List<MenuVO> list = menuService.list(null, null);
+                List<Long> menuIds = list.stream().map(MenuVO::getMenuId).collect(Collectors.toList());
+                detailVO.setMenuIds(menuIds);
+            } else {
+                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleId(roleId));
+            }
+            detailVO.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
+        }
     }
 }

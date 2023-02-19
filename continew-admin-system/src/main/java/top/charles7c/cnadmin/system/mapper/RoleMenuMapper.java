@@ -16,8 +16,12 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleMenuDO;
 
 /**
@@ -26,4 +30,15 @@ import top.charles7c.cnadmin.system.model.entity.RoleMenuDO;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {}
+public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
+
+    /**
+     * 根据角色 ID 查询
+     *
+     * @param roleId
+     *            角色 ID
+     * @return 菜单 ID 列表
+     */
+    @Select("SELECT `menu_id` FROM `sys_role_menu` WHERE `role_id` = #{roleId}")
+    List<Long> selectMenuIdsByRoleId(@Param("roleId") Long roleId);
+}

@@ -41,6 +41,7 @@ import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
@@ -107,7 +108,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(C request) {
+    public Long add(C request) {
         if (request == null) {
             return 0L;
         }
@@ -153,7 +154,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     protected <E> List<E> list(Q query, SortQuery sortQuery, Class<E> targetClass) {
         QueryWrapper<T> queryWrapper = QueryHelper.build(query);
         // 设置排序
-        Sort sort = sortQuery.getSort();
+        Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
         for (Sort.Order order : sort) {
             queryWrapper.orderBy(order != null, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
         }
