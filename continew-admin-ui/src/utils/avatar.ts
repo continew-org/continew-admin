@@ -1,20 +1,17 @@
-import { UserState } from '@/store/modules/login/types';
 import Unknown from '../assets/images/avatar/unknown.png';
 import Male from '../assets/images/avatar/male.png';
 import Female from '../assets/images/avatar/female.png';
 
-export default function getAvatar(loginStore: UserState) {
-  const userAvatar = loginStore.avatar;
-  if (userAvatar) {
+export default function getAvatar(avatar: string | undefined, gender: number | undefined) {
+  if (avatar) {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    return `${baseUrl}/avatar/${userAvatar}`;
+    return `${baseUrl}/avatar/${avatar}`;
   }
 
-  const userGender = loginStore.gender;
-  if (userGender === 1) {
+  if (gender === 1) {
     return Male;
   }
-  if (userGender === 2) {
+  if (gender === 2) {
     return Female;
   }
   return Unknown;

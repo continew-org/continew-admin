@@ -36,7 +36,7 @@ export function getDept(id: number) {
   return axios.get<DeptRecord>(`${BASE_URL}/${id}`);
 }
 
-export function createDept(req: DeptRecord) {
+export function addDept(req: DeptRecord) {
   return axios.post(BASE_URL, req);
 }
 

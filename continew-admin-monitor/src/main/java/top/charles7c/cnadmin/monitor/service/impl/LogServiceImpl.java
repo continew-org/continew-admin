@@ -35,6 +35,7 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
@@ -46,7 +47,6 @@ import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
 import top.charles7c.cnadmin.monitor.model.vo.*;
 import top.charles7c.cnadmin.monitor.service.LogService;
-import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 系统日志业务实现类
@@ -60,7 +60,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class LogServiceImpl implements LogService {
 
     private final LogMapper logMapper;
-    private final UserService userService;
+    private final CommonUserService commonUserService;
 
     @Async
     @EventListener
@@ -84,7 +84,7 @@ public class LogServiceImpl implements LogService {
 
         // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
         if (query.getUid() != null) {
-            String nickname = ExceptionUtils.exToNull(() -> userService.getById(query.getUid()).getNickname());
+            String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
             pageDataVO.getList().forEach(o -> o.setCreateUserString(nickname));
         } else {
             pageDataVO.getList().forEach(this::fill);
@@ -153,6 +153,6 @@ public class LogServiceImpl implements LogService {
         if (createUser == null) {
             return;
         }
-        logVO.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getById(createUser)).getNickname());
+        logVO.setCreateUserString(ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(createUser)));
     }
 }

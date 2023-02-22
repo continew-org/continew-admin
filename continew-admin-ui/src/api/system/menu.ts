@@ -44,7 +44,7 @@ export function getMenu(id: number) {
   return axios.get<MenuRecord>(`${BASE_URL}/${id}`);
 }
 
-export function createMenu(req: MenuRecord) {
+export function addMenu(req: MenuRecord) {
   return axios.post(BASE_URL, req);
 }
 

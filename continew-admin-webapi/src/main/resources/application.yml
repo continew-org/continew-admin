@@ -161,7 +161,15 @@ spring:
     # 配合 Maven Profile 选择不同配置文件进行启动，在 IntelliJ IDEA 右侧 Maven 工具窗口可以快速切换环境
     active: @profiles.active@
   main:
+    # 允许定义重名的 bean 对象覆盖原有的 bean
     allow-bean-definition-overriding: true
+    # 允许循环依赖
+    allow-circular-references: true
+  ## MVC 配置
+  mvc:
+    format:
+      # 日期格式化（针对 java.util.Date）
+      date-time: yyyy-MM-dd HH:mm:ss
   ## JSON 配置
   jackson:
     # 时区配置

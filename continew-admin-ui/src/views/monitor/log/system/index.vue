@@ -89,7 +89,7 @@
       <a-drawer
         title="日志详情"
         :visible="visible"
-        :width="570"
+        :width="580"
         :footer="false"
         unmount-on-close
         render-to-body
@@ -233,7 +233,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive, } from 'vue';
+  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
     SystemLogParam,
     SystemLogRecord,
@@ -245,7 +245,7 @@
   import 'vue-json-pretty/lib/styles.css';
 
   const { proxy } = getCurrentInstance() as any;
-  
+
   const systemLogList = ref<SystemLogRecord[]>([]);
   const systemLog = ref<SystemLogDetailRecord>({
     requestUrl: '',

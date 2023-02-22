@@ -16,17 +16,24 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.consts.Constants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
@@ -51,7 +58,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     private final RoleMenuService roleMenuService;
     private final RoleDeptService roleDeptService;
     private final MenuService menuService;
-    private final UserService userService;
+    @Resource
+    private UserService userService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -121,5 +129,23 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
             }
             detailVO.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
         }
+    }
+
+    @Override
+    public List<Tree<Long>> buildTree(List<RoleVO> list) {
+        return TreeUtils.build(list, (r, tree) -> {
+            tree.setId(r.getRoleId());
+            tree.setName(r.getRoleName());
+            tree.setWeight(r.getRoleSort());
+        });
+    }
+
+    @Override
+    public List<String> listRoleNamesByRoleIds(List<Long> roleIds) {
+        List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, roleIds).list();
+        if (CollUtil.isEmpty(roleList)) {
+            return Collections.emptyList();
+        }
+        return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
     }
 }

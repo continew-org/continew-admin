@@ -16,8 +16,7 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
+import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.DeptDO;
 
 /**

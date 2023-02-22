@@ -1,5 +1,6 @@
 import localeWorkplace from '@/views/dashboard/workplace/locale/en-US';
 
+import localeUser from '@/views/system/user/locale/en-US';
 import localeRole from '@/views/system/role/locale/en-US';
 import localeMenu from '@/views/system/menu/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
@@ -50,6 +51,7 @@ export default {
 
   ...localeWorkplace,
 
+  ...localeUser,
   ...localeRole,
   ...localeMenu,
   ...localeDept,

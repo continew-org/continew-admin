@@ -12,7 +12,11 @@
         <template #upload-button>
           <a-avatar :size="100" class="info-avatar">
             <template #trigger-icon><icon-camera /></template>
-            <img v-if="avatarList.length" :src="avatarList[0].url" :alt="$t('userCenter.panel.avatar')" />
+            <img
+              v-if="avatarList.length"
+              :src="avatarList[0].url"
+              :alt="$t('userCenter.panel.avatar')"
+            />
           </a-avatar>
         </template>
       </a-upload>
@@ -32,22 +36,33 @@
         align="right"
         layout="inline-horizontal"
       >
-        <a-descriptions-item :label="$t('userCenter.panel.label.nickname')">{{ loginStore.nickname }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.nickname')">{{
+          loginStore.nickname
+        }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.gender')">
           <div v-if="loginStore.gender === 1">
             {{ $t('userCenter.panel.male') }}
-            <icon-man style="color: #19BBF1" />
+            <icon-man style="color: #19bbf1" />
           </div>
           <div v-else-if="loginStore.gender === 2">
             {{ $t('userCenter.panel.female') }}
-            <icon-woman style="color: #FA7FA9" />
+            <icon-woman style="color: #fa7fa9" />
           </div>
           <div v-else>{{ $t('userCenter.panel.unknown') }}</div>
         </a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{ loginStore.phone }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{ loginStore.email }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{ loginStore.deptName }}</a-descriptions-item>
-        <a-descriptions-item :label="$t('userCenter.panel.label.registrationDate')">{{ loginStore.registrationDate }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{
+          loginStore.phone
+        }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{
+          loginStore.email
+        }}</a-descriptions-item>
+        <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{
+          loginStore.deptName
+        }}</a-descriptions-item>
+        <a-descriptions-item
+          :label="$t('userCenter.panel.label.registrationDate')"
+          >{{ loginStore.registrationDate }}</a-descriptions-item
+        >
       </a-descriptions>
     </a-space>
   </a-card>
@@ -66,7 +81,7 @@
   const avatar = {
     uid: '-2',
     name: 'avatar.png',
-    url: getAvatar(loginStore),
+    url: getAvatar(loginStore.avatar, loginStore.gender),
   };
   const avatarList = ref<FileItem[]>([avatar]);
 
@@ -88,13 +103,15 @@
       onProgress(20);
       const formData = new FormData();
       formData.append(name as string, fileItem.file as Blob);
-      uploadAvatar(formData).then((res) => {
-        onSuccess(res);
-        loginStore.avatar = res.data.avatar;
-        proxy.$message.success(res.msg);
-      }).catch((error) => {
-        onError(error);
-      });
+      uploadAvatar(formData)
+        .then((res) => {
+          onSuccess(res);
+          loginStore.avatar = res.data.avatar;
+          proxy.$message.success(res.msg);
+        })
+        .catch((error) => {
+          onError(error);
+        });
     })();
     return {
       abort() {
@@ -109,7 +126,10 @@
    * @param fileItemList 文件列表
    * @param currentFile 当前文件
    */
-  const handleAvatarChange = (fileItemList: FileItem[], currentFile: FileItem) => {
+  const handleAvatarChange = (
+    fileItemList: FileItem[],
+    currentFile: FileItem
+  ) => {
     avatarList.value = [currentFile];
   };
 </script>

@@ -14,40 +14,43 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.system.service;
 
-import java.io.Serializable;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import com.baomidou.mybatisplus.annotation.TableName;
+import java.util.List;
 
 /**
- * 用户和角色实体
+ * 用户和角色业务接口
  *
  * @author Charles7c
- * @since 2023/2/13 23:13
+ * @since 2023/2/20 21:30
  */
-@Data
-@NoArgsConstructor
-@TableName("sys_user_role")
-public class UserRoleDO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public interface UserRoleService {
 
     /**
-     * 用户 ID
+     * 保存
+     *
+     * @param roleIds
+     *            角色 ID 列表
+     * @param userId
+     *            用户 ID
      */
-    private Long userId;
+    void save(List<Long> roleIds, Long userId);
 
     /**
-     * 角色 ID
+     * 根据角色 ID 列表查询
+     *
+     * @param roleIds
+     *            角色 ID 列表
+     * @return 总记录数
      */
-    private Long roleId;
+    Long countByRoleIds(List<Long> roleIds);
 
-    public UserRoleDO(Long userId, Long roleId) {
-        this.userId = userId;
-        this.roleId = roleId;
-    }
+    /**
+     * 根据用户 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 角色 ID 列表
+     */
+    List<Long> listRoleIdsByUserId(Long userId);
 }

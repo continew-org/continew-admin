@@ -181,7 +181,7 @@
       <a-drawer
         :title="title"
         :visible="visible"
-        :width="570"
+        :width="580"
         :mask-closable="false"
         unmount-on-close
         render-to-body
@@ -275,7 +275,7 @@
       <a-drawer
         title="角色详情"
         :visible="detailVisible"
-        :width="570"
+        :width="580"
         :footer="false"
         unmount-on-close
         render-to-body
@@ -384,7 +384,7 @@
     RoleParam,
     listRole,
     getRole,
-    createRole,
+    addRole,
     updateRole,
     deleteRole,
   } from '@/api/system/role';
@@ -621,7 +621,7 @@
         } else {
           form.value.menuIds = getMenuAllCheckedKeys();
           form.value.deptIds = getDeptAllCheckedKeys();
-          createRole(form.value).then((res) => {
+          addRole(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);

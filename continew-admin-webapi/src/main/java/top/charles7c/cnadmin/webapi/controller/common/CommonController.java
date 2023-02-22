@@ -35,10 +35,13 @@ import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
+import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.model.vo.MenuVO;
+import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.MenuService;
+import top.charles7c.cnadmin.system.service.RoleService;
 
 /**
  * 公共 API
@@ -54,6 +57,7 @@ public class CommonController {
 
     private final DeptService deptService;
     private final MenuService menuService;
+    private final RoleService roleService;
 
     @Log(ignore = true)
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
@@ -70,6 +74,15 @@ public class CommonController {
     public R<List<Tree<Long>>> listMenuTree(@Validated MenuQuery query, @Validated SortQuery sortQuery) {
         List<MenuVO> list = menuService.list(query, sortQuery);
         List<Tree<Long>> treeList = menuService.buildTree(list);
+        return R.ok(treeList);
+    }
+
+    @Log(ignore = true)
+    @Operation(summary = "查询角色树", description = "查询树结构的角色列表")
+    @GetMapping("/tree/role")
+    public R<List<Tree<Long>>> listRoleTree(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
+        List<RoleVO> list = roleService.list(query, sortQuery);
+        List<Tree<Long>> treeList = roleService.buildTree(list);
         return R.ok(treeList);
     }
 }

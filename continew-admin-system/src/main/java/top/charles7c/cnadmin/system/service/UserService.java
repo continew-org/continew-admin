@@ -20,7 +20,12 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
+import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UserRequest;
+import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
+import top.charles7c.cnadmin.system.model.vo.UserVO;
 
 /**
  * 用户业务接口
@@ -28,7 +33,7 @@ import top.charles7c.cnadmin.system.model.entity.UserDO;
  * @author Charles7c
  * @since 2022/12/21 21:48
  */
-public interface UserService {
+public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery, UserRequest> {
 
     /**
      * 根据用户名查询
@@ -49,14 +54,6 @@ public interface UserService {
      * @return 新头像路径
      */
     String uploadAvatar(MultipartFile avatar, Long userId);
-
-    /**
-     * 修改信息
-     *
-     * @param user
-     *            用户信息
-     */
-    void update(UserDO user);
 
     /**
      * 修改密码
@@ -81,15 +78,6 @@ public interface UserService {
      *            用户ID
      */
     void updateEmail(String newEmail, String currentPassword, Long userId);
-
-    /**
-     * 根据 ID 查询
-     *
-     * @param userId
-     *            用户 ID
-     * @return 用户信息
-     */
-    UserDO getById(Long userId);
 
     /**
      * 根据部门 ID 列表查询

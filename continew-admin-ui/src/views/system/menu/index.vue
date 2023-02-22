@@ -345,7 +345,7 @@
     MenuParam,
     listMenu,
     getMenu,
-    createMenu,
+    addMenu,
     updateMenu,
     deleteMenu,
   } from '@/api/system/menu';
@@ -482,7 +482,7 @@
             proxy.$message.success(res.msg);
           });
         } else {
-          createMenu(form.value).then((res) => {
+          addMenu(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);

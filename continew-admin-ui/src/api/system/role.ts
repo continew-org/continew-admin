@@ -23,9 +23,9 @@ export interface RoleRecord {
 export interface RoleParam {
   roleName?: string;
   status?: number;
-  page: number;
-  size: number;
-  sort: Array<string>;
+  page?: number;
+  size?: number;
+  sort?: Array<string>;
 }
 
 export interface RoleListRes {
@@ -46,7 +46,7 @@ export function getRole(id: number) {
   return axios.get<RoleRecord>(`${BASE_URL}/${id}`);
 }
 
-export function createRole(req: RoleRecord) {
+export function addRole(req: RoleRecord) {
   return axios.post(BASE_URL, req);
 }
 

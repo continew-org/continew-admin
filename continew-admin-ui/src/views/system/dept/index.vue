@@ -210,7 +210,7 @@
       <a-drawer
         title="部门详情"
         :visible="detailVisible"
-        :width="570"
+        :width="580"
         :footer="false"
         unmount-on-close
         render-to-body
@@ -292,7 +292,7 @@
     DeptParam,
     listDept,
     getDept,
-    createDept,
+    addDept,
     updateDept,
     deleteDept,
   } from '@/api/system/dept';
@@ -431,7 +431,7 @@
             proxy.$message.success(res.msg);
           });
         } else {
-          createDept(form.value).then((res) => {
+          addDept(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
