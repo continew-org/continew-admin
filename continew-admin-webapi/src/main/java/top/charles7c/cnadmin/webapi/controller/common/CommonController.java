@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.model.query.SortQuery;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
@@ -78,11 +79,11 @@ public class CommonController {
     }
 
     @Log(ignore = true)
-    @Operation(summary = "查询角色树", description = "查询树结构的角色列表")
-    @GetMapping("/tree/role")
-    public R<List<Tree<Long>>> listRoleTree(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
+    @Operation(summary = "查询角色字典", description = "查询角色字典列表")
+    @GetMapping("/dict/role")
+    public R<List<LabelValueVO<Long>>> listRoleDict(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
         List<RoleVO> list = roleService.list(query, sortQuery);
-        List<Tree<Long>> treeList = roleService.buildTree(list);
-        return R.ok(treeList);
+        List<LabelValueVO<Long>> dictList = roleService.buildDict(list);
+        return R.ok(dictList);
     }
 }

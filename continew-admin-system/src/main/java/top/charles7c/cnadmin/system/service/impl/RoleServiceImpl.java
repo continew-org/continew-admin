@@ -28,12 +28,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.consts.Constants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.util.TreeUtils;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
@@ -132,12 +131,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     }
 
     @Override
-    public List<Tree<Long>> buildTree(List<RoleVO> list) {
-        return TreeUtils.build(list, (r, tree) -> {
-            tree.setId(r.getRoleId());
-            tree.setName(r.getRoleName());
-            tree.setWeight(r.getRoleSort());
-        });
+    public List<LabelValueVO<Long>> buildDict(List<RoleVO> list) {
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        return list.stream().map(r -> new LabelValueVO<>(r.getRoleName(), r.getRoleId())).collect(Collectors.toList());
     }
 
     @Override

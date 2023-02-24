@@ -18,9 +18,8 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
-import cn.hutool.core.lang.tree.Tree;
-
 import top.charles7c.cnadmin.common.base.BaseService;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.request.RoleRequest;
 import top.charles7c.cnadmin.system.model.vo.RoleDetailVO;
@@ -35,13 +34,13 @@ import top.charles7c.cnadmin.system.model.vo.RoleVO;
 public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery, RoleRequest> {
 
     /**
-     * 构建树
+     * 构建字典
      *
      * @param list
      *            原始列表数据
-     * @return 树列表
+     * @return 字典列表
      */
-    List<Tree<Long>> buildTree(List<RoleVO> list);
+    List<LabelValueVO<Long>> buildDict(List<RoleVO> list);
 
     /**
      * 根据角色 ID 列表查询

@@ -274,10 +274,6 @@
             <a-select
               v-model="form.roleIds"
               :options="roleOptions"
-              :field-names="{
-                label: 'title',
-                value: 'key',
-              }"
               placeholder="请选择所属角色"
               :loading="roleLoading"
               multiple
@@ -425,7 +421,7 @@
     updateUser,
     deleteUser,
   } from '@/api/system/user';
-  import { listRoleTree, listDeptTree } from '@/api/common';
+  import { listRoleDict, listDeptTree } from '@/api/common';
   import getAvatar from '@/utils/avatar';
 
   const { proxy } = getCurrentInstance() as any;
@@ -559,7 +555,7 @@
    */
   const getRoleOptions = () => {
     roleLoading.value = true;
-    listRoleTree({})
+    listRoleDict({})
       .then((res) => {
         roleOptions.value = res.data;
       })

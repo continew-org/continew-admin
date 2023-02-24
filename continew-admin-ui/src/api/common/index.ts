@@ -23,8 +23,8 @@ export function listMenuTree(params: MenuParam) {
   });
 }
 
-export function listRoleTree(params: RoleParam) {
-  return axios.get<TreeNodeData[]>('/common/tree/role', {
+export function listRoleDict(params: RoleParam) {
+  return axios.get<TreeNodeData[]>('/common/dict/role', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
