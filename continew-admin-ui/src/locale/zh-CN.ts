@@ -4,6 +4,7 @@ import localeUser from '@/views/system/user/locale/zh-CN';
 import localeRole from '@/views/system/role/locale/zh-CN';
 import localeMenu from '@/views/system/menu/locale/zh-CN';
 import localeDept from '@/views/system/dept/locale/zh-CN';
+import localePost from '@/views/system/post/locale/zh-CN';
 
 import localeOnlineUser from '@/views/monitor/online/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
@@ -55,6 +56,7 @@ export default {
   ...localeRole,
   ...localeMenu,
   ...localeDept,
+  ...localePost,
 
   ...localeOnlineUser,
   ...localeLoginLog,

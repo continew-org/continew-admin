@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -57,15 +55,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     private final RoleMenuService roleMenuService;
     private final RoleDeptService roleDeptService;
     private final MenuService menuService;
-    @Resource
-    private UserService userService;
+    private final UserRoleService userRoleService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExist = this.checkNameExists(roleName, request.getRoleId());
-        CheckUtils.throwIf(() -> isExist, String.format("新增失败，'%s'已存在", roleName));
+        boolean isExists = this.checkNameExists(roleName, request.getRoleId());
+        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", roleName));
 
         // 新增角色
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -81,8 +78,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExist = this.checkNameExists(roleName, request.getRoleId());
-        CheckUtils.throwIf(() -> isExist, String.format("修改失败，'%s'已存在", roleName));
+        boolean isExists = this.checkNameExists(roleName, request.getRoleId());
+        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", roleName));
 
         // 更新角色
         super.update(request);
@@ -96,7 +93,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        CheckUtils.throwIf(() -> userService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
+        CheckUtils.throwIf(() -> userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
         super.delete(ids);
     }
 

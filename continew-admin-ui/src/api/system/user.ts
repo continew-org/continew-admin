@@ -11,14 +11,17 @@ export interface UserRecord {
   email?: string;
   phone?: string;
   description?: string;
-  roleIds?: Array<number>;
-  deptId?: number;
   status?: number;
+  pwdResetTime?: string;
   createUserString?: string;
   createTime?: string;
   updateUserString?: string;
   updateTime?: string;
+  deptId?: number;
   deptName?: string;
+  postIds?: Array<number>;
+  postNames?: Array<string>;
+  roleIds?: Array<number>;
   roleNames?: Array<string>;
   disabled?: boolean;
 }

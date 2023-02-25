@@ -243,7 +243,7 @@
       <a-modal
         :title="title"
         :visible="visible"
-        :width="580"
+        :width="565"
         :mask-closable="false"
         unmount-on-close
         render-to-body
@@ -293,6 +293,29 @@
               <a-radio :value="0" disabled>未知</a-radio>
             </a-radio-group>
           </a-form-item>
+          <a-form-item label="所属部门" field="deptId">
+            <a-tree-select
+              v-model="form.deptId"
+              :data="deptOptions"
+              placeholder="请选择所属部门"
+              allow-clear
+              allow-search
+              :filter-tree-node="filterDeptOptions"
+              style="width: 416px"
+            />
+          </a-form-item>
+          <a-form-item label="所属岗位" field="postIds">
+            <a-select
+              v-model="form.postIds"
+              :options="postOptions"
+              placeholder="请选择所属岗位"
+              :loading="postLoading"
+              multiple
+              allow-clear
+              :allow-search="{ retainInputValue: true }"
+              style="width: 416px"
+            />
+          </a-form-item>
           <a-form-item label="所属角色" field="roleIds">
             <a-select
               v-model="form.roleIds"
@@ -302,17 +325,6 @@
               multiple
               allow-clear
               :allow-search="{ retainInputValue: true }"
-              style="width: 416px"
-            />
-          </a-form-item>
-          <a-form-item label="所属部门" field="deptId">
-            <a-tree-select
-              v-model="form.deptId"
-              :data="deptOptions"
-              placeholder="请选择所属部门"
-              allow-clear
-              allow-search
-              :filter-tree-node="filterDeptOptions"
               style="width: 416px"
             />
           </a-form-item>
@@ -367,7 +379,7 @@
         render-to-body
         @cancel="handleDetailCancel"
       >
-        <a-descriptions title="基础信息" :column="2" bordered size="large">
+        <a-descriptions :column="2" bordered size="large" layout="vertical">
           <a-descriptions-item label="用户名">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
@@ -410,17 +422,29 @@
             </a-skeleton>
             <span v-else>{{ user.phone || '无' }}</span>
           </a-descriptions-item>
+          <a-descriptions-item label="所属部门">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ user.deptName }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="所属岗位">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ user.postNames }}</span>
+          </a-descriptions-item>
           <a-descriptions-item label="所属角色">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>{{ user.roleNames }}</span>
           </a-descriptions-item>
-          <a-descriptions-item label="所属部门">
+          <a-descriptions-item label="最后一次修改密码时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.deptName }}</span>
+            <span v-else>{{ user.pwdResetTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
@@ -472,7 +496,12 @@
     resetPassword,
     updateUserRole,
   } from '@/api/system/user';
-  import { listRoleDict, listDeptTree } from '@/api/common';
+  import {
+    LabelValueRecord,
+    listDeptTree,
+    listPostDict,
+    listRoleDict,
+  } from '@/api/common';
   import getAvatar from '@/utils/avatar';
 
   const { proxy } = getCurrentInstance() as any;
@@ -485,6 +514,7 @@
     email: undefined,
     phone: undefined,
     status: 1,
+    pwdResetTime: '',
     createUserString: '',
     createTime: '',
     updateUserString: '',
@@ -509,10 +539,12 @@
     { label: '启用', value: 1 },
     { label: '禁用', value: 2 },
   ]);
-  const roleLoading = ref(false);
   const deptLoading = ref(false);
-  const roleOptions = ref<TreeNodeData[]>([]);
+  const postLoading = ref(false);
+  const roleLoading = ref(false);
   const deptOptions = ref<TreeNodeData[]>([]);
+  const postOptions = ref<LabelValueRecord[]>([]);
+  const roleOptions = ref<LabelValueRecord[]>([]);
   const deptTree = ref<TreeNodeData[]>([]);
   const deptName = ref('');
 
@@ -580,8 +612,9 @@
    */
   const toCreate = () => {
     reset();
-    getRoleOptions();
     getDeptOptions();
+    getPostOptions();
+    getRoleOptions();
     title.value = '新增用户';
     visible.value = true;
   };
@@ -593,8 +626,9 @@
    */
   const toUpdate = (id: number) => {
     reset();
-    getRoleOptions();
     getDeptOptions();
+    getPostOptions();
+    getRoleOptions();
     getUser(id).then((res) => {
       form.value = res.data;
       title.value = '修改用户';
@@ -617,20 +651,6 @@
   };
 
   /**
-   * 查询角色列表
-   */
-  const getRoleOptions = () => {
-    roleLoading.value = true;
-    listRoleDict({})
-      .then((res) => {
-        roleOptions.value = res.data;
-      })
-      .finally(() => {
-        roleLoading.value = false;
-      });
-  };
-
-  /**
    * 查询部门列表
    */
   const getDeptOptions = () => {
@@ -641,6 +661,34 @@
       })
       .finally(() => {
         deptLoading.value = false;
+      });
+  };
+
+  /**
+   * 查询岗位列表
+   */
+  const getPostOptions = () => {
+    postLoading.value = true;
+    listPostDict({})
+      .then((res) => {
+        postOptions.value = res.data;
+      })
+      .finally(() => {
+        postLoading.value = false;
+      });
+  };
+
+  /**
+   * 查询角色列表
+   */
+  const getRoleOptions = () => {
+    roleLoading.value = true;
+    listRoleDict({})
+      .then((res) => {
+        roleOptions.value = res.data;
+      })
+      .finally(() => {
+        roleLoading.value = false;
       });
   };
 
@@ -657,8 +705,9 @@
       phone: undefined,
       description: '',
       status: 1,
-      roleIds: [] as Array<number>,
       deptId: undefined,
+      postIds: [] as Array<number>,
+      roleIds: [] as Array<number>,
     };
     proxy.$refs.formRef?.resetFields();
   };

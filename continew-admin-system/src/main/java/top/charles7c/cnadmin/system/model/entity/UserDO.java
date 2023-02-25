@@ -91,7 +91,7 @@ public class UserDO extends BaseDO {
     private DisEnableStatusEnum status;
 
     /**
-     * 最后一次修改密码的时间
+     * 最后一次修改密码时间
      */
     private LocalDateTime pwdResetTime;
 

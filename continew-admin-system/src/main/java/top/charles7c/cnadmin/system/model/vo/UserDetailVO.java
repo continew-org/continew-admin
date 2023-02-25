@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.Data;
@@ -107,17 +108,10 @@ public class UserDetailVO extends BaseDetailVO {
     private String description;
 
     /**
-     * 角色 ID 列表
+     * 最后一次修改密码时间
      */
-    @Schema(description = "角色 ID 列表")
-    private List<Long> roleIds;
-
-    /**
-     * 所属角色
-     */
-    @Schema(description = "所属角色")
-    @ExcelProperty(value = "所属角色")
-    private String roleNames;
+    @Schema(description = "最后一次修改密码时间")
+    private LocalDateTime pwdResetTime;
 
     /**
      * 部门 ID
@@ -131,4 +125,30 @@ public class UserDetailVO extends BaseDetailVO {
     @Schema(description = "所属部门")
     @ExcelProperty(value = "所属部门")
     private String deptName;
+
+    /**
+     * 岗位 ID 列表
+     */
+    @Schema(description = "岗位 ID 列表")
+    private List<Long> postIds;
+
+    /**
+     * 所属岗位
+     */
+    @Schema(description = "所属岗位")
+    @ExcelProperty(value = "所属岗位")
+    private String postNames;
+
+    /**
+     * 角色 ID 列表
+     */
+    @Schema(description = "角色 ID 列表")
+    private List<Long> roleIds;
+
+    /**
+     * 所属角色
+     */
+    @Schema(description = "所属角色")
+    @ExcelProperty(value = "所属角色")
+    private String roleNames;
 }

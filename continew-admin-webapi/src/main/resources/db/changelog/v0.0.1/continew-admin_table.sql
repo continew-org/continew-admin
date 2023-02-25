@@ -72,6 +72,21 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept`  (
     PRIMARY KEY (`role_id`,`dept_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
 
+CREATE TABLE IF NOT EXISTS `sys_post`  (
+    `post_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '岗位ID',
+    `post_name` varchar(255) NOT NULL COMMENT '岗位名称',
+    `description` varchar(512) DEFAULT NULL COMMENT '描述',
+    `post_sort` int(11) unsigned DEFAULT 999 COMMENT '岗位排序',
+    `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1启用 2禁用）',
+    `create_user` bigint(20) unsigned NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint(20) unsigned NOT NULL COMMENT '修改人',
+    `update_time` datetime NOT NULL COMMENT '修改时间',
+    PRIMARY KEY (`post_id`) USING BTREE,
+    INDEX `idx_create_user`(`create_user`) USING BTREE,
+    INDEX `idx_update_user`(`update_user`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岗位表';
+
 CREATE TABLE IF NOT EXISTS `sys_user`  (
     `user_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '用户ID',
     `username` varchar(255) NOT NULL COMMENT '用户名',
@@ -83,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `sys_user`  (
     `avatar` varchar(255) DEFAULT NULL COMMENT '头像地址',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1启用 2禁用）',
-    `pwd_reset_time` datetime DEFAULT NULL COMMENT '最后一次修改密码的时间',
+    `pwd_reset_time` datetime DEFAULT NULL COMMENT '最后一次修改密码时间',
     `dept_id` bigint(20) unsigned DEFAULT NULL COMMENT '部门ID',
     `create_user` bigint(20) unsigned NOT NULL COMMENT '创建人',
     `create_time` datetime NOT NULL COMMENT '创建时间',
@@ -102,6 +117,12 @@ CREATE TABLE IF NOT EXISTS `sys_user_role`  (
     `role_id` bigint(20) unsigned NOT NULL COMMENT '角色ID',
     PRIMARY KEY (`user_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和角色关联表';
+
+CREATE TABLE IF NOT EXISTS `sys_user_post`  (
+    `user_id` bigint(20) unsigned NOT NULL COMMENT '用户ID',
+    `post_id` bigint(20) unsigned NOT NULL COMMENT '岗位ID',
+    PRIMARY KEY (`user_id`,`post_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和岗位关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `log_id` bigint(20) unsigned AUTO_INCREMENT COMMENT '日志ID',

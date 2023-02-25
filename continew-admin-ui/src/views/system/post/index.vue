@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
-    <Breadcrumb :items="['menu.system', 'menu.system.dept.list']" />
-    <a-card class="general-card" :title="$t('menu.system.dept.list')">
+    <Breadcrumb :items="['menu.system', 'menu.system.post.list']" />
+    <a-card class="general-card" :title="$t('menu.system.post.list')">
       <!-- 头部区域 -->
       <div class="header">
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="deptName" hide-label>
+            <a-form-item field="postName" hide-label>
               <a-input
-                v-model="queryParams.deptName"
-                placeholder="输入部门名称搜索"
+                v-model="queryParams.postName"
+                placeholder="输入岗位名称搜索"
                 allow-clear
                 style="width: 150px"
                 @press-enter="handleQuery"
@@ -86,35 +86,40 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
-        :data="deptList"
+        :data="postList"
         :row-selection="{
           type: 'checkbox',
           showCheckedAll: true,
           onlyCurrent: false,
         }"
-        :pagination="false"
-        :default-expand-all-rows="true"
-        :hide-expand-button-on-empty="true"
-        row-key="deptId"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        row-key="postId"
         :bordered="false"
         :stripe="true"
         :loading="loading"
         size="large"
-        @select="handleSelect"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="部门名称" data-index="deptName">
+          <a-table-column title="ID" data-index="postId" />
+          <a-table-column title="岗位名称">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.deptId)">{{
-                record.deptName
+              <a-link @click="toDetail(record.postId)">{{
+                record.postName
               }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
-            title="部门排序"
+            title="岗位排序"
             align="center"
-            data-index="deptSort"
+            data-index="postSort"
           />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
@@ -122,6 +127,7 @@
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
+                :disabled="record.disabled"
                 @change="handleChangeStatus(record)"
               />
             </template>
@@ -136,20 +142,22 @@
                 type="text"
                 size="small"
                 title="修改"
-                @click="toUpdate(record.deptId)"
+                :disabled="record.disabled"
+                @click="toUpdate(record.postId)"
               >
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
-                content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！"
+                content="确定要删除当前选中的数据吗？"
                 type="warning"
-                @ok="handleDelete([record.deptId])"
+                @ok="handleDelete([record.postId])"
               >
                 <a-button
                   v-permission="['admin']"
                   type="text"
                   size="small"
                   title="删除"
+                  :disabled="record.disabled"
                 >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
@@ -170,24 +178,13 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="上级部门" field="parentId">
-            <a-tree-select
-              v-model="form.parentId"
-              :data="treeData"
-              placeholder="请选择上级部门"
-              allow-clear
-              allow-search
-              :filter-tree-node="filterDeptTree"
-              :fallback-option="false"
-            />
+          <a-form-item label="岗位名称" field="postName">
+            <a-input v-model="form.postName" placeholder="请输入岗位名称" />
           </a-form-item>
-          <a-form-item label="部门名称" field="deptName">
-            <a-input v-model="form.deptName" placeholder="请输入部门名称" />
-          </a-form-item>
-          <a-form-item label="部门排序" field="deptSort">
+          <a-form-item label="岗位排序" field="postSort">
             <a-input-number
-              v-model="form.deptSort"
-              placeholder="请输入部门排序"
+              v-model="form.postSort"
+              placeholder="请输入岗位排序"
               :min="1"
               mode="button"
             />
@@ -208,7 +205,7 @@
 
       <!-- 详情区域 -->
       <a-drawer
-        title="部门详情"
+        title="岗位详情"
         :visible="detailVisible"
         :width="580"
         :footer="false"
@@ -217,62 +214,50 @@
         @cancel="handleDetailCancel"
       >
         <a-descriptions :column="2" bordered size="large" layout="vertical">
-          <a-descriptions-item label="部门名称">
+          <a-descriptions-item label="岗位名称">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.deptName }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="上级部门">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dept.parentName || '无' }}</span>
+            <span v-else>{{ post.postName }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="状态">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dept.status === 1" color="green">启用</a-tag>
+              <a-tag v-if="post.status === 1" color="green">启用</a-tag>
               <a-tag v-else color="red">禁用</a-tag>
             </span>
-          </a-descriptions-item>
-          <a-descriptions-item label="部门排序">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dept.deptSort }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.createUserString }}</span>
+            <span v-else>{{ post.createUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.createTime }}</span>
+            <span v-else>{{ post.createTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.updateUserString }}</span>
+            <span v-else>{{ post.updateUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.updateTime }}</span>
+            <span v-else>{{ post.updateTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="描述">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.description }}</span>
+            <span v-else>{{ post.description }}</span>
           </a-descriptions-item>
         </a-descriptions>
       </a-drawer>
@@ -282,36 +267,30 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { SelectOptionData } from '@arco-design/web-vue';
   import {
-    SelectOptionData,
-    TreeNodeData,
-    TableData,
-  } from '@arco-design/web-vue';
-  import {
-    DeptRecord,
-    DeptParam,
-    listDept,
-    getDept,
-    addDept,
-    updateDept,
-    deleteDept,
-  } from '@/api/system/dept';
-  import { listDeptTree } from '@/api/common';
+    PostRecord,
+    PostParam,
+    listPost,
+    getPost,
+    addPost,
+    updatePost,
+    deletePost,
+  } from '@/api/system/post';
 
   const { proxy } = getCurrentInstance() as any;
 
-  const deptList = ref<DeptRecord[]>([]);
-  const dept = ref<DeptRecord>({
-    deptName: '',
-    deptSort: 0,
-    description: '',
+  const postList = ref<PostRecord[]>([]);
+  const post = ref<PostRecord>({
+    postName: '',
     status: 1,
     createUserString: '',
     createTime: '',
     updateUserString: '',
     updateTime: '',
-    parentName: '',
+    description: '',
   });
+  const total = ref(0);
   const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
@@ -326,21 +305,22 @@
     { label: '启用', value: 1 },
     { label: '禁用', value: 2 },
   ]);
-  const treeData = ref<TreeNodeData[]>();
 
   const data = reactive({
     // 查询参数
     queryParams: {
-      deptName: undefined,
+      postName: undefined,
       status: undefined,
-      sort: ['parentId,asc', 'deptSort,asc', 'createTime,desc'],
+      page: 1,
+      size: 10,
+      sort: ['createTime,desc'],
     },
     // 表单数据
-    form: {} as DeptRecord,
+    form: {} as PostRecord,
     // 表单验证规则
     rules: {
-      deptName: [{ required: true, message: '请输入部门名称' }],
-      deptSort: [{ required: true, message: '请输入部门排序' }],
+      postName: [{ required: true, message: '请输入岗位名称' }],
+      postSort: [{ required: true, message: '请输入岗位排序' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);
@@ -350,14 +330,12 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: DeptParam = { ...queryParams.value }) => {
+  const getList = (params: PostParam = { ...queryParams.value }) => {
     loading.value = true;
-    listDept(params)
+    listPost(params)
       .then((res) => {
-        deptList.value = res.data;
-        setTimeout(() => {
-          proxy.$refs.tableRef.expandAll();
-        }, 0);
+        postList.value = res.data.list;
+        total.value = res.data.total;
       })
       .finally(() => {
         loading.value = false;
@@ -370,10 +348,7 @@
    */
   const toCreate = () => {
     reset();
-    listDeptTree({}).then((res) => {
-      treeData.value = res.data;
-    });
-    title.value = '新增部门';
+    title.value = '新增岗位';
     visible.value = true;
   };
 
@@ -384,13 +359,9 @@
    */
   const toUpdate = (id: number) => {
     reset();
-    listDeptTree({}).then((res) => {
-      treeData.value = res.data;
-    });
-
-    getDept(id).then((res) => {
+    getPost(id).then((res) => {
       form.value = res.data;
-      title.value = '修改部门';
+      title.value = '修改岗位';
       visible.value = true;
     });
   };
@@ -400,11 +371,10 @@
    */
   const reset = () => {
     form.value = {
-      deptId: undefined,
-      deptName: '',
-      parentId: undefined,
+      postId: undefined,
+      postName: '',
       description: '',
-      deptSort: 999,
+      postSort: 999,
       status: 1,
     };
     proxy.$refs.formRef?.resetFields();
@@ -424,14 +394,14 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        if (form.value.deptId !== undefined) {
-          updateDept(form.value).then((res) => {
+        if (form.value.postId !== undefined) {
+          updatePost(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
-          addDept(form.value).then((res) => {
+          addPost(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -450,9 +420,9 @@
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
-    getDept(id)
+    getPost(id)
       .then((res) => {
-        dept.value = res.data;
+        post.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -476,8 +446,7 @@
       proxy.$modal.warning({
         title: '警告',
         titleAlign: 'start',
-        content:
-          '确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！',
+        content: '确定要删除当前选中的数据吗？',
         hideCancel: false,
         onOk: () => {
           handleDelete(ids.value);
@@ -492,39 +461,14 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<number>) => {
-    deleteDept(ids).then((res) => {
+    deletePost(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });
   };
 
   /**
-   * 点击行选择器
-   */
-  const handleSelect = (rowKeys: any, rowKey: any, record: TableData) => {
-    if (rowKeys.find((key: any) => key === rowKey)) {
-      if (record.children) {
-        record.children.forEach((r) => {
-          proxy.$refs.tableRef.select(r.deptId);
-          rowKeys.push(r.deptId);
-          if (r.children) {
-            handleSelect(rowKeys, rowKey, r);
-          }
-        });
-      }
-    } else if (record.children) {
-      record.children.forEach((r) => {
-        rowKeys.splice(rowKeys.findIndex((key: number | undefined) => key === r.deptId), 1);
-        proxy.$refs.tableRef.select(r.deptId, false);
-        if (r.children) {
-          handleSelect(rowKeys, rowKey, r);
-        }
-      });
-    }
-  };
-
-  /**
-   * 已选择的数据行发生改变
+   * 已选择的数据行发生改变时触发
    *
    * @param rowKeys ID 列表
    */
@@ -541,7 +485,7 @@
     if (exportLoading.value) return;
     exportLoading.value = true;
     proxy
-      .download('/system/dept/export', { ...queryParams.value }, '部门数据')
+      .download('/system/post/export', { ...queryParams.value }, '岗位数据')
       .finally(() => {
         exportLoading.value = false;
       });
@@ -552,30 +496,15 @@
    *
    * @param record 记录信息
    */
-  const handleChangeStatus = (record: DeptRecord) => {
+  const handleChangeStatus = (record: PostRecord) => {
     const tip = record.status === 1 ? '启用' : '禁用';
-    updateDept(record)
+    updatePost(record)
       .then(() => {
         proxy.$message.success(`${tip}成功`);
       })
       .catch(() => {
         record.status = record.status === 1 ? 2 : 1;
       });
-  };
-
-  /**
-   * 过滤部门树
-   *
-   * @param searchValue 搜索值
-   * @param nodeData 节点值
-   */
-  const filterDeptTree = (searchValue: string, nodeData: TreeNodeData) => {
-    if (nodeData.title) {
-      return (
-        nodeData.title.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
-      );
-    }
-    return false;
   };
 
   /**
@@ -592,11 +521,31 @@
     proxy.$refs.queryRef.resetFields();
     handleQuery();
   };
+
+  /**
+   * 切换页码
+   *
+   * @param current 页码
+   */
+  const handlePageChange = (current: number) => {
+    queryParams.value.page = current;
+    getList();
+  };
+
+  /**
+   * 切换每页条数
+   *
+   * @param pageSize 每页条数
+   */
+  const handlePageSizeChange = (pageSize: number) => {
+    queryParams.value.size = pageSize;
+    getList();
+  };
 </script>
 
 <script lang="ts">
   export default {
-    name: 'Dept',
+    name: 'Post',
   };
 </script>
 

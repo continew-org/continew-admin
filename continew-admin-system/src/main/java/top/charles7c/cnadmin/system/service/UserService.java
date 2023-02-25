@@ -106,13 +106,4 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
-
-    /**
-     * 根据角色 ID 列表查询
-     *
-     * @param roleIds
-     *            角色 ID 列表
-     * @return 用户数量
-     */
-    Long countByRoleIds(List<Long> roleIds);
 }

@@ -14,62 +14,56 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.system.model.vo;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.common.enums.DataScopeEnum;
+import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
- * 角色实体
+ * 岗位信息
  *
  * @author Charles7c
- * @since 2023/2/8 22:54
+ * @since 2023/2/25 22:34
  */
 @Data
-@TableName("sys_role")
-public class RoleDO extends BaseDO {
+@Accessors(chain = true)
+@Schema(description = "岗位信息")
+public class PostVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
+     * 岗位 ID
      */
-    @TableId
-    private Long roleId;
+    @Schema(description = "岗位 ID")
+    private Long postId;
 
     /**
-     * 角色名称
+     * 岗位名称
      */
-    private String roleName;
+    @Schema(description = "岗位名称")
+    private String postName;
 
     /**
-     * 角色编码
+     * 岗位排序
      */
-    private String roleCode;
-
-    /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
-     */
-    private DataScopeEnum dataScope;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 角色排序
-     */
-    private Integer roleSort;
+    @Schema(description = "岗位排序")
+    private Integer postSort;
 
     /**
      * 状态（1启用 2禁用）
      */
+    @Schema(description = "状态（1启用 2禁用）")
     private DisEnableStatusEnum status;
+
+    /**
+     * 描述
+     */
+    @Schema(description = "描述")
+    private String description;
 }

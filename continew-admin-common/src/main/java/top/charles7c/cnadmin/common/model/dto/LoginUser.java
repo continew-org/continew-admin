@@ -75,7 +75,7 @@ public class LoginUser implements Serializable {
     private String description;
 
     /**
-     * 最后一次修改密码的时间
+     * 最后一次修改密码时间
      */
     private LocalDateTime pwdResetTime;
 

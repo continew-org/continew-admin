@@ -22,41 +22,30 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
- * 角色实体
+ * 岗位实体
  *
  * @author Charles7c
- * @since 2023/2/8 22:54
+ * @since 2023/2/25 22:25
  */
 @Data
-@TableName("sys_role")
-public class RoleDO extends BaseDO {
+@TableName("sys_post")
+public class PostDO extends BaseDO {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
+     * 岗位 ID
      */
     @TableId
-    private Long roleId;
+    private Long postId;
 
     /**
-     * 角色名称
+     * 岗位名称
      */
-    private String roleName;
-
-    /**
-     * 角色编码
-     */
-    private String roleCode;
-
-    /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
-     */
-    private DataScopeEnum dataScope;
+    private String postName;
 
     /**
      * 描述
@@ -64,9 +53,9 @@ public class RoleDO extends BaseDO {
     private String description;
 
     /**
-     * 角色排序
+     * 岗位排序
      */
-    private Integer roleSort;
+    private Integer postSort;
 
     /**
      * 状态（1启用 2禁用）
