@@ -105,7 +105,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
             boolean flag = true;
             for (MenuVO inner : list) {
                 // 忽略重复子列表
-                if (inner.getMenuId().equals(outer.getParentId())) {
+                if (Objects.equals(inner.getMenuId(), outer.getParentId())) {
                     flag = false;
                     break;
                 }

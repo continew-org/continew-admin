@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
+import java.util.Objects;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -104,7 +106,7 @@ public class UserVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (userId.equals(LoginHelper.getUserId())) {
+        if (Objects.equals(userId, LoginHelper.getUserId())) {
             return true;
         }
         return disabled;

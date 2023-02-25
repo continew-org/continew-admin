@@ -114,7 +114,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
             boolean flag = true;
             for (DeptVO inner : list) {
                 // 忽略重复子列表
-                if (inner.getDeptId().equals(outer.getParentId())) {
+                if (Objects.equals(inner.getDeptId(), outer.getParentId())) {
                     flag = false;
                     break;
                 }
