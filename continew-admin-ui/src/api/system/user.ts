@@ -61,3 +61,15 @@ export function updateUser(req: UserRecord) {
 export function deleteUser(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }
+
+export function resetPassword(id: number) {
+  return axios.patch(`${BASE_URL}/${id}/password`);
+}
+
+export interface UpdateUserRoleReq {
+  roleIds?: Array<number>;
+}
+
+export function updateUserRole(req: UpdateUserRoleReq, id: number) {
+  return axios.patch(`${BASE_URL}/${id}/role`, req);
+}

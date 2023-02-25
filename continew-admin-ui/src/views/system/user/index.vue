@@ -3,7 +3,7 @@
     <Breadcrumb :items="['menu.system', 'menu.system.user.list']" />
     <a-card class="general-card" :title="$t('menu.system.user.list')">
       <a-row>
-        <a-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4" style="margin-right: 12px">
+        <a-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4" style="margin-right: 10px">
           <a-input-search
             v-model="deptName"
             placeholder="输入部门名称搜索"
@@ -182,7 +182,7 @@
                 title="操作"
                 align="center"
                 fixed="right"
-                :width="120"
+                :width="90"
               >
                 <template #cell="{ record }">
                   <a-button
@@ -192,7 +192,7 @@
                     title="修改"
                     @click="toUpdate(record.userId)"
                   >
-                    <template #icon><icon-edit /></template>修改
+                    <template #icon><icon-edit /></template>
                   </a-button>
                   <a-popconfirm
                     content="确定要删除当前选中的数据吗？"
@@ -206,9 +206,32 @@
                       title="删除"
                       :disabled="record.disabled"
                     >
-                      <template #icon><icon-delete /></template>删除
+                      <template #icon><icon-delete /></template>
                     </a-button>
                   </a-popconfirm>
+                  <a-popconfirm
+                    content="确定要重置当前用户的密码吗？"
+                    type="warning"
+                    @ok="handleResetPassword(record.userId)"
+                  >
+                    <a-button
+                      v-permission="['admin']"
+                      type="text"
+                      size="small"
+                      title="重置密码"
+                    >
+                      <template #icon><svg-icon icon-class="privacy" /></template>
+                    </a-button>
+                  </a-popconfirm>
+                  <a-button
+                    v-permission="['admin']"
+                    type="text"
+                    size="small"
+                    title="分配角色"
+                    @click="toUpdateRole(record.userId)"
+                  >
+                    <template #icon><svg-icon icon-class="reference" /></template>
+                  </a-button>
                 </template>
               </a-table-column>
             </template>
@@ -302,6 +325,32 @@
                 minRows: 3,
               }"
               show-word-limit
+              style="width: 416px"
+            />
+          </a-form-item>
+        </a-form>
+      </a-modal>
+
+      <!-- 表单区域 -->
+      <a-modal
+        title="分配角色"
+        :visible="userRoleVisible"
+        :mask-closable="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleUpdateUserRole"
+        @cancel="handleCancel"
+      >
+        <a-form ref="userRoleFormRef" :model="form" :rules="rules" size="large">
+          <a-form-item label="所属角色" field="roleIds">
+            <a-select
+              v-model="form.roleIds"
+              :options="roleOptions"
+              placeholder="请选择所属角色"
+              :loading="roleLoading"
+              multiple
+              allow-clear
+              :allow-search="{ retainInputValue: true }"
               style="width: 416px"
             />
           </a-form-item>
@@ -420,6 +469,8 @@
     addUser,
     updateUser,
     deleteUser,
+    resetPassword,
+    updateUserRole,
   } from '@/api/system/user';
   import { listRoleDict, listDeptTree } from '@/api/common';
   import getAvatar from '@/utils/avatar';
@@ -452,6 +503,7 @@
   const detailLoading = ref(false);
   const exportLoading = ref(false);
   const visible = ref(false);
+  const userRoleVisible = ref(false);
   const detailVisible = ref(false);
   const statusOptions = ref<SelectOptionData[]>([
     { label: '启用', value: 1 },
@@ -551,6 +603,20 @@
   };
 
   /**
+   * 打开分配角色对话框
+   *
+   * @param id ID
+   */
+  const toUpdateRole = (id: number) => {
+    reset();
+    getRoleOptions();
+    getUser(id).then((res) => {
+      form.value = res.data;
+      userRoleVisible.value = true;
+    });
+  };
+
+  /**
    * 查询角色列表
    */
   const getRoleOptions = () => {
@@ -591,7 +657,7 @@
       phone: undefined,
       description: '',
       status: 1,
-      roleIds: [],
+      roleIds: [] as Array<number>,
       deptId: undefined,
     };
     proxy.$refs.formRef?.resetFields();
@@ -602,7 +668,9 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    userRoleVisible.value = false;
+    proxy.$refs.formRef?.resetFields();
+    proxy.$refs.userRoleFormRef?.resetFields();
   };
 
   /**
@@ -624,6 +692,23 @@
             proxy.$message.success(res.msg);
           });
         }
+      }
+    });
+  };
+
+  /**
+   * 修改用户角色
+   */
+  const handleUpdateUserRole = () => {
+    proxy.$refs.userRoleFormRef.validate((valid: any) => {
+      if (!valid && form.value.userId !== undefined) {
+        updateUserRole({ roleIds: form.value.roleIds }, form.value.userId).then(
+          (res) => {
+            handleCancel();
+            getList();
+            proxy.$message.success(res.msg);
+          }
+        );
       }
     });
   };
@@ -681,6 +766,17 @@
     deleteUser(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
+    });
+  };
+
+  /**
+   * 重置密码
+   *
+   * @param id ID
+   */
+  const handleResetPassword = (id: number) => {
+    resetPassword(id).then((res) => {
+      proxy.$message.success(res.msg);
     });
   };
 

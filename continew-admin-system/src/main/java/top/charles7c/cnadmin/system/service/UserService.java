@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
@@ -78,6 +79,24 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      *            用户ID
      */
     void updateEmail(String newEmail, String currentPassword, Long userId);
+
+    /**
+     * 重置密码
+     *
+     * @param userId
+     *            用户 ID
+     */
+    void resetPassword(Long userId);
+
+    /**
+     * 修改角色
+     *
+     * @param request
+     *            修改信息
+     * @param userId
+     *            用户 ID
+     */
+    void updateUserRole(UpdateUserRoleRequest request, Long userId);
 
     /**
      * 根据部门 ID 列表查询

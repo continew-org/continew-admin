@@ -16,9 +16,12 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +31,7 @@ import top.charles7c.cnadmin.common.base.BaseRequest;
 import top.charles7c.cnadmin.common.consts.Constants;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
@@ -40,6 +44,7 @@ import top.charles7c.cnadmin.system.service.UserService;
  * @since 2023/2/20 21:00
  */
 @Tag(name = "用户管理 API")
+@Validated
 @RestController
 @CrudRequestMapping("/system/user")
 public class UserController extends BaseController<UserService, UserVO, UserDetailVO, UserQuery, UserRequest> {
@@ -48,5 +53,19 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     protected R<Long> add(@Validated(BaseRequest.Create.class) @RequestBody UserRequest request) {
         Long id = baseService.add(request);
         return R.ok(String.format("新增成功，请牢记默认密码：%s", Constants.DEFAULT_PASSWORD), id);
+    }
+
+    @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
+    @PatchMapping("/{userId}/password")
+    public R resetPassword(@PathVariable Long userId) {
+        baseService.resetPassword(userId);
+        return R.ok(String.format("重置密码成功，请牢记默认密码：%s", Constants.DEFAULT_PASSWORD));
+    }
+
+    @Operation(summary = "分配角色", description = "为用户新增或移除角色")
+    @PatchMapping("/{userId}/role")
+    public R updateUserRole(@PathVariable Long userId, @Validated @RequestBody UpdateUserRoleRequest request) {
+        baseService.updateUserRole(request, userId);
+        return R.ok("分配成功");
     }
 }

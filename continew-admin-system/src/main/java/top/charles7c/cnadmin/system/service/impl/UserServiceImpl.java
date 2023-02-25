@@ -47,6 +47,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
@@ -173,7 +174,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long userId) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
-        UserDO userDO = this.getById(userId);
+        UserDO userDO = super.getById(userId);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), userDO.getPassword(), "当前密码错误");
 
         // 更新密码和密码重置时间
@@ -190,7 +191,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long userId) {
-        UserDO userDO = this.getById(userId);
+        UserDO userDO = super.getById(userId);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), userDO.getPassword(),
             "当前密码错误");
         Long count = super.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
@@ -204,6 +205,21 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         LoginUser loginUser = LoginHelper.getLoginUser();
         loginUser.setEmail(newEmail);
         LoginHelper.updateLoginUser(loginUser);
+    }
+
+    @Override
+    public void resetPassword(Long userId) {
+        UserDO userDO = super.getById(userId);
+        userDO.setPassword(SecureUtils.md5Salt(Constants.DEFAULT_PASSWORD, userId.toString()));
+        userDO.setPwdResetTime(LocalDateTime.now());
+        baseMapper.updateById(userDO);
+    }
+
+    @Override
+    public void updateUserRole(UpdateUserRoleRequest request, Long userId) {
+        super.getById(userId);
+        // 保存用户和角色关联
+        userRoleService.save(request.getRoleIds(), userId);
     }
 
     @Override
