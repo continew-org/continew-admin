@@ -117,7 +117,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "新增数据")
     @ResponseBody
     @PostMapping
-    protected R<Long> add(@Validated(BaseRequest.Create.class) @RequestBody C request) {
+    protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
         Long id = baseService.add(request);
         return R.ok("新增成功", id);
     }

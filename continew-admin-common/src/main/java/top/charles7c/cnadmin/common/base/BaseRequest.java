@@ -36,7 +36,7 @@ public class BaseRequest implements Serializable {
     /**
      * 分组校验-创建
      */
-    public interface Create extends Default {}
+    public interface Add extends Default {}
 
     /**
      * 分组校验-修改

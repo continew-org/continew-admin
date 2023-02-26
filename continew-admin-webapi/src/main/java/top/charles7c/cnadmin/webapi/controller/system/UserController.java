@@ -50,7 +50,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class UserController extends BaseController<UserService, UserVO, UserDetailVO, UserQuery, UserRequest> {
 
     @Override
-    protected R<Long> add(@Validated(BaseRequest.Create.class) @RequestBody UserRequest request) {
+    protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody UserRequest request) {
         Long id = baseService.add(request);
         return R.ok(String.format("新增成功，请牢记默认密码：%s", Constants.DEFAULT_PASSWORD), id);
     }

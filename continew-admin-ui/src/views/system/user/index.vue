@@ -62,7 +62,7 @@
               <a-row>
                 <a-col :span="12">
                   <a-space>
-                    <a-button type="primary" @click="toCreate">
+                    <a-button type="primary" @click="toAdd">
                       <template #icon><icon-plus /></template>新增
                     </a-button>
                     <a-button
@@ -603,7 +603,7 @@
   /**
    * 打开新增对话框
    */
-  const toCreate = () => {
+  const toAdd = () => {
     reset();
     getDeptOptions();
     getPostOptions();

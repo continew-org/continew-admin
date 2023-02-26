@@ -48,7 +48,7 @@ public class UserRequest extends BaseRequest {
      * 用户 ID
      */
     @Schema(description = "角色 ID")
-    @Null(message = "新增时，ID 必须为空", groups = Create.class)
+    @Null(message = "新增时，ID 必须为空", groups = Add.class)
     @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
     private Long userId;
 
