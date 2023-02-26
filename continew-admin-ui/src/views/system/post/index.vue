@@ -19,7 +19,7 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="statusOptions"
+                :options="DisEnableStatusEnum"
                 placeholder="状态搜索"
                 allow-clear
                 style="width: 150px"
@@ -267,7 +267,6 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { SelectOptionData } from '@arco-design/web-vue';
   import {
     PostRecord,
     PostParam,
@@ -279,6 +278,7 @@
   } from '@/api/system/post';
 
   const { proxy } = getCurrentInstance() as any;
+  const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
   const postList = ref<PostRecord[]>([]);
   const post = ref<PostRecord>({
@@ -301,10 +301,6 @@
   const exportLoading = ref(false);
   const visible = ref(false);
   const detailVisible = ref(false);
-  const statusOptions = ref<SelectOptionData[]>([
-    { label: '启用', value: 1 },
-    { label: '禁用', value: 2 },
-  ]);
 
   const data = reactive({
     // 查询参数

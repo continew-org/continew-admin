@@ -36,7 +36,7 @@
                 <a-form-item field="status" hide-label>
                   <a-select
                     v-model="queryParams.status"
-                    :options="statusOptions"
+                    :options="DisEnableStatusEnum"
                     placeholder="状态搜索"
                     allow-clear
                     style="width: 150px"
@@ -484,7 +484,7 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
-  import { SelectOptionData, TreeNodeData } from '@arco-design/web-vue';
+  import { TreeNodeData } from '@arco-design/web-vue';
   import {
     UserRecord,
     UserParam,
@@ -496,15 +496,12 @@
     resetPassword,
     updateUserRole,
   } from '@/api/system/user';
-  import {
-    LabelValueRecord,
-    listDeptTree,
-    listPostDict,
-    listRoleDict,
-  } from '@/api/common';
+  import { listDeptTree, listPostDict, listRoleDict } from '@/api/common';
+  import { LabelValueState } from '@/store/modules/dict/types';
   import getAvatar from '@/utils/avatar';
 
   const { proxy } = getCurrentInstance() as any;
+  const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
   const userList = ref<UserRecord[]>([]);
   const user = ref<UserRecord>({
@@ -535,16 +532,12 @@
   const visible = ref(false);
   const userRoleVisible = ref(false);
   const detailVisible = ref(false);
-  const statusOptions = ref<SelectOptionData[]>([
-    { label: '启用', value: 1 },
-    { label: '禁用', value: 2 },
-  ]);
   const deptLoading = ref(false);
   const postLoading = ref(false);
   const roleLoading = ref(false);
   const deptOptions = ref<TreeNodeData[]>([]);
-  const postOptions = ref<LabelValueRecord[]>([]);
-  const roleOptions = ref<LabelValueRecord[]>([]);
+  const postOptions = ref<LabelValueState[]>([]);
+  const roleOptions = ref<LabelValueState[]>([]);
   const deptTree = ref<TreeNodeData[]>([]);
   const deptName = ref('');
 

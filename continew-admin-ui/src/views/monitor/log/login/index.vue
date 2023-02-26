@@ -10,10 +10,10 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="statusOptions"
+                :options="SuccessFailureStatusEnum"
                 placeholder="登录状态搜索"
                 allow-clear
-                style="width: 150px;"
+                style="width: 150px"
               />
             </a-form-item>
             <a-form-item field="createTime" hide-label>
@@ -81,7 +81,6 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { SelectOptionData } from '@arco-design/web-vue';
   import {
     LoginLogParam,
     LoginLogRecord,
@@ -89,14 +88,11 @@
   } from '@/api/monitor/log';
 
   const { proxy } = getCurrentInstance() as any;
+  const { SuccessFailureStatusEnum } = proxy.useDict('SuccessFailureStatusEnum');
 
   const loginLogList = ref<LoginLogRecord[]>([]);
   const total = ref(0);
   const loading = ref(false);
-  const statusOptions = ref<SelectOptionData[]>([
-    { label: '成功', value: 1 },
-    { label: '失败', value: 2 },
-  ]);
 
   const data = reactive({
     // 查询参数

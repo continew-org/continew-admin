@@ -10,6 +10,8 @@ continew-admin:
   description: ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建。
   # URL
   url: https://github.com/Charles7c/continew-admin
+  # 基本包
+  basePackage: top.charles7c.cnadmin
   ## 作者信息配置
   author:
     name: Charles7c

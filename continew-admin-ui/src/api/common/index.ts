@@ -5,11 +5,7 @@ import { MenuParam } from '@/api/system/menu';
 import { RoleParam } from '@/api/system/role';
 import { PostParam } from '@/api/system/post';
 import { TreeNodeData } from '@arco-design/web-vue';
-
-export interface LabelValueRecord {
-  label: string;
-  value: any;
-}
+import { LabelValueState } from '@/store/modules/dict/types';
 
 export function listDeptTree(params: DeptParam) {
   return axios.get<TreeNodeData[]>('/common/tree/dept', {
@@ -30,7 +26,7 @@ export function listMenuTree(params: MenuParam) {
 }
 
 export function listRoleDict(params: RoleParam) {
-  return axios.get<LabelValueRecord[]>('/common/dict/role', {
+  return axios.get<LabelValueState[]>('/common/dict/role', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -39,10 +35,14 @@ export function listRoleDict(params: RoleParam) {
 }
 
 export function listPostDict(params: PostParam) {
-  return axios.get<LabelValueRecord[]>('/common/dict/post', {
+  return axios.get<LabelValueState[]>('/common/dict/post', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
     },
   });
+}
+
+export function listEnumDict(enumTypeName: string) {
+  return axios.get<LabelValueState[]>(`/common/dict/enum/${enumTypeName}`);
 }

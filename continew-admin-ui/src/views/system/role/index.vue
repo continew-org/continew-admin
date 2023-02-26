@@ -19,7 +19,7 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="statusOptions"
+                :options="DisEnableStatusEnum"
                 placeholder="状态搜索"
                 allow-clear
                 style="width: 150px"
@@ -244,7 +244,7 @@
             <a-form-item label="数据权限" field="dataScope">
               <a-select
                 v-model="form.dataScope"
-                :options="dataScopeOptions"
+                :options="DataScopeEnum"
                 placeholder="请选择数据权限"
               />
             </a-form-item>
@@ -378,7 +378,7 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { SelectOptionData, TreeNodeData } from '@arco-design/web-vue';
+  import { TreeNodeData } from '@arco-design/web-vue';
   import {
     RoleRecord,
     RoleParam,
@@ -391,6 +391,7 @@
   import { listMenuTree, listDeptTree } from '@/api/common';
 
   const { proxy } = getCurrentInstance() as any;
+  const { DataScopeEnum, DisEnableStatusEnum } = proxy.useDict('DataScopeEnum', 'DisEnableStatusEnum');
 
   const roleList = ref<RoleRecord[]>([]);
   const role = ref<RoleRecord>({
@@ -417,17 +418,6 @@
   const exportLoading = ref(false);
   const visible = ref(false);
   const detailVisible = ref(false);
-  const statusOptions = ref<SelectOptionData[]>([
-    { label: '启用', value: 1 },
-    { label: '禁用', value: 2 },
-  ]);
-  const dataScopeOptions = ref<SelectOptionData[]>([
-    { label: '全部数据权限', value: 1 },
-    { label: '本部门及以下数据权限', value: 2 },
-    { label: '本部门数据权限', value: 3 },
-    { label: '仅本人数据权限', value: 4 },
-    { label: '自定义数据权限', value: 5 },
-  ]);
   const menuLoading = ref(false);
   const deptLoading = ref(false);
   const menuOptions = ref<TreeNodeData[]>([]);

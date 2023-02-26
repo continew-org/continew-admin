@@ -16,7 +16,8 @@
 
 package top.charles7c.cnadmin.webapi.controller.common;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,12 +25,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ClassUtil;
 
+import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -55,6 +57,7 @@ import top.charles7c.cnadmin.system.service.RoleService;
  */
 @Tag(name = "公共 API")
 @Log(ignore = true)
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/common")
@@ -64,6 +67,7 @@ public class CommonController {
     private final MenuService menuService;
     private final RoleService roleService;
     private final PostService postService;
+    private final ContiNewAdminProperties properties;
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
@@ -94,6 +98,26 @@ public class CommonController {
     public R<List<LabelValueVO<Long>>> listPostDict(@Validated PostQuery query, @Validated SortQuery sortQuery) {
         List<PostVO> list = postService.list(query, sortQuery);
         List<LabelValueVO<Long>> dictList = postService.buildDict(list);
+        return R.ok(dictList);
+    }
+
+    @Operation(summary = "查询枚举字典", description = "查询枚举字典列表")
+    @GetMapping("/dict/enum/{enumTypeName}")
+    public R<List<LabelValueVO>> listEnumDict(@PathVariable String enumTypeName) {
+        // 扫描所有 BaseEnum 枚举基类的子类
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(properties.getBasePackage(), BaseEnum.class);
+        Optional<Class<?>> first =
+            classSet.stream().filter(c -> c.getSimpleName().equalsIgnoreCase(enumTypeName)).findFirst();
+        if (!first.isPresent()) {
+            return R.fail("枚举字典不存在");
+        }
+        // 转换枚举为字典列表
+        Class<?> enumClass = first.get();
+        Object[] enumConstants = enumClass.getEnumConstants();
+        List<LabelValueVO> dictList = Arrays.stream(enumConstants).map(e -> {
+            BaseEnum<Integer, String> baseEnum = (BaseEnum<Integer, String>)e;
+            return new LabelValueVO(baseEnum.getDescription(), baseEnum.getValue());
+        }).collect(Collectors.toList());
         return R.ok(dictList);
     }
 }

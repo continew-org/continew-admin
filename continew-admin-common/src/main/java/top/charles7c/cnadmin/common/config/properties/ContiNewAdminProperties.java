@@ -65,6 +65,11 @@ public class ContiNewAdminProperties {
     private String url;
 
     /**
+     * 基本包
+     */
+    private String basePackage;
+
+    /**
      * 作者信息
      */
     @NestedConfigurationProperty
