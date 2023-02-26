@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Override
     public List<MenuVO> buildListTree(List<MenuVO> list) {
         if (CollUtil.isEmpty(list)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // 去除重复子菜单列表

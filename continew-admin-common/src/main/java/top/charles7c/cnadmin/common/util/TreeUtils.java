@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.common.util;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -57,7 +57,7 @@ public class TreeUtils {
      */
     public static <T, E> List<Tree<E>> build(List<T> list, NodeParser<T, E> nodeParser) {
         if (CollUtil.isEmpty(list)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         E parentId = (E)ReflectUtil.getFieldValue(list.get(0), DEFAULT_CONFIG.getParentIdKey());
         return TreeUtil.build(list, parentId, DEFAULT_CONFIG, nodeParser);

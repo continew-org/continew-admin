@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     public List<DeptVO> buildListTree(List<DeptVO> list) {
         if (CollUtil.isEmpty(list)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // 去除重复子部门列表
