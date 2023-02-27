@@ -64,8 +64,6 @@ import top.charles7c.cnadmin.system.service.*;
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO, UserDetailVO, UserQuery, UserRequest>
     implements UserService, CommonUserService {
 
-    private final UserPostService userPostService;
-    private final PostService postService;
     private final UserRoleService userRoleService;
     private final RoleService roleService;
     private final LocalStorageProperties localStorageProperties;
@@ -85,8 +83,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         super.lambdaUpdate()
             .set(UserDO::getPassword, SecureUtils.md5Salt(Constants.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getUserId, userId).update();
-        // 保存用户和岗位关联
-        userPostService.save(request.getPostIds(), userId);
         // 保存用户和角色关联
         userRoleService.save(request.getRoleIds(), userId);
         return userId;
@@ -102,8 +98,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         // 更新用户
         super.update(request);
         Long userId = request.getUserId();
-        // 保存用户和岗位关联
-        userPostService.save(request.getPostIds(), userId);
         // 保存用户和角色关联
         userRoleService.save(request.getRoleIds(), userId);
     }
@@ -130,9 +124,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
             List<Long> roleIds = userRoleService.listRoleIdsByUserId(detailVO.getUserId());
             detailVO.setRoleIds(roleIds);
             detailVO.setRoleNames(String.join(",", roleService.listRoleNamesByRoleIds(roleIds)));
-            List<Long> postIds = userPostService.listPostIdsByUserId(detailVO.getUserId());
-            detailVO.setPostIds(postIds);
-            detailVO.setPostNames(String.join(",", postService.listPostNamesByPostIds(postIds)));
         }
     }
 

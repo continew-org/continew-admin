@@ -19,8 +19,6 @@ export interface UserRecord {
   updateTime?: string;
   deptId?: number;
   deptName?: string;
-  postIds?: Array<number>;
-  postNames?: Array<string>;
   roleIds?: Array<number>;
   roleNames?: Array<string>;
   disabled?: boolean;

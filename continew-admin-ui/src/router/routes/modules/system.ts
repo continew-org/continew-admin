@@ -52,16 +52,6 @@ const System: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
-    {
-      path: '/system/post',
-      name: 'Post',
-      component: () => import('@/views/system/post/index.vue'),
-      meta: {
-        locale: 'menu.system.post.list',
-        requiresAuth: true,
-        roles: ['*'],
-      },
-    },
   ],
 };
 

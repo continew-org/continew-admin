@@ -216,7 +216,7 @@
         render-to-body
         @cancel="handleDetailCancel"
       >
-        <a-descriptions :column="2" bordered size="large" layout="vertical">
+        <a-descriptions :column="2" bordered size="large">
           <a-descriptions-item label="部门名称">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />

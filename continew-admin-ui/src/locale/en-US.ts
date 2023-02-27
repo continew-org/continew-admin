@@ -4,7 +4,6 @@ import localeUser from '@/views/system/user/locale/en-US';
 import localeRole from '@/views/system/role/locale/en-US';
 import localeMenu from '@/views/system/menu/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
-import localePost from '@/views/system/post/locale/en-US';
 
 import localeOnlineUser from '@/views/monitor/online/locale/en-US';
 import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
@@ -56,7 +55,6 @@ export default {
   ...localeRole,
   ...localeMenu,
   ...localeDept,
-  ...localePost,
 
   ...localeOnlineUser,
   ...localeLoginLog,

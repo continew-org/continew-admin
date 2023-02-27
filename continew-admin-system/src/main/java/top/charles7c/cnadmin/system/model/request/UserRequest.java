@@ -108,12 +108,6 @@ public class UserRequest extends BaseRequest {
     private Long deptId;
 
     /**
-     * 岗位 ID 列表
-     */
-    @Schema(description = "所属岗位")
-    private List<Long> postIds;
-
-    /**
      * 角色 ID 列表
      */
     @Schema(description = "所属角色")

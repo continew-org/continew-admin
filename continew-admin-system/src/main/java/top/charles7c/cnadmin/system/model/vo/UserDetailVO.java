@@ -127,19 +127,6 @@ public class UserDetailVO extends BaseDetailVO {
     private String deptName;
 
     /**
-     * 岗位 ID 列表
-     */
-    @Schema(description = "岗位 ID 列表")
-    private List<Long> postIds;
-
-    /**
-     * 所属岗位
-     */
-    @Schema(description = "所属岗位")
-    @ExcelProperty(value = "所属岗位")
-    private String postNames;
-
-    /**
      * 角色 ID 列表
      */
     @Schema(description = "角色 ID 列表")

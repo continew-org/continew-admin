@@ -38,13 +38,10 @@ import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
-import top.charles7c.cnadmin.system.model.query.PostQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
-import top.charles7c.cnadmin.system.model.vo.PostVO;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.MenuService;
-import top.charles7c.cnadmin.system.service.PostService;
 import top.charles7c.cnadmin.system.service.RoleService;
 
 /**
@@ -64,7 +61,6 @@ public class CommonController {
     private final DeptService deptService;
     private final MenuService menuService;
     private final RoleService roleService;
-    private final PostService postService;
     private final ContiNewAdminProperties properties;
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
@@ -86,14 +82,6 @@ public class CommonController {
     public R<List<LabelValueVO<Long>>> listRoleDict(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
         List<RoleVO> list = roleService.list(query, sortQuery);
         List<LabelValueVO<Long>> dictList = roleService.buildDict(list);
-        return R.ok(dictList);
-    }
-
-    @Operation(summary = "查询岗位字典", description = "查询岗位字典列表")
-    @GetMapping("/dict/post")
-    public R<List<LabelValueVO<Long>>> listPostDict(@Validated PostQuery query, @Validated SortQuery sortQuery) {
-        List<PostVO> list = postService.list(query, sortQuery);
-        List<LabelValueVO<Long>> dictList = postService.buildDict(list);
         return R.ok(dictList);
     }
 

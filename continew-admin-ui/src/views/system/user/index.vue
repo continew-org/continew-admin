@@ -304,18 +304,6 @@
               style="width: 416px"
             />
           </a-form-item>
-          <a-form-item label="所属岗位" field="postIds">
-            <a-select
-              v-model="form.postIds"
-              :options="postOptions"
-              placeholder="请选择所属岗位"
-              :loading="postLoading"
-              multiple
-              allow-clear
-              :allow-search="{ retainInputValue: true }"
-              style="width: 416px"
-            />
-          </a-form-item>
           <a-form-item label="所属角色" field="roleIds">
             <a-select
               v-model="form.roleIds"
@@ -379,7 +367,7 @@
         render-to-body
         @cancel="handleDetailCancel"
       >
-        <a-descriptions :column="2" bordered size="large" layout="vertical">
+        <a-descriptions :column="2" bordered size="large">
           <a-descriptions-item label="用户名">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
@@ -428,23 +416,11 @@
             </a-skeleton>
             <span v-else>{{ user.deptName }}</span>
           </a-descriptions-item>
-          <a-descriptions-item label="所属岗位">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ user.postNames }}</span>
-          </a-descriptions-item>
           <a-descriptions-item label="所属角色">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>{{ user.roleNames }}</span>
-          </a-descriptions-item>
-          <a-descriptions-item label="最后一次修改密码时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ user.pwdResetTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
@@ -496,7 +472,7 @@
     resetPassword,
     updateUserRole,
   } from '@/api/system/user';
-  import { listDeptTree, listPostDict, listRoleDict } from '@/api/common';
+  import { listDeptTree, listRoleDict } from '@/api/common';
   import { LabelValueState } from '@/store/modules/dict/types';
   import getAvatar from '@/utils/avatar';
 
@@ -533,10 +509,8 @@
   const userRoleVisible = ref(false);
   const detailVisible = ref(false);
   const deptLoading = ref(false);
-  const postLoading = ref(false);
   const roleLoading = ref(false);
   const deptOptions = ref<TreeNodeData[]>([]);
-  const postOptions = ref<LabelValueState[]>([]);
   const roleOptions = ref<LabelValueState[]>([]);
   const deptTree = ref<TreeNodeData[]>([]);
   const deptName = ref('');
@@ -606,7 +580,6 @@
   const toAdd = () => {
     reset();
     getDeptOptions();
-    getPostOptions();
     getRoleOptions();
     title.value = '新增用户';
     visible.value = true;
@@ -620,7 +593,6 @@
   const toUpdate = (id: number) => {
     reset();
     getDeptOptions();
-    getPostOptions();
     getRoleOptions();
     getUser(id).then((res) => {
       form.value = res.data;
@@ -658,20 +630,6 @@
   };
 
   /**
-   * 查询岗位列表
-   */
-  const getPostOptions = () => {
-    postLoading.value = true;
-    listPostDict({})
-      .then((res) => {
-        postOptions.value = res.data;
-      })
-      .finally(() => {
-        postLoading.value = false;
-      });
-  };
-
-  /**
    * 查询角色列表
    */
   const getRoleOptions = () => {
@@ -699,7 +657,6 @@
       description: '',
       status: 1,
       deptId: undefined,
-      postIds: [] as Array<number>,
       roleIds: [] as Array<number>,
     };
     proxy.$refs.formRef?.resetFields();

@@ -3,7 +3,6 @@ import qs from 'query-string';
 import { DeptParam } from '@/api/system/dept';
 import { MenuParam } from '@/api/system/menu';
 import { RoleParam } from '@/api/system/role';
-import { PostParam } from '@/api/system/post';
 import { TreeNodeData } from '@arco-design/web-vue';
 import { LabelValueState } from '@/store/modules/dict/types';
 
@@ -27,15 +26,6 @@ export function listMenuTree(params: MenuParam) {
 
 export function listRoleDict(params: RoleParam) {
   return axios.get<LabelValueState[]>('/common/dict/role', {
-    params,
-    paramsSerializer: (obj) => {
-      return qs.stringify(obj);
-    },
-  });
-}
-
-export function listPostDict(params: PostParam) {
-  return axios.get<LabelValueState[]>('/common/dict/post', {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

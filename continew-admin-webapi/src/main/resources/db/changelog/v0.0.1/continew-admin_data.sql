@@ -25,11 +25,6 @@ INSERT IGNORE INTO `sys_menu` VALUES (1041, '部门新增', 1040, 3, NULL, NULL,
 INSERT IGNORE INTO `sys_menu` VALUES (1042, '部门修改', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:update', 2, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1043, '部门删除', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:delete', 3, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1044, '部门导出', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:export', 4, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1050, '岗位管理', 1000, 2, '/system/post', 'Post', '/system/post/index', NULL, b'0', b'0', b'0', 'system:post:list', 5, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1051, '岗位新增', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:add', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1052, '岗位修改', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:update', 2, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1053, '岗位删除', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:delete', 3, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1054, '岗位导出', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:export', 4, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (2000, '系统监控', 0, 1, 'monitor', NULL, NULL, 'computer', b'0', b'0', b'0', NULL, 2, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (2010, '在线用户', 2000, 2, '/monitor/online', 'OnlineUser', 'monitor/online/index', NULL, b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (2011, '强退用户', 2010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'monitor:online:user:delete', 1, 1, 1, NOW(), 1, NOW());
@@ -48,18 +43,6 @@ INSERT IGNORE INTO `sys_dept` VALUES (5, '测试部', 2, '系统初始部门', 3
 INSERT IGNORE INTO `sys_dept` VALUES (6, '运维部', 2, '系统初始部门', 4, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_dept` VALUES (7, '研发一组', 3, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_dept` VALUES (8, '研发二组', 3, '系统初始部门', 2, 2, 1, NOW(), 1, NOW());
-
--- 初始化默认岗位
-INSERT IGNORE INTO `sys_post` VALUES (1, '项目总监', '系统初始岗位', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (2, '技术总监', '系统初始岗位', 2, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (3, '销售经理', '系统初始岗位', 3, 2, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (4, '项目经理', '系统初始岗位', 4, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (5, '产品经理', '系统初始岗位', 5, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (6, '技术经理', '系统初始岗位', 6, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (7, '测试经理', '系统初始岗位', 7, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (8, '销售专员', '系统初始岗位', 8, 2, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (9, '软件开发', '系统初始岗位', 9, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_post` VALUES (10, '软件测试', '系统初始岗位', 10, 1, 1, NOW(), 1, NOW());
 
 -- 初始化默认角色
 INSERT IGNORE INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, 1, NOW(), 1, NOW());
@@ -93,7 +76,3 @@ INSERT IGNORE INTO `sys_role_dept` VALUES (2, 5);
 -- 初始化默认用户和角色关联数据
 INSERT IGNORE INTO `sys_user_role` VALUES (1, 1);
 INSERT IGNORE INTO `sys_user_role` VALUES (2, 2);
-
--- 初始化默认用户和岗位关联数据
-INSERT IGNORE INTO `sys_user_post` VALUES (1, 1);
-INSERT IGNORE INTO `sys_user_post` VALUES (2, 10);
