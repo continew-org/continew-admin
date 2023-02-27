@@ -21,10 +21,10 @@ INSERT IGNORE INTO `sys_menu` VALUES (1032, '菜单修改', 1030, 3, NULL, NULL,
 INSERT IGNORE INTO `sys_menu` VALUES (1033, '菜单删除', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:delete', 3, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1034, '菜单导出', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:export', 4, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1040, '部门管理', 1000, 2, '/system/dept', 'Dept', 'system/dept/index', NULL, b'0', b'0', b'0', 'system:dept:list', 4, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1041, '部门新增', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:add', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1042, '部门修改', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:update', 2, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1043, '部门删除', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:delete', 3, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_menu` VALUES (1044, '部门导出', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:export', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1041, '部门新增', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:add', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1042, '部门修改', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:update', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1043, '部门删除', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:delete', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_menu` VALUES (1044, '部门导出', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:export', 4, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1050, '岗位管理', 1000, 2, '/system/post', 'Post', '/system/post/index', NULL, b'0', b'0', b'0', 'system:post:list', 5, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1051, '岗位新增', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:add', 1, 1, 1, NOW(), 1, NOW());
 INSERT IGNORE INTO `sys_menu` VALUES (1052, '岗位修改', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:post:update', 2, 1, 1, NOW(), 1, NOW());
