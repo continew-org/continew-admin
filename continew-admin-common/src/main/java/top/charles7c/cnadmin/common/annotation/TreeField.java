@@ -19,65 +19,56 @@ package top.charles7c.cnadmin.common.annotation;
 import java.lang.annotation.*;
 
 /**
- * 增删改查请求映射器注解
+ * 树结构字段
  *
+ * @see cn.hutool.core.lang.tree.TreeNodeConfig
  * @author Charles7c
- * @since 2023/1/27 9:54
+ * @since 2023/2/26 23:50
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface CrudRequestMapping {
+public @interface TreeField {
 
     /**
-     * 路径映射 URI（等同于：@RequestMapping("/foo1")）
+     * ID 字段名
+     *
+     * @return ID 字段名
      */
-    String value() default "";
+    String value() default "key";
 
     /**
-     * API 列表
+     * 父 ID 字段名
+     *
+     * @return 父 ID 字段名
      */
-    Api[] api() default {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT};
+    String parentIdKey() default "parentId";
 
     /**
-     * API 枚举
+     * 名称字段名
+     *
+     * @return 名称字段名
      */
-    enum Api {
-        /**
-         * 所有 API
-         */
-        ALL,
-        /**
-         * 分页
-         */
-        PAGE,
-        /**
-         * 树列表
-         */
-        TREE,
-        /**
-         * 列表
-         */
-        LIST,
-        /**
-         * 详情
-         */
-        GET,
-        /**
-         * 新增
-         */
-        ADD,
-        /**
-         * 修改
-         */
-        UPDATE,
-        /**
-         * 删除
-         */
-        DELETE,
-        /**
-         * 导出
-         */
-        EXPORT,;
-    }
+    String nameKey() default "title";
+
+    /**
+     * 排序字段名
+     *
+     * @return 排序字段名
+     */
+    String weightKey() default "sort";
+
+    /**
+     * 子列表字段名
+     *
+     * @return 子列表字段名
+     */
+    String childrenKey() default "children";
+
+    /**
+     * 递归深度（< 0 不限制）
+     *
+     * @return 递归深度
+     */
+    int deep() default -1;
 }

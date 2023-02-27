@@ -16,8 +16,11 @@
 
 package top.charles7c.cnadmin.common.base;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,15 +44,21 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Opt;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
+import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExcelUtils;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.cnadmin.common.util.ReflectUtils;
+import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
@@ -88,6 +97,40 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
         PageDataVO<V> pageDataVO = PageDataVO.build(page, voClass);
         pageDataVO.getList().forEach(this::fill);
         return pageDataVO;
+    }
+
+    @Override
+    public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple) {
+        List<V> list = this.list(query, sortQuery);
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+
+        // 如果构建简单树结构，则不包含基本树结构之外的扩展字段
+        TreeNodeConfig treeNodeConfig = TreeUtils.DEFAULT_CONFIG;
+        TreeField treeField = voClass.getDeclaredAnnotation(TreeField.class);
+        if (!isSimple) {
+            // 根据 @TreeField 配置生成树结构配置
+            treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
+        }
+
+        // 构建树
+        return TreeUtils.build(list, treeNodeConfig, (node, tree) -> {
+            // 转换器
+            tree.setId(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.value())));
+            tree.setParentId(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.parentIdKey())));
+            tree.setName(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.nameKey())));
+            tree.setWeight(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.weightKey())));
+            if (!isSimple) {
+                Field[] fieldArr = ReflectUtils.getNonStaticFields(voClass);
+                List<Field> fieldList = Arrays.stream(fieldArr)
+                    .filter(f -> !StrUtil.containsAnyIgnoreCase(f.getName(), treeField.value(), treeField.parentIdKey(),
+                        treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()))
+                    .collect(Collectors.toList());
+                fieldList
+                    .forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, StrUtil.genGetter(f.getName()))));
+            }
+        });
     }
 
     @Override

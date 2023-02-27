@@ -24,7 +24,7 @@ export interface DeptParam {
 }
 
 export function listDept(params: DeptParam) {
-  return axios.get<DeptRecord[]>(`${BASE_URL}/list`, {
+  return axios.get<DeptRecord[]>(`${BASE_URL}/tree`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

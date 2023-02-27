@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.lang.tree.Tree;
+
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -50,6 +52,19 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      * @return 分页列表信息
      */
     PageDataVO<V> page(Q query, PageQuery pageQuery);
+
+    /**
+     * 查询树列表
+     *
+     * @param query
+     *            查询条件
+     * @param sortQuery
+     *            排序查询条件
+     * @param isSimple
+     *            是否为简单树结构（不包含基本树结构之外的扩展字段）
+     * @return 树列表信息
+     */
+    List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple);
 
     /**
      * 查询列表

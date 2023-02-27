@@ -16,13 +16,12 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
@@ -34,6 +33,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  */
 @Data
 @Accessors(chain = true)
+@TreeField(value = "deptId", nameKey = "deptName", weightKey = "deptSort")
 @Schema(description = "部门信息")
 public class DeptVO extends BaseVO {
 
@@ -74,10 +74,4 @@ public class DeptVO extends BaseVO {
      */
     @Schema(description = "状态（1启用 2禁用）")
     private DisEnableStatusEnum status;
-
-    /**
-     * 子部门列表
-     */
-    @Schema(description = "子部门列表")
-    private List<DeptVO> children;
 }

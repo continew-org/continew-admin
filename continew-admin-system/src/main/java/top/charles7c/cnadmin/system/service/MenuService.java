@@ -16,10 +16,6 @@
 
 package top.charles7c.cnadmin.system.service;
 
-import java.util.List;
-
-import cn.hutool.core.lang.tree.Tree;
-
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.request.MenuRequest;
@@ -31,23 +27,4 @@ import top.charles7c.cnadmin.system.model.vo.MenuVO;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, MenuRequest> {
-
-    /**
-     * 构建树
-     *
-     * @param list
-     *            原始列表数据
-     * @return 树列表
-     */
-    List<MenuVO> buildListTree(List<MenuVO> list);
-
-    /**
-     * 构建树
-     *
-     * @param list
-     *            原始列表数据
-     * @return 树列表
-     */
-    List<Tree<Long>> buildTree(List<MenuVO> list);
-}
+public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, MenuRequest> {}

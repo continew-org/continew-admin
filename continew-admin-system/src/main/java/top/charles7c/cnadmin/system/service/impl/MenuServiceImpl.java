@@ -16,23 +16,15 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.tree.Tree;
-
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MenuMapper;
 import top.charles7c.cnadmin.system.model.entity.MenuDO;
@@ -71,6 +63,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         boolean isExists = this.checkNameExists(menuName, request.getParentId(), request.getMenuId());
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", menuName));
 
+        // 更新信息
         super.update(request);
     }
 
@@ -79,68 +72,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     public void delete(List<Long> ids) {
         super.delete(ids);
         super.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
-    }
-
-    @Override
-    public List<MenuVO> buildListTree(List<MenuVO> list) {
-        if (CollUtil.isEmpty(list)) {
-            return Collections.emptyList();
-        }
-
-        // 去除重复子菜单列表
-        List<MenuVO> deDuplicationList = deDuplication(list);
-        return deDuplicationList.stream().map(m -> m.setChildren(this.getChildren(m, list)))
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * 数据去重（去除重复子菜单列表）
-     *
-     * @param list
-     *            菜单列表
-     * @return 去重后菜单列表
-     */
-    private List<MenuVO> deDuplication(List<MenuVO> list) {
-        List<MenuVO> deDuplicationList = new ArrayList<>();
-        for (MenuVO outer : list) {
-            boolean flag = true;
-            for (MenuVO inner : list) {
-                // 忽略重复子列表
-                if (Objects.equals(inner.getMenuId(), outer.getParentId())) {
-                    flag = false;
-                    break;
-                }
-            }
-
-            if (flag) {
-                deDuplicationList.add(outer);
-            }
-        }
-        return deDuplicationList;
-    }
-
-    /**
-     * 获取指定菜单的子菜单列表
-     *
-     * @param menuVO
-     *            指定菜单
-     * @param list
-     *            菜单列表
-     * @return 子菜单列表
-     */
-    private List<MenuVO> getChildren(MenuVO menuVO, List<MenuVO> list) {
-        return list.stream().filter(m -> Objects.equals(m.getParentId(), menuVO.getMenuId()))
-            .map(m -> m.setChildren(this.getChildren(m, list))).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Tree<Long>> buildTree(List<MenuVO> list) {
-        return TreeUtils.build(list, (m, tree) -> {
-            tree.setId(m.getMenuId());
-            tree.setName(m.getMenuName());
-            tree.setParentId(m.getParentId());
-            tree.setWeight(m.getMenuSort());
-        });
     }
 
     /**

@@ -30,6 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import cn.hutool.core.lang.tree.Tree;
+
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -72,6 +74,23 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     protected R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
         return R.ok(pageDataVO);
+    }
+
+    /**
+     * 查询树列表
+     *
+     * @param query
+     *            查询条件
+     * @param sortQuery
+     *            排序查询条件
+     * @return 树列表信息
+     */
+    @Operation(summary = "查询树列表")
+    @ResponseBody
+    @GetMapping("/tree")
+    protected R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
+        List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
+        return R.ok(list);
     }
 
     /**

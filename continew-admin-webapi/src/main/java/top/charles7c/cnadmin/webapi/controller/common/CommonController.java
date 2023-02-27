@@ -40,8 +40,6 @@ import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.query.PostQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
-import top.charles7c.cnadmin.system.model.vo.DeptVO;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.model.vo.PostVO;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.DeptService;
@@ -72,16 +70,14 @@ public class CommonController {
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> listDeptTree(@Validated DeptQuery query, @Validated SortQuery sortQuery) {
-        List<DeptVO> list = deptService.list(query, sortQuery);
-        List<Tree<Long>> treeList = deptService.buildTree(list);
+        List<Tree<Long>> treeList = deptService.tree(query, sortQuery, true);
         return R.ok(treeList);
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
     public R<List<Tree<Long>>> listMenuTree(@Validated MenuQuery query, @Validated SortQuery sortQuery) {
-        List<MenuVO> list = menuService.list(query, sortQuery);
-        List<Tree<Long>> treeList = menuService.buildTree(list);
+        List<Tree<Long>> treeList = menuService.tree(query, sortQuery, true);
         return R.ok(treeList);
     }
 

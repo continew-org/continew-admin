@@ -16,10 +16,6 @@
 
 package top.charles7c.cnadmin.system.service;
 
-import java.util.List;
-
-import cn.hutool.core.lang.tree.Tree;
-
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.request.DeptRequest;
@@ -32,23 +28,4 @@ import top.charles7c.cnadmin.system.model.vo.DeptVO;
  * @author Charles7c
  * @since 2023/1/22 17:54
  */
-public interface DeptService extends BaseService<DeptVO, DeptDetailVO, DeptQuery, DeptRequest> {
-
-    /**
-     * 构建树
-     *
-     * @param list
-     *            原始列表数据
-     * @return 树列表
-     */
-    List<DeptVO> buildListTree(List<DeptVO> list);
-
-    /**
-     * 构建树
-     *
-     * @param list
-     *            原始列表数据
-     * @return 树列表
-     */
-    List<Tree<Long>> buildTree(List<DeptVO> list);
-}
+public interface DeptService extends BaseService<DeptVO, DeptDetailVO, DeptQuery, DeptRequest> {}

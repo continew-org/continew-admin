@@ -16,13 +16,12 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
-import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
@@ -35,6 +34,7 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
  */
 @Data
 @Accessors(chain = true)
+@TreeField(value = "menuId", nameKey = "menuName", weightKey = "menuSort")
 @Schema(description = "菜单信息")
 public class MenuVO extends BaseVO {
 
@@ -123,10 +123,4 @@ public class MenuVO extends BaseVO {
      */
     @Schema(description = "状态（1启用 2禁用）")
     private DisEnableStatusEnum status;
-
-    /**
-     * 子菜单列表
-     */
-    @Schema(description = "子菜单列表")
-    private List<MenuVO> children;
 }

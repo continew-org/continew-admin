@@ -32,7 +32,7 @@ export interface MenuParam {
 }
 
 export function listMenu(params: MenuParam) {
-  return axios.get<MenuRecord[]>(`${BASE_URL}/list`, {
+  return axios.get<MenuRecord[]>(`${BASE_URL}/tree`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
