@@ -51,7 +51,7 @@ public @interface Log {
     String module() default "";
 
     /**
-     * 是否忽略日志记录（仅用于接口方法上）
+     * 是否忽略日志记录（用于接口方法或类上）
      */
     boolean ignore() default false;
 }

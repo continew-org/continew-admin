@@ -322,20 +322,24 @@ public class LogInterceptor implements HandlerInterceptor {
         // 3、排除不需要记录系统日志的接口
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
-        // 3.1 请求方式不要求记录且接口方法上没有 @Log 注解，则不记录系统日志
-        if (operationLogProperties.getExcludeMethods().contains(request.getMethod()) && methodLog == null) {
-            return false;
-        }
-        // 3.2 如果接口方法上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
+        // 3.1 如果接口方法上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
         Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
         if (methodLog == null && methodOperation == null) {
+            return false;
+        }
+        // 3.2 请求方式不要求记录且接口方法上没有 @Log 注解，则不记录系统日志
+        if (methodLog == null && operationLogProperties.getExcludeMethods().contains(request.getMethod())) {
             return false;
         }
         // 3.3 如果接口被隐藏，不记录系统日志
         if (methodOperation != null && methodOperation.hidden()) {
             return false;
         }
-        // 3.4 如果接口方法上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
-        return methodLog == null || !methodLog.ignore();
+        // 3.4 如果接口方法或类上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
+        if (methodLog != null && methodLog.ignore()) {
+            return false;
+        }
+        Log classLog = handlerMethod.getBeanType().getDeclaredAnnotation(Log.class);
+        return classLog == null || !classLog.ignore();
     }
 }
