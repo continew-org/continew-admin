@@ -243,7 +243,7 @@
       <a-modal
         :title="title"
         :visible="visible"
-        :width="565"
+        :width="580"
         :mask-closable="false"
         unmount-on-close
         render-to-body
@@ -301,7 +301,7 @@
               allow-clear
               allow-search
               :filter-tree-node="filterDeptOptions"
-              style="width: 416px"
+              style="width: 431px"
             />
           </a-form-item>
           <a-form-item label="所属角色" field="roleIds">
@@ -313,7 +313,7 @@
               multiple
               allow-clear
               :allow-search="{ retainInputValue: true }"
-              style="width: 416px"
+              style="width: 431px"
             />
           </a-form-item>
           <a-form-item label="描述" field="description">
@@ -325,7 +325,7 @@
                 minRows: 3,
               }"
               show-word-limit
-              style="width: 416px"
+              style="width: 431px"
             />
           </a-form-item>
         </a-form>
