@@ -62,10 +62,15 @@
               <a-row>
                 <a-col :span="12">
                   <a-space>
-                    <a-button type="primary" @click="toAdd">
+                    <a-button
+                      v-permission="['system:user:add']"
+                      type="primary"
+                      @click="toAdd"
+                    >
                       <template #icon><icon-plus /></template>新增
                     </a-button>
                     <a-button
+                      v-permission="['system:user:update']"
                       type="primary"
                       status="success"
                       :disabled="single"
@@ -75,6 +80,7 @@
                       <template #icon><icon-edit /></template>修改
                     </a-button>
                     <a-button
+                      v-permission="['system:user:delete']"
                       type="primary"
                       status="danger"
                       :disabled="multiple"
@@ -84,6 +90,7 @@
                       <template #icon><icon-delete /></template>删除
                     </a-button>
                     <a-button
+                      v-permission="['system:user:export']"
                       :loading="exportLoading"
                       type="primary"
                       status="warning"
@@ -166,7 +173,7 @@
                     v-model="record.status"
                     :checked-value="1"
                     :unchecked-value="2"
-                    :disabled="record.disabled"
+                    :disabled="record.disabled || !checkPermission(['system:user:update'])"
                     @change="handleChangeStatus(record)"
                   />
                 </template>
@@ -186,7 +193,7 @@
               >
                 <template #cell="{ record }">
                   <a-button
-                    v-permission="['admin']"
+                    v-permission="['system:user:update']"
                     type="text"
                     size="small"
                     title="修改"
@@ -200,7 +207,7 @@
                     @ok="handleDelete([record.userId])"
                   >
                     <a-button
-                      v-permission="['admin']"
+                      v-permission="['system:user:delete']"
                       type="text"
                       size="small"
                       title="删除"
@@ -215,7 +222,7 @@
                     @ok="handleResetPassword(record.userId)"
                   >
                     <a-button
-                      v-permission="['admin']"
+                      v-permission="['system:user:password:reset']"
                       type="text"
                       size="small"
                       title="重置密码"
@@ -224,7 +231,7 @@
                     </a-button>
                   </a-popconfirm>
                   <a-button
-                    v-permission="['admin']"
+                    v-permission="['system:user:role:update']"
                     type="text"
                     size="small"
                     title="分配角色"
@@ -475,6 +482,7 @@
   import { listDeptTree, listRoleDict } from '@/api/common';
   import { LabelValueState } from '@/store/modules/dict/types';
   import getAvatar from '@/utils/avatar';
+  import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');

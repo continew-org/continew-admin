@@ -1,4 +1,3 @@
-export type RoleType = '' | '*' | 'admin' | 'user';
 export interface UserState {
   userId: number;
   username: string;
@@ -12,12 +11,6 @@ export interface UserState {
   registrationDate?: string;
   deptId?: number;
   deptName?: string;
-
-  job?: string;
-  jobName?: string;
-  location?: string;
-  locationName?: string;
-  introduction?: string;
-  personalWebsite?: string;
-  role: RoleType;
+  permissions: Array<string>;
+  roles: Array<string>;
 }

@@ -30,8 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.StrUtil;
 
+import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -72,6 +75,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping
     protected R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
+        this.checkPermission("list");
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
         return R.ok(pageDataVO);
     }
@@ -89,6 +93,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/tree")
     protected R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
+        this.checkPermission("list");
         List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
         return R.ok(list);
     }
@@ -106,6 +111,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/list")
     protected R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
+        this.checkPermission("list");
         List<V> list = baseService.list(query, sortQuery);
         return R.ok(list);
     }
@@ -122,6 +128,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/{id}")
     protected R<D> get(@PathVariable Long id) {
+        this.checkPermission("list");
         D detail = baseService.get(id);
         return R.ok(detail);
     }
@@ -137,6 +144,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @PostMapping
     protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
+        this.checkPermission("add");
         Long id = baseService.add(request);
         return R.ok("新增成功", id);
     }
@@ -152,6 +160,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @PutMapping
     protected R update(@Validated(BaseRequest.Update.class) @RequestBody C request) {
+        this.checkPermission("update");
         baseService.update(request);
         return R.ok("修改成功");
     }
@@ -168,6 +177,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @DeleteMapping("/{ids}")
     protected R delete(@PathVariable List<Long> ids) {
+        this.checkPermission("delete");
         baseService.delete(ids);
         return R.ok("删除成功");
     }
@@ -185,6 +195,20 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "导出数据")
     @GetMapping("/export")
     protected void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
+        this.checkPermission("export");
         baseService.export(query, sortQuery, response);
+    }
+
+    /**
+     * 权限认证
+     *
+     * @param subPermission
+     *            部分权限码
+     */
+    private void checkPermission(String subPermission) {
+        CrudRequestMapping crudRequestMapping = this.getClass().getDeclaredAnnotation(CrudRequestMapping.class);
+        String path = crudRequestMapping.value();
+        String permissionPrefix = String.join(":", StrUtil.splitTrim(path, "/"));
+        StpUtil.checkPermission(String.format("%s:%s", permissionPrefix, subPermission));
     }
 }

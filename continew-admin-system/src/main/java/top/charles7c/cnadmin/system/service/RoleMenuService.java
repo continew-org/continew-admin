@@ -39,9 +39,9 @@ public interface RoleMenuService {
     /**
      * 根据角色 ID 查询
      *
-     * @param roleId
-     *            角色 ID
+     * @param roleIds
+     *            角色 ID 列表
      * @return 菜单 ID 列表
      */
-    List<Long> listMenuIdByRoleId(Long roleId);
+    List<Long> listMenuIdByRoleIds(List<Long> roleIds);
 }

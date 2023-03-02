@@ -19,7 +19,7 @@ const RESULT: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.result.success',
         requiresAuth: true,
-        roles: ['admin'],
+        roles: ['*'],
       },
     },
     {
@@ -29,7 +29,7 @@ const RESULT: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.result.error',
         requiresAuth: true,
-        roles: ['admin'],
+        roles: ['*'],
       },
     },
   ],

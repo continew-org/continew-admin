@@ -16,6 +16,10 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
+import java.util.Set;
+
+import org.apache.ibatis.annotations.Param;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MenuDO;
 
@@ -25,4 +29,14 @@ import top.charles7c.cnadmin.system.model.entity.MenuDO;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuMapper extends BaseMapper<MenuDO> {}
+public interface MenuMapper extends BaseMapper<MenuDO> {
+
+    /**
+     * 根据 ID 查询权限码
+     *
+     * @param userId
+     *            用户 ID
+     * @return 权限码集合
+     */
+    Set<String> selectPermissionsByUserId(@Param("userId") Long userId);
+}

@@ -74,10 +74,10 @@
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button v-permission="['admin']" type="text" size="small" title="查看详情" @click="toDetail(record.logId)">
+              <a-button type="text" size="small" title="查看详情" @click="toDetail(record.logId)">
                 <template #icon><icon-eye /></template>详情
               </a-button>
-              <a-button v-if="record.exceptionDetail" v-permission="['admin']" type="text" size="small" title="查看异常详情" @click="toExceptionDetail(record)">
+              <a-button v-if="record.exceptionDetail" type="text" size="small" title="查看异常详情" @click="toExceptionDetail(record)">
                 <template #icon><icon-bug /></template>异常
               </a-button>
             </template>

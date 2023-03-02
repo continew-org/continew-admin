@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.auth.service;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import java.util.Set;
 
 /**
- * 系统常量
+ * 权限业务接口
  *
  * @author Charles7c
- * @since 2023/2/9 22:11
+ * @since 2023/3/2 20:40
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Constants {
+public interface PermissionService {
 
     /**
-     * 超级管理员角色编码
+     * 根据用户 ID 查询权限码
+     *
+     * @param userId
+     *            用户 ID
+     * @return 权限码集合
      */
-    public static final String SUPER_ADMIN = "admin";
+    Set<String> listPermissionsByUserId(Long userId);
 
     /**
-     * 全部权限标识
+     * 根据用户 ID 查询角色编码
+     *
+     * @param userId
+     *            用户 ID
+     * @return 角色编码集合
      */
-    public static final String ALL_PERMISSION = "*";
-
-    /**
-     * 默认密码
-     */
-    public static final String DEFAULT_PASSWORD = "123456";
+    Set<String> listRoleCodesByUserId(Long userId);
 }

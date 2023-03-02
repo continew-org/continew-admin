@@ -9,7 +9,7 @@ export default function usePermission() {
         !route.meta?.requiresAuth ||
         !route.meta?.roles ||
         route.meta?.roles?.includes('*') ||
-        route.meta?.roles?.includes(loginStore.role)
+        route.meta?.roles?.includes(loginStore.roles[0])
       );
     },
     findFirstPermissionRoute(_routers: any, role = 'admin') {

@@ -90,7 +90,7 @@ public class RoleVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (Constants.ADMIN_ROLE_CODE.equals(roleCode)) {
+        if (Constants.SUPER_ADMIN.equals(roleCode)) {
             return true;
         }
         return disabled;

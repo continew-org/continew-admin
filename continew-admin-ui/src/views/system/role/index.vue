@@ -42,10 +42,15 @@
           <a-row>
             <a-col :span="12">
               <a-space>
-                <a-button type="primary" @click="toAdd">
+                <a-button
+                  v-permission="['system:role:add']"
+                  type="primary"
+                  @click="toAdd"
+                >
                   <template #icon><icon-plus /></template>新增
                 </a-button>
                 <a-button
+                  v-permission="['system:role:update']"
                   type="primary"
                   status="success"
                   :disabled="single"
@@ -55,6 +60,7 @@
                   <template #icon><icon-edit /></template>修改
                 </a-button>
                 <a-button
+                  v-permission="['system:role:delete']"
                   type="primary"
                   status="danger"
                   :disabled="multiple"
@@ -64,6 +70,7 @@
                   <template #icon><icon-delete /></template>删除
                 </a-button>
                 <a-button
+                  v-permission="['system:role:export']"
                   :loading="exportLoading"
                   type="primary"
                   status="warning"
@@ -137,7 +144,7 @@
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
-                :disabled="record.disabled"
+                :disabled="record.disabled || !checkPermission(['system:role:update'])"
                 @change="handleChangeStatus(record)"
               />
             </template>
@@ -148,7 +155,7 @@
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
-                v-permission="['admin']"
+                v-permission="['system:role:update']"
                 type="text"
                 size="small"
                 title="修改"
@@ -163,7 +170,7 @@
                 @ok="handleDelete([record.roleId])"
               >
                 <a-button
-                  v-permission="['admin']"
+                  v-permission="['system:role:delete']"
                   type="text"
                   size="small"
                   title="删除"
@@ -389,9 +396,13 @@
     deleteRole,
   } from '@/api/system/role';
   import { listMenuTree, listDeptTree } from '@/api/common';
+  import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { DataScopeEnum, DisEnableStatusEnum } = proxy.useDict('DataScopeEnum', 'DisEnableStatusEnum');
+  const { DataScopeEnum, DisEnableStatusEnum } = proxy.useDict(
+    'DataScopeEnum',
+    'DisEnableStatusEnum'
+  );
 
   const roleList = ref<RoleRecord[]>([]);
   const role = ref<RoleRecord>({
@@ -572,7 +583,9 @@
 
     // 获取半选中的菜单
     const halfCheckedNodes = proxy.$refs.menuRef.getHalfCheckedNodes();
-    const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key);
+    const halfCheckedKeys = halfCheckedNodes.map(
+      (item: TreeNodeData) => item.key
+    );
     // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
     return checkedKeys;
@@ -582,13 +595,18 @@
    * 获取所有选中的部门
    */
   const getDeptAllCheckedKeys = () => {
+    if (!proxy.$refs.deptRef) {
+      return [];
+    }
     // 获取目前被选中的部门
     const checkedNodes = proxy.$refs.deptRef.getCheckedNodes();
     const checkedKeys = checkedNodes.map((item: TreeNodeData) => item.key);
 
     // 获取半选中的部门
     const halfCheckedNodes = proxy.$refs.deptRef.getHalfCheckedNodes();
-    const halfCheckedKeys = halfCheckedNodes.map((item: TreeNodeData) => item.key);
+    const halfCheckedKeys = halfCheckedNodes.map(
+      (item: TreeNodeData) => item.key
+    );
     // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
     return checkedKeys;

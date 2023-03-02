@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,11 +63,6 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public List<Long> listRoleIdsByUserId(Long userId) {
-        List<UserRoleDO> userRoleList = userRoleMapper.selectList(
-            Wrappers.<UserRoleDO>lambdaQuery().select(UserRoleDO::getRoleId).eq(UserRoleDO::getUserId, userId));
-        if (CollUtil.isEmpty(userRoleList)) {
-            return Collections.emptyList();
-        }
-        return userRoleList.stream().map(UserRoleDO::getRoleId).collect(Collectors.toList());
+        return userRoleMapper.selectRoleIdsByUserId(userId);
     }
 }

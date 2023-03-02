@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.List;
+import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -88,5 +88,10 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return super.lambdaQuery().eq(MenuDO::getMenuName, name).eq(MenuDO::getParentId, parentId)
             .ne(id != null, MenuDO::getMenuId, id).exists();
+    }
+
+    @Override
+    public Set<String> listPermissionsByUserId(Long userId) {
+        return baseMapper.selectPermissionsByUserId(userId);
     }
 }

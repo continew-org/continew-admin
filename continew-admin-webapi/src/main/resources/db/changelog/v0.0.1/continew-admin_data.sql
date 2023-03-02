@@ -59,16 +59,6 @@ INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1011);
 INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1012);
 INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1013);
 INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1014);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1030);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1031);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1032);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1033);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1034);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1050);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1051);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1052);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1053);
-INSERT IGNORE INTO `sys_role_menu` VALUES (2, 1054);
 
 -- 初始化默认角色和部门关联数据
 INSERT IGNORE INTO `sys_role_dept` VALUES (2, 5);

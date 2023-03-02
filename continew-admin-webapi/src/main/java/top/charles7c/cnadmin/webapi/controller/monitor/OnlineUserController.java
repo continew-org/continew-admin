@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
@@ -59,6 +60,7 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
 public class OnlineUserController {
 
     @Operation(summary = "分页查询列表")
+    @SaCheckPermission("monitor:online:user:list")
     @GetMapping
     public R<PageDataVO<OnlineUserVO>> page(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
         List<LoginUser> loginUserList = new ArrayList<>();
@@ -113,6 +115,7 @@ public class OnlineUserController {
     }
 
     @Operation(summary = "强退在线用户")
+    @SaCheckPermission("monitor:online:user:delete")
     @DeleteMapping("/{token}")
     public R kickout(@PathVariable String token) {
         String currentToken = StpUtil.getTokenValue();

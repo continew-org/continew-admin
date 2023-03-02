@@ -70,7 +70,7 @@
             <template #cell="{ record }">
               <a-popconfirm content="确定要强退该用户吗？" type="warning" @ok="handleKickout(record.token)">
                 <a-button
-                  v-permission="['admin']"
+                  v-permission="['monitor:online:user:delete']"
                   type="text"
                   size="small"
                   :disabled="currentToken === record.token"

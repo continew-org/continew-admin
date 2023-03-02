@@ -24,8 +24,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
+import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpLogic;
 import cn.dev33.satoken.stp.StpUtil;
 
@@ -53,7 +55,23 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
      * Sa-Token 整合 JWT（简单模式）
      */
     @Bean
-    public StpLogic getStpLogicJwt() {
+    public StpLogic stpLogic() {
         return new StpLogicJwtForSimple();
+    }
+
+    /**
+     * Sa-Token 持久层本地 Redis 适配
+     */
+    @Bean
+    public SaTokenDao saTokenDao() {
+        return new SaTokenRedisDaoImpl();
+    }
+
+    /**
+     * Sa-Token 权限认证适配
+     */
+    @Bean
+    public StpInterface stpInterface() {
+        return new SaTokenPermissionImpl();
     }
 }

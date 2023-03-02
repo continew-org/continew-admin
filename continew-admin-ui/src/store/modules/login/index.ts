@@ -25,14 +25,8 @@ const useLoginStore = defineStore('user', {
     registrationDate: undefined,
     deptId: 0,
     deptName: '',
-
-    job: 'backend',
-    jobName: '后端艺术家',
-    location: 'beijing',
-    locationName: '北京',
-    introduction: '低调星人',
-    personalWebsite: 'https://blog.charles7c.top',
-    role: '',
+    permissions: [],
+    roles: [],
   }),
 
   getters: {
@@ -86,14 +80,6 @@ const useLoginStore = defineStore('user', {
     // 重置用户信息
     resetInfo() {
       this.$reset();
-    },
-
-    // 切换角色
-    switchRoles() {
-      return new Promise((resolve) => {
-        this.role = this.role === 'user' ? 'admin' : 'user';
-        resolve(this.role);
-      });
     },
   },
 });

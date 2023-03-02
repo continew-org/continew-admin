@@ -41,6 +41,7 @@ import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Opt;
@@ -165,7 +166,10 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(C request) {
-        T entity = BeanUtil.copyProperties(request, entityClass);
+        String idName = this.currentEntityIdName();
+        Object idValue = ReflectUtil.getFieldValue(request, idName);
+        T entity = this.getById(idValue);
+        BeanUtil.copyProperties(request, entity, CopyOptions.create().ignoreNullValue());
         baseMapper.updateById(entity);
     }
 
@@ -211,8 +215,8 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
      *            ID
      * @return 实体信息
      */
-    protected T getById(Long id) {
-        T entity = baseMapper.selectById(id);
+    protected T getById(Object id) {
+        T entity = baseMapper.selectById(Convert.toStr(id));
         CheckUtils.throwIfNull(entity, String.format("ID为 [%s] 的记录已不存在", id));
         return entity;
     }

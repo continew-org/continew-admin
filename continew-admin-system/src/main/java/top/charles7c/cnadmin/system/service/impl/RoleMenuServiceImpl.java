@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,10 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     }
 
     @Override
-    public List<Long> listMenuIdByRoleId(Long roleId) {
-        return roleMenuMapper.selectMenuIdsByRoleId(roleId);
+    public List<Long> listMenuIdByRoleIds(List<Long> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return Collections.emptyList();
+        }
+        return roleMenuMapper.selectMenuIdsByRoleIds(roleIds);
     }
 }

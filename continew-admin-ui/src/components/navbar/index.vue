@@ -151,14 +151,6 @@
           </a-avatar>
           <template #content>
             <a-doption>
-              <a-space @click="switchRoles">
-                <icon-tag />
-                <span>
-                  {{ $t('messageBox.switchRoles') }}
-                </span>
-              </a-space>
-            </a-doption>
-            <a-doption>
               <a-space @click="$router.push({ name: 'UserCenter' })">
                 <icon-settings />
                 <span>
@@ -183,7 +175,6 @@
 
 <script lang="ts" setup>
   import { computed, ref, inject } from 'vue';
-  import { Message } from '@arco-design/web-vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useLoginStore } from '@/store';
   import { LOCALE_OPTIONS } from '@/locale';
@@ -241,10 +232,6 @@
       cancelable: true,
     });
     triggerBtn.value.dispatchEvent(event);
-  };
-  const switchRoles = async () => {
-    const res = await loginStore.switchRoles();
-    Message.success(res as string);
   };
   const toggleDrawerMenu = inject('toggleDrawerMenu') as () => void;
 </script>

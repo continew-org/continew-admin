@@ -1,8 +1,12 @@
-import { DirectiveBinding } from 'vue';
 import { useLoginStore } from '@/store';
 
-function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
-  const { value } = binding;
+/**
+ * 权限判断
+ *
+ * @param value 权限码列表
+ * @return true 有权限，false 没有权限
+ */
+export default function checkPermission(value: Array<string>) {
   const loginStore = useLoginStore();
   const { permissions, roles } = loginStore;
   const superAdmin = 'admin';
@@ -20,22 +24,9 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
     const hasRole = roles.some((role: string) => {
       return superAdmin === role || permissionValues.includes(role);
     });
-    // 如果没有权限，移除元素
-    if (!hasPermission && !hasRole && el.parentNode) {
-      el.parentNode.removeChild(el);
-    }
-  } else {
-    throw new Error(
-      `need roles! Like v-permission="['admin','system:user:add']"`
-    );
+    return hasPermission || hasRole;
   }
+  throw new Error(
+    `need roles! Like v-permission="['admin','system:user:add']"`
+  );
 }
-
-export default {
-  mounted(el: HTMLElement, binding: DirectiveBinding) {
-    checkPermission(el, binding);
-  },
-  updated(el: HTMLElement, binding: DirectiveBinding) {
-    checkPermission(el, binding);
-  },
-};

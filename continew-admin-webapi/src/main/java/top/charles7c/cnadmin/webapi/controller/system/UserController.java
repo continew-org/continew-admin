@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.base.BaseRequest;
@@ -50,12 +52,14 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class UserController extends BaseController<UserService, UserVO, UserDetailVO, UserQuery, UserRequest> {
 
     @Override
+    @SaCheckPermission("system:user:add")
     protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody UserRequest request) {
         Long id = baseService.add(request);
         return R.ok(String.format("新增成功，请牢记默认密码：%s", Constants.DEFAULT_PASSWORD), id);
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
+    @SaCheckPermission("system:user:password:reset")
     @PatchMapping("/{userId}/password")
     public R resetPassword(@PathVariable Long userId) {
         baseService.resetPassword(userId);
@@ -63,6 +67,7 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
+    @SaCheckPermission("system:user:role:update")
     @PatchMapping("/{userId}/role")
     public R updateUserRole(@PathVariable Long userId, @Validated @RequestBody UpdateUserRoleRequest request) {
         baseService.updateUserRole(request, userId);

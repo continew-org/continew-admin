@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.auth.model.vo;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -123,9 +124,16 @@ public class UserInfoVO implements Serializable {
     private String deptName;
 
     /**
-     * 用户角色（临时 mock 用，写完角色体系后移除）
+     * 权限码集合
      */
-    private String role = "admin";
+    @Schema(description = "权限码集合")
+    private Set<String> permissions;
+
+    /**
+     * 角色编码集合
+     */
+    @Schema(description = "角色编码集合")
+    private Set<String> roles;
 
     public String getPhone() {
         return DesensitizedUtil.mobilePhone(phone);

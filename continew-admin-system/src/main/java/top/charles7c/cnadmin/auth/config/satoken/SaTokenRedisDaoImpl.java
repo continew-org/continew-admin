@@ -21,20 +21,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.util.SaFoxUtil;
 
 import top.charles7c.cnadmin.common.util.RedisUtils;
 
 /**
- * SaTokenDao 的本地 Redis 适配（参考：Sa-Token/sa-token-plugin/sa-token-dao-redisx/SaTokenDaoOfRedis.java）
+ * Sa-Token 持久层本地 Redis 适配（参考：Sa-Token/sa-token-plugin/sa-token-dao-redisx/SaTokenDaoOfRedis.java）
  *
  * @author Charles7c
  * @since 2022/12/28 22:55
  */
-@Component
 public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override

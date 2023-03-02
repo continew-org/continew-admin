@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.common.model.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.Data;
 
@@ -118,4 +119,14 @@ public class LoginUser implements Serializable {
      * 登录时间
      */
     private LocalDateTime loginTime;
+
+    /**
+     * 权限码集合
+     */
+    private Set<String> permissions;
+
+    /**
+     * 角色编码集合
+     */
+    private Set<String> roles;
 }

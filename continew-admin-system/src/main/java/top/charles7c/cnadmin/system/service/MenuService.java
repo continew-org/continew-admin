@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.service;
 
+import java.util.Set;
+
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.request.MenuRequest;
@@ -27,4 +29,14 @@ import top.charles7c.cnadmin.system.model.vo.MenuVO;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, MenuRequest> {}
+public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, MenuRequest> {
+
+    /**
+     * 根据用户 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 权限码集合
+     */
+    Set<String> listPermissionsByUserId(Long userId);
+}

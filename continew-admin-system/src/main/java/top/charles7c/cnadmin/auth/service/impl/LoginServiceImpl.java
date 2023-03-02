@@ -24,6 +24,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.auth.service.LoginService;
+import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -46,6 +47,7 @@ public class LoginServiceImpl implements LoginService {
 
     private final UserService userService;
     private final DeptService deptService;
+    private final PermissionService permissionService;
 
     @Override
     public String login(String username, String password) {
@@ -58,6 +60,8 @@ public class LoginServiceImpl implements LoginService {
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
         loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getDeptName()));
+        loginUser.setPermissions(permissionService.listPermissionsByUserId(userId));
+        loginUser.setRoles(permissionService.listRoleCodesByUserId(userId));
         LoginHelper.login(loginUser);
 
         // 返回令牌

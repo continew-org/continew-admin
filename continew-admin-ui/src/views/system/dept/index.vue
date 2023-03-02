@@ -42,10 +42,15 @@
           <a-row>
             <a-col :span="12">
               <a-space>
-                <a-button type="primary" @click="toAdd">
+                <a-button
+                  v-permission="['system:dept:add']"
+                  type="primary"
+                  @click="toAdd"
+                >
                   <template #icon><icon-plus /></template>新增
                 </a-button>
                 <a-button
+                  v-permission="['system:dept:update']"
                   type="primary"
                   status="success"
                   :disabled="single"
@@ -55,6 +60,7 @@
                   <template #icon><icon-edit /></template>修改
                 </a-button>
                 <a-button
+                  v-permission="['system:dept:delete']"
                   type="primary"
                   status="danger"
                   :disabled="multiple"
@@ -64,6 +70,7 @@
                   <template #icon><icon-delete /></template>删除
                 </a-button>
                 <a-button
+                  v-permission="['system:dept:export']"
                   :loading="exportLoading"
                   type="primary"
                   status="warning"
@@ -122,6 +129,7 @@
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
+                :disabled="!checkPermission(['system:dept:update'])"
                 @change="handleChangeStatus(record)"
               />
             </template>
@@ -132,7 +140,7 @@
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
-                v-permission="['admin']"
+                v-permission="['system:dept:update']"
                 type="text"
                 size="small"
                 title="修改"
@@ -146,7 +154,7 @@
                 @ok="handleDelete([record.deptId])"
               >
                 <a-button
-                  v-permission="['admin']"
+                  v-permission="['system:dept:delete']"
                   type="text"
                   size="small"
                   title="删除"
@@ -293,6 +301,7 @@
     deleteDept,
   } from '@/api/system/dept';
   import { listDeptTree } from '@/api/common';
+  import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');

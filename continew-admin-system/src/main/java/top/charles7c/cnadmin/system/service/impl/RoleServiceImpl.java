@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -61,8 +62,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExists = this.checkNameExists(roleName, request.getRoleId());
-        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", roleName));
+        CheckUtils.throwIf(() -> this.checkNameExists(roleName, request.getRoleId()),
+            String.format("新增失败，'%s'已存在", roleName));
+        String roleCode = request.getRoleCode();
+        CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
+            String.format("新增失败，'%s'已存在", roleCode));
 
         // 新增角色
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -78,8 +82,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request) {
         String roleName = request.getRoleName();
-        boolean isExists = this.checkNameExists(roleName, request.getRoleId());
-        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", roleName));
+        CheckUtils.throwIf(() -> this.checkNameExists(roleName, request.getRoleId()),
+            String.format("修改失败，'%s'已存在", roleName));
+        String roleCode = request.getRoleCode();
+        CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
+            String.format("修改失败，'%s'已存在", roleCode));
 
         // 更新角色
         super.update(request);
@@ -110,18 +117,31 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
     }
 
+    /**
+     * 检查编码是否存在
+     *
+     * @param code
+     *            编码
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkCodeExists(String code, Long id) {
+        return super.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
+    }
+
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
         if (detailObj instanceof RoleDetailVO) {
             RoleDetailVO detailVO = (RoleDetailVO)detailObj;
             Long roleId = detailVO.getRoleId();
-            if (Constants.ADMIN_ROLE_CODE.equals(detailVO.getRoleCode())) {
+            if (Constants.SUPER_ADMIN.equals(detailVO.getRoleCode())) {
                 List<MenuVO> list = menuService.list(null, null);
                 List<Long> menuIds = list.stream().map(MenuVO::getMenuId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);
             } else {
-                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleId(roleId));
+                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(Collections.singletonList(roleId)));
             }
             detailVO.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
         }
@@ -142,5 +162,15 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
             return Collections.emptyList();
         }
         return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<String> listRoleCodesByUserId(Long userId) {
+        List<Long> roleIds = userRoleService.listRoleIdsByUserId(userId);
+        List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
+        if (CollUtil.isEmpty(roleList)) {
+            return Collections.emptySet();
+        }
+        return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());
     }
 }

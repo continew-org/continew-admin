@@ -36,6 +36,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -163,7 +165,20 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 拦截认证异常-未登录异常
+     * 拦截文件上传异常-超过上传大小限制
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletRequest request) {
+        log.error("请求地址'{}'，上传文件失败，文件大小超过限制", request.getRequestURI(), e);
+        String sizeLimit = StrUtil.subBetween(e.getMessage(), "The maximum size ", " for");
+        String errorMsg = String.format("请上传小于 %s MB 的文件", NumberUtil.parseLong(sizeLimit) / 1024 / 1024);
+        LogContextHolder.setErrorMsg(errorMsg);
+        return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
+    }
+
+    /**
+     * 认证异常-登录认证
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(NotLoginException.class)
@@ -188,15 +203,22 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 拦截文件上传异常-超过上传大小限制
+     * 认证异常-权限认证
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，上传文件失败，文件大小超过限制", request.getRequestURI(), e);
-        String sizeLimit = StrUtil.subBetween(e.getMessage(), "The maximum size ", " for");
-        String errorMsg = String.format("请上传小于 %s MB 的文件", NumberUtil.parseLong(sizeLimit) / 1024 / 1024);
-        LogContextHolder.setErrorMsg(errorMsg);
-        return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(NotPermissionException.class)
+    public R handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
+        log.error("请求地址'{}'，权限码校验失败'{}'", request.getRequestURI(), e);
+        return R.fail(HttpStatus.FORBIDDEN.value(), "没有访问权限，请联系管理员授权");
+    }
+
+    /**
+     * 认证异常-角色认证
+     */
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(NotRoleException.class)
+    public R handleNotRoleException(NotRoleException e, HttpServletRequest request) {
+        log.error("请求地址'{}'，角色权限校验失败'{}'", request.getRequestURI(), e);
+        return R.fail(HttpStatus.FORBIDDEN.value(), "没有访问权限，请联系管理员授权");
     }
 }

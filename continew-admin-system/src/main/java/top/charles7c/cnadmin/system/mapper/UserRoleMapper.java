@@ -16,6 +16,11 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
 
@@ -25,4 +30,15 @@ import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
  * @author Charles7c
  * @since 2023/2/13 23:13
  */
-public interface UserRoleMapper extends BaseMapper<UserRoleDO> {}
+public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
+
+    /**
+     * 根据用户 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 角色 ID 列表
+     */
+    @Select("SELECT `role_id` FROM `sys_user_role` WHERE `user_id` = #{userId}")
+    List<Long> selectRoleIdsByUserId(@Param("userId") Long userId);
+}
