@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.common.util;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -229,7 +229,7 @@ public class MailUtils {
      */
     private static List<String> splitAddress(String addresses) {
         if (StrUtil.isBlank(addresses)) {
-            return Collections.emptyList();
+            return new ArrayList<>(0);
         }
 
         List<String> result;

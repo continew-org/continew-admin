@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -141,7 +141,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
                 List<Long> menuIds = list.stream().map(MenuVO::getMenuId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);
             } else {
-                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(Collections.singletonList(roleId)));
+                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
             }
             detailVO.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
         }
@@ -150,7 +150,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     public List<LabelValueVO<Long>> buildDict(List<RoleVO> list) {
         if (CollUtil.isEmpty(list)) {
-            return Collections.emptyList();
+            return new ArrayList<>(0);
         }
         return list.stream().map(r -> new LabelValueVO<>(r.getRoleName(), r.getRoleId())).collect(Collectors.toList());
     }
@@ -158,9 +158,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     public List<String> listRoleNamesByRoleIds(List<Long> roleIds) {
         List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, roleIds).list();
-        if (CollUtil.isEmpty(roleList)) {
-            return Collections.emptyList();
-        }
         return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
     }
 
@@ -168,9 +165,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     public Set<String> listRoleCodesByUserId(Long userId) {
         List<Long> roleIds = userRoleService.listRoleIdsByUserId(userId);
         List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
-        if (CollUtil.isEmpty(roleList)) {
-            return Collections.emptySet();
-        }
         return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());
     }
 }

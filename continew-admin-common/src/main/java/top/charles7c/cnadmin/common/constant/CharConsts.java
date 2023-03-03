@@ -34,4 +34,9 @@ public class CharConsts implements CharPool {
      * 分号
      */
     public static final String SEMICOLON = ";";
+
+    /**
+     * 空字符串
+     */
+    public static final String EMPTY = "";
 }

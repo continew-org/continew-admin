@@ -17,8 +17,8 @@
 package top.charles7c.cnadmin.common.base;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -104,7 +104,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple) {
         List<V> list = this.list(query, sortQuery);
         if (CollUtil.isEmpty(list)) {
-            return Collections.emptyList();
+            return new ArrayList<>(0);
         }
 
         // 如果构建简单树结构，则不包含基本树结构之外的扩展字段
@@ -205,7 +205,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
             queryWrapper.orderBy(order != null, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
         }
         List<T> entityList = baseMapper.selectList(queryWrapper);
-        return CollUtil.isNotEmpty(entityList) ? BeanUtil.copyToList(entityList, targetClass) : Collections.emptyList();
+        return BeanUtil.copyToList(entityList, targetClass);
     }
 
     /**

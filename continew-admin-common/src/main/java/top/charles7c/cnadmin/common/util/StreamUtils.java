@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import org.apache.commons.lang3.StringUtils;
-
 import cn.hutool.core.collection.CollUtil;
+
+import top.charles7c.cnadmin.common.constant.CharConsts;
 
 /**
  * Stream 工具类
@@ -52,7 +52,7 @@ public class StreamUtils {
      */
     public static <E> String join(Collection<E> collection, Function<E, String> function, CharSequence delimiter) {
         if (CollUtil.isEmpty(collection)) {
-            return StringUtils.EMPTY;
+            return CharConsts.EMPTY;
         }
         return collection.stream().map(function).filter(Objects::nonNull).collect(Collectors.joining(delimiter));
     }

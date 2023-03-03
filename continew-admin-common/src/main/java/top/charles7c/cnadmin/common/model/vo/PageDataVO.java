@@ -120,7 +120,7 @@ public class PageDataVO<V> {
         int fromIndex = (page - 1) * size;
         int toIndex = page * size + size;
         if (fromIndex > list.size()) {
-            pageDataVO.setList(new ArrayList<>());
+            pageDataVO.setList(new ArrayList<>(0));
         } else if (toIndex >= list.size()) {
             pageDataVO.setList(list.subList(fromIndex, list.size()));
         } else {
