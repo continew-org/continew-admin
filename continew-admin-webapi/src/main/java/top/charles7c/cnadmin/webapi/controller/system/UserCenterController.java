@@ -30,8 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ReUtil;
 
-import top.charles7c.cnadmin.common.consts.CacheConstants;
-import top.charles7c.cnadmin.common.consts.RegExpConstants;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.RegExpConsts;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
@@ -89,7 +89,7 @@ public class UserCenterController {
         String rawNewPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
         ValidationUtils.throwIfBlank(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(() -> !ReUtil.isMatch(RegExpConstants.PASSWORD, rawNewPassword),
+        ValidationUtils.throwIf(() -> !ReUtil.isMatch(RegExpConsts.PASSWORD, rawNewPassword),
             "密码长度 6 到 32 位，同时包含数字和字母");
 
         // 修改密码
@@ -105,7 +105,7 @@ public class UserCenterController {
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
 
         // 校验验证码
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, updateEmailRequest.getNewEmail());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, updateEmailRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");

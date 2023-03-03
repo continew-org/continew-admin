@@ -34,7 +34,7 @@ import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.common.consts.CacheConstants;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -62,7 +62,7 @@ public class LoginController {
     @PostMapping("/login")
     public R<LoginVO> login(@Validated @RequestBody LoginRequest loginRequest) {
         // 校验验证码
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, loginRequest.getUuid());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);

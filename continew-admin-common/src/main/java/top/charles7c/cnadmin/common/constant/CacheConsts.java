@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 系统常量
+ * 缓存相关常量
  *
  * @author Charles7c
- * @since 2023/2/9 22:11
+ * @since 2022/12/22 19:30
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Constants {
+public class CacheConsts {
 
     /**
-     * 超级管理员角色编码
+     * 登录用户缓存键
      */
-    public static final String SUPER_ADMIN = "admin";
+    public static final String LOGIN_USER_CACHE_KEY = "LOGIN_USER";
 
     /**
-     * 全部权限标识
+     * 验证码缓存键
      */
-    public static final String ALL_PERMISSION = "*";
+    public static final String CAPTCHA_CACHE_KEY = "CAPTCHA";
 
     /**
-     * 默认密码
+     * 限流缓存键
      */
-    public static final String DEFAULT_PASSWORD = "123456";
+    public static final String LIMIT_CACHE_KEY = "LIMIT";
 }

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.auth.service.PermissionService;
-import top.charles7c.cnadmin.common.consts.Constants;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.system.service.MenuService;
 import top.charles7c.cnadmin.system.service.RoleService;
 
@@ -46,8 +46,8 @@ public class PermissionServiceImpl implements PermissionService {
     public Set<String> listPermissionsByUserId(Long userId) {
         Set<String> roleCodeSet = this.listRoleCodesByUserId(userId);
         // 超级管理员赋予全部权限
-        if (roleCodeSet.contains(Constants.SUPER_ADMIN)) {
-            return CollUtil.newHashSet(Constants.ALL_PERMISSION);
+        if (roleCodeSet.contains(SysConsts.SUPER_ADMIN)) {
+            return CollUtil.newHashSet(SysConsts.ALL_PERMISSION);
         }
         return menuService.listPermissionsByUserId(userId);
     }

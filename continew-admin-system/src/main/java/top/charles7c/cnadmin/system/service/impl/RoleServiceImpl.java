@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
-import top.charles7c.cnadmin.common.consts.Constants;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -136,7 +136,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         if (detailObj instanceof RoleDetailVO) {
             RoleDetailVO detailVO = (RoleDetailVO)detailObj;
             Long roleId = detailVO.getRoleId();
-            if (Constants.SUPER_ADMIN.equals(detailVO.getRoleCode())) {
+            if (SysConsts.SUPER_ADMIN.equals(detailVO.getRoleCode())) {
                 List<MenuVO> list = menuService.list(null, null);
                 List<Long> menuIds = list.stream().map(MenuVO::getMenuId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);

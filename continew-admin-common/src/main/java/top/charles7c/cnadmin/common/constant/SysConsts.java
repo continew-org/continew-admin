@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 文件常量
+ * 系统相关常量
  *
  * @author Charles7c
- * @since 2023/1/2 21:19
+ * @since 2023/2/9 22:11
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FileConstants {
+public class SysConsts {
 
     /**
-     * 头像支持的图片类型
+     * 超级管理员角色编码
      */
-    public static final String[] AVATAR_SUPPORTED_IMG_TYPES = {"jpg", "png", "gif", "jpeg"};
+    public static final String SUPER_ADMIN = "admin";
 
+    /**
+     * 全部权限标识
+     */
+    public static final String ALL_PERMISSION = "*";
+
+    /**
+     * 默认密码
+     */
+    public static final String DEFAULT_PASSWORD = "123456";
 }

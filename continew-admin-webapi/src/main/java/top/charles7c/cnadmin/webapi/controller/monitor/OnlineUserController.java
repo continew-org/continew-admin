@@ -38,7 +38,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.consts.CacheConstants;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -74,7 +74,7 @@ public class OnlineUserController {
 
             // 获取 Token Session
             SaSession saSession = StpUtil.getTokenSessionByToken(token);
-            LoginUser loginUser = saSession.get(CacheConstants.LOGIN_USER_CACHE_KEY, new LoginUser());
+            LoginUser loginUser = saSession.get(CacheConsts.LOGIN_USER_CACHE_KEY, new LoginUser());
 
             // 检查是否符合查询条件
             if (Boolean.TRUE.equals(checkQuery(query, loginUser))) {

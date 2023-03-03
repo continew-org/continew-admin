@@ -27,7 +27,7 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 
-import top.charles7c.cnadmin.common.consts.CacheConstants;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -66,8 +66,8 @@ public class LoginHelper {
         // 登录保存用户信息
         StpUtil.login(loginUser.getUserId());
         loginUser.setToken(StpUtil.getTokenValue());
-        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
-        StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
     }
 
     /**
@@ -76,13 +76,13 @@ public class LoginHelper {
      * @return /
      */
     public static LoginUser getLoginUser() {
-        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConstants.LOGIN_USER_CACHE_KEY);
+        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_CACHE_KEY);
         if (loginUser != null) {
             return loginUser;
         }
         try {
-            loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConstants.LOGIN_USER_CACHE_KEY);
-            SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+            loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_CACHE_KEY);
+            SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
         } catch (Exception ignored) {
         }
         return loginUser;
@@ -95,8 +95,8 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void updateLoginUser(LoginUser loginUser) {
-        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
-        StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_CACHE_KEY, loginUser);
+        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
     }
 
     /**

@@ -34,8 +34,8 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
-import top.charles7c.cnadmin.common.consts.Constants;
-import top.charles7c.cnadmin.common.consts.FileConstants;
+import top.charles7c.cnadmin.common.constant.FileConsts;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.service.CommonUserService;
@@ -81,7 +81,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long userId = super.add(request);
         super.lambdaUpdate()
-            .set(UserDO::getPassword, SecureUtils.md5Salt(Constants.DEFAULT_PASSWORD, userId.toString()))
+            .set(UserDO::getPassword, SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getUserId, userId).update();
         // 保存用户和角色关联
         userRoleService.save(request.getRoleIds(), userId);
@@ -139,7 +139,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
             String.format("请上传小于 %s MB 的图片", avatarMaxSizeInMb));
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
-        String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
+        String[] avatarSupportImgTypes = FileConsts.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
             String.format("头像仅支持 %s 格式的图片", String.join("，", avatarSupportImgTypes)));
 
@@ -206,7 +206,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     public void resetPassword(Long userId) {
         UserDO userDO = super.getById(userId);
-        userDO.setPassword(SecureUtils.md5Salt(Constants.DEFAULT_PASSWORD, userId.toString()));
+        userDO.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, userId.toString()));
         userDO.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(userDO);
     }

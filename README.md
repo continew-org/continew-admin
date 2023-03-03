@@ -239,7 +239,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                │  ├─ mybatis      # MyBatis Plus 配置
   │                │  ├─ threadpool   # 线程池配置
   │                │  └─ properties   # 公共配置属性
-  │                ├─ consts       # 公共常量
+  │                ├─ constant     # 公共常量
   │                ├─ enums        # 公共枚举
   │                ├─ exception    # 公共异常
   │                ├─ handler      # 公共处理器

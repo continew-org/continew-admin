@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
-import top.charles7c.cnadmin.common.consts.Constants;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
@@ -90,7 +90,7 @@ public class RoleVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (Constants.SUPER_ADMIN.equals(roleCode)) {
+        if (SysConsts.SUPER_ADMIN.equals(roleCode)) {
             return true;
         }
         return disabled;

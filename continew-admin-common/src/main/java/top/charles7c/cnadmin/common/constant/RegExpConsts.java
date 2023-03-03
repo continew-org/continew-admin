@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
+ * 正则相关常量
+ *
  * @author Charles7c
  * @since 2023/1/10 20:06
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegExpConstants {
+public class RegExpConsts {
 
     /**
      * 密码正则（必须包含字母和数字的组合，可以使用特殊字符，长度在6-32之间）

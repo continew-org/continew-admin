@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * 缓存键常量
+ * 文件相关常量
  *
  * @author Charles7c
- * @since 2022/12/22 19:30
+ * @since 2023/1/2 21:19
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CacheConstants {
+public class FileConsts {
 
     /**
-     * 登录用户缓存键
+     * 头像支持的图片类型
      */
-    public static final String LOGIN_USER_CACHE_KEY = "LOGIN_USER";
-
-    /**
-     * 验证码缓存键
-     */
-    public static final String CAPTCHA_CACHE_KEY = "CAPTCHA";
-
-    /**
-     * 限流缓存键
-     */
-    public static final String LIMIT_CACHE_KEY = "LIMIT";
-
+    public static final String[] AVATAR_SUPPORTED_IMG_TYPES = {"jpg", "png", "gif", "jpeg"};
 }

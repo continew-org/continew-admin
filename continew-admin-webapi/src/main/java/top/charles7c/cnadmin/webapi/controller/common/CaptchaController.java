@@ -42,7 +42,7 @@ import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
-import top.charles7c.cnadmin.common.consts.CacheConstants;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.*;
@@ -74,7 +74,7 @@ public class CaptchaController {
 
         // 保存验证码
         String uuid = IdUtil.fastSimpleUUID();
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, uuid);
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
 
@@ -88,8 +88,8 @@ public class CaptchaController {
     public R getMailCaptcha(
         @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email)
         throws MessagingException {
-        String limitCacheKey = CacheConstants.LIMIT_CACHE_KEY;
-        String captchaCacheKey = CacheConstants.CAPTCHA_CACHE_KEY;
+        String limitCacheKey = CacheConsts.LIMIT_CACHE_KEY;
+        String captchaCacheKey = CacheConsts.CAPTCHA_CACHE_KEY;
         String limitCaptchaKey = RedisUtils.formatKey(limitCacheKey, captchaCacheKey, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
         CheckUtils.throwIf(() -> limitTimeInMillisecond > 0,
@@ -106,7 +106,7 @@ public class CaptchaController {
         MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", properties.getName()), content);
 
         // 保存验证码
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_CACHE_KEY, email);
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, email);
         RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));

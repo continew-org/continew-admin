@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.common.consts;
+package top.charles7c.cnadmin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -22,13 +22,13 @@ import lombok.NoArgsConstructor;
 import cn.hutool.core.text.CharPool;
 
 /**
- * 字符常量
+ * 字符相关常量
  *
  * @author Charles7c
  * @since 2023/2/10 20:14
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CharConstants implements CharPool {
+public class CharConsts implements CharPool {
 
     /**
      * 分号
