@@ -72,7 +72,7 @@ public class ExcelBigNumberConverter implements Converter<Long> {
                 return new WriteCellData<>(str);
             }
         }
-        WriteCellData<Object> writeCellData = new WriteCellData<>(new BigDecimal(value));
+        WriteCellData<Object> writeCellData = new WriteCellData<>(BigDecimal.valueOf(value));
         writeCellData.setType(CellDataTypeEnum.NUMBER);
         return writeCellData;
     }
