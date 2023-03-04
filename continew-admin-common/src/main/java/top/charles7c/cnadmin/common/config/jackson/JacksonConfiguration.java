@@ -43,6 +43,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 
 /**
  * Jackson 配置
@@ -59,10 +60,6 @@ public class JacksonConfiguration {
      */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        String dateTimeFormatPattern = "yyyy-MM-dd HH:mm:ss";
-        String dateFormatPattern = "yyyy-MM-dd";
-        String timeFormatPattern = "HH:mm:ss";
-
         return builder -> {
             // 针对数值类型：Long、BigInteger、BigDecimal 的序列化和反序列化
             JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -72,15 +69,15 @@ public class JacksonConfiguration {
             javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
 
             // 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimeFormatPattern);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(StringConsts.NORM_DATE_TIME_PATTERN);
             javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
             javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
 
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateFormatPattern);
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(StringConsts.NORM_DATE_PATTERN);
             javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
             javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormatter));
 
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(timeFormatPattern);
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(StringConsts.NORM_TIME_PATTERN);
             javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
             javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
             builder.modules(javaTimeModule);

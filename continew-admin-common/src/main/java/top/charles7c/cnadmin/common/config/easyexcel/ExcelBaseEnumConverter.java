@@ -28,6 +28,7 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 
 /**
  * Easy Excel 枚举基类转换器
@@ -63,7 +64,7 @@ public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer, Strin
     public WriteCellData<String> convertToExcelData(BaseEnum<Integer, String> value,
         ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
         if (ObjectUtil.isNull(value)) {
-            return new WriteCellData<>("");
+            return new WriteCellData<>(StringConsts.EMPTY);
         }
         return new WriteCellData<>(value.getDescription());
     }

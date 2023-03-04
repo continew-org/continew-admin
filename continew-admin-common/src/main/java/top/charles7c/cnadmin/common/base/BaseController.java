@@ -35,6 +35,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -208,7 +209,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     private void checkPermission(String subPermission) {
         CrudRequestMapping crudRequestMapping = this.getClass().getDeclaredAnnotation(CrudRequestMapping.class);
         String path = crudRequestMapping.value();
-        String permissionPrefix = String.join(":", StrUtil.splitTrim(path, "/"));
+        String permissionPrefix = String.join(StringConsts.COLON, StrUtil.splitTrim(path, StringConsts.SLASH));
         StpUtil.checkPermission(String.format("%s:%s", permissionPrefix, subPermission));
     }
 }

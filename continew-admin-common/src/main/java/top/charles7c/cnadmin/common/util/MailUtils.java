@@ -37,7 +37,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.constant.CharConsts;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
 /**
@@ -233,10 +233,10 @@ public class MailUtils {
         }
 
         List<String> result;
-        if (StrUtil.contains(addresses, CharConsts.COMMA)) {
-            result = StrUtil.splitTrim(addresses, CharConsts.COMMA);
-        } else if (StrUtil.contains(addresses, CharConsts.SEMICOLON)) {
-            result = StrUtil.splitTrim(addresses, CharConsts.SEMICOLON);
+        if (StrUtil.contains(addresses, StringConsts.COMMA)) {
+            result = StrUtil.splitTrim(addresses, StringConsts.COMMA);
+        } else if (StrUtil.contains(addresses, StringConsts.SEMICOLON)) {
+            result = StrUtil.splitTrim(addresses, StringConsts.SEMICOLON);
         } else {
             result = CollUtil.newArrayList(addresses);
         }

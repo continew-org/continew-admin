@@ -29,6 +29,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
 
+import top.charles7c.cnadmin.common.constant.StringConsts;
+
 /**
  * 文件工具类
  *
@@ -57,7 +59,7 @@ public class FileUtils {
         String filename;
         if (isKeepOriginalFilename) {
             filename = String.format("%s-%s.%s", FileNameUtil.getPrefix(originalFilename),
-                DateUtil.format(LocalDateTime.now(), "yyyyMMddHHmmssS"), extensionName);
+                DateUtil.format(LocalDateTime.now(), StringConsts.PURE_DATE_TIME_MS_PATTERN), extensionName);
         } else {
             filename = String.format("%s.%s", IdUtil.fastSimpleUUID(), extensionName);
         }

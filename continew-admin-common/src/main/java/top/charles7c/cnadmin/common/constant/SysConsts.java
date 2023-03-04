@@ -42,4 +42,14 @@ public class SysConsts {
      * 默认密码
      */
     public static final String DEFAULT_PASSWORD = "123456";
+
+    /**
+     * 登录 URI
+     */
+    public static final String LOGIN_URI = "/auth/login";
+
+    /**
+     * 退出登录 URI
+     */
+    public static final String LOGOUT_URI = "/auth/logout";
 }

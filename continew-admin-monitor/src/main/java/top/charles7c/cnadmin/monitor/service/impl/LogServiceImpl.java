@@ -33,6 +33,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.service.CommonUserService;
@@ -95,8 +96,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.lambda()
-            .and(qw -> qw.like(LogDO::getRequestUrl, "/auth/login").or().like(LogDO::getRequestUrl, "/auth/logout"));
+        queryWrapper.lambda().and(qw -> qw.like(LogDO::getRequestUrl, SysConsts.LOGIN_URI).or()
+            .like(LogDO::getRequestUrl, SysConsts.LOGOUT_URI));
 
         // 限定查询信息
         String[] fieldsName = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
