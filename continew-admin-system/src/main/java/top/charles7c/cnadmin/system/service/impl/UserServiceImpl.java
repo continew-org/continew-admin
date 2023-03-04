@@ -35,6 +35,7 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.constant.FileConsts;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
@@ -108,22 +109,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         if (detailObj instanceof UserDetailVO) {
             UserDetailVO detailVO = (UserDetailVO)detailObj;
             detailVO.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detailVO.getDeptId()).getDeptName()));
-            List<Long> roleIds = userRoleService.listRoleIdsByUserId(detailVO.getUserId());
-            detailVO.setRoleIds(roleIds);
-            detailVO.setRoleNames(String.join(",", roleService.listRoleNamesByRoleIds(roleIds)));
+            List<Long> roleIdList = userRoleService.listRoleIdByUserId(detailVO.getUserId());
+            detailVO.setRoleIds(roleIdList);
+            detailVO.setRoleNames(String.join(StringConsts.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String uploadAvatar(MultipartFile avatarFile, Long userId) {
+    public String uploadAvatar(MultipartFile avatarFile, Long id) {
         Long avatarMaxSizeInMb = localStorageProperties.getAvatarMaxSizeInMb();
         CheckUtils.throwIf(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
             String.format("请上传小于 %s MB 的图片", avatarMaxSizeInMb));
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConsts.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
-            String.format("头像仅支持 %s 格式的图片", String.join("，", avatarSupportImgTypes)));
+            String.format("头像仅支持 %s 格式的图片", String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes)));
 
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
@@ -133,7 +134,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
         // 更新用户头像
         String newAvatar = newAvatarFile.getName();
-        baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getUserId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getUserId, id).update();
 
         // 删除原头像
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -150,15 +151,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePassword(String oldPassword, String newPassword, Long userId) {
+    public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
-        UserDO userDO = super.getById(userId);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, userId.toString()), userDO.getPassword(), "当前密码错误");
+        UserDO userDO = super.getById(id);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), userDO.getPassword(), "当前密码错误");
 
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
-        baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
-            .set(UserDO::getPwdResetTime, now).eq(UserDO::getUserId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
+            .set(UserDO::getPwdResetTime, now).eq(UserDO::getUserId, id).update();
 
         // 更新登录用户信息
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -168,16 +169,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateEmail(String newEmail, String currentPassword, Long userId) {
-        UserDO userDO = super.getById(userId);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), userDO.getPassword(),
-            "当前密码错误");
+    public void updateEmail(String newEmail, String currentPassword, Long id) {
+        UserDO userDO = super.getById(id);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), userDO.getPassword(), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, userDO.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
-        baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getUserId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getUserId, id).update();
 
         // 更新登录用户信息
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -186,18 +186,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
-    public void resetPassword(Long userId) {
-        UserDO userDO = super.getById(userId);
-        userDO.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, userId.toString()));
+    public void resetPassword(Long id) {
+        UserDO userDO = super.getById(id);
+        userDO.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, id.toString()));
         userDO.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(userDO);
     }
 
     @Override
-    public void updateUserRole(UpdateUserRoleRequest request, Long userId) {
-        super.getById(userId);
+    public void updateRole(UpdateUserRoleRequest request, Long id) {
+        super.getById(id);
         // 保存用户和角色关联
-        userRoleService.save(request.getRoleIds(), userId);
+        userRoleService.save(request.getRoleIds(), id);
     }
 
     @Override
@@ -211,8 +211,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
-    public String getNicknameById(Long userId) {
-        return super.getById(userId).getNickname();
+    public String getNicknameById(Long id) {
+        return super.getById(id).getNickname();
     }
 
     /**

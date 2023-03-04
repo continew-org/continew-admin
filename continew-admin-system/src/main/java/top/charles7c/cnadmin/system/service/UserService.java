@@ -41,11 +41,11 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      *
      * @param avatar
      *            头像文件
-     * @param userId
-     *            用户 ID
+     * @param id
+     *            ID
      * @return 新头像路径
      */
-    String uploadAvatar(MultipartFile avatar, Long userId);
+    String uploadAvatar(MultipartFile avatar, Long id);
 
     /**
      * 修改密码
@@ -54,10 +54,10 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      *            当前密码
      * @param newPassword
      *            新密码
-     * @param userId
-     *            用户 ID
+     * @param id
+     *            ID
      */
-    void updatePassword(String oldPassword, String newPassword, Long userId);
+    void updatePassword(String oldPassword, String newPassword, Long id);
 
     /**
      * 修改邮箱
@@ -66,28 +66,28 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      *            新邮箱
      * @param currentPassword
      *            当前密码
-     * @param userId
-     *            用户ID
+     * @param id
+     *            ID
      */
-    void updateEmail(String newEmail, String currentPassword, Long userId);
+    void updateEmail(String newEmail, String currentPassword, Long id);
 
     /**
      * 重置密码
      *
-     * @param userId
-     *            用户 ID
+     * @param id
+     *            ID
      */
-    void resetPassword(Long userId);
+    void resetPassword(Long id);
 
     /**
      * 修改角色
      *
      * @param request
      *            修改信息
-     * @param userId
-     *            用户 ID
+     * @param id
+     *            ID
      */
-    void updateUserRole(UpdateUserRoleRequest request, Long userId);
+    void updateRole(UpdateUserRoleRequest request, Long id);
 
     /**
      * 根据用户名查询

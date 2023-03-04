@@ -60,17 +60,17 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
 
     @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
     @SaCheckPermission("system:user:password:reset")
-    @PatchMapping("/{userId}/password")
-    public R resetPassword(@PathVariable Long userId) {
-        baseService.resetPassword(userId);
+    @PatchMapping("/{id}/password")
+    public R resetPassword(@PathVariable Long id) {
+        baseService.resetPassword(id);
         return R.ok(String.format("重置密码成功，请牢记默认密码：%s", SysConsts.DEFAULT_PASSWORD));
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
     @SaCheckPermission("system:user:role:update")
-    @PatchMapping("/{userId}/role")
-    public R updateUserRole(@PathVariable Long userId, @Validated @RequestBody UpdateUserRoleRequest request) {
-        baseService.updateUserRole(request, userId);
+    @PatchMapping("/{id}/role")
+    public R updateRole(@PathVariable Long id, @Validated @RequestBody UpdateUserRoleRequest request) {
+        baseService.updateRole(request, id);
         return R.ok("分配成功");
     }
 }

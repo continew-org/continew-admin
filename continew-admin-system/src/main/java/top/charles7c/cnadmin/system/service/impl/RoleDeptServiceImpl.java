@@ -56,6 +56,6 @@ public class RoleDeptServiceImpl implements RoleDeptService {
 
     @Override
     public List<Long> listDeptIdByRoleId(Long roleId) {
-        return roleDeptMapper.selectDeptIdsByRoleId(roleId);
+        return roleDeptMapper.selectDeptIdByRoleId(roleId);
     }
 }

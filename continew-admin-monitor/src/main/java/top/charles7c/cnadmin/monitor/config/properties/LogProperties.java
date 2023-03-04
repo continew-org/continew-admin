@@ -53,5 +53,5 @@ public class LogProperties {
     /**
      * 脱敏字段
      */
-    private List<String> desensitize = new ArrayList<>();
+    private List<String> desensitizeFields = new ArrayList<>();
 }

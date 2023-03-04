@@ -60,8 +60,8 @@ public class LoginServiceImpl implements LoginService {
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
         loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getDeptName()));
-        loginUser.setPermissions(permissionService.listPermissionsByUserId(userId));
-        loginUser.setRoles(permissionService.listRoleCodesByUserId(userId));
+        loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
+        loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
         LoginHelper.login(loginUser);
 
         // 返回令牌

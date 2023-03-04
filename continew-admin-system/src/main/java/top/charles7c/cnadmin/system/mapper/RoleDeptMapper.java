@@ -40,5 +40,5 @@ public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
      * @return 部门 ID 列表
      */
     @Select("SELECT `dept_id` FROM `sys_role_dept` WHERE `role_id` = #{roleId}")
-    List<Long> selectDeptIdsByRoleId(@Param("roleId") Long roleId);
+    List<Long> selectDeptIdByRoleId(@Param("roleId") Long roleId);
 }

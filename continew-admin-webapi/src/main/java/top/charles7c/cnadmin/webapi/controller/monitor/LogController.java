@@ -80,9 +80,9 @@ public class LogController {
 
     @Log(module = "系统日志")
     @Operation(summary = "查看系统日志详情")
-    @GetMapping("/system/{logId}")
-    public R<SystemLogDetailVO> get(@PathVariable Long logId) {
-        SystemLogDetailVO detailVO = logService.get(logId);
+    @GetMapping("/system/{id}")
+    public R<SystemLogDetailVO> get(@PathVariable Long id) {
+        SystemLogDetailVO detailVO = logService.get(id);
         return R.ok(detailVO);
     }
 }

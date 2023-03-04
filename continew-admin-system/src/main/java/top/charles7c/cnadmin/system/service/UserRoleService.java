@@ -52,5 +52,5 @@ public interface UserRoleService {
      *            用户 ID
      * @return 角色 ID 列表
      */
-    List<Long> listRoleIdsByUserId(Long userId);
+    List<Long> listRoleIdByUserId(Long userId);
 }

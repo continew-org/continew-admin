@@ -31,14 +31,19 @@ import cn.hutool.core.text.StrPool;
 public class StringConsts implements StrPool {
 
     /**
+     * 空字符串
+     */
+    public static final String EMPTY = "";
+
+    /**
      * 分号
      */
     public static final String SEMICOLON = ";";
 
     /**
-     * 空字符串
+     * 中文逗号
      */
-    public static final String EMPTY = "";
+    public static final String CHINESE_COMMA = "，";
 
     /**
      * 标准日期时间格式

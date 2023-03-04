@@ -74,10 +74,10 @@ public class LogServiceImpl implements LogService {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        String[] fieldsName = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
-        List<String> columns = Arrays.stream(fieldsName).map(StrUtil::toUnderlineCase)
+        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
+        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
-        queryWrapper.select(columns);
+        queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
@@ -100,10 +100,10 @@ public class LogServiceImpl implements LogService {
             .like(LogDO::getRequestUrl, SysConsts.LOGOUT_URI));
 
         // 限定查询信息
-        String[] fieldsName = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
-        List<String> columns = Arrays.stream(fieldsName).map(StrUtil::toUnderlineCase)
+        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
+        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
-        queryWrapper.select(columns);
+        queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
@@ -119,10 +119,10 @@ public class LogServiceImpl implements LogService {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        String[] fieldsName = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
-        List<String> columns = Arrays.stream(fieldsName).map(StrUtil::toUnderlineCase)
+        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
+        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
-        queryWrapper.select(columns);
+        queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
@@ -134,13 +134,13 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public SystemLogDetailVO get(Long logId) {
-        LogDO logDO = logMapper.selectById(logId);
-        CheckUtils.throwIfNull(logDO, String.format("ID为 [%s] 的日志已不存在", logId));
+    public SystemLogDetailVO get(Long id) {
+        LogDO logDO = logMapper.selectById(id);
+        CheckUtils.throwIfNull(logDO, String.format("ID为 [%s] 的日志已不存在", id));
 
-        SystemLogDetailVO systemLogDetailVO = BeanUtil.copyProperties(logDO, SystemLogDetailVO.class);
-        this.fill(systemLogDetailVO);
-        return systemLogDetailVO;
+        SystemLogDetailVO detailVO = BeanUtil.copyProperties(logDO, SystemLogDetailVO.class);
+        this.fill(detailVO);
+        return detailVO;
     }
 
     /**

@@ -43,17 +43,17 @@ public class PermissionServiceImpl implements PermissionService {
     private final RoleService roleService;
 
     @Override
-    public Set<String> listPermissionsByUserId(Long userId) {
-        Set<String> roleCodeSet = this.listRoleCodesByUserId(userId);
+    public Set<String> listPermissionByUserId(Long userId) {
+        Set<String> roleCodeSet = this.listRoleCodeByUserId(userId);
         // 超级管理员赋予全部权限
         if (roleCodeSet.contains(SysConsts.SUPER_ADMIN)) {
             return CollUtil.newHashSet(SysConsts.ALL_PERMISSION);
         }
-        return menuService.listPermissionsByUserId(userId);
+        return menuService.listPermissionByUserId(userId);
     }
 
     @Override
-    public Set<String> listRoleCodesByUserId(Long userId) {
-        return roleService.listRoleCodesByUserId(userId);
+    public Set<String> listRoleCodeByUserId(Long userId) {
+        return roleService.listRoleCodeByUserId(userId);
     }
 }

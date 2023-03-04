@@ -73,8 +73,8 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     }
 
     @Override
-    public Set<String> listPermissionsByUserId(Long userId) {
-        return baseMapper.selectPermissionsByUserId(userId);
+    public Set<String> listPermissionByUserId(Long userId) {
+        return baseMapper.selectPermissionByUserId(userId);
     }
 
     /**

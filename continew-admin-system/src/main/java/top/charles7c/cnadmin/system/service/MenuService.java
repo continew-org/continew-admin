@@ -38,5 +38,5 @@ public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, Menu
      *            用户 ID
      * @return 权限码集合
      */
-    Set<String> listPermissionsByUserId(Long userId);
+    Set<String> listPermissionByUserId(Long userId);
 }

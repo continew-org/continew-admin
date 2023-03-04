@@ -36,5 +36,5 @@ public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
      *            角色 ID 列表
      * @return 菜单 ID 列表
      */
-    List<Long> selectMenuIdsByRoleIds(List<Long> roleIds);
+    List<Long> selectMenuIdByRoleIds(List<Long> roleIds);
 }

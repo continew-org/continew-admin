@@ -130,15 +130,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     }
 
     @Override
-    public List<String> listRoleNamesByRoleIds(List<Long> roleIds) {
-        List<RoleDO> roleList =
-            baseMapper.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, roleIds).list();
+    public List<String> listNameByIds(List<Long> ids) {
+        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, ids).list();
         return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
     }
 
     @Override
-    public Set<String> listRoleCodesByUserId(Long userId) {
-        List<Long> roleIds = userRoleService.listRoleIdsByUserId(userId);
+    public Set<String> listRoleCodeByUserId(Long userId) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
         List<RoleDO> roleList =
             baseMapper.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
         return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());

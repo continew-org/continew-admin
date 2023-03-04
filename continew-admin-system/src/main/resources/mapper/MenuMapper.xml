@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.charles7c.cnadmin.system.mapper.MenuMapper">
-    <select id="selectPermissionsByUserId" resultType="java.lang.String">
+    <select id="selectPermissionByUserId" resultType="java.lang.String">
         SELECT DISTINCT m.`permission`
         FROM `sys_menu` m
                  LEFT JOIN `sys_role_menu` rm ON rm.`menu_id` = m.`menu_id`

@@ -60,7 +60,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public List<Long> listRoleIdsByUserId(Long userId) {
-        return userRoleMapper.selectRoleIdsByUserId(userId);
+    public List<Long> listRoleIdByUserId(Long userId) {
+        return userRoleMapper.selectRoleIdByUserId(userId);
     }
 }

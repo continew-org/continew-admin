@@ -60,6 +60,6 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         if (CollUtil.isEmpty(roleIds)) {
             return new ArrayList<>(0);
         }
-        return roleMenuMapper.selectMenuIdsByRoleIds(roleIds);
+        return roleMenuMapper.selectMenuIdByRoleIds(roleIds);
     }
 }

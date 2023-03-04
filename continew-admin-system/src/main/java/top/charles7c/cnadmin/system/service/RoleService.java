@@ -44,13 +44,13 @@ public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery
     List<LabelValueVO<Long>> buildDict(List<RoleVO> list);
 
     /**
-     * 根据角色 ID 列表查询
+     * 根据 ID 列表查询
      *
-     * @param roleIds
-     *            角色 ID 列表
-     * @return 角色名称列表
+     * @param ids
+     *            ID 列表
+     * @return 名称列表
      */
-    List<String> listRoleNamesByRoleIds(List<Long> roleIds);
+    List<String> listNameByIds(List<Long> ids);
 
     /**
      * 根据用户 ID 查询角色编码
@@ -59,5 +59,5 @@ public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery
      *            用户 ID
      * @return 角色编码集合
      */
-    Set<String> listRoleCodesByUserId(Long userId);
+    Set<String> listRoleCodeByUserId(Long userId);
 }

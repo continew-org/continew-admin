@@ -38,5 +38,5 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      *            用户 ID
      * @return 权限码集合
      */
-    Set<String> selectPermissionsByUserId(@Param("userId") Long userId);
+    Set<String> selectPermissionByUserId(@Param("userId") Long userId);
 }

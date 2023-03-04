@@ -41,7 +41,7 @@ logging:
     #excludeMethods:
     #  - GET
     # 脱敏字段
-    desensitize:
+    desensitizeFields:
       - password
       - Authorization
 

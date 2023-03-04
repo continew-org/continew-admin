@@ -258,7 +258,7 @@ public class LogInterceptor implements HandlerInterceptor {
                 return desensitizeDataStr;
             }
 
-            for (String desensitizeProperty : operationLogProperties.getDesensitize()) {
+            for (String desensitizeProperty : operationLogProperties.getDesensitizeFields()) {
                 waitDesensitizeData.computeIfPresent(desensitizeProperty, (k, v) -> ENCRYPT_SYMBOL);
                 waitDesensitizeData.computeIfPresent(desensitizeProperty.toLowerCase(), (k, v) -> ENCRYPT_SYMBOL);
                 waitDesensitizeData.computeIfPresent(desensitizeProperty.toUpperCase(), (k, v) -> ENCRYPT_SYMBOL);

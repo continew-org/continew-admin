@@ -81,8 +81,8 @@ public class CommonController {
     @GetMapping("/dict/role")
     public R<List<LabelValueVO<Long>>> listRoleDict(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
         List<RoleVO> list = roleService.list(query, sortQuery);
-        List<LabelValueVO<Long>> dictList = roleService.buildDict(list);
-        return R.ok(dictList);
+        List<LabelValueVO<Long>> labelValueVOList = roleService.buildDict(list);
+        return R.ok(labelValueVOList);
     }
 
     @Operation(summary = "查询枚举字典", description = "查询枚举字典列表")
@@ -98,10 +98,10 @@ public class CommonController {
         // 转换枚举为字典列表
         Class<?> enumClass = first.get();
         Object[] enumConstants = enumClass.getEnumConstants();
-        List<LabelValueVO> dictList = Arrays.stream(enumConstants).map(e -> {
+        List<LabelValueVO> labelValueVOList = Arrays.stream(enumConstants).map(e -> {
             BaseEnum<Integer, String> baseEnum = (BaseEnum<Integer, String>)e;
-            return new LabelValueVO(baseEnum.getDescription(), baseEnum.getValue());
+            return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue());
         }).collect(Collectors.toList());
-        return R.ok(dictList);
+        return R.ok(labelValueVOList);
     }
 }
