@@ -41,7 +41,7 @@ public class WebMvcMappingConfiguration extends DelegatingWebMvcConfiguration {
      * CRUD 请求映射器处理器映射器（覆盖默认 RequestMappingHandlerMapping）
      */
     @Override
-    protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
+    public RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
         return new CrudRequestMappingHandlerMapping();
     }
 

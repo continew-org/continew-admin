@@ -34,5 +34,4 @@ public interface LoginService {
      * @return 令牌
      */
     String login(String username, String password);
-
 }

@@ -46,13 +46,29 @@ public class MybatisPlusConfiguration {
      * @return /
      */
     @Bean
-    MybatisPlusInterceptor mybatisPlusInterceptor() {
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 分页插件
         interceptor.addInnerInterceptor(paginationInnerInterceptor());
         // 防全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         return interceptor;
+    }
+
+    /**
+     * 元对象处理器配置（插入或修改时自动填充）
+     */
+    @Bean
+    public MetaObjectHandler metaObjectHandler() {
+        return new MyBatisPlusMetaObjectHandler();
+    }
+
+    /**
+     * ID 生成器配置，仅在主键类型（idType）配置为 ASSIGN_ID 或 ASSIGN_UUID 时有效（使用网卡信息绑定雪花生成器，防止集群雪花 ID 重复）
+     */
+    @Bean
+    public IdentifierGenerator idGenerator() {
+        return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
     }
 
     /**
@@ -67,21 +83,5 @@ public class MybatisPlusConfiguration {
         // 单页分页条数限制
         paginationInnerInterceptor.setMaxLimit(-1L);
         return paginationInnerInterceptor;
-    }
-
-    /**
-     * 元对象处理器配置（插入或修改时自动填充）
-     */
-    @Bean
-    MetaObjectHandler metaObjectHandler() {
-        return new MyBatisPlusMetaObjectHandler();
-    }
-
-    /**
-     * ID 生成器配置，仅在主键类型（idType）配置为 ASSIGN_ID 或 ASSIGN_UUID 时有效（使用网卡信息绑定雪花生成器，防止集群雪花 ID 重复）
-     */
-    @Bean
-    IdentifierGenerator idGenerator() {
-        return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
     }
 }

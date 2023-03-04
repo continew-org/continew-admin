@@ -57,10 +57,6 @@ public class ServletUtils {
         return getServletRequestAttributes().getResponse();
     }
 
-    private static ServletRequestAttributes getServletRequestAttributes() {
-        return (ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
-    }
-
     /**
      * 获取浏览器及其版本信息
      *
@@ -74,5 +70,9 @@ public class ServletUtils {
         }
         UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
         return userAgent.getBrowser().getName() + " " + userAgent.getVersion();
+    }
+
+    private static ServletRequestAttributes getServletRequestAttributes() {
+        return (ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
     }
 }

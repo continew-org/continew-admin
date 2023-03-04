@@ -102,19 +102,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         userRoleService.save(request.getRoleIds(), userId);
     }
 
-    /**
-     * 检查名称是否存在
-     *
-     * @param name
-     *            名称
-     * @param id
-     *            ID
-     * @return 是否存在
-     */
-    private boolean checkNameExists(String name, Long id) {
-        return super.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getUserId, id).exists();
-    }
-
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
@@ -125,11 +112,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
             detailVO.setRoleIds(roleIds);
             detailVO.setRoleNames(String.join(",", roleService.listRoleNamesByRoleIds(roleIds)));
         }
-    }
-
-    @Override
-    public UserDO getByUsername(String username) {
-        return super.lambdaQuery().eq(UserDO::getUsername, username).one();
     }
 
     @Override
@@ -219,6 +201,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    public UserDO getByUsername(String username) {
+        return super.lambdaQuery().eq(UserDO::getUsername, username).one();
+    }
+
+    @Override
     public Long countByDeptIds(List<Long> deptIds) {
         return super.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
     }
@@ -226,5 +213,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     public String getNicknameById(Long userId) {
         return super.getById(userId).getNickname();
+    }
+
+    /**
+     * 检查名称是否存在
+     *
+     * @param name
+     *            名称
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkNameExists(String name, Long id) {
+        return super.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getUserId, id).exists();
     }
 }

@@ -25,8 +25,8 @@ import top.charles7c.cnadmin.common.exception.ServiceException;
 /**
  * 业务参数校验工具类（抛出 500 ServiceException）
  *
- * @author Charles7c
  * @see ServiceException
+ * @author Charles7c
  * @since 2023/1/2 22:12
  */
 @Slf4j

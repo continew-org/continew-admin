@@ -82,6 +82,15 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         super.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
     }
 
+    @Override
+    public void fillDetail(Object detailObj) {
+        super.fillDetail(detailObj);
+        if (detailObj instanceof DeptDetailVO) {
+            DeptDetailVO detailVO = (DeptDetailVO)detailObj;
+            detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getDeptName()));
+        }
+    }
+
     /**
      * 检查名称是否存在
      *
@@ -96,14 +105,5 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return super.lambdaQuery().eq(DeptDO::getDeptName, name).eq(DeptDO::getParentId, parentId)
             .ne(id != null, DeptDO::getDeptId, id).exists();
-    }
-
-    @Override
-    public void fillDetail(Object detailObj) {
-        super.fillDetail(detailObj);
-        if (detailObj instanceof DeptDetailVO) {
-            DeptDetailVO detailVO = (DeptDetailVO)detailObj;
-            detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getDeptName()));
-        }
     }
 }

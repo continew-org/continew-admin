@@ -76,20 +76,6 @@ public class PageQuery extends SortQuery {
         this.setSize(size);
     }
 
-    public void setPage(Integer page) {
-        this.page = page == null ? DEFAULT_PAGE : page;
-    }
-
-    public void setSize(Integer size) {
-        if (size == null) {
-            this.size = DEFAULT_SIZE;
-        } else if (size > DEFAULT_MAX_SIZE) {
-            this.size = DEFAULT_MAX_SIZE;
-        } else {
-            this.size = size;
-        }
-    }
-
     /**
      * 基于分页查询条件转换为 MyBatis Plus 分页条件
      *
@@ -109,5 +95,19 @@ public class PageQuery extends SortQuery {
             }
         }
         return mybatisPage;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page == null ? DEFAULT_PAGE : page;
+    }
+
+    public void setSize(Integer size) {
+        if (size == null) {
+            this.size = DEFAULT_SIZE;
+        } else if (size > DEFAULT_MAX_SIZE) {
+            this.size = DEFAULT_MAX_SIZE;
+        } else {
+            this.size = size;
+        }
     }
 }

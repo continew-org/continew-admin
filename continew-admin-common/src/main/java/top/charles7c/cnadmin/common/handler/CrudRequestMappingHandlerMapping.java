@@ -20,8 +20,6 @@ import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 
 import java.lang.reflect.Method;
 
-import lombok.NoArgsConstructor;
-
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -38,7 +36,6 @@ import top.charles7c.cnadmin.common.util.ExceptionUtils;
  * @author Charles7c
  * @since 2023/1/27 10:30
  */
-@NoArgsConstructor
 public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
     @Override

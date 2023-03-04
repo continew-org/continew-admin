@@ -24,5 +24,4 @@ class ContinewAdminApplicationTests {
 
     @Test
     void contextLoads() {}
-
 }

@@ -25,9 +25,9 @@ import top.charles7c.cnadmin.common.exception.BadRequestException;
 /**
  * 基本参数校验工具类（抛出 400 BadRequestException）
  *
+ * @see BadRequestException
  * @author Charles7c
  * @since 2022/12/21 20:56
- * @see BadRequestException
  */
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

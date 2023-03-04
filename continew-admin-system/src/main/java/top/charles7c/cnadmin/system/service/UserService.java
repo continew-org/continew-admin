@@ -37,15 +37,6 @@ import top.charles7c.cnadmin.system.model.vo.UserVO;
 public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery, UserRequest> {
 
     /**
-     * 根据用户名查询
-     *
-     * @param username
-     *            用户名
-     * @return 用户信息
-     */
-    UserDO getByUsername(String username);
-
-    /**
      * 上传头像
      *
      * @param avatar
@@ -97,6 +88,15 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      *            用户 ID
      */
     void updateUserRole(UpdateUserRoleRequest request, Long userId);
+
+    /**
+     * 根据用户名查询
+     *
+     * @param username
+     *            用户名
+     * @return 用户信息
+     */
+    UserDO getByUsername(String username);
 
     /**
      * 根据部门 ID 列表查询

@@ -87,9 +87,18 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     @Autowired
     protected M baseMapper;
 
-    protected Class<T> entityClass = currentEntityClass();
-    protected Class<V> voClass = currentVoClass();
-    protected Class<D> detailVoClass = currentDetailVoClass();
+    private final Class<T> entityClass;
+    private final Class<V> voClass;
+    private final Class<D> detailVoClass;
+    private final String entityIdName;
+
+    public BaseServiceImpl() {
+        this.entityClass = (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 1);
+        this.voClass = (Class<V>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 2);
+        this.detailVoClass =
+            (Class<D>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 3);
+        this.entityIdName = this.currentEntityIdName();
+    }
 
     @Override
     public PageDataVO<V> page(Q query, PageQuery pageQuery) {
@@ -141,51 +150,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
         return list;
     }
 
-    @Override
-    public D get(Long id) {
-        T entity = this.getById(id);
-        D detailVO = BeanUtil.copyProperties(entity, detailVoClass);
-        this.fillDetail(detailVO);
-        return detailVO;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long add(C request) {
-        if (request == null) {
-            return 0L;
-        }
-        // 保存信息
-        T entity = BeanUtil.copyProperties(request, entityClass);
-        baseMapper.insert(entity);
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
-        Object idValue = tableInfo.getPropertyValue(entity, this.currentEntityIdName());
-        return Convert.toLong(idValue);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void update(C request) {
-        String idName = this.currentEntityIdName();
-        Object idValue = ReflectUtil.getFieldValue(request, idName);
-        T entity = this.getById(idValue);
-        BeanUtil.copyProperties(request, entity, CopyOptions.create().ignoreNullValue());
-        baseMapper.updateById(entity);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
-        baseMapper.deleteBatchIds(ids);
-    }
-
-    @Override
-    public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
-        List<D> list = this.list(query, sortQuery, detailVoClass);
-        list.forEach(this::fillDetail);
-        ExcelUtils.export(list, "导出数据", detailVoClass, response);
-    }
-
     /**
      * 查询列表
      *
@@ -206,6 +170,50 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
         }
         List<T> entityList = baseMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(entityList, targetClass);
+    }
+
+    @Override
+    public D get(Long id) {
+        T entity = this.getById(id);
+        D detailVO = BeanUtil.copyProperties(entity, detailVoClass);
+        this.fillDetail(detailVO);
+        return detailVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long add(C request) {
+        if (request == null) {
+            return 0L;
+        }
+        // 保存信息
+        T entity = BeanUtil.copyProperties(request, entityClass);
+        baseMapper.insert(entity);
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        Object idValue = tableInfo.getPropertyValue(entity, entityIdName);
+        return Convert.toLong(idValue);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(C request) {
+        Object idValue = ReflectUtil.getFieldValue(request, entityIdName);
+        T entity = this.getById(idValue);
+        BeanUtil.copyProperties(request, entity, CopyOptions.create().ignoreNullValue());
+        baseMapper.updateById(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        baseMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
+        List<D> list = this.list(query, sortQuery, detailVoClass);
+        list.forEach(this::fillDetail);
+        ExcelUtils.export(list, "导出数据", detailVoClass, response);
     }
 
     /**
@@ -260,46 +268,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     }
 
     /**
-     * 获取实体类 ID 名称
-     *
-     * @return 实体类 ID 名称
-     */
-    protected String currentEntityIdName() {
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
-        Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
-        String keyProperty = tableInfo.getKeyProperty();
-        Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-        return keyProperty;
-    }
-
-    /**
-     * 获取实体类 Class 对象
-     *
-     * @return 实体类 Class 对象
-     */
-    protected Class<T> currentEntityClass() {
-        return (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 1);
-    }
-
-    /**
-     * 获取列表信息类 Class 对象
-     *
-     * @return 列表信息类 Class 对象
-     */
-    protected Class<V> currentVoClass() {
-        return (Class<V>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 2);
-    }
-
-    /**
-     * 获取详情信息类 Class 对象
-     *
-     * @return 详情信息类 Class 对象
-     */
-    protected Class<D> currentDetailVoClass() {
-        return (Class<D>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 3);
-    }
-
-    /**
      * 链式查询
      *
      * @return QueryWrapper 的包装类
@@ -344,5 +312,18 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
      */
     protected LambdaUpdateChainWrapper<T> lambdaUpdate() {
         return ChainWrappers.lambdaUpdateChain(baseMapper);
+    }
+
+    /**
+     * 获取实体类 ID 名称
+     *
+     * @return 实体类 ID 名称
+     */
+    private String currentEntityIdName() {
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+        Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
+        String keyProperty = tableInfo.getKeyProperty();
+        Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
+        return keyProperty;
     }
 }

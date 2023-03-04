@@ -104,32 +104,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         super.delete(ids);
     }
 
-    /**
-     * 检查名称是否存在
-     *
-     * @param name
-     *            名称
-     * @param id
-     *            ID
-     * @return 是否存在
-     */
-    private boolean checkNameExists(String name, Long id) {
-        return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
-    }
-
-    /**
-     * 检查编码是否存在
-     *
-     * @param code
-     *            编码
-     * @param id
-     *            ID
-     * @return 是否存在
-     */
-    private boolean checkCodeExists(String code, Long id) {
-        return super.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
-    }
-
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
@@ -166,5 +140,31 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         List<Long> roleIds = userRoleService.listRoleIdsByUserId(userId);
         List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
         return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());
+    }
+
+    /**
+     * 检查名称是否存在
+     *
+     * @param name
+     *            名称
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkNameExists(String name, Long id) {
+        return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
+    }
+
+    /**
+     * 检查编码是否存在
+     *
+     * @param code
+     *            编码
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkCodeExists(String code, Long id) {
+        return super.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
     }
 }

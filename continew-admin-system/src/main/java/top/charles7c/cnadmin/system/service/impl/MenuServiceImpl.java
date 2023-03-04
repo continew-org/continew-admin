@@ -74,6 +74,11 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         super.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
     }
 
+    @Override
+    public Set<String> listPermissionsByUserId(Long userId) {
+        return baseMapper.selectPermissionsByUserId(userId);
+    }
+
     /**
      * 检查名称是否存在
      *
@@ -88,10 +93,5 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return super.lambdaQuery().eq(MenuDO::getMenuName, name).eq(MenuDO::getParentId, parentId)
             .ne(id != null, MenuDO::getMenuId, id).exists();
-    }
-
-    @Override
-    public Set<String> listPermissionsByUserId(Long userId) {
-        return baseMapper.selectPermissionsByUserId(userId);
     }
 }
