@@ -48,7 +48,7 @@ public class OperationLogQuery implements Serializable {
      * 操作人
      */
     @Schema(description = "操作人")
-    @Query(property = "createUser", type = Type.EQUAL)
+    @Query(property = "createUser")
     private Long uid;
 
     /**

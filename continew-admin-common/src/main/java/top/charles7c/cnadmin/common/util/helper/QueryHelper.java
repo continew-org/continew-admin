@@ -206,7 +206,7 @@ public class QueryHelper {
             case IS_NULL:
                 queryWrapper.isNull(columnName);
                 break;
-            case NOT_NULL:
+            case IS_NOT_NULL:
                 queryWrapper.isNotNull(columnName);
                 break;
             default:

@@ -108,6 +108,6 @@ public @interface Query {
         /**
          * 非空查询，例如：WHERE `email` IS NOT NULL
          */
-        NOT_NULL,;
+        IS_NOT_NULL,;
     }
 }
