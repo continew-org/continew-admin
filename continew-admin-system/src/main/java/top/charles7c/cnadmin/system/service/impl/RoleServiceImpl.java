@@ -68,7 +68,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
             String.format("新增失败，'%s'已存在", roleCode));
 
-        // 新增角色
+        // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long roleId = super.add(request);
         // 保存角色和菜单关联
@@ -88,7 +88,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
             String.format("修改失败，'%s'已存在", roleCode));
 
-        // 更新角色
+        // 更新信息
         super.update(request);
         Long roleId = request.getRoleId();
         // 保存角色和菜单关联
@@ -131,14 +131,16 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
 
     @Override
     public List<String> listRoleNamesByRoleIds(List<Long> roleIds) {
-        List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, roleIds).list();
+        List<RoleDO> roleList =
+            baseMapper.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, roleIds).list();
         return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
     }
 
     @Override
     public Set<String> listRoleCodesByUserId(Long userId) {
         List<Long> roleIds = userRoleService.listRoleIdsByUserId(userId);
-        List<RoleDO> roleList = super.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
+        List<RoleDO> roleList =
+            baseMapper.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
         return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());
     }
 
@@ -152,7 +154,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long id) {
-        return super.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
     }
 
     /**
@@ -165,6 +167,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkCodeExists(String code, Long id) {
-        return super.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
     }
 }

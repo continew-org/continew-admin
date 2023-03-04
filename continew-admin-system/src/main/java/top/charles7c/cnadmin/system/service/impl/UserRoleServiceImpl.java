@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.system.mapper.UserRoleMapper;
@@ -49,7 +47,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             return;
         }
         // 删除原有关联
-        userRoleMapper.delete(Wrappers.<UserRoleDO>lambdaQuery().eq(UserRoleDO::getUserId, userId));
+        userRoleMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
         List<UserRoleDO> userRoleList =
             roleIds.stream().map(roleId -> new UserRoleDO(userId, roleId)).collect(Collectors.toList());
@@ -58,7 +56,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public Long countByRoleIds(List<Long> roleIds) {
-        return userRoleMapper.selectCount(Wrappers.<UserRoleDO>lambdaQuery().in(UserRoleDO::getRoleId, roleIds));
+        return userRoleMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).count();
     }
 
     @Override

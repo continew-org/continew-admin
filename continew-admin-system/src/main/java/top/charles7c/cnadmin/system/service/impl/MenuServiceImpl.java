@@ -51,7 +51,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         boolean isExists = this.checkNameExists(menuName, request.getParentId(), request.getMenuId());
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", menuName));
 
-        // 保存信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(request);
     }
@@ -63,7 +62,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         boolean isExists = this.checkNameExists(menuName, request.getParentId(), request.getMenuId());
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", menuName));
 
-        // 更新信息
         super.update(request);
     }
 
@@ -71,7 +69,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         super.delete(ids);
-        super.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
+        baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
     }
 
     @Override
@@ -91,7 +89,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long parentId, Long id) {
-        return super.lambdaQuery().eq(MenuDO::getMenuName, name).eq(MenuDO::getParentId, parentId)
+        return baseMapper.lambdaQuery().eq(MenuDO::getMenuName, name).eq(MenuDO::getParentId, parentId)
             .ne(id != null, MenuDO::getMenuId, id).exists();
     }
 }

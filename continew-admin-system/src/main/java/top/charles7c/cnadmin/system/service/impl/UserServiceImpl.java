@@ -77,10 +77,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         boolean isExists = this.checkNameExists(username, request.getUserId());
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", username));
 
-        // 新增用户
+        // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long userId = super.add(request);
-        super.lambdaUpdate()
+        baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getUserId, userId).update();
         // 保存用户和角色关联
@@ -95,7 +95,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         boolean isExists = this.checkNameExists(username, request.getUserId());
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", username));
 
-        // 更新用户
+        // 更新信息
         super.update(request);
         Long userId = request.getUserId();
         // 保存用户和角色关联
@@ -133,7 +133,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
         // 更新用户头像
         String newAvatar = newAvatarFile.getName();
-        super.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getUserId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getUserId, userId).update();
 
         // 删除原头像
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -157,7 +157,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
-        super.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
+        baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, userId.toString()))
             .set(UserDO::getPwdResetTime, now).eq(UserDO::getUserId, userId).update();
 
         // 更新登录用户信息
@@ -172,12 +172,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         UserDO userDO = super.getById(userId);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, userId.toString()), userDO.getPassword(),
             "当前密码错误");
-        Long count = super.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
+        Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, userDO.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
-        super.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getUserId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getUserId, userId).update();
 
         // 更新登录用户信息
         LoginUser loginUser = LoginHelper.getLoginUser();
@@ -202,12 +202,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     public UserDO getByUsername(String username) {
-        return super.lambdaQuery().eq(UserDO::getUsername, username).one();
+        return baseMapper.lambdaQuery().eq(UserDO::getUsername, username).one();
     }
 
     @Override
     public Long countByDeptIds(List<Long> deptIds) {
-        return super.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
+        return baseMapper.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
     }
 
     @Override
@@ -225,6 +225,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long id) {
-        return super.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getUserId, id).exists();
+        return baseMapper.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getUserId, id).exists();
     }
 }

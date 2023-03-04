@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.system.mapper.RoleDeptMapper;
@@ -49,7 +47,7 @@ public class RoleDeptServiceImpl implements RoleDeptService {
             return;
         }
         // 删除原有关联
-        roleDeptMapper.delete(Wrappers.<RoleDeptDO>lambdaQuery().eq(RoleDeptDO::getRoleId, roleId));
+        roleDeptMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
         List<RoleDeptDO> roleDeptList =
             deptIds.stream().map(deptId -> new RoleDeptDO(roleId, deptId)).collect(Collectors.toList());

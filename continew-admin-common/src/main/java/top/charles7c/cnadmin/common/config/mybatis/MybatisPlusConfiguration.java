@@ -78,9 +78,9 @@ public class MybatisPlusConfiguration {
         // 对于单一数据库类型来说，都建议配置该值，避免每次分页都去抓取数据库类型
         // PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
-        // 溢出总页数后是否进行处理
+        // 溢出总页数后是否进行处理，默认不处理
         paginationInnerInterceptor.setOverflow(false);
-        // 单页分页条数限制
+        // 单页分页条数限制，默认无限制
         paginationInnerInterceptor.setMaxLimit(-1L);
         return paginationInnerInterceptor;
     }

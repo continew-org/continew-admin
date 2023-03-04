@@ -24,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.system.mapper.RoleMenuMapper;
@@ -50,7 +48,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
             return;
         }
         // 删除原有关联
-        roleMenuMapper.delete(Wrappers.<RoleMenuDO>lambdaQuery().eq(RoleMenuDO::getRoleId, roleId));
+        roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
         List<RoleMenuDO> roleMenuList =
             menuIds.stream().map(menuId -> new RoleMenuDO(roleId, menuId)).collect(Collectors.toList());

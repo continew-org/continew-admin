@@ -26,7 +26,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -56,7 +55,7 @@ public class QueryHelper {
      * @return MyBatis Plus 查询条件封装对象
      */
     public static <Q, R> QueryWrapper<R> build(Q query) {
-        QueryWrapper<R> queryWrapper = Wrappers.query();
+        QueryWrapper<R> queryWrapper = new QueryWrapper<>();
         // 没有查询条件，直接返回
         if (query == null) {
             return queryWrapper;

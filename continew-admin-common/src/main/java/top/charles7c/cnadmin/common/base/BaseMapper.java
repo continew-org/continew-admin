@@ -18,6 +18,12 @@ package top.charles7c.cnadmin.common.base;
 
 import java.util.Collection;
 
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 
 /**
@@ -39,5 +45,61 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
      */
     default boolean insertBatch(Collection<T> entityList) {
         return Db.saveBatch(entityList);
+    }
+
+    /**
+     * 链式查询
+     *
+     * @return QueryWrapper 的包装类
+     */
+    default QueryChainWrapper<T> query() {
+        return ChainWrappers.queryChain(this);
+    }
+
+    /**
+     * 链式查询（lambda 式）
+     *
+     * @return LambdaQueryWrapper 的包装类
+     */
+    default LambdaQueryChainWrapper<T> lambdaQuery() {
+        return ChainWrappers.lambdaQueryChain(this, this.currentEntityClass());
+    }
+
+    /**
+     * 链式查询（lambda 式）
+     *
+     * @param entity
+     *            实体对象
+     * @return LambdaQueryWrapper 的包装类
+     */
+    default LambdaQueryChainWrapper<T> lambdaQuery(T entity) {
+        return ChainWrappers.lambdaQueryChain(this, entity);
+    }
+
+    /**
+     * 链式更改
+     *
+     * @return UpdateWrapper 的包装类
+     */
+    default UpdateChainWrapper<T> update() {
+        return ChainWrappers.updateChain(this);
+    }
+
+    /**
+     * 链式更改（lambda 式）
+     *
+     * @return LambdaUpdateWrapper 的包装类
+     */
+    default LambdaUpdateChainWrapper<T> lambdaUpdate() {
+        return ChainWrappers.lambdaUpdateChain(this);
+    }
+
+    /**
+     * 获取实体类 Class 对象
+     *
+     * @return 实体类 Class 对象
+     */
+    default Class<T> currentEntityClass() {
+        return (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseMapper.class, 0);
     }
 }

@@ -59,7 +59,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", deptName));
 
-        // 保存信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(request);
     }
@@ -79,7 +78,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(() -> userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         super.delete(ids);
-        super.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
+        baseMapper.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
     }
 
     @Override
@@ -103,7 +102,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long parentId, Long id) {
-        return super.lambdaQuery().eq(DeptDO::getDeptName, name).eq(DeptDO::getParentId, parentId)
+        return baseMapper.lambdaQuery().eq(DeptDO::getDeptName, name).eq(DeptDO::getParentId, parentId)
             .ne(id != null, DeptDO::getDeptId, id).exists();
     }
 }
