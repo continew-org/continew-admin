@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -27,7 +28,9 @@ import lombok.Data;
  * @since 2022/12/25 8:59
  */
 @Data
-public class LogContext {
+public class LogContext implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 创建人

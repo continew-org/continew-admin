@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.query;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @ParameterObject
 @Schema(description = "在线用户查询条件")
-public class OnlineUserQuery {
+public class OnlineUserQuery implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 用户昵称

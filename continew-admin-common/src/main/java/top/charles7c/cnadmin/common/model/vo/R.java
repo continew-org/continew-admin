@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.io.Serializable;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +35,9 @@ import org.springframework.http.HttpStatus;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Schema(description = "响应信息")
-public class R<V> {
+public class R<V> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** 是否成功 */
     @Schema(description = "是否成功")

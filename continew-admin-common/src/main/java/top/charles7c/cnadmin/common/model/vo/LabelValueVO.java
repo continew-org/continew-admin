@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.io.Serializable;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -33,7 +35,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Schema(description = "键值对信息")
-public class LabelValueVO<V> {
+public class LabelValueVO<V> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 标签

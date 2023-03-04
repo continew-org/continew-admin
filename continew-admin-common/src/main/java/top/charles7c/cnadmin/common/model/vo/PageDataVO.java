@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,9 @@ import cn.hutool.core.collection.CollUtil;
 @Data
 @Accessors(chain = true)
 @Schema(description = "分页信息")
-public class PageDataVO<V> {
+public class PageDataVO<V> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 列表数据
