@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，自定义验证失败", request.getRequestURI(), e);
+        log.warn("请求地址'{}'，自定义验证失败", request.getRequestURI(), e);
         LogContextHolder.setErrorMsg(e.getMessage());
         return R.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public R handleBindException(BindException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
+        log.warn("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
         String errorMsg = StreamUtils.join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, "，");
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
+        log.warn("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
         String errorMsg = StreamUtils.join(e.getConstraintViolations(), ConstraintViolation::getMessage, "，");
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
+        log.warn("请求地址'{}'，参数验证失败", request.getRequestURI(), e);
         String errorMsg = ExceptionUtils
             .exToNull(() -> Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
         LogContextHolder.setErrorMsg(errorMsg);
@@ -147,7 +147,7 @@ public class GlobalExceptionHandler {
     public R handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e,
         HttpServletRequest request) {
         String subMsg = StrUtil.format("参数名：'{}'，期望参数类型：'{}'", e.getName(), e.getParameter().getParameterType());
-        log.error("请求地址'{}'，参数转换失败。方法：'{}'，{}", request.getRequestURI(),
+        log.warn("请求地址'{}'，参数转换失败。方法：'{}'，{}", request.getRequestURI(),
             Objects.requireNonNull(e.getParameter().getMethod()).getName(), subMsg, e);
         LogContextHolder.setErrorMsg(subMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), subMsg);
@@ -170,7 +170,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletRequest request) {
-        log.error("请求地址'{}'，上传文件失败，文件大小超过限制", request.getRequestURI(), e);
+        log.warn("请求地址'{}'，上传文件失败，文件大小超过限制", request.getRequestURI(), e);
         String sizeLimit = StrUtil.subBetween(e.getMessage(), "The maximum size ", " for");
         String errorMsg = String.format("请上传小于 %s MB 的文件", NumberUtil.parseLong(sizeLimit) / 1024 / 1024);
         LogContextHolder.setErrorMsg(errorMsg);

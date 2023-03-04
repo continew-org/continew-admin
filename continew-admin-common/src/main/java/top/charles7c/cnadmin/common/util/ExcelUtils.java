@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.esotericsoftware.minlog.Log;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.URLUtil;
@@ -90,7 +89,7 @@ public class ExcelUtils {
                 // 自动转换大数值
                 .registerConverter(new ExcelBigNumberConverter()).sheet(sheetName).doWrite(list);
         } catch (Exception e) {
-            Log.error("Export excel occurred an error.", e);
+            log.error("Export excel occurred an error: {}. fileName: {}.", e.getMessage(), fileName, e);
             throw new ServiceException("导出 Excel 出现错误");
         }
     }

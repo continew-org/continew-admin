@@ -36,19 +36,19 @@
 
     <!-- 输出日志到文件 -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <!-- 滚动策略：基于时间归档日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 归档日志文件的路径及文件名 -->
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <!-- 归档日志最大保留数量（取决于 fileNamePattern 配置的规则，例如：配置归档为每天 1 个文件，那么保留 15 个也可以理解为是保留 15 天） -->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
         <encoder>
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>${LOG_CHARSET}</charset>
         </encoder>
-        <!-- 循环政策：基于时间和大小创建日志文件 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <!-- 日志文件输出的文件名 -->
-            <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd, aux}/${APP_NAME}.%d{yyyy-MM-dd_HH}.%i.log</fileNamePattern>
-            <!-- 日志保存 10 天（一小时生成一个，一天 24 个文件） -->
-            <maxHistory>240</maxHistory>
-            <!-- 单个日志文件最大的大小 -->
-            <maxFileSize>20MB</maxFileSize>
-        </rollingPolicy>
     </appender>
 
     <!-- 输出日志到文件（异步） -->

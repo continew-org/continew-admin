@@ -119,7 +119,7 @@ public class QueryHelper {
             // 解析查询条件
             parse(queryAnnotation, field.getName(), fieldValue, queryWrapper);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("Build query occurred an error: {}. Query: {}, Field: {}.", e.getMessage(), query, field, e);
         } finally {
             field.setAccessible(accessible);
         }

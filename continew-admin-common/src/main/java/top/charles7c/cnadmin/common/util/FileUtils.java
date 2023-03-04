@@ -56,16 +56,16 @@ public class FileUtils {
         String originalFilename = multipartFile.getOriginalFilename();
         String extensionName = FileNameUtil.extName(originalFilename);
 
-        String filename;
+        String fileName;
         if (isKeepOriginalFilename) {
-            filename = String.format("%s-%s.%s", FileNameUtil.getPrefix(originalFilename),
+            fileName = String.format("%s-%s.%s", FileNameUtil.getPrefix(originalFilename),
                 DateUtil.format(LocalDateTime.now(), StringConsts.PURE_DATE_TIME_MS_PATTERN), extensionName);
         } else {
-            filename = String.format("%s.%s", IdUtil.fastSimpleUUID(), extensionName);
+            fileName = String.format("%s.%s", IdUtil.fastSimpleUUID(), extensionName);
         }
 
         try {
-            String pathname = filePath + filename;
+            String pathname = filePath + fileName;
             File dest = new File(pathname).getCanonicalFile();
             // 如果父路径不存在，自动创建
             if (!dest.getParentFile().exists()) {
@@ -77,7 +77,7 @@ public class FileUtils {
             multipartFile.transferTo(dest);
             return dest;
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("Upload file occurred an error: {}. fileName: {}.", e.getMessage(), fileName, e);
         }
         return null;
     }
