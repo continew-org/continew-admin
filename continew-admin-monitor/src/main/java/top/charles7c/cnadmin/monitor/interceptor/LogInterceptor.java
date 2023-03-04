@@ -120,26 +120,30 @@ public class LogInterceptor implements HandlerInterceptor {
      */
     private LogDO logElapsedTimeAndException() {
         LogContext logContext = LogContextHolder.get();
-        if (logContext != null) {
-            LogContextHolder.remove();
-            LogDO logDO = new LogDO();
-            logDO.setCreateTime(logContext.getCreateTime());
-            logDO.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(logDO.getCreateTime()));
-            logDO.setStatus(LogStatusEnum.SUCCESS);
+        try {
+            if (logContext != null) {
+                LogDO logDO = new LogDO();
+                logDO.setCreateTime(logContext.getCreateTime());
+                logDO
+                    .setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(logDO.getCreateTime()));
+                logDO.setStatus(LogStatusEnum.SUCCESS);
 
-            // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
-            String errorMsg = logContext.getErrorMsg();
-            if (StrUtil.isNotBlank(errorMsg)) {
-                logDO.setStatus(LogStatusEnum.FAILURE);
-                logDO.setErrorMsg(errorMsg);
+                // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
+                String errorMsg = logContext.getErrorMsg();
+                if (StrUtil.isNotBlank(errorMsg)) {
+                    logDO.setStatus(LogStatusEnum.FAILURE);
+                    logDO.setErrorMsg(errorMsg);
+                }
+                // 记录异常详情
+                Exception exception = logContext.getException();
+                if (exception != null) {
+                    logDO.setStatus(LogStatusEnum.FAILURE);
+                    logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
+                }
+                return logDO;
             }
-            // 记录异常详情
-            Exception exception = logContext.getException();
-            if (exception != null) {
-                logDO.setStatus(LogStatusEnum.FAILURE);
-                logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
-            }
-            return logDO;
+        } finally {
+            LogContextHolder.remove();
         }
         return null;
     }
