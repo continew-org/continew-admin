@@ -318,7 +318,7 @@
     updateTime: '',
     parentName: '',
   });
-  const ids = ref<Array<number>>([]);
+  const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -384,7 +384,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: number) => {
+  const toUpdate = (id: string) => {
     reset();
     listDeptTree({}).then((res) => {
       treeData.value = res.data;
@@ -448,7 +448,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: number) => {
+  const toDetail = async (id: string) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
@@ -493,7 +493,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<number>) => {
+  const handleDelete = (ids: Array<string>) => {
     deleteDept(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

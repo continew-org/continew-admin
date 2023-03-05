@@ -1,5 +1,5 @@
 export interface UserState {
-  userId: number;
+  userId: string;
   username: string;
   nickname: string;
   gender: number;
@@ -9,7 +9,7 @@ export interface UserState {
   description?: string;
   pwdResetTime?: string;
   registrationDate?: string;
-  deptId?: number;
+  deptId?: string;
   deptName?: string;
   permissions: Array<string>;
   roles: Array<string>;

@@ -4,9 +4,9 @@ import qs from 'query-string';
 const BASE_URL = '/system/menu';
 
 export interface MenuRecord {
-  menuId?: number;
+  menuId?: string;
   menuName: string;
-  parentId?: number;
+  parentId?: string;
   menuType: number;
   path?: string;
   name?: string;
@@ -40,7 +40,7 @@ export function listMenu(params: MenuParam) {
   });
 }
 
-export function getMenu(id: number) {
+export function getMenu(id: string) {
   return axios.get<MenuRecord>(`${BASE_URL}/${id}`);
 }
 
@@ -52,6 +52,6 @@ export function updateMenu(req: MenuRecord) {
   return axios.put(BASE_URL, req);
 }
 
-export function deleteMenu(ids: number | Array<number>) {
+export function deleteMenu(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }

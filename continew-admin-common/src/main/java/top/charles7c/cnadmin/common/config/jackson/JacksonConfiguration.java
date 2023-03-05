@@ -61,11 +61,11 @@ public class JacksonConfiguration {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
         return builder -> {
-            // 针对数值类型：Long、BigInteger、BigDecimal 的序列化和反序列化
             JavaTimeModule javaTimeModule = new JavaTimeModule();
-            javaTimeModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
-            javaTimeModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
-            javaTimeModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+            // 针对数值类型：Long、BigInteger、BigDecimal 的序列化
+            javaTimeModule.addSerializer(Long.class, ToStringSerializer.instance);
+            javaTimeModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+            javaTimeModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
             javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
 
             // 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
@@ -80,9 +80,9 @@ public class JacksonConfiguration {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(StringConsts.NORM_TIME_PATTERN);
             javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
             javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
-            builder.modules(javaTimeModule);
             builder.timeZone(TimeZone.getDefault());
-            log.info(">>>初始化 Jackson 配置<<<");
+            builder.modules(javaTimeModule);
+            log.info(">>>初始化 Jackson 序列化配置<<<");
         };
     }
 

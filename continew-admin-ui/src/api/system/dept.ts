@@ -4,9 +4,9 @@ import qs from 'query-string';
 const BASE_URL = '/system/dept';
 
 export interface DeptRecord {
-  deptId?: number;
+  deptId?: string;
   deptName: string;
-  parentId?: number;
+  parentId?: string;
   description?: string;
   deptSort: number;
   status?: number;
@@ -32,7 +32,7 @@ export function listDept(params: DeptParam) {
   });
 }
 
-export function getDept(id: number) {
+export function getDept(id: string) {
   return axios.get<DeptRecord>(`${BASE_URL}/${id}`);
 }
 
@@ -44,6 +44,6 @@ export function updateDept(req: DeptRecord) {
   return axios.put(BASE_URL, req);
 }
 
-export function deleteDept(ids: number | Array<number>) {
+export function deleteDept(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }

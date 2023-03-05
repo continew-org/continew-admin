@@ -345,7 +345,7 @@
         :mask-closable="false"
         unmount-on-close
         render-to-body
-        @ok="handleUpdateUserRole"
+        @ok="handleUpdateRole"
         @cancel="handleCancel"
       >
         <a-form ref="userRoleFormRef" :model="form" :rules="rules" size="large">
@@ -505,7 +505,7 @@
     deptId: undefined,
   });
   const total = ref(0);
-  const ids = ref<Array<number>>([]);
+  const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -598,7 +598,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: number) => {
+  const toUpdate = (id: string) => {
     reset();
     getDeptOptions();
     getRoleOptions();
@@ -614,7 +614,7 @@
    *
    * @param id ID
    */
-  const toUpdateRole = (id: number) => {
+  const toUpdateRole = (id: string) => {
     reset();
     getRoleOptions();
     getUser(id).then((res) => {
@@ -665,7 +665,7 @@
       description: '',
       status: 1,
       deptId: undefined,
-      roleIds: [] as Array<number>,
+      roleIds: [] as Array<string>,
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -704,9 +704,9 @@
   };
 
   /**
-   * 修改用户角色
+   * 修改角色
    */
-  const handleUpdateUserRole = () => {
+  const handleUpdateRole = () => {
     proxy.$refs.userRoleFormRef.validate((valid: any) => {
       if (!valid && form.value.userId !== undefined) {
         updateUserRole({ roleIds: form.value.roleIds }, form.value.userId).then(
@@ -725,7 +725,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: number) => {
+  const toDetail = async (id: string) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
@@ -769,7 +769,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<number>) => {
+  const handleDelete = (ids: Array<string>) => {
     deleteUser(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
@@ -781,7 +781,7 @@
    *
    * @param id ID
    */
-  const handleResetPassword = (id: number) => {
+  const handleResetPassword = (id: string) => {
     resetPassword(id).then((res) => {
       proxy.$message.success(res.msg);
     });

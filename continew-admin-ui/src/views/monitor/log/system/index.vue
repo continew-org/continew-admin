@@ -299,7 +299,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: number) => {
+  const toDetail = async (id: string) => {
     visible.value = true;
     loading.value = true;
     getSystemLog(id).then((res) => {

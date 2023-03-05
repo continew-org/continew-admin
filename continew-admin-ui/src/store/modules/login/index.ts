@@ -13,7 +13,7 @@ import useAppStore from '../app';
 
 const useLoginStore = defineStore('user', {
   state: (): UserState => ({
-    userId: 0,
+    userId: '',
     username: '',
     nickname: '',
     gender: 0,
@@ -23,7 +23,7 @@ const useLoginStore = defineStore('user', {
     description: undefined,
     pwdResetTime: undefined,
     registrationDate: undefined,
-    deptId: 0,
+    deptId: '',
     deptName: '',
     permissions: [],
     roles: [],

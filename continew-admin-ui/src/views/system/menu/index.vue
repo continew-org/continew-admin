@@ -360,7 +360,7 @@
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
   const menuList = ref<MenuRecord[]>([]);
-  const ids = ref<Array<number>>([]);
+  const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -427,7 +427,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: number) => {
+  const toUpdate = (id: string) => {
     reset();
     listMenuTree({}).then((res) => {
       treeData.value = res.data;
@@ -519,7 +519,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<number>) => {
+  const handleDelete = (ids: Array<string>) => {
     deleteMenu(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

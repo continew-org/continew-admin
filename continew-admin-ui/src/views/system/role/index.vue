@@ -419,7 +419,7 @@
     deptIds: undefined,
   });
   const total = ref(0);
-  const ids = ref<Array<number>>([]);
+  const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -494,7 +494,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: number) => {
+  const toUpdate = (id: string) => {
     reset();
     menuCheckStrictly.value = false;
     deptCheckStrictly.value = false;
@@ -644,7 +644,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: number) => {
+  const toDetail = async (id: string) => {
     if (detailLoading.value) return;
     getMenuTree();
     getDeptTree();
@@ -690,7 +690,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<number>) => {
+  const handleDelete = (ids: Array<string>) => {
     deleteRole(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

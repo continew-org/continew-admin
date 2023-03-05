@@ -4,14 +4,14 @@ import qs from 'query-string';
 const BASE_URL = '/system/role';
 
 export interface RoleRecord {
-  roleId?: number;
+  roleId?: string;
   roleName: string;
   roleCode?: string;
   roleSort?: number;
   description?: string;
-  menuIds?: Array<number>;
+  menuIds?: Array<string>;
   dataScope: number;
-  deptIds?: Array<number>;
+  deptIds?: Array<string>;
   status?: number;
   createUserString?: string;
   createTime?: string;
@@ -42,7 +42,7 @@ export function listRole(params: RoleParam) {
   });
 }
 
-export function getRole(id: number) {
+export function getRole(id: string) {
   return axios.get<RoleRecord>(`${BASE_URL}/${id}`);
 }
 
@@ -54,6 +54,6 @@ export function updateRole(req: RoleRecord) {
   return axios.put(BASE_URL, req);
 }
 
-export function deleteRole(ids: number | Array<number>) {
+export function deleteRole(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }
