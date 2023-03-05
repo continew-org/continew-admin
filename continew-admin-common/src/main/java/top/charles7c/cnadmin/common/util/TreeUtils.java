@@ -41,7 +41,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TreeUtils {
 
-    /** 默认属性配置对象（根据前端树结构灵活调整名称） */
+    /** 默认字段配置对象（根据前端树结构灵活调整名称） */
     public static final TreeNodeConfig DEFAULT_CONFIG =
         TreeNodeConfig.DEFAULT_CONFIG.setNameKey("title").setIdKey("key").setWeightKey("sort");
 

@@ -19,6 +19,8 @@ package top.charles7c.cnadmin.common.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -44,9 +46,9 @@ public class ReflectUtils {
      * @throws SecurityException
      *             安全检查异常
      */
-    public static String[] getNonStaticFieldsName(Class<?> beanClass) throws SecurityException {
-        Field[] nonStaticFields = getNonStaticFields(beanClass);
-        return Arrays.stream(nonStaticFields).map(Field::getName).toArray(String[]::new);
+    public static List<String> getNonStaticFieldsName(Class<?> beanClass) throws SecurityException {
+        List<Field> nonStaticFields = getNonStaticFields(beanClass);
+        return nonStaticFields.stream().map(Field::getName).collect(Collectors.toList());
     }
 
     /**
@@ -59,8 +61,8 @@ public class ReflectUtils {
      * @throws SecurityException
      *             安全检查异常
      */
-    public static Field[] getNonStaticFields(Class<?> beanClass) throws SecurityException {
+    public static List<Field> getNonStaticFields(Class<?> beanClass) throws SecurityException {
         Field[] fields = ReflectUtil.getFields(beanClass);
-        return Arrays.stream(fields).filter(f -> !Modifier.isStatic(f.getModifiers())).toArray(Field[]::new);
+        return Arrays.stream(fields).filter(f -> !Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
     }
 }

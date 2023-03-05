@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.monitor.service.impl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,8 +73,8 @@ public class LogServiceImpl implements LogService {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
-        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
+        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
@@ -100,8 +99,8 @@ public class LogServiceImpl implements LogService {
             .like(LogDO::getRequestUrl, SysConsts.LOGOUT_URI));
 
         // 限定查询信息
-        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
-        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
+        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
@@ -119,8 +118,8 @@ public class LogServiceImpl implements LogService {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        String[] fieldNameArr = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
-        List<String> columnNameList = Arrays.stream(fieldNameArr).map(StrUtil::toUnderlineCase)
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
+        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
             .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
@@ -136,7 +135,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public SystemLogDetailVO get(Long id) {
         LogDO logDO = logMapper.selectById(id);
-        CheckUtils.throwIfNull(logDO, String.format("ID为 [%s] 的日志已不存在", id));
+        CheckUtils.throwIfNull(logDO, "LogDO", "ID", id);
 
         SystemLogDetailVO detailVO = BeanUtil.copyProperties(logDO, SystemLogDetailVO.class);
         this.fill(detailVO);

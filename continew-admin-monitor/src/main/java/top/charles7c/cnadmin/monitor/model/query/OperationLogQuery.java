@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.monitor.model.query;
 
-import static top.charles7c.cnadmin.common.annotation.Query.Type;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +53,7 @@ public class OperationLogQuery implements Serializable {
      * 操作内容
      */
     @Schema(description = "操作内容")
-    @Query(type = Type.INNER_LIKE)
+    @Query(type = Query.Type.INNER_LIKE)
     private String description;
 
     /**
@@ -69,7 +67,7 @@ public class OperationLogQuery implements Serializable {
      * 操作时间
      */
     @Schema(description = "操作时间")
-    @Query(type = Type.BETWEEN)
+    @Query(type = Query.Type.BETWEEN)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private List<Date> createTime;
 }

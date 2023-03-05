@@ -48,6 +48,23 @@ public class CheckUtils extends Validator {
     }
 
     /**
+     * 如果为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param entityName
+     *            实体名
+     * @param fieldName
+     *            字段名
+     * @param fieldValue
+     *            字段值
+     */
+    public static void throwIfNull(Object obj, String entityName, String fieldName, Object fieldValue) {
+        String message = String.format("%s 为 [%s] 的 %s 记录已不存在", fieldName, fieldValue, entityName);
+        throwIfNull(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
      * 如果不为空，抛出异常
      *
      * @param obj
@@ -56,6 +73,23 @@ public class CheckUtils extends Validator {
      *            错误信息
      */
     public static void throwIfNotNull(Object obj, String message) {
+        throwIfNotNull(obj, message, EXCEPTION_TYPE);
+    }
+
+    /**
+     * 如果不为空，抛出异常
+     *
+     * @param obj
+     *            被检测的对象
+     * @param entityName
+     *            实体名
+     * @param fieldName
+     *            字段名
+     * @param fieldValue
+     *            字段值
+     */
+    public static void throwIfNotNull(Object obj, String entityName, String fieldName, Object fieldValue) {
+        String message = String.format("%s 为 [%s] 的 %s 记录已存在", fieldName, fieldValue, entityName);
         throwIfNotNull(obj, message, EXCEPTION_TYPE);
     }
 

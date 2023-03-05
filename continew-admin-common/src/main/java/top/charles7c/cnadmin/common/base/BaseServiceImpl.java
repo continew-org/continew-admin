@@ -18,9 +18,7 @@ package top.charles7c.cnadmin.common.base;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +40,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -127,11 +126,9 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
             tree.setName(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.nameKey())));
             tree.setWeight(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.weightKey())));
             if (!isSimple) {
-                Field[] fieldArr = ReflectUtils.getNonStaticFields(voClass);
-                List<Field> fieldList = Arrays.stream(fieldArr)
-                    .filter(f -> !StrUtil.containsAnyIgnoreCase(f.getName(), treeField.value(), treeField.parentIdKey(),
-                        treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()))
-                    .collect(Collectors.toList());
+                List<Field> fieldList = ReflectUtils.getNonStaticFields(voClass);
+                fieldList.removeIf(f -> StrUtil.containsAnyIgnoreCase(f.getName(), treeField.value(),
+                    treeField.parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
                 fieldList
                     .forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, StrUtil.genGetter(f.getName()))));
             }
@@ -220,7 +217,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
      */
     protected T getById(Object id) {
         T entity = baseMapper.selectById(Convert.toStr(id));
-        CheckUtils.throwIfNull(entity, String.format("ID为 [%s] 的记录已不存在", id));
+        CheckUtils.throwIfNull(entity, ClassUtil.getClassName(entityClass, true), "ID", id);
         return entity;
     }
 

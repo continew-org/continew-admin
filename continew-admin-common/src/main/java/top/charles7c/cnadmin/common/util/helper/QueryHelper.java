@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.common.util.helper;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -32,6 +31,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.Query;
+import top.charles7c.cnadmin.common.util.ReflectUtils;
 
 /**
  * 查询助手
@@ -61,29 +61,10 @@ public class QueryHelper {
             return queryWrapper;
         }
 
-        // 获取查询条件中所有的属性（包括私有的和父类的）
-        List<Field> fieldList = getFieldList(query.getClass(), new ArrayList<>());
+        // 获取查询条件中所有的字段
+        List<Field> fieldList = ReflectUtils.getNonStaticFields(query.getClass());
         fieldList.forEach(field -> buildQuery(query, field, queryWrapper));
         return queryWrapper;
-    }
-
-    /**
-     * 获取指定类型的所有属性（包括私有的和父类的）
-     *
-     * @param clazz
-     *            指定类型
-     * @param fieldList
-     *            属性列表
-     * @param <Q>
-     *            查询条件数据类型
-     * @return 属性列表（包括私有的和父类的）
-     */
-    public static <Q> List<Field> getFieldList(Class<Q> clazz, List<Field> fieldList) {
-        if (clazz != null) {
-            fieldList.addAll(Arrays.asList(clazz.getDeclaredFields()));
-            getFieldList(clazz.getSuperclass(), fieldList);
-        }
-        return fieldList;
     }
 
     /**
@@ -92,7 +73,7 @@ public class QueryHelper {
      * @param query
      *            查询条件
      * @param field
-     *            属性
+     *            字段
      * @param queryWrapper
      *            MyBatis Plus 查询条件封装对象
      * @param <Q>
@@ -110,7 +91,7 @@ public class QueryHelper {
                 return;
             }
 
-            // 如果属性值为空，直接返回
+            // 如果字段值为空，直接返回
             Object fieldValue = field.get(query);
             if (ObjectUtil.isEmpty(fieldValue)) {
                 return;
@@ -131,9 +112,9 @@ public class QueryHelper {
      * @param queryAnnotation
      *            查询注解
      * @param fieldName
-     *            属性名
+     *            字段名
      * @param fieldValue
-     *            属性值
+     *            字段值
      * @param queryWrapper
      *            MyBatis Plus 查询条件封装对象
      * @param <R>
