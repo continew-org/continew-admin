@@ -39,6 +39,11 @@ public class SysConsts {
     public static final String ALL_PERMISSION = "*";
 
     /**
+     * 顶级父 ID
+     */
+    public static final Long SUPER_PARENT_ID = 0L;
+
+    /**
      * 默认密码
      */
     public static final String DEFAULT_PASSWORD = "123456";

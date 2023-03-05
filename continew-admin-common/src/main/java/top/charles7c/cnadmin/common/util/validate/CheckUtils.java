@@ -20,6 +20,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import cn.hutool.core.util.StrUtil;
+
 import top.charles7c.cnadmin.common.exception.ServiceException;
 
 /**
@@ -60,7 +62,8 @@ public class CheckUtils extends Validator {
      *            字段值
      */
     public static void throwIfNull(Object obj, String entityName, String fieldName, Object fieldValue) {
-        String message = String.format("%s 为 [%s] 的 %s 记录已不存在", fieldName, fieldValue, entityName);
+        String message =
+            String.format("%s 为 [%s] 的 %s 记录已不存在", fieldName, fieldValue, StrUtil.replace(entityName, "DO", ""));
         throwIfNull(obj, message, EXCEPTION_TYPE);
     }
 

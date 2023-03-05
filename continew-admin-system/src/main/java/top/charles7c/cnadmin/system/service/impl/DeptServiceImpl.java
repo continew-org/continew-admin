@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -86,6 +88,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         super.fillDetail(detailObj);
         if (detailObj instanceof DeptDetailVO) {
             DeptDetailVO detailVO = (DeptDetailVO)detailObj;
+            if (Objects.equals(SysConsts.SUPER_PARENT_ID, detailVO.getParentId())) {
+                return;
+            }
             detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getDeptName()));
         }
     }
