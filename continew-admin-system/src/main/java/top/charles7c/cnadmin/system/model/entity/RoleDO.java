@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.system.model.entity;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
@@ -38,23 +37,17 @@ public class RoleDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
-     */
-    @TableId
-    private Long roleId;
-
-    /**
      * 角色名称
      */
-    private String roleName;
+    private String name;
 
     /**
      * 角色编码
      */
-    private String roleCode;
+    private String code;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
     private DataScopeEnum dataScope;
 
@@ -66,10 +59,10 @@ public class RoleDO extends BaseDO {
     /**
      * 角色排序
      */
-    private Integer roleSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
     private DisEnableStatusEnum status;
 }

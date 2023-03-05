@@ -4,10 +4,10 @@ import qs from 'query-string';
 const BASE_URL = '/system/role';
 
 export interface RoleRecord {
-  roleId?: string;
-  roleName: string;
-  roleCode?: string;
-  roleSort?: number;
+  id?: string;
+  name: string;
+  code?: string;
+  sort?: number;
   description?: string;
   menuIds?: Array<string>;
   dataScope: number;
@@ -21,7 +21,7 @@ export interface RoleRecord {
 }
 
 export interface RoleParam {
-  roleName?: string;
+  name?: string;
   status?: number;
   page?: number;
   size?: number;

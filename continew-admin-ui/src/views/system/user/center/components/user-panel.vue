@@ -51,10 +51,10 @@
           <div v-else>{{ $t('userCenter.panel.unknown') }}</div>
         </a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{
-          loginStore.phone
+          loginStore.phone || '暂无'
         }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{
-          loginStore.email
+          loginStore.email || '暂无'
         }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{
           loginStore.deptName

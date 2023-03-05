@@ -4,7 +4,7 @@ import qs from 'query-string';
 const BASE_URL = '/monitor/log';
 
 export interface LogRecord {
-  logId?: string;
+  id?: string;
   clientIp: string;
   location: string;
   browser: string;

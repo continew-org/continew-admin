@@ -42,18 +42,11 @@ public class DeptDetailVO extends BaseDetailVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
-     */
-    @Schema(description = "部门 ID")
-    @ExcelProperty(value = "部门ID")
-    private Long deptId;
-
-    /**
      * 部门名称
      */
     @Schema(description = "部门名称")
     @ExcelProperty(value = "部门名称")
-    private String deptName;
+    private String name;
 
     /**
      * 上级部门 ID
@@ -62,29 +55,30 @@ public class DeptDetailVO extends BaseDetailVO {
     private Long parentId;
 
     /**
-     * 描述
+     * 上级部门
      */
-    @Schema(description = "描述")
-    @ExcelProperty(value = "描述")
-    private String description;
+    @Schema(description = "上级部门")
+    @TableField(exist = false)
+    @ExcelProperty(value = "上级部门")
+    private String parentName;
 
     /**
      * 部门排序
      */
     @Schema(description = "部门排序")
-    private Integer deptSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 
     /**
-     * 上级部门
+     * 描述
      */
-    @Schema(description = "上级部门")
-    @TableField(exist = false)
-    private String parentName;
+    @Schema(description = "描述")
+    @ExcelProperty(value = "描述")
+    private String description;
 }

@@ -44,30 +44,23 @@ public class RoleDetailVO extends BaseDetailVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
-     */
-    @Schema(description = "角色 ID")
-    @ExcelProperty(value = "角色ID")
-    private Long roleId;
-
-    /**
      * 角色名称
      */
     @Schema(description = "角色名称")
     @ExcelProperty(value = "角色名称")
-    private String roleName;
+    private String name;
 
     /**
      * 角色编码
      */
     @Schema(description = "角色编码")
     @ExcelProperty(value = "角色编码")
-    private String roleCode;
+    private String code;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）")
+    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）")
     @ExcelProperty(value = "数据权限", converter = ExcelBaseEnumConverter.class)
     private DataScopeEnum dataScope;
 
@@ -76,12 +69,12 @@ public class RoleDetailVO extends BaseDetailVO {
      */
     @Schema(description = "角色排序")
     @ExcelProperty(value = "角色排序")
-    private Integer roleSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 

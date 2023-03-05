@@ -74,7 +74,7 @@ public class UserCenterController {
     @PatchMapping("/basic/info")
     public R updateBasicInfo(@Validated @RequestBody UpdateBasicInfoRequest updateBasicInfoRequest) {
         UserRequest userRequest = new UserRequest();
-        userRequest.setUserId(LoginHelper.getUserId());
+        userRequest.setId(LoginHelper.getUserId());
         BeanUtil.copyProperties(updateBasicInfoRequest, userRequest);
         userService.update(userRequest);
         return R.ok("修改成功");

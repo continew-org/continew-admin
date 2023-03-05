@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
@@ -40,12 +39,6 @@ public class UserDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
-     */
-    @TableId
-    private Long userId;
-
-    /**
      * 用户名
      */
     private String username;
@@ -61,7 +54,7 @@ public class UserDO extends BaseDO {
     private String password;
 
     /**
-     * 性别（0未知 1男 2女）
+     * 性别（0：未知，1：男，2：女）
      */
     private GenderEnum gender;
 
@@ -86,7 +79,7 @@ public class UserDO extends BaseDO {
     private String description;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
     private DisEnableStatusEnum status;
 

@@ -37,6 +37,12 @@ public class LogVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID")
+    private Long id;
+
+    /**
      * 创建人
      */
     @JsonIgnore

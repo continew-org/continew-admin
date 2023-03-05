@@ -45,7 +45,7 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
-        row-key="logId"
+        row-key="id"
         :loading="loading"
         :pagination="{
           showTotal: true,

@@ -46,12 +46,6 @@ public class UserVO extends BaseVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
-     */
-    @Schema(description = "用户 ID")
-    private Long userId;
-
-    /**
      * 用户名
      */
     @Schema(description = "用户名")
@@ -64,10 +58,16 @@ public class UserVO extends BaseVO {
     private String nickname;
 
     /**
-     * 性别（0未知 1男 2女）
+     * 性别（0：未知，1：男，2：女）
      */
-    @Schema(description = "性别（0未知 1男 2女）")
+    @Schema(description = "性别（0：未知，1：男，2：女）")
     private GenderEnum gender;
+
+    /**
+     * 头像地址
+     */
+    @Schema(description = "头像地址")
+    private String avatar;
 
     /**
      * 邮箱
@@ -82,15 +82,9 @@ public class UserVO extends BaseVO {
     private String phone;
 
     /**
-     * 头像地址
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "头像地址")
-    private String avatar;
-
-    /**
-     * 状态（1启用 2禁用）
-     */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     private DisEnableStatusEnum status;
 
     /**
@@ -106,7 +100,7 @@ public class UserVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (Objects.equals(userId, LoginHelper.getUserId())) {
+        if (Objects.equals(this.getId(), LoginHelper.getUserId())) {
             return true;
         }
         return disabled;

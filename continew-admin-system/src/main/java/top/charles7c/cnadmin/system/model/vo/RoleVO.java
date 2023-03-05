@@ -42,39 +42,33 @@ public class RoleVO extends BaseVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
-     */
-    @Schema(description = "角色 ID")
-    private Long roleId;
-
-    /**
      * 角色名称
      */
     @Schema(description = "角色名称")
-    private String roleName;
+    private String name;
 
     /**
      * 角色编码
      */
     @Schema(description = "角色编码")
-    private String roleCode;
+    private String code;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）")
+    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）")
     private DataScopeEnum dataScope;
 
     /**
      * 角色排序
      */
     @Schema(description = "角色排序")
-    private Integer roleSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     private DisEnableStatusEnum status;
 
     /**
@@ -90,7 +84,7 @@ public class RoleVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (SysConsts.SUPER_ADMIN.equals(roleCode)) {
+        if (SysConsts.SUPER_ADMIN.equals(code)) {
             return true;
         }
         return disabled;

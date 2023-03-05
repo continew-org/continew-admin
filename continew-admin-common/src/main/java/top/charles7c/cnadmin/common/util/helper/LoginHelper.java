@@ -64,7 +64,7 @@ public class LoginHelper {
         loginUser.setLoginTime(logContext != null ? logContext.getCreateTime() : LocalDateTime.now());
 
         // 登录保存用户信息
-        StpUtil.login(loginUser.getUserId());
+        StpUtil.login(loginUser.getId());
         loginUser.setToken(StpUtil.getTokenValue());
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
         StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
@@ -105,7 +105,7 @@ public class LoginHelper {
      * @return /
      */
     public static Long getUserId() {
-        return ExceptionUtils.exToNull(() -> getLoginUser().getUserId());
+        return ExceptionUtils.exToNull(() -> getLoginUser().getId());
     }
 
     /**

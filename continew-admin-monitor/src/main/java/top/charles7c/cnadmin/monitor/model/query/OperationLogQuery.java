@@ -43,13 +43,6 @@ public class OperationLogQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 操作人
-     */
-    @Schema(description = "操作人")
-    @Query(property = "createUser")
-    private Long uid;
-
-    /**
      * 操作内容
      */
     @Schema(description = "操作内容")
@@ -57,9 +50,9 @@ public class OperationLogQuery implements Serializable {
     private String description;
 
     /**
-     * 操作状态（1成功 2失败）
+     * 操作状态（1：成功，2：失败）
      */
-    @Schema(description = "操作状态（1成功 2失败）")
+    @Schema(description = "操作状态（1：成功，2：失败）")
     @Query
     private Integer status;
 
@@ -70,4 +63,11 @@ public class OperationLogQuery implements Serializable {
     @Query(type = Query.Type.BETWEEN)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private List<Date> createTime;
+
+    /**
+     * 操作人
+     */
+    @Schema(description = "操作人")
+    @Query(property = "createUser")
+    private Long uid;
 }

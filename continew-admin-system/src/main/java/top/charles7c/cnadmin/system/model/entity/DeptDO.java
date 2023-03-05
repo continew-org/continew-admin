@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.system.model.entity;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
@@ -37,15 +36,9 @@ public class DeptDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
-     */
-    @TableId
-    private Long deptId;
-
-    /**
      * 部门名称
      */
-    private String deptName;
+    private String name;
 
     /**
      * 上级部门 ID
@@ -60,10 +53,10 @@ public class DeptDO extends BaseDO {
     /**
      * 部门排序
      */
-    private Integer deptSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
     private DisEnableStatusEnum status;
 }

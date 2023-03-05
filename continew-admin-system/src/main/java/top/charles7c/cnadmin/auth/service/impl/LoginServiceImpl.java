@@ -53,13 +53,13 @@ public class LoginServiceImpl implements LoginService {
     public String login(String username, String password) {
         UserDO userDO = userService.getByUsername(username);
         CheckUtils.throwIfNull(userDO, "用户名或密码错误");
-        Long userId = userDO.getUserId();
+        Long userId = userDO.getId();
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), userDO.getPassword(), "用户名或密码错误");
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, userDO.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
-        loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getDeptName()));
+        loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getName()));
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
         LoginHelper.login(loginUser);

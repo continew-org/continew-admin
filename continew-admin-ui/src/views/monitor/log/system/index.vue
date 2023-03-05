@@ -27,7 +27,7 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
-        row-key="logId"
+        row-key="id"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -74,7 +74,7 @@
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
-              <a-button type="text" size="small" title="查看详情" @click="toDetail(record.logId)">
+              <a-button type="text" size="small" title="查看详情" @click="toDetail(record.id)">
                 <template #icon><icon-eye /></template>详情
               </a-button>
               <a-button v-if="record.exceptionDetail" type="text" size="small" title="查看异常详情" @click="toExceptionDetail(record)">
@@ -285,12 +285,14 @@
    */
   const getList = (params: SystemLogParam = { ...queryParams.value }) => {
     loading.value = true;
-    listSystemLog(params).then((res) => {
-      systemLogList.value = res.data.list;
-      total.value = res.data.total;
-    }).finally(() => {
-      loading.value = false;
-    });
+    listSystemLog(params)
+      .then((res) => {
+        systemLogList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 
@@ -302,11 +304,13 @@
   const toDetail = async (id: string) => {
     visible.value = true;
     loading.value = true;
-    getSystemLog(id).then((res) => {
-      systemLog.value = res.data;
-    }).finally(() => {
-      loading.value = false;
-    });
+    getSystemLog(id)
+      .then((res) => {
+        systemLog.value = res.data;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
 
   /**
@@ -314,7 +318,7 @@
    */
   const handleCancel = () => {
     visible.value = false;
-  }
+  };
 
   /**
    * 查看异常详情
@@ -332,7 +336,7 @@
   const handleExceptionDetailCancel = () => {
     exceptionDetail.value = '';
     exceptionDetailVisible.value = false;
-  }
+  };
 
   /**
    * 查询

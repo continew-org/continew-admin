@@ -44,9 +44,9 @@ public class LoginRequest implements Serializable {
     private String username;
 
     /**
-     * 密码（加密后）
+     * 密码（加密）
      */
-    @Schema(description = "密码（加密后）")
+    @Schema(description = "密码（加密）")
     @NotBlank(message = "密码不能为空")
     private String password;
 

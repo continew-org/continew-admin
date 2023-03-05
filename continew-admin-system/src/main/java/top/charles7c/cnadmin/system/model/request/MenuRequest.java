@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.system.model.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Data;
 
@@ -41,32 +40,37 @@ public class MenuRequest extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单 ID
-     */
-    @Schema(description = "菜单 ID")
-    @Null(message = "新增时，ID 必须为空", groups = Add.class)
-    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
-    private Long menuId;
-
-    /**
-     * 上级菜单 ID
-     */
-    @Schema(description = "上级菜单 ID")
-    private Long parentId;
-
-    /**
-     * 菜单名称
-     */
-    @Schema(description = "菜单名称")
-    @NotBlank(message = "菜单名称不能为空")
-    private String menuName;
-
-    /**
      * 菜单类型（1目录 2菜单 3按钮）
      */
     @Schema(description = "菜单类型（1目录 2菜单 3按钮）", type = "Integer", allowableValues = {"1", "2", "3"})
     @NotNull(message = "菜单类型非法")
-    private MenuTypeEnum menuType;
+    private MenuTypeEnum type;
+
+    /**
+     * 菜单图标
+     */
+    @Schema(description = "菜单图标")
+    private String icon;
+
+    /**
+     * 菜单标题
+     */
+    @Schema(description = "菜单标题")
+    @NotBlank(message = "菜单标题不能为空")
+    private String title;
+
+    /**
+     * 菜单排序
+     */
+    @Schema(description = "菜单排序")
+    @NotNull(message = "菜单排序不能为空")
+    private Integer sort;
+
+    /**
+     * 权限标识
+     */
+    @Schema(description = "权限标识")
+    private String permission;
 
     /**
      * 路由地址
@@ -87,12 +91,6 @@ public class MenuRequest extends BaseRequest {
     private String component;
 
     /**
-     * 菜单图标
-     */
-    @Schema(description = "菜单图标")
-    private String icon;
-
-    /**
      * 是否外链
      */
     @Schema(description = "是否外链")
@@ -111,17 +109,10 @@ public class MenuRequest extends BaseRequest {
     private Boolean isHidden;
 
     /**
-     * 权限标识
+     * 上级菜单 ID
      */
-    @Schema(description = "权限标识")
-    private String permission;
-
-    /**
-     * 菜单排序
-     */
-    @Schema(description = "菜单排序")
-    @NotNull(message = "菜单排序不能为空")
-    private Integer menuSort;
+    @Schema(description = "上级菜单 ID")
+    private Long parentId;
 
     /**
      * 状态（1启用 2禁用）

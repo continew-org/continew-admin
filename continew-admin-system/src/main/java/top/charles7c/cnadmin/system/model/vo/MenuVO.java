@@ -21,8 +21,12 @@ import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+
 import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.base.BaseVO;
+import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 
@@ -34,93 +38,100 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
  */
 @Data
 @Accessors(chain = true)
-@TreeField(value = "menuId", nameKey = "menuName", weightKey = "menuSort")
+@TreeField(value = "id")
+@ExcelIgnoreUnannotated
 @Schema(description = "菜单信息")
 public class MenuVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单 ID
+     * 菜单标题
      */
-    @Schema(description = "菜单 ID")
-    private Long menuId;
-
-    /**
-     * 菜单名称
-     */
-    @Schema(description = "菜单名称")
-    private String menuName;
-
-    /**
-     * 上级菜单 ID
-     */
-    @Schema(description = "上级菜单 ID")
-    private Long parentId;
-
-    /**
-     * 菜单类型（1目录 2菜单 3按钮）
-     */
-    @Schema(description = "菜单类型（1目录 2菜单 3按钮）")
-    private MenuTypeEnum menuType;
-
-    /**
-     * 路由地址
-     */
-    @Schema(description = "路由地址")
-    private String path;
-
-    /**
-     * 组件名称
-     */
-    @Schema(description = "组件名称")
-    private String name;
-
-    /**
-     * 组件路径
-     */
-    @Schema(description = "组件路径")
-    private String component;
+    @Schema(description = "菜单标题")
+    @ExcelProperty(value = "菜单标题")
+    private String title;
 
     /**
      * 菜单图标
      */
     @Schema(description = "菜单图标")
+    @ExcelProperty(value = "菜单图标")
     private String icon;
+
+    /**
+     * 菜单排序
+     */
+    @Schema(description = "菜单排序")
+    @ExcelProperty(value = "菜单排序")
+    private Integer sort;
+
+    /**
+     * 权限标识
+     */
+    @Schema(description = "权限标识")
+    @ExcelProperty(value = "权限标识")
+    private String permission;
+
+    /**
+     * 组件路径
+     */
+    @Schema(description = "组件路径")
+    @ExcelProperty(value = "组件路径")
+    private String component;
+
+    /**
+     * 状态（1：启用，2：禁用）
+     */
+    @Schema(description = "状态（1：启用，2：禁用）")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
+    private DisEnableStatusEnum status;
 
     /**
      * 是否外链
      */
     @Schema(description = "是否外链")
+    @ExcelProperty(value = "是否外链")
     private Boolean isExternal;
 
     /**
      * 是否缓存
      */
     @Schema(description = "是否缓存")
+    @ExcelProperty(value = "是否缓存")
     private Boolean isCache;
 
     /**
      * 是否隐藏
      */
     @Schema(description = "是否隐藏")
+    @ExcelProperty(value = "是否隐藏")
     private Boolean isHidden;
 
     /**
-     * 权限标识
+     * 路由地址
      */
-    @Schema(description = "权限标识")
-    private String permission;
+    @Schema(description = "路由地址")
+    @ExcelProperty(value = "路由地址")
+    private String path;
 
     /**
-     * 菜单排序
+     * 组件名称
      */
-    @Schema(description = "菜单排序")
-    private Integer menuSort;
+    @Schema(description = "组件名称")
+    @ExcelProperty(value = "组件名称")
+    private String name;
 
     /**
-     * 状态（1启用 2禁用）
+     * 菜单类型（1：目录，2：菜单，3：按钮）
      */
-    @Schema(description = "状态（1启用 2禁用）")
-    private DisEnableStatusEnum status;
+    @Schema(description = "菜单类型（1：目录，2：菜单，3：按钮）")
+    @ExcelProperty(value = "菜单类型", converter = ExcelBaseEnumConverter.class)
+    private MenuTypeEnum type;
+
+    /**
+     * 上级菜单 ID
+     */
+    @Schema(description = "上级菜单 ID")
+    private Long parentId;
 }

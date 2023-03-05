@@ -35,12 +35,6 @@ public class OperationLogVO extends LogVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志 ID
-     */
-    @Schema(description = "日志 ID")
-    private Long logId;
-
-    /**
      * 操作内容
      */
     @Schema(description = "操作内容")
@@ -55,7 +49,7 @@ public class OperationLogVO extends LogVO {
     /**
      * 操作状态（1成功 2失败）
      */
-    @Schema(description = "操作状态（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "操作状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"})
     private LogStatusEnum status;
 
     /**

@@ -4,11 +4,11 @@ import qs from 'query-string';
 const BASE_URL = '/system/dept';
 
 export interface DeptRecord {
-  deptId?: string;
-  deptName: string;
+  id?: string;
+  name: string;
   parentId?: string;
   description?: string;
-  deptSort: number;
+  sort: number;
   status?: number;
   createUserString?: string;
   createTime?: string;
@@ -19,7 +19,7 @@ export interface DeptRecord {
 }
 
 export interface DeptParam {
-  deptName?: string;
+  name?: string;
   status?: number;
 }
 

@@ -36,7 +36,7 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
-        row-key="logId"
+        row-key="id"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -113,12 +113,14 @@
    */
   const getList = (params: LoginLogParam = { ...queryParams.value }) => {
     loading.value = true;
-    listLoginLog(params).then((res) => {
-      loginLogList.value = res.data.list;
-      total.value = res.data.total;
-    }).finally(() => {
-      loading.value = false;
-    });
+    listLoginLog(params)
+      .then((res) => {
+        loginLogList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 

@@ -61,12 +61,10 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
-        String roleName = request.getRoleName();
-        CheckUtils.throwIf(() -> this.checkNameExists(roleName, request.getRoleId()),
-            String.format("新增失败，'%s'已存在", roleName));
-        String roleCode = request.getRoleCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
-            String.format("新增失败，'%s'已存在", roleCode));
+        String name = request.getName();
+        CheckUtils.throwIf(() -> this.checkNameExists(name, request.getId()), String.format("新增失败，'%s'已存在", name));
+        String code = request.getCode();
+        CheckUtils.throwIf(() -> this.checkCodeExists(code, request.getId()), String.format("新增失败，'%s'已存在", code));
 
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -81,16 +79,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request) {
-        String roleName = request.getRoleName();
-        CheckUtils.throwIf(() -> this.checkNameExists(roleName, request.getRoleId()),
-            String.format("修改失败，'%s'已存在", roleName));
-        String roleCode = request.getRoleCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(roleCode, request.getRoleId()),
-            String.format("修改失败，'%s'已存在", roleCode));
+        String name = request.getName();
+        CheckUtils.throwIf(() -> this.checkNameExists(name, request.getId()), String.format("修改失败，'%s'已存在", name));
+        String code = request.getCode();
+        CheckUtils.throwIf(() -> this.checkCodeExists(code, request.getId()), String.format("修改失败，'%s'已存在", code));
 
         // 更新信息
         super.update(request);
-        Long roleId = request.getRoleId();
+        Long roleId = request.getId();
         // 保存角色和菜单关联
         roleMenuService.save(request.getMenuIds(), roleId);
         // 保存角色和部门关联
@@ -109,10 +105,10 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         super.fillDetail(detailObj);
         if (detailObj instanceof RoleDetailVO) {
             RoleDetailVO detailVO = (RoleDetailVO)detailObj;
-            Long roleId = detailVO.getRoleId();
-            if (SysConsts.SUPER_ADMIN.equals(detailVO.getRoleCode())) {
+            Long roleId = detailVO.getId();
+            if (SysConsts.SUPER_ADMIN.equals(detailVO.getCode())) {
                 List<MenuVO> list = menuService.list(null, null);
-                List<Long> menuIds = list.stream().map(MenuVO::getMenuId).collect(Collectors.toList());
+                List<Long> menuIds = list.stream().map(MenuVO::getId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);
             } else {
                 detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
@@ -126,21 +122,20 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>(0);
         }
-        return list.stream().map(r -> new LabelValueVO<>(r.getRoleName(), r.getRoleId())).collect(Collectors.toList());
+        return list.stream().map(r -> new LabelValueVO<>(r.getName(), r.getId())).collect(Collectors.toList());
     }
 
     @Override
     public List<String> listNameByIds(List<Long> ids) {
-        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getRoleName).in(RoleDO::getRoleId, ids).list();
-        return roleList.stream().map(RoleDO::getRoleName).collect(Collectors.toList());
+        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getName).in(RoleDO::getId, ids).list();
+        return roleList.stream().map(RoleDO::getName).collect(Collectors.toList());
     }
 
     @Override
-    public Set<String> listRoleCodeByUserId(Long userId) {
+    public Set<String> listCodeByUserId(Long userId) {
         List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
-        List<RoleDO> roleList =
-            baseMapper.lambdaQuery().select(RoleDO::getRoleCode).in(RoleDO::getRoleId, roleIds).list();
-        return roleList.stream().map(RoleDO::getRoleCode).collect(Collectors.toSet());
+        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
+        return roleList.stream().map(RoleDO::getCode).collect(Collectors.toSet());
     }
 
     /**
@@ -153,7 +148,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long id) {
-        return baseMapper.lambdaQuery().eq(RoleDO::getRoleName, name).ne(id != null, RoleDO::getRoleId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getName, name).ne(id != null, RoleDO::getId, id).exists();
     }
 
     /**
@@ -166,6 +161,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkCodeExists(String code, Long id) {
-        return baseMapper.lambdaQuery().eq(RoleDO::getRoleCode, code).ne(id != null, RoleDO::getRoleId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).ne(id != null, RoleDO::getId, id).exists();
     }
 }

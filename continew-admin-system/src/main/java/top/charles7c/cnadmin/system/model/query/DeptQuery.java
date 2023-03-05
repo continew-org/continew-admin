@@ -44,12 +44,12 @@ public class DeptQuery implements Serializable {
      */
     @Schema(description = "部门名称")
     @Query(type = Query.Type.INNER_LIKE)
-    private String deptName;
+    private String name;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     @Query
     private Integer status;
 }

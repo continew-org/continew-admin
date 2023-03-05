@@ -7,9 +7,9 @@
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="deptName" hide-label>
+            <a-form-item field="name" hide-label>
               <a-input
-                v-model="queryParams.deptName"
+                v-model="queryParams.name"
                 placeholder="输入部门名称搜索"
                 allow-clear
                 style="width: 150px"
@@ -102,7 +102,7 @@
         :pagination="false"
         :default-expand-all-rows="true"
         :hide-expand-button-on-empty="true"
-        row-key="deptId"
+        row-key="id"
         :bordered="false"
         :stripe="true"
         :loading="loading"
@@ -111,17 +111,17 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="部门名称" data-index="deptName">
+          <a-table-column title="部门名称">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.deptId)">{{
-                record.deptName
+              <a-link @click="toDetail(record.id)">{{
+                record.name
               }}</a-link>
             </template>
           </a-table-column>
           <a-table-column
             title="部门排序"
             align="center"
-            data-index="deptSort"
+            data-index="sort"
           />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
@@ -144,14 +144,14 @@
                 type="text"
                 size="small"
                 title="修改"
-                @click="toUpdate(record.deptId)"
+                @click="toUpdate(record.id)"
               >
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
                 content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！"
                 type="warning"
-                @ok="handleDelete([record.deptId])"
+                @ok="handleDelete([record.id])"
               >
                 <a-button
                   v-permission="['system:dept:delete']"
@@ -189,12 +189,12 @@
               :fallback-option="false"
             />
           </a-form-item>
-          <a-form-item label="部门名称" field="deptName">
-            <a-input v-model="form.deptName" placeholder="请输入部门名称" />
+          <a-form-item label="部门名称" field="name">
+            <a-input v-model="form.name" placeholder="请输入部门名称" />
           </a-form-item>
-          <a-form-item label="部门排序" field="deptSort">
+          <a-form-item label="部门排序" field="sort">
             <a-input-number
-              v-model="form.deptSort"
+              v-model="form.sort"
               placeholder="请输入部门排序"
               :min="1"
               mode="button"
@@ -229,7 +229,7 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.deptName }}</span>
+            <span v-else>{{ dept.name }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="上级部门">
             <a-skeleton v-if="detailLoading" :animation="true">
@@ -250,7 +250,7 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.deptSort }}</span>
+            <span v-else>{{ dept.sort }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
@@ -308,8 +308,8 @@
 
   const deptList = ref<DeptRecord[]>([]);
   const dept = ref<DeptRecord>({
-    deptName: '',
-    deptSort: 0,
+    name: '',
+    sort: 0,
     description: '',
     status: 1,
     createUserString: '',
@@ -333,16 +333,16 @@
   const data = reactive({
     // 查询参数
     queryParams: {
-      deptName: undefined,
+      name: undefined,
       status: undefined,
-      sort: ['parentId,asc', 'deptSort,asc', 'createTime,desc'],
+      sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
     },
     // 表单数据
     form: {} as DeptRecord,
     // 表单验证规则
     rules: {
-      deptName: [{ required: true, message: '请输入部门名称' }],
-      deptSort: [{ required: true, message: '请输入部门排序' }],
+      name: [{ required: true, message: '请输入部门名称' }],
+      sort: [{ required: true, message: '请输入部门排序' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);
@@ -402,11 +402,11 @@
    */
   const reset = () => {
     form.value = {
-      deptId: undefined,
-      deptName: '',
+      id: undefined,
+      name: '',
       parentId: undefined,
       description: '',
-      deptSort: 999,
+      sort: 999,
       status: 1,
     };
     proxy.$refs.formRef?.resetFields();
@@ -426,7 +426,7 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        if (form.value.deptId !== undefined) {
+        if (form.value.id !== undefined) {
           updateDept(form.value).then((res) => {
             handleCancel();
             getList();
@@ -507,8 +507,8 @@
     if (rowKeys.find((key: any) => key === rowKey)) {
       if (record.children) {
         record.children.forEach((r) => {
-          proxy.$refs.tableRef.select(r.deptId);
-          rowKeys.push(r.deptId);
+          proxy.$refs.tableRef.select(r.id);
+          rowKeys.push(r.id);
           if (r.children) {
             handleSelect(rowKeys, rowKey, r);
           }
@@ -516,8 +516,8 @@
       }
     } else if (record.children) {
       record.children.forEach((r) => {
-        rowKeys.splice(rowKeys.findIndex((key: number | undefined) => key === r.deptId), 1);
-        proxy.$refs.tableRef.select(r.deptId, false);
+        rowKeys.splice(rowKeys.findIndex((key: number | undefined) => key === r.id), 1);
+        proxy.$refs.tableRef.select(r.id, false);
         if (r.children) {
           handleSelect(rowKeys, rowKey, r);
         }

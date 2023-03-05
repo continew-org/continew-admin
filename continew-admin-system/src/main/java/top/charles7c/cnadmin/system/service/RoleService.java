@@ -59,5 +59,5 @@ public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery
      *            用户 ID
      * @return 角色编码集合
      */
-    Set<String> listRoleCodeByUserId(Long userId);
+    Set<String> listCodeByUserId(Long userId);
 }

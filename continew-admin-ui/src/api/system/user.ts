@@ -4,7 +4,7 @@ import qs from 'query-string';
 const BASE_URL = '/system/user';
 
 export interface UserRecord {
-  userId?: string;
+  id?: string;
   username: string;
   nickname: string;
   gender: number;

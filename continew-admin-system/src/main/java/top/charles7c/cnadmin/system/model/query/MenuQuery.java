@@ -40,16 +40,16 @@ public class MenuQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单名称
+     * 菜单标题
      */
-    @Schema(description = "菜单名称")
+    @Schema(description = "菜单标题")
     @Query(type = Query.Type.INNER_LIKE)
-    private String menuName;
+    private String title;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     @Query
     private Integer status;
 }

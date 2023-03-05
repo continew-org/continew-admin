@@ -33,18 +33,6 @@ public class SystemLogVO extends LogVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志 ID
-     */
-    @Schema(description = "日志 ID")
-    private Long logId;
-
-    /**
-     * 日志描述
-     */
-    @Schema(description = "日志描述")
-    private String description;
-
-    /**
      * 状态码
      */
     @Schema(description = "状态码")
@@ -57,16 +45,10 @@ public class SystemLogVO extends LogVO {
     private String requestMethod;
 
     /**
-     * 请求URL
+     * 请求 URL
      */
-    @Schema(description = "请求URL")
+    @Schema(description = "请求 URL")
     private String requestUrl;
-
-    /**
-     * 请求耗时（ms）
-     */
-    @Schema(description = "请求耗时（ms）")
-    private Long elapsedTime;
 
     /**
      * 客户端IP
@@ -85,6 +67,12 @@ public class SystemLogVO extends LogVO {
      */
     @Schema(description = "浏览器")
     private String browser;
+
+    /**
+     * 请求耗时（ms）
+     */
+    @Schema(description = "请求耗时（ms）")
+    private Long elapsedTime;
 
     /**
      * 错误信息

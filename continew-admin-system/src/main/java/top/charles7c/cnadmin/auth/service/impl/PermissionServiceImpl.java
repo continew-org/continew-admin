@@ -54,6 +54,6 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Set<String> listRoleCodeByUserId(Long userId) {
-        return roleService.listRoleCodeByUserId(userId);
+        return roleService.listCodeByUserId(userId);
     }
 }

@@ -18,9 +18,13 @@ package top.charles7c.cnadmin.common.base;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.groups.Default;
 
 import lombok.Data;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Request 基类
@@ -32,6 +36,14 @@ import lombok.Data;
 public class BaseRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @Schema(description = "ID")
+    @Null(message = "新增时，ID 必须为空", groups = Add.class)
+    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
+    private Long id;
 
     /**
      * 分组校验-创建

@@ -23,6 +23,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 
 /**
  * 实体类基类
@@ -34,6 +35,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 public class BaseDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @TableId
+    private Long id;
 
     /**
      * 创建人

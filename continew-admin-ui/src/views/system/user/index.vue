@@ -125,7 +125,7 @@
               total: total,
               current: queryParams.page,
             }"
-            row-key="userId"
+            row-key="id"
             :bordered="false"
             :stripe="true"
             :loading="loading"
@@ -138,10 +138,10 @@
             @selection-change="handleSelectionChange"
           >
             <template #columns>
-              <a-table-column title="ID" data-index="userId" />
+              <a-table-column title="ID" data-index="id" />
               <a-table-column title="用户名">
                 <template #cell="{ record }">
-                  <a-link @click="toDetail(record.userId)">{{
+                  <a-link @click="toDetail(record.id)">{{
                     record.username
                   }}</a-link>
                 </template>
@@ -197,14 +197,14 @@
                     type="text"
                     size="small"
                     title="修改"
-                    @click="toUpdate(record.userId)"
+                    @click="toUpdate(record.id)"
                   >
                     <template #icon><icon-edit /></template>
                   </a-button>
                   <a-popconfirm
                     content="确定要删除当前选中的数据吗？"
                     type="warning"
-                    @ok="handleDelete([record.userId])"
+                    @ok="handleDelete([record.id])"
                   >
                     <a-button
                       v-permission="['system:user:delete']"
@@ -219,7 +219,7 @@
                   <a-popconfirm
                     content="确定要重置当前用户的密码吗？"
                     type="warning"
-                    @ok="handleResetPassword(record.userId)"
+                    @ok="handleResetPassword(record.id)"
                   >
                     <a-button
                       v-permission="['system:user:password:reset']"
@@ -235,7 +235,7 @@
                     type="text"
                     size="small"
                     title="分配角色"
-                    @click="toUpdateRole(record.userId)"
+                    @click="toUpdateRole(record.id)"
                   >
                     <template #icon><svg-icon icon-class="reference" /></template>
                   </a-button>
@@ -492,8 +492,8 @@
     username: '',
     nickname: '',
     gender: 1,
-    email: undefined,
     phone: undefined,
+    email: undefined,
     status: 1,
     pwdResetTime: '',
     createUserString: '',
@@ -552,7 +552,7 @@
    * @param name 名称
    */
   const getDeptTree = (name: string) => {
-    listDeptTree({ deptName: name }).then((res) => {
+    listDeptTree({ name }).then((res) => {
       deptTree.value = res.data;
       setTimeout(() => {
         proxy.$refs.deptTreeRef.expandAll();
@@ -656,7 +656,7 @@
    */
   const reset = () => {
     form.value = {
-      userId: undefined,
+      id: undefined,
       username: '',
       nickname: '',
       gender: 1,
@@ -686,7 +686,7 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        if (form.value.userId !== undefined) {
+        if (form.value.id !== undefined) {
           updateUser(form.value).then((res) => {
             handleCancel();
             getList();
@@ -708,8 +708,8 @@
    */
   const handleUpdateRole = () => {
     proxy.$refs.userRoleFormRef.validate((valid: any) => {
-      if (!valid && form.value.userId !== undefined) {
-        updateUserRole({ roleIds: form.value.roleIds }, form.value.userId).then(
+      if (!valid && form.value.id !== undefined) {
+        updateUserRole({ roleIds: form.value.roleIds }, form.value.id).then(
           (res) => {
             handleCancel();
             getList();

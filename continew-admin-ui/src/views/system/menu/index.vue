@@ -7,10 +7,10 @@
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="menuName" hide-label>
+            <a-form-item field="title" hide-label>
               <a-input
-                v-model="queryParams.menuName"
-                placeholder="输入菜单名称搜索"
+                v-model="queryParams.title"
+                placeholder="输入菜单标题搜索"
                 allow-clear
                 style="width: 150px"
                 @press-enter="handleQuery"
@@ -105,7 +105,7 @@
         :pagination="false"
         :default-expand-all-rows="true"
         :hide-expand-button-on-empty="true"
-        row-key="menuId"
+        row-key="id"
         :bordered="false"
         :stripe="true"
         :loading="loading"
@@ -114,13 +114,13 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="菜单名称" data-index="menuName" />
+          <a-table-column title="菜单标题" data-index="title" />
           <a-table-column title="图标" align="center">
             <template #cell="{ record }">
               <svg-icon :icon-class="record.icon ? record.icon : ''" />
             </template>
           </a-table-column>
-          <a-table-column title="排序" align="center" data-index="menuSort" />
+          <a-table-column title="排序" align="center" data-index="sort" />
           <a-table-column title="权限标识" data-index="permission" />
           <a-table-column title="组件路径" data-index="component" />
           <a-table-column title="状态" align="center">
@@ -160,14 +160,14 @@
                 type="text"
                 size="small"
                 title="修改"
-                @click="toUpdate(record.menuId)"
+                @click="toUpdate(record.id)"
               >
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
                 content="确定要删除当前选中的数据吗？如果存在下级菜单则一并删除，此操作不能撤销！"
                 type="warning"
-                @ok="handleDelete([record.menuId])"
+                @ok="handleDelete([record.id])"
               >
                 <a-button
                   v-permission="['system:menu:delete']"
@@ -202,14 +202,14 @@
           :label-col-style="{ width: '85px' }"
           size="large"
         >
-          <a-form-item label="菜单类型" field="menuType" lab>
-            <a-radio-group v-model="form.menuType" type="button">
+          <a-form-item label="菜单类型" field="type" lab>
+            <a-radio-group v-model="form.type" type="button">
               <a-radio :value="1" style="width: 57px">目录</a-radio>
               <a-radio :value="2" style="width: 57px">菜单</a-radio>
               <a-radio :value="3" style="width: 57px">按钮</a-radio>
             </a-radio-group>
           </a-form-item>
-          <a-form-item v-if="form.menuType !== 3" label="菜单图标" field="icon">
+          <a-form-item v-if="form.type !== 3" label="菜单图标" field="icon">
             <a-popover
               v-model:popup-visible="showChooseIcon"
               position="bottom"
@@ -236,16 +236,16 @@
               </template>
             </a-popover>
           </a-form-item>
-          <a-form-item label="菜单名称" field="menuName">
+          <a-form-item label="菜单标题" field="title">
             <a-input
-              v-model="form.menuName"
-              placeholder="请输入菜单名称"
+              v-model="form.title"
+              placeholder="请输入菜单标题"
               style="width: 182px"
             />
           </a-form-item>
-          <a-form-item label="菜单排序" field="menuSort">
+          <a-form-item label="菜单排序" field="sort">
             <a-input-number
-              v-model="form.menuSort"
+              v-model="form.sort"
               placeholder="请输入菜单排序"
               :min="1"
               mode="button"
@@ -253,7 +253,7 @@
             />
           </a-form-item>
           <a-form-item
-            v-if="form.menuType !== 1"
+            v-if="form.type !== 1"
             label="权限标识"
             field="permission"
           >
@@ -263,7 +263,7 @@
               style="width: 182px"
             />
           </a-form-item>
-          <a-form-item v-if="form.menuType !== 3" label="路由地址" field="path">
+          <a-form-item v-if="form.type !== 3" label="路由地址" field="path">
             <a-input
               v-model="form.path"
               placeholder="请输入路由地址"
@@ -271,7 +271,7 @@
             />
           </a-form-item>
           <a-form-item
-            v-if="!form.isExternal && form.menuType === 2"
+            v-if="!form.isExternal && form.type === 2"
             label="组件名称"
             field="name"
           >
@@ -282,7 +282,7 @@
             />
           </a-form-item>
           <a-form-item
-            v-if="!form.isExternal && form.menuType === 2"
+            v-if="!form.isExternal && form.type === 2"
             label="组件路径"
             field="component"
           >
@@ -294,7 +294,7 @@
           </a-form-item>
           <br />
           <a-form-item
-            v-if="form.menuType !== 3"
+            v-if="form.type !== 3"
             label="是否外链"
             field="isExternal"
           >
@@ -304,7 +304,7 @@
             </a-radio-group>
           </a-form-item>
           <a-form-item
-            v-if="form.menuType === 2"
+            v-if="form.type === 2"
             label="是否缓存"
             field="isCache"
           >
@@ -314,7 +314,7 @@
             </a-radio-group>
           </a-form-item>
           <a-form-item
-            v-if="form.menuType !== 3"
+            v-if="form.type !== 3"
             label="是否隐藏"
             field="isHidden"
           >
@@ -375,20 +375,20 @@
   const data = reactive({
     // 查询参数
     queryParams: {
-      menuName: undefined,
+      title: undefined,
       status: undefined,
-      sort: ['parentId,asc', 'menuSort,asc', 'createTime,desc'],
+      sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
     },
     // 表单数据
     form: {} as MenuRecord,
     // 表单验证规则
     rules: {
-      menuName: [{ required: true, message: '请输入菜单名称' }],
+      title: [{ required: true, message: '请输入菜单标题' }],
       path: [{ required: true, message: '请输入路由地址' }],
       name: [{ required: true, message: '请输入组件名称' }],
       component: [{ required: true, message: '请输入组件路径' }],
       permission: [{ required: true, message: '请输入权限标识' }],
-      menuSort: [{ required: true, message: '请输入菜单排序' }],
+      sort: [{ required: true, message: '请输入菜单排序' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);
@@ -445,10 +445,10 @@
    */
   const reset = () => {
     form.value = {
-      menuId: undefined,
-      menuName: '',
+      id: undefined,
+      title: '',
       parentId: undefined,
-      menuType: 1,
+      type: 1,
       path: undefined,
       name: undefined,
       component: undefined,
@@ -457,7 +457,7 @@
       isCache: false,
       isHidden: false,
       permission: undefined,
-      menuSort: 999,
+      sort: 999,
       status: 1,
     };
     proxy.$refs.formRef?.resetFields();
@@ -477,7 +477,7 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        if (form.value.menuId !== undefined) {
+        if (form.value.id !== undefined) {
           updateMenu(form.value).then((res) => {
             handleCancel();
             getList();
@@ -533,8 +533,8 @@
     if (rowKeys.find((key: any) => key === rowKey)) {
       if (record.children) {
         record.children.forEach((r) => {
-          proxy.$refs.tableRef.select(r.menuId);
-          rowKeys.push(r.menuId);
+          proxy.$refs.tableRef.select(r.id);
+          rowKeys.push(r.id);
           if (r.children) {
             handleSelect(rowKeys, rowKey, r);
           }
@@ -543,10 +543,10 @@
     } else if (record.children) {
       record.children.forEach((r) => {
         rowKeys.splice(
-          rowKeys.findIndex((key: number | undefined) => key === r.menuId),
+          rowKeys.findIndex((key: number | undefined) => key === r.id),
           1
         );
-        proxy.$refs.tableRef.select(r.menuId, false);
+        proxy.$refs.tableRef.select(r.id, false);
         if (r.children) {
           handleSelect(rowKeys, rowKey, r);
         }

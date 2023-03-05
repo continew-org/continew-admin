@@ -45,13 +45,6 @@ public class UserDetailVO extends BaseDetailVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
-     */
-    @Schema(description = "用户 ID")
-    @ExcelProperty(value = "用户ID")
-    private Long userId;
-
-    /**
      * 用户名
      */
     @Schema(description = "用户名")
@@ -66,9 +59,9 @@ public class UserDetailVO extends BaseDetailVO {
     private String nickname;
 
     /**
-     * 性别（0未知 1男 2女）
+     * 性别（0：未知，1：男，2：女）
      */
-    @Schema(description = "性别（0未知 1男 2女）")
+    @Schema(description = "性别（0：未知，1：男，2：女）")
     @ExcelProperty(value = "性别", converter = ExcelBaseEnumConverter.class)
     private GenderEnum gender;
 
@@ -94,9 +87,9 @@ public class UserDetailVO extends BaseDetailVO {
     private String avatar;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 

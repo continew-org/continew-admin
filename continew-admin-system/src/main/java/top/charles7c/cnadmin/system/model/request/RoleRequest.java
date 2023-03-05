@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Data;
 
@@ -45,32 +44,24 @@ public class RoleRequest extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色 ID
-     */
-    @Schema(description = "角色 ID")
-    @Null(message = "新增时，ID 必须为空", groups = Add.class)
-    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
-    private Long roleId;
-
-    /**
      * 角色名称
      */
     @Schema(description = "角色名称")
     @NotBlank(message = "角色名称不能为空")
-    private String roleName;
+    private String name;
 
     /**
      * 角色编码
      */
     @Schema(description = "角色编码")
-    private String roleCode;
+    private String code;
 
     /**
      * 角色排序
      */
     @Schema(description = "角色排序")
     @NotNull(message = "角色排序不能为空")
-    private Integer roleSort;
+    private Integer sort;
 
     /**
      * 描述
@@ -86,9 +77,9 @@ public class RoleRequest extends BaseRequest {
     private List<Long> menuIds;
 
     /**
-     * 数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）
+     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    @Schema(description = "数据权限（1全部数据权限 2本部门及以下数据权限 3本部门数据权限 4仅本人数据权限 5自定义数据权限）", type = "Integer",
+    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", type = "Integer",
         allowableValues = {"1", "2", "3", "4", "5"})
     private DataScopeEnum dataScope;
 
@@ -99,8 +90,8 @@ public class RoleRequest extends BaseRequest {
     private List<Long> deptIds;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"})
     private DisEnableStatusEnum status;
 }

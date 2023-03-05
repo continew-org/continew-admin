@@ -36,9 +36,9 @@ public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户ID
+     * ID
      */
-    private Long userId;
+    private Long id;
 
     /**
      * 用户名

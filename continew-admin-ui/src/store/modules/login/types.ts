@@ -1,5 +1,5 @@
 export interface UserState {
-  userId: string;
+  id: string;
   username: string;
   nickname: string;
   gender: number;

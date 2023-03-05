@@ -38,6 +38,13 @@ public class BaseVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID")
+    @ExcelProperty(value = "ID")
+    private Long id;
+
+    /**
      * 创建人
      */
     @JsonIgnore

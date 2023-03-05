@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.system.model.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import lombok.Data;
 
@@ -42,14 +41,6 @@ public class DeptRequest extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
-     */
-    @Schema(description = "部门 ID")
-    @Null(message = "新增时，ID 必须为空", groups = Add.class)
-    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
-    private Long deptId;
-
-    /**
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID")
@@ -60,14 +51,14 @@ public class DeptRequest extends BaseRequest {
      */
     @Schema(description = "部门名称")
     @NotBlank(message = "部门名称不能为空")
-    private String deptName;
+    private String name;
 
     /**
      * 部门排序
      */
     @Schema(description = "部门排序")
     @NotNull(message = "部门排序不能为空")
-    private Integer deptSort;
+    private Integer sort;
 
     /**
      * 描述

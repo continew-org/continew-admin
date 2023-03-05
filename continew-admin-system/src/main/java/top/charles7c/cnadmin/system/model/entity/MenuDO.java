@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.system.model.entity;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
@@ -38,15 +37,9 @@ public class MenuDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单 ID
+     * 菜单标题
      */
-    @TableId
-    private Long menuId;
-
-    /**
-     * 菜单名称
-     */
-    private String menuName;
+    private String title;
 
     /**
      * 上级菜单 ID
@@ -54,9 +47,9 @@ public class MenuDO extends BaseDO {
     private Long parentId;
 
     /**
-     * 菜单类型（1目录 2菜单 3按钮）
+     * 菜单类型（1：目录，2：菜单，3：按钮）
      */
-    private MenuTypeEnum menuType;
+    private MenuTypeEnum type;
 
     /**
      * 路由地址
@@ -101,10 +94,10 @@ public class MenuDO extends BaseDO {
     /**
      * 菜单排序
      */
-    private Integer menuSort;
+    private Integer sort;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
     private DisEnableStatusEnum status;
 }

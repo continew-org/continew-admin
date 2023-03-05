@@ -39,10 +39,10 @@ public class LogDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志 ID
+     * ID
      */
     @TableId
-    private Long logId;
+    private Long id;
 
     /**
      * 日志描述
@@ -95,7 +95,7 @@ public class LogDO implements Serializable {
     private Long elapsedTime;
 
     /**
-     * 操作状态（1成功 2失败）
+     * 操作状态（1：成功，2：失败）
      */
     private LogStatusEnum status;
 

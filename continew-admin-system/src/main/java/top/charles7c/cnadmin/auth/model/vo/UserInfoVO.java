@@ -46,10 +46,10 @@ public class UserInfoVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户ID
+     * ID
      */
-    @Schema(description = "用户ID")
-    private Long userId;
+    @Schema(description = "ID")
+    private Long id;
 
     /**
      * 用户名
@@ -64,9 +64,9 @@ public class UserInfoVO implements Serializable {
     private String nickname;
 
     /**
-     * 性别（0未知 1男 2女）
+     * 性别（0：未知，1：男，2：女）
      */
-    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"})
+    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"})
     private GenderEnum gender;
 
     /**
@@ -112,9 +112,9 @@ public class UserInfoVO implements Serializable {
     private LocalDate registrationDate;
 
     /**
-     * 部门ID
+     * 部门 ID
      */
-    @Schema(description = "部门ID")
+    @Schema(description = "部门 ID")
     private Long deptId;
 
     /**

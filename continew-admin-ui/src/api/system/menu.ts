@@ -4,10 +4,10 @@ import qs from 'query-string';
 const BASE_URL = '/system/menu';
 
 export interface MenuRecord {
-  menuId?: string;
-  menuName: string;
+  id?: string;
+  title: string;
   parentId?: string;
-  menuType: number;
+  type: number;
   path?: string;
   name?: string;
   component?: string;
@@ -16,7 +16,7 @@ export interface MenuRecord {
   isCache: boolean;
   isHidden: boolean;
   permission?: string;
-  menuSort: number;
+  sort: number;
   status?: number;
   createUserString?: string;
   createTime?: string;
@@ -27,7 +27,7 @@ export interface MenuRecord {
 }
 
 export interface MenuParam {
-  menuName?: string;
+  name?: string;
   status?: number;
 }
 

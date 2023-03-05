@@ -35,21 +35,15 @@ public class LoginLogVO extends LogVO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日志 ID
+     * 登录行为
      */
-    @Schema(description = "日志 ID")
-    private Long logId;
-
-    /**
-     * 日志描述
-     */
-    @Schema(description = "日志描述")
+    @Schema(description = "登录行为")
     private String description;
 
     /**
-     * 操作状态（1成功 2失败）
+     * 登录状态（1：成功，2：失败）
      */
-    @Schema(description = "操作状态（1成功 2失败）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "登录状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"})
     private LogStatusEnum status;
 
     /**

@@ -33,23 +33,17 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  */
 @Data
 @Accessors(chain = true)
-@TreeField(value = "deptId", nameKey = "deptName", weightKey = "deptSort")
+@TreeField(value = "id", nameKey = "name")
 @Schema(description = "部门信息")
 public class DeptVO extends BaseVO {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门 ID
-     */
-    @Schema(description = "部门 ID")
-    private Long deptId;
-
-    /**
      * 部门名称
      */
     @Schema(description = "部门名称")
-    private String deptName;
+    private String name;
 
     /**
      * 上级部门 ID
@@ -58,20 +52,20 @@ public class DeptVO extends BaseVO {
     private Long parentId;
 
     /**
+     * 部门排序
+     */
+    @Schema(description = "部门排序")
+    private Integer sort;
+
+    /**
+     * 状态（1：启用，2：禁用）
+     */
+    @Schema(description = "状态（1：启用，2：禁用）")
+    private DisEnableStatusEnum status;
+
+    /**
      * 描述
      */
     @Schema(description = "描述")
     private String description;
-
-    /**
-     * 部门排序
-     */
-    @Schema(description = "部门排序")
-    private Integer deptSort;
-
-    /**
-     * 状态（1启用 2禁用）
-     */
-    @Schema(description = "状态（1启用 2禁用）")
-    private DisEnableStatusEnum status;
 }

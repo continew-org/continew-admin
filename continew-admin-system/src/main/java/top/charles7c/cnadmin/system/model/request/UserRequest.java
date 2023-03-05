@@ -45,14 +45,6 @@ public class UserRequest extends BaseRequest {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户 ID
-     */
-    @Schema(description = "角色 ID")
-    @Null(message = "新增时，ID 必须为空", groups = Add.class)
-    @NotNull(message = "修改时，ID 不能为空", groups = Update.class)
-    private Long userId;
-
-    /**
      * 用户名
      */
     @Schema(description = "用户名")
@@ -65,13 +57,6 @@ public class UserRequest extends BaseRequest {
     @Schema(description = "昵称")
     @Length(max = 32, message = "昵称长度不能超过 {max} 个字符")
     private String nickname;
-
-    /**
-     * 性别（0未知 1男 2女）
-     */
-    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"})
-    @NotNull(message = "性别非法")
-    private GenderEnum gender;
 
     /**
      * 邮箱
@@ -88,6 +73,25 @@ public class UserRequest extends BaseRequest {
     private String phone;
 
     /**
+     * 性别（0：未知，1：男，2：女）
+     */
+    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"})
+    @NotNull(message = "性别非法")
+    private GenderEnum gender;
+
+    /**
+     * 所属部门
+     */
+    @Schema(description = "所属部门")
+    private Long deptId;
+
+    /**
+     * 所属角色
+     */
+    @Schema(description = "所属角色")
+    private List<Long> roleIds;
+
+    /**
      * 描述
      */
     @Schema(description = "描述")
@@ -95,20 +99,8 @@ public class UserRequest extends BaseRequest {
     private String description;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"})
     private DisEnableStatusEnum status;
-
-    /**
-     * 部门 ID
-     */
-    @Schema(description = "所属部门")
-    private Long deptId;
-
-    /**
-     * 角色 ID 列表
-     */
-    @Schema(description = "所属角色")
-    private List<Long> roleIds;
 }

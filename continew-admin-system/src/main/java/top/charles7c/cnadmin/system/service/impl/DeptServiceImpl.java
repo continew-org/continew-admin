@@ -57,9 +57,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long add(DeptRequest request) {
-        String deptName = request.getDeptName();
-        boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
-        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", deptName));
+        String name = request.getName();
+        boolean isExists = this.checkNameExists(name, request.getParentId(), request.getId());
+        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", name));
 
         request.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(request);
@@ -68,9 +68,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(DeptRequest request) {
-        String deptName = request.getDeptName();
-        boolean isExists = this.checkNameExists(deptName, request.getParentId(), request.getDeptId());
-        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", deptName));
+        String name = request.getName();
+        boolean isExists = this.checkNameExists(name, request.getParentId(), request.getId());
+        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", name));
 
         super.update(request);
     }
@@ -91,7 +91,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
             if (Objects.equals(SysConsts.SUPER_PARENT_ID, detailVO.getParentId())) {
                 return;
             }
-            detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getDeptName()));
+            detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getName()));
         }
     }
 
@@ -107,7 +107,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long parentId, Long id) {
-        return baseMapper.lambdaQuery().eq(DeptDO::getDeptName, name).eq(DeptDO::getParentId, parentId)
-            .ne(id != null, DeptDO::getDeptId, id).exists();
+        return baseMapper.lambdaQuery().eq(DeptDO::getName, name).eq(DeptDO::getParentId, parentId)
+            .ne(id != null, DeptDO::getId, id).exists();
     }
 }

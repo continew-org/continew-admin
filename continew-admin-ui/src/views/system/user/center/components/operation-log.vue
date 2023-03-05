@@ -3,14 +3,14 @@
     <!-- 列表区域 -->
     <a-table
       ref="tableRef"
-      row-key="logId"
+      row-key="id"
       :loading="loading"
       :pagination="{
-          showTotal: true,
-          showPageSize: true,
-          total: total,
-          current: queryParams.page,
-        }"
+        showTotal: true,
+        showPageSize: true,
+        total: total,
+        current: queryParams.page,
+      }"
       :data="operationLogList"
       :bordered="false"
       :stripe="true"
@@ -70,7 +70,7 @@
   const data = reactive({
     // 查询参数
     queryParams: {
-      uid: loginStore.userId,
+      uid: loginStore.id,
       page: 1,
       size: 10,
       sort: ['createTime,desc'],
@@ -85,12 +85,14 @@
    */
   const getList = (params: OperationLogParam = { ...queryParams.value }) => {
     loading.value = true;
-    listOperationLog(params).then((res) => {
-      operationLogList.value = res.data.list;
-      total.value = res.data.total;
-    }).finally(() => {
-      loading.value = false;
-    });
+    listOperationLog(params)
+      .then((res) => {
+        operationLogList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 

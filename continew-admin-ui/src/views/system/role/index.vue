@@ -7,9 +7,9 @@
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
           <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <a-form-item field="roleName" hide-label>
+            <a-form-item field="name" hide-label>
               <a-input
-                v-model="queryParams.roleName"
+                v-model="queryParams.name"
                 placeholder="输入角色名称搜索"
                 allow-clear
                 style="width: 150px"
@@ -105,7 +105,7 @@
           total: total,
           current: queryParams.page,
         }"
-        row-key="roleId"
+        row-key="id"
         :bordered="false"
         :stripe="true"
         :loading="loading"
@@ -115,15 +115,15 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="ID" data-index="roleId" />
-          <a-table-column title="角色名称" data-index="roleName">
+          <a-table-column title="ID" data-index="id" />
+          <a-table-column title="角色名称" data-index="name">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.roleId)">{{
-                record.roleName
+              <a-link @click="toDetail(record.id)">{{
+                record.name
               }}</a-link>
             </template>
           </a-table-column>
-          <a-table-column title="角色编码" data-index="roleCode" />
+          <a-table-column title="角色编码" data-index="code" />
           <a-table-column title="数据权限">
             <template #cell="{ record }">
               <span v-if="record.dataScope === 1">全部数据权限</span>
@@ -136,7 +136,7 @@
           <a-table-column
             title="角色排序"
             align="center"
-            data-index="roleSort"
+            data-index="sort"
           />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
@@ -160,14 +160,14 @@
                 size="small"
                 title="修改"
                 :disabled="record.disabled"
-                @click="toUpdate(record.roleId)"
+                @click="toUpdate(record.id)"
               >
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
                 content="确定要删除当前选中的数据吗？"
                 type="warning"
-                @ok="handleDelete([record.roleId])"
+                @ok="handleDelete([record.id])"
               >
                 <a-button
                   v-permission="['system:role:delete']"
@@ -198,15 +198,15 @@
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
           <fieldset>
             <legend>基础信息</legend>
-            <a-form-item label="角色名称" field="roleName">
-              <a-input v-model="form.roleName" placeholder="请输入角色名称" />
+            <a-form-item label="角色名称" field="name">
+              <a-input v-model="form.name" placeholder="请输入角色名称" />
             </a-form-item>
-            <a-form-item label="角色编码" field="roleCode">
-              <a-input v-model="form.roleCode" placeholder="请输入角色编码" />
+            <a-form-item label="角色编码" field="code">
+              <a-input v-model="form.code" placeholder="请输入角色编码" />
             </a-form-item>
-            <a-form-item label="角色排序" field="roleSort">
+            <a-form-item label="角色排序" field="sort">
               <a-input-number
-                v-model="form.roleSort"
+                v-model="form.sort"
                 placeholder="请输入角色排序"
                 :min="1"
                 mode="button"
@@ -294,13 +294,13 @@
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.roleName }}</span>
+              <span v-else>{{ role.name }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="角色编码">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.roleCode }}</span>
+              <span v-else>{{ role.code }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="状态">
               <a-skeleton v-if="detailLoading" :animation="true">
@@ -406,8 +406,8 @@
 
   const roleList = ref<RoleRecord[]>([]);
   const role = ref<RoleRecord>({
-    roleName: '',
-    roleCode: '',
+    name: '',
+    code: '',
     status: 1,
     dataScope: 1,
     createUserString: '',
@@ -443,7 +443,7 @@
   const data = reactive({
     // 查询参数
     queryParams: {
-      roleName: undefined,
+      name: undefined,
       status: undefined,
       page: 1,
       size: 10,
@@ -453,9 +453,9 @@
     form: {} as RoleRecord,
     // 表单验证规则
     rules: {
-      roleName: [{ required: true, message: '请输入角色名称' }],
+      name: [{ required: true, message: '请输入角色名称' }],
       dataScope: [{ required: true, message: '请选择数据权限' }],
-      roleSort: [{ required: true, message: '请输入角色排序' }],
+      sort: [{ required: true, message: '请输入角色排序' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);
@@ -552,12 +552,12 @@
     proxy.$refs.menuRef?.expandAll(menuExpandAll.value);
     proxy.$refs.deptRef?.expandAll(deptExpandAll.value);
     form.value = {
-      roleId: undefined,
-      roleName: '',
-      roleCode: undefined,
+      id: undefined,
+      name: '',
+      code: undefined,
       dataScope: 4,
       description: '',
-      roleSort: 999,
+      sort: 999,
       status: 1,
       menuIds: [],
       deptIds: [],
@@ -618,7 +618,7 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        if (form.value.roleId !== undefined) {
+        if (form.value.id !== undefined) {
           form.value.menuIds = getMenuAllCheckedKeys();
           form.value.deptIds = getDeptAllCheckedKeys();
           updateRole(form.value).then((res) => {
