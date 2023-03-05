@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.common.model.query;
 import javax.validation.constraints.Min;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -41,6 +42,7 @@ import cn.hutool.core.util.StrUtil;
  */
 @Data
 @ParameterObject
+@NoArgsConstructor
 @Schema(description = "分页查询条件")
 public class PageQuery extends SortQuery {
 
@@ -64,12 +66,6 @@ public class PageQuery extends SortQuery {
     private static final int DEFAULT_PAGE = 1;
     /** 默认每页条数：10 */
     private static final int DEFAULT_SIZE = 10;
-    /** 默认每页最大条数：1000 */
-    private static final int DEFAULT_MAX_SIZE = 1000;
-
-    public PageQuery() {
-        this(DEFAULT_PAGE, DEFAULT_SIZE);
-    }
 
     public PageQuery(Integer page, Integer size) {
         this.setPage(page);
@@ -102,12 +98,6 @@ public class PageQuery extends SortQuery {
     }
 
     public void setSize(Integer size) {
-        if (size == null) {
-            this.size = DEFAULT_SIZE;
-        } else if (size > DEFAULT_MAX_SIZE) {
-            this.size = DEFAULT_MAX_SIZE;
-        } else {
-            this.size = size;
-        }
+        this.size = size == null ? DEFAULT_SIZE : size;
     }
 }
