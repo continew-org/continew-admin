@@ -49,13 +49,13 @@ import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 @RequiredArgsConstructor
 @Import(cn.hutool.extra.spring.SpringUtil.class)
 @ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
-public class ContinewAdminApplication implements ApplicationRunner {
+public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ContiNewAdminProperties properties;
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
-        SpringApplication.run(ContinewAdminApplication.class, args);
+        SpringApplication.run(ContiNewAdminApplication.class, args);
     }
 
     /**
