@@ -186,6 +186,14 @@
                 </template>
               </a-table-column>
               <a-table-column
+                v-if="
+                  checkPermission([
+                    'system:user:update',
+                    'system:user:delete',
+                    'system:user:password:reset',
+                    'system:user:role:update',
+                  ])
+                "
                 title="操作"
                 align="center"
                 fixed="right"

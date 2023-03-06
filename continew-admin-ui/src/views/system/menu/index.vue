@@ -153,7 +153,11 @@
             </template>
           </a-table-column>
           <a-table-column title="创建时间" data-index="createTime" />
-          <a-table-column title="操作" align="center">
+          <a-table-column
+            v-if="checkPermission(['system:menu:update', 'system:menu:delete'])"
+            title="操作"
+            align="center"
+          >
             <template #cell="{ record }">
               <a-button
                 v-permission="['system:menu:update']"

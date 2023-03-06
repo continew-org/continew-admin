@@ -137,7 +137,11 @@
           <a-table-column title="描述" data-index="description" />
           <a-table-column title="创建人" data-index="createUserString" />
           <a-table-column title="创建时间" data-index="createTime" />
-          <a-table-column title="操作" align="center">
+          <a-table-column
+            v-if="checkPermission(['system:dept:update', 'system:dept:delete'])"
+            title="操作"
+            align="center"
+          >
             <template #cell="{ record }">
               <a-button
                 v-permission="['system:dept:update']"

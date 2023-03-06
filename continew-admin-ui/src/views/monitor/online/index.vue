@@ -66,7 +66,7 @@
           <a-table-column title="登录地点" data-index="location" />
           <a-table-column title="浏览器" data-index="browser" />
           <a-table-column title="登录时间" data-index="loginTime" />
-          <a-table-column title="操作" align="center">
+          <a-table-column v-if="checkPermission(['monitor:online:user:delete'])" title="操作" align="center">
             <template #cell="{ record }">
               <a-popconfirm content="确定要强退该用户吗？" type="warning" @ok="handleKickout(record.token)">
                 <a-button
@@ -93,9 +93,10 @@
     OnlineUserParam,
     OnlineUserRecord,
     listOnlineUser,
-    kickout
+    kickout,
   } from '@/api/monitor/online';
   import { getToken } from '@/utils/auth';
+  import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
 
