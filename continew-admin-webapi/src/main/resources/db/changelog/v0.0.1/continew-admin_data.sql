@@ -35,14 +35,14 @@ INSERT IGNORE INTO `sys_menu` VALUES (10000, 'Arco Design Vue', 0, 1, 'https://a
 INSERT IGNORE INTO `sys_menu` VALUES (10001, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 101, 1, 1, NOW(), 1, NOW());
 
 -- 初始化默认部门
-INSERT IGNORE INTO `sys_dept` VALUES (1, 'Xxx科技有限公司', 0, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (2, '天津总部', 1, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (3, '研发部', 2, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (4, 'UI部', 2, '系统初始部门', 2, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (5, '测试部', 2, '系统初始部门', 3, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (6, '运维部', 2, '系统初始部门', 4, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (7, '研发一组', 3, '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
-INSERT IGNORE INTO `sys_dept` VALUES (8, '研发二组', 3, '系统初始部门', 2, 2, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (1, 'Xxx科技有限公司', 0, '0', '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (2, '天津总部', 1, '0,1', '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (3, '研发部', 2, '0,1,2', '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (4, 'UI部', 2, '0,1,2', '系统初始部门', 2, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (5, '测试部', 2, '0,1,2', '系统初始部门', 3, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (6, '运维部', 2, '0,1,2', '系统初始部门', 4, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (7, '研发一组', 3, '0,1,2,3', '系统初始部门', 1, 1, 1, NOW(), 1, NOW());
+INSERT IGNORE INTO `sys_dept` VALUES (8, '研发二组', 3, '0,1,2,3', '系统初始部门', 2, 2, 1, NOW(), 1, NOW());
 
 -- 初始化默认角色
 INSERT IGNORE INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, 1, NOW(), 1, NOW());

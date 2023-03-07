@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
@@ -62,6 +65,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", name));
 
         request.setStatus(DisEnableStatusEnum.ENABLE);
+        DeptDO parentDept = baseMapper.selectById(request.getParentId());
+        CheckUtils.throwIfNull(parentDept, "上级部门不存在");
+        request.setAncestors(String.format("%s,%s", parentDept.getAncestors(), request.getParentId()));
         return super.add(request);
     }
 
@@ -72,6 +78,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         boolean isExists = this.checkNameExists(name, request.getParentId(), request.getId());
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", name));
 
+        DeptDO oldDept = baseMapper.selectById(request.getId());
+        // 更新祖级列表
+        if (!Objects.equals(oldDept.getParentId(), request.getParentId())) {
+            DeptDO newParentDept = baseMapper.selectById(request.getParentId());
+            CheckUtils.throwIfNull(newParentDept, "上级部门不存在");
+            request.setAncestors(String.format("%s,%s", newParentDept.getAncestors(), request.getParentId()));
+            this.updateChildrenAncestors(request.getId(), request.getAncestors(), oldDept.getAncestors());
+        }
         super.update(request);
     }
 
@@ -109,5 +123,31 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return baseMapper.lambdaQuery().eq(DeptDO::getName, name).eq(DeptDO::getParentId, parentId)
             .ne(id != null, DeptDO::getId, id).exists();
+    }
+
+    /**
+     * 更新子部门祖级列表
+     *
+     * @param id
+     *            ID
+     * @param newAncestors
+     *            新祖级列表
+     * @param oldAncestors
+     *            原祖级列表
+     */
+    private void updateChildrenAncestors(Long id, String newAncestors, String oldAncestors) {
+        List<DeptDO> children =
+            baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
+        if (CollUtil.isEmpty(children)) {
+            return;
+        }
+        List<DeptDO> list = new ArrayList<>(children.size());
+        for (DeptDO child : children) {
+            DeptDO dept = new DeptDO();
+            dept.setId(child.getId());
+            dept.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+            list.add(dept);
+        }
+        baseMapper.updateBatchById(list);
     }
 }

@@ -33,6 +33,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.RoleService;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -47,6 +48,7 @@ public class LoginServiceImpl implements LoginService {
 
     private final UserService userService;
     private final DeptService deptService;
+    private final RoleService roleService;
     private final PermissionService permissionService;
 
     @Override
@@ -62,6 +64,7 @@ public class LoginServiceImpl implements LoginService {
         loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getName()));
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
+        loginUser.setRoleSet(roleService.listByUserId(userId));
         LoginHelper.login(loginUser);
 
         // 返回令牌

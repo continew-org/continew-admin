@@ -48,6 +48,17 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
     }
 
     /**
+     * 批量更新记录
+     *
+     * @param entityList
+     *            实体列表
+     * @return 是否成功
+     */
+    default boolean updateBatchById(Collection<T> entityList) {
+        return Db.updateBatchById(entityList);
+    }
+
+    /**
      * 链式查询
      *
      * @return QueryWrapper 的包装类

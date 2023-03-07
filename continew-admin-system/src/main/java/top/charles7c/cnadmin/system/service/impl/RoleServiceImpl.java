@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,11 +27,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
@@ -106,7 +109,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         if (detailObj instanceof RoleDetailVO) {
             RoleDetailVO detailVO = (RoleDetailVO)detailObj;
             Long roleId = detailVO.getId();
-            if (SysConsts.SUPER_ADMIN.equals(detailVO.getCode())) {
+            if (SysConsts.ADMIN_ROLE_CODE.equals(detailVO.getCode())) {
                 List<MenuVO> list = menuService.list(null, null);
                 List<Long> menuIds = list.stream().map(MenuVO::getId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);
@@ -136,6 +139,13 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
         List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
         return roleList.stream().map(RoleDO::getCode).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<RoleDTO> listByUserId(Long userId) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
+        List<RoleDO> roleList = baseMapper.lambdaQuery().in(RoleDO::getId, roleIds).list();
+        return new HashSet<>(BeanUtil.copyToList(roleList, RoleDTO.class));
     }
 
     /**

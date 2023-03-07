@@ -22,6 +22,9 @@ import java.util.Set;
 
 import lombok.Data;
 
+import cn.hutool.core.collection.CollUtil;
+
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
 /**
@@ -129,4 +132,21 @@ public class LoginUser implements Serializable {
      * 角色编码集合
      */
     private Set<String> roles;
+
+    /**
+     * 角色集合
+     */
+    private Set<RoleDTO> roleSet;
+
+    /**
+     * 是否为管理员
+     *
+     * @return true：是，false：否
+     */
+    public boolean isAdmin() {
+        if (CollUtil.isEmpty(roles)) {
+            return false;
+        }
+        return roles.contains(SysConsts.ADMIN_ROLE_CODE);
+    }
 }

@@ -72,4 +72,10 @@ public class DeptRequest extends BaseRequest {
      */
     @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
     private DisEnableStatusEnum status;
+
+    /**
+     * 祖级列表
+     */
+    @Schema(description = "祖级列表")
+    private String ancestors;
 }

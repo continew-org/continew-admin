@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
     `id` bigint(20) unsigned AUTO_INCREMENT COMMENT 'ID',
     `name` varchar(255) NOT NULL COMMENT '部门名称',
     `parent_id` bigint(20) unsigned DEFAULT 0 COMMENT '上级部门ID',
+    `ancestors` varchar(512) DEFAULT '' COMMENT '祖级列表',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `sort` int(11) unsigned DEFAULT 999 COMMENT '部门排序',
     `status` tinyint(1) unsigned DEFAULT 1 COMMENT '状态（1：启用，2：禁用）',

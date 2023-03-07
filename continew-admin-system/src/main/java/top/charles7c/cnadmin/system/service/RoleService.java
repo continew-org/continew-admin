@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import top.charles7c.cnadmin.common.base.BaseService;
+import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.request.RoleRequest;
@@ -60,4 +61,13 @@ public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery
      * @return 角色编码集合
      */
     Set<String> listCodeByUserId(Long userId);
+
+    /**
+     * 根据用户 ID 查询角色
+     *
+     * @param userId
+     *            用户 ID
+     * @return 角色集合
+     */
+    Set<RoleDTO> listByUserId(Long userId);
 }

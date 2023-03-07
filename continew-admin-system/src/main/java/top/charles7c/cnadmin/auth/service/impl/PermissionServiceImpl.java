@@ -46,7 +46,7 @@ public class PermissionServiceImpl implements PermissionService {
     public Set<String> listPermissionByUserId(Long userId) {
         Set<String> roleCodeSet = this.listRoleCodeByUserId(userId);
         // 超级管理员赋予全部权限
-        if (roleCodeSet.contains(SysConsts.SUPER_ADMIN)) {
+        if (roleCodeSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
             return CollUtil.newHashSet(SysConsts.ALL_PERMISSION);
         }
         return menuService.listPermissionByUserId(userId);

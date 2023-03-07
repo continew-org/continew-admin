@@ -14,54 +14,37 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.common.model.dto;
+
+import java.io.Serializable;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 
 /**
- * 部门实体
+ * 角色信息
  *
  * @author Charles7c
- * @since 2023/1/22 13:50
+ * @since 2023/3/7 22:08
  */
 @Data
-@TableName("sys_dept")
-public class DeptDO extends BaseDO {
+public class RoleDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门名称
+     * ID
      */
-    private String name;
+    private Long id;
 
     /**
-     * 上级部门 ID
+     * 角色编码
      */
-    private Long parentId;
+    private String code;
 
     /**
-     * 祖级列表
+     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    private String ancestors;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 部门排序
-     */
-    private Integer sort;
-
-    /**
-     * 状态（1：启用，2：禁用）
-     */
-    private DisEnableStatusEnum status;
+    private DataScopeEnum dataScope;
 }

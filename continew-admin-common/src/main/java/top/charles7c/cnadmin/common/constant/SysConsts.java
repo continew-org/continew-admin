@@ -29,19 +29,19 @@ import lombok.NoArgsConstructor;
 public class SysConsts {
 
     /**
-     * 超级管理员角色编码
+     * 管理员角色编码
      */
-    public static final String SUPER_ADMIN = "admin";
-
-    /**
-     * 全部权限标识
-     */
-    public static final String ALL_PERMISSION = "*";
+    public static final String ADMIN_ROLE_CODE = "admin";
 
     /**
      * 顶级父 ID
      */
     public static final Long SUPER_PARENT_ID = 0L;
+
+    /**
+     * 全部权限标识
+     */
+    public static final String ALL_PERMISSION = "*";
 
     /**
      * 默认密码

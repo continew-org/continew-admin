@@ -84,7 +84,7 @@ public class RoleVO extends BaseVO {
     private Boolean disabled;
 
     public Boolean getDisabled() {
-        if (SysConsts.SUPER_ADMIN.equals(code)) {
+        if (SysConsts.ADMIN_ROLE_CODE.equals(code)) {
             return true;
         }
         return disabled;
