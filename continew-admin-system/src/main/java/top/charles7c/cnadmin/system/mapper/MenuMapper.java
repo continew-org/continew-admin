@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.system.model.entity.MenuDO;
 public interface MenuMapper extends BaseMapper<MenuDO> {
 
     /**
-     * 根据 ID 查询权限码
+     * 根据用户 ID 查询权限码
      *
      * @param userId
      *            用户 ID
