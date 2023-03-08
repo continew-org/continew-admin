@@ -23,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.hutool.core.bean.BeanUtil;
+
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -75,6 +77,14 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Override
     public Set<String> listPermissionByUserId(Long userId) {
         return baseMapper.selectPermissionByUserId(userId);
+    }
+
+    @Override
+    public List<MenuVO> listByUserId(Long userId) {
+        List<MenuDO> menuList = baseMapper.selectListByUserId(userId);
+        List<MenuVO> list = BeanUtil.copyToList(menuList, MenuVO.class);
+        list.forEach(this::fill);
+        return list;
     }
 
     /**

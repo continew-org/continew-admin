@@ -3,7 +3,7 @@ export default {
   name: 'GitHub',
   meta: {
     locale: 'menu.github',
-    icon: 'icon-github',
+    icon: 'github',
     requiresAuth: true,
     order: 107,
   },

@@ -7,7 +7,7 @@ const FORM: AppRouteRecordRaw = {
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.form',
-    icon: 'icon-bookmark',
+    icon: 'bookmark',
     requiresAuth: true,
     order: 101,
   },

@@ -7,7 +7,7 @@ const System: AppRouteRecordRaw = {
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.system',
-    icon: 'icon-settings',
+    icon: 'settings',
     requiresAuth: true,
     order: 1,
   },

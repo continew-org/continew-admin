@@ -16,23 +16,39 @@
 
 package top.charles7c.cnadmin.auth.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
 
+import top.charles7c.cnadmin.auth.model.vo.MetaVO;
+import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
+import top.charles7c.cnadmin.common.annotation.TreeField;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
+import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
+import top.charles7c.cnadmin.system.model.query.MenuQuery;
+import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.MenuService;
 import top.charles7c.cnadmin.system.service.RoleService;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -49,6 +65,7 @@ public class LoginServiceImpl implements LoginService {
     private final UserService userService;
     private final DeptService deptService;
     private final RoleService roleService;
+    private final MenuService menuService;
     private final PermissionService permissionService;
 
     @Override
@@ -69,5 +86,43 @@ public class LoginServiceImpl implements LoginService {
 
         // 返回令牌
         return StpUtil.getTokenValue();
+    }
+
+    @Override
+    public List<RouteVO> buildRouteTree(Long userId) {
+        Set<String> roleSet = permissionService.listRoleCodeByUserId(userId);
+        if (CollUtil.isEmpty(roleSet)) {
+            return new ArrayList<>(0);
+        }
+
+        // 查询菜单列表
+        List<MenuVO> menuList;
+        if (roleSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
+            MenuQuery menuQuery = new MenuQuery();
+            menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());
+            menuList = menuService.list(menuQuery, null);
+        } else {
+            menuList = menuService.listByUserId(userId);
+        }
+        menuList.removeIf(m -> MenuTypeEnum.BUTTON.equals(m.getType()));
+
+        // 构建路由树
+        TreeField treeField = MenuVO.class.getDeclaredAnnotation(TreeField.class);
+        TreeNodeConfig treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
+        List<Tree<Long>> treeList = TreeUtils.build(menuList, treeNodeConfig, (m, tree) -> {
+            tree.setId(m.getId());
+            tree.setParentId(m.getParentId());
+            tree.setName(m.getTitle());
+            tree.setWeight(m.getSort());
+
+            tree.putExtra("path", m.getPath());
+            tree.putExtra("name", m.getName());
+            tree.putExtra("component", m.getComponent());
+            MetaVO metaVO = new MetaVO();
+            metaVO.setLocale(m.getTitle());
+            metaVO.setIcon(m.getIcon());
+            tree.putExtra("meta", metaVO);
+        });
+        return BeanUtil.copyToList(treeList, RouteVO.class);
     }
 }

@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.webapi.controller.auth;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +34,7 @@ import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
+import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
@@ -92,5 +95,13 @@ public class LoginController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         UserInfoVO userInfoVO = BeanUtil.copyProperties(loginUser, UserInfoVO.class);
         return R.ok(userInfoVO);
+    }
+
+    @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
+    @GetMapping("/route")
+    public R<List<RouteVO>> listMenu() {
+        Long userId = LoginHelper.getUserId();
+        List<RouteVO> routeTree = loginService.buildRouteTree(userId);
+        return R.ok(routeTree);
     }
 }

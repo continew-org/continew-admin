@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.service;
 
+import java.util.List;
 import java.util.Set;
 
 import top.charles7c.cnadmin.common.base.BaseService;
@@ -39,4 +40,13 @@ public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, Menu
      * @return 权限码集合
      */
     Set<String> listPermissionByUserId(Long userId);
+
+    /**
+     * 根据用户 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 菜单列表
+     */
+    List<MenuVO> listByUserId(Long userId);
 }

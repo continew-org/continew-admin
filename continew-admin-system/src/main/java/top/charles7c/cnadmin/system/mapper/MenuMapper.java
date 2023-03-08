@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
+import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -39,4 +40,13 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
      * @return 权限码集合
      */
     Set<String> selectPermissionByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据用户 ID 查询
+     *
+     * @param userId
+     *            用户 ID
+     * @return 菜单列表
+     */
+    List<MenuDO> selectListByUserId(@Param("userId") Long userId);
 }

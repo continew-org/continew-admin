@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.service;
+package top.charles7c.cnadmin.auth.model.vo;
 
-import java.util.List;
+import java.io.Serializable;
 
-import top.charles7c.cnadmin.auth.model.vo.RouteVO;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 登录业务接口
+ * 元数据信息
  *
  * @author Charles7c
- * @since 2022/12/21 21:48
+ * @since 2023/2/26 22:51
  */
-public interface LoginService {
+@Data
+@Accessors(chain = true)
+@Schema(description = "元数据信息")
+public class MetaVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 用户登录
-     *
-     * @param username
-     *            用户名
-     * @param password
-     *            密码
-     * @return 令牌
+     * 菜单标题
      */
-    String login(String username, String password);
+    @Schema(description = "菜单标题")
+    private String locale;
 
     /**
-     * 构建路由树
-     *
-     * @param userId
-     *            用户 ID
-     * @return 路由树
+     * 菜单图标
      */
-    List<RouteVO> buildRouteTree(Long userId);
+    @Schema(description = "菜单图标")
+    private String icon;
 }

@@ -7,7 +7,7 @@ const RESULT: AppRouteRecordRaw = {
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.result',
-    icon: 'icon-check-circle',
+    icon: 'check-circle',
     requiresAuth: true,
     order: 103,
   },

@@ -3,7 +3,7 @@ export default {
   name: 'ArcoWebsite',
   meta: {
     locale: 'menu.arcoWebsite',
-    icon: 'icon-link',
+    icon: 'link',
     requiresAuth: true,
     order: 106,
   },

@@ -7,7 +7,7 @@ const UserCenter: AppRouteRecordRaw = {
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.user',
-    icon: 'icon-user',
+    icon: 'user',
     requiresAuth: true,
   },
   children: [

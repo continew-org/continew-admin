@@ -27,6 +27,6 @@ export function getUserInfo() {
   return axios.get<UserState>(`${BASE_URL}/user/info`);
 }
 
-export function getMenuList() {
-  return axios.get<RouteRecordNormalized[]>('/api/user/menu');
+export function listRoute() {
+  return axios.get<RouteRecordNormalized[]>(`${BASE_URL}/route`);
 }

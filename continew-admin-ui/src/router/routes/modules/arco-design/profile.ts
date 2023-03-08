@@ -8,7 +8,7 @@ const PROFILE: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.profile',
     requiresAuth: true,
-    icon: 'icon-file',
+    icon: 'file',
     order: 102,
   },
   children: [

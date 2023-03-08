@@ -8,7 +8,7 @@ const VISUALIZATION: AppRouteRecordRaw = {
   meta: {
     locale: 'menu.visualization',
     requiresAuth: true,
-    icon: 'icon-bar-chart',
+    icon: 'bar-chart',
     order: 105,
   },
   children: [
