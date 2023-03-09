@@ -1,149 +1,47 @@
 # ContiNew Admin 中后台管理框架
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
 ![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v0.0.1-%23ff3f59.svg)
+[![GitHub Repo stars](https://img.shields.io/github/stars/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
+[![GitHub forks](https://img.shields.io/github/forks/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
+[![Gitee Repo stars](https://gitee.com/Charles7c/continew-admin/badge/star.svg?theme=white)](https://gitee.com/Charles7c/continew-admin)
+[![Gitee forks](https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white)](https://gitee.com/Charles7c/continew-admin)
 
-📚 [演示地址](https://cnadmin.charles7c.top)
+🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
 ## 简介
 
-ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Pro Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Hutool 等。
+ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建、优化及扩展。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Easy Excel、Hutool 等。
 
-## 开始
+## 项目源码
 
-> 注意：下方步骤有重叠部分，无需重复执行。
+| 开源平台      | 源码地址                                    |
+| ------------- | ------------------------------------------- |
+| GitHub        | https://github.com/Charles7c/continew-admin |
+| Gitee（码云） | https://gitee.com/Charles7c/continew-admin  |
 
-### 后端
+## 主要特性
 
-```bash
-# 1.克隆本项目
-git clone https://github.com/Charles7c/continew-admin.git
+- 使用最新技术栈，社区资源丰富
+- 高效率开发，后端提供了 CRUD 组件，在 Controller 添加一个注解，搞定增、删、改、查、分页、列表、树列表
+- 提供一套 Base 基类（BaseDO、BaseVO、BaseController、BaseService、升级版 BaseMapper...，用了你就知道），既方便复用又方便扩展
+- 基于注解的通用查询方式，降低拼接 MyBatis Plus QueryWrapper 的烦恼
+- 支持接口级别的功能权限与数据权限，可自定义操作
+- 前后端统一异常拦截处理，统一输出异常，避免繁琐的判断
+- 良好的代码、配置文件结构和命名，完善的代码注释，遵循阿里巴巴 《Java开发手册(黄山版)》的代码规范
+- 提供多项实用基础配置，例如：Jackson 针对日期、通用枚举的序列化、反序列化配置，统一线程池配置...
+- 通过 Liquibase 管理数据库脚本版本记录
 
-# 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
+##  系统功能
 
-# 3.修改配置文件中的数据源配置信息、Redis 配置信息、邮件配置信息等
-# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
+**v1.0.0-rc1：**
 
-# 4.启动程序
-# 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew Admin backend service started successfully.
-# 4.2 接口文档：http://localhost:8000/doc.html
-
-# 5.部署
-# 5.1 Docker 部署
-#   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
-#   5.1.2 执行 mvn package -P prod 进行项目打包，将 target 目录下的 continew-admin.jar 放到 /docker/continew-admin/server 目录下
-#   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   5.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
-#   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
-# 5.2 其他方式部署
-```
-
-### 前端
-
-```bash
-# 1.克隆本项目
-git clone https://github.com/Charles7c/continew-admin.git
-
-# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
-
-# 3.配置淘宝源
-yarn config set registry https://registry.npm.taobao.org
-
-# 4.安装依赖
-yarn install
-
-# 5.启动程序
-# 5.1 启动成功：访问 http://localhost:5173/
-yarn dev
-
-# 6.部署
-# 6.1 Docker 部署
-#   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
-#   6.1.2 执行 yarn build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/web 目录下
-#   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   6.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
-#   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
-# 6.2 其他方式部署
-```
-
-## 技术栈
-
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| [Vue](https://cn.vuejs.org/)                                 | 3.2.45       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| [TypeScript](https://www.typescriptlang.org/zh/)             | 4.9.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| [Arco Design Pro Vue](http://pro.arco.design/)               | 2.6.1        | 基于 Arco Design Vue 组件库的开箱即用的中后台前端解决方案。  |
-| [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.8        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
-| [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
-| [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.34.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| [MariaDB](https://mariadb.org/)                              | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
-| [MyBatis Plus](https://baomidou.com/)                        | 3.5.3.1      | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
-| [dynamic-datasource-spring-boot-starter](https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611) | 3.6.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                       | 4.0.3        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| [mysql-connector-j](https://dev.mysql.com/doc/connector-j/8.0/en/) | 8.0.31       | MySQL Java 驱动。                                            |
-| [P6Spy](https://github.com/p6spy/p6spy)                      | 3.9.1        | SQL 性能分析组件。                                           |
-| [Liquibase](https://github.com/liquibase/liquibase)          | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| [Redis](https://redis.io/)                                   | 6.2.7        | 高性能的 key-value 数据库。                                  |
-| [Redisson](https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D) | 3.19.0       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
-| [Easy Excel](https://easyexcel.opensource.alibaba.com/)      | 3.2.0        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| [Knife4j](https://doc.xiaominfo.com/)                        | 4.0.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。本项目使用的是 [knife4j-openapi3-spring-boot-starter](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo) 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter，该模块包含了 UI 部分，底层基于 springdoc-openapi 项目。 |
-| [Hutool](https://www.hutool.cn/)                             | 5.8.11       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| [Lombok](https://projectlombok.org/)                         | 1.18.24      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
-
-## 部分功能截图
-
-<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
-    <tbody>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwWQJ.png" alt="登录页面" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/01/14/pSMlHXT.png" alt="仪表盘" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOw7FK.png" alt="个人中心" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwHJO.png" alt="个人中心-安全设置" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwLSe.png" alt="个人中心-安全设置-修改密码" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwXyd.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwbWD.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/01/14/pSM3lxx.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhz34.png" alt="系统监控-在线用户" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhxCF.png" alt="系统监控-登录日志" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhXNT.png" alt="系统监控-操作日志" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhOEV.png" alt="个人中心-操作日志" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhj4U.png" alt="系统监控-系统日志" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhqH0.png" alt="系统监控-系统日志-详情" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0mT0.png" alt="系统管理-部门管理" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO036J.png" alt="系统管理-部门管理-新增" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0ewq.png" alt="系统管理-部门管理-详情" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0ukV.png" alt="系统管理-菜单管理" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0lpF.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0MfU.png" alt="系统管理-角色管理" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO01l4.png" alt="系统管理-角色管理-新增" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSO0Zmn.png" alt="系统管理-角色管理-详情" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSv4SgJ.png" alt="系统管理-用户管理" width="1920" /></td>
-        </tr>
-    </tbody>
-</table>
+- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
+- 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
+- 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
+- 部门管理：可配置系统组织架构，树形表格展示
+- 在线用户：管理当前登录用户，可一键踢下线
+- 日志管理：提供在线用户监控、登录日志监控、操作日志监控和系统日志监控等监控功能
 
 ## 项目结构
 
@@ -260,6 +158,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
 ```bash
 continew-admin
   └─ continew-admin-ui      # 前端项目
+    ├─ config               # 全局 Vite 配置
     ├─ public               # 公共静态资源（favicon.ico、logo.svg）
     ├─ src
     │  ├─ api               # 请求接口
@@ -293,6 +192,7 @@ continew-admin
     │  │  │  └─ online           # 在线用户
     │  │  └─ system           # 系统管理模块
     │  │    ├─ dept             # 部门管理
+    │  │    ├─ menu             # 菜单管理
     │  │    ├─ role             # 角色管理
     │  │    └─ user             # 用户模块
     │  │      └─ center           # 个人中心
@@ -305,7 +205,159 @@ continew-admin
     └─ tsconfig.json
 ```
 
+## 技术栈
+
+| 名称                                                         | 版本         | 简介                                                         |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
+| [Vue](https://cn.vuejs.org/)                                 | 3.2.45       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| [TypeScript](https://www.typescriptlang.org/zh/)             | 4.9.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| [Arco Design Vue](https://arco.design/vue/docs/start)        | 2.40.1       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
+| [Spring Boot](https://spring.io/projects/spring-boot)        | 2.7.8        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
+| [Undertow](https://undertow.io/)                             | 2.2.22.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
+| [Sa-Token + JWT](https://sa-token.dev33.cn/)                 | 1.34.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| [MariaDB](https://mariadb.org/)                              | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
+| [MyBatis Plus](https://baomidou.com/)                        | 3.5.3.1      | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| [dynamic-datasource-spring-boot-starter](https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611) | 3.6.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
+| Hikari                                                       | 4.0.3        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| [mysql-connector-j](https://dev.mysql.com/doc/connector-j/8.0/en/) | 8.0.31       | MySQL Java 驱动。                                            |
+| [P6Spy](https://github.com/p6spy/p6spy)                      | 3.9.1        | SQL 性能分析组件。                                           |
+| [Liquibase](https://github.com/liquibase/liquibase)          | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
+| [Redis](https://redis.io/)                                   | 6.2.7        | 高性能的 key-value 数据库。                                  |
+| [Redisson](https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D) | 3.19.0       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
+| [Easy Excel](https://easyexcel.opensource.alibaba.com/)      | 3.2.0        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
+| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
+| [Knife4j](https://doc.xiaominfo.com/)                        | 4.0.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。本项目使用的是 [knife4j-openapi3-spring-boot-starter](https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo) 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter，该模块包含了 UI 部分，底层基于 springdoc-openapi 项目。 |
+| [Hutool](https://www.hutool.cn/)                             | 5.8.11       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| [Lombok](https://projectlombok.org/)                         | 1.18.24      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+
+## 部分系统截图
+
+<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
+    <tbody>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwWQJ.png" alt="登录页面" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn4wVA.png" alt="仪表盘" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://user-images.githubusercontent.com/25446948/224081765-8cf61216-d30a-402d-8972-24eb714687bd.png" alt="数据可视化-分析页" width="1920" /></td>
+            <td><img src="https://user-images.githubusercontent.com/25446948/224081884-d0da486d-5e39-4f24-8e6f-3bd806c09b45.png" alt="数据可视化-实时监控" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOw7FK.png" alt="个人中心" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwHJO.png" alt="个人中心-安全设置" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwLSe.png" alt="个人中心-安全设置-修改密码" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwXyd.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwbWD.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/01/14/pSM3lxx.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhOEV.png" alt="个人中心-操作日志" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5ise.png" alt="系统监控-操作日志" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn4bMF.png" alt="系统监控-在线用户" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5SG6.png" alt="系统监控-登录日志" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5eit.png" alt="系统监控-系统日志" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5VII.png" alt="系统监控-系统日志-详情" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5nRf.png" alt="系统管理-部门管理" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5Qsg.png" alt="系统管理-菜单管理" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5lLQ.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5DeJ.png" alt="系统管理-角色管理" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5soR.png" alt="系统管理-角色管理-新增" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5cJx.png" alt="系统管理-角色管理-详情" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5WQO.png" alt="系统管理-用户管理" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/09/ppn55eH.png" alt="系统管理-用户管理-新增" width="1920" /></td>
+        </tr>
+    </tbody>
+</table>
+## 快速开始
+
+> 注意：下方步骤有重叠部分，无需重复执行。
+
+### 后端
+
+```bash
+# 1.克隆本项目
+git clone https://github.com/Charles7c/continew-admin.git
+
+# 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
+
+# 3.修改配置文件中的数据源配置信息、Redis 配置信息、邮件配置信息等
+# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
+
+# 4.启动程序
+# 4.1 启动成功：访问 http://localhost:8000/，页面输出：ContiNew Admin backend service started successfully.
+# 4.2 接口文档：http://localhost:8000/doc.html
+
+# 5.部署
+# 5.1 Docker 部署
+#   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
+#   5.1.2 执行 mvn package -P prod 进行项目打包，将 target 目录下的 continew-admin.jar 放到 /docker/continew-admin/server 目录下
+#   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
+#   5.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
+#   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
+# 5.2 其他方式部署
+```
+
+### 前端
+
+```bash
+# 1.克隆本项目
+git clone https://github.com/Charles7c/continew-admin.git
+
+# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
+
+# 3.配置淘宝源
+yarn config set registry https://registry.npm.taobao.org
+
+# 4.安装依赖
+yarn install
+
+# 5.启动程序
+# 5.1 启动成功：访问 http://localhost:5173/
+yarn dev
+
+# 6.部署
+# 6.1 Docker 部署
+#   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
+#   6.1.2 执行 yarn build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/web 目录下
+#   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
+#   6.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
+#   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
+# 6.2 其他方式部署
+```
+
+## 特别鸣谢
+
+- 感谢 [JetBrains](https://www.jetbrains.com/) 提供的 [非商业开源软件开发授权](https://www.jetbrains.com/shop/eform/opensource)
+- 感谢 [Arco Design Pro](http://pro.arco.design/) 开箱即用的中后台前端解决方案
+- 感谢 [ELADMIN](https://github.com/elunez/eladmin)、[RuoYi-Vue-Plus](https://github.com/JavaLionLi/RuoYi-Vue-Plus)、[RuoYi-Vue3](https://github.com/yangzongzhuan/RuoYi-Vue3) 提供的诸多成熟方案，致敬各位作者为开源世界做出的贡献
+
 ## License
 
 - 遵循 [Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) 开源许可协议
 - Copyright © 2022-present Charles7c
+
+## 反馈交流
+
+💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
+
+💬 也欢迎各位小伙伴儿扫码加作者好友，进群随意聊聊技术和建议，现仅有作者（群主）一人，包场服务~
+
+<div align="left">
+  <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
+</div>
