@@ -75,7 +75,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(UserRequest request) {
         String username = request.getUsername();
-        boolean isExists = this.checkNameExists(username, request.getId());
+        boolean isExists = this.checkNameExists(username, null);
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", username));
 
         // 新增信息
@@ -91,16 +91,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(UserRequest request) {
+    public void update(UserRequest request, Long id) {
         String username = request.getUsername();
-        boolean isExists = this.checkNameExists(username, request.getId());
+        boolean isExists = this.checkNameExists(username, id);
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", username));
 
         // 更新信息
-        super.update(request);
-        Long userId = request.getId();
+        super.update(request, id);
         // 保存用户和角色关联
-        userRoleService.save(request.getRoleIds(), userId);
+        userRoleService.save(request.getRoleIds(), id);
     }
 
     @Override

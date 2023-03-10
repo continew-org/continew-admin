@@ -431,7 +431,7 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          updateDept(form.value).then((res) => {
+          updateDept(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -559,14 +559,16 @@
    * @param record 记录信息
    */
   const handleChangeStatus = (record: DeptRecord) => {
-    const tip = record.status === 1 ? '启用' : '禁用';
-    updateDept(record)
-      .then(() => {
-        proxy.$message.success(`${tip}成功`);
-      })
-      .catch(() => {
-        record.status = record.status === 1 ? 2 : 1;
-      });
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      updateDept(record, record.id)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
   };
 
   /**

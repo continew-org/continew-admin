@@ -28,9 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -75,7 +72,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
  * @author Charles7c
  * @since 2023/1/26 21:52
  */
-public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C extends BaseRequest>
+public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO, V, D, Q, C extends BaseRequest>
     implements BaseService<V, D, Q, C> {
 
     @Autowired
@@ -84,14 +81,12 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
     private final Class<T> entityClass;
     private final Class<V> voClass;
     private final Class<D> detailVoClass;
-    private final String entityIdName;
 
     public BaseServiceImpl() {
         this.entityClass = (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 1);
         this.voClass = (Class<V>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 2);
         this.detailVoClass =
             (Class<D>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 3);
-        this.entityIdName = this.currentEntityIdName();
     }
 
     @Override
@@ -178,19 +173,15 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
         if (request == null) {
             return 0L;
         }
-        // 保存信息
         T entity = BeanUtil.copyProperties(request, entityClass);
         baseMapper.insert(entity);
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
-        Object idValue = tableInfo.getPropertyValue(entity, entityIdName);
-        return Convert.toLong(idValue);
+        return entity.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(C request) {
-        Object idValue = ReflectUtil.getFieldValue(request, entityIdName);
-        T entity = this.getById(idValue);
+    public void update(C request, Long id) {
+        T entity = this.getById(id);
         BeanUtil.copyProperties(request, entity, CopyOptions.create().ignoreNullValue());
         baseMapper.updateById(entity);
     }
@@ -257,18 +248,5 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T, V, D, Q, C ext
             CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
             detailVO.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(updateUser)));
         }
-    }
-
-    /**
-     * 获取实体类 ID 名称
-     *
-     * @return 实体类 ID 名称
-     */
-    private String currentEntityIdName() {
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
-        Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
-        String keyProperty = tableInfo.getKeyProperty();
-        Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-        return keyProperty;
     }
 }

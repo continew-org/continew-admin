@@ -625,7 +625,7 @@
         if (form.value.id !== undefined) {
           form.value.menuIds = getMenuAllCheckedKeys();
           form.value.deptIds = getDeptAllCheckedKeys();
-          updateRole(form.value).then((res) => {
+          updateRole(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -731,14 +731,16 @@
    * @param record 记录信息
    */
   const handleChangeStatus = (record: RoleRecord) => {
-    const tip = record.status === 1 ? '启用' : '禁用';
-    updateRole(record)
-      .then(() => {
-        proxy.$message.success(`${tip}成功`);
-      })
-      .catch(() => {
-        record.status = record.status === 1 ? 2 : 1;
-      });
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      updateRole(record, record.id)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
   };
 
   /**

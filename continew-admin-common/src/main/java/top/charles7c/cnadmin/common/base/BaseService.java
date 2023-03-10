@@ -100,8 +100,10 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *
      * @param request
      *            修改信息
+     * @param id
+     *            ID
      */
-    void update(C request);
+    void update(C request, Long id);
 
     /**
      * 删除

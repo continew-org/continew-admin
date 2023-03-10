@@ -40,8 +40,8 @@ export function addDept(req: DeptRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateDept(req: DeptRecord) {
-  return axios.put(BASE_URL, req);
+export function updateDept(req: DeptRecord, id: string) {
+  return axios.put(`${BASE_URL}/${id}`, req);
 }
 
 export function deleteDept(ids: string | Array<string>) {

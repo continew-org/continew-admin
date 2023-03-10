@@ -482,7 +482,7 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          updateMenu(form.value).then((res) => {
+          updateMenu(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -596,14 +596,16 @@
    * @param record 记录信息
    */
   const handleChangeStatus = (record: MenuRecord) => {
-    const tip = record.status === 1 ? '启用' : '禁用';
-    updateMenu(record)
-      .then(() => {
-        proxy.$message.success(`${tip}成功`);
-      })
-      .catch(() => {
-        record.status = record.status === 1 ? 2 : 1;
-      });
+    if (record.id) {
+      const tip = record.status === 1 ? '启用' : '禁用';
+      updateMenu(record, record.id)
+        .then(() => {
+          proxy.$message.success(`${tip}成功`);
+        })
+        .catch(() => {
+          record.status = record.status === 1 ? 2 : 1;
+        });
+    }
   };
 
   /**

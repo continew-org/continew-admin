@@ -61,7 +61,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(DeptRequest request) {
         String name = request.getName();
-        boolean isExists = this.checkNameExists(name, request.getParentId(), request.getId());
+        boolean isExists = this.checkNameExists(name, request.getParentId(), null);
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", name));
 
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -73,20 +73,20 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(DeptRequest request) {
+    public void update(DeptRequest request, Long id) {
         String name = request.getName();
-        boolean isExists = this.checkNameExists(name, request.getParentId(), request.getId());
+        boolean isExists = this.checkNameExists(name, request.getParentId(), id);
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", name));
 
-        DeptDO oldDept = baseMapper.selectById(request.getId());
+        DeptDO oldDept = baseMapper.selectById(id);
         // 更新祖级列表
         if (!Objects.equals(oldDept.getParentId(), request.getParentId())) {
             DeptDO newParentDept = baseMapper.selectById(request.getParentId());
             CheckUtils.throwIfNull(newParentDept, "上级部门不存在");
             request.setAncestors(String.format("%s,%s", newParentDept.getAncestors(), request.getParentId()));
-            this.updateChildrenAncestors(request.getId(), request.getAncestors(), oldDept.getAncestors());
+            this.updateChildrenAncestors(id, request.getAncestors(), oldDept.getAncestors());
         }
-        super.update(request);
+        super.update(request, id);
     }
 
     @Override

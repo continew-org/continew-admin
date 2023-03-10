@@ -65,9 +65,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
         String name = request.getName();
-        CheckUtils.throwIf(() -> this.checkNameExists(name, request.getId()), String.format("新增失败，'%s'已存在", name));
+        CheckUtils.throwIf(() -> this.checkNameExists(name, null), String.format("新增失败，'%s'已存在", name));
         String code = request.getCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(code, request.getId()), String.format("新增失败，'%s'已存在", code));
+        CheckUtils.throwIf(() -> this.checkCodeExists(code, null), String.format("新增失败，'%s'已存在", code));
 
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -81,19 +81,18 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(RoleRequest request) {
+    public void update(RoleRequest request, Long id) {
         String name = request.getName();
-        CheckUtils.throwIf(() -> this.checkNameExists(name, request.getId()), String.format("修改失败，'%s'已存在", name));
+        CheckUtils.throwIf(() -> this.checkNameExists(name, id), String.format("修改失败，'%s'已存在", name));
         String code = request.getCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(code, request.getId()), String.format("修改失败，'%s'已存在", code));
+        CheckUtils.throwIf(() -> this.checkCodeExists(code, id), String.format("修改失败，'%s'已存在", code));
 
         // 更新信息
-        super.update(request);
-        Long roleId = request.getId();
+        super.update(request, id);
         // 保存角色和菜单关联
-        roleMenuService.save(request.getMenuIds(), roleId);
+        roleMenuService.save(request.getMenuIds(), id);
         // 保存角色和部门关联
-        roleDeptService.save(request.getDeptIds(), roleId);
+        roleDeptService.save(request.getDeptIds(), id);
     }
 
     @Override

@@ -55,8 +55,8 @@ export function addUser(req: UserRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateUser(req: UserRecord) {
-  return axios.put(BASE_URL, req);
+export function updateUser(req: UserRecord, id: string) {
+  return axios.put(`${BASE_URL}/${id}`, req);
 }
 
 export function deleteUser(ids: string | Array<string>) {

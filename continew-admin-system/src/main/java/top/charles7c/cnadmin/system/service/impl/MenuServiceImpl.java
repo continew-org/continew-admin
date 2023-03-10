@@ -50,7 +50,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(MenuRequest request) {
         String title = request.getTitle();
-        boolean isExists = this.checkNameExists(title, request.getParentId(), request.getId());
+        boolean isExists = this.checkNameExists(title, request.getParentId(), null);
         CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", title));
 
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -59,12 +59,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(MenuRequest request) {
+    public void update(MenuRequest request, Long id) {
         String title = request.getTitle();
-        boolean isExists = this.checkNameExists(title, request.getParentId(), request.getId());
+        boolean isExists = this.checkNameExists(title, request.getParentId(), id);
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", title));
 
-        super.update(request);
+        super.update(request, id);
     }
 
     @Override

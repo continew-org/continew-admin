@@ -48,8 +48,8 @@ export function addMenu(req: MenuRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateMenu(req: MenuRecord) {
-  return axios.put(BASE_URL, req);
+export function updateMenu(req: MenuRecord, id: string) {
+  return axios.put(`${BASE_URL}/${id}`, req);
 }
 
 export function deleteMenu(ids: string | Array<string>) {

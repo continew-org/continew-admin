@@ -50,8 +50,8 @@ export function addRole(req: RoleRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateRole(req: RoleRecord) {
-  return axios.put(BASE_URL, req);
+export function updateRole(req: RoleRecord, id: string) {
+  return axios.put(`${BASE_URL}/${id}`, req);
 }
 
 export function deleteRole(ids: string | Array<string>) {
