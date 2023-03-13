@@ -46,7 +46,10 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 
+import top.charles7c.cnadmin.auth.model.request.LoginRequest;
+import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
+import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -55,6 +58,7 @@ import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.config.properties.LogProperties;
 import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 系统日志拦截器
@@ -67,6 +71,7 @@ import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 @RequiredArgsConstructor
 public class LogInterceptor implements HandlerInterceptor {
 
+    private final UserService userService;
     private final LogProperties operationLogProperties;
     private static final String ENCRYPT_SYMBOL = "****************";
 
@@ -220,6 +225,11 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
         logDO.setBrowser(ServletUtils.getBrowser(request));
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
+        if (logDO.getCreateUser() == null && SysConsts.LOGIN_URI.equals(request.getRequestURI())) {
+            LoginRequest loginRequest = JSONUtil.toBean(requestBody, LoginRequest.class);
+            logDO.setCreateUser(
+                ExceptionUtils.exToNull(() -> userService.getByUsername(loginRequest.getUsername()).getId()));
+        }
     }
 
     /**

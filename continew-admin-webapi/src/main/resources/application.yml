@@ -36,7 +36,7 @@ logging:
     # 是否启用系统日志
     enabled: true
     # 是否记录内网 IP 操作
-    includeInnerIp: false
+    includeInnerIp: true
     # 哪些请求方式不记录系统日志
     #excludeMethods:
     #  - GET
