@@ -284,6 +284,7 @@ continew-admin
         </tr>
     </tbody>
 </table>
+
 ## 快速开始
 
 > 注意：下方步骤有重叠部分，无需重复执行。
@@ -356,7 +357,7 @@ yarn dev
 
 💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
 
-💬 也欢迎各位小伙伴儿扫码加作者好友，进群随意聊聊技术和建议，现仅有作者（群主）一人，包场服务~
+💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），进群随意聊聊技术和建议，现仅有作者（群主）一人，包场服务~
 
 <div align="left">
   <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
