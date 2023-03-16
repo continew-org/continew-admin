@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.common.util;
 
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

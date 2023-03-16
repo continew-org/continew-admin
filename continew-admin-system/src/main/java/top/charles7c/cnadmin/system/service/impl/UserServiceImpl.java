@@ -20,7 +20,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import lombok.RequiredArgsConstructor;
 

@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
@@ -55,7 +56,14 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         // 拼接路径前缀（合并了 @RequestMapping 的部分能力）
         String pathPrefix = crudRequestMapping.value();
         if (StrUtil.isNotBlank(pathPrefix)) {
-            requestMappingInfo = RequestMappingInfo.paths(pathPrefix).build().combine(requestMappingInfo);
+            /**
+             * 问题：RequestMappingInfo.paths(pathPrefix)返回的RequestMappingInfo对象里pathPatternsCondition = null
+             * 导致combine()方法抛出断言异常！
+             * 修复: 创建options对象, 并设置PatternParser
+             */
+            RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
+            options.setPatternParser(PathPatternParser.defaultInstance);
+            requestMappingInfo = RequestMappingInfo.paths(pathPrefix).options(options).build().combine(requestMappingInfo);
         }
 
         // 过滤 API

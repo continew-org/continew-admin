@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.util;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

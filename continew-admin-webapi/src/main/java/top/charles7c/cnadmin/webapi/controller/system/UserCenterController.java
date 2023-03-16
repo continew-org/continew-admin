@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
 

@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.system.model.request;
 
 import java.util.List;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import lombok.Data;
 

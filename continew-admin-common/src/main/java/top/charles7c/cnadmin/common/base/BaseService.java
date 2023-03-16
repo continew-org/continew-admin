@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.common.base;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.lang.tree.Tree;
 

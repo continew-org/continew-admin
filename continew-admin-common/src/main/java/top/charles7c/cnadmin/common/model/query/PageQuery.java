@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.query;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Range;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Sort;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;

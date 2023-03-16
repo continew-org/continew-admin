@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.auth.model.request;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
