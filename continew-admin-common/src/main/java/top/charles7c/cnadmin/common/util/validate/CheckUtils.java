@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.util.validate;
 
+import java.util.function.BooleanSupplier;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -208,7 +210,7 @@ public class CheckUtils extends Validator {
      * @param message
      *            错误信息
      */
-    public static void throwIf(java.util.function.BooleanSupplier conditionSupplier, String message) {
+    public static void throwIf(BooleanSupplier conditionSupplier, String message) {
         throwIf(conditionSupplier, message, EXCEPTION_TYPE);
     }
 }
