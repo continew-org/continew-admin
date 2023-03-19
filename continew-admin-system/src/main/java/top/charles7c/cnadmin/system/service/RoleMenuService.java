@@ -44,4 +44,12 @@ public interface RoleMenuService {
      * @return 菜单 ID 列表
      */
     List<Long> listMenuIdByRoleIds(List<Long> roleIds);
+
+    /**
+     * 根据角色 ID 删除
+     *
+     * @param roleIds
+     *            角色 ID 列表
+     */
+    void deleteByRoleIds(List<Long> roleIds);
 }

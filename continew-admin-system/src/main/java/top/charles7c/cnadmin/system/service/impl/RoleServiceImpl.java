@@ -16,10 +16,7 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +29,7 @@ import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
@@ -86,20 +84,42 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(() -> this.checkNameExists(name, id), String.format("修改失败，'%s'已存在", name));
         String code = request.getCode();
         CheckUtils.throwIf(() -> this.checkCodeExists(code, id), String.format("修改失败，'%s'已存在", code));
+        RoleDO oldRole = this.getById(id);
+        if (DataTypeEnum.SYSTEM.equals(oldRole.getType())) {
+            CheckUtils.throwIf(() -> DisEnableStatusEnum.DISABLE.equals(request.getStatus()),
+                String.format("'%s' 是系统内置角色，不允许禁用", oldRole.getName()));
+            CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(),
+                String.format("'%s' 是系统内置角色，不允许修改角色编码", oldRole.getName()));
+            CheckUtils.throwIfNotEqual(request.getDataScope(), oldRole.getDataScope(),
+                String.format("'%s' 是系统内置角色，不允许修改角色数据权限", oldRole.getName()));
+        }
 
         // 更新信息
         super.update(request, id);
-        // 保存角色和菜单关联
-        roleMenuService.save(request.getMenuIds(), id);
-        // 保存角色和部门关联
-        roleDeptService.save(request.getDeptIds(), id);
+        if (!SysConsts.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
+            // 保存角色和菜单关联
+            roleMenuService.save(request.getMenuIds(), id);
+            // 保存角色和部门关联
+            roleDeptService.save(request.getDeptIds(), id);
+        }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
+        List<RoleDO> list =
+            baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getType).in(RoleDO::getId, ids).list();
+        Optional<RoleDO> isSystemData = list.stream().filter(r -> DataTypeEnum.SYSTEM.equals(r.getType())).findFirst();
+        CheckUtils.throwIf(isSystemData::isPresent,
+            String.format("所选角色 '%s' 是系统内置角色，不允许删除", isSystemData.orElseGet(RoleDO::new).getName()));
         CheckUtils.throwIf(() -> userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
+
+        // 删除角色
         super.delete(ids);
+        // 删除角色和菜单关联
+        roleMenuService.deleteByRoleIds(ids);
+        // 删除角色和部门关联
+        roleDeptService.deleteByRoleIds(ids);
     }
 
     @Override

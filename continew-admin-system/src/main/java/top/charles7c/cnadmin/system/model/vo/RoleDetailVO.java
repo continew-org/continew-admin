@@ -28,6 +28,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -79,6 +80,13 @@ public class RoleDetailVO extends BaseDetailVO {
     private DisEnableStatusEnum status;
 
     /**
+     * 类型（1：系统内置，2：自定义）
+     */
+    @Schema(description = "类型（1：系统内置，2：自定义）")
+    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
+    private DataTypeEnum type;
+
+    /**
      * 描述
      */
     @Schema(description = "描述")
@@ -96,4 +104,9 @@ public class RoleDetailVO extends BaseDetailVO {
      */
     @Schema(description = "权限范围：部门 ID 列表")
     private List<Long> deptIds;
+
+    @Override
+    public Boolean getDisabled() {
+        return DataTypeEnum.SYSTEM.equals(type);
+    }
 }

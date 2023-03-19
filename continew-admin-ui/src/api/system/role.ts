@@ -13,6 +13,7 @@ export interface RoleRecord {
   dataScope: number;
   deptIds?: Array<string>;
   status?: number;
+  type?: number;
   createUserString?: string;
   createTime?: string;
   updateUserString?: string;

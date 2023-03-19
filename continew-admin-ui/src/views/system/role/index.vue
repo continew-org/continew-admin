@@ -116,7 +116,7 @@
       >
         <template #columns>
           <a-table-column title="ID" data-index="id" />
-          <a-table-column title="角色名称" data-index="name">
+          <a-table-column title="角色名称" data-index="name" :width="130">
             <template #cell="{ record }">
               <a-link @click="toDetail(record.id)">{{
                 record.name
@@ -124,7 +124,7 @@
             </template>
           </a-table-column>
           <a-table-column title="角色编码" data-index="code" />
-          <a-table-column title="数据权限">
+          <a-table-column title="数据权限" :width="130">
             <template #cell="{ record }">
               <span v-if="record.dataScope === 1">全部数据权限</span>
               <span v-else-if="record.dataScope === 2">本部门及以下数据权限</span>
@@ -149,8 +149,13 @@
               />
             </template>
           </a-table-column>
-          <a-table-column title="描述" data-index="description" />
-          <a-table-column title="创建人" data-index="createUserString" />
+          <a-table-column title="类型" align="center">
+            <template #cell="{ record }">
+              <a-tag v-if="record.type === 1" color="red">系统内置</a-tag>
+              <a-tag v-else color="arcoblue">自定义</a-tag>
+            </template>
+          </a-table-column>
+          <a-table-column title="描述" data-index="description" tooltip />
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column
             v-if="checkPermission(['system:role:update', 'system:role:delete'])"
@@ -163,7 +168,6 @@
                 type="text"
                 size="small"
                 title="修改"
-                :disabled="record.disabled"
                 @click="toUpdate(record.id)"
               >
                 <template #icon><icon-edit /></template>修改
@@ -205,7 +209,7 @@
             <a-form-item label="角色名称" field="name">
               <a-input v-model="form.name" placeholder="请输入角色名称" />
             </a-form-item>
-            <a-form-item label="角色编码" field="code">
+            <a-form-item label="角色编码" field="code" :disabled="form.disabled">
               <a-input v-model="form.code" placeholder="请输入角色编码" />
             </a-form-item>
             <a-form-item label="角色排序" field="sort">
@@ -230,7 +234,7 @@
           </fieldset>
           <fieldset>
             <legend>功能权限</legend>
-            <a-form-item label="功能权限">
+            <a-form-item label="功能权限" :disabled="form.disabled">
               <a-space style="margin-top: 2px">
                 <a-checkbox v-model="menuExpandAll" @change="handleExpandAll('menu')">展开/折叠</a-checkbox>
                 <a-checkbox v-model="menuCheckAll" @change="handleCheckAll('menu')">全选/全不选</a-checkbox>
@@ -252,14 +256,14 @@
           </fieldset>
           <fieldset>
             <legend>数据权限</legend>
-            <a-form-item label="数据权限" field="dataScope">
+            <a-form-item label="数据权限" field="dataScope" :disabled="form.disabled">
               <a-select
                 v-model="form.dataScope"
                 :options="DataScopeEnum"
                 placeholder="请选择数据权限"
               />
             </a-form-item>
-            <a-form-item v-if="form.dataScope === 5" label="权限范围">
+            <a-form-item v-if="form.dataScope === 5" label="权限范围" :disabled="form.disabled">
               <a-space style="margin-top: 2px">
                 <a-checkbox v-model="deptExpandAll" @change="handleExpandAll('dept')">展开/折叠</a-checkbox>
                 <a-checkbox v-model="deptCheckAll" @change="handleCheckAll('dept')">全选/全不选</a-checkbox>
@@ -565,6 +569,7 @@
       status: 1,
       menuIds: [],
       deptIds: [],
+      disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
   };

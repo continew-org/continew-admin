@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollUtil;
-
 import top.charles7c.cnadmin.system.mapper.RoleDeptMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDeptDO;
 import top.charles7c.cnadmin.system.service.RoleDeptService;
@@ -43,9 +41,6 @@ public class RoleDeptServiceImpl implements RoleDeptService {
 
     @Override
     public void save(List<Long> deptIds, Long roleId) {
-        if (CollUtil.isEmpty(deptIds)) {
-            return;
-        }
         // 删除原有关联
         roleDeptMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
@@ -62,5 +57,10 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     @Override
     public void deleteByDeptIds(List<Long> deptIds) {
         roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getDeptId, deptIds).remove();
+    }
+
+    @Override
+    public void deleteByRoleIds(List<Long> roleIds) {
+        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getRoleId, roleIds).remove();
     }
 }

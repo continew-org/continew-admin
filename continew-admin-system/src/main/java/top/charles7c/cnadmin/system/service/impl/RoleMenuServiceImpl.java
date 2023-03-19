@@ -44,9 +44,6 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 
     @Override
     public void save(List<Long> menuIds, Long roleId) {
-        if (CollUtil.isEmpty(menuIds)) {
-            return;
-        }
         // 删除原有关联
         roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
@@ -61,5 +58,10 @@ public class RoleMenuServiceImpl implements RoleMenuService {
             return new ArrayList<>(0);
         }
         return roleMenuMapper.selectMenuIdByRoleIds(roleIds);
+    }
+
+    @Override
+    public void deleteByRoleIds(List<Long> roleIds) {
+        roleMenuMapper.lambdaUpdate().in(RoleMenuDO::getRoleId, roleIds).remove();
     }
 }

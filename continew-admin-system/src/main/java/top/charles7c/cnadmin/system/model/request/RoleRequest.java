@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -74,7 +75,7 @@ public class RoleRequest extends BaseRequest {
      * 功能权限：菜单 ID 列表
      */
     @Schema(description = "功能权限：菜单 ID 列表")
-    private List<Long> menuIds;
+    private List<Long> menuIds = new ArrayList<>();
 
     /**
      * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
@@ -87,7 +88,7 @@ public class RoleRequest extends BaseRequest {
      * 权限范围：部门 ID 列表
      */
     @Schema(description = "权限范围：部门 ID 列表")
-    private List<Long> deptIds;
+    private List<Long> deptIds = new ArrayList<>();
 
     /**
      * 状态（1：启用，2：禁用）

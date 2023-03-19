@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `sort` int(11) UNSIGNED DEFAULT 999 COMMENT '角色排序',
     `status` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '状态（1：启用，2：禁用）',
+    `type` tinyint(1) UNSIGNED DEFAULT 2 COMMENT '类型（1：系统内置，2：自定义）',
     `create_user` bigint(20) UNSIGNED NOT NULL COMMENT '创建人',
     `create_time` datetime NOT NULL COMMENT '创建时间',
     `update_user` bigint(20) UNSIGNED NOT NULL COMMENT '修改人',
