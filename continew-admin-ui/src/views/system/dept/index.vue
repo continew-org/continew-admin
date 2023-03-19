@@ -129,13 +129,18 @@
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
-                :disabled="!checkPermission(['system:dept:update'])"
+                :disabled="record.disabled || !checkPermission(['system:dept:update'])"
                 @change="handleChangeStatus(record)"
               />
             </template>
           </a-table-column>
+          <a-table-column title="类型" align="center">
+            <template #cell="{ record }">
+              <a-tag v-if="record.type === 1" color="red">系统内置</a-tag>
+              <a-tag v-else color="arcoblue">自定义</a-tag>
+            </template>
+          </a-table-column>
           <a-table-column title="描述" data-index="description" />
-          <a-table-column title="创建人" data-index="createUserString" />
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column
             v-if="checkPermission(['system:dept:update', 'system:dept:delete'])"
@@ -162,6 +167,7 @@
                   type="text"
                   size="small"
                   title="删除"
+                  :disabled="record.disabled"
                 >
                   <template #icon><icon-delete /></template>删除
                 </a-button>
@@ -182,7 +188,7 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="上级部门" field="parentId">
+          <a-form-item label="上级部门" field="parentId" :disabled="form.disabled">
             <a-tree-select
               v-model="form.parentId"
               :data="treeData"
@@ -345,6 +351,7 @@
     form: {} as DeptRecord,
     // 表单验证规则
     rules: {
+      parentId: [{ required: true, message: '请选择上级部门' }],
       name: [{ required: true, message: '请输入部门名称' }],
       sort: [{ required: true, message: '请输入部门排序' }],
     },
@@ -412,6 +419,7 @@
       description: '',
       sort: 999,
       status: 1,
+      disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
   };

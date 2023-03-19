@@ -44,4 +44,12 @@ public interface RoleDeptService {
      * @return 部门 ID 列表
      */
     List<Long> listDeptIdByRoleId(Long roleId);
+
+    /**
+     * 根据部门 ID 删除
+     *
+     * @param deptIds
+     *            部门 ID 列表
+     */
+    void deleteByDeptIds(List<Long> deptIds);
 }

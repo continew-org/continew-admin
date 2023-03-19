@@ -43,6 +43,7 @@ public class DeptRequest extends BaseRequest {
     /**
      * 上级部门 ID
      */
+    @NotNull(message = "上级部门不能为空", groups = Add.class)
     @Schema(description = "上级部门 ID")
     private Long parentId;
 

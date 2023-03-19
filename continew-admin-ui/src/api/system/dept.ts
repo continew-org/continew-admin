@@ -10,12 +10,14 @@ export interface DeptRecord {
   description?: string;
   sort: number;
   status?: number;
+  type?: number;
   createUserString?: string;
   createTime?: string;
   updateUserString?: string;
   updateTime?: string;
   children?: Array<DeptRecord>;
   parentName?: string;
+  disabled?: boolean;
 }
 
 export interface DeptParam {

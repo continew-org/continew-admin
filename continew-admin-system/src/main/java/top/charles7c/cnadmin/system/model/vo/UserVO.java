@@ -23,8 +23,6 @@ import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import cn.hutool.core.util.DesensitizedUtil;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
@@ -93,17 +91,9 @@ public class UserVO extends BaseVO {
     @Schema(description = "描述")
     private String description;
 
-    /**
-     * 是否禁用修改
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean disabled;
-
+    @Override
     public Boolean getDisabled() {
-        if (Objects.equals(this.getId(), LoginHelper.getUserId())) {
-            return true;
-        }
-        return disabled;
+        return Objects.equals(this.getId(), LoginHelper.getUserId());
     }
 
     public String getPhone() {

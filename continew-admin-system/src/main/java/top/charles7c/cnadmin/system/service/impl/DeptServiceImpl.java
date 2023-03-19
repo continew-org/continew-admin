@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.system.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -28,9 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -41,6 +44,7 @@ import top.charles7c.cnadmin.system.model.request.DeptRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.DeptVO;
 import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.RoleDeptService;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -54,6 +58,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptDetailVO, DeptQuery, DeptRequest>
     implements DeptService {
 
+    private final RoleDeptService roleDeptService;
     @Resource
     private UserService userService;
 
@@ -62,12 +67,10 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public Long add(DeptRequest request) {
         String name = request.getName();
         boolean isExists = this.checkNameExists(name, request.getParentId(), null);
-        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", name));
+        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s' 已存在", name));
 
+        request.setAncestors(this.getAncestors(request.getParentId()));
         request.setStatus(DisEnableStatusEnum.ENABLE);
-        DeptDO parentDept = baseMapper.selectById(request.getParentId());
-        CheckUtils.throwIfNull(parentDept, "上级部门不存在");
-        request.setAncestors(String.format("%s,%s", parentDept.getAncestors(), request.getParentId()));
         return super.add(request);
     }
 
@@ -76,15 +79,21 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public void update(DeptRequest request, Long id) {
         String name = request.getName();
         boolean isExists = this.checkNameExists(name, request.getParentId(), id);
-        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", name));
+        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s' 已存在", name));
+        DeptDO oldDept = this.getById(id);
+        CheckUtils.throwIf(
+            () -> DisEnableStatusEnum.DISABLE.equals(request.getStatus())
+                && DataTypeEnum.SYSTEM.equals(oldDept.getType()),
+            String.format("'%s' 是系统内置部门，不允许禁用", oldDept.getName()));
 
-        DeptDO oldDept = baseMapper.selectById(id);
-        // 更新祖级列表
-        if (!Objects.equals(oldDept.getParentId(), request.getParentId())) {
-            DeptDO newParentDept = baseMapper.selectById(request.getParentId());
-            CheckUtils.throwIfNull(newParentDept, "上级部门不存在");
-            request.setAncestors(String.format("%s,%s", newParentDept.getAncestors(), request.getParentId()));
-            this.updateChildrenAncestors(id, request.getAncestors(), oldDept.getAncestors());
+        // 变更上级部门
+        if (ObjectUtil.notEqual(oldDept.getParentId(), request.getParentId())) {
+            CheckUtils.throwIf(() -> DataTypeEnum.SYSTEM.equals(oldDept.getType()),
+                String.format("'%s' 是系统内置部门，不允许变更上级部门", oldDept.getName()));
+            // 更新祖级列表
+            String newAncestors = this.getAncestors(request.getParentId());
+            request.setAncestors(newAncestors);
+            this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
         super.update(request, id);
     }
@@ -92,9 +101,19 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
+        List<DeptDO> list =
+            baseMapper.lambdaQuery().select(DeptDO::getName, DeptDO::getType).in(DeptDO::getId, ids).list();
+        Optional<DeptDO> isSystemData = list.stream().filter(d -> DataTypeEnum.SYSTEM.equals(d.getType())).findFirst();
+        CheckUtils.throwIf(isSystemData::isPresent,
+            String.format("所选部门 '%s' 是系统内置部门，不允许删除", isSystemData.orElseGet(DeptDO::new).getName()));
         CheckUtils.throwIf(() -> userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
+
+        // 删除部门
         super.delete(ids);
+        // 删除子部门
         baseMapper.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
+        // 删除角色和部门关联
+        roleDeptService.deleteByDeptIds(ids);
     }
 
     @Override
@@ -126,16 +145,29 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     }
 
     /**
+     * 获取祖级列表
+     * 
+     * @param parentId
+     *            上级部门
+     * @return 祖级列表
+     */
+    private String getAncestors(Long parentId) {
+        DeptDO parentDept = baseMapper.selectById(parentId);
+        CheckUtils.throwIfNull(parentDept, "上级部门不存在");
+        return String.format("%s,%s", parentDept.getAncestors(), parentId);
+    }
+
+    /**
      * 更新子部门祖级列表
      *
-     * @param id
-     *            ID
      * @param newAncestors
      *            新祖级列表
      * @param oldAncestors
      *            原祖级列表
+     * @param id
+     *            ID
      */
-    private void updateChildrenAncestors(Long id, String newAncestors, String oldAncestors) {
+    private void updateChildrenAncestors(String newAncestors, String oldAncestors, Long id) {
         List<DeptDO> children =
             baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
         if (CollUtil.isEmpty(children)) {

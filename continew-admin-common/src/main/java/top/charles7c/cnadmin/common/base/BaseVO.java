@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * VO 基类
@@ -63,4 +64,10 @@ public class BaseVO implements Serializable {
     @Schema(description = "创建时间")
     @ExcelProperty(value = "创建时间")
     private LocalDateTime createTime;
+
+    /**
+     * 是否禁用修改
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean disabled;
 }

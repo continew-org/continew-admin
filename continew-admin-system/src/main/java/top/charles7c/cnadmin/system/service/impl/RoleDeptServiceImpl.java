@@ -58,4 +58,9 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     public List<Long> listDeptIdByRoleId(Long roleId) {
         return roleDeptMapper.selectDeptIdByRoleId(roleId);
     }
+
+    @Override
+    public void deleteByDeptIds(List<Long> deptIds) {
+        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getDeptId, deptIds).remove();
+    }
 }

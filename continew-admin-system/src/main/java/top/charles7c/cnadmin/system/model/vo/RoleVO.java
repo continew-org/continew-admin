@@ -21,8 +21,6 @@ import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import top.charles7c.cnadmin.common.base.BaseVO;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
@@ -77,16 +75,8 @@ public class RoleVO extends BaseVO {
     @Schema(description = "描述")
     private String description;
 
-    /**
-     * 是否禁用修改
-     */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean disabled;
-
+    @Override
     public Boolean getDisabled() {
-        if (SysConsts.ADMIN_ROLE_CODE.equals(code)) {
-            return true;
-        }
-        return disabled;
+        return SysConsts.ADMIN_ROLE_CODE.equals(code);
     }
 }

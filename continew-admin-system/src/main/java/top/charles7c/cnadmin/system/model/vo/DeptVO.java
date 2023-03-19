@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.base.BaseVO;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -64,8 +65,19 @@ public class DeptVO extends BaseVO {
     private DisEnableStatusEnum status;
 
     /**
+     * 类型（1：系统内置，2：自定义）
+     */
+    @Schema(description = "类型（1：系统内置，2：自定义）")
+    private DataTypeEnum type;
+
+    /**
      * 描述
      */
     @Schema(description = "描述")
     private String description;
+
+    @Override
+    public Boolean getDisabled() {
+        return DataTypeEnum.SYSTEM.equals(type);
+    }
 }
