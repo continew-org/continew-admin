@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.collection.CollUtil;
-
 import top.charles7c.cnadmin.system.mapper.UserRoleMapper;
 import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
 import top.charles7c.cnadmin.system.service.UserRoleService;
@@ -43,9 +41,6 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void save(List<Long> roleIds, Long userId) {
-        if (CollUtil.isEmpty(roleIds)) {
-            return;
-        }
         // 删除原有关联
         userRoleMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
@@ -62,5 +57,10 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public List<Long> listRoleIdByUserId(Long userId) {
         return userRoleMapper.selectRoleIdByUserId(userId);
+    }
+
+    @Override
+    public void deleteByUserIds(List<Long> userIds) {
+        userRoleMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
     }
 }

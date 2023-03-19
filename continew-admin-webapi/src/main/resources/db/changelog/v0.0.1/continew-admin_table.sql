@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
     `avatar` varchar(255) DEFAULT NULL COMMENT '头像地址',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `status` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '状态（1：启用，2：禁用）',
+    `type` tinyint(1) UNSIGNED DEFAULT 2 COMMENT '类型（1：系统内置，2：自定义）',
     `pwd_reset_time` datetime DEFAULT NULL COMMENT '最后一次修改密码时间',
     `dept_id` bigint(20) UNSIGNED NOT NULL COMMENT '部门ID',
     `create_user` bigint(20) UNSIGNED NOT NULL COMMENT '创建人',

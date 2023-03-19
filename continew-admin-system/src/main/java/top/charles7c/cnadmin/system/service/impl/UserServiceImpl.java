@@ -19,6 +19,8 @@ package top.charles7c.cnadmin.system.service.impl;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
@@ -37,6 +40,7 @@ import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.constant.FileConsts;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.service.CommonUserService;
@@ -95,11 +99,36 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         String username = request.getUsername();
         boolean isExists = this.checkNameExists(username, id);
         CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", username));
+        UserDO oldUser = super.getById(id);
+        if (DataTypeEnum.SYSTEM.equals(oldUser.getType())) {
+            CheckUtils.throwIf(() -> DisEnableStatusEnum.DISABLE.equals(request.getStatus()),
+                String.format("'%s' 是系统内置用户，不允许禁用", oldUser.getNickname()));
+            List<Long> oldRoleIdList =
+                userRoleService.listRoleIdByUserId(id).stream().sorted().collect(Collectors.toList());
+            List<Long> newRoleIdList = request.getRoleIds().stream().sorted().collect(Collectors.toList());
+            CheckUtils.throwIf(() -> !CollUtil.isEqualList(newRoleIdList, oldRoleIdList),
+                String.format("'%s' 是系统内置用户，不允许变更所属角色", oldUser.getNickname()));
+        }
 
         // 更新信息
         super.update(request, id);
         // 保存用户和角色关联
         userRoleService.save(request.getRoleIds(), id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        List<UserDO> list =
+            baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getType).in(UserDO::getId, ids).list();
+        Optional<UserDO> isSystemData = list.stream().filter(u -> DataTypeEnum.SYSTEM.equals(u.getType())).findFirst();
+        CheckUtils.throwIf(isSystemData::isPresent,
+            String.format("所选用户 '%s' 是系统内置用户，不允许删除", isSystemData.orElseGet(UserDO::new).getNickname()));
+
+        // 删除用户
+        super.delete(ids);
+        // 删除用户和角色关联
+        userRoleService.deleteByUserIds(ids);
     }
 
     @Override

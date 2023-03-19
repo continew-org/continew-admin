@@ -53,4 +53,12 @@ public interface UserRoleService {
      * @return 角色 ID 列表
      */
     List<Long> listRoleIdByUserId(Long userId);
+
+    /**
+     * 根据用户 ID 删除
+     *
+     * @param userIds
+     *            用户 ID 列表
+     */
+    void deleteByUserIds(List<Long> userIds);
 }

@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import cn.hutool.core.util.DesensitizedUtil;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -84,6 +85,12 @@ public class UserVO extends BaseVO {
      */
     @Schema(description = "状态（1：启用，2：禁用）")
     private DisEnableStatusEnum status;
+
+    /**
+     * 类型（1：系统内置，2：自定义）
+     */
+    @Schema(description = "类型（1：系统内置，2：自定义）")
+    private DataTypeEnum type;
 
     /**
      * 描述

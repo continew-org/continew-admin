@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.system.model.vo;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Data;
 
@@ -28,8 +29,10 @@ import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
+import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
+import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
 /**
  * 用户详情信息
@@ -94,6 +97,13 @@ public class UserDetailVO extends BaseDetailVO {
     private DisEnableStatusEnum status;
 
     /**
+     * 类型（1：系统内置，2：自定义）
+     */
+    @Schema(description = "类型（1：系统内置，2：自定义）")
+    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
+    private DataTypeEnum type;
+
+    /**
      * 描述
      */
     @Schema(description = "描述")
@@ -131,4 +141,9 @@ public class UserDetailVO extends BaseDetailVO {
     @Schema(description = "所属角色")
     @ExcelProperty(value = "所属角色")
     private String roleNames;
+
+    @Override
+    public Boolean getDisabled() {
+        return DataTypeEnum.SYSTEM.equals(type) || Objects.equals(this.getId(), LoginHelper.getUserId());
+    }
 }

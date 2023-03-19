@@ -139,15 +139,15 @@
           >
             <template #columns>
               <a-table-column title="ID" data-index="id" />
-              <a-table-column title="用户名">
+              <a-table-column title="用户名" :width="115">
                 <template #cell="{ record }">
                   <a-link @click="toDetail(record.id)">{{
                     record.username
                   }}</a-link>
                 </template>
               </a-table-column>
-              <a-table-column title="昵称" data-index="nickname" :width="120" />
-              <a-table-column title="性别">
+              <a-table-column title="昵称" data-index="nickname" :width="115" />
+              <a-table-column title="性别" align="center">
                 <template #cell="{ record }">
                   <span v-if="record.gender === 1">男</span>
                   <span v-else-if="record.gender === 2">女</span>
@@ -161,7 +161,7 @@
                   </a-avatar>
                 </template>
               </a-table-column>
-              <a-table-column title="联系方式" :width="175">
+              <a-table-column title="联系方式" :width="170">
                 <template #cell="{ record }">
                   {{ record.email }}<br v-if="record.email && record.phone">
                   {{ record.phone }}
@@ -178,7 +178,12 @@
                   />
                 </template>
               </a-table-column>
-              <a-table-column title="描述" data-index="description" ellipsis tooltip />
+              <a-table-column title="类型" align="center">
+                <template #cell="{ record }">
+                  <a-tag v-if="record.type === 1" color="red">系统内置</a-tag>
+                  <a-tag v-else color="arcoblue">自定义</a-tag>
+                </template>
+              </a-table-column>
               <a-table-column title="创建人/创建时间" :width="175">
                 <template #cell="{ record }">
                   {{ record.createUserString }}<br>
@@ -243,6 +248,7 @@
                     type="text"
                     size="small"
                     title="分配角色"
+                    :disabled="record.disabled"
                     @click="toUpdateRole(record.id)"
                   >
                     <template #icon><svg-icon icon-class="reference" /></template>
@@ -319,7 +325,7 @@
               style="width: 431px"
             />
           </a-form-item>
-          <a-form-item label="所属角色" field="roleIds">
+          <a-form-item label="所属角色" field="roleIds" :disabled="form.disabled">
             <a-select
               v-model="form.roleIds"
               :options="roleOptions"
@@ -674,6 +680,7 @@
       status: 1,
       deptId: undefined,
       roleIds: [] as Array<string>,
+      disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -825,11 +832,19 @@
    * @param record 记录信息
    */
   const handleChangeStatus = (record: UserRecord) => {
-    if (record.id) {
+    const { id } = record;
+    if (id) {
       const tip = record.status === 1 ? '启用' : '禁用';
-      updateUser(record, record.id)
-        .then(() => {
-          proxy.$message.success(`${tip}成功`);
+      getUser(id)
+        .then((res) => {
+          res.data.status = record.status;
+          updateUser(res.data, id)
+            .then(() => {
+              proxy.$message.success(`${tip}成功`);
+            })
+            .catch(() => {
+              record.status = record.status === 1 ? 2 : 1;
+            });
         })
         .catch(() => {
           record.status = record.status === 1 ? 2 : 1;

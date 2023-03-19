@@ -12,6 +12,7 @@ export interface UserRecord {
   phone?: string;
   description?: string;
   status?: number;
+  type?: number;
   pwdResetTime?: string;
   createUserString?: string;
   createTime?: string;
