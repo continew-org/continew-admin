@@ -24,8 +24,9 @@ ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持�
 
 - 使用最新技术栈，社区资源丰富
 - 高效率开发，后端提供了 CRUD 组件，在 Controller 添加一个注解，搞定增、删、改、查、分页、列表、树列表
-- 提供一套 Base 基类（BaseDO、BaseVO、BaseController、BaseService、升级版 BaseMapper...，用了你就知道），既方便复用又方便扩展
 - 基于注解的通用查询方式，降低拼接 MyBatis Plus QueryWrapper 的烦恼
+- 提供一套 Base 基类（BaseDO、BaseVO、BaseController、BaseService、升级版 BaseMapper...，用了你就知道），既方便复用又方便扩展
+- 提供一套校验工具实践，另根据实际需要，基于 Hutool 扩展部分工具类（能 PR 到 Hutool 的已尽量 PR）
 - 支持接口级别的功能权限与数据权限，可自定义操作
 - 前后端统一异常拦截处理，统一输出异常，避免繁琐的判断
 - 良好的代码、配置文件结构和命名，完善的代码注释，遵循阿里巴巴 《Java开发手册(黄山版)》的代码规范
@@ -267,20 +268,20 @@ continew-admin
             <td><img src="https://s1.ax1x.com/2023/03/09/ppn5VII.png" alt="系统监控-系统日志-详情" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5nRf.png" alt="系统管理-部门管理" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNru8A.png" alt="系统管理-部门管理" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/03/09/ppn5Qsg.png" alt="系统管理-菜单管理" width="1920" /></td>
         </tr>
         <tr>
             <td><img src="https://s1.ax1x.com/2023/03/09/ppn5lLQ.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5DeJ.png" alt="系统管理-角色管理" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrMvt.png" alt="系统管理-角色管理" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5soR.png" alt="系统管理-角色管理-新增" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5cJx.png" alt="系统管理-角色管理-详情" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNr0K0.png" alt="系统管理-角色管理-新增" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrlKP.png" alt="系统管理-角色管理-详情" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5WQO.png" alt="系统管理-用户管理" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn55eH.png" alt="系统管理-用户管理-新增" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrGVS.png" alt="系统管理-用户管理" width="1920" /></td>
+            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrJUg.png" alt="系统管理-用户管理-新增" width="1920" /></td>
         </tr>
     </tbody>
 </table>
@@ -342,6 +343,16 @@ yarn dev
 # 6.2 其他方式部署
 ```
 
+## 反馈交流
+
+💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
+
+💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），作者拉你进群，现有作者（群主）及 3 位群友，随意聊聊技术、提提需求，吐吐槽~
+
+<div align="left">
+  <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
+</div>
+
 ## 特别鸣谢
 
 - 感谢 [JetBrains](https://www.jetbrains.com/) 提供的 [非商业开源软件开发授权](https://www.jetbrains.com/shop/eform/opensource)
@@ -352,13 +363,3 @@ yarn dev
 
 - 遵循 [Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) 开源许可协议
 - Copyright © 2022-present Charles7c
-
-## 反馈交流
-
-💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
-
-💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），进群随意聊聊技术和建议，现仅有作者（群主）一人，包场服务~
-
-<div align="left">
-  <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
-</div>
