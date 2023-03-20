@@ -92,8 +92,7 @@ public class CaptchaController {
         String captchaCacheKey = CacheConsts.CAPTCHA_CACHE_KEY;
         String limitCaptchaKey = RedisUtils.formatKey(limitCacheKey, captchaCacheKey, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
-        CheckUtils.throwIf(() -> limitTimeInMillisecond > 0,
-            String.format("发送邮箱验证码过于频繁，请您 %ds 后再试", limitTimeInMillisecond / 1000));
+        CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送邮箱验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
 
         // 生成验证码
         CaptchaProperties.CaptchaMail captchaMail = captchaProperties.getMail();

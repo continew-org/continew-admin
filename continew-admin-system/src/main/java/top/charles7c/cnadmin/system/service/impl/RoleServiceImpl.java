@@ -63,9 +63,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
         String name = request.getName();
-        CheckUtils.throwIf(() -> this.checkNameExists(name, null), String.format("新增失败，'%s'已存在", name));
+        CheckUtils.throwIf(this.checkNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(code, null), String.format("新增失败，'%s'已存在", code));
+        CheckUtils.throwIf(this.checkCodeExists(code, null), "新增失败，[{}] 已存在", code);
 
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -81,17 +81,17 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request, Long id) {
         String name = request.getName();
-        CheckUtils.throwIf(() -> this.checkNameExists(name, id), String.format("修改失败，'%s'已存在", name));
+        CheckUtils.throwIf(this.checkNameExists(name, id), "修改失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(() -> this.checkCodeExists(code, id), String.format("修改失败，'%s'已存在", code));
-        RoleDO oldRole = this.getById(id);
+        CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
+        RoleDO oldRole = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldRole.getType())) {
-            CheckUtils.throwIf(() -> DisEnableStatusEnum.DISABLE.equals(request.getStatus()),
-                String.format("'%s' 是系统内置角色，不允许禁用", oldRole.getName()));
-            CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(),
-                String.format("'%s' 是系统内置角色，不允许修改角色编码", oldRole.getName()));
-            CheckUtils.throwIfNotEqual(request.getDataScope(), oldRole.getDataScope(),
-                String.format("'%s' 是系统内置角色，不允许修改角色数据权限", oldRole.getName()));
+            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置角色，不允许禁用",
+                oldRole.getName());
+            CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(), "[{}] 是系统内置角色，不允许修改角色编码",
+                oldRole.getName());
+            CheckUtils.throwIfNotEqual(request.getDataScope(), oldRole.getDataScope(), "[{}] 是系统内置角色，不允许修改角色数据权限",
+                oldRole.getName());
         }
 
         // 更新信息
@@ -110,9 +110,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         List<RoleDO> list =
             baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getType).in(RoleDO::getId, ids).list();
         Optional<RoleDO> isSystemData = list.stream().filter(r -> DataTypeEnum.SYSTEM.equals(r.getType())).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent,
-            String.format("所选角色 '%s' 是系统内置角色，不允许删除", isSystemData.orElseGet(RoleDO::new).getName()));
-        CheckUtils.throwIf(() -> userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
+        CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
+            isSystemData.orElseGet(RoleDO::new).getName());
+        CheckUtils.throwIf(userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
 
         // 删除角色
         super.delete(ids);

@@ -135,7 +135,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public SystemLogDetailVO get(Long id) {
         LogDO logDO = logMapper.selectById(id);
-        CheckUtils.throwIfNull(logDO, "LogDO", "ID", id);
+        CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
 
         SystemLogDetailVO detailVO = BeanUtil.copyProperties(logDO, SystemLogDetailVO.class);
         this.fill(detailVO);

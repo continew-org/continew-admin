@@ -208,7 +208,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      */
     protected T getById(Object id) {
         T entity = baseMapper.selectById(Convert.toStr(id));
-        CheckUtils.throwIfNull(entity, ClassUtil.getClassName(entityClass, true), "ID", id);
+        CheckUtils.throwIfNotExists(entity, ClassUtil.getClassName(entityClass, true), "ID", id);
         return entity;
     }
 

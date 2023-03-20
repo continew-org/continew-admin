@@ -67,7 +67,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public Long add(DeptRequest request) {
         String name = request.getName();
         boolean isExists = this.checkNameExists(name, request.getParentId(), null);
-        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s' 已存在", name));
+        CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
 
         request.setAncestors(this.getAncestors(request.getParentId()));
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -79,20 +79,21 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     public void update(DeptRequest request, Long id) {
         String name = request.getName();
         boolean isExists = this.checkNameExists(name, request.getParentId(), id);
-        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s' 已存在", name));
-        DeptDO oldDept = this.getById(id);
-        CheckUtils.throwIf(
-            () -> DisEnableStatusEnum.DISABLE.equals(request.getStatus())
-                && DataTypeEnum.SYSTEM.equals(oldDept.getType()),
-            String.format("'%s' 是系统内置部门，不允许禁用", oldDept.getName()));
+        CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
+        DeptDO oldDept = super.getById(id);
+        if (DataTypeEnum.SYSTEM.equals(oldDept.getType())) {
+            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置部门，不允许禁用",
+                oldDept.getName());
+            CheckUtils.throwIf(ObjectUtil.notEqual(oldDept.getParentId(), request.getParentId()),
+                "[{}] 是系统内置部门，不允许变更上级部门", oldDept.getName());
+        }
 
         // 变更上级部门
         if (ObjectUtil.notEqual(oldDept.getParentId(), request.getParentId())) {
-            CheckUtils.throwIf(() -> DataTypeEnum.SYSTEM.equals(oldDept.getType()),
-                String.format("'%s' 是系统内置部门，不允许变更上级部门", oldDept.getName()));
             // 更新祖级列表
             String newAncestors = this.getAncestors(request.getParentId());
             request.setAncestors(newAncestors);
+            // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
         super.update(request, id);
@@ -104,9 +105,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         List<DeptDO> list =
             baseMapper.lambdaQuery().select(DeptDO::getName, DeptDO::getType).in(DeptDO::getId, ids).list();
         Optional<DeptDO> isSystemData = list.stream().filter(d -> DataTypeEnum.SYSTEM.equals(d.getType())).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent,
-            String.format("所选部门 '%s' 是系统内置部门，不允许删除", isSystemData.orElseGet(DeptDO::new).getName()));
-        CheckUtils.throwIf(() -> userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
+        CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
+            isSystemData.orElseGet(DeptDO::new).getName());
+        CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
 
         // 删除部门
         super.delete(ids);

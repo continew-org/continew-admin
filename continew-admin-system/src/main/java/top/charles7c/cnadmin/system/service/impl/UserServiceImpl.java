@@ -80,7 +80,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     public Long add(UserRequest request) {
         String username = request.getUsername();
         boolean isExists = this.checkNameExists(username, null);
-        CheckUtils.throwIf(() -> isExists, String.format("新增失败，'%s'已存在", username));
+        CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", username);
 
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -98,16 +98,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     public void update(UserRequest request, Long id) {
         String username = request.getUsername();
         boolean isExists = this.checkNameExists(username, id);
-        CheckUtils.throwIf(() -> isExists, String.format("修改失败，'%s'已存在", username));
+        CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", username);
         UserDO oldUser = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldUser.getType())) {
-            CheckUtils.throwIf(() -> DisEnableStatusEnum.DISABLE.equals(request.getStatus()),
-                String.format("'%s' 是系统内置用户，不允许禁用", oldUser.getNickname()));
+            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置用户，不允许禁用",
+                oldUser.getNickname());
             List<Long> oldRoleIdList =
                 userRoleService.listRoleIdByUserId(id).stream().sorted().collect(Collectors.toList());
             List<Long> newRoleIdList = request.getRoleIds().stream().sorted().collect(Collectors.toList());
-            CheckUtils.throwIf(() -> !CollUtil.isEqualList(newRoleIdList, oldRoleIdList),
-                String.format("'%s' 是系统内置用户，不允许变更所属角色", oldUser.getNickname()));
+            CheckUtils.throwIf(!CollUtil.isEqualList(newRoleIdList, oldRoleIdList), "[{}] 是系统内置用户，不允许变更所属角色",
+                oldUser.getNickname());
         }
 
         // 更新信息
@@ -122,8 +122,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         List<UserDO> list =
             baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getType).in(UserDO::getId, ids).list();
         Optional<UserDO> isSystemData = list.stream().filter(u -> DataTypeEnum.SYSTEM.equals(u.getType())).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent,
-            String.format("所选用户 '%s' 是系统内置用户，不允许删除", isSystemData.orElseGet(UserDO::new).getNickname()));
+        CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
+            isSystemData.orElseGet(UserDO::new).getNickname());
 
         // 删除用户
         super.delete(ids);
@@ -147,12 +147,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         Long avatarMaxSizeInMb = localStorageProperties.getAvatarMaxSizeInMb();
-        CheckUtils.throwIf(() -> avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024,
-            String.format("请上传小于 %s MB 的图片", avatarMaxSizeInMb));
+        CheckUtils.throwIf(avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024, "请上传小于 {}MB 的图片", avatarMaxSizeInMb);
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConsts.AVATAR_SUPPORTED_IMG_TYPES;
-        CheckUtils.throwIf(() -> !StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes),
-            String.format("头像仅支持 %s 格式的图片", String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes)));
+        CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
+            String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes));
 
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
@@ -201,7 +200,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         UserDO userDO = super.getById(id);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), userDO.getPassword(), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
-        CheckUtils.throwIf(() -> count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
+        CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, userDO.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
