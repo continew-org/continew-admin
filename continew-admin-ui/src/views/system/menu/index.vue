@@ -136,19 +136,19 @@
           </a-table-column>
           <a-table-column title="外链" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.isExternal" color="green">是</a-tag>
+              <a-tag v-if="record.isExternal" color="arcoblue">是</a-tag>
               <a-tag v-else color="red">否</a-tag>
             </template>
           </a-table-column>
           <a-table-column title="缓存" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.isCache" color="green">是</a-tag>
+              <a-tag v-if="record.isCache" color="arcoblue">是</a-tag>
               <a-tag v-else color="red">否</a-tag>
             </template>
           </a-table-column>
           <a-table-column title="隐藏" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.isHidden" color="green">是</a-tag>
+              <a-tag v-if="record.isHidden" color="arcoblue">是</a-tag>
               <a-tag v-else color="red">否</a-tag>
             </template>
           </a-table-column>

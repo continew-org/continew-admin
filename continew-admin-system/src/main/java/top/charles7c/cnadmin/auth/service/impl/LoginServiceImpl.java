@@ -121,6 +121,8 @@ public class LoginServiceImpl implements LoginService {
             MetaVO metaVO = new MetaVO();
             metaVO.setLocale(m.getTitle());
             metaVO.setIcon(m.getIcon());
+            metaVO.setIgnoreCache(!m.getIsCache());
+            metaVO.setHideInMenu(m.getIsHidden());
             tree.putExtra("meta", metaVO);
         });
         return BeanUtil.copyToList(treeList, RouteVO.class);
