@@ -2,9 +2,9 @@
   <a-layout-footer class="footer">
     {{ `Copyright © 2022-${new Date().getFullYear()} Charles7c` }}
     <span>&nbsp;⋅&nbsp;</span>
-    <a href="https://github.com/Charles7c/continew-admin" target="_blank">{{ $t('title') }}</a>
+    <a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopenner noreferrer">{{ $t('title') }}</a>
     <span>&nbsp;⋅&nbsp;</span>
-    <a href="https://beian.miit.gov.cn" target="_blank">津ICP备2022005864号-2</a>
+    <a href="https://beian.miit.gov.cn" target="_blank" rel="noopenner noreferrer">津ICP备2022005864号-2</a>
   </a-layout-footer>
 </template>
 
