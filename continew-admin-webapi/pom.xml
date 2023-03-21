@@ -67,6 +67,7 @@ limitations under the License.
                     <excludedGroups>exclude</excludedGroups>
                 </configuration>
             </plugin>
+            <!-- Spring Boot 打包插件（将 Spring Boot Maven 应用打包为可执行的 jar 包） -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -78,7 +79,7 @@ limitations under the License.
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- 如果没有该项配置，devtools 不会生效，应用不会自动重启 -->
+                    <!-- 在新的 JVM 进程中运行打包任务（另注：在使用 devtools 时，如果没有该项配置，热部署可能会失效） -->
                     <fork>true</fork>
                     <excludes>
                         <exclude>
