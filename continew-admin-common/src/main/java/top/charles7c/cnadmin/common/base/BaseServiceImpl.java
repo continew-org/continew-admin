@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
@@ -82,11 +81,10 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     private final Class<V> voClass;
     private final Class<D> detailVoClass;
 
-    public BaseServiceImpl() {
-        this.entityClass = (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 1);
-        this.voClass = (Class<V>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 2);
-        this.detailVoClass =
-            (Class<D>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseServiceImpl.class, 3);
+    protected BaseServiceImpl() {
+        this.entityClass = (Class<T>)ClassUtil.getTypeArgument(this.getClass(), 1);
+        this.voClass = (Class<V>)ClassUtil.getTypeArgument(this.getClass(), 2);
+        this.detailVoClass = (Class<D>)ClassUtil.getTypeArgument(this.getClass(), 3);
     }
 
     @Override

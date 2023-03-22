@@ -18,13 +18,14 @@ package top.charles7c.cnadmin.common.base;
 
 import java.util.Collection;
 
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.ChainWrappers;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+
+import cn.hutool.core.util.ClassUtil;
 
 /**
  * Mapper 基类
@@ -111,6 +112,6 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
      * @return 实体类 Class 对象
      */
     default Class<T> currentEntityClass() {
-        return (Class<T>)ReflectionKit.getSuperClassGenericType(this.getClass(), BaseMapper.class, 0);
+        return (Class<T>)ClassUtil.getTypeArgument(this.getClass(), 0);
     }
 }
