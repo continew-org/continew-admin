@@ -86,7 +86,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
         RoleDO oldRole = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldRole.getType())) {
-            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置角色，不允许禁用",
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置角色，不允许禁用",
                 oldRole.getName());
             CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(), "[{}] 是系统内置角色，不允许修改角色编码",
                 oldRole.getName());

@@ -82,14 +82,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
         DeptDO oldDept = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldDept.getType())) {
-            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置部门，不允许禁用",
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置部门，不允许禁用",
                 oldDept.getName());
-            CheckUtils.throwIf(ObjectUtil.notEqual(oldDept.getParentId(), request.getParentId()),
-                "[{}] 是系统内置部门，不允许变更上级部门", oldDept.getName());
+            CheckUtils.throwIfNotEqual(request.getParentId(), oldDept.getParentId(), "[{}] 是系统内置部门，不允许变更上级部门",
+                oldDept.getName());
         }
 
         // 变更上级部门
-        if (ObjectUtil.notEqual(oldDept.getParentId(), request.getParentId())) {
+        if (ObjectUtil.notEqual(request.getParentId(), oldDept.getParentId())) {
             // 更新祖级列表
             String newAncestors = this.getAncestors(request.getParentId());
             request.setAncestors(newAncestors);

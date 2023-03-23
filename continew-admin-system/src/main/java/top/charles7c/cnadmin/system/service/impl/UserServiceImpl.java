@@ -18,9 +18,9 @@ package top.charles7c.cnadmin.system.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -101,13 +101,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", username);
         UserDO oldUser = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldUser.getType())) {
-            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(request.getStatus()), "[{}] 是系统内置用户，不允许禁用",
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置用户，不允许禁用",
                 oldUser.getNickname());
-            List<Long> oldRoleIdList =
-                userRoleService.listRoleIdByUserId(id).stream().sorted().collect(Collectors.toList());
-            List<Long> newRoleIdList = request.getRoleIds().stream().sorted().collect(Collectors.toList());
-            CheckUtils.throwIf(!CollUtil.isEqualList(newRoleIdList, oldRoleIdList), "[{}] 是系统内置用户，不允许变更所属角色",
-                oldUser.getNickname());
+            Collection<Long> disjunctionRoleIds =
+                CollUtil.disjunction(request.getRoleIds(), userRoleService.listRoleIdByUserId(id));
+            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更所属角色", oldUser.getNickname());
         }
 
         // 更新信息
