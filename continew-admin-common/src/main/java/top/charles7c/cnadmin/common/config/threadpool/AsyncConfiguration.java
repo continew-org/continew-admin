@@ -35,6 +35,7 @@ import top.charles7c.cnadmin.common.exception.ServiceException;
 /**
  * 异步任务执行配置
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/23 22:33
  */
@@ -47,7 +48,7 @@ public class AsyncConfiguration implements AsyncConfigurer {
     private final ScheduledExecutorService scheduledExecutorService;
 
     /**
-     * 异步任务执行时，使用 Java 内置线程池
+     * 异步任务 @Async 执行时，使用 Java 内置线程池
      */
     @Override
     public Executor getAsyncExecutor() {

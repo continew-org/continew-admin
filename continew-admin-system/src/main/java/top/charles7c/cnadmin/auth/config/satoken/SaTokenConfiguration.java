@@ -34,6 +34,7 @@ import cn.dev33.satoken.stp.StpUtil;
 /**
  * Sa-Token 配置
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/19 22:13
  */

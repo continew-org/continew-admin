@@ -59,8 +59,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         LocalStorageProperties.LocalStoragePath path = localStorageProperties.getPath();
-        String avatarUtl = "file:" + path.getAvatar().replace("\\", "/");
-        String fileUrl = "file:" + path.getFile().replace("\\", "/");
+        String avatarUtl = "file:" + path.getAvatar().replace(StringConsts.BACKSLASH, StringConsts.SLASH);
+        String fileUrl = "file:" + path.getFile().replace(StringConsts.BACKSLASH, StringConsts.SLASH);
         registry.addResourceHandler(localStorageProperties.getFilePattern()).addResourceLocations(fileUrl)
             .setCachePeriod(0);
         registry.addResourceHandler(localStorageProperties.getAvatarPattern()).addResourceLocations(avatarUtl)

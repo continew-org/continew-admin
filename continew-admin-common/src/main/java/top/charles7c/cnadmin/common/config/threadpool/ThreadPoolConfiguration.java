@@ -34,6 +34,7 @@ import top.charles7c.cnadmin.common.util.ExceptionUtils;
 /**
  * 线程池配置
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/23 23:13
  */

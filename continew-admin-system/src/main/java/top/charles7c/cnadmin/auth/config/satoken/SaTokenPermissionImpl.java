@@ -27,17 +27,24 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 /**
  * Sa-Token 权限认证适配
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2023/3/1 22:28
  */
 public class SaTokenPermissionImpl implements StpInterface {
 
+    /**
+     * 获取菜单权限列表
+     */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         LoginUser loginUser = LoginHelper.getLoginUser();
         return new ArrayList<>(loginUser.getPermissions());
     }
 
+    /**
+     * 获取角色权限列表
+     */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         LoginUser loginUser = LoginHelper.getLoginUser();

@@ -33,6 +33,7 @@ import cn.hutool.extra.spring.SpringUtil;
 /**
  * Redis 工具类
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/11 12:00
  */

@@ -39,6 +39,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -50,6 +51,7 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
 /**
  * 在线用户 API
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2023/1/20 21:51
  */
@@ -64,9 +66,9 @@ public class OnlineUserController {
     @GetMapping
     public R<PageDataVO<OnlineUserVO>> page(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
         List<LoginUser> loginUserList = new ArrayList<>();
-        List<String> tokenKeyList = StpUtil.searchTokenValue("", 0, -1, false);
+        List<String> tokenKeyList = StpUtil.searchTokenValue(StringConsts.EMPTY, 0, -1, false);
         for (String tokenKey : tokenKeyList) {
-            String token = StrUtil.subAfter(tokenKey, ":", true);
+            String token = StrUtil.subAfter(tokenKey, StringConsts.COLON, true);
             // 忽略已过期或失效 Token
             if (StpUtil.stpLogic.getTokenActivityTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
                 continue;

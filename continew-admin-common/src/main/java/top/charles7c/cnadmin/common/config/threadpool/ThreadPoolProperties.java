@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 /**
  * 线程池配置属性
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/23 23:06
  */

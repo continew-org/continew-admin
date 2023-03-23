@@ -38,6 +38,7 @@ import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 /**
  * 登录助手
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/24 12:58
  */

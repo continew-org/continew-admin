@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 /**
  * Sa-Token 安全配置属性
  *
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2022/12/19 22:14
  */
