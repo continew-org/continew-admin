@@ -41,7 +41,7 @@ public class SysConsts {
     /**
      * 全部权限标识
      */
-    public static final String ALL_PERMISSION = "*";
+    public static final String ALL_PERMISSION = StringConsts.ASTERISK;
 
     /**
      * 默认密码

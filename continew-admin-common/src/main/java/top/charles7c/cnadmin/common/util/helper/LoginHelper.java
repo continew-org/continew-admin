@@ -66,8 +66,7 @@ public class LoginHelper {
         // 登录保存用户信息
         StpUtil.login(loginUser.getId());
         loginUser.setToken(StpUtil.getTokenValue());
-        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
-        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -76,15 +75,12 @@ public class LoginHelper {
      * @return /
      */
     public static LoginUser getLoginUser() {
-        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_CACHE_KEY);
+        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_KEY);
         if (loginUser != null) {
             return loginUser;
         }
-        try {
-            loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_CACHE_KEY);
-            SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
-        } catch (Exception ignored) {
-        }
+        loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_KEY);
+        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         return loginUser;
     }
 
@@ -95,8 +91,8 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void updateLoginUser(LoginUser loginUser) {
-        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
-        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_CACHE_KEY, loginUser);
+        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
     }
 
     /**

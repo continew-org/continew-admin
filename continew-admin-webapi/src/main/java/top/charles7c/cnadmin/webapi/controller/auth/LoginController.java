@@ -65,7 +65,7 @@ public class LoginController {
     @PostMapping("/login")
     public R<LoginVO> login(@Validated @RequestBody LoginRequest loginRequest) {
         // 校验验证码
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, loginRequest.getUuid());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);

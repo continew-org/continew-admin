@@ -74,7 +74,7 @@ public class CaptchaController {
 
         // 保存验证码
         String uuid = IdUtil.fastSimpleUUID();
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, uuid);
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
 
@@ -88,9 +88,9 @@ public class CaptchaController {
     public R getMailCaptcha(
         @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email)
         throws MessagingException {
-        String limitCacheKey = CacheConsts.LIMIT_CACHE_KEY;
-        String captchaCacheKey = CacheConsts.CAPTCHA_CACHE_KEY;
-        String limitCaptchaKey = RedisUtils.formatKey(limitCacheKey, captchaCacheKey, email);
+        String limitKeyPrefix = CacheConsts.LIMIT_KEY_PREFIX;
+        String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;
+        String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
         CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送邮箱验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
 
@@ -105,7 +105,7 @@ public class CaptchaController {
         MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", properties.getName()), content);
 
         // 保存验证码
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, email);
+        String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, email);
         RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));

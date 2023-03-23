@@ -103,7 +103,7 @@ public class UserCenterController {
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
 
         // 校验验证码
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_CACHE_KEY, updateEmailRequest.getNewEmail());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateEmailRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");

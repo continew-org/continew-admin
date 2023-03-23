@@ -29,17 +29,17 @@ import lombok.NoArgsConstructor;
 public class CacheConsts {
 
     /**
-     * 登录用户缓存键
+     * 登录用户键
      */
-    public static final String LOGIN_USER_CACHE_KEY = "LOGIN_USER";
+    public static final String LOGIN_USER_KEY = "LOGIN_USER";
 
     /**
-     * 验证码缓存键
+     * 验证码键前缀
      */
-    public static final String CAPTCHA_CACHE_KEY = "CAPTCHA";
+    public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA";
 
     /**
-     * 限流缓存键
+     * 限流键前缀
      */
-    public static final String LIMIT_CACHE_KEY = "LIMIT";
+    public static final String LIMIT_KEY_PREFIX = "LIMIT";
 }

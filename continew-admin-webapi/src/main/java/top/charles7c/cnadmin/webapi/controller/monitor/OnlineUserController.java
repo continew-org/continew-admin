@@ -74,7 +74,7 @@ public class OnlineUserController {
 
             // 获取 Token Session
             SaSession saSession = StpUtil.getTokenSessionByToken(token);
-            LoginUser loginUser = saSession.get(CacheConsts.LOGIN_USER_CACHE_KEY, new LoginUser());
+            LoginUser loginUser = saSession.get(CacheConsts.LOGIN_USER_KEY, new LoginUser());
 
             // 检查是否符合查询条件
             if (Boolean.TRUE.equals(checkQuery(query, loginUser))) {
