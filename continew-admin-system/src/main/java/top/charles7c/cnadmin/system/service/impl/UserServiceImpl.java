@@ -125,10 +125,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
             isSystemData.orElseGet(UserDO::new).getNickname());
 
-        // 删除用户
-        super.delete(ids);
         // 删除用户和角色关联
         userRoleService.deleteByUserIds(ids);
+        // 删除用户
+        super.delete(ids);
     }
 
     @Override

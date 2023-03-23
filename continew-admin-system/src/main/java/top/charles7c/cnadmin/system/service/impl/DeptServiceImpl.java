@@ -109,12 +109,12 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
             isSystemData.orElseGet(DeptDO::new).getName());
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
 
-        // 删除部门
-        super.delete(ids);
-        // 删除子部门
-        baseMapper.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
         // 删除角色和部门关联
         roleDeptService.deleteByDeptIds(ids);
+        // 删除子部门
+        baseMapper.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
+        // 删除部门
+        super.delete(ids);
     }
 
     @Override

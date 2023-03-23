@@ -70,8 +70,8 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        super.delete(ids);
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
+        super.delete(ids);
     }
 
     @Override

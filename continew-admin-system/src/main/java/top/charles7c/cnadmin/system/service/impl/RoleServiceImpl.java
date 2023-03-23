@@ -114,12 +114,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
             isSystemData.orElseGet(RoleDO::new).getName());
         CheckUtils.throwIf(userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
 
-        // 删除角色
-        super.delete(ids);
         // 删除角色和菜单关联
         roleMenuService.deleteByRoleIds(ids);
         // 删除角色和部门关联
         roleDeptService.deleteByRoleIds(ids);
+        // 删除角色
+        super.delete(ids);
     }
 
     @Override
