@@ -41,6 +41,11 @@ public class StringConsts implements StrPool {
     public static final String SEMICOLON = ";";
 
     /**
+     * 星号
+     */
+    public static final String ASTERISK = "*";
+
+    /**
      * 中文逗号
      */
     public static final String CHINESE_COMMA = "，";

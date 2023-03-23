@@ -36,6 +36,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import top.charles7c.cnadmin.common.config.properties.CorsProperties;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 
 /**
  * Web MVC 配置
@@ -75,13 +76,17 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        // 配置为 true 后则必须配置允许跨域的域名，且不允许配置为 *
-        config.setAllowCredentials(true);
         // 设置跨域允许时间
         config.setMaxAge(1800L);
 
         // 配置允许跨域的域名
-        corsProperties.getAllowedOrigins().forEach(config::addAllowedOrigin);
+        if (corsProperties.getAllowedOrigins().contains(StringConsts.ASTERISK)) {
+            config.addAllowedOriginPattern(StringConsts.ASTERISK);
+        } else {
+            // 配置为 true 后则必须配置允许跨域的域名，且不允许配置为 *
+            config.setAllowCredentials(true);
+            corsProperties.getAllowedOrigins().forEach(config::addAllowedOrigin);
+        }
         // 配置允许跨域的请求方式
         corsProperties.getAllowedMethods().forEach(config::addAllowedMethod);
         // 配置允许跨域的请求头

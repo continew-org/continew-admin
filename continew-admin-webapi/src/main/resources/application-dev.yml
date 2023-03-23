@@ -176,11 +176,7 @@ local-storage:
 --- ### 跨域配置
 cors:
   # 配置允许跨域的域名
-  allowedOrigins:
-    - http://127.0.0.1:5173
-    - http://localhost:5173
-    - http://cnadmin.charles7c.top
-    - https://cnadmin.charles7c.top
+  allowedOrigins: '*'
   # 配置允许跨域的请求方式
   allowedMethods: '*'
   # 配置允许跨域的请求头
