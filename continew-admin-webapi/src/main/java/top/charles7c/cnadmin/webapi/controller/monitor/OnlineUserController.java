@@ -16,11 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.monitor;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,28 +25,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.dao.SaTokenDao;
-import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.common.constant.StringConsts;
-import top.charles7c.cnadmin.common.model.dto.LoginUser;
+import top.charles7c.cnadmin.auth.model.query.OnlineUserQuery;
+import top.charles7c.cnadmin.auth.model.vo.OnlineUserVO;
+import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
-import top.charles7c.cnadmin.monitor.model.query.OnlineUserQuery;
-import top.charles7c.cnadmin.monitor.model.vo.*;
 
 /**
  * 在线用户 API
  *
- * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
  * @since 2023/1/20 21:51
  */
@@ -61,59 +47,13 @@ import top.charles7c.cnadmin.monitor.model.vo.*;
 @RequestMapping("/monitor/online/user")
 public class OnlineUserController {
 
+    private final OnlineUserService onlineUserService;
+
     @Operation(summary = "分页查询列表")
     @SaCheckPermission("monitor:online:user:list")
     @GetMapping
     public R<PageDataVO<OnlineUserVO>> page(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
-        List<LoginUser> loginUserList = new ArrayList<>();
-        List<String> tokenKeyList = StpUtil.searchTokenValue(StringConsts.EMPTY, 0, -1, false);
-        for (String tokenKey : tokenKeyList) {
-            String token = StrUtil.subAfter(tokenKey, StringConsts.COLON, true);
-            // 忽略已过期或失效 Token
-            if (StpUtil.stpLogic.getTokenActivityTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
-                continue;
-            }
-
-            // 获取 Token Session
-            SaSession saSession = StpUtil.getTokenSessionByToken(token);
-            LoginUser loginUser = saSession.get(CacheConsts.LOGIN_USER_KEY, new LoginUser());
-
-            // 检查是否符合查询条件
-            if (Boolean.TRUE.equals(checkQuery(query, loginUser))) {
-                loginUserList.add(loginUser);
-            }
-        }
-
-        // 构建分页数据
-        List<OnlineUserVO> list = BeanUtil.copyToList(loginUserList, OnlineUserVO.class);
-        CollUtil.sort(list, Comparator.comparing(OnlineUserVO::getLoginTime).reversed());
-        PageDataVO<OnlineUserVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), list);
-        return R.ok(pageDataVO);
-    }
-
-    /**
-     * 检查是否符合查询条件
-     *
-     * @param query
-     *            查询条件
-     * @param loginUser
-     *            登录用户信息
-     * @return 是否符合查询条件
-     */
-    private boolean checkQuery(OnlineUserQuery query, LoginUser loginUser) {
-        boolean flag1 = true;
-        String nickname = query.getNickname();
-        if (StrUtil.isNotBlank(nickname)) {
-            flag1 = loginUser.getUsername().contains(nickname) || loginUser.getNickname().contains(nickname);
-        }
-
-        boolean flag2 = true;
-        List<Date> loginTime = query.getLoginTime();
-        if (CollUtil.isNotEmpty(loginTime)) {
-            flag2 =
-                DateUtil.isIn(DateUtil.date(loginUser.getLoginTime()).toJdkDate(), loginTime.get(0), loginTime.get(1));
-        }
-        return flag1 && flag2;
+        return R.ok(onlineUserService.page(query, pageQuery));
     }
 
     @Operation(summary = "强退在线用户")

@@ -14,66 +14,42 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.model.vo;
+package top.charles7c.cnadmin.auth.model.query;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
- * 在线用户信息
+ * 在线用户查询条件
  *
  * @author Charles7c
- * @since 2023/1/20 21:54
+ * @since 2023/1/20 23:07
  */
 @Data
-@Schema(description = "在线用户信息")
-public class OnlineUserVO implements Serializable {
+@ParameterObject
+@Schema(description = "在线用户查询条件")
+public class OnlineUserQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 令牌
+     * 用户昵称
      */
-    @Schema(description = "令牌")
-    private String token;
-
-    /**
-     * 用户名
-     */
-    @Schema(description = "用户名")
-    private String username;
-
-    /**
-     * 昵称
-     */
-    @Schema(description = "昵称")
+    @Schema(description = "用户昵称")
     private String nickname;
-
-    /**
-     * 登录 IP
-     */
-    @Schema(description = "登录 IP")
-    private String clientIp;
-
-    /**
-     * 登录地点
-     */
-    @Schema(description = "登录地点")
-    private String location;
-
-    /**
-     * 浏览器
-     */
-    @Schema(description = "浏览器")
-    private String browser;
 
     /**
      * 登录时间
      */
     @Schema(description = "登录时间")
-    private LocalDateTime loginTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private List<Date> loginTime;
 }

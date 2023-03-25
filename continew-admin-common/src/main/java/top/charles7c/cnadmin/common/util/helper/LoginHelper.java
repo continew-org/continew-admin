@@ -73,7 +73,7 @@ public class LoginHelper {
     /**
      * 获取登录用户信息
      *
-     * @return /
+     * @return 登录用户信息
      */
     public static LoginUser getLoginUser() {
         LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_KEY);
@@ -83,6 +83,17 @@ public class LoginHelper {
         loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_KEY);
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         return loginUser;
+    }
+
+    /**
+     * 根据 Token 获取登录用户信息
+     *
+     * @param token
+     *            用户 Token
+     * @return 登录用户信息
+     */
+    public static LoginUser getLoginUser(String token) {
+        return StpUtil.getTokenSessionByToken(token).get(CacheConsts.LOGIN_USER_KEY, new LoginUser());
     }
 
     /**

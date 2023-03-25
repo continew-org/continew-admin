@@ -33,8 +33,9 @@ public interface RoleMenuService {
      *            菜单 ID 列表
      * @param roleId
      *            角色 ID
+     * @return true：成功，false：无变更/失败
      */
-    void save(List<Long> menuIds, Long roleId);
+    boolean save(List<Long> menuIds, Long roleId);
 
     /**
      * 根据角色 ID 查询

@@ -33,8 +33,9 @@ public interface UserRoleService {
      *            角色 ID 列表
      * @param userId
      *            用户 ID
+     * @return true：成功，false：无变更/失败
      */
-    void save(List<Long> roleIds, Long userId);
+    boolean save(List<Long> roleIds, Long userId);
 
     /**
      * 根据角色 ID 列表查询

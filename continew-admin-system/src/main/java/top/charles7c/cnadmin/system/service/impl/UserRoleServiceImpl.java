@@ -23,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.collection.CollUtil;
+
 import top.charles7c.cnadmin.system.mapper.UserRoleMapper;
 import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
 import top.charles7c.cnadmin.system.service.UserRoleService;
@@ -40,13 +42,19 @@ public class UserRoleServiceImpl implements UserRoleService {
     private final UserRoleMapper userRoleMapper;
 
     @Override
-    public void save(List<Long> roleIds, Long userId) {
+    public boolean save(List<Long> roleIds, Long userId) {
+        // 检查是否有变更
+        List<Long> oldRoleIdList = userRoleMapper.lambdaQuery().select(UserRoleDO::getRoleId)
+            .eq(UserRoleDO::getUserId, userId).list().stream().map(UserRoleDO::getRoleId).collect(Collectors.toList());
+        if (CollUtil.isEmpty(CollUtil.disjunction(roleIds, oldRoleIdList))) {
+            return false;
+        }
         // 删除原有关联
         userRoleMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
         List<UserRoleDO> userRoleList =
             roleIds.stream().map(roleId -> new UserRoleDO(userId, roleId)).collect(Collectors.toList());
-        userRoleMapper.insertBatch(userRoleList);
+        return userRoleMapper.insertBatch(userRoleList);
     }
 
     @Override

@@ -43,13 +43,19 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     private final RoleMenuMapper roleMenuMapper;
 
     @Override
-    public void save(List<Long> menuIds, Long roleId) {
+    public boolean save(List<Long> menuIds, Long roleId) {
+        // 检查是否有变更
+        List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery().select(RoleMenuDO::getMenuId)
+            .eq(RoleMenuDO::getRoleId, roleId).list().stream().map(RoleMenuDO::getMenuId).collect(Collectors.toList());
+        if (CollUtil.isEmpty(CollUtil.disjunction(menuIds, oldMenuIdList))) {
+            return false;
+        }
         // 删除原有关联
         roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
         List<RoleMenuDO> roleMenuList =
             menuIds.stream().map(menuId -> new RoleMenuDO(roleId, menuId)).collect(Collectors.toList());
-        roleMenuMapper.insertBatch(roleMenuList);
+        return roleMenuMapper.insertBatch(roleMenuList);
     }
 
     @Override

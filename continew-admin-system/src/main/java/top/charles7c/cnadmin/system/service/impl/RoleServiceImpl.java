@@ -26,9 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 
+import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
@@ -54,9 +57,10 @@ import top.charles7c.cnadmin.system.service.*;
 public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO, RoleDetailVO, RoleQuery, RoleRequest>
     implements RoleService {
 
+    private final MenuService menuService;
+    private final OnlineUserService onlineUserService;
     private final RoleMenuService roleMenuService;
     private final RoleDeptService roleDeptService;
-    private final MenuService menuService;
     private final UserRoleService userRoleService;
 
     @Override
@@ -85,22 +89,30 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         String code = request.getCode();
         CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
         RoleDO oldRole = super.getById(id);
+        DataScopeEnum oldDataScope = oldRole.getDataScope();
+        String oldCode = oldRole.getCode();
         if (DataTypeEnum.SYSTEM.equals(oldRole.getType())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置角色，不允许禁用",
                 oldRole.getName());
-            CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(), "[{}] 是系统内置角色，不允许修改角色编码",
-                oldRole.getName());
-            CheckUtils.throwIfNotEqual(request.getDataScope(), oldRole.getDataScope(), "[{}] 是系统内置角色，不允许修改角色数据权限",
+            CheckUtils.throwIfNotEqual(request.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
+            CheckUtils.throwIfNotEqual(request.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
                 oldRole.getName());
         }
 
         // 更新信息
         super.update(request, id);
+        // 更新关联信息
         if (!SysConsts.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
             // 保存角色和菜单关联
-            roleMenuService.save(request.getMenuIds(), id);
+            boolean isSaveMenuSuccess = roleMenuService.save(request.getMenuIds(), id);
             // 保存角色和部门关联
-            roleDeptService.save(request.getDeptIds(), id);
+            boolean isSaveDeptSuccess = roleDeptService.save(request.getDeptIds(), id);
+            // 如果角色编码、功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
+            if (ObjectUtil.notEqual(request.getCode(), oldCode)
+                || ObjectUtil.notEqual(request.getDataScope(), oldDataScope) || isSaveMenuSuccess
+                || isSaveDeptSuccess) {
+                onlineUserService.cleanByRoleId(id);
+            }
         }
     }
 
