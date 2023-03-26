@@ -158,7 +158,7 @@
                 <template #icon><icon-edit /></template>修改
               </a-button>
               <a-popconfirm
-                content="确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！"
+                content="确定要删除当前选中的数据吗？"
                 type="warning"
                 @ok="handleDelete([record.id])"
               >
@@ -490,8 +490,7 @@
       proxy.$modal.warning({
         title: '警告',
         titleAlign: 'start',
-        content:
-          '确定要删除当前选中的数据吗？如果存在下级部门则一并删除，此操作不能撤销！',
+        content: '确定要删除当前选中的数据吗？',
         hideCancel: false,
         onOk: () => {
           handleDelete(ids.value);

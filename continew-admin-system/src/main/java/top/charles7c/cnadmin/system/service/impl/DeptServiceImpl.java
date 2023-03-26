@@ -119,12 +119,11 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         Optional<DeptDO> isSystemData = list.stream().filter(d -> DataTypeEnum.SYSTEM.equals(d.getType())).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
             isSystemData.orElseGet(DeptDO::new).getName());
+        CheckUtils.throwIf(this.countChildren(ids) > 0, "所选部门存在下级部门，不允许删除");
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
 
         // 删除角色和部门关联
         roleDeptService.deleteByDeptIds(ids);
-        // 删除子部门
-        baseMapper.lambdaUpdate().in(DeptDO::getParentId, ids).remove();
         // 删除部门
         super.delete(ids);
     }
@@ -191,6 +190,22 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      */
     private List<DeptDO> listChildren(Long id) {
         return baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
+    }
+
+    /**
+     * 查询子部门数量
+     *
+     * @param ids
+     *            ID 列表
+     * @return 子部门数量
+     */
+    private Long countChildren(List<Long> ids) {
+        if (CollUtil.isEmpty(ids)) {
+            return 0L;
+        }
+        return ids.stream()
+            .mapToLong(id -> baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).count())
+            .sum();
     }
 
     /**
