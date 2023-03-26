@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
@@ -46,6 +47,7 @@ import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
+import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
@@ -77,8 +79,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(UserRequest request) {
         String username = request.getUsername();
-        boolean isExists = this.checkNameExists(username, null);
-        CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.checkNameExists(username, null), "新增失败，[{}] 已存在", username);
+        String email = request.getEmail();
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.checkEmailExists(email, null), "新增失败，[{}] 已存在", email);
+        String phone = request.getPhone();
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.checkPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
 
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
@@ -95,11 +100,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(UserRequest request, Long id) {
         String username = request.getUsername();
-        boolean isExists = this.checkNameExists(username, id);
-        CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.checkNameExists(username, id), "修改失败，[{}] 已存在", username);
+        String email = request.getEmail();
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.checkEmailExists(email, id), "修改失败，[{}] 已存在", email);
+        String phone = request.getPhone();
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.checkPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
+        DisEnableStatusEnum newStatus = request.getStatus();
+        CheckUtils.throwIf(
+            DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper.getUserId()),
+            "不允许禁用当前用户");
         UserDO oldUser = super.getById(id);
         if (DataTypeEnum.SYSTEM.equals(oldUser.getType())) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置用户，不允许禁用",
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用",
                 oldUser.getNickname());
             Collection<Long> disjunctionRoleIds =
                 CollUtil.disjunction(request.getRoleIds(), userRoleService.listRoleIdByUserId(id));
@@ -115,6 +127,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
+        CheckUtils.throwIf(CollUtil.contains(ids, LoginHelper.getUserId()), "不允许删除当前用户");
         List<UserDO> list =
             baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getType).in(UserDO::getId, ids).list();
         Optional<UserDO> isSystemData = list.stream().filter(u -> DataTypeEnum.SYSTEM.equals(u.getType())).findFirst();
@@ -235,5 +248,31 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      */
     private boolean checkNameExists(String name, Long id) {
         return baseMapper.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getId, id).exists();
+    }
+
+    /**
+     * 检查邮箱是否存在
+     *
+     * @param email
+     *            邮箱
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkEmailExists(String email, Long id) {
+        return baseMapper.lambdaQuery().eq(UserDO::getEmail, email).ne(id != null, UserDO::getId, id).exists();
+    }
+
+    /**
+     * 检查手机号码是否存在
+     *
+     * @param phone
+     *            手机号码
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean checkPhoneExists(String phone, Long id) {
+        return baseMapper.lambdaQuery().eq(UserDO::getPhone, phone).ne(id != null, UserDO::getId, id).exists();
     }
 }
