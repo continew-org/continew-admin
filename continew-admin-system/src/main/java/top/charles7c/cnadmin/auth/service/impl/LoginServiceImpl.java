@@ -70,16 +70,16 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String login(String username, String password) {
-        UserDO userDO = userService.getByUsername(username);
-        CheckUtils.throwIfNull(userDO, "用户名或密码错误");
-        Long userId = userDO.getId();
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), userDO.getPassword(), "用户名或密码错误");
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, userDO.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
-        DeptDetailVO deptDetailVO = deptService.get(userDO.getDeptId());
+        UserDO user = userService.getByUsername(username);
+        CheckUtils.throwIfNull(user, "用户名或密码错误");
+        Long userId = user.getId();
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), user.getPassword(), "用户名或密码错误");
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
 
         // 登录
-        LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
+        LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
         loginUser.setRoleSet(roleService.listByUserId(userId));

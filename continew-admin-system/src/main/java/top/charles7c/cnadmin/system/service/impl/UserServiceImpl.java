@@ -149,7 +149,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
             String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes));
 
-        UserDO userDO = super.getById(id);
+        UserDO user = super.getById(id);
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
@@ -161,7 +161,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
 
         // 删除原头像
-        String oldAvatar = userDO.getAvatar();
+        String oldAvatar = user.getAvatar();
         if (StrUtil.isNotBlank(oldAvatar)) {
             FileUtil.del(avatarPath + oldAvatar);
         }
@@ -172,8 +172,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
-        UserDO userDO = super.getById(id);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), userDO.getPassword(), "当前密码错误");
+        UserDO user = super.getById(id);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), user.getPassword(), "当前密码错误");
 
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
@@ -184,11 +184,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long id) {
-        UserDO userDO = super.getById(id);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), userDO.getPassword(), "当前密码错误");
+        UserDO user = super.getById(id);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), user.getPassword(), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
-        CheckUtils.throwIfEqual(newEmail, userDO.getEmail(), "新邮箱不能与当前邮箱相同");
+        CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
 
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
@@ -196,10 +196,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     public void resetPassword(Long id) {
-        UserDO userDO = super.getById(id);
-        userDO.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, id.toString()));
-        userDO.setPwdResetTime(LocalDateTime.now());
-        baseMapper.updateById(userDO);
+        UserDO user = super.getById(id);
+        user.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, id.toString()));
+        user.setPwdResetTime(LocalDateTime.now());
+        baseMapper.updateById(user);
     }
 
     @Override
