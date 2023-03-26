@@ -70,7 +70,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
 
         request.setAncestors(this.getAncestors(request.getParentId()));
-        request.setStatus(DisEnableStatusEnum.ENABLE);
+        request.setStatus(DisEnableStatusEnum.DISABLE);
         return super.add(request);
     }
 
@@ -81,15 +81,27 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         boolean isExists = this.checkNameExists(name, request.getParentId(), id);
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
         DeptDO oldDept = super.getById(id);
+        String oldName = oldDept.getName();
+        DisEnableStatusEnum newStatus = request.getStatus();
+        Long oldParentId = oldDept.getParentId();
         if (DataTypeEnum.SYSTEM.equals(oldDept.getType())) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置部门，不允许禁用",
-                oldDept.getName());
-            CheckUtils.throwIfNotEqual(request.getParentId(), oldDept.getParentId(), "[{}] 是系统内置部门，不允许变更上级部门",
-                oldDept.getName());
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用", oldName);
+            CheckUtils.throwIfNotEqual(request.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
+        }
+        // 启用/禁用部门
+        if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
+            List<DeptDO> children = this.listChildren(id);
+            long enabledChildrenCount =
+                children.stream().filter(d -> DisEnableStatusEnum.ENABLE.equals(d.getStatus())).count();
+            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && enabledChildrenCount > 0,
+                "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
+            DeptDO oldParentDept = this.getByParentId(oldParentId);
+            CheckUtils.throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus)
+                && DisEnableStatusEnum.DISABLE.equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
 
         // 变更上级部门
-        if (ObjectUtil.notEqual(request.getParentId(), oldDept.getParentId())) {
+        if (ObjectUtil.notEqual(request.getParentId(), oldParentId)) {
             // 更新祖级列表
             String newAncestors = this.getAncestors(request.getParentId());
             request.setAncestors(newAncestors);
@@ -147,15 +159,38 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
 
     /**
      * 获取祖级列表
-     * 
+     *
      * @param parentId
      *            上级部门
      * @return 祖级列表
      */
     private String getAncestors(Long parentId) {
+        DeptDO parentDept = this.getByParentId(parentId);
+        return String.format("%s,%s", parentDept.getAncestors(), parentId);
+    }
+
+    /**
+     * 根据上级部门 ID 查询
+     *
+     * @param parentId
+     *            上级部门 ID
+     * @return 上级部门信息
+     */
+    private DeptDO getByParentId(Long parentId) {
         DeptDO parentDept = baseMapper.selectById(parentId);
         CheckUtils.throwIfNull(parentDept, "上级部门不存在");
-        return String.format("%s,%s", parentDept.getAncestors(), parentId);
+        return parentDept;
+    }
+
+    /**
+     * 查询子部门列表
+     *
+     * @param id
+     *            ID
+     * @return 子部门列表
+     */
+    private List<DeptDO> listChildren(Long id) {
+        return baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
     }
 
     /**
@@ -169,8 +204,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      *            ID
      */
     private void updateChildrenAncestors(String newAncestors, String oldAncestors, Long id) {
-        List<DeptDO> children =
-            baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
+        List<DeptDO> children = this.listChildren(id);
         if (CollUtil.isEmpty(children)) {
             return;
         }
