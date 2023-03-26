@@ -54,7 +54,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     public PageDataVO<OnlineUserVO> page(OnlineUserQuery query, PageQuery pageQuery) {
         List<LoginUser> loginUserList = this.list(query);
         List<OnlineUserVO> list = BeanUtil.copyToList(loginUserList, OnlineUserVO.class);
-        return PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        PageDataVO<OnlineUserVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        pageDataVO.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
+        return pageDataVO;
     }
 
     @Override

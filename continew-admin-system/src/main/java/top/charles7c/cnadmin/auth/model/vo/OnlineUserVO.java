@@ -36,6 +36,12 @@ public class OnlineUserVO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID")
+    private Long id;
+
+    /**
      * 令牌
      */
     @Schema(description = "令牌")
