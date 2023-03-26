@@ -70,16 +70,16 @@ public class UserInfoVO implements Serializable {
     private GenderEnum gender;
 
     /**
-     * 手机号码
-     */
-    @Schema(description = "手机号码")
-    private String phone;
-
-    /**
      * 邮箱
      */
     @Schema(description = "邮箱")
     private String email;
+
+    /**
+     * 手机号码
+     */
+    @Schema(description = "手机号码")
+    private String phone;
 
     /**
      * 头像地址

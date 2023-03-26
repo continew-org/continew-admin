@@ -42,12 +42,10 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
-import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
@@ -151,6 +149,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
             String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes));
 
+        UserDO userDO = super.getById(id);
         // 上传新头像
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
@@ -162,15 +161,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
 
         // 删除原头像
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        String oldAvatar = loginUser.getAvatar();
-        if (StrUtil.isNotBlank(loginUser.getAvatar())) {
+        String oldAvatar = userDO.getAvatar();
+        if (StrUtil.isNotBlank(oldAvatar)) {
             FileUtil.del(avatarPath + oldAvatar);
         }
-
-        // 更新登录用户信息
-        loginUser.setAvatar(newAvatar);
-        LoginHelper.updateLoginUser(loginUser);
         return newAvatar;
     }
 
@@ -185,11 +179,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         LocalDateTime now = LocalDateTime.now();
         baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
             .set(UserDO::getPwdResetTime, now).eq(UserDO::getId, id).update();
-
-        // 更新登录用户信息
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        loginUser.setPwdResetTime(now);
-        LoginHelper.updateLoginUser(loginUser);
     }
 
     @Override
@@ -203,11 +192,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
-
-        // 更新登录用户信息
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        loginUser.setEmail(newEmail);
-        LoginHelper.updateLoginUser(loginUser);
     }
 
     @Override

@@ -39,13 +39,13 @@ import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
+import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.MenuService;
@@ -75,10 +75,11 @@ public class LoginServiceImpl implements LoginService {
         Long userId = userDO.getId();
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), userDO.getPassword(), "用户名或密码错误");
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, userDO.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        DeptDetailVO deptDetailVO = deptService.get(userDO.getDeptId());
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
 
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(userDO, LoginUser.class);
-        loginUser.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(loginUser.getDeptId()).getName()));
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
         loginUser.setRoleSet(roleService.listByUserId(userId));

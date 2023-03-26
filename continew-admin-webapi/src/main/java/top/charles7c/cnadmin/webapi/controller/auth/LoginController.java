@@ -45,6 +45,8 @@ import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 登录 API
@@ -59,6 +61,7 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 public class LoginController {
 
     private final LoginService loginService;
+    private final UserService userService;
 
     @SaIgnore
     @Operation(summary = "用户登录", description = "根据用户名和密码进行登录认证")
@@ -93,7 +96,10 @@ public class LoginController {
     @GetMapping("/user/info")
     public R<UserInfoVO> getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        UserInfoVO userInfoVO = BeanUtil.copyProperties(loginUser, UserInfoVO.class);
+        UserDetailVO userDetailVO = userService.get(loginUser.getId());
+        UserInfoVO userInfoVO = BeanUtil.copyProperties(userDetailVO, UserInfoVO.class);
+        userInfoVO.setPermissions(loginUser.getPermissions());
+        userInfoVO.setRoles(loginUser.getRoles());
         return R.ok(userInfoVO);
     }
 

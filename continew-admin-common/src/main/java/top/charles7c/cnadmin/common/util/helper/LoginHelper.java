@@ -26,10 +26,12 @@ import lombok.NoArgsConstructor;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
+import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
@@ -110,7 +112,7 @@ public class LoginHelper {
     /**
      * 获取登录用户 ID
      *
-     * @return /
+     * @return 登录用户 ID
      */
     public static Long getUserId() {
         return ExceptionUtils.exToNull(() -> getLoginUser().getId());
@@ -119,7 +121,7 @@ public class LoginHelper {
     /**
      * 获取登录用户名
      *
-     * @return /
+     * @return 登录用户名
      */
     public static String getUsername() {
         return ExceptionUtils.exToNull(() -> getLoginUser().getUsername());
@@ -128,9 +130,20 @@ public class LoginHelper {
     /**
      * 获取登录用户昵称
      *
-     * @return /
+     * @return 登录用户昵称
      */
     public static String getNickname() {
-        return ExceptionUtils.exToNull(() -> getLoginUser().getNickname());
+        return getNickname(getUserId());
+    }
+
+    /**
+     * 获取登录用户昵称
+     *
+     * @param userId
+     *            登录用户 ID
+     * @return 登录用户昵称
+     */
+    public static String getNickname(Long userId) {
+        return ExceptionUtils.exToNull(() -> SpringUtil.getBean(CommonUserService.class).getNicknameById(userId));
     }
 }

@@ -21,8 +21,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
 import cn.dev33.satoken.dao.SaTokenDao;
@@ -50,7 +48,6 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
  * @since 2023/3/25 22:49
  */
 @Service
-@RequiredArgsConstructor
 public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
@@ -109,7 +106,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         String nickname = query.getNickname();
         if (StrUtil.isNotBlank(nickname)) {
             flag1 = StrUtil.contains(loginUser.getUsername(), nickname)
-                || StrUtil.contains(loginUser.getNickname(), nickname);
+                || StrUtil.contains(LoginHelper.getNickname(loginUser.getId()), nickname);
         }
 
         boolean flag2 = true;

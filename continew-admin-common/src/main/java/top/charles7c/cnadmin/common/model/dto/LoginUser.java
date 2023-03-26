@@ -25,7 +25,6 @@ import lombok.Data;
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.constant.SysConsts;
-import top.charles7c.cnadmin.common.enums.GenderEnum;
 
 /**
  * 登录用户信息
@@ -49,54 +48,24 @@ public class LoginUser implements Serializable {
     private String username;
 
     /**
-     * 昵称
-     */
-    private String nickname;
-
-    /**
-     * 性别（0未知 1男 2女）
-     */
-    private GenderEnum gender;
-
-    /**
-     * 手机号码
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 头像地址
-     */
-    private String avatar;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * 最后一次修改密码时间
-     */
-    private LocalDateTime pwdResetTime;
-
-    /**
      * 部门 ID
      */
     private Long deptId;
 
     /**
-     * 部门名称
+     * 权限码集合
      */
-    private String deptName;
+    private Set<String> permissions;
 
     /**
-     * 创建时间
+     * 角色编码集合
      */
-    private LocalDateTime createTime;
+    private Set<String> roles;
+
+    /**
+     * 角色集合
+     */
+    private Set<RoleDTO> roleSet;
 
     /**
      * 令牌
@@ -122,21 +91,6 @@ public class LoginUser implements Serializable {
      * 登录时间
      */
     private LocalDateTime loginTime;
-
-    /**
-     * 权限码集合
-     */
-    private Set<String> permissions;
-
-    /**
-     * 角色编码集合
-     */
-    private Set<String> roles;
-
-    /**
-     * 角色集合
-     */
-    private Set<RoleDTO> roleSet;
 
     /**
      * 是否为管理员
