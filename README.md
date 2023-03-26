@@ -1,17 +1,17 @@
 # ContiNew Admin 中后台管理框架
 
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
-![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v0.0.1-%23ff3f59.svg)
+![SNAPSHOT](https://img.shields.io/badge/Release-v1.0.0-%23ff3f59.svg)
 [![GitHub Repo stars](https://img.shields.io/github/stars/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
 [![GitHub forks](https://img.shields.io/github/forks/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
 [![Gitee Repo stars](https://gitee.com/Charles7c/continew-admin/badge/star.svg?theme=white)](https://gitee.com/Charles7c/continew-admin)
 [![Gitee forks](https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white)](https://gitee.com/Charles7c/continew-admin)
 
-🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
 ## 简介
 
-ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建、优化及扩展。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Easy Excel、Hutool 等。
+ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。当前阶段采用的技术栈：Vue3、TypeScript、Arco Design Vue、Spring Boot、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Easy Excel、Hutool 等。
 
 ## 项目源码
 
@@ -22,20 +22,53 @@ ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持�
 
 ## 主要特性
 
-- 使用最新技术栈，社区资源丰富
+- 精选技术栈，综合考虑成熟度、流行性、发展潜力
 - 高效率开发，后端提供了 CRUD 组件，在 Controller 添加一个注解，搞定增、删、改、查、分页、列表、树列表
 - 基于注解的通用查询方式，降低拼接 MyBatis Plus QueryWrapper 的烦恼
 - 提供一套 Base 基类（BaseDO、BaseVO、BaseController、BaseService、升级版 BaseMapper...，用了你就知道），既方便复用又方便扩展
 - 提供一套校验工具实践，另根据实际需要，基于 Hutool 扩展部分工具类（能 PR 到 Hutool 的已尽量 PR）
-- 支持接口级别的功能权限与数据权限，可自定义操作
+- 支持 API 级别的功能权限与数据权限，可自定义操作
 - 前后端统一异常拦截处理，统一输出异常，避免繁琐的判断
-- 良好的代码、配置文件结构和命名，完善的代码注释，遵循阿里巴巴 《Java开发手册(黄山版)》的代码规范
+- 良好的代码、配置文件结构和命名，完善的代码注释，遵循阿里巴巴 [《Java开发手册(黄山版)》](https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf)的代码规范
 - 提供多项实用基础配置，例如：Jackson 针对日期、通用枚举的序列化、反序列化配置，统一线程池配置...
 - 通过 Liquibase 管理数据库脚本版本记录
+- 更多细节及实践，敬请探索与关注
 
 ##  系统功能
 
-**v1.0.0-rc1：**
+> v1.x 开发和 v2.x 开发同步进行中。小步快跑，快速迭代。
+>
+> 详细进度请查看 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 
+
+**v2.0.0：** :fire: 升级并适配 Spring Boot 3.x。
+
+- [ ] 依赖升级：升级并适配 Spring Boot 3.x
+- [ ] 依赖升级：其他依赖升级
+- [ ] 计划对接 [FlowLong](https://gitee.com/aizuda/flowlong) 纯国产工作流引擎
+- [ ] 其他需求汇集中...
+
+**v1.2.0：** 第三方服务支持。
+
+- [ ] 文件管理：提供 OSS 及本地文件管理
+- [ ] 支持第三方登录
+- [ ] 支持 SMS
+- [x] 文档：整理使用文档，创建文档站点
+- [ ] 依赖升级：升级至最新 Spring Boot 2.x 版本
+- [ ] 依赖升级：其他依赖升级
+- [ ] 其他需求汇集中...
+
+**v1.1.0：** 丰富中后台管理框架/脚手架的基础功能。
+
+- [ ] 代码生成：高灵活度生成前后端代码，减少大量重复的工作任务
+- [ ] 公告管理：提供系统公告的发布和维护功能
+- [ ] 通知管理：提供系统通知管理，设为已读、未读
+- [ ] 仪表盘优化：各区块数据动态渲染
+- [ ] 网站配置：支持配置系统网站标题、网站 Logo、favicon、版权信息等
+- [ ] 依赖升级：升级至最新 Spring Boot 2.x 版本
+- [ ] 依赖升级：其他依赖升级
+- [ ] 其他需求汇集中...
+
+**v1.0.0：** 初步完成中后台管理框架/脚手架的基础功能。
 
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
@@ -70,7 +103,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        ├─ db.changelog   # 数据库脚本文件
-  │        │  └─ v0.0.1        # v0.0.1 版本数据库脚本文件
+  │        │  └─ v1.0.0        # v1.0.0 版本数据库脚本文件
   │        └─ templates      # 模板文件
   │          └─ mail           # 邮件模板
   ├─ continew-admin-monitor  # 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）
@@ -347,7 +380,7 @@ yarn dev
 
 💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
 
-💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），作者拉你进群，现有作者（群主）及 3 位群友，随意聊聊技术、提提需求，吐吐槽~
+💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），作者拉你进群，现有作者（群主）及 7 位群友，随意聊聊技术、提提需求，吐吐槽~
 
 <div align="left">
   <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
@@ -355,11 +388,12 @@ yarn dev
 
 ## 特别鸣谢
 
-- 感谢 [JetBrains](https://www.jetbrains.com/) 提供的 [非商业开源软件开发授权](https://www.jetbrains.com/shop/eform/opensource)
+- 感谢 [JetBrains](https://www.jetbrains.com/) 提供的 [非商业开源软件开发授权](https://www.jetbrains.com/shop/eform/opensource) 
 - 感谢 [Arco Design Pro](http://pro.arco.design/) 开箱即用的中后台前端解决方案
-- 感谢 [ELADMIN](https://github.com/elunez/eladmin)、[RuoYi-Vue-Plus](https://github.com/JavaLionLi/RuoYi-Vue-Plus)、[RuoYi-Vue3](https://github.com/yangzongzhuan/RuoYi-Vue3) 提供的诸多成熟方案，致敬各位作者为开源世界做出的贡献
+- 感谢 [MyBatis Plus](https://github.com/baomidou/mybatis-plus)、[Sa-Token](https://github.com/dromara/sa-token) 、[Easy Excel](https://github.com/alibaba/easyexcel)、[Knife4j](https://github.com/xiaoymin/knife4j)、[Hutool](https://github.com/dromara/hutool) 等国产开源组件作者为国内开源世界作出的贡献
+- 感谢 [ELADMIN](https://github.com/elunez/eladmin)、[RuoYi-Vue-Plus](https://github.com/dromara/RuoYi-Vue-Plus)、[RuoYi-Vue3](https://github.com/yangzongzhuan/RuoYi-Vue3) 提供的诸多成熟方案，致敬各位作者为开源世界作出的贡献
 
 ## License
 
 - 遵循 [Apache-2.0](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE) 开源许可协议
-- Copyright © 2022-present Charles7c
+- Copyright © 2022-present [Charles7c](https://blog.charles7c.top)

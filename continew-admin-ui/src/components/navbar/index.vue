@@ -142,6 +142,19 @@
         </a-tooltip>
       </li>
       <li>
+        <a-tooltip :content="$t('settings.doc')">
+          <a-button
+            class="nav-btn"
+            type="outline"
+            :shape="'circle'"
+            href="https://doc.charles7c.top"
+            target="_blank"
+          >
+            <icon-book />
+          </a-button>
+        </a-tooltip>
+      </li>
+      <li>
         <a-dropdown trigger="click">
           <a-avatar
             :size="32"

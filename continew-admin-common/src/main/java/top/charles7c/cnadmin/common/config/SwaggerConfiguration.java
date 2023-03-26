@@ -49,10 +49,10 @@ public class SwaggerConfiguration {
      */
     @Bean
     public OpenAPI openApi() {
-        return new OpenAPI().info(
-            new Info().title(continewAdminProperties.getName() + " 接口文档").version(continewAdminProperties.getVersion())
-                .description(continewAdminProperties.getDescription()).termsOfService(continewAdminProperties.getUrl())
-                .contact(continewAdminProperties.getAuthor()).license(continewAdminProperties.getLicense()));
+        return new OpenAPI().info(new Info().title(continewAdminProperties.getName() + " 接口文档")
+            .version(String.format("v%s", continewAdminProperties.getVersion()))
+            .description(continewAdminProperties.getDescription()).termsOfService(continewAdminProperties.getUrl())
+            .contact(continewAdminProperties.getAuthor()).license(continewAdminProperties.getLicense()));
     }
 
     /**

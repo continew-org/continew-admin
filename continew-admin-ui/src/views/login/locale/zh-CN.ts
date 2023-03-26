@@ -21,7 +21,7 @@ export default {
   'login.form.logout.success': '退出成功',
 
   'login.banner.slogan1': '中后台管理框架',
-  'login.banner.subSlogan1': 'Continue New Admin，持续以最新流行技术栈构建',
+  'login.banner.subSlogan1': 'Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化',
   'login.banner.slogan2': '内置了常见问题的解决方案',
   'login.banner.subSlogan2': '基础功能丰富，使用门槛低，企业级快速开发脚手架',
   'login.banner.slogan3': '代码规范且开源免费',

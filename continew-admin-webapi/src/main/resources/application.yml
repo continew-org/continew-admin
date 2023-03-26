@@ -5,9 +5,9 @@ continew-admin:
   # 应用名称
   appName: continew-admin
   # 版本
-  version: 0.0.1-SNAPSHOT
+  version: 1.0.0
   # 描述
-  description: ContiNew Admin 中后台管理框架（孵化中），Continue New Admin，持续以最新流行技术栈构建。
+  description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
   # URL
   url: https://github.com/Charles7c/continew-admin
   # 基本包
@@ -69,7 +69,7 @@ knife4j:
     # 是否自定义 footer（默认 false 非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
-    footer-custom-content: 'Copyright © 2022-present Charles7c&nbsp;⋅&nbsp;[ContiNew Admin](https://github.com/Charles7c/continew-admin)'
+    footer-custom-content: 'Copyright © 2022-present [Charles7c](${continew-admin.author.url})&nbsp;⋅&nbsp;[ContiNew Admin](https://github.com/Charles7c/continew-admin) v${continew-admin.version}'
 
 --- ### Sa-Token 配置
 sa-token:
