@@ -38,7 +38,7 @@ limitations under the License.
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.8</version>
+        <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -51,12 +51,12 @@ limitations under the License.
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
-        <easyexcel.version>3.2.0</easyexcel.version>
+        <easyexcel.version>3.2.1</easyexcel.version>
         <ip2region.version>2.7.6</ip2region.version>
-        <knife4j.version>4.0.0</knife4j.version>
-        <redisson.version>3.19.0</redisson.version>
+        <knife4j.version>4.1.0</knife4j.version>
+        <redisson.version>3.20.0</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
-        <hutool.version>5.8.11</hutool.version>
+        <hutool.version>5.8.16</hutool.version>
 
         <!-- ### 基础环境相关 ### -->
         <revision>1.0.0</revision>

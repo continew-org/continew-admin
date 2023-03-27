@@ -51,13 +51,14 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
+    show-extensions: true
   api-docs:
     enabled: ${springdoc.swagger-ui.enabled}
     path: /v3/api-docs
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller
 ## 接口文档增强配置
 knife4j:
   enable: true
