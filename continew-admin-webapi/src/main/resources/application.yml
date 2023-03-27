@@ -69,7 +69,7 @@ knife4j:
     # 是否自定义 footer（默认 false 非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
-    footer-custom-content: 'Copyright © 2022-present [Charles7c](${continew-admin.author.url})&nbsp;⋅&nbsp;[ContiNew Admin](https://github.com/Charles7c/continew-admin) v${continew-admin.version}'
+    footer-custom-content: 'Copyright © 2022-present [${continew-admin.author.name}](${continew-admin.author.url})&nbsp;⋅&nbsp;[${continew-admin.name}](${continew-admin.url}) v${continew-admin.version}'
 
 --- ### Sa-Token 配置
 sa-token:
