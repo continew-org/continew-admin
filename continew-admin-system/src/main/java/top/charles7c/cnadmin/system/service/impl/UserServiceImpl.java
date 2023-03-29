@@ -52,11 +52,15 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
-import top.charles7c.cnadmin.system.service.*;
+import top.charles7c.cnadmin.system.service.DeptService;
+import top.charles7c.cnadmin.system.service.RoleService;
+import top.charles7c.cnadmin.system.service.UserRoleService;
+import top.charles7c.cnadmin.system.service.UserService;
 
 /**
  * 用户业务实现类
@@ -179,6 +183,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
             FileUtil.del(avatarPath + oldAvatar);
         }
         return newAvatar;
+    }
+
+    @Override
+    public void updateBasicInfo(UpdateBasicInfoRequest request, Long id) {
+        super.getById(id);
+        baseMapper.lambdaUpdate().set(UserDO::getNickname, request.getNickname())
+            .set(UserDO::getGender, request.getGender()).eq(UserDO::getId, id).update();
     }
 
     @Override

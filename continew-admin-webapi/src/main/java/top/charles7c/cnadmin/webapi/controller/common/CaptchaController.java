@@ -36,16 +36,18 @@ import com.wf.captcha.base.Captcha;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.common.util.*;
+import top.charles7c.cnadmin.common.util.MailUtils;
+import top.charles7c.cnadmin.common.util.RedisUtils;
+import top.charles7c.cnadmin.common.util.TemplateUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
 /**
@@ -86,7 +88,7 @@ public class CaptchaController {
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
     public R getMailCaptcha(
-        @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email)
+        @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误") String email)
         throws MessagingException {
         String limitKeyPrefix = CacheConsts.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;

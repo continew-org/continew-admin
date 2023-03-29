@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -29,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
@@ -49,12 +51,15 @@ public class RoleRequest extends BaseRequest {
      */
     @Schema(description = "角色名称")
     @NotBlank(message = "角色名称不能为空")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "角色名称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
      * 角色编码
      */
     @Schema(description = "角色编码")
+    @NotBlank(message = "角色编码不能为空")
+    @Pattern(regexp = RegexConsts.GENERAL_CODE, message = "角色编码长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头")
     private String code;
 
     /**

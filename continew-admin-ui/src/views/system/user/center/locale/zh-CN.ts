@@ -25,7 +25,9 @@ export default {
   'userCenter.basicInfo.form.placeholder.nickname': '请输入昵称',
 
   'userCenter.basicInfo.form.error.required.username': '请输入用户名',
+  'userCenter.basicInfo.form.error.match.username': '长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头',
   'userCenter.basicInfo.form.error.required.nickname': '请输入昵称',
+  'userCenter.basicInfo.form.error.match.nickname': '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线',
 
   'userCenter.basicInfo.form.save': '保存',
   'userCenter.basicInfo.form.save.success': '保存成功',
@@ -44,12 +46,12 @@ export default {
   'userCenter.securitySettings.updatePwd.form.label.rePassword': '确认新密码',
 
   'userCenter.securitySettings.updatePwd.form.placeholder.oldPassword': '请输入当前密码',
-  'userCenter.securitySettings.updatePwd.form.placeholder.newPassword': '密码长度 6 到 32 位，同时包含数字和字母',
+  'userCenter.securitySettings.updatePwd.form.placeholder.newPassword': '长度为 6 到 32 位，同时包含字母和数字',
   'userCenter.securitySettings.updatePwd.form.placeholder.rePassword': '请再次输入新密码',
 
   'userCenter.securitySettings.updatePwd.form.error.required.oldPassword': '请输入当前密码',
   'userCenter.securitySettings.updatePwd.form.error.required.newPassword': '请输入新密码',
-  'userCenter.securitySettings.updatePwd.form.error.match.newPassword': '密码长度 6 到 32 位，同时包含数字和字母',
+  'userCenter.securitySettings.updatePwd.form.error.match.newPassword': '长度为 6 到 32 位，同时包含字母和数字',
   'userCenter.securitySettings.updatePwd.form.error.validator.newPassword': '新密码不能与当前密码相同',
   'userCenter.securitySettings.updatePwd.form.error.required.rePassword': '请再次输入新密码',
   'userCenter.securitySettings.updatePwd.form.error.validator.rePassword': '两次输入的密码不一致',

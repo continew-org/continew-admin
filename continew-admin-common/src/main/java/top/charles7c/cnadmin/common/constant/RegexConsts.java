@@ -19,6 +19,8 @@ package top.charles7c.cnadmin.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import cn.hutool.core.lang.RegexPool;
+
 /**
  * 正则相关常量
  *
@@ -26,10 +28,25 @@ import lombok.NoArgsConstructor;
  * @since 2023/1/10 20:06
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegExpConsts {
+public class RegexConsts implements RegexPool {
 
     /**
-     * 密码正则（必须包含字母和数字的组合，可以使用特殊字符，长度在6-32之间）
+     * 用户名正则（长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头）
+     */
+    public static final String USERNAME = "^[a-zA-Z][a-zA-Z0-9_]{3,15}$";
+
+    /**
+     * 密码正则（长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字）
      */
     public static final String PASSWORD = "^(?=.*\\d)(?=.*[a-z]).{6,32}$";
+
+    /**
+     * 通用编码正则（长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头）
+     */
+    public static final String GENERAL_CODE = "^[a-zA-Z][a-zA-Z0-9_]{1,15}$";
+
+    /**
+     * 通用名称正则（长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线）
+     */
+    public static final String GENERAL_NAME = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{1,20}$";
 }
