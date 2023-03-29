@@ -20,13 +20,13 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.hibernate.validator.constraints.Length;
-
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
 /**
@@ -46,7 +46,7 @@ public class UpdateBasicInfoRequest implements Serializable {
      */
     @Schema(description = "昵称")
     @NotBlank(message = "昵称不能为空")
-    @Length(max = 32, message = "昵称长度不能超过 {max} 个字符")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**

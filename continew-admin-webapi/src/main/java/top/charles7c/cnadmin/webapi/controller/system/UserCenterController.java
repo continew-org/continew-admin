@@ -27,11 +27,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ReUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.common.constant.RegExpConsts;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
@@ -41,7 +40,6 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.request.UpdateEmailRequest;
 import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
-import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -73,9 +71,7 @@ public class UserCenterController {
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
     public R updateBasicInfo(@Validated @RequestBody UpdateBasicInfoRequest updateBasicInfoRequest) {
-        UserRequest userRequest = new UserRequest();
-        BeanUtil.copyProperties(updateBasicInfoRequest, userRequest);
-        userService.update(userRequest, LoginHelper.getUserId());
+        userService.updateBasicInfo(updateBasicInfoRequest, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
@@ -88,7 +84,7 @@ public class UserCenterController {
         String rawNewPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
         ValidationUtils.throwIfBlank(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(!ReUtil.isMatch(RegExpConsts.PASSWORD, rawNewPassword), "密码长度 6 到 32 位，同时包含数字和字母");
+        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword), "密码长度 6 到 32 位，同时包含字母和数字");
 
         // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());

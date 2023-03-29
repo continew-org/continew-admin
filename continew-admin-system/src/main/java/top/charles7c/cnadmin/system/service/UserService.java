@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
+import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
@@ -46,6 +47,16 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      * @return 新头像路径
      */
     String uploadAvatar(MultipartFile avatar, Long id);
+
+    /**
+     * 修改基础信息
+     *
+     * @param request
+     *            修改信息
+     * @param id
+     *            ID
+     */
+    void updateBasicInfo(UpdateBasicInfoRequest request, Long id);
 
     /**
      * 修改密码

@@ -12,14 +12,14 @@
       <a-input
         v-model="form.username"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
-        max-length="50"
+        max-length="16"
       />
     </a-form-item>
     <a-form-item :label="$t('userCenter.basicInfo.form.label.nickname')" field="nickname">
       <a-input
         v-model="form.nickname"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
-        max-length="32"
+        max-length="20"
       />
     </a-form-item>
     <a-form-item :label="$t('userCenter.basicInfo.form.label.gender')" field="gender">
@@ -70,11 +70,19 @@
             required: true,
             message: t('userCenter.basicInfo.form.error.required.username'),
           },
+          {
+            match: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/,
+            message: t('userCenter.basicInfo.form.error.match.username'),
+          },
         ],
         nickname: [
           {
             required: true,
             message: t('userCenter.basicInfo.form.error.required.nickname'),
+          },
+          {
+            match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
+            message: t('userCenter.basicInfo.form.error.match.nickname'),
           },
         ],
       };

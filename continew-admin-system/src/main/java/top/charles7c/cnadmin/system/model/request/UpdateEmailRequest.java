@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import cn.hutool.core.lang.RegexPool;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 
 /**
  * 修改邮箱信息
@@ -46,7 +46,7 @@ public class UpdateEmailRequest implements Serializable {
      */
     @Schema(description = "新邮箱")
     @NotBlank(message = "新邮箱不能为空")
-    @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误")
+    @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误")
     private String newEmail;
 
     /**
