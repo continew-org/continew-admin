@@ -19,8 +19,8 @@ package top.charles7c.cnadmin.monitor.interceptor;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
@@ -215,13 +215,13 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
             : request.getRequestURL().append("?").append(request.getQueryString()).toString());
         logDO.setRequestMethod(request.getMethod());
-        logDO.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
+        logDO.setRequestHeaders(this.desensitize(JakartaServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         if (StrUtil.isNotBlank(requestBody)) {
             logDO.setRequestBody(this.desensitize(
-                JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : ServletUtil.getParamMap(request)));
+                JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : JakartaServletUtil.getParamMap(request)));
         }
-        logDO.setClientIp(ServletUtil.getClientIP(request));
+        logDO.setClientIp(JakartaServletUtil.getClientIP(request));
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
         logDO.setBrowser(ServletUtils.getBrowser(request));
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
@@ -243,7 +243,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logResponse(LogDO logDO, HttpServletResponse response) {
         int status = response.getStatus();
         logDO.setStatusCode(status);
-        logDO.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
+        logDO.setResponseHeaders(this.desensitize(JakartaServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
@@ -328,7 +328,7 @@ public class LogInterceptor implements HandlerInterceptor {
         }
 
         // 2、检查是否需要记录内网 IP 操作
-        boolean isInnerIp = IpUtils.isInnerIp(ServletUtil.getClientIP(request));
+        boolean isInnerIp = IpUtils.isInnerIp(JakartaServletUtil.getClientIP(request));
         if (isInnerIp && Boolean.FALSE.equals(operationLogProperties.getIncludeInnerIp())) {
             return false;
         }

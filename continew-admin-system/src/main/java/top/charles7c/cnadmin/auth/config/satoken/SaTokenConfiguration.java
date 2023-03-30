@@ -30,6 +30,7 @@ import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpLogic;
 import cn.dev33.satoken.stp.StpUtil;
+import top.charles7c.cnadmin.auth.config.satoken.properties.SecurityProperties;
 
 /**
  * Sa-Token 配置

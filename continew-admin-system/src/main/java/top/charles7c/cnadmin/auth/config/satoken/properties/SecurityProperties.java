@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.auth.config.satoken;
+package top.charles7c.cnadmin.auth.config.satoken.properties;
 
 import lombok.Data;
 

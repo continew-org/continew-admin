@@ -18,9 +18,9 @@ package top.charles7c.cnadmin.webapi.controller.common;
 
 import java.time.Duration;
 
-import javax.mail.MessagingException;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import jakarta.mail.MessagingException;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.RequiredArgsConstructor;
 

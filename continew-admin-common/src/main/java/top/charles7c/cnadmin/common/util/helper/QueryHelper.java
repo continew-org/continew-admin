@@ -83,7 +83,7 @@ public class QueryHelper {
      *            查询数据类型
      */
     private static <Q, R> void buildQuery(Q query, Field field, QueryWrapper<R> queryWrapper) {
-        boolean accessible = field.isAccessible();
+        boolean accessible = field.canAccess(null);
         try {
             field.setAccessible(true);
             // 没有 @Query，直接返回
