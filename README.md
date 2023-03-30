@@ -1,7 +1,7 @@
 # ContiNew Admin 中后台管理框架
 
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Charles7c/continew-admin/blob/dev/LICENSE)
-![SNAPSHOT](https://img.shields.io/badge/Release-v1.0.0-%23ff3f59.svg)
+![SNAPSHOT](https://img.shields.io/badge/SNAPSHOT-v1.0.1-%23ff3f59.svg)
 [![GitHub Repo stars](https://img.shields.io/github/stars/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
 [![GitHub forks](https://img.shields.io/github/forks/Charles7c/continew-admin?style=social)](https://github.com/Charles7c/continew-admin)
 [![Gitee Repo stars](https://gitee.com/Charles7c/continew-admin/badge/star.svg?theme=white)](https://gitee.com/Charles7c/continew-admin)
