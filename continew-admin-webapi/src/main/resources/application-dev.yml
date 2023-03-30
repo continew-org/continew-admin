@@ -20,7 +20,7 @@ spring:
         master:
           url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
           username: ${DB_USER:root}
-          password: ${DB_PWD:root}
+          password: ${DB_PWD:123456}
           driver-class-name: com.mysql.cj.jdbc.Driver
         # 从库配置（可配多个，构成多从）
         slave_1:
@@ -60,7 +60,7 @@ spring:
       # 端口（默认 6379）
       port: ${REDIS_PORT:6379}
       # 密码（未设置密码时可为空或注释掉）
-  #    password: ${REDIS_PWD:123456}
+      password: ${REDIS_PWD:123456}
       # 数据库索引
       database: ${REDIS_DB:0}
       # 连接超时时间

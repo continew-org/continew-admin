@@ -218,8 +218,8 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setRequestHeaders(this.desensitize(JakartaServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         if (StrUtil.isNotBlank(requestBody)) {
-            logDO.setRequestBody(this.desensitize(
-                JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : JakartaServletUtil.getParamMap(request)));
+            logDO.setRequestBody(this.desensitize(JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody)
+                : JakartaServletUtil.getParamMap(request)));
         }
         logDO.setClientIp(JakartaServletUtil.getClientIP(request));
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));

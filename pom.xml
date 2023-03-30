@@ -251,7 +251,7 @@ limitations under the License.
                 <configuration>
                     <java>
                         <importOrder>
-                            <order>java,javax,lombok,io,org,com,cn,top.charles7c,</order>
+                            <order>java,jakarta,lombok,io,org,com,cn,top.charles7c,</order>
                         </importOrder>
                         <removeUnusedImports/>
                         <eclipse>

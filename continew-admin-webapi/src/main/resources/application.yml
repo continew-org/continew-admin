@@ -188,6 +188,13 @@ spring:
       # 允许反序列化不存在的属性
       FAIL_ON_UNKNOWN_PROPERTIES: false
 
+--- ### 健康检查配置
+management:
+  health:
+    mail:
+      # 关闭邮箱健康检查（邮箱配置错误或邮箱服务器不可用时，健康检查会报错）
+      enabled: false
+
 --- ### 线程池配置
 thread-pool:
   # 是否启用线程池
@@ -196,22 +203,3 @@ thread-pool:
   queueCapacity: 128
   # 活跃时间
   keepAliveSeconds: 300
-
-management:
-  health:
-    mail:
-      # 临时关闭邮箱健康检查
-      # 注: 邮箱参数没有正确配置会出现mail health异常
-      enabled: false
-#    redis:
-#      # redis
-#      enabled: false
-#    mongo:
-#      # 关闭mongodb健康检查
-#      enabled: false
-#    solr:
-#      # 关闭solr健康检查
-#      enabled: false
-#    elasticsearch:
-#      # 关闭es健康检查
-#      enabled: false

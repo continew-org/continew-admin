@@ -54,8 +54,8 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 
 **v2.0.0：** :fire: 升级并适配 Spring Boot 3.x。
 
-- [ ] 依赖升级：升级并适配 Spring Boot 3.x
-- [ ] 依赖升级：其他依赖升级
+- [x] 依赖升级：升级并适配 Spring Boot 3.x
+- [x] 依赖升级：其他依赖升级
 - [ ] 计划对接 <a href="https://gitee.com/aizuda/flowlong" target="_blank">FlowLong</a> 纯国产工作流引擎
 - [ ] 其他需求汇集中...
 
