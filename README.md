@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin/tree/1.0.x" target="_blank">
-<img src="https://img.shields.io/badge/Release-v1.0.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v1.1.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -115,7 +115,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        ├─ db.changelog   # 数据库脚本文件
-  │        │  └─ v1.0.0        # v1.0.0 版本数据库脚本文件
+  │        │  ├─ v1.0.0        # v1.0.0 版本数据库脚本文件
+  │        │  └─ v1.1.0        # v1.1.0 版本数据库脚本文件
   │        └─ templates      # 模板文件
   │          └─ mail           # 邮件模板
   ├─ continew-admin-monitor  # 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）
