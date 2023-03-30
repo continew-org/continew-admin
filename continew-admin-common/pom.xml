@@ -80,7 +80,7 @@ limitations under the License.
         <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
         </dependency>
 
         <!-- Sa-Token 整合 JWT -->
