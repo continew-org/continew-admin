@@ -75,7 +75,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "分页查询列表")
     @ResponseBody
     @GetMapping
-    protected R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
         this.checkPermission("list");
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
         return R.ok(pageDataVO);
@@ -93,7 +93,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
-    protected R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
+    public R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
         this.checkPermission("list");
         List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
         return R.ok(list);
@@ -111,7 +111,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    protected R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
+    public R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
         this.checkPermission("list");
         List<V> list = baseService.list(query, sortQuery);
         return R.ok(list);
@@ -128,7 +128,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
-    protected R<D> get(@PathVariable Long id) {
+    public R<D> get(@PathVariable Long id) {
         this.checkPermission("list");
         D detail = baseService.get(id);
         return R.ok(detail);
@@ -144,7 +144,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "新增数据")
     @ResponseBody
     @PostMapping
-    protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
+    public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
         this.checkPermission("add");
         Long id = baseService.add(request);
         return R.ok("新增成功", id);
@@ -162,7 +162,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "修改数据")
     @ResponseBody
     @PutMapping("/{id}")
-    protected R update(@Validated(BaseRequest.Update.class) @RequestBody C request, @PathVariable Long id) {
+    public R update(@Validated(BaseRequest.Update.class) @RequestBody C request, @PathVariable Long id) {
         this.checkPermission("update");
         baseService.update(request, id);
         return R.ok("修改成功");
@@ -179,7 +179,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
     @ResponseBody
     @DeleteMapping("/{ids}")
-    protected R delete(@PathVariable List<Long> ids) {
+    public R delete(@PathVariable List<Long> ids) {
         this.checkPermission("delete");
         baseService.delete(ids);
         return R.ok("删除成功");
@@ -197,7 +197,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      */
     @Operation(summary = "导出数据")
     @GetMapping("/export")
-    protected void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
+    public void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
         this.checkPermission("export");
         baseService.export(query, sortQuery, response);
     }
