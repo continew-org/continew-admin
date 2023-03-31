@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -34,6 +35,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("sys_role_dept")
 public class RoleDeptDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

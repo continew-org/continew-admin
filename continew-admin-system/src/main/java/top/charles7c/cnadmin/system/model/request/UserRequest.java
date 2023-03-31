@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
 import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.enums.GenderEnum;
 @Schema(description = "创建或修改用户信息")
 public class UserRequest extends BaseRequest {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

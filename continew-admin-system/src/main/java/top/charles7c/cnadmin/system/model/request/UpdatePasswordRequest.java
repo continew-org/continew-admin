@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "修改密码信息")
 public class UpdatePasswordRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

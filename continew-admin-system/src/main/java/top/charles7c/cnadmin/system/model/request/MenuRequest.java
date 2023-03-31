@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -39,6 +41,7 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 @Schema(description = "创建或修改菜单信息")
 public class MenuRequest extends BaseRequest {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

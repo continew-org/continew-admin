@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "修改用户角色信息")
 public class UpdateUserRoleRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

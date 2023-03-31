@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
+
 import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -34,6 +36,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @TableName("sys_dept")
 public class DeptDO extends BaseDO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

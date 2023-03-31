@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import lombok.Data;
@@ -42,6 +43,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 @Schema(description = "用户信息")
 public class UserVO extends BaseVO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

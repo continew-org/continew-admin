@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
 @Schema(description = "排序查询条件")
 public class SortQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

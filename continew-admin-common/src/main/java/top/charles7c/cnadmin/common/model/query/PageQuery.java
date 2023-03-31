@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.model.query;
 
+import java.io.Serial;
+
 import jakarta.validation.constraints.Min;
 
 import lombok.Data;
@@ -46,6 +48,7 @@ import cn.hutool.core.util.StrUtil;
 @Schema(description = "分页查询条件")
 public class PageQuery extends SortQuery {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

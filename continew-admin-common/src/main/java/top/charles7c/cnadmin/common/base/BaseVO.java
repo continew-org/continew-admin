@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.base;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Data
 public class BaseVO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

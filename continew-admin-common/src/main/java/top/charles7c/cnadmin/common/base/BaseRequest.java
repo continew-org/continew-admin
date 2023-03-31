@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.base;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.validation.groups.Default;
@@ -31,6 +32,7 @@ import lombok.Data;
 @Data
 public class BaseRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

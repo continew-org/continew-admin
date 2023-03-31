@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -36,6 +37,7 @@ import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 @TableName("sys_log")
 public class LogDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

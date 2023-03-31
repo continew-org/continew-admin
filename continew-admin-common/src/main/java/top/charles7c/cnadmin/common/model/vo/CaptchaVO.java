@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "验证码信息")
 public class CaptchaVO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

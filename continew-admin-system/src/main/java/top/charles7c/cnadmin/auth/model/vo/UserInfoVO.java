@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.auth.model.vo;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,6 +44,7 @@ import top.charles7c.cnadmin.common.enums.GenderEnum;
 @Schema(description = "用户信息")
 public class UserInfoVO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

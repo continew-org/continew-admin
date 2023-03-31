@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.vo;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.AccessLevel;
@@ -37,6 +38,7 @@ import org.springframework.http.HttpStatus;
 @Schema(description = "响应信息")
 public class R<V> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** 是否成功 */

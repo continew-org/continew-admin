@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.monitor.model.vo;
 
+import java.io.Serial;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +32,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "系统日志详情信息")
 public class SystemLogDetailVO extends LogVO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "创建或修改角色信息")
 public class RoleRequest extends BaseRequest {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

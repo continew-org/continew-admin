@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.validation.constraints.NotBlank;
@@ -39,6 +40,7 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 @Schema(description = "修改邮箱信息")
 public class UpdateEmailRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

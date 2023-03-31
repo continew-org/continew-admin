@@ -144,57 +144,34 @@ public class QueryHelper {
         String columnName = StrUtil.toUnderlineCase(fieldName);
         Query.Type queryType = queryAnnotation.type();
         switch (queryType) {
-            case EQUAL:
-                queryWrapper.eq(columnName, fieldValue);
-                break;
-            case NOT_EQUAL:
-                queryWrapper.ne(columnName, fieldValue);
-                break;
-            case GREATER_THAN:
-                queryWrapper.gt(columnName, fieldValue);
-                break;
-            case LESS_THAN:
-                queryWrapper.lt(columnName, fieldValue);
-                break;
-            case GREATER_THAN_OR_EQUAL:
-                queryWrapper.ge(columnName, fieldValue);
-                break;
-            case LESS_THAN_OR_EQUAL:
-                queryWrapper.le(columnName, fieldValue);
-                break;
-            case BETWEEN:
+            case EQUAL -> queryWrapper.eq(columnName, fieldValue);
+            case NOT_EQUAL -> queryWrapper.ne(columnName, fieldValue);
+            case GREATER_THAN -> queryWrapper.gt(columnName, fieldValue);
+            case LESS_THAN -> queryWrapper.lt(columnName, fieldValue);
+            case GREATER_THAN_OR_EQUAL -> queryWrapper.ge(columnName, fieldValue);
+            case LESS_THAN_OR_EQUAL -> queryWrapper.le(columnName, fieldValue);
+            case BETWEEN -> {
                 List<Object> between = new ArrayList<>((List<Object>)fieldValue);
                 if (between.size() >= 2) {
                     queryWrapper.between(columnName, between.get(0), between.get(1));
                 }
-                break;
-            case LEFT_LIKE:
-                queryWrapper.likeLeft(columnName, fieldValue);
-                break;
-            case INNER_LIKE:
-                queryWrapper.like(columnName, fieldValue);
-                break;
-            case RIGHT_LIKE:
-                queryWrapper.likeRight(columnName, fieldValue);
-                break;
-            case IN:
+            }
+            case LEFT_LIKE -> queryWrapper.likeLeft(columnName, fieldValue);
+            case INNER_LIKE -> queryWrapper.like(columnName, fieldValue);
+            case RIGHT_LIKE -> queryWrapper.likeRight(columnName, fieldValue);
+            case IN -> {
                 if (CollUtil.isNotEmpty((List<Object>)fieldValue)) {
                     queryWrapper.in(columnName, (List<Object>)fieldValue);
                 }
-                break;
-            case NOT_IN:
+            }
+            case NOT_IN -> {
                 if (CollUtil.isNotEmpty((List<Object>)fieldValue)) {
                     queryWrapper.notIn(columnName, (List<Object>)fieldValue);
                 }
-                break;
-            case IS_NULL:
-                queryWrapper.isNull(columnName);
-                break;
-            case IS_NOT_NULL:
-                queryWrapper.isNotNull(columnName);
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
+            }
+            case IS_NULL -> queryWrapper.isNull(columnName);
+            case IS_NOT_NULL -> queryWrapper.isNotNull(columnName);
+            default -> throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
         }
     }
 }

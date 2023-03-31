@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.auth.model.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.validation.constraints.NotBlank;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "登录信息")
 public class LoginRequest implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

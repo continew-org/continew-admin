@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ import top.charles7c.cnadmin.common.annotation.Query;
 @Schema(description = "操作日志查询条件")
 public class OperationLogQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
+import java.io.Serial;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -37,6 +39,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "角色信息")
 public class RoleVO extends BaseVO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

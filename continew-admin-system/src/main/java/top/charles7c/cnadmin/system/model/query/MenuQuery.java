@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -37,6 +38,7 @@ import top.charles7c.cnadmin.common.annotation.Query;
 @Schema(description = "菜单查询条件")
 public class MenuQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
