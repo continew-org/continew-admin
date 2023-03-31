@@ -200,14 +200,14 @@ public class MailUtils {
         // 设置收信人
         // 抄送人
         if (CollUtil.isNotEmpty(ccs)) {
-            messageHelper.setCc(ccs.toArray(new String[0]));
+            messageHelper.setCc(ccs.toArray(String[]::new));
         }
         // 密送人
         if (CollUtil.isNotEmpty(bccs)) {
-            messageHelper.setBcc(bccs.toArray(new String[0]));
+            messageHelper.setBcc(bccs.toArray(String[]::new));
         }
         // 收件人
-        messageHelper.setTo(tos.toArray(new String[0]));
+        messageHelper.setTo(tos.toArray(String[]::new));
 
         // 设置附件
         if (ArrayUtil.isNotEmpty(files)) {
