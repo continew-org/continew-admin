@@ -4,45 +4,44 @@ server:
   port: 18000
 
 --- ### 数据源配置
-spring:
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    ## 动态数据源配置（可配多主多从：m1、s1...、纯粹多库：mysql、oracle...、混合配置：m1、s1、oracle...）
-    dynamic:
-      # 是否启用 P6Spy（SQL 性能分析组件，默认 false，该插件有性能损耗，不建议生产环境使用）
-      p6spy: false
-      # 设置默认的数据源或者数据源组（默认 master）
-      primary: master
-      # 严格匹配数据源（true 未匹配到指定数据源时抛异常；false 使用默认数据源；默认 false）
-      strict: false
-      datasource:
-        # 主库配置（可配多个，构成多主）
-        master:
-          url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-          username: ${DB_USER:root}
-          password: ${DB_PWD:123456}
-          driver-class-name: com.mysql.cj.jdbc.Driver
-        # 从库配置（可配多个，构成多从）
-        slave_1:
-          url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-          username:
-          password:
-          lazy: true
-          driver-class-name: com.mysql.cj.jdbc.Driver
-          type: ${spring.datasource.type}
-      # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
-      hikari:
-        # 最大连接数量（默认 10，根据实际环境调整）
-        # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
-        max-pool-size: 20
-        # 获取连接超时时间（默认 30000 毫秒，30 秒）
-        connection-timeout: 30000
-        # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
-        idle-timeout: 600000
-        # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
-        keepaliveTime: 30000
-        # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
-        max-lifetime: 1800000
+spring.datasource:
+  type: com.zaxxer.hikari.HikariDataSource
+  ## 动态数据源配置（可配多主多从：m1、s1...、纯粹多库：mysql、oracle...、混合配置：m1、s1、oracle...）
+  dynamic:
+    # 是否启用 P6Spy（SQL 性能分析组件，默认 false，该插件有性能损耗，不建议生产环境使用）
+    p6spy: false
+    # 设置默认的数据源或者数据源组（默认 master）
+    primary: master
+    # 严格匹配数据源（true 未匹配到指定数据源时抛异常；false 使用默认数据源；默认 false）
+    strict: false
+    datasource:
+      # 主库配置（可配多个，构成多主）
+      master:
+        url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+        username: ${DB_USER:root}
+        password: ${DB_PWD:123456}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      # 从库配置（可配多个，构成多从）
+      slave_1:
+        url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+        username:
+        password:
+        lazy: true
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: ${spring.datasource.type}
+    # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
+    hikari:
+      # 最大连接数量（默认 10，根据实际环境调整）
+      # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
+      max-pool-size: 20
+      # 获取连接超时时间（默认 30000 毫秒，30 秒）
+      connection-timeout: 30000
+      # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
+      idle-timeout: 600000
+      # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
+      keepaliveTime: 30000
+      # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
+      max-lifetime: 1800000
 
 --- ### Liquibase 配置
 spring.liquibase:
@@ -68,21 +67,20 @@ spring:
     ssl: false
 
 --- ### 邮件配置
-spring:
-  mail:
-    # 根据需要更换
-    host: smtp.126.com
-    port: 465
-    username: 你的邮箱
-    password: 你的邮箱授权码
-    default-encoding: utf-8
-    properties:
-      mail:
-        smtp:
-          auth: true
-          socketFactory:
-            class: javax.net.ssl.SSLSocketFactory
-            port: 465
+spring.mail:
+  # 根据需要更换
+  host: smtp.126.com
+  port: 465
+  username: 你的邮箱
+  password: 你的邮箱授权码
+  default-encoding: utf-8
+  properties:
+    mail:
+      smtp:
+        auth: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+          port: 465
 
 --- ### 验证码配置
 captcha:
@@ -109,19 +107,17 @@ captcha:
     # 模板路径
     templatePath: mail/captcha.ftl
 
---- ### 安全配置
-security:
-  # 排除路径配置
-  excludes:
-    # 静态资源
-    - /*.html
-    - /**/*.html
-    - /**/*.css
-    - /**/*.js
-    - /webSocket/**
-    # 本地存储资源
-    - /avatar/**
-    - /file/**
+--- ### 安全配置-排除路径配置
+security.excludes:
+  # 静态资源
+  - /*.html
+  - /**/*.html
+  - /**/*.css
+  - /**/*.js
+  - /webSocket/**
+  # 本地存储资源
+  - /avatar/**
+  - /file/**
 
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:
@@ -134,14 +130,13 @@ springdoc:
     enabled: false
 
 --- ### 文件上传配置
-spring:
-  servlet:
-    multipart:
-      enabled: true
-      # 单文件上传大小限制
-      max-file-size: 10MB
-      # 单次总上传文件大小限制
-      max-request-size: 20MB
+spring.servlet:
+  multipart:
+    enabled: true
+    # 单文件上传大小限制
+    max-file-size: 10MB
+    # 单次总上传文件大小限制
+    max-request-size: 20MB
 
 --- ### 本地存储配置
 local-storage:
