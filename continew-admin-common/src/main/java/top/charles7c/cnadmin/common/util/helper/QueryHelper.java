@@ -142,7 +142,8 @@ public class QueryHelper {
         String property = queryAnnotation.property();
         fieldName = StrUtil.blankToDefault(property, fieldName);
         String columnName = StrUtil.toUnderlineCase(fieldName);
-        switch (queryAnnotation.type()) {
+        Query.Type queryType = queryAnnotation.type();
+        switch (queryType) {
             case EQUAL:
                 queryWrapper.eq(columnName, fieldValue);
                 break;
@@ -163,7 +164,9 @@ public class QueryHelper {
                 break;
             case BETWEEN:
                 List<Object> between = new ArrayList<>((List<Object>)fieldValue);
-                queryWrapper.between(columnName, between.get(0), between.get(1));
+                if (between.size() >= 2) {
+                    queryWrapper.between(columnName, between.get(0), between.get(1));
+                }
                 break;
             case LEFT_LIKE:
                 queryWrapper.likeLeft(columnName, fieldValue);
@@ -191,7 +194,7 @@ public class QueryHelper {
                 queryWrapper.isNotNull(columnName);
                 break;
             default:
-                break;
+                throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
         }
     }
 }
