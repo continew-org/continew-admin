@@ -52,14 +52,14 @@ public class MenuController extends BaseController<MenuService, MenuVO, MenuVO, 
 
     @Override
     @SaCheckPermission("system:menu:add")
-    protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody MenuRequest request) {
+    public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody MenuRequest request) {
         this.checkPath(request);
         return super.add(request);
     }
 
     @Override
     @SaCheckPermission("system:menu:update")
-    protected R update(@Validated(BaseRequest.Update.class) @RequestBody MenuRequest request, @PathVariable Long id) {
+    public R update(@Validated(BaseRequest.Update.class) @RequestBody MenuRequest request, @PathVariable Long id) {
         this.checkPath(request);
         return super.update(request, id);
     }

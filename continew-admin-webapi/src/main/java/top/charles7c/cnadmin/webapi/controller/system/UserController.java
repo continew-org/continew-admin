@@ -53,7 +53,7 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
 
     @Override
     @SaCheckPermission("system:user:add")
-    protected R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody UserRequest request) {
+    public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody UserRequest request) {
         Long id = baseService.add(request);
         return R.ok(String.format("新增成功，请牢记默认密码：%s", SysConsts.DEFAULT_PASSWORD), id);
     }
