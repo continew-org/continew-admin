@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.system.model.request;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -86,12 +87,14 @@ public class UserRequest extends BaseRequest {
      * 所属部门
      */
     @Schema(description = "所属部门")
+    @NotNull(message = "所属部门不能为空")
     private Long deptId;
 
     /**
      * 所属角色
      */
     @Schema(description = "所属角色")
+    @NotEmpty(message = "所属角色不能为空")
     private List<Long> roleIds;
 
     /**

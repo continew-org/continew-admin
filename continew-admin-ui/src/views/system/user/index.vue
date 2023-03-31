@@ -554,8 +554,8 @@
     rules: {
       username: [{ required: true, message: '请输入用户名' }],
       nickname: [{ required: true, message: '请输入昵称' }],
-      roleIds: [{ required: true, message: '请选择所属角色' }],
       deptId: [{ required: true, message: '请选择所属部门' }],
+      roleIds: [{ required: true, message: '请选择所属角色' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);
