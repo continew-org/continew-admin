@@ -42,8 +42,9 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 
 **v2.0.0：** :fire: 升级并适配 Spring Boot 3.x。
 
-- [ ] 依赖升级：升级并适配 Spring Boot 3.x
-- [ ] 依赖升级：其他依赖升级
+- [x] 依赖升级：升级并适配 Spring Boot 3.x
+- [x] 依赖升级：其他依赖升级
+- [x] 适配 Java 8 => Java 17 新 API 及特性
 - [ ] 计划对接 [FlowLong](https://gitee.com/aizuda/flowlong) 纯国产工作流引擎
 - [ ] 其他需求汇集中...
 
@@ -64,8 +65,8 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 - [ ] 通知管理：提供系统通知管理，设为已读、未读
 - [ ] 仪表盘优化：各区块数据动态渲染
 - [ ] 网站配置：支持配置系统网站标题、网站 Logo、favicon、版权信息等
-- [ ] 依赖升级：升级至最新 Spring Boot 2.x 版本
-- [ ] 依赖升级：其他依赖升级
+- [x] 依赖升级：升级至最新 Spring Boot 2.x 版本
+- [x] 依赖升级：其他依赖升级
 - [ ] 其他需求汇集中...
 
 **v1.0.0：** 初步完成中后台管理框架/脚手架的基础功能。
