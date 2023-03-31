@@ -147,7 +147,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public List<String> searchData(String prefix, String keyword, int start, int size, boolean sortType) {
-        Collection<String> keys = RedisUtils.keys(prefix + "*" + keyword + "*");
+        Collection<String> keys = RedisUtils.keys(String.format("%s*%s*", prefix, keyword));
         List<String> list = new ArrayList<>(keys);
         return SaFoxUtil.searchList(list, start, size, sortType);
     }
