@@ -20,11 +20,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -40,10 +40,9 @@ import top.charles7c.cnadmin.common.util.ExceptionUtils;
  */
 @Slf4j
 @Configuration
-@RequiredArgsConstructor
+@EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolConfiguration {
 
-    private final ThreadPoolProperties threadPoolProperties;
     /** 核心（最小）线程数 = CPU 核心数 + 1 */
     private final int corePoolSize = Runtime.getRuntime().availableProcessors() + 1;
 
@@ -52,7 +51,7 @@ public class ThreadPoolConfiguration {
      */
     @Bean
     @ConditionalOnProperty(prefix = "thread-pool", name = "enabled", havingValue = "true")
-    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
+    public ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties threadPoolProperties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         // 核心（最小）线程数
         executor.setCorePoolSize(corePoolSize);

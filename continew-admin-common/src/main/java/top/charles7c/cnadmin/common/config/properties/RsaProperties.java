@@ -16,9 +16,8 @@
 
 package top.charles7c.cnadmin.common.config.properties;
 
-import lombok.Data;
-
-import org.springframework.stereotype.Component;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import cn.hutool.extra.spring.SpringUtil;
 
@@ -29,8 +28,7 @@ import cn.hutool.extra.spring.SpringUtil;
  * @author Charles7c
  * @since 2022/12/21 20:21
  */
-@Data
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RsaProperties {
 
     /** 私钥 */
