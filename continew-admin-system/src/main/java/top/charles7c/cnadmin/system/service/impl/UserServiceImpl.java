@@ -147,8 +147,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof UserDetailVO) {
-            UserDetailVO detailVO = (UserDetailVO)detailObj;
+        if (detailObj instanceof UserDetailVO detailVO) {
             detailVO.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detailVO.getDeptId()).getName()));
             List<Long> roleIdList = userRoleService.listRoleIdByUserId(detailVO.getId());
             detailVO.setRoleIds(roleIdList);

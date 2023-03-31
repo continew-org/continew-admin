@@ -137,8 +137,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof RoleDetailVO) {
-            RoleDetailVO detailVO = (RoleDetailVO)detailObj;
+        if (detailObj instanceof RoleDetailVO detailVO) {
             Long roleId = detailVO.getId();
             if (SysConsts.ADMIN_ROLE_CODE.equals(detailVO.getCode())) {
                 List<MenuVO> list = menuService.list(null, null);

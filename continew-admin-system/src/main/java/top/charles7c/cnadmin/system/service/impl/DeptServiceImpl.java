@@ -131,8 +131,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof DeptDetailVO) {
-            DeptDetailVO detailVO = (DeptDetailVO)detailObj;
+        if (detailObj instanceof DeptDetailVO detailVO) {
             if (Objects.equals(SysConsts.SUPER_PARENT_ID, detailVO.getParentId())) {
                 return;
             }

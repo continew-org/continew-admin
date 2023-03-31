@@ -217,8 +217,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充列表信息
      */
     protected void fill(Object baseObj) {
-        if (baseObj instanceof BaseVO) {
-            BaseVO baseVO = (BaseVO)baseObj;
+        if (baseObj instanceof BaseVO baseVO) {
             Long createUser = baseVO.getCreateUser();
             if (createUser == null) {
                 return;
@@ -235,8 +234,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充详情信息
      */
     protected void fillDetail(Object detailObj) {
-        if (detailObj instanceof BaseDetailVO) {
-            BaseDetailVO detailVO = (BaseDetailVO)detailObj;
+        if (detailObj instanceof BaseDetailVO detailVO) {
             this.fill(detailVO);
 
             Long updateUser = detailVO.getUpdateUser();
