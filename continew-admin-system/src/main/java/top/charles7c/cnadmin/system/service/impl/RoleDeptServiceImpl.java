@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.collection.CollUtil;
 
@@ -42,6 +43,7 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     private final RoleDeptMapper roleDeptMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean save(List<Long> deptIds, Long roleId) {
         // 检查是否有变更
         List<Long> oldDeptIdList = roleDeptMapper.lambdaQuery().select(RoleDeptDO::getDeptId)
@@ -58,17 +60,19 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     }
 
     @Override
-    public List<Long> listDeptIdByRoleId(Long roleId) {
-        return roleDeptMapper.selectDeptIdByRoleId(roleId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByRoleIds(List<Long> roleIds) {
+        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getRoleId, roleIds).remove();
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByDeptIds(List<Long> deptIds) {
         roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getDeptId, deptIds).remove();
     }
 
     @Override
-    public void deleteByRoleIds(List<Long> roleIds) {
-        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getRoleId, roleIds).remove();
+    public List<Long> listDeptIdByRoleId(Long roleId) {
+        return roleDeptMapper.selectDeptIdByRoleId(roleId);
     }
 }

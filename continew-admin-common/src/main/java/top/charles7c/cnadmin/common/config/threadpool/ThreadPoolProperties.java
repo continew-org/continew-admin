@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.common.config.threadpool;
 import lombok.Data;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 线程池配置属性
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Component;
  * @since 2022/12/23 23:06
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "thread-pool")
 public class ThreadPoolProperties {
 

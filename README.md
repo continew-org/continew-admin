@@ -19,7 +19,7 @@
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 
-📚 <a href="https://doc.charles7c.top" target="_blank">在线文档</a> | ✨ <a href="https://doc.charles7c.top/require" target="_blank">提交需求</a> | 🚀 <a href="https://cnadmin.charles7c.top" target="_blank">演示地址</a>（账号/密码：admin/admin123）
+📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
 ## 简介
 
@@ -54,8 +54,9 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 
 **v2.0.0：** :fire: 升级并适配 Spring Boot 3.x。
 
-- [ ] 依赖升级：升级并适配 Spring Boot 3.x
-- [ ] 依赖升级：其他依赖升级
+- [x] 依赖升级：升级并适配 Spring Boot 3.x
+- [x] 依赖升级：其他依赖升级
+- [x] 适配 Java 8 => Java 17 新 API 及特性
 - [ ] 计划对接 <a href="https://gitee.com/aizuda/flowlong" target="_blank">FlowLong</a> 纯国产工作流引擎
 - [ ] 其他需求汇集中...
 
