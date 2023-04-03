@@ -46,6 +46,11 @@ public class StringConsts implements StrPool {
     public static final String ASTERISK = "*";
 
     /**
+     * 问号
+     */
+    public static final String QUESTION_MARK = "?";
+
+    /**
      * 中文逗号
      */
     public static final String CHINESE_COMMA = "，";

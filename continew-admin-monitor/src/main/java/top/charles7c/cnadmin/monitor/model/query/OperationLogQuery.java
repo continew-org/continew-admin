@@ -29,6 +29,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 
 /**
  * 操作日志查询条件
@@ -63,7 +64,7 @@ public class OperationLogQuery implements Serializable {
      */
     @Schema(description = "操作时间")
     @Query(type = Query.Type.BETWEEN)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
     private List<Date> createTime;
 
     /**

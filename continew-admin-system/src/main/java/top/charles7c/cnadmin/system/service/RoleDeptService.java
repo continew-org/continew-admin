@@ -38,13 +38,12 @@ public interface RoleDeptService {
     boolean save(List<Long> deptIds, Long roleId);
 
     /**
-     * 根据角色 ID 查询
+     * 根据角色 ID 删除
      *
-     * @param roleId
-     *            角色 ID
-     * @return 部门 ID 列表
+     * @param roleIds
+     *            角色 ID 列表
      */
-    List<Long> listDeptIdByRoleId(Long roleId);
+    void deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 根据部门 ID 删除
@@ -55,10 +54,11 @@ public interface RoleDeptService {
     void deleteByDeptIds(List<Long> deptIds);
 
     /**
-     * 根据角色 ID 删除
+     * 根据角色 ID 查询
      *
-     * @param roleIds
-     *            角色 ID 列表
+     * @param roleId
+     *            角色 ID
+     * @return 部门 ID 列表
      */
-    void deleteByRoleIds(List<Long> roleIds);
+    List<Long> listDeptIdByRoleId(Long roleId);
 }

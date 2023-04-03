@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.util.StrUtil;
 
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 
 /**
@@ -52,8 +53,8 @@ public class CheckUtils extends Validator {
      *            字段值
      */
     public static void throwIfNotExists(Object obj, String entityName, String fieldName, Object fieldValue) {
-        String message =
-            String.format("%s 为 [%s] 的 %s 记录已不存在", fieldName, fieldValue, StrUtil.replace(entityName, "DO", ""));
+        String message = String.format("%s 为 [%s] 的 %s 记录已不存在", fieldName, fieldValue,
+            StrUtil.replace(entityName, "DO", StringConsts.EMPTY));
         throwIfNull(obj, message, EXCEPTION_TYPE);
     }
 

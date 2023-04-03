@@ -56,6 +56,7 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 
 - [x] 依赖升级：升级并适配 Spring Boot 3.x
 - [x] 依赖升级：其他依赖升级
+- [x] 适配 Java 8 => Java 17 新 API 及特性
 - [ ] 计划对接 <a href="https://gitee.com/aizuda/flowlong" target="_blank">FlowLong</a> 纯国产工作流引擎
 - [ ] 其他需求汇集中...
 

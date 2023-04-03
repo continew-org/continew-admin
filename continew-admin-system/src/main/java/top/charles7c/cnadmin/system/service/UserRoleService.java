@@ -38,13 +38,12 @@ public interface UserRoleService {
     boolean save(List<Long> roleIds, Long userId);
 
     /**
-     * 根据角色 ID 列表查询
+     * 根据用户 ID 删除
      *
-     * @param roleIds
-     *            角色 ID 列表
-     * @return 总记录数
+     * @param userIds
+     *            用户 ID 列表
      */
-    Long countByRoleIds(List<Long> roleIds);
+    void deleteByUserIds(List<Long> userIds);
 
     /**
      * 根据用户 ID 查询
@@ -56,10 +55,11 @@ public interface UserRoleService {
     List<Long> listRoleIdByUserId(Long userId);
 
     /**
-     * 根据用户 ID 删除
+     * 根据角色 ID 列表查询
      *
-     * @param userIds
-     *            用户 ID 列表
+     * @param roleIds
+     *            角色 ID 列表
+     * @return 总记录数
      */
-    void deleteByUserIds(List<Long> userIds);
+    Long countByRoleIds(List<Long> roleIds);
 }

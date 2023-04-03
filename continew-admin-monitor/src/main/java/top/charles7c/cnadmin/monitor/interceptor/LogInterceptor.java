@@ -47,6 +47,7 @@ import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -170,7 +171,8 @@ public class LogInterceptor implements HandlerInterceptor {
         // （本框架代码规范）例如：@Tag(name = "部门管理 API") -> 部门管理
         if (classTag != null) {
             String name = classTag.name();
-            logDO.setModule(StrUtil.isNotBlank(name) ? name.replace("API", "").trim() : "请在该接口类上指定所属模块");
+            logDO
+                .setModule(StrUtil.isNotBlank(name) ? name.replace("API", StringConsts.EMPTY).trim() : "请在该接口类上指定所属模块");
         }
         // 例如：@Log(module = "部门管理") -> 部门管理
         if (classLog != null && StrUtil.isNotBlank(classLog.module())) {
@@ -213,7 +215,7 @@ public class LogInterceptor implements HandlerInterceptor {
      */
     private void logRequest(LogDO logDO, HttpServletRequest request) {
         logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
-            : request.getRequestURL().append("?").append(request.getQueryString()).toString());
+            : request.getRequestURL().append(StringConsts.QUESTION_MARK).append(request.getQueryString()).toString());
         logDO.setRequestMethod(request.getMethod());
         logDO.setRequestHeaders(this.desensitize(JakartaServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);

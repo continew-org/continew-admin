@@ -25,6 +25,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import top.charles7c.cnadmin.common.constant.StringConsts;
+
 /**
  * 异常工具类
  *
@@ -98,7 +100,7 @@ public class ExceptionUtils {
      * @return /
      */
     public static String exToBlank(ExSupplier<String> exSupplier) {
-        return exToDefault(exSupplier, "");
+        return exToDefault(exSupplier, StringConsts.EMPTY);
     }
 
     /**
