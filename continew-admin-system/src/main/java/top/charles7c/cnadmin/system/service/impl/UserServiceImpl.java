@@ -186,6 +186,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateBasicInfo(UpdateBasicInfoRequest request, Long id) {
         super.getById(id);
         baseMapper.lambdaUpdate().set(UserDO::getNickname, request.getNickname())
@@ -219,6 +220,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void resetPassword(Long id) {
         UserDO user = super.getById(id);
         user.setPassword(SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, id.toString()));
@@ -227,6 +229,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateRole(UpdateUserRoleRequest request, Long id) {
         super.getById(id);
         // 保存用户和角色关联

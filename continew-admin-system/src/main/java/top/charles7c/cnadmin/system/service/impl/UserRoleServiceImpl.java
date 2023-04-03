@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.collection.CollUtil;
 
@@ -42,6 +43,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     private final UserRoleMapper userRoleMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean save(List<Long> roleIds, Long userId) {
         // 检查是否有变更
         List<Long> oldRoleIdList = userRoleMapper.lambdaQuery().select(UserRoleDO::getRoleId)
@@ -58,8 +60,9 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public Long countByRoleIds(List<Long> roleIds) {
-        return userRoleMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).count();
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByUserIds(List<Long> userIds) {
+        userRoleMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
     }
 
     @Override
@@ -68,7 +71,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public void deleteByUserIds(List<Long> userIds) {
-        userRoleMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
+    public Long countByRoleIds(List<Long> roleIds) {
+        return userRoleMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).count();
     }
 }

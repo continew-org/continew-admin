@@ -84,7 +84,8 @@ public class UserCenterController {
         String rawNewPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
         ValidationUtils.throwIfBlank(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword), "密码长度 6 到 32 位，同时包含字母和数字");
+        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
+            "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
 
         // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());

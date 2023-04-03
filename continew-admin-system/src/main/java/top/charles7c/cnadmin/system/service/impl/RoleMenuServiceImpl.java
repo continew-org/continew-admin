@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.collection.CollUtil;
 
@@ -43,6 +44,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     private final RoleMenuMapper roleMenuMapper;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean save(List<Long> menuIds, Long roleId) {
         // 检查是否有变更
         List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery().select(RoleMenuDO::getMenuId)
@@ -59,15 +61,16 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByRoleIds(List<Long> roleIds) {
+        roleMenuMapper.lambdaUpdate().in(RoleMenuDO::getRoleId, roleIds).remove();
+    }
+
+    @Override
     public List<Long> listMenuIdByRoleIds(List<Long> roleIds) {
         if (CollUtil.isEmpty(roleIds)) {
             return new ArrayList<>(0);
         }
         return roleMenuMapper.selectMenuIdByRoleIds(roleIds);
-    }
-
-    @Override
-    public void deleteByRoleIds(List<Long> roleIds) {
-        roleMenuMapper.lambdaUpdate().in(RoleMenuDO::getRoleId, roleIds).remove();
     }
 }
