@@ -24,7 +24,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.constant.StringConsts;
@@ -36,7 +35,6 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
  * @since 2023/1/20 23:07
  */
 @Data
-@ParameterObject
 @Schema(description = "在线用户查询条件")
 public class OnlineUserQuery implements Serializable {
 

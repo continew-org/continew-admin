@@ -75,7 +75,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "分页查询列表")
     @ResponseBody
     @GetMapping
-    public R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<V>> page(Q query, @Validated PageQuery pageQuery) {
         this.checkPermission("list");
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
         return R.ok(pageDataVO);
@@ -93,7 +93,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
-    public R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
+    public R<List<Tree<Long>>> tree(Q query, SortQuery sortQuery) {
         this.checkPermission("list");
         List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
         return R.ok(list);
@@ -111,7 +111,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    public R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
+    public R<List<V>> list(Q query, SortQuery sortQuery) {
         this.checkPermission("list");
         List<V> list = baseService.list(query, sortQuery);
         return R.ok(list);
@@ -197,7 +197,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      */
     @Operation(summary = "导出数据")
     @GetMapping("/export")
-    public void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
+    public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
         this.checkPermission("export");
         baseService.export(query, sortQuery, response);
     }

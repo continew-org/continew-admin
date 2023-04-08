@@ -57,7 +57,7 @@ public class LogController {
     @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表")
     @GetMapping("/login")
-    public R<PageDataVO<LoginLogVO>> page(@Validated LoginLogQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<LoginLogVO>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<LoginLogVO> pageDataVO = logService.page(query, pageQuery);
         return R.ok(pageDataVO);
     }
@@ -65,7 +65,7 @@ public class LogController {
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public R<PageDataVO<OperationLogVO>> page(@Validated OperationLogQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<OperationLogVO>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<OperationLogVO> pageDataVO = logService.page(query, pageQuery);
         return R.ok(pageDataVO);
     }
@@ -73,7 +73,7 @@ public class LogController {
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表")
     @GetMapping("/system")
-    public R<PageDataVO<SystemLogVO>> page(@Validated SystemLogQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<SystemLogVO>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<SystemLogVO> pageDataVO = logService.page(query, pageQuery);
         return R.ok(pageDataVO);
     }

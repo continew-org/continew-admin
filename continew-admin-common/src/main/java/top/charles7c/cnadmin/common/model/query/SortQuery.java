@@ -24,7 +24,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Sort;
 
 import cn.hutool.core.util.ArrayUtil;
@@ -39,7 +38,6 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
  * @since 2023/2/12 21:30
  */
 @Data
-@ParameterObject
 @Schema(description = "排序查询条件")
 public class SortQuery implements Serializable {
 

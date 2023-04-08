@@ -16,7 +16,10 @@
 
 package top.charles7c.cnadmin.webapi.controller.common;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
@@ -65,21 +71,21 @@ public class CommonController {
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
-    public R<List<Tree<Long>>> listDeptTree(@Validated DeptQuery query, @Validated SortQuery sortQuery) {
+    public R<List<Tree<Long>>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
         List<Tree<Long>> treeList = deptService.tree(query, sortQuery, true);
         return R.ok(treeList);
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
-    public R<List<Tree<Long>>> listMenuTree(@Validated MenuQuery query, @Validated SortQuery sortQuery) {
+    public R<List<Tree<Long>>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
         List<Tree<Long>> treeList = menuService.tree(query, sortQuery, true);
         return R.ok(treeList);
     }
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public R<List<LabelValueVO<Long>>> listRoleDict(@Validated RoleQuery query, @Validated SortQuery sortQuery) {
+    public R<List<LabelValueVO<Long>>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
         List<RoleVO> list = roleService.list(query, sortQuery);
         List<LabelValueVO<Long>> labelValueVOList = roleService.buildDict(list);
         return R.ok(labelValueVOList);

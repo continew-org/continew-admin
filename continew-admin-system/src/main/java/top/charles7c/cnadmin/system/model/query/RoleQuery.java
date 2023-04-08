@@ -22,8 +22,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.api.annotations.ParameterObject;
-
 import top.charles7c.cnadmin.common.annotation.Query;
 
 /**
@@ -33,7 +31,6 @@ import top.charles7c.cnadmin.common.annotation.Query;
  * @since 2023/2/8 23:04
  */
 @Data
-@ParameterObject
 @Schema(description = "角色查询条件")
 public class RoleQuery implements Serializable {
 
