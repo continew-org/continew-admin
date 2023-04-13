@@ -32,7 +32,10 @@ import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
-import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.Parenthesis;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
@@ -45,7 +48,7 @@ import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SubSelect;
 
 /**
- * 数据权限处理器实现类
+ * 数据权限处理器实现
  * <p>
  * 来源：<a href="https://gitee.com/baomidou/mybatis-plus/issues/I37I90">DataPermissionInterceptor 如何使用？</a>
  * </p>

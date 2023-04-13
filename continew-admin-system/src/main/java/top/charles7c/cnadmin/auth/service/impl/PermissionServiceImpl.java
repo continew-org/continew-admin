@@ -30,7 +30,7 @@ import top.charles7c.cnadmin.system.service.MenuService;
 import top.charles7c.cnadmin.system.service.RoleService;
 
 /**
- * 权限业务实现类
+ * 权限业务实现
  *
  * @author Charles7c
  * @since 2023/3/2 20:40

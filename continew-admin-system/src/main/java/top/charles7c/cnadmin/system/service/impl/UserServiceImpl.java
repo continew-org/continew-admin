@@ -63,7 +63,7 @@ import top.charles7c.cnadmin.system.service.UserRoleService;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
- * 用户业务实现类
+ * 用户业务实现
  *
  * @author Charles7c
  * @since 2022/12/21 21:49
