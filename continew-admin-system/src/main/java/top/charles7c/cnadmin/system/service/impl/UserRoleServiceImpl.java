@@ -31,7 +31,7 @@ import top.charles7c.cnadmin.system.model.entity.UserRoleDO;
 import top.charles7c.cnadmin.system.service.UserRoleService;
 
 /**
- * 用户和角色业务实现类
+ * 用户和角色业务实现
  *
  * @author Charles7c
  * @since 2023/2/20 21:30

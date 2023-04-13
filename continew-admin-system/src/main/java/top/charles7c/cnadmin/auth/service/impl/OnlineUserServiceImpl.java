@@ -41,7 +41,7 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
 /**
- * 在线用户业务实现类
+ * 在线用户业务实现
  *
  * @author Charles7c
  * @author Lion Li（RuoYi-Vue-Plus）
