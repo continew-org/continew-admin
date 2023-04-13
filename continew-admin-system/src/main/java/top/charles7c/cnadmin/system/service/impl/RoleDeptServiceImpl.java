@@ -31,7 +31,7 @@ import top.charles7c.cnadmin.system.model.entity.RoleDeptDO;
 import top.charles7c.cnadmin.system.service.RoleDeptService;
 
 /**
- * 角色和部门业务实现类
+ * 角色和部门业务实现
  *
  * @author Charles7c
  * @since 2023/2/19 10:47

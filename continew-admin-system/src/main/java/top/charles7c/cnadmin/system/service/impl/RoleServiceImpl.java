@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.*;
 
 /**
- * 角色业务实现类
+ * 角色业务实现
  *
  * @author Charles7c
  * @since 2023/2/8 23:17

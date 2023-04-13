@@ -50,30 +50,24 @@ public class PageQuery extends SortQuery {
 
     @Serial
     private static final long serialVersionUID = 1L;
+    /** 默认页码：1 */
+    private static final int DEFAULT_PAGE = 1;
+    /** 默认每页条数：10 */
+    private static final int DEFAULT_SIZE = 10;
 
     /**
      * 页码
      */
     @Schema(description = "页码")
     @Min(value = 1, message = "页码最小值为 {value}")
-    private Integer page;
+    private Integer page = DEFAULT_PAGE;
 
     /**
      * 每页条数
      */
     @Schema(description = "每页条数")
     @Range(min = 1, max = 1000, message = "每页条数（取值范围 {min}-{max}）")
-    private Integer size;
-
-    /** 默认页码：1 */
-    private static final int DEFAULT_PAGE = 1;
-    /** 默认每页条数：10 */
-    private static final int DEFAULT_SIZE = 10;
-
-    public PageQuery(Integer page, Integer size) {
-        this.setPage(page);
-        this.setSize(size);
-    }
+    private Integer size = DEFAULT_SIZE;
 
     /**
      * 基于分页查询条件转换为 MyBatis Plus 分页条件
@@ -94,13 +88,5 @@ public class PageQuery extends SortQuery {
             }
         }
         return mybatisPage;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page == null ? DEFAULT_PAGE : page;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size == null ? DEFAULT_SIZE : size;
     }
 }

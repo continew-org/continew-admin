@@ -47,6 +47,9 @@ logging:
 
 --- ### 接口文档配置
 springdoc:
+  # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认为 false）
+  # 如果不添加该全局配置，可以在需要如此处理的对象参数类上使用 @ParameterObject
+  default-flat-param-object: true
   swagger-ui:
     path: /swagger-ui.html
     tags-sorter: alpha

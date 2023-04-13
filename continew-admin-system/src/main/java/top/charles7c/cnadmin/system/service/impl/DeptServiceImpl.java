@@ -48,7 +48,7 @@ import top.charles7c.cnadmin.system.service.RoleDeptService;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
- * 部门业务实现类
+ * 部门业务实现
  *
  * @author Charles7c
  * @since 2023/1/22 17:55

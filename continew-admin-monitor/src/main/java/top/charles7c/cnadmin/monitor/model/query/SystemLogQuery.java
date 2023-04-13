@@ -25,7 +25,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
@@ -38,7 +37,6 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
  * @since 2023/1/17 23:31
  */
 @Data
-@ParameterObject
 @Schema(description = "系统日志查询条件")
 public class SystemLogQuery implements Serializable {
 

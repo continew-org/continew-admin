@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.common.model.query;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Sort;
 
 import cn.hutool.core.util.ArrayUtil;
@@ -40,11 +38,9 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
  * @since 2023/2/12 21:30
  */
 @Data
-@ParameterObject
 @Schema(description = "排序查询条件")
 public class SortQuery implements Serializable {
 
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

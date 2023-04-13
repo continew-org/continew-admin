@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.system.model.entity.RoleMenuDO;
 import top.charles7c.cnadmin.system.service.RoleMenuService;
 
 /**
- * 角色和菜单业务实现类
+ * 角色和菜单业务实现
  *
  * @author Charles7c
  * @since 2023/2/19 10:43

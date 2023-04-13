@@ -3,11 +3,11 @@
 -- changeset Charles7c:1
 CREATE TABLE IF NOT EXISTS `sys_menu` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
-    `title` varchar(255) NOT NULL COMMENT '菜单标题',
+    `title` varchar(50) NOT NULL COMMENT '菜单标题',
     `parent_id` bigint(20) UNSIGNED DEFAULT 0 COMMENT '上级菜单ID',
     `type` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '菜单类型（1：目录，2：菜单，3：按钮）',
     `path` varchar(512) DEFAULT NULL COMMENT '路由地址',
-    `name` varchar(255) DEFAULT NULL COMMENT '组件名称',
+    `name` varchar(50) DEFAULT NULL COMMENT '组件名称',
     `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
     `icon` varchar(255) DEFAULT NULL COMMENT '菜单图标',
     `is_external` bit(1) DEFAULT b'0' COMMENT '是否外链',
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
 
 CREATE TABLE IF NOT EXISTS `sys_dept` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
-    `name` varchar(255) NOT NULL COMMENT '部门名称',
+    `name` varchar(50) NOT NULL COMMENT '部门名称',
     `parent_id` bigint(20) UNSIGNED DEFAULT 0 COMMENT '上级部门ID',
     `ancestors` varchar(512) DEFAULT '' COMMENT '祖级列表',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
 
 CREATE TABLE IF NOT EXISTS `sys_role` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
-    `name` varchar(255) NOT NULL COMMENT '角色名称',
-    `code` varchar(255) NOT NULL COMMENT '角色编码',
+    `name` varchar(50) NOT NULL COMMENT '角色名称',
+    `code` varchar(50) NOT NULL COMMENT '角色编码',
     `data_scope` tinyint(1) DEFAULT 4 COMMENT '数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `sort` int(11) UNSIGNED DEFAULT 999 COMMENT '角色排序',
@@ -77,12 +77,12 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept` (
 
 CREATE TABLE IF NOT EXISTS `sys_user` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
-    `username` varchar(255) NOT NULL COMMENT '用户名',
-    `nickname` varchar(255) DEFAULT NULL COMMENT '昵称',
+    `username` varchar(50) NOT NULL COMMENT '用户名',
+    `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
     `password` varchar(255) DEFAULT NULL COMMENT '密码',
     `gender` tinyint(1) UNSIGNED DEFAULT 0 COMMENT '性别（0：未知，1：男，2：女）',
-    `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
-    `phone` varchar(255) DEFAULT NULL COMMENT '手机号码',
+    `email` varchar(100) DEFAULT NULL COMMENT '邮箱',
+    `phone` varchar(50) DEFAULT NULL COMMENT '手机号码',
     `avatar` varchar(255) DEFAULT NULL COMMENT '头像地址',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `status` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '状态（1：启用，2：禁用）',
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `sys_user_role` (
 CREATE TABLE IF NOT EXISTS `sys_log` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
     `description` varchar(255) NOT NULL COMMENT '日志描述',
-    `module` varchar(255) NOT NULL COMMENT '所属模块',
+    `module` varchar(50) NOT NULL COMMENT '所属模块',
     `request_url` varchar(512) NOT NULL COMMENT '请求URL',
     `request_method` varchar(10) NOT NULL COMMENT '请求方式',
     `request_headers` text DEFAULT NULL COMMENT '请求头',
@@ -120,9 +120,9 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `response_body` mediumtext DEFAULT NULL COMMENT '响应体',
     `elapsed_time` bigint(20) UNSIGNED NOT NULL COMMENT '请求耗时（ms）',
     `status` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '操作状态（1：成功，2：失败）',
-    `client_ip` varchar(255) DEFAULT NULL COMMENT '客户端IP',
-    `location` varchar(512) DEFAULT NULL COMMENT 'IP归属地',
-    `browser` varchar(255) DEFAULT NULL COMMENT '浏览器',
+    `client_ip` varchar(100) DEFAULT NULL COMMENT '客户端IP',
+    `location` varchar(255) DEFAULT NULL COMMENT 'IP归属地',
+    `browser` varchar(100) DEFAULT NULL COMMENT '浏览器',
     `error_msg` text DEFAULT NULL COMMENT '错误信息',
     `exception_detail` mediumtext DEFAULT NULL COMMENT '异常详情',
     `create_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '创建人',

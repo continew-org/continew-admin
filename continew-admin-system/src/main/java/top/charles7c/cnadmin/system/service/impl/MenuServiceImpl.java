@@ -36,7 +36,7 @@ import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.MenuService;
 
 /**
- * 菜单业务实现类
+ * 菜单业务实现
  *
  * @author Charles7c
  * @since 2023/2/15 20:30

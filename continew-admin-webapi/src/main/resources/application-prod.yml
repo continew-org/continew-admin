@@ -128,6 +128,10 @@ rsa:
 springdoc:
   swagger-ui:
     enabled: false
+## 接口文档增强配置
+knife4j:
+  # 开启生产环境屏蔽
+  production: true
 
 --- ### 文件上传配置
 spring.servlet:

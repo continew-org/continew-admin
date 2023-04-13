@@ -23,8 +23,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.springdoc.core.annotations.ParameterObject;
-
 import top.charles7c.cnadmin.common.annotation.Query;
 
 /**
@@ -34,7 +32,6 @@ import top.charles7c.cnadmin.common.annotation.Query;
  * @since 2023/2/15 20:21
  */
 @Data
-@ParameterObject
 @Schema(description = "菜单查询条件")
 public class MenuQuery implements Serializable {
 

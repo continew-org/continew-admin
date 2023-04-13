@@ -52,7 +52,7 @@ public class OnlineUserController {
     @Operation(summary = "分页查询列表")
     @SaCheckPermission("monitor:online:user:list")
     @GetMapping
-    public R<PageDataVO<OnlineUserVO>> page(@Validated OnlineUserQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataVO<OnlineUserVO>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
         return R.ok(onlineUserService.page(query, pageQuery));
     }
 
