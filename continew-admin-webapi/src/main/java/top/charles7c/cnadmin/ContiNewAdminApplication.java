@@ -34,6 +34,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 
@@ -73,10 +76,16 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        Integer port = serverProperties.getPort();
+        String contextPath = serverProperties.getServlet().getContextPath();
+        String baseUrl = URLUtil.normalize(String.format("%s:%s%s", hostAddress, port, contextPath));
         log.info("------------------------------------------------------");
         log.info("{} backend service started successfully.", properties.getName());
-        log.info("后端 API 地址：http://{}:{}", hostAddress, serverProperties.getPort());
-        log.info("后端 API 文档：http://{}:{}/doc.html", hostAddress, serverProperties.getPort());
+        log.info("后端 API 地址：{}", baseUrl);
+        Boolean docEnabled = Convert.toBool(SpringUtil.getProperty("springdoc.swagger-ui.enabled"));
+        if (Boolean.TRUE.equals(docEnabled)) {
+            log.info("后端 API 文档：{}/doc.html", baseUrl);
+        }
         log.info("------------------------------------------------------");
     }
 }
