@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
@@ -45,7 +46,7 @@ public class DeptRequest extends BaseRequest {
     /**
      * 上级部门 ID
      */
-    @NotNull(message = "上级部门不能为空", groups = Add.class)
+    @NotNull(message = "上级部门不能为空", groups = ValidateGroup.Crud.Add.class)
     @Schema(description = "上级部门 ID")
     private Long parentId;
 

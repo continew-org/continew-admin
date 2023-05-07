@@ -30,7 +30,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
-import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.URLUtils;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
@@ -52,14 +52,15 @@ public class MenuController extends BaseController<MenuService, MenuVO, MenuVO, 
 
     @Override
     @SaCheckPermission("system:menu:add")
-    public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody MenuRequest request) {
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuRequest request) {
         this.checkPath(request);
         return super.add(request);
     }
 
     @Override
     @SaCheckPermission("system:menu:update")
-    public R update(@Validated(BaseRequest.Update.class) @RequestBody MenuRequest request, @PathVariable Long id) {
+    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuRequest request,
+        @PathVariable Long id) {
         this.checkPath(request);
         return super.update(request, id);
     }

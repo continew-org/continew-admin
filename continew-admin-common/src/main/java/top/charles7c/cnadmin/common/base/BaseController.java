@@ -144,7 +144,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "新增数据")
     @ResponseBody
     @PostMapping
-    public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody C request) {
         this.checkPermission("add");
         Long id = baseService.add(request);
         return R.ok("新增成功", id);
@@ -162,7 +162,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "修改数据")
     @ResponseBody
     @PutMapping("/{id}")
-    public R update(@Validated(BaseRequest.Update.class) @RequestBody C request, @PathVariable Long id) {
+    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody C request, @PathVariable Long id) {
         this.checkPermission("update");
         baseService.update(request, id);
         return R.ok("修改成功");

@@ -16,18 +16,28 @@
 
 package top.charles7c.cnadmin.common.base;
 
-import java.io.Serializable;
-
-import lombok.Data;
+import javax.validation.groups.Default;
 
 /**
- * Request 基类
+ * 分组校验
  *
  * @author Charles7c
- * @since 2023/1/30 21:51
+ * @since 2023/5/7 19:41
  */
-@Data
-public class BaseRequest implements Serializable {
+public interface ValidateGroup extends Default {
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 分组校验-增删改查
+     */
+    interface Crud extends ValidateGroup {
+        /**
+         * 分组校验-创建
+         */
+        interface Add extends Crud {}
+
+        /**
+         * 分组校验-修改
+         */
+        interface Update extends Crud {}
+    }
 }
