@@ -19,7 +19,7 @@
       href="https://beian.miit.gov.cn"
       target="_blank"
       rel="noopenner noreferrer"
-      >
+    >
       津ICP备2022005864号-2
     </a>
   </a-layout-footer>
