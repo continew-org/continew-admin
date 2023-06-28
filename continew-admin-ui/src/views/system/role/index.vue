@@ -118,33 +118,31 @@
           <a-table-column title="ID" data-index="id" />
           <a-table-column title="角色名称" data-index="name" :width="130">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.id)">{{
-                record.name
-              }}</a-link>
+              <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
             </template>
           </a-table-column>
           <a-table-column title="角色编码" data-index="code" />
           <a-table-column title="数据权限" :width="130">
             <template #cell="{ record }">
               <span v-if="record.dataScope === 1">全部数据权限</span>
-              <span v-else-if="record.dataScope === 2">本部门及以下数据权限</span>
+              <span v-else-if="record.dataScope === 2"
+                >本部门及以下数据权限</span
+              >
               <span v-else-if="record.dataScope === 3">本部门数据权限</span>
               <span v-else-if="record.dataScope === 4">仅本人数据权限</span>
               <span v-else>自定义数据权限</span>
             </template>
           </a-table-column>
-          <a-table-column
-            title="角色排序"
-            align="center"
-            data-index="sort"
-          />
+          <a-table-column title="角色排序" align="center" data-index="sort" />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
               <a-switch
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
-                :disabled="record.disabled || !checkPermission(['system:role:update'])"
+                :disabled="
+                  record.disabled || !checkPermission(['system:role:update'])
+                "
                 @change="handleChangeStatus(record)"
               />
             </template>
@@ -204,7 +202,11 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-alert v-if="!form.disabled" type="warning" style="margin-bottom: 15px;">
+          <a-alert
+            v-if="!form.disabled"
+            type="warning"
+            style="margin-bottom: 15px"
+          >
             变更角色编码、功能权限或数据权限后，关联在线用户会自动下线！
           </a-alert>
           <fieldset>
@@ -212,7 +214,11 @@
             <a-form-item label="角色名称" field="name">
               <a-input v-model="form.name" placeholder="请输入角色名称" />
             </a-form-item>
-            <a-form-item label="角色编码" field="code" :disabled="form.disabled">
+            <a-form-item
+              label="角色编码"
+              field="code"
+              :disabled="form.disabled"
+            >
               <a-input v-model="form.code" placeholder="请输入角色编码" />
             </a-form-item>
             <a-form-item label="角色排序" field="sort">
@@ -239,8 +245,16 @@
             <legend>功能权限</legend>
             <a-form-item label="功能权限" :disabled="form.disabled">
               <a-space style="margin-top: 2px">
-                <a-checkbox v-model="menuExpandAll" @change="handleExpandAll('menu')">展开/折叠</a-checkbox>
-                <a-checkbox v-model="menuCheckAll" @change="handleCheckAll('menu')">全选/全不选</a-checkbox>
+                <a-checkbox
+                  v-model="menuExpandAll"
+                  @change="handleExpandAll('menu')"
+                  >展开/折叠</a-checkbox
+                >
+                <a-checkbox
+                  v-model="menuCheckAll"
+                  @change="handleCheckAll('menu')"
+                  >全选/全不选</a-checkbox
+                >
                 <a-checkbox v-model="menuCheckStrictly">父子联动</a-checkbox>
               </a-space>
               <template #extra>
@@ -259,17 +273,33 @@
           </fieldset>
           <fieldset>
             <legend>数据权限</legend>
-            <a-form-item label="数据权限" field="dataScope" :disabled="form.disabled">
+            <a-form-item
+              label="数据权限"
+              field="dataScope"
+              :disabled="form.disabled"
+            >
               <a-select
                 v-model="form.dataScope"
                 :options="DataScopeEnum"
                 placeholder="请选择数据权限"
               />
             </a-form-item>
-            <a-form-item v-if="form.dataScope === 5" label="权限范围" :disabled="form.disabled">
+            <a-form-item
+              v-if="form.dataScope === 5"
+              label="权限范围"
+              :disabled="form.disabled"
+            >
               <a-space style="margin-top: 2px">
-                <a-checkbox v-model="deptExpandAll" @change="handleExpandAll('dept')">展开/折叠</a-checkbox>
-                <a-checkbox v-model="deptCheckAll" @change="handleCheckAll('dept')">全选/全不选</a-checkbox>
+                <a-checkbox
+                  v-model="deptExpandAll"
+                  @change="handleExpandAll('dept')"
+                  >展开/折叠</a-checkbox
+                >
+                <a-checkbox
+                  v-model="deptCheckAll"
+                  @change="handleCheckAll('dept')"
+                  >全选/全不选</a-checkbox
+                >
                 <a-checkbox v-model="deptCheckStrictly">父子联动</a-checkbox>
               </a-space>
               <template #extra>
@@ -328,7 +358,9 @@
               </a-skeleton>
               <span v-else>
                 <span v-if="role.dataScope === 1">全部数据权限</span>
-                <span v-else-if="role.dataScope === 2">本部门及以下数据权限</span>
+                <span v-else-if="role.dataScope === 2"
+                  >本部门及以下数据权限</span
+                >
                 <span v-else-if="role.dataScope === 3">本部门数据权限</span>
                 <span v-else-if="role.dataScope === 4">仅本人数据权限</span>
                 <span v-else>自定义数据权限</span>
@@ -468,14 +500,15 @@
         { required: true, message: '请输入角色名称' },
         {
           match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
-          message: '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线'
+          message:
+            '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线',
         },
       ],
       code: [
         { required: true, message: '请输入角色编码' },
         {
           match: /^[a-zA-Z][a-zA-Z0-9_]{1,15}$/,
-          message: '长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头'
+          message: '长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头',
         },
       ],
       dataScope: [{ required: true, message: '请选择数据权限' }],

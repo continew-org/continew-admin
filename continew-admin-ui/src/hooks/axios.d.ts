@@ -1,6 +1,6 @@
 import axios, { Axios, AxiosResponse, AxiosRequestConfig } from 'axios';
 
-declare module "axios" {
+declare module 'axios' {
   interface AxiosResponse<T = any> {
     success: boolean; // 是否成功
     code: number; // 状态码

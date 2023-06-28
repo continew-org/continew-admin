@@ -167,7 +167,9 @@
                     <div>
                       <a-checkbox
                         v-model="item.checked"
-                        @change="handleChange($event, item as TableColumnData, index)"
+                        @change="
+                          handleChange($event, item as TableColumnData, index)
+                        "
                       >
                       </a-checkbox>
                     </div>

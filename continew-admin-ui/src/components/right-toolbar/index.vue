@@ -2,10 +2,14 @@
   <div class="header-operation-right">
     <a-button-group>
       <a-tooltip :content="showQuery ? '隐藏搜索栏' : '显示搜索栏'">
-        <a-button @click="toggleSearch"><template #icon><icon-search /></template></a-button>
+        <a-button @click="toggleSearch"
+          ><template #icon><icon-search /></template
+        ></a-button>
       </a-tooltip>
       <a-tooltip content="刷新">
-        <a-button @click="handleRefresh"><template #icon><icon-refresh /></template></a-button>
+        <a-button @click="handleRefresh"
+          ><template #icon><icon-refresh /></template
+        ></a-button>
       </a-tooltip>
     </a-button-group>
   </div>

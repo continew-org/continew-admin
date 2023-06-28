@@ -15,7 +15,8 @@ const VISUALIZATION: AppRouteRecordRaw = {
     {
       path: 'data-analysis',
       name: 'DataAnalysis',
-      component: () => import('@/views/arco-design/visualization/data-analysis/index.vue'),
+      component: () =>
+        import('@/views/arco-design/visualization/data-analysis/index.vue'),
       meta: {
         locale: 'menu.visualization.dataAnalysis',
         requiresAuth: true,
@@ -26,7 +27,9 @@ const VISUALIZATION: AppRouteRecordRaw = {
       path: 'multi-dimension-data-analysis',
       name: 'MultiDimensionDataAnalysis',
       component: () =>
-        import('@/views/arco-design/visualization/multi-dimension-data-analysis/index.vue'),
+        import(
+          '@/views/arco-design/visualization/multi-dimension-data-analysis/index.vue'
+        ),
       meta: {
         locale: 'menu.visualization.multiDimensionDataAnalysis',
         requiresAuth: true,
@@ -36,7 +39,8 @@ const VISUALIZATION: AppRouteRecordRaw = {
     {
       path: 'monitor',
       name: 'Monitor',
-      component: () => import('@/views/arco-design/visualization/monitor/index.vue'),
+      component: () =>
+        import('@/views/arco-design/visualization/monitor/index.vue'),
       meta: {
         locale: 'menu.dashboard.monitor',
         requiresAuth: true,

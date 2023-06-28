@@ -8,14 +8,25 @@
     <template #description>
       <div class="content">
         <a-typography-paragraph v-if="loginStore.pwdResetTime">
-          {{ $t('userCenter.securitySettings.updatePwd.placeholder.success.password') }}
+          {{
+            $t(
+              'userCenter.securitySettings.updatePwd.placeholder.success.password'
+            )
+          }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
-          {{ $t('userCenter.securitySettings.updatePwd.placeholder.error.password') }}
+          {{
+            $t(
+              'userCenter.securitySettings.updatePwd.placeholder.error.password'
+            )
+          }}
         </a-typography-paragraph>
       </div>
       <div class="operation">
-        <a-link :title="$t('userCenter.securitySettings.button.update')" @click="toUpdate">
+        <a-link
+          :title="$t('userCenter.securitySettings.button.update')"
+          @click="toUpdate"
+        >
           {{ $t('userCenter.securitySettings.button.update') }}
         </a-link>
       </div>
@@ -30,26 +41,53 @@
     @cancel="handleCancel"
   >
     <a-form ref="formRef" :model="form" :rules="rules" size="large">
-      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.oldPassword')" field="oldPassword">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updatePwd.form.label.oldPassword')
+        "
+        field="oldPassword"
+      >
         <a-input-password
           v-model="form.oldPassword"
-          :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.oldPassword')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updatePwd.form.placeholder.oldPassword'
+            )
+          "
           max-length="32"
           allow-clear
         />
       </a-form-item>
-      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.newPassword')" field="newPassword">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updatePwd.form.label.newPassword')
+        "
+        field="newPassword"
+      >
         <a-input-password
           v-model="form.newPassword"
-          :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.newPassword')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updatePwd.form.placeholder.newPassword'
+            )
+          "
           max-length="32"
           allow-clear
         />
       </a-form-item>
-      <a-form-item :label="$t('userCenter.securitySettings.updatePwd.form.label.rePassword')" field="rePassword">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updatePwd.form.label.rePassword')
+        "
+        field="rePassword"
+      >
         <a-input-password
           v-model="form.rePassword"
-          :placeholder="$t('userCenter.securitySettings.updatePwd.form.placeholder.rePassword')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updatePwd.form.placeholder.rePassword'
+            )
+          "
           max-length="32"
           allow-clear
         />
@@ -81,31 +119,61 @@
   // 表单验证规则
   const rules = computed((): Record<string, FieldRule[]> => {
     return {
-      oldPassword: [{ required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.oldPassword') }],
+      oldPassword: [
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updatePwd.form.error.required.oldPassword'
+          ),
+        },
+      ],
       newPassword: [
-        { required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.newPassword') },
-        { match: /^(?=.*\d)(?=.*[a-z]).{6,32}$/, message: t('userCenter.securitySettings.updatePwd.form.error.match.newPassword') },
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updatePwd.form.error.required.newPassword'
+          ),
+        },
+        {
+          match: /^(?=.*\d)(?=.*[a-z]).{6,32}$/,
+          message: t(
+            'userCenter.securitySettings.updatePwd.form.error.match.newPassword'
+          ),
+        },
         {
           validator: (value, callback) => {
             if (value === form.oldPassword) {
-              callback(t('userCenter.securitySettings.updatePwd.form.error.validator.newPassword'))
+              callback(
+                t(
+                  'userCenter.securitySettings.updatePwd.form.error.validator.newPassword'
+                )
+              );
             } else {
-              callback()
+              callback();
             }
-          }
-        }
+          },
+        },
       ],
       rePassword: [
-        { required: true, message: t('userCenter.securitySettings.updatePwd.form.error.required.rePassword') },
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updatePwd.form.error.required.rePassword'
+          ),
+        },
         {
           validator: (value, callback) => {
             if (value !== form.newPassword) {
-              callback(t('userCenter.securitySettings.updatePwd.form.error.validator.rePassword'))
+              callback(
+                t(
+                  'userCenter.securitySettings.updatePwd.form.error.validator.rePassword'
+                )
+              );
             } else {
-              callback()
+              callback();
             }
-          }
-        }
+          },
+        },
       ],
     };
   });

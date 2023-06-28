@@ -12,7 +12,7 @@
                 v-model="queryParams.nickname"
                 placeholder="输入用户昵称搜索"
                 allow-clear
-                style="width: 150px;"
+                style="width: 150px"
                 @press-enter="handleQuery"
               />
             </a-form-item>
@@ -59,22 +59,34 @@
           </a-table-column>
           <a-table-column title="用户昵称">
             <template #cell="{ record }">
-              {{ record.nickname }}（{{record.username}}）
+              {{ record.nickname }}（{{ record.username }}）
             </template>
           </a-table-column>
           <a-table-column title="登录 IP" data-index="clientIp" />
           <a-table-column title="登录地点" data-index="location" />
           <a-table-column title="浏览器" data-index="browser" />
           <a-table-column title="登录时间" data-index="loginTime" />
-          <a-table-column v-if="checkPermission(['monitor:online:user:delete'])" title="操作" align="center">
+          <a-table-column
+            v-if="checkPermission(['monitor:online:user:delete'])"
+            title="操作"
+            align="center"
+          >
             <template #cell="{ record }">
-              <a-popconfirm content="确定要强退该用户吗？" type="warning" @ok="handleKickout(record.token)">
+              <a-popconfirm
+                content="确定要强退该用户吗？"
+                type="warning"
+                @ok="handleKickout(record.token)"
+              >
                 <a-button
                   v-permission="['monitor:online:user:delete']"
                   type="text"
                   size="small"
                   :disabled="currentToken === record.token"
-                  :title="currentToken === record.token ? '不能强退当前登录用户' : '强退'"
+                  :title="
+                    currentToken === record.token
+                      ? '不能强退当前登录用户'
+                      : '强退'
+                  "
                 >
                   <template #icon><icon-delete /></template>强退
                 </a-button>
@@ -124,12 +136,14 @@
    */
   const getList = (params: OnlineUserParam = { ...queryParams.value }) => {
     loading.value = true;
-    listOnlineUser(params).then((res) => {
-      onlineUserList.value = res.data.list;
-      total.value = res.data.total;
-    }).finally(() => {
-      loading.value = false;
-    });
+    listOnlineUser(params)
+      .then((res) => {
+        onlineUserList.value = res.data.list;
+        total.value = res.data.total;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
   };
   getList();
 

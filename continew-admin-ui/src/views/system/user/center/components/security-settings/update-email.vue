@@ -8,14 +8,25 @@
     <template #description>
       <div class="content">
         <a-typography-paragraph v-if="loginStore.email">
-          {{ $t('userCenter.securitySettings.updateEmail.placeholder.success.email') }}：{{ loginStore.email }}
+          {{
+            $t(
+              'userCenter.securitySettings.updateEmail.placeholder.success.email'
+            )
+          }}：{{ loginStore.email }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
-          {{ $t('userCenter.securitySettings.updateEmail.placeholder.error.email') }}
+          {{
+            $t(
+              'userCenter.securitySettings.updateEmail.placeholder.error.email'
+            )
+          }}
         </a-typography-paragraph>
       </div>
       <div class="operation">
-        <a-link :title="$t('userCenter.securitySettings.button.update')" @click="toUpdate">
+        <a-link
+          :title="$t('userCenter.securitySettings.button.update')"
+          @click="toUpdate"
+        >
           {{ $t('userCenter.securitySettings.button.update') }}
         </a-link>
       </div>
@@ -30,17 +41,35 @@
     @cancel="handleCancel"
   >
     <a-form ref="formRef" :model="form" :rules="rules" size="large">
-      <a-form-item :label="$t('userCenter.securitySettings.updateEmail.form.label.newEmail')" field="newEmail">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updateEmail.form.label.newEmail')
+        "
+        field="newEmail"
+      >
         <a-input
           v-model="form.newEmail"
-          :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.newEmail')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updateEmail.form.placeholder.newEmail'
+            )
+          "
           allow-clear
         />
       </a-form-item>
-      <a-form-item :label="$t('userCenter.securitySettings.updateEmail.form.label.captcha')" field="captcha">
+      <a-form-item
+        :label="
+          $t('userCenter.securitySettings.updateEmail.form.label.captcha')
+        "
+        field="captcha"
+      >
         <a-input
           v-model="form.captcha"
-          :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.captcha')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updateEmail.form.placeholder.captcha'
+            )
+          "
           max-length="6"
           allow-clear
           style="width: 80%"
@@ -55,10 +84,21 @@
           {{ captchaBtnName }}
         </a-button>
       </a-form-item>
-      <a-form-item :label="$t('userCenter.securitySettings.updateEmail.form.label.currentPassword')" field="currentPassword">
+      <a-form-item
+        :label="
+          $t(
+            'userCenter.securitySettings.updateEmail.form.label.currentPassword'
+          )
+        "
+        field="currentPassword"
+      >
         <a-input-password
           v-model="form.currentPassword"
-          :placeholder="$t('userCenter.securitySettings.updateEmail.form.placeholder.currentPassword')"
+          :placeholder="
+            $t(
+              'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword'
+            )
+          "
           max-length="32"
           allow-clear
         />
@@ -85,7 +125,9 @@
   const captchaLoading = ref(false);
   const captchaDisable = ref(false);
   const visible = ref(false);
-  const captchaBtnNameKey = ref('userCenter.securitySettings.updateEmail.form.sendCaptcha');
+  const captchaBtnNameKey = ref(
+    'userCenter.securitySettings.updateEmail.form.sendCaptcha'
+  );
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
 
   // 表单数据
@@ -98,24 +140,48 @@
   const rules = computed((): Record<string, FieldRule[]> => {
     return {
       newEmail: [
-        { required: true, message: t('userCenter.securitySettings.updateEmail.form.error.required.newEmail') },
-        { type: 'email', message: t('userCenter.securitySettings.updateEmail.form.error.match.newEmail') },
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updateEmail.form.error.required.newEmail'
+          ),
+        },
+        {
+          type: 'email',
+          message: t(
+            'userCenter.securitySettings.updateEmail.form.error.match.newEmail'
+          ),
+        },
         {
           validator: (value, callback) => {
             if (value === loginStore.email) {
-              callback(t('userCenter.securitySettings.updateEmail.form.error.validator.newEmail'))
+              callback(
+                t(
+                  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail'
+                )
+              );
             } else {
-              callback()
+              callback();
             }
-          }
-        }
+          },
+        },
       ],
       captcha: [
-        { required: true, message: t('userCenter.securitySettings.updateEmail.form.error.required.captcha') }
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updateEmail.form.error.required.captcha'
+          ),
+        },
       ],
       currentPassword: [
-        { required: true, message: t('userCenter.securitySettings.updateEmail.form.error.required.currentPassword') }
-      ]
+        {
+          required: true,
+          message: t(
+            'userCenter.securitySettings.updateEmail.form.error.required.currentPassword'
+          ),
+        },
+      ],
     };
   });
 
@@ -125,9 +191,10 @@
   const resetCaptcha = () => {
     window.clearInterval(captchaTimer.value);
     captchaTime.value = 60;
-    captchaBtnNameKey.value = 'userCenter.securitySettings.updateEmail.form.sendCaptcha';
+    captchaBtnNameKey.value =
+      'userCenter.securitySettings.updateEmail.form.sendCaptcha';
     captchaDisable.value = false;
-  }
+  };
 
   /**
    * 发送验证码
@@ -137,28 +204,37 @@
     proxy.$refs.formRef.validateField('newEmail', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
-        captchaBtnNameKey.value = 'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha';
+        captchaBtnNameKey.value =
+          'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha';
         getMailCaptcha({
-          email: form.newEmail
-        }).then((res) => {
-          captchaLoading.value = false;
-          captchaDisable.value = true;
-          captchaBtnNameKey.value = `${t('userCenter.securitySettings.updateEmail.form.reSendCaptcha')}(${captchaTime.value -= 1}s)`;
-          captchaTimer.value = window.setInterval(() => {
-            captchaTime.value -= 1;
-            captchaBtnNameKey.value = `${t('userCenter.securitySettings.updateEmail.form.reSendCaptcha')}(${captchaTime.value}s)`;
-            if (captchaTime.value < 0) {
-              window.clearInterval(captchaTimer.value);
-              captchaTime.value = 60;
-              captchaBtnNameKey.value = t('userCenter.securitySettings.updateEmail.form.reSendCaptcha');
-              captchaDisable.value = false;
-            }
-          }, 1000);
-          proxy.$message.success(res.msg);
-        }).catch(() => {
-          resetCaptcha();
-          captchaLoading.value = false;
-        });
+          email: form.newEmail,
+        })
+          .then((res) => {
+            captchaLoading.value = false;
+            captchaDisable.value = true;
+            captchaBtnNameKey.value = `${t(
+              'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
+            )}(${(captchaTime.value -= 1)}s)`;
+            captchaTimer.value = window.setInterval(() => {
+              captchaTime.value -= 1;
+              captchaBtnNameKey.value = `${t(
+                'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
+              )}(${captchaTime.value}s)`;
+              if (captchaTime.value < 0) {
+                window.clearInterval(captchaTimer.value);
+                captchaTime.value = 60;
+                captchaBtnNameKey.value = t(
+                  'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
+                );
+                captchaDisable.value = false;
+              }
+            }, 1000);
+            proxy.$message.success(res.msg);
+          })
+          .catch(() => {
+            resetCaptcha();
+            captchaLoading.value = false;
+          });
       }
     });
   };

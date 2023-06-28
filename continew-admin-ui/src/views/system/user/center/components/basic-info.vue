@@ -8,21 +8,30 @@
     size="large"
     class="form"
   >
-    <a-form-item :label="$t('userCenter.basicInfo.form.label.username')" disabled>
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.username')"
+      disabled
+    >
       <a-input
         v-model="form.username"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
         max-length="16"
       />
     </a-form-item>
-    <a-form-item :label="$t('userCenter.basicInfo.form.label.nickname')" field="nickname">
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.nickname')"
+      field="nickname"
+    >
       <a-input
         v-model="form.nickname"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
         max-length="20"
       />
     </a-form-item>
-    <a-form-item :label="$t('userCenter.basicInfo.form.label.gender')" field="gender">
+    <a-form-item
+      :label="$t('userCenter.basicInfo.form.label.gender')"
+      field="gender"
+    >
       <a-radio-group v-model="form.gender">
         <a-radio :value="1">男</a-radio>
         <a-radio :value="2">女</a-radio>

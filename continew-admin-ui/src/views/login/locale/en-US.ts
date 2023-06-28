@@ -1,6 +1,7 @@
 export default {
   'login.form.title': 'Login to ContiNew Admin',
-  'login.form.subTitle': 'Continue to build the latest popular technology stack in the background management framework',
+  'login.form.subTitle':
+    'Continue to build the latest popular technology stack in the background management framework',
 
   'login.form.placeholder.username': 'Please enter username',
   'login.form.placeholder.password': 'Please enter password',
@@ -27,5 +28,6 @@ export default {
   'login.banner.subSlogan2':
     'Rich basic functions, low threshold to use, enterprise rapid development scaffolding',
   'login.banner.slogan3': 'The code is standard and open source and free',
-  'login.banner.subSlogan3': 'The backend code is fully compliant with the Alibaba coding specification, and the frontend code is strictly ESLint checked',
+  'login.banner.subSlogan3':
+    'The backend code is fully compliant with the Alibaba coding specification, and the frontend code is strictly ESLint checked',
 };

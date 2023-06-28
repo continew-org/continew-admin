@@ -1,12 +1,26 @@
 <template>
   <a-layout-footer class="footer">
     {{ `Copyright © 2022-${new Date().getFullYear()}` }}&nbsp;
-    <a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopenner noreferrer">Charles7c</a>
+    <a
+      href="https://blog.charles7c.top/about/me"
+      target="_blank"
+      rel="noopenner noreferrer"
+      >Charles7c</a
+    >
     <span>&nbsp;⋅&nbsp;</span>
-    <a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopenner noreferrer">{{ $t('title') }}</a>&nbsp;
-    v1.0.0
+    <a
+      href="https://github.com/Charles7c/continew-admin"
+      target="_blank"
+      rel="noopenner noreferrer"
+      >{{ $t('title') }}</a
+    >&nbsp; v1.0.0
     <span>&nbsp;⋅&nbsp;</span>
-    <a href="https://beian.miit.gov.cn" target="_blank" rel="noopenner noreferrer">津ICP备2022005864号-2</a>
+    <a
+      href="https://beian.miit.gov.cn"
+      target="_blank"
+      rel="noopenner noreferrer"
+      >津ICP备2022005864号-2</a
+    >
   </a-layout-footer>
 </template>
 
