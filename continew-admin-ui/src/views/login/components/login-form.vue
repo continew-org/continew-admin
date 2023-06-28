@@ -55,12 +55,7 @@
             {{ $t('login.form.rememberMe') }}
           </a-checkbox>
         </div>
-        <a-button
-          :loading="loading"
-          type="primary"
-          long
-          html-type="submit"
-        >
+        <a-button :loading="loading" type="primary" long html-type="submit">
           {{ $t('login.form.login') }}
         </a-button>
       </a-space>

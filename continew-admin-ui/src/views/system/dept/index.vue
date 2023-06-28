@@ -113,23 +113,19 @@
         <template #columns>
           <a-table-column title="部门名称">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.id)">{{
-                record.name
-              }}</a-link>
+              <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
             </template>
           </a-table-column>
-          <a-table-column
-            title="部门排序"
-            align="center"
-            data-index="sort"
-          />
+          <a-table-column title="部门排序" align="center" data-index="sort" />
           <a-table-column title="状态" align="center" data-index="status">
             <template #cell="{ record }">
               <a-switch
                 v-model="record.status"
                 :checked-value="1"
                 :unchecked-value="2"
-                :disabled="record.disabled || !checkPermission(['system:dept:update'])"
+                :disabled="
+                  record.disabled || !checkPermission(['system:dept:update'])
+                "
                 @change="handleChangeStatus(record)"
               />
             </template>
@@ -188,7 +184,11 @@
         @cancel="handleCancel"
       >
         <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <a-form-item label="上级部门" field="parentId" :disabled="form.disabled">
+          <a-form-item
+            label="上级部门"
+            field="parentId"
+            :disabled="form.disabled"
+          >
             <a-tree-select
               v-model="form.parentId"
               :data="treeData"
@@ -527,7 +527,10 @@
       }
     } else if (record.children) {
       record.children.forEach((r) => {
-        rowKeys.splice(rowKeys.findIndex((key: number | undefined) => key === r.id), 1);
+        rowKeys.splice(
+          rowKeys.findIndex((key: number | undefined) => key === r.id),
+          1
+        );
         proxy.$refs.tableRef.select(r.id, false);
         if (r.children) {
           handleSelect(rowKeys, rowKey, r);

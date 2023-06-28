@@ -307,21 +307,13 @@
               <a-radio :value="false">否</a-radio>
             </a-radio-group>
           </a-form-item>
-          <a-form-item
-            v-if="form.type === 2"
-            label="是否缓存"
-            field="isCache"
-          >
+          <a-form-item v-if="form.type === 2" label="是否缓存" field="isCache">
             <a-radio-group v-model="form.isCache" type="button">
               <a-radio :value="true">是</a-radio>
               <a-radio :value="false">否</a-radio>
             </a-radio-group>
           </a-form-item>
-          <a-form-item
-            v-if="form.type !== 3"
-            label="是否隐藏"
-            field="isHidden"
-          >
+          <a-form-item v-if="form.type !== 3" label="是否隐藏" field="isHidden">
             <a-radio-group v-model="form.isHidden" type="button">
               <a-radio :value="true">是</a-radio>
               <a-radio :value="false">否</a-radio>

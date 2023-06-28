@@ -29,7 +29,9 @@
         <a-table-column title="所属模块" data-index="module" />
         <a-table-column title="操作状态" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.status === 1" color="green"><span class="circle pass" />成功</a-tag>
+            <a-tag v-if="record.status === 1" color="green"
+              ><span class="circle pass" />成功</a-tag
+            >
             <a-tooltip v-else :content="record.errorMsg">
               <a-tag color="red" style="cursor: pointer">
                 <span class="circle fail" />失败

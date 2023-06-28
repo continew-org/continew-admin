@@ -61,7 +61,9 @@
           <a-table-column title="登录行为" data-index="description" />
           <a-table-column title="登录状态" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.status === 1" color="green"><span class="circle pass" />成功</a-tag>
+              <a-tag v-if="record.status === 1" color="green"
+                ><span class="circle pass" />成功</a-tag
+              >
               <a-tooltip v-else :content="record.errorMsg">
                 <a-tag color="red" style="cursor: pointer">
                   <span class="circle fail" />失败
@@ -88,7 +90,9 @@
   } from '@/api/monitor/log';
 
   const { proxy } = getCurrentInstance() as any;
-  const { SuccessFailureStatusEnum } = proxy.useDict('SuccessFailureStatusEnum');
+  const { SuccessFailureStatusEnum } = proxy.useDict(
+    'SuccessFailureStatusEnum'
+  );
 
   const loginLogList = ref<LoginLogRecord[]>([]);
   const total = ref(0);

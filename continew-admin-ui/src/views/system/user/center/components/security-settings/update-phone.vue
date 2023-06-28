@@ -8,10 +8,18 @@
     <template #description>
       <div class="content">
         <a-typography-paragraph v-if="loginStore.phone">
-          {{ $t('userCenter.securitySettings.updatePhone.placeholder.success.phone') }}：{{ loginStore.phone }}
+          {{
+            $t(
+              'userCenter.securitySettings.updatePhone.placeholder.success.phone'
+            )
+          }}：{{ loginStore.phone }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
-          {{ $t('userCenter.securitySettings.updatePhone.placeholder.error.phone') }}
+          {{
+            $t(
+              'userCenter.securitySettings.updatePhone.placeholder.error.phone'
+            )
+          }}
         </a-typography-paragraph>
       </div>
       <div class="operation">

@@ -3,7 +3,14 @@
     <Breadcrumb :items="['menu.system', 'menu.system.user.list']" />
     <a-card class="general-card" :title="$t('menu.system.user.list')">
       <a-row>
-        <a-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4" style="margin-right: 10px">
+        <a-col
+          :xs="9"
+          :sm="6"
+          :md="5"
+          :lg="4"
+          :xl="4"
+          style="margin-right: 10px"
+        >
           <a-input-search
             v-model="deptName"
             placeholder="输入部门名称搜索"
@@ -157,13 +164,16 @@
               <a-table-column title="头像" align="center">
                 <template #cell="{ record }">
                   <a-avatar>
-                    <img :src="getAvatar(record.avatar, record.gender)" alt="头像" />
+                    <img
+                      :src="getAvatar(record.avatar, record.gender)"
+                      alt="头像"
+                    />
                   </a-avatar>
                 </template>
               </a-table-column>
               <a-table-column title="联系方式" :width="170">
                 <template #cell="{ record }">
-                  {{ record.email }}<br v-if="record.email && record.phone">
+                  {{ record.email }}<br v-if="record.email && record.phone" />
                   {{ record.phone }}
                 </template>
               </a-table-column>
@@ -173,7 +183,10 @@
                     v-model="record.status"
                     :checked-value="1"
                     :unchecked-value="2"
-                    :disabled="record.disabled || !checkPermission(['system:user:update'])"
+                    :disabled="
+                      record.disabled ||
+                      !checkPermission(['system:user:update'])
+                    "
                     @change="handleChangeStatus(record)"
                   />
                 </template>
@@ -186,7 +199,7 @@
               </a-table-column>
               <a-table-column title="创建人/创建时间" :width="175">
                 <template #cell="{ record }">
-                  {{ record.createUserString }}<br>
+                  {{ record.createUserString }}<br />
                   {{ record.createTime }}
                 </template>
               </a-table-column>
@@ -240,7 +253,9 @@
                       size="small"
                       title="重置密码"
                     >
-                      <template #icon><svg-icon icon-class="privacy" /></template>
+                      <template #icon
+                        ><svg-icon icon-class="privacy"
+                      /></template>
                     </a-button>
                   </a-popconfirm>
                   <a-button
@@ -251,7 +266,9 @@
                     :disabled="record.disabled"
                     @click="toUpdateRole(record.id)"
                   >
-                    <template #icon><svg-icon icon-class="reference" /></template>
+                    <template #icon
+                      ><svg-icon icon-class="reference"
+                    /></template>
                   </a-button>
                 </template>
               </a-table-column>
@@ -325,7 +342,11 @@
               style="width: 431px"
             />
           </a-form-item>
-          <a-form-item label="所属角色" field="roleIds" :disabled="form.disabled">
+          <a-form-item
+            label="所属角色"
+            field="roleIds"
+            :disabled="form.disabled"
+          >
             <a-select
               v-model="form.roleIds"
               :options="roleOptions"
