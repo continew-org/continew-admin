@@ -6,4 +6,5 @@ module.exports = {
   quoteProps: 'consistent',
   htmlWhitespaceSensitivity: 'strict',
   vueIndentScriptAndStyle: true,
+  endOfLine: 'auto',
 };

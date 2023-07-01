@@ -26,12 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.Query;
+import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 
 /**
  * 查询助手
@@ -100,6 +101,10 @@ public class QueryHelper {
 
             // 解析查询条件
             parse(queryAnnotation, field.getName(), fieldValue, queryWrapper);
+        } catch (BadRequestException e) {
+            log.error("Build query occurred an validation error: {}. Query: {}, Field: {}.", e.getMessage(), query,
+                field, e);
+            throw e;
         } catch (Exception e) {
             log.error("Build query occurred an error: {}. Query: {}, Field: {}.", e.getMessage(), query, field, e);
         } finally {
@@ -140,8 +145,7 @@ public class QueryHelper {
         // 如果没有单独指定属性名，就和使用该注解的属性的名称一致
         // 注意：数据库规范中列采用下划线连接法命名，程序规范中变量采用驼峰法命名
         String property = queryAnnotation.property();
-        fieldName = StrUtil.blankToDefault(property, fieldName);
-        String columnName = StrUtil.toUnderlineCase(fieldName);
+        String columnName = StrUtil.toUnderlineCase(StrUtil.blankToDefault(property, fieldName));
         Query.Type queryType = queryAnnotation.type();
         switch (queryType) {
             case EQUAL:
@@ -164,9 +168,8 @@ public class QueryHelper {
                 break;
             case BETWEEN:
                 List<Object> between = new ArrayList<>((List<Object>)fieldValue);
-                if (between.size() >= 2) {
-                    queryWrapper.between(columnName, between.get(0), between.get(1));
-                }
+                ValidationUtils.throwIf(between.size() != 2, "[{}] 必须是一个范围", fieldName);
+                queryWrapper.between(columnName, between.get(0), between.get(1));
                 break;
             case LEFT_LIKE:
                 queryWrapper.likeLeft(columnName, fieldValue);
@@ -178,14 +181,12 @@ public class QueryHelper {
                 queryWrapper.likeRight(columnName, fieldValue);
                 break;
             case IN:
-                if (CollUtil.isNotEmpty((List<Object>)fieldValue)) {
-                    queryWrapper.in(columnName, (List<Object>)fieldValue);
-                }
+                ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", fieldName);
+                queryWrapper.in(columnName, (List<Object>)fieldValue);
                 break;
             case NOT_IN:
-                if (CollUtil.isNotEmpty((List<Object>)fieldValue)) {
-                    queryWrapper.notIn(columnName, (List<Object>)fieldValue);
-                }
+                ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", fieldName);
+                queryWrapper.notIn(columnName, (List<Object>)fieldValue);
                 break;
             case IS_NULL:
                 queryWrapper.isNull(columnName);

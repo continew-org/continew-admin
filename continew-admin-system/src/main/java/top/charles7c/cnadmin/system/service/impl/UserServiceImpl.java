@@ -238,7 +238,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     public UserDO getByUsername(String username) {
-        return baseMapper.lambdaQuery().eq(UserDO::getUsername, username).one();
+        return baseMapper.selectByUsername(username);
     }
 
     @Override
