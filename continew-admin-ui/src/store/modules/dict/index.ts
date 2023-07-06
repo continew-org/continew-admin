@@ -6,7 +6,7 @@ const useDictStore = defineStore('dict', {
   actions: {
     // 获取字典
     getDict(_name: string) {
-      if (_name === null && _name === '') {
+      if (_name == null || _name === '') {
         return null;
       }
       try {
