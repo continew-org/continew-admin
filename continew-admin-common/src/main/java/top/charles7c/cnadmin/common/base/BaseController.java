@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.common.base;
 
+import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -76,7 +78,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping
     public R<PageDataVO<V>> page(@Validated Q query, @Validated PageQuery pageQuery) {
-        this.checkPermission("list");
+        this.checkPermission(Api.LIST);
         PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
         return R.ok(pageDataVO);
     }
@@ -94,7 +96,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/tree")
     public R<List<Tree<Long>>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
-        this.checkPermission("list");
+        this.checkPermission(Api.LIST);
         List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
         return R.ok(list);
     }
@@ -112,7 +114,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/list")
     public R<List<V>> list(@Validated Q query, @Validated SortQuery sortQuery) {
-        this.checkPermission("list");
+        this.checkPermission(Api.LIST);
         List<V> list = baseService.list(query, sortQuery);
         return R.ok(list);
     }
@@ -129,7 +131,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @GetMapping("/{id}")
     public R<D> get(@PathVariable Long id) {
-        this.checkPermission("list");
+        this.checkPermission(Api.LIST);
         D detail = baseService.get(id);
         return R.ok(detail);
     }
@@ -145,7 +147,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @PostMapping
     public R<Long> add(@Validated(BaseRequest.Add.class) @RequestBody C request) {
-        this.checkPermission("add");
+        this.checkPermission(Api.ADD);
         Long id = baseService.add(request);
         return R.ok("新增成功", id);
     }
@@ -163,7 +165,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @PutMapping("/{id}")
     public R update(@Validated(BaseRequest.Update.class) @RequestBody C request, @PathVariable Long id) {
-        this.checkPermission("update");
+        this.checkPermission(Api.UPDATE);
         baseService.update(request, id);
         return R.ok("修改成功");
     }
@@ -180,7 +182,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @ResponseBody
     @DeleteMapping("/{ids}")
     public R delete(@PathVariable List<Long> ids) {
-        this.checkPermission("delete");
+        this.checkPermission(Api.DELETE);
         baseService.delete(ids);
         return R.ok("删除成功");
     }
@@ -198,20 +200,20 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "导出数据")
     @GetMapping("/export")
     public void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
-        this.checkPermission("export");
+        this.checkPermission(Api.EXPORT);
         baseService.export(query, sortQuery, response);
     }
 
     /**
-     * 权限认证
+     * 根据 API 类型进行权限验证
      *
-     * @param subPermission
-     *            部分权限码
+     * @param api
+     *            API 类型
      */
-    private void checkPermission(String subPermission) {
+    private void checkPermission(Api api) {
         CrudRequestMapping crudRequestMapping = this.getClass().getDeclaredAnnotation(CrudRequestMapping.class);
         String path = crudRequestMapping.value();
         String permissionPrefix = String.join(StringConsts.COLON, StrUtil.splitTrim(path, StringConsts.SLASH));
-        StpUtil.checkPermission(String.format("%s:%s", permissionPrefix, subPermission));
+        StpUtil.checkPermission(String.format("%s:%s", permissionPrefix, api.name().toLowerCase()));
     }
 }
