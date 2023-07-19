@@ -248,7 +248,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     public String getNicknameById(Long id) {
-        return super.getById(id).getNickname();
+        return baseMapper.selectNicknameById(id);
     }
 
     /**
