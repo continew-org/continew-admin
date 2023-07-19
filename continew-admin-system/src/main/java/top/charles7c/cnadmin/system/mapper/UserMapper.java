@@ -54,4 +54,14 @@ public interface UserMapper extends BaseMapper<UserDO> {
      */
     @Select("SELECT * FROM `sys_user` WHERE `username` = #{username}")
     UserDO selectByUsername(@Param("username") String username);
+
+    /**
+     * 根据 ID 查询昵称
+     *
+     * @param id
+     *            ID
+     * @return 昵称
+     */
+    @Select("SELECT `nickname` FROM `sys_user` WHERE `id` = #{id}")
+    String selectNicknameById(@Param("id") Long id);
 }
