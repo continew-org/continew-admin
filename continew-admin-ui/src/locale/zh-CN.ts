@@ -5,6 +5,8 @@ import localeRole from '@/views/system/role/locale/zh-CN';
 import localeMenu from '@/views/system/menu/locale/zh-CN';
 import localeDept from '@/views/system/dept/locale/zh-CN';
 
+import localeGenerator from '@/views/tool/generator/locale/zh-CN';
+
 import localeOnlineUser from '@/views/monitor/online/locale/zh-CN';
 import localeLoginLog from '@/views/monitor/log/login/locale/zh-CN';
 import localeOperationLog from '@/views/monitor/log/operation/locale/zh-CN';
@@ -35,6 +37,7 @@ export default {
   'menu.server.dashboard': '仪表盘-服务端',
   'menu.server.workplace': '工作台-服务端',
   'menu.system': '系统管理',
+  'menu.tool': '系统工具',
   'menu.monitor': '系统监控',
   'menu.list': '列表页',
   'menu.form': '表单页',
@@ -55,6 +58,8 @@ export default {
   ...localeRole,
   ...localeMenu,
   ...localeDept,
+
+  ...localeGenerator,
 
   ...localeOnlineUser,
   ...localeLoginLog,

@@ -142,7 +142,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          └─ service       # 系统监控相关业务接口及实现类
   │      │             └─ impl         # 系统监控相关业务实现类
   │      └─ resources   # 工程配置目录
-  │         └─ mapper        # MyBatis Mapper XML 文件目录
+  │         └─ mapper       # MyBatis Mapper XML 文件目录
   ├─ continew-admin-system   # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
   │  └─ src
   │    └─ main
@@ -169,6 +169,28 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │             └─ impl        # 系统管理相关业务实现类
   │      └─ resources   # 工程配置目录
   │         └─ mapper        # MyBatis Mapper XML 文件目录
+  ├─ continew-admin-tool  # 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等）
+  │  └─ src
+  │    └─ main
+  │      ├─ java        # 工程源文件代码目录
+  │      │  └─ top
+  │      │    └─ charles7c
+  │      │      └─ cnadmin
+  │      │        └─ tool
+  │      │          ├─ mapper     # 系统工具相关 Mapper
+  │      │          ├─ model      # 系统工具相关模型
+  │      │          │  ├─ entity      # 系统工具相关实体对象
+  │      │          │  ├─ query       # 系统工具相关查询条件
+  │      │          │  ├─ request     # 系统工具相关请求对象
+  │      │          │  └─ vo          # 系统工具相关 VO（View Object）
+  │      │          └─ service    # 系统工具相关业务接口及实现类
+  │      │             └─ impl        # 系统工具相关业务实现类
+  │      └─ resources   # 工程配置目录
+  │        ├─ mapper        # MyBatis Mapper XML 文件目录
+  │        └─ templates     # 模板文件
+  │          └─ generator       # 代码生成器模板
+  │            ├─ admin-backend     # 管理系统后端模板
+  │            └─ admin-frontend    # 管理系统前端模板
   ├─ continew-admin-common   # 公共模块（存放公共工具类，公共配置等）
   │  └─ src
   │    └─ main
@@ -177,26 +199,26 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │          └─ charles7c
   │            └─ cnadmin
   │              └─ common
-  │                ├─ annotation   # 公共注解
-  │                ├─ base         # 公共基类
-  │                ├─ config       # 公共配置
+  │                ├─ annotation    # 公共注解
+  │                ├─ base          # 公共基类
+  │                ├─ config        # 公共配置
   │                │  ├─ easyexcel    # Easy Excel 配置
   │                │  ├─ jackson      # Jackson 配置
   │                │  ├─ mybatis      # MyBatis Plus 配置
   │                │  ├─ threadpool   # 线程池配置
   │                │  └─ properties   # 公共配置属性
-  │                ├─ constant     # 公共常量
-  │                ├─ enums        # 公共枚举
-  │                ├─ exception    # 公共异常
-  │                ├─ handler      # 公共处理器
-  │                ├─ model        # 公共模型
+  │                ├─ constant      # 公共常量
+  │                ├─ enums         # 公共枚举
+  │                ├─ exception     # 公共异常
+  │                ├─ handler       # 公共处理器
+  │                ├─ model         # 公共模型
   │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
   │                │  ├─ query        # 公共查询条件
   │                │  ├─ request      # 公共请求对象
   │                │  └─ vo           # 公共 VO（View Object）
-  │                ├─ service      # 公共业务接口
-  │                └─ util         # 公共工具类
-  │                  ├─ helper        # 公共 Helper（助手）
+  │                ├─ service       # 公共业务接口
+  │                └─ util          # 公共工具类
+  │                  ├─ helper      # 公共 Helper（助手）
   │                  ├─ holder        # 公共 Holder（持有者）
   │                  └─ validate      # 公共校验器（参数校验，业务校验）
 ```

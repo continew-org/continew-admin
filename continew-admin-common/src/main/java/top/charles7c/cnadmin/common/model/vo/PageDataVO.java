@@ -76,7 +76,7 @@ public class PageDataVO<V> implements Serializable {
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(BeanUtil.copyToList(page.getRecords(), targetClass));
-        pageDataVO.setTotal((int) page.getTotal());
+        pageDataVO.setTotal((int)page.getTotal());
         return pageDataVO;
     }
 
@@ -95,7 +95,7 @@ public class PageDataVO<V> implements Serializable {
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(page.getRecords());
-        pageDataVO.setTotal((int) page.getTotal());
+        pageDataVO.setTotal((int)page.getTotal());
         return pageDataVO;
     }
 

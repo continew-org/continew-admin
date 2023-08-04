@@ -5,6 +5,8 @@ import localeRole from '@/views/system/role/locale/en-US';
 import localeMenu from '@/views/system/menu/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
 
+import localeGenerator from '@/views/tool/generator/locale/en-US';
+
 import localeOnlineUser from '@/views/monitor/online/locale/en-US';
 import localeLoginLog from '@/views/monitor/log/login/locale/en-US';
 import localeOperationLog from '@/views/monitor/log/operation/locale/en-US';
@@ -35,6 +37,7 @@ export default {
   'menu.server.dashboard': 'Dashboard-Server',
   'menu.server.workplace': 'Workplace-Server',
   'menu.system': 'System management',
+  'menu.tool': 'Tool',
   'menu.monitor': 'Monitor',
   'menu.list': 'List',
   'menu.form': 'Form',
@@ -55,6 +58,8 @@ export default {
   ...localeRole,
   ...localeMenu,
   ...localeDept,
+
+  ...localeGenerator,
 
   ...localeOnlineUser,
   ...localeLoginLog,
