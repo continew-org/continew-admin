@@ -30,6 +30,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.Query;
+import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
@@ -146,7 +147,7 @@ public class QueryHelper {
         // 注意：数据库规范中列采用下划线连接法命名，程序规范中变量采用驼峰法命名
         String property = queryAnnotation.property();
         String columnName = StrUtil.toUnderlineCase(StrUtil.blankToDefault(property, fieldName));
-        Query.Type queryType = queryAnnotation.type();
+        QueryTypeEnum queryType = queryAnnotation.type();
         switch (queryType) {
             case EQUAL:
                 queryWrapper.eq(columnName, fieldValue);

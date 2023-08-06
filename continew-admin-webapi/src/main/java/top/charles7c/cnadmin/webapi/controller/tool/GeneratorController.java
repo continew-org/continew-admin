@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.webapi.controller.tool;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,12 +26,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
@@ -54,5 +57,11 @@ public class GeneratorController {
     @GetMapping("/table")
     public R<PageDataVO<TableVO>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
         return R.ok(generatorService.pageTable(query, pageQuery));
+    }
+
+    @Operation(summary = "查询列映射信息列表", description = "查询列映射信息列表")
+    @GetMapping("/column/{tableName}")
+    public R<List<ColumnMappingDO>> listColumnMapping(@PathVariable String tableName) {
+        return R.ok(generatorService.listColumnMapping(tableName));
     }
 }

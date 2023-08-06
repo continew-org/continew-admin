@@ -37,13 +37,22 @@ logging:
     enabled: true
     # 是否记录内网 IP 操作
     includeInnerIp: true
-    # 哪些请求方式不记录系统日志
+    # 排除请求方式
     #excludeMethods:
     #  - GET
     # 脱敏字段
     desensitizeFields:
       - password
       - Authorization
+
+--- ### 代码生成器配置
+generator:
+  # 排除数据表
+  excludeTables:
+    - DATABASECHANGELOG
+    - DATABASECHANGELOGLOCK
+    - gen_config
+    - gen_column_mapping
 
 --- ### 接口文档配置
 springdoc:

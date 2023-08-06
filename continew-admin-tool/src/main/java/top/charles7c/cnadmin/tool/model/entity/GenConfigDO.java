@@ -14,56 +14,85 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.tool.model.vo;
+package top.charles7c.cnadmin.tool.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
- * 表信息
+ * 生成配置实体
  *
  * @author Charles7c
  * @since 2023/4/12 20:21
  */
 @Data
-@Accessors(chain = true)
-@Schema(description = "表信息")
-public class TableVO implements Serializable {
+@TableName("gen_config")
+public class GenConfigDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @TableId
+    private Long id;
+
+    /**
      * 表名称
      */
-    @Schema(description = "表名称")
     private String tableName;
 
     /**
-     * 描述
+     * 模块名称
      */
-    @Schema(description = "描述")
-    private String comment;
+    private String moduleName;
 
     /**
-     * 存储引擎
+     * 包名称
      */
-    @Schema(description = "存储引擎")
-    private String engine;
+    private String packageName;
 
     /**
-     * 字符集
+     * 业务名称
      */
-    @Schema(description = "字符集")
-    private String charset;
+    private String businessName;
+
+    /**
+     * 作者
+     */
+    private String author;
+
+    /**
+     * 前端路径
+     */
+    private String frontendPath;
+
+    /**
+     * 表前缀
+     */
+    private String tablePrefix;
+
+    /**
+     * 是否覆盖
+     */
+    private Boolean isOverride;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 }

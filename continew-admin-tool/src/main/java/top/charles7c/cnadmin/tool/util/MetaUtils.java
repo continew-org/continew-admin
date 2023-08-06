@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.tool.util;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -28,6 +29,8 @@ import lombok.NoArgsConstructor;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
+import cn.hutool.db.meta.Column;
+import cn.hutool.db.meta.MetaUtil;
 
 /**
  * 数据库元数据信息工具类
@@ -58,5 +61,19 @@ public class MetaUtils {
             tableList.add(table);
         }
         return tableList;
+    }
+
+    /**
+     * 获取所有列信息
+     *
+     * @param dataSource
+     *            数据源
+     * @param tableName
+     *            表名称
+     * @return 列信息列表
+     */
+    public static Collection<Column> getColumns(DataSource dataSource, String tableName) {
+        cn.hutool.db.meta.Table table = MetaUtil.getTableMeta(dataSource, tableName);
+        return table.getColumns();
     }
 }

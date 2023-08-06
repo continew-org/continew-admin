@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.monitor.config.properties;
-
-import java.util.ArrayList;
-import java.util.List;
+package top.charles7c.cnadmin.tool.config.properties;
 
 import lombok.Data;
 
@@ -25,33 +22,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 系统日志配置属性
+ * 代码生成器配置属性
  *
  * @author Charles7c
- * @since 2022/12/24 23:04
+ * @since 2023/8/5 11:08
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "logging.system")
-public class LogProperties {
+@ConfigurationProperties(prefix = "generator")
+public class GeneratorProperties {
 
     /**
-     * 是否启用系统日志
+     * 排除数据表（哪些数据表不展示在代码生成中）
      */
-    private Boolean enabled;
-
-    /**
-     * 是否记录内网 IP 操作
-     */
-    private Boolean includeInnerIp;
-
-    /**
-     * 排除请求方式（哪些请求方式不记录系统日志）
-     */
-    private List<String> excludeMethods = new ArrayList<>();
-
-    /**
-     * 脱敏字段
-     */
-    private List<String> desensitizeFields = new ArrayList<>();
+    private String[] excludeTables;
 }

@@ -28,3 +28,41 @@ export function listTable(params: TableParam) {
     },
   });
 }
+
+export interface ColumnMappingRecord {
+  id: string;
+  tableName: string;
+  columnName: string;
+  columnType: string;
+  fieldName: string;
+  fieldType: string;
+  comment: string;
+  sort: number;
+  isRequired: boolean;
+  showInList: boolean;
+  showInAdd: boolean;
+  showInUpdate: boolean;
+  showInQuery: boolean;
+  formType: string;
+  queryType: string;
+  createTime: string;
+  updateTime: string;
+}
+
+export interface GenConfigRecord {
+  id: string;
+  tableName: string;
+  moduleName: string;
+  packageName: string;
+  frontendPath: string;
+  businessName: string;
+  author: string;
+  tablePrefix: string;
+  isOverride: boolean;
+  createTime: string;
+  updateTime: string;
+}
+
+export function listColumnMapping(tableName: string) {
+  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}`);
+}

@@ -36,6 +36,11 @@ public class StringConsts implements StrPool {
     public static final String EMPTY = "";
 
     /**
+     * 空格
+     */
+    public static final String SPACE = " ";
+
+    /**
      * 分号
      */
     public static final String SEMICOLON = ";";

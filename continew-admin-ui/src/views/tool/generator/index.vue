@@ -51,7 +51,9 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
+        row-key="tableName"
         :data="tableList"
+        :loading="loading"
         :row-selection="{
           type: 'checkbox',
           showCheckedAll: true,
@@ -63,10 +65,9 @@
           total: total,
           current: queryParams.page,
         }"
-        row-key="tableName"
         :bordered="false"
-        :stripe="true"
-        :loading="loading"
+        column-resizable
+        stripe
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
@@ -84,12 +85,20 @@
             :width="200"
             tooltip
           />
-          <a-table-column title="注释" data-index="comment" tooltip />
+          <a-table-column title="描述" data-index="comment" tooltip />
           <a-table-column title="存储引擎" data-index="engine" align="center" />
           <a-table-column title="字符集" data-index="charset" />
           <a-table-column title="创建时间" data-index="createTime" />
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
+              <a-button
+                type="text"
+                size="small"
+                title="配置"
+                @click="toConfig(record.tableName)"
+              >
+                <template #icon><icon-settings /></template>配置
+              </a-button>
               <a-button
                 type="text"
                 size="small"
@@ -102,23 +111,198 @@
           </a-table-column>
         </template>
       </a-table>
+
+      <!-- 表单区域 -->
+      <a-drawer
+        :title="title"
+        :visible="visible"
+        :width="1000"
+        :mask-closable="false"
+        :esc-to-close="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+        <a-card title="字段配置" class="field-config">
+          <a-table
+            ref="columnMappingRef"
+            :data="columnMappingList"
+            :loading="columnMappingLoading"
+            :pagination="false"
+            :bordered="false"
+            size="large"
+            :scroll="{
+              y: 400,
+            }"
+          >
+            <template #columns>
+              <a-table-column
+                title="名称"
+                data-index="fieldName"
+                :width="130"
+                ellipsis
+                tooltip
+              />
+              <a-table-column
+                title="类型"
+                data-index="fieldType"
+                :width="90"
+                ellipsis
+                tooltip
+              />
+              <a-table-column title="描述" data-index="comment" :width="170">
+                <template #cell="{ record }">
+                  <a-input v-model="record.comment" />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="必填"
+                data-index="isRequired"
+                :width="60"
+                align="center"
+              >
+                <template #cell="{ record }">
+                  <a-checkbox v-model="record.isRequired" value="true" />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="列表"
+                data-index="showInList"
+                :width="60"
+                align="center"
+              >
+                <template #cell="{ record }">
+                  <a-checkbox v-model="record.showInList" value="true" />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="新增"
+                data-index="showInAdd"
+                :width="60"
+                align="center"
+              >
+                <template #cell="{ record }">
+                  <a-checkbox v-model="record.showInAdd" value="true" />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="修改"
+                data-index="showInUpdate"
+                :width="60"
+                align="center"
+              >
+                <template #cell="{ record }">
+                  <a-checkbox v-model="record.showInUpdate" value="true" />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="表单类型"
+                data-index="formType"
+                :width="150"
+              >
+                <template #cell="{ record }">
+                  <a-select
+                    v-model="record.formType"
+                    :options="FormTypeEnum"
+                    placeholder="请选择表单类型"
+                  />
+                </template>
+              </a-table-column>
+              <a-table-column title="查询方式" data-index="queryType">
+                <template #cell="{ record }">
+                  <a-select
+                    v-model="record.queryType"
+                    :options="QueryTypeEnum"
+                    placeholder="请选择查询方式"
+                  />
+                </template>
+              </a-table-column>
+            </template>
+          </a-table>
+        </a-card>
+        <a-card title="生成配置" style="margin-top: 10px">
+          <a-form
+            ref="formRef"
+            :model="form"
+            :rules="rules"
+            class="gen-config"
+            size="large"
+          >
+            <a-form-item label="作者名称" field="author">
+              <a-input v-model="form.author" placeholder="请输入作者名称" />
+            </a-form-item>
+            <a-form-item label="业务名称" field="businessName">
+              <a-input
+                v-model="form.businessName"
+                placeholder="自定义业务名称，例如：用户"
+              />
+            </a-form-item>
+            <a-form-item label="所属模块" field="moduleName">
+              <a-input
+                v-model="form.moduleName"
+                placeholder="项目模块名称，例如：continew-admin-system"
+              />
+            </a-form-item>
+            <a-form-item label="模块包名" field="packageName">
+              <a-input
+                v-model="form.packageName"
+                placeholder="项目模块包名，例如：top.charles7c.cnadmin.system"
+              />
+            </a-form-item>
+            <a-form-item label="前端路径" field="frontendPath">
+              <a-input
+                v-model="form.frontendPath"
+                placeholder="前端项目 views 目录地址"
+              />
+            </a-form-item>
+            <a-form-item label="去表前缀" field="tablePrefix">
+              <a-input
+                v-model="form.tablePrefix"
+                placeholder="数据库表前缀，例如：sys_"
+              />
+            </a-form-item>
+            <a-form-item label="是否覆盖" field="isOverride">
+              <a-radio-group v-model="form.isOverride" type="button">
+                <a-radio :value="true">是</a-radio>
+                <a-radio :value="false">否</a-radio>
+              </a-radio-group>
+            </a-form-item>
+          </a-form>
+        </a-card>
+      </a-drawer>
     </a-card>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import { TableRecord, TableParam, listTable } from '@/api/tool/generator';
+  import {
+    TableRecord,
+    TableParam,
+    ColumnMappingRecord,
+    GenConfigRecord,
+    listTable,
+    listColumnMapping,
+  } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
+  const { FormTypeEnum, QueryTypeEnum } = proxy.useDict(
+    'FormTypeEnum',
+    'QueryTypeEnum'
+  );
 
   const tableList = ref<TableRecord[]>([]);
+  const columnMappingList = ref<ColumnMappingRecord[]>([]);
   const total = ref(0);
   const ids = ref<Array<string>>([]);
+  const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
   const showQuery = ref(true);
   const loading = ref(false);
+  const visible = ref(false);
+  const columnMappingLoading = ref(false);
 
   const data = reactive({
     // 查询参数
@@ -128,8 +312,17 @@
       size: 10,
       sort: ['createTime,desc', 'updateTime,desc'],
     },
+    // 表单数据
+    form: {} as GenConfigRecord,
+    // 表单验证规则
+    rules: {
+      author: [{ required: true, message: '请输入作者名称' }],
+      moduleName: [{ required: true, message: '请输入模块名称' }],
+      packageName: [{ required: true, message: '请输入包名称' }],
+      businessName: [{ required: true, message: '请输入业务名称' }],
+    },
   });
-  const { queryParams } = toRefs(data);
+  const { queryParams, form, rules } = toRefs(data);
 
   /**
    * 查询列表
@@ -148,6 +341,41 @@
       });
   };
   getList();
+
+  /**
+   * 打开配置对话框
+   *
+   * @param tableName 表名称
+   */
+  const toConfig = (tableName: string) => {
+    title.value = `${tableName} 配置`;
+    form.value.isOverride = false;
+    visible.value = true;
+    // 查询所有字段信息
+    columnMappingLoading.value = true;
+    listColumnMapping(tableName)
+      .then((res) => {
+        columnMappingList.value = res.data;
+      })
+      .finally(() => {
+        columnMappingLoading.value = false;
+      });
+  };
+
+  /**
+   * 确定
+   */
+  const handleOk = () => {
+    visible.value = false;
+    proxy.$message.info('功能尚在开发中');
+  };
+
+  /**
+   * 关闭配置
+   */
+  const handleCancel = () => {
+    visible.value = false;
+  };
 
   /**
    * 代码生成
@@ -207,8 +435,16 @@
 
 <script lang="ts">
   export default {
-    name: 'Role',
+    name: 'Generator',
   };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .field-config :deep(.arco-card-body) {
+    padding: 0;
+  }
+
+  :deep(.gen-config.arco-form) {
+    width: 50%;
+  }
+</style>

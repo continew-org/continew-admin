@@ -17,6 +17,8 @@
 package top.charles7c.cnadmin.tool.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -26,11 +28,21 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.meta.Column;
+
+import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
+import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
+import top.charles7c.cnadmin.tool.mapper.ColumnMappingMapper;
+import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
@@ -49,6 +61,8 @@ import top.charles7c.cnadmin.tool.util.Table;
 public class GeneratorServiceImpl implements GeneratorService {
 
     private final DataSource dataSource;
+    private final GeneratorProperties generatorProperties;
+    private final ColumnMappingMapper columnMappingMapper;
 
     @Override
     public PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
@@ -57,9 +71,29 @@ public class GeneratorServiceImpl implements GeneratorService {
         if (StrUtil.isNotBlank(tableName)) {
             tableList.removeIf(table -> !StrUtil.containsAny(table.getTableName(), tableName));
         }
-        tableList
-            .removeIf(table -> StrUtil.equalsAny(table.getTableName(), "DATABASECHANGELOG", "DATABASECHANGELOGLOCK"));
+        tableList.removeIf(table -> StrUtil.equalsAny(table.getTableName(), generatorProperties.getExcludeTables()));
         List<TableVO> tableVOList = BeanUtil.copyToList(tableList, TableVO.class);
         return PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
+    }
+
+    @Override
+    public List<ColumnMappingDO> listColumnMapping(String tableName) {
+        List<ColumnMappingDO> columnMappingList = columnMappingMapper
+            .selectList(Wrappers.lambdaQuery(ColumnMappingDO.class).eq(ColumnMappingDO::getTableName, tableName));
+        if (CollUtil.isEmpty(columnMappingList)) {
+            Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
+            columnMappingList = new ArrayList<>(columnList.size());
+            for (Column column : columnList) {
+                String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0];
+                boolean isRequired = !column.isPk() && !column.isNullable();
+                ColumnMappingDO columnMapping = new ColumnMappingDO().setTableName(tableName)
+                    .setColumnName(column.getName()).setColumnType(columnType.toLowerCase())
+                    .setComment(column.getComment()).setIsRequired(isRequired).setShowInList(true)
+                    .setShowInAdd(isRequired).setShowInUpdate(isRequired).setShowInQuery(isRequired)
+                    .setFormType(FormTypeEnum.TEXT).setQueryType(QueryTypeEnum.EQUAL);
+                columnMappingList.add(columnMapping);
+            }
+        }
+        return columnMappingList;
     }
 }

@@ -17,9 +17,11 @@
 package top.charles7c.cnadmin.tool.service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 
@@ -32,13 +34,22 @@ import top.charles7c.cnadmin.tool.model.vo.TableVO;
 public interface GeneratorService {
 
     /**
-     * 分页查询列表
+     * 分页查询表信息列表
      *
      * @param query
      *            查询条件
      * @param pageQuery
      *            分页查询条件
-     * @return 分页列表信息
+     * @return 表信息分页列表
      */
     PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
+
+    /**
+     * 查询列映射信息列表
+     *
+     * @param tableName
+     *            表名称
+     * @return 列映射信息列表
+     */
+    List<ColumnMappingDO> listColumnMapping(String tableName);
 }

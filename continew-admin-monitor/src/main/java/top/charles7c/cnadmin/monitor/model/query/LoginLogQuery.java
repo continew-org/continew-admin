@@ -28,6 +28,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
 import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 
 /**
  * 登录日志查询条件
@@ -52,7 +53,7 @@ public class LoginLogQuery implements Serializable {
      * 登录时间
      */
     @Schema(description = "登录时间")
-    @Query(type = Query.Type.BETWEEN)
+    @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
     private List<Date> createTime;
 }

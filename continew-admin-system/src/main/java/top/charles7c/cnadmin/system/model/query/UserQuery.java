@@ -28,6 +28,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
 import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 
 /**
  * 用户查询条件
@@ -59,7 +60,7 @@ public class UserQuery implements Serializable {
      * 创建时间
      */
     @Schema(description = "创建时间")
-    @Query(type = Query.Type.BETWEEN)
+    @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
     private List<Date> createTime;
 

@@ -28,6 +28,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import top.charles7c.cnadmin.common.annotation.Query;
 import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 
 /**
  * 操作日志查询条件
@@ -45,7 +46,7 @@ public class OperationLogQuery implements Serializable {
      * 操作内容
      */
     @Schema(description = "操作内容")
-    @Query(type = Query.Type.INNER_LIKE)
+    @Query(type = QueryTypeEnum.INNER_LIKE)
     private String description;
 
     /**
@@ -59,7 +60,7 @@ public class OperationLogQuery implements Serializable {
      * 操作时间
      */
     @Schema(description = "操作时间")
-    @Query(type = Query.Type.BETWEEN)
+    @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
     private List<Date> createTime;
 
