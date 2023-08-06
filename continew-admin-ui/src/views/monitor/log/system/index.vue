@@ -28,6 +28,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
+        :data="systemLogList"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -35,9 +36,9 @@
           total: total,
           current: queryParams.page,
         }"
-        :data="systemLogList"
         :bordered="false"
-        :stripe="true"
+        column-resizable
+        stripe
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
@@ -262,7 +263,6 @@
         :visible="exceptionDetailVisible"
         width="83%"
         :footer="false"
-        :mask-closable="false"
         top="30px"
         unmount-on-close
         render-to-body

@@ -96,19 +96,20 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
+        row-key="id"
         :data="menuList"
+        :loading="loading"
         :row-selection="{
           type: 'checkbox',
           showCheckedAll: true,
           onlyCurrent: false,
         }"
         :pagination="false"
+        :bordered="false"
         :default-expand-all-rows="true"
         :hide-expand-button-on-empty="true"
-        row-key="id"
-        :bordered="false"
-        :stripe="true"
-        :loading="loading"
+        column-resizable
+        stripe
         size="large"
         @select="handleSelect"
         @selection-change="handleSelectionChange"
@@ -193,6 +194,7 @@
         :visible="visible"
         :width="625"
         :mask-closable="false"
+        :esc-to-close="false"
         unmount-on-close
         render-to-body
         @ok="handleOk"

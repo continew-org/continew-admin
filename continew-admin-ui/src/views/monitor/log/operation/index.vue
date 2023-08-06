@@ -46,6 +46,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
+        :data="operationLogList"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -53,9 +54,9 @@
           total: total,
           current: queryParams.page,
         }"
-        :data="operationLogList"
         :bordered="false"
-        :stripe="true"
+        column-resizable
+        stripe
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"

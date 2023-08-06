@@ -120,7 +120,9 @@
           <!-- 列表区域 -->
           <a-table
             ref="tableRef"
+            row-key="id"
             :data="userList"
+            :loading="loading"
             :row-selection="{
               type: 'checkbox',
               showCheckedAll: true,
@@ -132,10 +134,9 @@
               total: total,
               current: queryParams.page,
             }"
-            row-key="id"
             :bordered="false"
-            :stripe="true"
-            :loading="loading"
+            column-resizable
+            stripe
             size="large"
             :scroll="{
               x: '120%',
@@ -283,6 +284,7 @@
         :visible="visible"
         :width="580"
         :mask-closable="false"
+        :esc-to-close="false"
         unmount-on-close
         render-to-body
         @ok="handleOk"
@@ -378,6 +380,7 @@
         title="分配角色"
         :visible="userRoleVisible"
         :mask-closable="false"
+        :esc-to-close="false"
         unmount-on-close
         render-to-body
         @ok="handleUpdateRole"

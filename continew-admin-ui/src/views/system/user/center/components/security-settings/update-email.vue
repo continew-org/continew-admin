@@ -37,6 +37,7 @@
     :title="$t('userCenter.securitySettings.updateEmail.modal.title')"
     :visible="visible"
     :mask-closable="false"
+    :esc-to-close="false"
     @ok="handleUpdate"
     @cancel="handleCancel"
   >

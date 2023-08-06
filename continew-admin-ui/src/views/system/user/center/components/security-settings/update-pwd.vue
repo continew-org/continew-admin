@@ -37,6 +37,7 @@
     :title="$t('userCenter.securitySettings.updatePwd.modal.title')"
     :visible="visible"
     :mask-closable="false"
+    :esc-to-close="false"
     @ok="handleUpdate"
     @cancel="handleCancel"
   >

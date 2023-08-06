@@ -93,7 +93,9 @@
       <!-- 列表区域 -->
       <a-table
         ref="tableRef"
+        row-key="id"
         :data="roleList"
+        :loading="loading"
         :row-selection="{
           type: 'checkbox',
           showCheckedAll: true,
@@ -105,10 +107,9 @@
           total: total,
           current: queryParams.page,
         }"
-        row-key="id"
         :bordered="false"
-        :stripe="true"
-        :loading="loading"
+        column-resizable
+        stripe
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
@@ -196,6 +197,7 @@
         :visible="visible"
         :width="580"
         :mask-closable="false"
+        :esc-to-close="false"
         unmount-on-close
         render-to-body
         @ok="handleOk"

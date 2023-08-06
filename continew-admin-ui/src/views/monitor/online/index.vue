@@ -37,6 +37,7 @@
       <a-table
         ref="tableRef"
         row-key="token"
+        :data="onlineUserList"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -44,9 +45,9 @@
           total: total,
           current: queryParams.page,
         }"
-        :data="onlineUserList"
         :bordered="false"
-        :stripe="true"
+        column-resizable
+        stripe
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
