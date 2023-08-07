@@ -112,16 +112,10 @@ public class ColumnMappingDO implements Serializable {
     private Boolean showInList;
 
     /**
-     * 是否在新增中显示
+     * 是否在表单中显示
      */
-    @Schema(description = "是否在新增中显示")
-    private Boolean showInAdd;
-
-    /**
-     * 是否在修改中显示
-     */
-    @Schema(description = "是否在修改中显示")
-    private Boolean showInUpdate;
+    @Schema(description = "是否在表单中显示")
+    private Boolean showInForm;
 
     /**
      * 是否在查询中显示

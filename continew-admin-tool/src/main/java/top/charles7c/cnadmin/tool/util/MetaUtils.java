@@ -27,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.meta.Column;
@@ -49,7 +50,27 @@ public class MetaUtils {
      * @return 表信息列表
      */
     public static List<Table> getTables(DataSource dataSource) throws SQLException {
-        List<Entity> tableEntityList = Db.use(dataSource).query("SHOW TABLE STATUS");
+        return getTables(dataSource, null);
+    }
+
+    /**
+     * 获取所有表信息
+     *
+     * @param dataSource
+     *            数据源
+     * @param tableName
+     *            表名称
+     * @return 表信息列表
+     */
+    public static List<Table> getTables(DataSource dataSource, String tableName) throws SQLException {
+        String querySql = "SHOW TABLE STATUS";
+        List<Entity> tableEntityList;
+        Db db = Db.use(dataSource);
+        if (StrUtil.isNotBlank(tableName)) {
+            tableEntityList = db.query(String.format("%s WHERE NAME = ?", querySql), tableName);
+        } else {
+            tableEntityList = db.query(querySql);
+        }
         List<Table> tableList = new ArrayList<>(tableEntityList.size());
         for (Entity tableEntity : tableEntityList) {
             Table table = new Table(tableEntity.getStr("NAME"));

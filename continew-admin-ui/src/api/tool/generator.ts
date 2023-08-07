@@ -40,13 +40,16 @@ export interface ColumnMappingRecord {
   sort: number;
   isRequired: boolean;
   showInList: boolean;
-  showInAdd: boolean;
-  showInUpdate: boolean;
+  showInForm: boolean;
   showInQuery: boolean;
   formType: string;
   queryType: string;
   createTime: string;
   updateTime: string;
+}
+
+export function listColumnMapping(tableName: string) {
+  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}`);
 }
 
 export interface GenConfigRecord {
@@ -63,6 +66,6 @@ export interface GenConfigRecord {
   updateTime: string;
 }
 
-export function listColumnMapping(tableName: string) {
-  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}`);
+export function getGenConfig(tableName: string) {
+  return axios.get<GenConfigRecord>(`${BASE_URL}/table/${tableName}`);
 }

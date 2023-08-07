@@ -22,6 +22,7 @@ import java.util.List;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 
@@ -41,8 +42,21 @@ public interface GeneratorService {
      * @param pageQuery
      *            分页查询条件
      * @return 表信息分页列表
+     * @throws SQLException
+     *             /
      */
     PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
+
+    /**
+     * 查询生成配置信息
+     *
+     * @param tableName
+     *            表名称
+     * @return 生成配置信息
+     * @throws SQLException
+     *             /
+     */
+    GenConfigDO getGenConfig(String tableName) throws SQLException;
 
     /**
      * 查询列映射信息列表

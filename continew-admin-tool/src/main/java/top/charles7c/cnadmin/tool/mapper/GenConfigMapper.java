@@ -16,6 +16,10 @@
 
 package top.charles7c.cnadmin.tool.mapper;
 
+import java.util.Date;
+
+import org.apache.ibatis.annotations.Param;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 
@@ -25,4 +29,14 @@ import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
  * @author Charles7c
  * @since 2023/4/12 23:56
  */
-public interface GenConfigMapper extends BaseMapper<GenConfigDO> {}
+public interface GenConfigMapper extends BaseMapper<GenConfigDO> {
+
+    /**
+     * 查询推荐作者名
+     *
+     * @param lessThanDate
+     *            截止时间
+     * @return 推荐作者名
+     */
+    String selectRecommendAuthor(@Param("lessThanDate") Date lessThanDate);
+}

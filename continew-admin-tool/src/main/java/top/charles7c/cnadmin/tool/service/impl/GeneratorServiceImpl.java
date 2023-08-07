@@ -32,6 +32,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 
@@ -42,7 +44,9 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 import top.charles7c.cnadmin.tool.mapper.ColumnMappingMapper;
+import top.charles7c.cnadmin.tool.mapper.GenConfigMapper;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
@@ -63,6 +67,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private final DataSource dataSource;
     private final GeneratorProperties generatorProperties;
     private final ColumnMappingMapper columnMappingMapper;
+    private final GenConfigMapper genConfigMapper;
 
     @Override
     public PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
@@ -74,6 +79,31 @@ public class GeneratorServiceImpl implements GeneratorService {
         tableList.removeIf(table -> StrUtil.equalsAny(table.getTableName(), generatorProperties.getExcludeTables()));
         List<TableVO> tableVOList = BeanUtil.copyToList(tableList, TableVO.class);
         return PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
+    }
+
+    @Override
+    public GenConfigDO getGenConfig(String tableName) throws SQLException {
+        GenConfigDO genConfig =
+            genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableName));
+        if (null == genConfig) {
+            genConfig = new GenConfigDO().setTableName(tableName);
+            String packageName = ClassUtil.getPackage(GeneratorService.class);
+            genConfig.setPackageName(StrUtil.subBefore(packageName, StringConsts.DOT, true));
+            List<Table> tableList = MetaUtils.getTables(dataSource, tableName);
+            if (CollUtil.isNotEmpty(tableList)) {
+                Table table = tableList.get(0);
+                genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConsts.EMPTY));
+            }
+            String recommendAuthor = genConfigMapper.selectRecommendAuthor(DateUtil.lastWeek().toJdkDate());
+            if (StrUtil.isNotBlank(recommendAuthor)) {
+                genConfig.setAuthor(recommendAuthor);
+            }
+            int underLineIndex = StrUtil.indexOf(tableName, StringConsts.C_UNDERLINE);
+            if (-1 != underLineIndex) {
+                genConfig.setTablePrefix(StrUtil.subPre(tableName, underLineIndex + 1));
+            }
+        }
+        return genConfig;
     }
 
     @Override
@@ -89,8 +119,9 @@ public class GeneratorServiceImpl implements GeneratorService {
                 ColumnMappingDO columnMapping = new ColumnMappingDO().setTableName(tableName)
                     .setColumnName(column.getName()).setColumnType(columnType.toLowerCase())
                     .setComment(column.getComment()).setIsRequired(isRequired).setShowInList(true)
-                    .setShowInAdd(isRequired).setShowInUpdate(isRequired).setShowInQuery(isRequired)
-                    .setFormType(FormTypeEnum.TEXT).setQueryType(QueryTypeEnum.EQUAL);
+                    .setShowInForm(isRequired).setShowInQuery(isRequired).setFormType(FormTypeEnum.TEXT);
+                columnMapping.setQueryType(
+                    "String".equals(columnMapping.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
                 columnMappingList.add(columnMapping);
             }
         }

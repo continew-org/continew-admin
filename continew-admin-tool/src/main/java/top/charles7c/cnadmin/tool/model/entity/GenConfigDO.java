@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -34,6 +37,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @Data
 @TableName("gen_config")
+@Accessors(chain = true)
+@Schema(description = "生成配置信息")
 public class GenConfigDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,57 +47,68 @@ public class GenConfigDO implements Serializable {
      * ID
      */
     @TableId
+    @Schema(description = "ID")
     private Long id;
 
     /**
      * 表名称
      */
+    @Schema(description = "表名称")
     private String tableName;
 
     /**
      * 模块名称
      */
+    @Schema(description = "模块名称")
     private String moduleName;
 
     /**
      * 包名称
      */
+    @Schema(description = "包名称")
     private String packageName;
+
+    /**
+     * 前端路径
+     */
+    @Schema(description = "前端路径")
+    private String frontendPath;
 
     /**
      * 业务名称
      */
+    @Schema(description = "业务名称")
     private String businessName;
 
     /**
      * 作者
      */
+    @Schema(description = "作者")
     private String author;
-
-    /**
-     * 前端路径
-     */
-    private String frontendPath;
 
     /**
      * 表前缀
      */
+    @Schema(description = "表前缀")
     private String tablePrefix;
 
     /**
      * 是否覆盖
      */
+    @Schema(description = "是否覆盖")
     private Boolean isOverride;
 
     /**
      * 创建时间
      */
+    @Schema(description = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
+    @Schema(description = "修改时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

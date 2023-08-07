@@ -125,6 +125,19 @@
         @cancel="handleCancel"
       >
         <a-card title="字段配置" class="field-config">
+          <template #extra>
+            <a-space>
+              <a-button
+                type="primary"
+                status="success"
+                size="small"
+                title="同步"
+                disabled
+              >
+                <template #icon><icon-sync /></template>同步
+              </a-button>
+            </a-space>
+          </template>
           <a-table
             ref="columnMappingRef"
             :data="columnMappingList"
@@ -157,16 +170,6 @@
                 </template>
               </a-table-column>
               <a-table-column
-                title="必填"
-                data-index="isRequired"
-                :width="60"
-                align="center"
-              >
-                <template #cell="{ record }">
-                  <a-checkbox v-model="record.isRequired" value="true" />
-                </template>
-              </a-table-column>
-              <a-table-column
                 title="列表"
                 data-index="showInList"
                 :width="60"
@@ -177,23 +180,34 @@
                 </template>
               </a-table-column>
               <a-table-column
-                title="新增"
-                data-index="showInAdd"
+                title="表单"
+                data-index="showInForm"
                 :width="60"
                 align="center"
               >
                 <template #cell="{ record }">
-                  <a-checkbox v-model="record.showInAdd" value="true" />
+                  <a-checkbox v-model="record.showInForm" value="true" />
                 </template>
               </a-table-column>
               <a-table-column
-                title="修改"
-                data-index="showInUpdate"
+                title="必填"
+                data-index="isRequired"
                 :width="60"
                 align="center"
               >
                 <template #cell="{ record }">
-                  <a-checkbox v-model="record.showInUpdate" value="true" />
+                  <a-checkbox v-if="record.showInForm" v-model="record.isRequired" value="true" />
+                  <a-checkbox v-else disabled />
+                </template>
+              </a-table-column>
+              <a-table-column
+                title="查询"
+                data-index="showInQuery"
+                :width="60"
+                align="center"
+              >
+                <template #cell="{ record }">
+                  <a-checkbox v-model="record.showInQuery" value="true" />
                 </template>
               </a-table-column>
               <a-table-column
@@ -203,19 +217,23 @@
               >
                 <template #cell="{ record }">
                   <a-select
+                    v-if="record.showInForm || record.showInQuery"
                     v-model="record.formType"
                     :options="FormTypeEnum"
                     placeholder="请选择表单类型"
                   />
+                  <span v-else>无需设置</span>
                 </template>
               </a-table-column>
               <a-table-column title="查询方式" data-index="queryType">
                 <template #cell="{ record }">
                   <a-select
+                    v-if="record.showInQuery"
                     v-model="record.queryType"
                     :options="QueryTypeEnum"
                     placeholder="请选择查询方式"
                   />
+                  <span v-else>无需设置</span>
                 </template>
               </a-table-column>
             </template>
@@ -284,6 +302,7 @@
     GenConfigRecord,
     listTable,
     listColumnMapping,
+    getGenConfig,
   } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
@@ -348,10 +367,13 @@
    * @param tableName 表名称
    */
   const toConfig = (tableName: string) => {
-    title.value = `${tableName} 配置`;
-    form.value.isOverride = false;
+    let tableComment = tableList.value.filter(
+      (t) => t.tableName === tableName
+    )[0].comment;
+    tableComment = tableComment ? `（${tableComment}）` : ' ';
+    title.value = `${tableName}${tableComment}配置`;
     visible.value = true;
-    // 查询所有字段信息
+    // 查询列映射信息
     columnMappingLoading.value = true;
     listColumnMapping(tableName)
       .then((res) => {
@@ -360,6 +382,11 @@
       .finally(() => {
         columnMappingLoading.value = false;
       });
+    // 查询生成配置
+    getGenConfig(tableName).then((res) => {
+      form.value = res.data;
+      form.value.isOverride = false;
+    });
   };
 
   /**

@@ -34,6 +34,7 @@ import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
@@ -57,6 +58,12 @@ public class GeneratorController {
     @GetMapping("/table")
     public R<PageDataVO<TableVO>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
         return R.ok(generatorService.pageTable(query, pageQuery));
+    }
+
+    @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
+    @GetMapping("/table/{tableName}")
+    public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
+        return R.ok(generatorService.getGenConfig(tableName));
     }
 
     @Operation(summary = "查询列映射信息列表", description = "查询列映射信息列表")
