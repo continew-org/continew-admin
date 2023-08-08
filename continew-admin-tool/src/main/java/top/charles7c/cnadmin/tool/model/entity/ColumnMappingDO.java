@@ -19,14 +19,16 @@ package top.charles7c.cnadmin.tool.model.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import cn.hutool.core.util.StrUtil;
@@ -44,6 +46,7 @@ import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
  */
 @Data
 @TableName("gen_column_mapping")
+@NoArgsConstructor
 @Accessors(chain = true)
 @Schema(description = "列映射信息")
 public class ColumnMappingDO implements Serializable {
@@ -51,40 +54,38 @@ public class ColumnMappingDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
-     */
-    @TableId
-    @Schema(description = "ID")
-    private Long id;
-
-    /**
      * 表名称
      */
     @Schema(description = "表名称")
+    @NotBlank(message = "表名称不能为空")
     private String tableName;
 
     /**
      * 列名称
      */
     @Schema(description = "列名称")
+    @NotBlank(message = "列名称不能为空")
     private String columnName;
 
     /**
      * 列类型
      */
     @Schema(description = "列类型")
+    @NotBlank(message = "列类型不能为空")
     private String columnType;
 
     /**
      * 字段名称
      */
     @Schema(description = "字段名称")
+    @NotBlank(message = "字段名称不能为空")
     private String fieldName;
 
     /**
      * 字段类型
      */
     @Schema(description = "字段类型")
+    @NotBlank(message = "字段类型不能为空")
     private String fieldType;
 
     /**
@@ -92,12 +93,6 @@ public class ColumnMappingDO implements Serializable {
      */
     @Schema(description = "注释")
     private String comment;
-
-    /**
-     * 排序
-     */
-    @Schema(description = "排序")
-    private Integer sort;
 
     /**
      * 是否必填
@@ -142,12 +137,9 @@ public class ColumnMappingDO implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /**
-     * 修改时间
-     */
-    @Schema(description = "修改时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    public ColumnMappingDO(String tableName) {
+        this.tableName = tableName;
+    }
 
     public ColumnMappingDO setColumnName(String columnName) {
         this.columnName = columnName;

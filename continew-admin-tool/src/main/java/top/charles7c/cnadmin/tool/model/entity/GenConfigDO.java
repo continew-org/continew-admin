@@ -19,15 +19,16 @@ package top.charles7c.cnadmin.tool.model.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 
 /**
  * 生成配置实体
@@ -37,6 +38,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  */
 @Data
 @TableName("gen_config")
+@NoArgsConstructor
 @Accessors(chain = true)
 @Schema(description = "生成配置信息")
 public class GenConfigDO implements Serializable {
@@ -44,28 +46,25 @@ public class GenConfigDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
-     */
-    @TableId
-    @Schema(description = "ID")
-    private Long id;
-
-    /**
      * 表名称
      */
+    @TableId(type = IdType.INPUT)
     @Schema(description = "表名称")
+    @NotBlank(message = "表名称不能为空")
     private String tableName;
 
     /**
      * 模块名称
      */
     @Schema(description = "模块名称")
+    @NotBlank(message = "模块名称不能为空")
     private String moduleName;
 
     /**
      * 包名称
      */
     @Schema(description = "包名称")
+    @NotBlank(message = "包名称不能为空")
     private String packageName;
 
     /**
@@ -78,12 +77,14 @@ public class GenConfigDO implements Serializable {
      * 业务名称
      */
     @Schema(description = "业务名称")
+    @NotBlank(message = "业务名称不能为空")
     private String businessName;
 
     /**
      * 作者
      */
     @Schema(description = "作者")
+    @NotBlank(message = "作者名称不能为空")
     private String author;
 
     /**
@@ -96,6 +97,7 @@ public class GenConfigDO implements Serializable {
      * 是否覆盖
      */
     @Schema(description = "是否覆盖")
+    @NotNull(message = "是否覆盖不能为空")
     private Boolean isOverride;
 
     /**
@@ -111,4 +113,8 @@ public class GenConfigDO implements Serializable {
     @Schema(description = "修改时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    public GenConfigDO(String tableName) {
+        this.tableName = tableName;
+    }
 }

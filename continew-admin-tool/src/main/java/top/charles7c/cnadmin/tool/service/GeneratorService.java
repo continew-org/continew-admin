@@ -24,6 +24,7 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
+import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 
 /**
@@ -66,4 +67,14 @@ public interface GeneratorService {
      * @return 列映射信息列表
      */
     List<ColumnMappingDO> listColumnMapping(String tableName);
+
+    /**
+     * 保存代码生成配置信息
+     *
+     * @param request
+     *            代码生成配置信息
+     * @param tableName
+     *            表名称
+     */
+    void saveConfig(GenConfigRequest request, String tableName);
 }

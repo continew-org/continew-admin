@@ -153,14 +153,14 @@
               <a-table-column
                 title="名称"
                 data-index="fieldName"
-                :width="130"
+                :width="125"
                 ellipsis
                 tooltip
               />
               <a-table-column
                 title="类型"
                 data-index="fieldType"
-                :width="90"
+                :width="95"
                 ellipsis
                 tooltip
               />
@@ -303,6 +303,8 @@
     listTable,
     listColumnMapping,
     getGenConfig,
+    GeneratorConfigRecord,
+    saveConfig,
   } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
@@ -333,15 +335,16 @@
     },
     // 表单数据
     form: {} as GenConfigRecord,
+    config: {} as GeneratorConfigRecord,
     // 表单验证规则
     rules: {
       author: [{ required: true, message: '请输入作者名称' }],
-      moduleName: [{ required: true, message: '请输入模块名称' }],
-      packageName: [{ required: true, message: '请输入包名称' }],
+      moduleName: [{ required: true, message: '请输入所属模块' }],
+      packageName: [{ required: true, message: '请输入模块包名' }],
       businessName: [{ required: true, message: '请输入业务名称' }],
     },
   });
-  const { queryParams, form, rules } = toRefs(data);
+  const { queryParams, form, rules, config } = toRefs(data);
 
   /**
    * 查询列表
@@ -393,8 +396,17 @@
    * 确定
    */
   const handleOk = () => {
-    visible.value = false;
-    proxy.$message.info('功能尚在开发中');
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        config.value.columnMappings = columnMappingList.value;
+        config.value.genConfig = form.value;
+        saveConfig(form.value.tableName, config.value).then((res) => {
+          handleCancel();
+          getList();
+          proxy.$message.success(res.msg);
+        });
+      }
+    });
   };
 
   /**
@@ -402,6 +414,8 @@
    */
   const handleCancel = () => {
     visible.value = false;
+    proxy.$refs.formRef?.resetFields();
+    columnMappingList.value = [];
   };
 
   /**
@@ -410,7 +424,7 @@
    * @param tableName 表名称
    */
   const toGenerate = (tableName: string) => {
-    proxy.$message.info(tableName);
+    proxy.$message.info('功能尚在开发中');
   };
 
   /**

@@ -27,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
@@ -41,6 +41,7 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 import top.charles7c.cnadmin.tool.mapper.ColumnMappingMapper;
@@ -48,6 +49,7 @@ import top.charles7c.cnadmin.tool.mapper.GenConfigMapper;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
+import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
 import top.charles7c.cnadmin.tool.model.vo.TableVO;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
 import top.charles7c.cnadmin.tool.util.MetaUtils;
@@ -83,21 +85,25 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     public GenConfigDO getGenConfig(String tableName) throws SQLException {
-        GenConfigDO genConfig =
-            genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableName));
+        GenConfigDO genConfig = genConfigMapper.selectById(tableName);
         if (null == genConfig) {
-            genConfig = new GenConfigDO().setTableName(tableName);
+            genConfig = new GenConfigDO(tableName);
+            // 默认包名（当前包名）
             String packageName = ClassUtil.getPackage(GeneratorService.class);
             genConfig.setPackageName(StrUtil.subBefore(packageName, StringConsts.DOT, true));
+            // 默认业务名（表注释）
             List<Table> tableList = MetaUtils.getTables(dataSource, tableName);
             if (CollUtil.isNotEmpty(tableList)) {
                 Table table = tableList.get(0);
                 genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConsts.EMPTY));
             }
-            String recommendAuthor = genConfigMapper.selectRecommendAuthor(DateUtil.lastWeek().toJdkDate());
-            if (StrUtil.isNotBlank(recommendAuthor)) {
-                genConfig.setAuthor(recommendAuthor);
+            // 默认作者名称（上次保存使用的作者名称）
+            GenConfigDO lastGenConfig = genConfigMapper.selectOne(
+                Wrappers.lambdaQuery(GenConfigDO.class).orderByDesc(GenConfigDO::getCreateTime).last("LIMIT 1"));
+            if (null != lastGenConfig) {
+                genConfig.setAuthor(lastGenConfig.getAuthor());
             }
+            // 默认表前缀（sys_user -> sys_）
             int underLineIndex = StrUtil.indexOf(tableName, StringConsts.C_UNDERLINE);
             if (-1 != underLineIndex) {
                 genConfig.setTablePrefix(StrUtil.subPre(tableName, underLineIndex + 1));
@@ -116,15 +122,55 @@ public class GeneratorServiceImpl implements GeneratorService {
             for (Column column : columnList) {
                 String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0];
                 boolean isRequired = !column.isPk() && !column.isNullable();
-                ColumnMappingDO columnMapping = new ColumnMappingDO().setTableName(tableName)
-                    .setColumnName(column.getName()).setColumnType(columnType.toLowerCase())
-                    .setComment(column.getComment()).setIsRequired(isRequired).setShowInList(true)
-                    .setShowInForm(isRequired).setShowInQuery(isRequired).setFormType(FormTypeEnum.TEXT);
+                ColumnMappingDO columnMapping = new ColumnMappingDO(tableName).setColumnName(column.getName())
+                    .setColumnType(columnType.toLowerCase()).setComment(column.getComment()).setIsRequired(isRequired)
+                    .setShowInList(true).setShowInForm(isRequired).setShowInQuery(isRequired)
+                    .setFormType(FormTypeEnum.TEXT);
                 columnMapping.setQueryType(
                     "String".equals(columnMapping.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
                 columnMappingList.add(columnMapping);
             }
         }
         return columnMappingList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveConfig(GenConfigRequest request, String tableName) {
+        // 保存列映射信息
+        columnMappingMapper
+            .delete(Wrappers.lambdaQuery(ColumnMappingDO.class).eq(ColumnMappingDO::getTableName, tableName));
+        List<ColumnMappingDO> columnMappingList = request.getColumnMappings();
+        for (ColumnMappingDO columnMapping : columnMappingList) {
+            if (columnMapping.getShowInForm()) {
+                CheckUtils.throwIfNull(columnMapping.getFormType(), "字段 [{}] 的表单类型不能为空", columnMapping.getFieldName());
+            } else {
+                // 在表单中不显示，不需要设置必填
+                columnMapping.setIsRequired(false);
+            }
+            if (columnMapping.getShowInQuery()) {
+                CheckUtils.throwIfNull(columnMapping.getFormType(), "字段 [{}] 的表单类型不能为空", columnMapping.getFieldName());
+                CheckUtils.throwIfNull(columnMapping.getQueryType(), "字段 [{}] 的查询方式不能为空", columnMapping.getFieldName());
+            } else {
+                // 在查询中不显示，不需要设置查询方式
+                columnMapping.setQueryType(null);
+            }
+            // 既不在表单也不在查询中显示，不需要设置表单类型
+            if (!columnMapping.getShowInForm() && !columnMapping.getShowInQuery()) {
+                columnMapping.setFormType(null);
+            }
+            columnMapping.setTableName(tableName);
+        }
+        columnMappingMapper.insertBatch(columnMappingList);
+
+        // 保存或更新生成配置信息
+        GenConfigDO newGenConfig = request.getGenConfig();
+        GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);
+        if (null != oldGenConfig) {
+            BeanUtil.copyProperties(newGenConfig, oldGenConfig);
+            genConfigMapper.updateById(oldGenConfig);
+        } else {
+            genConfigMapper.insert(newGenConfig);
+        }
     }
 }

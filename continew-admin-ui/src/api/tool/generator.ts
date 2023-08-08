@@ -30,14 +30,12 @@ export function listTable(params: TableParam) {
 }
 
 export interface ColumnMappingRecord {
-  id: string;
   tableName: string;
   columnName: string;
   columnType: string;
   fieldName: string;
   fieldType: string;
   comment: string;
-  sort: number;
   isRequired: boolean;
   showInList: boolean;
   showInForm: boolean;
@@ -53,7 +51,6 @@ export function listColumnMapping(tableName: string) {
 }
 
 export interface GenConfigRecord {
-  id: string;
   tableName: string;
   moduleName: string;
   packageName: string;
@@ -68,4 +65,13 @@ export interface GenConfigRecord {
 
 export function getGenConfig(tableName: string) {
   return axios.get<GenConfigRecord>(`${BASE_URL}/table/${tableName}`);
+}
+
+export interface GeneratorConfigRecord {
+  genConfig: GenConfigRecord;
+  columnMappings: ColumnMappingRecord[];
+}
+
+export function saveConfig(tableName: string, req: GeneratorConfigRecord) {
+  return axios.post(`${BASE_URL}/table/${tableName}`, req);
 }
