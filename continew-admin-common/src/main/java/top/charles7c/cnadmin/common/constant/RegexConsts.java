@@ -49,4 +49,9 @@ public class RegexConsts implements RegexPool {
      * 通用名称正则（长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线）
      */
     public static final String GENERAL_NAME = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{1,20}$";
+
+    /**
+     * 包名正则（可以包含大小写字母、数字、下划线，每一级包名不能以数字开头）
+     */
+    public static final String PACKAGE_NAME = "^(?:[a-zA-Z_][a-zA-Z0-9_]*\\.)*[a-zA-Z_][a-zA-Z0-9_]*$";
 }

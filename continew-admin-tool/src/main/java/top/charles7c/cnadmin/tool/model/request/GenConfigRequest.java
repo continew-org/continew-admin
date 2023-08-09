@@ -20,6 +20,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,11 +46,13 @@ public class GenConfigRequest implements Serializable {
      * 列映射信息列表
      */
     @Schema(description = "列映射信息列表")
+    @NotEmpty(message = "列映射信息不能为空")
     private List<ColumnMappingDO> columnMappings = new ArrayList<>();
 
     /**
      * 生成配置信息
      */
     @Schema(description = "生成配置信息")
+    @NotNull(message = "生成配置信息不能为空")
     private GenConfigDO genConfig;
 }

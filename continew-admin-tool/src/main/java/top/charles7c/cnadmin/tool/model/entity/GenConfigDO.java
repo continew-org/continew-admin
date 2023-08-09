@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,11 @@ import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.baomidou.mybatisplus.annotation.*;
+
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 
 /**
  * 生成配置实体
@@ -58,6 +63,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "模块名称")
     @NotBlank(message = "模块名称不能为空")
+    @Length(max = 60, message = "模块名称不能超过 {max} 个字符")
     private String moduleName;
 
     /**
@@ -65,12 +71,15 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "包名称")
     @NotBlank(message = "包名称不能为空")
+    @Pattern(regexp = RegexConsts.PACKAGE_NAME, message = "包名称格式错误")
+    @Length(max = 60, message = "包名称不能超过 {max} 个字符")
     private String packageName;
 
     /**
      * 前端路径
      */
     @Schema(description = "前端路径")
+    @Length(max = 255, message = "前端路径不能超过 {max} 个字符")
     private String frontendPath;
 
     /**
@@ -78,6 +87,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "业务名称")
     @NotBlank(message = "业务名称不能为空")
+    @Length(max = 50, message = "业务名称不能超过 {max} 个字符")
     private String businessName;
 
     /**
@@ -85,6 +95,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "作者")
     @NotBlank(message = "作者名称不能为空")
+    @Length(max = 100, message = "作者名称不能超过 {max} 个字符")
     private String author;
 
     /**
