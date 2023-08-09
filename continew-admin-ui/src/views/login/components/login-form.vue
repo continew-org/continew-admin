@@ -163,6 +163,7 @@
         })
         .catch(() => {
           getCaptcha();
+          form.value.captcha = '';
         })
         .finally(() => {
           loading.value = false;
