@@ -42,12 +42,11 @@ export interface ColumnMappingRecord {
   showInQuery: boolean;
   formType: string;
   queryType: string;
-  createTime: string;
-  updateTime: string;
+  createTime?: string;
 }
 
-export function listColumnMapping(tableName: string) {
-  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}`);
+export function listColumnMapping(tableName: string, requireSync: boolean) {
+  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}?requireSync=${requireSync}`);
 }
 
 export interface GenConfigRecord {
@@ -59,8 +58,8 @@ export interface GenConfigRecord {
   author: string;
   tablePrefix: string;
   isOverride: boolean;
-  createTime: string;
-  updateTime: string;
+  createTime?: string;
+  updateTime?: string;
 }
 
 export function getGenConfig(tableName: string) {

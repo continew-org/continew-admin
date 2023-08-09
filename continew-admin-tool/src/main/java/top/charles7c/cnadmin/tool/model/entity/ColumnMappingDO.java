@@ -23,6 +23,7 @@ import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,9 +33,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.db.meta.Column;
 import cn.hutool.setting.dialect.Props;
 import cn.hutool.setting.dialect.PropsUtil;
 
+import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 
@@ -137,8 +140,14 @@ public class ColumnMappingDO implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    public ColumnMappingDO(String tableName) {
-        this.tableName = tableName;
+    public ColumnMappingDO(@NonNull Column column) {
+        String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
+        boolean isRequired = !column.isPk() && !column.isNullable();
+        this.tableName = column.getTableName();
+        this.setColumnName(column.getName()).setColumnType(columnType).setComment(column.getComment())
+            .setIsRequired(isRequired).setShowInList(true).setShowInForm(isRequired).setShowInQuery(isRequired)
+            .setFormType(FormTypeEnum.TEXT);
+        this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
     }
 
     public ColumnMappingDO setColumnName(String columnName) {

@@ -17,9 +17,11 @@
 package top.charles7c.cnadmin.tool.service.impl;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -38,12 +40,10 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 
 import top.charles7c.cnadmin.common.constant.StringConsts;
-import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
-import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 import top.charles7c.cnadmin.tool.mapper.ColumnMappingMapper;
 import top.charles7c.cnadmin.tool.mapper.GenConfigMapper;
 import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
@@ -113,22 +113,34 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     @Override
-    public List<ColumnMappingDO> listColumnMapping(String tableName) {
+    public List<ColumnMappingDO> listColumnMapping(String tableName, Boolean requireSync) {
         List<ColumnMappingDO> columnMappingList = columnMappingMapper
             .selectList(Wrappers.lambdaQuery(ColumnMappingDO.class).eq(ColumnMappingDO::getTableName, tableName));
         if (CollUtil.isEmpty(columnMappingList)) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            columnMappingList = new ArrayList<>(columnList.size());
+            return columnList.stream().map(ColumnMappingDO::new).collect(Collectors.toList());
+        }
+
+        // 同步最新数据表列信息
+        if (requireSync) {
+            Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
+            // 移除已不存在的列映射信息
+            List<String> columnNameList = columnList.stream().map(Column::getName).collect(Collectors.toList());
+            columnMappingList.removeIf(column -> !columnNameList.contains(column.getColumnName()));
+            // 新增或更新列映射信息
+            Map<String, ColumnMappingDO> columnMappingMap = columnMappingList.stream()
+                .collect(Collectors.toMap(ColumnMappingDO::getColumnName, Function.identity(), (key1, key2) -> key2));
             for (Column column : columnList) {
-                String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0];
-                boolean isRequired = !column.isPk() && !column.isNullable();
-                ColumnMappingDO columnMapping = new ColumnMappingDO(tableName).setColumnName(column.getName())
-                    .setColumnType(columnType.toLowerCase()).setComment(column.getComment()).setIsRequired(isRequired)
-                    .setShowInList(true).setShowInForm(isRequired).setShowInQuery(isRequired)
-                    .setFormType(FormTypeEnum.TEXT);
-                columnMapping.setQueryType(
-                    "String".equals(columnMapping.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
-                columnMappingList.add(columnMapping);
+                ColumnMappingDO columnMapping = columnMappingMap.get(column.getName());
+                if (null != columnMapping) {
+                    // 更新已有列映射信息
+                    String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
+                    columnMapping.setColumnType(columnType).setComment(column.getComment());
+                } else {
+                    // 新增列映射信息
+                    columnMapping = new ColumnMappingDO(column);
+                    columnMappingList.add(columnMapping);
+                }
             }
         }
         return columnMappingList;

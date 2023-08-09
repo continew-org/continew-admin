@@ -66,8 +66,9 @@ public class GeneratorController {
 
     @Operation(summary = "查询列映射信息列表", description = "查询列映射信息列表")
     @GetMapping("/column/{tableName}")
-    public R<List<ColumnMappingDO>> listColumnMapping(@PathVariable String tableName) {
-        return R.ok(generatorService.listColumnMapping(tableName));
+    public R<List<ColumnMappingDO>> listColumnMapping(@PathVariable String tableName,
+        @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
+        return R.ok(generatorService.listColumnMapping(tableName, requireSync));
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")

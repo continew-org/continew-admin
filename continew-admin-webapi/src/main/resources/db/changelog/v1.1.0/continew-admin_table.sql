@@ -2,9 +2,9 @@
 
 -- changeset Charles7c:1
 CREATE TABLE IF NOT EXISTS `gen_config` (
-    `table_name` varchar(100) COMMENT '表名称',
-    `module_name` varchar(50) NOT NULL COMMENT '模块名称',
-    `package_name` varchar(50) NOT NULL COMMENT '包名称',
+    `table_name` varchar(64) COMMENT '表名称',
+    `module_name` varchar(60) NOT NULL COMMENT '模块名称',
+    `package_name` varchar(60) NOT NULL COMMENT '包名称',
     `frontend_path` varchar(255) DEFAULT NULL COMMENT '前端路径',
     `business_name` varchar(50) NOT NULL COMMENT '业务名称',
     `author` varchar(100) NOT NULL COMMENT '作者',
@@ -16,10 +16,10 @@ CREATE TABLE IF NOT EXISTS `gen_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='生成配置表';
 
 CREATE TABLE IF NOT EXISTS `gen_column_mapping` (
-    `table_name` varchar(100) NOT NULL COMMENT '表名称',
-    `column_name` varchar(50) NOT NULL COMMENT '列名称',
+    `table_name` varchar(64) NOT NULL COMMENT '表名称',
+    `column_name` varchar(64) NOT NULL COMMENT '列名称',
     `column_type` varchar(25) NOT NULL COMMENT '列类型',
-    `field_name` varchar(50) NOT NULL COMMENT '字段名称',
+    `field_name` varchar(64) NOT NULL COMMENT '字段名称',
     `field_type` varchar(25) NOT NULL COMMENT '字段类型',
     `comment` varchar(512) DEFAULT NULL COMMENT '注释',
     `is_required` bit(1) DEFAULT b'1' COMMENT '是否必填',

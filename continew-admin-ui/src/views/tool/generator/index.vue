@@ -126,17 +126,26 @@
       >
         <a-card title="字段配置" class="field-config">
           <template #extra>
-            <a-space>
-              <a-button
-                type="primary"
-                status="success"
-                size="small"
-                title="同步"
-                disabled
-              >
-                <template #icon><icon-sync /></template>同步
-              </a-button>
-            </a-space>
+            <a-popconfirm
+              content="确定要同步最新数据表结构吗？同步后只要不点击确定保存，则不影响原有配置数据。"
+              type="warning"
+              @ok="handleRefresh(form.tableName)"
+            >
+              <a-tooltip content="同步最新数据表结构">
+                <a-button
+                  type="primary"
+                  status="success"
+                  size="small"
+                  title="同步"
+                  :disabled="
+                    columnMappingList.length !== 0 &&
+                    columnMappingList[0].createTime === null
+                  "
+                >
+                  <template #icon><icon-sync /></template>同步
+                </a-button>
+              </a-tooltip>
+            </a-popconfirm>
           </template>
           <a-table
             ref="columnMappingRef"
@@ -377,19 +386,39 @@
     title.value = `${tableName}${tableComment}配置`;
     visible.value = true;
     // 查询列映射信息
+    getColumnMappingList(tableName, false);
+    // 查询生成配置
+    getGenConfig(tableName).then((res) => {
+      form.value = res.data;
+      form.value.isOverride = false;
+    });
+  };
+
+  /**
+   * 同步
+   *
+   * @param tableName 表名称
+   */
+  const handleRefresh = (tableName: string) => {
+    getColumnMappingList(tableName, true);
+  };
+
+  /**
+   * 查询列映射信息
+   *
+   * @param tableName 表名称
+   * @param requireSync 是否需要同步
+   */
+  const getColumnMappingList = (tableName: string, requireSync: boolean) => {
+    // 查询列映射信息
     columnMappingLoading.value = true;
-    listColumnMapping(tableName)
+    listColumnMapping(tableName, requireSync)
       .then((res) => {
         columnMappingList.value = res.data;
       })
       .finally(() => {
         columnMappingLoading.value = false;
       });
-    // 查询生成配置
-    getGenConfig(tableName).then((res) => {
-      form.value = res.data;
-      form.value.isOverride = false;
-    });
   };
 
   /**

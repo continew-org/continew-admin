@@ -64,9 +64,11 @@ public interface GeneratorService {
      *
      * @param tableName
      *            表名称
+     * @param requireSync
+     *            是否需要同步
      * @return 列映射信息列表
      */
-    List<ColumnMappingDO> listColumnMapping(String tableName);
+    List<ColumnMappingDO> listColumnMapping(String tableName, Boolean requireSync);
 
     /**
      * 保存代码生成配置信息
