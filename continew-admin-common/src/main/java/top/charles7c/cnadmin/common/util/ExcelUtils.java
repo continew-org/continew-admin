@@ -28,11 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.URLUtil;
 
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBigNumberConverter;
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 
 /**
@@ -79,7 +79,7 @@ public class ExcelUtils {
         HttpServletResponse response) {
         try {
             fileName =
-                String.format("%s_%s.xlsx", fileName, DateUtil.format(new Date(), StringConsts.PURE_DATE_TIME_PATTERN));
+                String.format("%s_%s.xlsx", fileName, DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN));
             fileName = URLUtil.encode(fileName);
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");

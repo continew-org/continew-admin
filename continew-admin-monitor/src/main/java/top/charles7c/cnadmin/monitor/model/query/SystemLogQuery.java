@@ -26,8 +26,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import cn.hutool.core.date.DatePattern;
+
 import top.charles7c.cnadmin.common.annotation.Query;
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 
 /**
@@ -47,6 +48,6 @@ public class SystemLogQuery implements Serializable {
      */
     @Schema(description = "创建时间")
     @Query(type = QueryTypeEnum.BETWEEN)
-    @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
+    @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;
 }

@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
+import cn.hutool.core.date.DatePattern;
 
 /**
  * 在线用户查询条件
@@ -50,6 +50,6 @@ public class OnlineUserQuery implements Serializable {
      * 登录时间
      */
     @Schema(description = "登录时间")
-    @DateTimeFormat(pattern = StringConsts.NORM_DATE_TIME_PATTERN)
+    @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> loginTime;
 }

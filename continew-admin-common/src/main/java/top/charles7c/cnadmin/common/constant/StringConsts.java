@@ -59,29 +59,4 @@ public class StringConsts implements StrPool {
      * 中文逗号
      */
     public static final String CHINESE_COMMA = "，";
-
-    /**
-     * 标准日期时间格式
-     */
-    public static final String NORM_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-
-    /**
-     * 标准日期时间格式（紧凑）
-     */
-    public static final String PURE_DATE_TIME_PATTERN = "yyyyMMddHHmmss";
-
-    /**
-     * 标准日期时间格式（紧凑，带毫秒）
-     */
-    public static final String PURE_DATE_TIME_MS_PATTERN = "yyyyMMddHHmmssSSS";
-
-    /**
-     * 标准日期格式
-     */
-    public static final String NORM_DATE_PATTERN = "yyyy-MM-dd";
-
-    /**
-     * 标准时间格式
-     */
-    public static final String NORM_TIME_PATTERN = "HH:mm:ss";
 }

@@ -25,11 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.IdUtil;
-
-import top.charles7c.cnadmin.common.constant.StringConsts;
 
 /**
  * 文件工具类
@@ -60,7 +59,7 @@ public class FileUtils {
         String fileName;
         if (isKeepOriginalFilename) {
             fileName = String.format("%s-%s.%s", FileNameUtil.getPrefix(originalFilename),
-                DateUtil.format(LocalDateTime.now(), StringConsts.PURE_DATE_TIME_MS_PATTERN), extensionName);
+                DateUtil.format(LocalDateTime.now(), DatePattern.PURE_DATETIME_MS_PATTERN), extensionName);
         } else {
             fileName = String.format("%s.%s", IdUtil.fastSimpleUUID(), extensionName);
         }
