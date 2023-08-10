@@ -42,17 +42,17 @@ import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 
 /**
- * 列映射实体
+ * 字段配置实体
  *
  * @author Charles7c
  * @since 2023/4/12 20:21
  */
 @Data
-@TableName("gen_column_mapping")
+@TableName("gen_field_config")
 @NoArgsConstructor
 @Accessors(chain = true)
-@Schema(description = "列映射信息")
-public class ColumnMappingDO implements Serializable {
+@Schema(description = "字段配置信息")
+public class FieldConfigDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -140,7 +140,7 @@ public class ColumnMappingDO implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    public ColumnMappingDO(@NonNull Column column) {
+    public FieldConfigDO(@NonNull Column column) {
         String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
         boolean isRequired = !column.isPk() && !column.isNullable();
         this.tableName = column.getTableName();
@@ -150,13 +150,13 @@ public class ColumnMappingDO implements Serializable {
         this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
     }
 
-    public ColumnMappingDO setColumnName(String columnName) {
+    public FieldConfigDO setColumnName(String columnName) {
         this.columnName = columnName;
         this.fieldName = StrUtil.toCamelCase(this.columnName);
         return this;
     }
 
-    public ColumnMappingDO setColumnType(String columnType) {
+    public FieldConfigDO setColumnType(String columnType) {
         this.columnType = columnType;
         Props generatorProp = PropsUtil.get("generator");
         this.fieldType = generatorProp.getStr(columnType);

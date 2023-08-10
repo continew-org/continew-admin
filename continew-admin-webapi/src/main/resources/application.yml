@@ -52,7 +52,7 @@ generator:
     - DATABASECHANGELOG
     - DATABASECHANGELOGLOCK
     - gen_config
-    - gen_column_mapping
+    - gen_field_config
 
 --- ### 接口文档配置
 springdoc:

@@ -16,13 +16,29 @@
 
 package top.charles7c.cnadmin.tool.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
-import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 
 /**
- * 列映射 Mapper
+ * 字段配置 Mapper
  *
  * @author Charles7c
  * @since 2023/4/12 23:56
  */
-public interface ColumnMappingMapper extends BaseMapper<ColumnMappingDO> {}
+public interface FieldConfigMapper extends BaseMapper<FieldConfigDO> {
+
+    /**
+     * 根据表名称查询
+     * 
+     * @param tableName
+     *            表名称
+     * @return 字段配置信息
+     */
+    @Select("SELECT * FROM `gen_field_config` WHERE `table_name` = #{tableName}")
+    List<FieldConfigDO> selectListByTableName(@Param("tableName") String tableName);
+}

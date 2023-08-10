@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
-import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
@@ -58,21 +58,21 @@ public class GeneratorController {
         return R.ok(generatorService.pageTable(query, pageQuery));
     }
 
+    @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
+    @GetMapping("/field/{tableName}")
+    public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
+        @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
+        return R.ok(generatorService.listFieldConfig(tableName, requireSync));
+    }
+
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
-    @GetMapping("/table/{tableName}")
+    @GetMapping("/config/{tableName}")
     public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
         return R.ok(generatorService.getGenConfig(tableName));
     }
 
-    @Operation(summary = "查询列映射信息列表", description = "查询列映射信息列表")
-    @GetMapping("/column/{tableName}")
-    public R<List<ColumnMappingDO>> listColumnMapping(@PathVariable String tableName,
-        @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
-        return R.ok(generatorService.listColumnMapping(tableName, requireSync));
-    }
-
     @Operation(summary = "保存配置信息", description = "保存配置信息")
-    @PostMapping("/table/{tableName}")
+    @PostMapping("/config/{tableName}")
     public R saveConfig(@Validated @RequestBody GenConfigRequest request, @PathVariable String tableName) {
         generatorService.saveConfig(request, tableName);
         return R.ok("保存成功");

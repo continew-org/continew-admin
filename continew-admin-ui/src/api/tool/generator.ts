@@ -29,7 +29,7 @@ export function listTable(params: TableParam) {
   });
 }
 
-export interface ColumnMappingRecord {
+export interface FieldConfigRecord {
   tableName: string;
   columnName: string;
   columnType: string;
@@ -45,8 +45,8 @@ export interface ColumnMappingRecord {
   createTime?: string;
 }
 
-export function listColumnMapping(tableName: string, requireSync: boolean) {
-  return axios.get<ColumnMappingRecord[]>(`${BASE_URL}/column/${tableName}?requireSync=${requireSync}`);
+export function listFieldConfig(tableName: string, requireSync: boolean) {
+  return axios.get<FieldConfigRecord[]>(`${BASE_URL}/field/${tableName}?requireSync=${requireSync}`);
 }
 
 export interface GenConfigRecord {
@@ -63,14 +63,14 @@ export interface GenConfigRecord {
 }
 
 export function getGenConfig(tableName: string) {
-  return axios.get<GenConfigRecord>(`${BASE_URL}/table/${tableName}`);
+  return axios.get<GenConfigRecord>(`${BASE_URL}/config/${tableName}`);
 }
 
 export interface GeneratorConfigRecord {
   genConfig: GenConfigRecord;
-  columnMappings: ColumnMappingRecord[];
+  fieldConfigs: FieldConfigRecord[];
 }
 
 export function saveConfig(tableName: string, req: GeneratorConfigRecord) {
-  return axios.post(`${BASE_URL}/table/${tableName}`, req);
+  return axios.post(`${BASE_URL}/config/${tableName}`, req);
 }

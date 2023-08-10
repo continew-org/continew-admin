@@ -21,7 +21,7 @@ import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
@@ -60,15 +60,15 @@ public interface GeneratorService {
     GenConfigDO getGenConfig(String tableName) throws SQLException;
 
     /**
-     * 查询列映射信息列表
+     * 查询字段配置列表
      *
      * @param tableName
      *            表名称
      * @param requireSync
      *            是否需要同步
-     * @return 列映射信息列表
+     * @return 字段配置列表
      */
-    List<ColumnMappingDO> listColumnMapping(String tableName, Boolean requireSync);
+    List<FieldConfigDO> listFieldConfig(String tableName, Boolean requireSync);
 
     /**
      * 保存代码生成配置信息

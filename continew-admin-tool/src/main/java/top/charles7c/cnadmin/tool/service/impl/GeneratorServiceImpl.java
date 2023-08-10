@@ -44,9 +44,9 @@ import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
-import top.charles7c.cnadmin.tool.mapper.ColumnMappingMapper;
+import top.charles7c.cnadmin.tool.mapper.FieldConfigMapper;
 import top.charles7c.cnadmin.tool.mapper.GenConfigMapper;
-import top.charles7c.cnadmin.tool.model.entity.ColumnMappingDO;
+import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
@@ -68,7 +68,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     private final DataSource dataSource;
     private final GeneratorProperties generatorProperties;
-    private final ColumnMappingMapper columnMappingMapper;
+    private final FieldConfigMapper fieldConfigMapper;
     private final GenConfigMapper genConfigMapper;
 
     @Override
@@ -113,67 +113,65 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     @Override
-    public List<ColumnMappingDO> listColumnMapping(String tableName, Boolean requireSync) {
-        List<ColumnMappingDO> columnMappingList = columnMappingMapper
-            .selectList(Wrappers.lambdaQuery(ColumnMappingDO.class).eq(ColumnMappingDO::getTableName, tableName));
-        if (CollUtil.isEmpty(columnMappingList)) {
+    public List<FieldConfigDO> listFieldConfig(String tableName, Boolean requireSync) {
+        List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
+        if (CollUtil.isEmpty(fieldConfigList)) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            return columnList.stream().map(ColumnMappingDO::new).collect(Collectors.toList());
+            return columnList.stream().map(FieldConfigDO::new).collect(Collectors.toList());
         }
 
         // 同步最新数据表列信息
         if (requireSync) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            // 移除已不存在的列映射信息
+            // 移除已不存在的字段配置
             List<String> columnNameList = columnList.stream().map(Column::getName).collect(Collectors.toList());
-            columnMappingList.removeIf(column -> !columnNameList.contains(column.getColumnName()));
-            // 新增或更新列映射信息
-            Map<String, ColumnMappingDO> columnMappingMap = columnMappingList.stream()
-                .collect(Collectors.toMap(ColumnMappingDO::getColumnName, Function.identity(), (key1, key2) -> key2));
+            fieldConfigList.removeIf(column -> !columnNameList.contains(column.getColumnName()));
+            // 新增或更新字段配置
+            Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
+                .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
             for (Column column : columnList) {
-                ColumnMappingDO columnMapping = columnMappingMap.get(column.getName());
-                if (null != columnMapping) {
-                    // 更新已有列映射信息
+                FieldConfigDO fieldConfig = fieldConfigMap.get(column.getName());
+                if (null != fieldConfig) {
+                    // 更新已有字段配置
                     String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
-                    columnMapping.setColumnType(columnType).setComment(column.getComment());
+                    fieldConfig.setColumnType(columnType).setComment(column.getComment());
                 } else {
-                    // 新增列映射信息
-                    columnMapping = new ColumnMappingDO(column);
-                    columnMappingList.add(columnMapping);
+                    // 新增字段配置
+                    fieldConfig = new FieldConfigDO(column);
+                    fieldConfigList.add(fieldConfig);
                 }
             }
         }
-        return columnMappingList;
+        return fieldConfigList;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveConfig(GenConfigRequest request, String tableName) {
-        // 保存列映射信息
-        columnMappingMapper
-            .delete(Wrappers.lambdaQuery(ColumnMappingDO.class).eq(ColumnMappingDO::getTableName, tableName));
-        List<ColumnMappingDO> columnMappingList = request.getColumnMappings();
-        for (ColumnMappingDO columnMapping : columnMappingList) {
-            if (columnMapping.getShowInForm()) {
-                CheckUtils.throwIfNull(columnMapping.getFormType(), "字段 [{}] 的表单类型不能为空", columnMapping.getFieldName());
+        // 保存字段配置
+        fieldConfigMapper.delete(Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
+        List<FieldConfigDO> fieldConfigList = request.getFieldConfigs();
+        for (FieldConfigDO fieldConfig : fieldConfigList) {
+            if (fieldConfig.getShowInForm()) {
+                CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
             } else {
                 // 在表单中不显示，不需要设置必填
-                columnMapping.setIsRequired(false);
+                fieldConfig.setIsRequired(false);
             }
-            if (columnMapping.getShowInQuery()) {
-                CheckUtils.throwIfNull(columnMapping.getFormType(), "字段 [{}] 的表单类型不能为空", columnMapping.getFieldName());
-                CheckUtils.throwIfNull(columnMapping.getQueryType(), "字段 [{}] 的查询方式不能为空", columnMapping.getFieldName());
+            if (fieldConfig.getShowInQuery()) {
+                CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
+                CheckUtils.throwIfNull(fieldConfig.getQueryType(), "字段 [{}] 的查询方式不能为空", fieldConfig.getFieldName());
             } else {
                 // 在查询中不显示，不需要设置查询方式
-                columnMapping.setQueryType(null);
+                fieldConfig.setQueryType(null);
             }
             // 既不在表单也不在查询中显示，不需要设置表单类型
-            if (!columnMapping.getShowInForm() && !columnMapping.getShowInQuery()) {
-                columnMapping.setFormType(null);
+            if (!fieldConfig.getShowInForm() && !fieldConfig.getShowInQuery()) {
+                fieldConfig.setFormType(null);
             }
-            columnMapping.setTableName(tableName);
+            fieldConfig.setTableName(tableName);
         }
-        columnMappingMapper.insertBatch(columnMappingList);
+        fieldConfigMapper.insertBatch(fieldConfigList);
 
         // 保存或更新生成配置信息
         GenConfigDO newGenConfig = request.getGenConfig();

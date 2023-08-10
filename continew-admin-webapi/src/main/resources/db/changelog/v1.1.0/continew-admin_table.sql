@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `gen_config` (
     PRIMARY KEY (`table_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='生成配置表';
 
-CREATE TABLE IF NOT EXISTS `gen_column_mapping` (
+CREATE TABLE IF NOT EXISTS `gen_field_config` (
     `table_name` varchar(64) NOT NULL COMMENT '表名称',
     `column_name` varchar(64) NOT NULL COMMENT '列名称',
     `column_type` varchar(25) NOT NULL COMMENT '列类型',
@@ -30,4 +30,4 @@ CREATE TABLE IF NOT EXISTS `gen_column_mapping` (
     `query_type` tinyint(1) UNSIGNED DEFAULT NULL COMMENT '查询方式',
     `create_time` datetime NOT NULL COMMENT '创建时间',
     INDEX `idx_table_name`(`table_name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='列映射表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字段配置表';

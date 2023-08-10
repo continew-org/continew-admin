@@ -28,24 +28,6 @@
             </a-form-item>
           </a-form>
         </div>
-        <!-- 操作栏 -->
-        <div class="header-operation">
-          <a-row>
-            <a-col :span="12">
-              <a-space>
-                <a-button type="primary" @click="toGenerate(ids[0])">
-                  <template #icon><icon-robot-add /></template>代码生成
-                </a-button>
-              </a-space>
-            </a-col>
-            <a-col :span="12">
-              <right-toolbar
-                v-model:show-query="showQuery"
-                @refresh="getList"
-              />
-            </a-col>
-          </a-row>
-        </div>
       </div>
 
       <!-- 列表区域 -->
@@ -54,11 +36,6 @@
         row-key="tableName"
         :data="tableList"
         :loading="loading"
-        :row-selection="{
-          type: 'checkbox',
-          showCheckedAll: true,
-          onlyCurrent: false,
-        }"
         :pagination="{
           showTotal: true,
           showPageSize: true,
@@ -71,7 +48,6 @@
         size="large"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
-        @selection-change="handleSelectionChange"
       >
         <template #columns>
           <a-table-column title="序号">
@@ -103,12 +79,19 @@
                 type="text"
                 size="small"
                 title="生成"
-                @click="toGenerate(record.tableName)"
+                @click="handleGenerate(record.tableName)"
               >
                 <template #icon><icon-robot-add /></template>生成
               </a-button>
             </template>
           </a-table-column>
+        </template>
+        <template #pagination-left>
+          <a-tooltip content="刷新">
+            <div class="action-icon" @click="handleQuery">
+              <icon-refresh size="18" />
+            </div>
+          </a-tooltip>
         </template>
       </a-table>
 
@@ -138,8 +121,8 @@
                   size="small"
                   title="同步"
                   :disabled="
-                    columnMappingList.length !== 0 &&
-                    columnMappingList[0].createTime === null
+                    fieldConfigList.length !== 0 &&
+                    fieldConfigList[0].createTime === null
                   "
                 >
                   <template #icon><icon-sync /></template>同步
@@ -148,9 +131,9 @@
             </a-popconfirm>
           </template>
           <a-table
-            ref="columnMappingRef"
-            :data="columnMappingList"
-            :loading="columnMappingLoading"
+            ref="fieldConfigRef"
+            :data="fieldConfigList"
+            :loading="fieldConfigLoading"
             :pagination="false"
             :bordered="false"
             size="large"
@@ -307,10 +290,10 @@
   import {
     TableRecord,
     TableParam,
-    ColumnMappingRecord,
+    FieldConfigRecord,
     GenConfigRecord,
     listTable,
-    listColumnMapping,
+    listFieldConfig,
     getGenConfig,
     GeneratorConfigRecord,
     saveConfig,
@@ -323,16 +306,13 @@
   );
 
   const tableList = ref<TableRecord[]>([]);
-  const columnMappingList = ref<ColumnMappingRecord[]>([]);
+  const fieldConfigList = ref<FieldConfigRecord[]>([]);
   const total = ref(0);
-  const ids = ref<Array<string>>([]);
   const title = ref('');
-  const single = ref(true);
-  const multiple = ref(true);
   const showQuery = ref(true);
   const loading = ref(false);
   const visible = ref(false);
-  const columnMappingLoading = ref(false);
+  const fieldConfigLoading = ref(false);
 
   const data = reactive({
     // 查询参数
@@ -344,6 +324,7 @@
     },
     // 表单数据
     form: {} as GenConfigRecord,
+    // 代码生成配置数据
     config: {} as GeneratorConfigRecord,
     // 表单验证规则
     rules: {
@@ -385,8 +366,8 @@
     tableComment = tableComment ? `（${tableComment}）` : ' ';
     title.value = `${tableName}${tableComment}配置`;
     visible.value = true;
-    // 查询列映射信息
-    getColumnMappingList(tableName, false);
+    // 查询字段配置
+    getFieldConfig(tableName, false);
     // 查询生成配置
     getGenConfig(tableName).then((res) => {
       form.value = res.data;
@@ -400,24 +381,23 @@
    * @param tableName 表名称
    */
   const handleRefresh = (tableName: string) => {
-    getColumnMappingList(tableName, true);
+    getFieldConfig(tableName, true);
   };
 
   /**
-   * 查询列映射信息
+   * 查询字段配置
    *
    * @param tableName 表名称
    * @param requireSync 是否需要同步
    */
-  const getColumnMappingList = (tableName: string, requireSync: boolean) => {
-    // 查询列映射信息
-    columnMappingLoading.value = true;
-    listColumnMapping(tableName, requireSync)
+  const getFieldConfig = (tableName: string, requireSync: boolean) => {
+    fieldConfigLoading.value = true;
+    listFieldConfig(tableName, requireSync)
       .then((res) => {
-        columnMappingList.value = res.data;
+        fieldConfigList.value = res.data;
       })
       .finally(() => {
-        columnMappingLoading.value = false;
+        fieldConfigLoading.value = false;
       });
   };
 
@@ -427,7 +407,7 @@
   const handleOk = () => {
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
-        config.value.columnMappings = columnMappingList.value;
+        config.value.fieldConfigs = fieldConfigList.value;
         config.value.genConfig = form.value;
         saveConfig(form.value.tableName, config.value).then((res) => {
           handleCancel();
@@ -444,27 +424,16 @@
   const handleCancel = () => {
     visible.value = false;
     proxy.$refs.formRef?.resetFields();
-    columnMappingList.value = [];
+    fieldConfigList.value = [];
   };
 
   /**
-   * 代码生成
+   * 生成代码
    *
    * @param tableName 表名称
    */
-  const toGenerate = (tableName: string) => {
+  const handleGenerate = (tableName: string) => {
     proxy.$message.info('功能尚在开发中');
-  };
-
-  /**
-   * 已选择的数据行发生改变时触发
-   *
-   * @param rowKeys ID 列表
-   */
-  const handleSelectionChange = (rowKeys: Array<any>) => {
-    ids.value = rowKeys;
-    single.value = rowKeys.length !== 1;
-    multiple.value = !rowKeys.length;
   };
 
   /**
@@ -516,5 +485,14 @@
 
   :deep(.gen-config.arco-form) {
     width: 50%;
+  }
+
+  .action-icon {
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  .action-icon:hover {
+    color: #0960bd;
   }
 </style>
