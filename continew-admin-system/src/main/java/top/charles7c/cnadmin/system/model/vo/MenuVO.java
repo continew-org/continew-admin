@@ -17,7 +17,6 @@
 package top.charles7c.cnadmin.system.model.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -37,7 +36,6 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
  * @since 2023/2/15 20:23
  */
 @Data
-@Accessors(chain = true)
 @TreeField(value = "id")
 @ExcelIgnoreUnannotated
 @Schema(description = "菜单信息")

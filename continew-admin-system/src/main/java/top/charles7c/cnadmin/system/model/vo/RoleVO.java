@@ -17,7 +17,6 @@
 package top.charles7c.cnadmin.system.model.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,7 +32,6 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
  * @since 2023/2/8 23:05
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "角色信息")
 public class RoleVO extends BaseVO {
 

@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.system.model.vo;
 import java.util.Objects;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -38,7 +37,6 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
  * @since 2023/2/20 21:08
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "用户信息")
 public class UserVO extends BaseVO {
 

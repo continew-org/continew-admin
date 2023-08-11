@@ -25,7 +25,6 @@ import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -42,9 +41,8 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
  * @since 2023/4/12 20:21
  */
 @Data
-@TableName("gen_config")
 @NoArgsConstructor
-@Accessors(chain = true)
+@TableName("gen_config")
 @Schema(description = "生成配置信息")
 public class GenConfigDO implements Serializable {
 

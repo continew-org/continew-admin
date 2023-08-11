@@ -24,7 +24,6 @@ import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -48,9 +47,8 @@ import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
  * @since 2023/4/12 20:21
  */
 @Data
-@TableName("gen_field_config")
 @NoArgsConstructor
-@Accessors(chain = true)
+@TableName("gen_field_config")
 @Schema(description = "字段配置信息")
 public class FieldConfigDO implements Serializable {
 
@@ -144,22 +142,25 @@ public class FieldConfigDO implements Serializable {
         String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
         boolean isRequired = !column.isPk() && !column.isNullable();
         this.tableName = column.getTableName();
-        this.setColumnName(column.getName()).setColumnType(columnType).setComment(column.getComment())
-            .setIsRequired(isRequired).setShowInList(true).setShowInForm(isRequired).setShowInQuery(isRequired)
-            .setFormType(FormTypeEnum.TEXT);
+        this.setColumnName(column.getName());
+        this.setColumnType(columnType);
+        this.setComment(column.getComment());
+        this.setIsRequired(isRequired);
+        this.setShowInList(true);
+        this.setShowInForm(isRequired);
+        this.setShowInQuery(isRequired);
+        this.setFormType(FormTypeEnum.TEXT);
         this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
     }
 
-    public FieldConfigDO setColumnName(String columnName) {
+    public void setColumnName(String columnName) {
         this.columnName = columnName;
         this.fieldName = StrUtil.toCamelCase(this.columnName);
-        return this;
     }
 
-    public FieldConfigDO setColumnType(String columnType) {
+    public void setColumnType(String columnType) {
         this.columnType = columnType;
         Props generatorProp = PropsUtil.get("generator");
         this.fieldType = generatorProp.getStr(columnType);
-        return this;
     }
 }

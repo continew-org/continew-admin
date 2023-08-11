@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.common.model.vo;
 
 import java.io.Serializable;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2022/12/11 13:55
  */
 @Data
-@Accessors(chain = true)
+@Builder
 @Schema(description = "验证码信息")
 public class CaptchaVO implements Serializable {
 

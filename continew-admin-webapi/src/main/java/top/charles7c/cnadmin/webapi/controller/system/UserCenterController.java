@@ -65,7 +65,7 @@ public class UserCenterController {
 
         // 上传头像
         String newAvatar = userService.uploadAvatar(avatarFile, LoginHelper.getUserId());
-        return R.ok("上传成功", new AvatarVO().setAvatar(newAvatar));
+        return R.ok("上传成功", AvatarVO.builder().avatar(newAvatar).build());
     }
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")

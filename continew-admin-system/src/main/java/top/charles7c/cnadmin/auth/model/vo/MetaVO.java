@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.auth.model.vo;
 import java.io.Serializable;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -30,7 +29,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2023/2/26 22:51
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "元数据信息")
 public class MetaVO implements Serializable {
 

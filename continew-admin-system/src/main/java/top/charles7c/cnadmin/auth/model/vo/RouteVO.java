@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since 2023/2/26 22:51
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "路由信息")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RouteVO implements Serializable {

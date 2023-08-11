@@ -79,10 +79,7 @@ public class CaptchaController {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
-
-        // 返回验证码
-        CaptchaVO captchaVO = new CaptchaVO().setUuid(uuid).setImg(captcha.toBase64());
-        return R.ok(captchaVO);
+        return R.ok(CaptchaVO.builder().uuid(uuid).img(captcha.toBase64()).build());
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")

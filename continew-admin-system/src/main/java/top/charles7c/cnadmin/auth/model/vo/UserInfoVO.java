@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -39,7 +38,6 @@ import top.charles7c.cnadmin.common.enums.GenderEnum;
  * @since 2022/12/29 20:15
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "用户信息")
 public class UserInfoVO implements Serializable {
 

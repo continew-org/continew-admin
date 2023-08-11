@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -31,7 +30,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2023/4/12 20:21
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "表信息")
 public class TableVO implements Serializable {
 

@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,7 +32,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Data
 @NoArgsConstructor
-@Accessors(chain = true)
 @Schema(description = "键值对信息")
 public class LabelValueVO<V> implements Serializable {
 

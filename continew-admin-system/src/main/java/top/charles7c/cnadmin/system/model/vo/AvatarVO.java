@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.system.model.vo;
 
 import java.io.Serializable;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @since 2023/1/2 16:29
  */
 @Data
-@Accessors(chain = true)
+@Builder
 @Schema(description = "头像信息")
 public class AvatarVO implements Serializable {
 

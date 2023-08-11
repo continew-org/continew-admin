@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -39,7 +38,6 @@ import cn.hutool.core.collection.CollUtil;
  * @since 2023/1/14 23:40
  */
 @Data
-@Accessors(chain = true)
 @Schema(description = "分页信息")
 public class PageDataVO<V> implements Serializable {
 

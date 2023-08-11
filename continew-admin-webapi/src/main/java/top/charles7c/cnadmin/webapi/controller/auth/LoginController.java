@@ -79,7 +79,7 @@ public class LoginController {
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
         String token = loginService.login(loginRequest.getUsername(), rawPassword);
-        return R.ok(new LoginVO().setToken(token));
+        return R.ok(LoginVO.builder().token(token).build());
     }
 
     @SaIgnore

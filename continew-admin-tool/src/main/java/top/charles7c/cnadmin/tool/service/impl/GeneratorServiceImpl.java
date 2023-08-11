@@ -134,7 +134,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 if (null != fieldConfig) {
                     // 更新已有字段配置
                     String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
-                    fieldConfig.setColumnType(columnType).setComment(column.getComment());
+                    fieldConfig.setColumnType(columnType);
+                    fieldConfig.setComment(column.getComment());
                 } else {
                     // 新增字段配置
                     fieldConfig = new FieldConfigDO(column);
