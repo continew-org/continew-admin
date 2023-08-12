@@ -22,6 +22,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +65,11 @@ public class GeneratorController {
     }
 
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
+    @Parameters({
+        @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
+            in = ParameterIn.PATH),
+        @Parameter(name = "requireSync", description = "是否需要同步", example = "true",
+            in = ParameterIn.QUERY)})
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
         @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
@@ -69,12 +77,14 @@ public class GeneratorController {
     }
 
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @GetMapping("/config/{tableName}")
     public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
         return R.ok(generatorService.getGenConfig(tableName));
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @PostMapping("/config/{tableName}")
     public R saveConfig(@Validated @RequestBody GenConfigRequest request, @PathVariable String tableName) {
         generatorService.saveConfig(request, tableName);
@@ -82,6 +92,7 @@ public class GeneratorController {
     }
 
     @Operation(summary = "生成代码", description = "生成代码")
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @PostMapping("/{tableName}")
     public R generate(@PathVariable String tableName) {
         ValidationUtils.throwIf("prod".equals(SpringUtil.getActiveProfile()), "仅支持在开发环境生成代码");

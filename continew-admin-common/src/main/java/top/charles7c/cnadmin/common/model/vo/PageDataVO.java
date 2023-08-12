@@ -52,7 +52,7 @@ public class PageDataVO<V> implements Serializable {
     /**
      * 总记录数
      */
-    @Schema(description = "总记录数")
+    @Schema(description = "总记录数", example = "10")
     private int total;
 
     /**

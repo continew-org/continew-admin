@@ -37,6 +37,6 @@ public class TableQuery implements Serializable {
     /**
      * 表名称
      */
-    @Schema(description = "表名称")
+    @Schema(description = "表名称", example = "sys_user")
     private String tableName;
 }

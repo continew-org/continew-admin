@@ -40,15 +40,15 @@ public class R<V> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** 是否成功 */
-    @Schema(description = "是否成功")
+    @Schema(description = "是否成功", example = "true")
     private boolean success;
 
     /** 状态码 */
-    @Schema(description = "状态码")
+    @Schema(description = "状态码", example = "200")
     private int code;
 
     /** 状态信息 */
-    @Schema(description = "状态信息")
+    @Schema(description = "状态信息", example = "操作成功")
     private String msg;
 
     /** 返回数据 */
@@ -56,7 +56,7 @@ public class R<V> implements Serializable {
     private V data;
 
     /** 时间戳 */
-    @Schema(description = "时间戳")
+    @Schema(description = "时间戳", example = "1691453288000")
     private long timestamp = System.currentTimeMillis();
 
     /** 成功状态码 */

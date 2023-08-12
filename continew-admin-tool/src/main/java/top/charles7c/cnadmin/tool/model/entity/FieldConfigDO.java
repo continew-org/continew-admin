@@ -57,84 +57,84 @@ public class FieldConfigDO implements Serializable {
     /**
      * 表名称
      */
-    @Schema(description = "表名称")
+    @Schema(description = "表名称", example = "sys_user")
     @NotBlank(message = "表名称不能为空")
     private String tableName;
 
     /**
      * 列名称
      */
-    @Schema(description = "列名称")
+    @Schema(description = "列名称", example = "nickname")
     @NotBlank(message = "列名称不能为空")
     private String columnName;
 
     /**
      * 列类型
      */
-    @Schema(description = "列类型")
+    @Schema(description = "列类型", example = "varchar")
     @NotBlank(message = "列类型不能为空")
     private String columnType;
 
     /**
      * 字段名称
      */
-    @Schema(description = "字段名称")
+    @Schema(description = "字段名称", example = "nickname")
     @NotBlank(message = "字段名称不能为空")
     private String fieldName;
 
     /**
      * 字段类型
      */
-    @Schema(description = "字段类型")
+    @Schema(description = "字段类型", example = "String")
     @NotBlank(message = "字段类型不能为空")
     private String fieldType;
 
     /**
      * 注释
      */
-    @Schema(description = "注释")
+    @Schema(description = "注释", example = "昵称")
     private String comment;
 
     /**
      * 是否必填
      */
-    @Schema(description = "是否必填")
+    @Schema(description = "是否必填", example = "true")
     private Boolean isRequired;
 
     /**
      * 是否在列表中显示
      */
-    @Schema(description = "是否在列表中显示")
+    @Schema(description = "是否在列表中显示", example = "true")
     private Boolean showInList;
 
     /**
      * 是否在表单中显示
      */
-    @Schema(description = "是否在表单中显示")
+    @Schema(description = "是否在表单中显示", example = "true")
     private Boolean showInForm;
 
     /**
      * 是否在查询中显示
      */
-    @Schema(description = "是否在查询中显示")
+    @Schema(description = "是否在查询中显示", example = "true")
     private Boolean showInQuery;
 
     /**
      * 表单类型
      */
-    @Schema(description = "表单类型")
+    @Schema(description = "表单类型", example = "1")
     private FormTypeEnum formType;
 
     /**
      * 查询方式
      */
-    @Schema(description = "查询方式")
+    @Schema(description = "查询方式", example = "1")
     private QueryTypeEnum queryType;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
