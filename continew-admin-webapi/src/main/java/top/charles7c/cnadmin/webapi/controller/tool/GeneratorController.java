@@ -27,9 +27,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import cn.hutool.extra.spring.SpringUtil;
+
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
@@ -76,5 +79,13 @@ public class GeneratorController {
     public R saveConfig(@Validated @RequestBody GenConfigRequest request, @PathVariable String tableName) {
         generatorService.saveConfig(request, tableName);
         return R.ok("保存成功");
+    }
+
+    @Operation(summary = "生成代码", description = "生成代码")
+    @PostMapping("/{tableName}")
+    public R generate(@PathVariable String tableName) {
+        ValidationUtils.throwIf("prod".equals(SpringUtil.getActiveProfile()), "仅支持在开发环境生成代码");
+        generatorService.generate(tableName);
+        return R.ok("生成成功，请查看生成代码是否正确");
     }
 }

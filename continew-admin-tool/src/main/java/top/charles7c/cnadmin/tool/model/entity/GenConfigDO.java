@@ -18,19 +18,25 @@ package top.charles7c.cnadmin.tool.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 
@@ -78,6 +84,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "前端路径")
     @Length(max = 255, message = "前端路径不能超过 {max} 个字符")
+    @Pattern(regexp = "^(?=.*src\\/views)(?!.*\\/views\\/?$).*", message = "前端路径配置错误")
     private String frontendPath;
 
     /**
@@ -123,7 +130,28 @@ public class GenConfigDO implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    /**
+     * 类名前缀
+     */
+    @Setter(AccessLevel.NONE)
+    @JsonIgnore
+    @TableField(exist = false)
+    private String classNamePrefix;
+
+    /**
+     * 字段配置信息
+     */
+    @JsonIgnore
+    @TableField(exist = false)
+    private List<FieldConfigDO> fieldConfigs;
+
     public GenConfigDO(String tableName) {
         this.tableName = tableName;
+    }
+
+    public String getClassNamePrefix() {
+        String rawClassName = StrUtil.isNotBlank(this.tablePrefix)
+            ? StrUtil.removePrefix(this.tableName, this.tablePrefix) : this.tableName;
+        return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }

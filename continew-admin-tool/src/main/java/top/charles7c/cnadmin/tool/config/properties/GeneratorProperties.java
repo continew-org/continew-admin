@@ -16,10 +16,14 @@
 
 package top.charles7c.cnadmin.tool.config.properties;
 
+import java.util.Map;
+
 import lombok.Data;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import cn.hutool.core.map.MapUtil;
 
 /**
  * 代码生成器配置属性
@@ -36,4 +40,26 @@ public class GeneratorProperties {
      * 排除数据表（哪些数据表不展示在代码生成中）
      */
     private String[] excludeTables;
+
+    /**
+     * 模板配置
+     */
+    private Map<String, TemplateConfig> templateConfigs = MapUtil.newHashMap(true);
+
+    /**
+     * 模板配置
+     */
+    @Data
+    public static class TemplateConfig {
+
+        /**
+         * 模板路径
+         */
+        private String templatePath;
+
+        /**
+         * 包名称
+         */
+        private String packageName;
+    }
 }

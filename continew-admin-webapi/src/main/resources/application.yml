@@ -45,15 +45,6 @@ logging:
       - password
       - Authorization
 
---- ### 代码生成器配置
-generator:
-  # 排除数据表
-  excludeTables:
-    - DATABASECHANGELOG
-    - DATABASECHANGELOGLOCK
-    - gen_config
-    - gen_field_config
-
 --- ### 接口文档配置
 springdoc:
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认为 false）
@@ -214,3 +205,41 @@ thread-pool:
   queueCapacity: 128
   # 活跃时间
   keepAliveSeconds: 300
+
+--- ### 代码生成器配置
+generator:
+  # 排除数据表
+  excludeTables:
+    - DATABASECHANGELOG
+    - DATABASECHANGELOGLOCK
+    - gen_config
+    - gen_field_config
+  # 模板配置
+  templateConfigs:
+    DO:
+      templatePath: generator/Entity.ftl
+      packageName: model.entity
+    Query:
+      templatePath: generator/Query.ftl
+      packageName: model.query
+    Request:
+      templatePath: generator/Request.ftl
+      packageName: model.request
+    VO:
+      templatePath: generator/VO.ftl
+      packageName: model.vo
+    DetailVO:
+      templatePath: generator/DetailVO.ftl
+      packageName: model.vo
+    Mapper:
+      templatePath: generator/Mapper.ftl
+      packageName: mapper
+    Service:
+      templatePath: generator/Service.ftl
+      packageName: service
+    ServiceImpl:
+      templatePath: generator/ServiceImpl.ftl
+      packageName: service.impl
+    Controller:
+      templatePath: generator/Controller.ftl
+      packageName: controller

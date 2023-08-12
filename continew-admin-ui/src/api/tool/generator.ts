@@ -75,3 +75,7 @@ export interface GeneratorConfigRecord {
 export function saveConfig(tableName: string, req: GeneratorConfigRecord) {
   return axios.post(`${BASE_URL}/config/${tableName}`, req);
 }
+
+export function generate(tableName: string) {
+  return axios.post(`${BASE_URL}/${tableName}`);
+}

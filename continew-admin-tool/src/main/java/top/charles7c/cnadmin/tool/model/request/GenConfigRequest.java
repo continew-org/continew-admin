@@ -43,16 +43,16 @@ public class GenConfigRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字段配置
+     * 字段配置信息
      */
-    @Schema(description = "字段配置")
+    @Schema(description = "字段配置信息")
     @NotEmpty(message = "字段配置不能为空")
     private List<FieldConfigDO> fieldConfigs = new ArrayList<>();
 
     /**
-     * 生成配置
+     * 生成配置信息
      */
-    @Schema(description = "生成配置")
+    @Schema(description = "生成配置信息")
     @NotNull(message = "生成配置不能为空")
     private GenConfigDO genConfig;
 }

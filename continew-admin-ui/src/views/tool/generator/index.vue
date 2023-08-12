@@ -298,6 +298,7 @@
     getGenConfig,
     GeneratorConfigRecord,
     saveConfig,
+    generate,
   } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
@@ -434,7 +435,9 @@
    * @param tableName 表名称
    */
   const handleGenerate = (tableName: string) => {
-    proxy.$message.info('功能尚在开发中');
+    generate(tableName).then((res) => {
+      proxy.$message.success(res.msg);
+    });
   };
 
   /**

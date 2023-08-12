@@ -79,4 +79,12 @@ public interface GeneratorService {
      *            表名称
      */
     void saveConfig(GenConfigRequest request, String tableName);
+
+    /**
+     * 生成代码
+     *
+     * @param tableName
+     *            表名称
+     */
+    void generate(String tableName);
 }
