@@ -78,7 +78,8 @@
               <a-button
                 type="text"
                 size="small"
-                title="生成"
+                :title="record.isConfiged ? '生成' : '请先进行生成配置'"
+                :disabled="!record.isConfiged"
                 @click="handleGenerate(record.tableName)"
               >
                 <template #icon><icon-robot-add /></template>生成

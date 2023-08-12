@@ -80,7 +80,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
         tableList.removeIf(table -> StrUtil.equalsAny(table.getTableName(), generatorProperties.getExcludeTables()));
         List<TableVO> tableVOList = BeanUtil.copyToList(tableList, TableVO.class);
-        return PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
+        PageDataVO<TableVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
+        for (TableVO tableVO : pageDataVO.getList()) {
+            long count = genConfigMapper.selectCount(
+                Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableVO.getTableName()));
+            tableVO.setIsConfiged(count > 0);
+        }
+        return pageDataVO;
     }
 
     @Override

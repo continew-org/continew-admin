@@ -9,6 +9,7 @@ export interface TableRecord {
   engine: string;
   charset: string;
   createTime?: string;
+  isConfiged: boolean;
 }
 
 export interface TableParam {

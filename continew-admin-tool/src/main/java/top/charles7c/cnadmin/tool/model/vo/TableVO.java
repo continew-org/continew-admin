@@ -64,4 +64,10 @@ public class TableVO implements Serializable {
      */
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
+
+    /**
+     * 是否已配置
+     */
+    @Schema(description = "是否已配置")
+    private Boolean isConfiged;
 }
