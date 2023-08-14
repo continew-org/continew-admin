@@ -61,7 +61,7 @@ public class LoginRequest implements Serializable {
     /**
      * 验证码标识
      */
-    @Schema(description = "验证码标识", example = "8a5a0296acd141a8b1bd789da867bc1a")
+    @Schema(description = "验证码标识", example = "090b9a2c-1691-4fca-99db-e4ed0cff362f")
     @NotBlank(message = "验证码标识不能为空")
     private String uuid;
 }

@@ -75,7 +75,7 @@ public class CaptchaController {
         Captcha captcha = captchaImage.getCaptcha();
 
         // 保存验证码
-        String uuid = IdUtil.fastSimpleUUID();
+        String uuid = IdUtil.fastUUID();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
