@@ -38,48 +38,49 @@ public class OnlineUserVO implements Serializable {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
      * 令牌
      */
-    @Schema(description = "令牌")
+    @Schema(description = "令牌",
+        example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
     private String token;
 
     /**
      * 用户名
      */
-    @Schema(description = "用户名")
+    @Schema(description = "用户名", example = "zhangsan")
     private String username;
 
     /**
      * 昵称
      */
-    @Schema(description = "昵称")
+    @Schema(description = "昵称", example = "张三")
     private String nickname;
 
     /**
      * 登录 IP
      */
-    @Schema(description = "登录 IP")
+    @Schema(description = "登录 IP", example = "192.168.0.1")
     private String clientIp;
 
     /**
      * 登录地点
      */
-    @Schema(description = "登录地点")
+    @Schema(description = "登录地点", example = "中国北京北京市")
     private String location;
 
     /**
      * 浏览器
      */
-    @Schema(description = "浏览器")
+    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
 
     /**
      * 登录时间
      */
-    @Schema(description = "登录时间")
+    @Schema(description = "登录时间", example = "2023-08-08 08:08:08")
     private LocalDateTime loginTime;
 }

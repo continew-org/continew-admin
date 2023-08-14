@@ -44,20 +44,20 @@ public class MenuRequest extends BaseRequest {
     /**
      * 菜单类型（1目录 2菜单 3按钮）
      */
-    @Schema(description = "菜单类型（1目录 2菜单 3按钮）", type = "Integer", allowableValues = {"1", "2", "3"})
+    @Schema(description = "菜单类型（1目录 2菜单 3按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
     @NotNull(message = "菜单类型非法")
     private MenuTypeEnum type;
 
     /**
      * 菜单图标
      */
-    @Schema(description = "菜单图标")
+    @Schema(description = "菜单图标", example = "user")
     private String icon;
 
     /**
      * 菜单标题
      */
-    @Schema(description = "菜单标题")
+    @Schema(description = "菜单标题", example = "用户管理")
     @NotBlank(message = "菜单标题不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "菜单标题长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String title;
@@ -65,61 +65,61 @@ public class MenuRequest extends BaseRequest {
     /**
      * 菜单排序
      */
-    @Schema(description = "菜单排序")
+    @Schema(description = "菜单排序", example = "1")
     @NotNull(message = "菜单排序不能为空")
     private Integer sort;
 
     /**
      * 权限标识
      */
-    @Schema(description = "权限标识")
+    @Schema(description = "权限标识", example = "system:user:list")
     private String permission;
 
     /**
      * 路由地址
      */
-    @Schema(description = "路由地址")
+    @Schema(description = "路由地址", example = "/system/user")
     private String path;
 
     /**
      * 组件名称
      */
-    @Schema(description = "组件名称")
+    @Schema(description = "组件名称", example = "User")
     private String name;
 
     /**
      * 组件路径
      */
-    @Schema(description = "组件路径")
+    @Schema(description = "组件路径", example = "/system/user/index")
     private String component;
 
     /**
      * 是否外链
      */
-    @Schema(description = "是否外链")
+    @Schema(description = "是否外链", example = "false")
     private Boolean isExternal;
 
     /**
      * 是否缓存
      */
-    @Schema(description = "是否缓存")
+    @Schema(description = "是否缓存", example = "false")
     private Boolean isCache;
 
     /**
      * 是否隐藏
      */
-    @Schema(description = "是否隐藏")
+    @Schema(description = "是否隐藏", example = "false")
     private Boolean isHidden;
 
     /**
      * 上级菜单 ID
      */
-    @Schema(description = "上级菜单 ID")
+    @Schema(description = "上级菜单 ID", example = "1000")
     private Long parentId;
 
     /**
      * 状态（1启用 2禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

@@ -40,14 +40,14 @@ public class MenuQuery implements Serializable {
     /**
      * 菜单标题
      */
-    @Schema(description = "菜单标题")
+    @Schema(description = "菜单标题", example = "用户管理")
     @Query(type = QueryTypeEnum.INNER_LIKE)
     private String title;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
     @Query
     private Integer status;
 }

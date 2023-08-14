@@ -46,21 +46,21 @@ public class UserQuery implements Serializable {
     /**
      * 用户名
      */
-    @Schema(description = "用户名")
+    @Schema(description = "用户名", example = "zhangsan")
     @Query(blurry = "username,nickname,email,phone")
     private String username;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
     @Query
     private Integer status;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;
@@ -68,7 +68,7 @@ public class UserQuery implements Serializable {
     /**
      * 部门 ID
      */
-    @Schema(description = "部门 ID")
+    @Schema(description = "部门 ID", example = "1")
     @Query
     private Long deptId;
 }

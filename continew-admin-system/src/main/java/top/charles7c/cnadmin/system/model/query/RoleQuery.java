@@ -39,14 +39,14 @@ public class RoleQuery implements Serializable {
     /**
      * 角色名称
      */
-    @Schema(description = "角色名称")
+    @Schema(description = "角色名称", example = "测试人员")
     @Query(blurry = "name,code")
     private String name;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
     @Query
     private Integer status;
 }

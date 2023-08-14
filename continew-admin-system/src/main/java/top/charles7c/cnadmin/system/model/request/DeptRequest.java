@@ -46,14 +46,14 @@ public class DeptRequest extends BaseRequest {
     /**
      * 上级部门 ID
      */
+    @Schema(description = "上级部门 ID", example = "2")
     @NotNull(message = "上级部门不能为空", groups = ValidateGroup.Crud.Add.class)
-    @Schema(description = "上级部门 ID")
     private Long parentId;
 
     /**
      * 部门名称
      */
-    @Schema(description = "部门名称")
+    @Schema(description = "部门名称", example = "测试部")
     @NotBlank(message = "部门名称不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "部门名称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
@@ -61,21 +61,21 @@ public class DeptRequest extends BaseRequest {
     /**
      * 部门排序
      */
-    @Schema(description = "部门排序")
+    @Schema(description = "部门排序", example = "1")
     @NotNull(message = "部门排序不能为空")
     private Integer sort;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "测试部描述信息")
     @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
 
     /**
      * 状态（1启用 2禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 
     /**

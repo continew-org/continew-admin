@@ -41,19 +41,19 @@ public class RouteVO implements Serializable {
     /**
      * 路由地址
      */
-    @Schema(description = "路由地址")
+    @Schema(description = "路由地址", example = "/system/user")
     private String path;
 
     /**
      * 组件名称
      */
-    @Schema(description = "组件名称")
+    @Schema(description = "组件名称", example = "User")
     private String name;
 
     /**
      * 组件路径
      */
-    @Schema(description = "组件路径")
+    @Schema(description = "组件路径", example = "/system/user/index")
     private String component;
 
     /**
