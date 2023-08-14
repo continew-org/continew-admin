@@ -39,14 +39,16 @@ public class UpdatePasswordRequest implements Serializable {
     /**
      * 当前密码（加密后）
      */
-    @Schema(description = "当前密码（加密后）")
+    @Schema(description = "当前密码（加密后）",
+        example = "E7c72TH+LDxKTwavjM99W1MdI9Lljh79aPKiv3XB9MXcplhm7qJ1BJCj28yaflbdVbfc366klMtjLIWQGqb0qw==")
     @NotBlank(message = "当前密码不能为空")
     private String oldPassword;
 
     /**
      * 新密码（加密后）
      */
-    @Schema(description = "新密码（加密后）")
+    @Schema(description = "新密码（加密后）",
+        example = "Gzc78825P5baH190lRuZFb9KJxRt/psN2jiyOMPoc5WRcCvneCwqDm3Q33BZY56EzyyVy7vQu7jQwYTK4j1+5w==")
     @NotBlank(message = "新密码不能为空")
     private String newPassword;
 }

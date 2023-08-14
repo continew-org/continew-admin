@@ -45,20 +45,20 @@ public class DeptDetailVO extends BaseDetailVO {
     /**
      * 部门名称
      */
-    @Schema(description = "部门名称")
+    @Schema(description = "部门名称", example = "测试部")
     @ExcelProperty(value = "部门名称")
     private String name;
 
     /**
      * 上级部门 ID
      */
-    @Schema(description = "上级部门 ID")
+    @Schema(description = "上级部门 ID", example = "2")
     private Long parentId;
 
     /**
      * 上级部门
      */
-    @Schema(description = "上级部门")
+    @Schema(description = "上级部门", example = "天津总部")
     @TableField(exist = false)
     @ExcelProperty(value = "上级部门")
     private String parentName;
@@ -66,27 +66,27 @@ public class DeptDetailVO extends BaseDetailVO {
     /**
      * 部门排序
      */
-    @Schema(description = "部门排序")
+    @Schema(description = "部门排序", example = "1")
     private Integer sort;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 
     /**
      * 类型（1：系统内置，2：自定义）
      */
-    @Schema(description = "类型（1：系统内置，2：自定义）")
+    @Schema(description = "类型（1：系统内置，2：自定义）", example = "2")
     @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private DataTypeEnum type;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "测试部描述信息")
     @ExcelProperty(value = "描述")
     private String description;
 

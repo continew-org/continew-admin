@@ -49,7 +49,7 @@ public class UserRequest extends BaseRequest {
     /**
      * 用户名
      */
-    @Schema(description = "用户名")
+    @Schema(description = "用户名", example = "zhangsan")
     @NotBlank(message = "用户名不能为空")
     @Pattern(regexp = RegexConsts.USERNAME, message = "用户名长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头")
     private String username;
@@ -57,7 +57,7 @@ public class UserRequest extends BaseRequest {
     /**
      * 昵称
      */
-    @Schema(description = "昵称")
+    @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
@@ -65,48 +65,48 @@ public class UserRequest extends BaseRequest {
     /**
      * 邮箱
      */
-    @Schema(description = "邮箱")
+    @Schema(description = "邮箱", example = "123456789@qq.com")
     @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误")
     private String email;
 
     /**
      * 手机号码
      */
-    @Schema(description = "手机号码")
+    @Schema(description = "手机号码", example = "13811111111")
     @Pattern(regexp = RegexConsts.MOBILE, message = "手机号码格式错误")
     private String phone;
 
     /**
      * 性别（0：未知，1：男，2：女）
      */
-    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"})
+    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
     @NotNull(message = "性别非法")
     private GenderEnum gender;
 
     /**
      * 所属部门
      */
-    @Schema(description = "所属部门")
+    @Schema(description = "所属部门", example = "5")
     @NotNull(message = "所属部门不能为空")
     private Long deptId;
 
     /**
      * 所属角色
      */
-    @Schema(description = "所属角色")
+    @Schema(description = "所属角色", example = "2")
     @NotEmpty(message = "所属角色不能为空")
     private List<Long> roleIds;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "张三描述信息")
     @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

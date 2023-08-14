@@ -39,28 +39,29 @@ public class LoginRequest implements Serializable {
     /**
      * 用户名
      */
-    @Schema(description = "用户名")
+    @Schema(description = "用户名", example = "zhangsan")
     @NotBlank(message = "用户名不能为空")
     private String username;
 
     /**
      * 密码（加密）
      */
-    @Schema(description = "密码（加密）")
+    @Schema(description = "密码（加密）",
+        example = "HHwZoiBwCfh0xLdWOAd0bHOkEZlIMMOQKJyeFUw9T3ArrhL57od2i42s1o0sSXKkeHPJXvQsninhPFH2lArDDQ==")
     @NotBlank(message = "密码不能为空")
     private String password;
 
     /**
      * 验证码
      */
-    @Schema(description = "验证码")
+    @Schema(description = "验证码", example = "ABCD")
     @NotBlank(message = "验证码不能为空")
     private String captcha;
 
     /**
      * 验证码标识
      */
-    @Schema(description = "验证码标识")
+    @Schema(description = "验证码标识", example = "8a5a0296acd141a8b1bd789da867bc1a")
     @NotBlank(message = "验证码标识不能为空")
     private String uuid;
 }

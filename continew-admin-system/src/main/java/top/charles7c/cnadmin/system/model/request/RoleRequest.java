@@ -49,7 +49,7 @@ public class RoleRequest extends BaseRequest {
     /**
      * 角色名称
      */
-    @Schema(description = "角色名称")
+    @Schema(description = "角色名称", example = "测试人员")
     @NotBlank(message = "角色名称不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "角色名称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
@@ -57,7 +57,7 @@ public class RoleRequest extends BaseRequest {
     /**
      * 角色编码
      */
-    @Schema(description = "角色编码")
+    @Schema(description = "角色编码", example = "test")
     @NotBlank(message = "角色编码不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_CODE, message = "角色编码长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头")
     private String code;
@@ -65,39 +65,39 @@ public class RoleRequest extends BaseRequest {
     /**
      * 角色排序
      */
-    @Schema(description = "角色排序")
+    @Schema(description = "角色排序", example = "1")
     @NotNull(message = "角色排序不能为空")
     private Integer sort;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "测试人员描述信息")
     @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
 
     /**
      * 功能权限：菜单 ID 列表
      */
-    @Schema(description = "功能权限：菜单 ID 列表")
+    @Schema(description = "功能权限：菜单 ID 列表", example = "1000,1010,1011,1012,1013,1014")
     private List<Long> menuIds = new ArrayList<>();
 
     /**
      * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
     @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", type = "Integer",
-        allowableValues = {"1", "2", "3", "4", "5"})
+        allowableValues = {"1", "2", "3", "4", "5"}, example = "5")
     private DataScopeEnum dataScope;
 
     /**
      * 权限范围：部门 ID 列表
      */
-    @Schema(description = "权限范围：部门 ID 列表")
+    @Schema(description = "权限范围：部门 ID 列表", example = "5")
     private List<Long> deptIds = new ArrayList<>();
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

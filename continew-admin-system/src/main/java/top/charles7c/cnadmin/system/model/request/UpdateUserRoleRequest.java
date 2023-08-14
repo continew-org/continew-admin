@@ -40,7 +40,7 @@ public class UpdateUserRoleRequest implements Serializable {
     /**
      * 角色 ID 列表
      */
-    @Schema(description = "所属角色")
+    @Schema(description = "所属角色", example = "1,2")
     @NotEmpty(message = "所属角色不能为空")
     private List<Long> roleIds;
 }

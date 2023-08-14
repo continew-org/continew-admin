@@ -44,7 +44,7 @@ public class UpdateBasicInfoRequest implements Serializable {
     /**
      * 昵称
      */
-    @Schema(description = "昵称")
+    @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
     @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
@@ -52,7 +52,7 @@ public class UpdateBasicInfoRequest implements Serializable {
     /**
      * 性别（0未知 1男 2女）
      */
-    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"})
+    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
     @NotNull(message = "性别非法")
     private GenderEnum gender;
 }

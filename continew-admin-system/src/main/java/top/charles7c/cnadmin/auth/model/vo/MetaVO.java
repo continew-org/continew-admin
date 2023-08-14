@@ -37,30 +37,30 @@ public class MetaVO implements Serializable {
     /**
      * 菜单标题
      */
-    @Schema(description = "菜单标题")
+    @Schema(description = "菜单标题", example = "用户管理")
     private String locale;
 
     /**
      * 菜单图标
      */
-    @Schema(description = "菜单图标")
+    @Schema(description = "菜单图标", example = "user")
     private String icon;
 
     /**
      * 是否隐藏
      */
-    @Schema(description = "是否隐藏")
+    @Schema(description = "是否隐藏", example = "false")
     private Boolean hideInMenu;
 
     /**
      * 是否缓存
      */
-    @Schema(description = "是否缓存")
+    @Schema(description = "是否缓存", example = "false")
     private Boolean ignoreCache;
 
     /**
      * 是否需要登录才能访问
      */
-    @Schema(description = "是否需要登录才能访问")
+    @Schema(description = "是否需要登录才能访问", example = "false")
     private Boolean requiresAuth = true;
 }

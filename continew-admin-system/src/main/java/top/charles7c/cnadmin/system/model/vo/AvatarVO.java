@@ -39,6 +39,7 @@ public class AvatarVO implements Serializable {
     /**
      * 头像地址
      */
-    @Schema(description = "头像地址")
+    @Schema(description = "头像地址",
+        example = "https://himg.bdimg.com/sys/portrait/item/public.1.81ac9a9e.rf1ix17UfughLQjNo7XQ_w.jpg")
     private String avatar;
 }

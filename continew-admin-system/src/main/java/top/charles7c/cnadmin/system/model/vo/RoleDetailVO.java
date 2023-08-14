@@ -47,62 +47,62 @@ public class RoleDetailVO extends BaseDetailVO {
     /**
      * 角色名称
      */
-    @Schema(description = "角色名称")
+    @Schema(description = "角色名称", example = "测试人员")
     @ExcelProperty(value = "角色名称")
     private String name;
 
     /**
      * 角色编码
      */
-    @Schema(description = "角色编码")
+    @Schema(description = "角色编码", example = "test")
     @ExcelProperty(value = "角色编码")
     private String code;
 
     /**
      * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）")
+    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", example = "5")
     @ExcelProperty(value = "数据权限", converter = ExcelBaseEnumConverter.class)
     private DataScopeEnum dataScope;
 
     /**
      * 角色排序
      */
-    @Schema(description = "角色排序")
+    @Schema(description = "角色排序", example = "1")
     @ExcelProperty(value = "角色排序")
     private Integer sort;
 
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）")
+    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 
     /**
      * 类型（1：系统内置，2：自定义）
      */
-    @Schema(description = "类型（1：系统内置，2：自定义）")
+    @Schema(description = "类型（1：系统内置，2：自定义）", example = "2")
     @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private DataTypeEnum type;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "测试人员描述信息")
     @ExcelProperty(value = "描述")
     private String description;
 
     /**
      * 功能权限：菜单 ID 列表
      */
-    @Schema(description = "功能权限：菜单 ID 列表")
+    @Schema(description = "功能权限：菜单 ID 列表", example = "1000,1010,1011,1012,1013,1014")
     private List<Long> menuIds;
 
     /**
      * 权限范围：部门 ID 列表
      */
-    @Schema(description = "权限范围：部门 ID 列表")
+    @Schema(description = "权限范围：部门 ID 列表", example = "5")
     private List<Long> deptIds;
 
     @Override

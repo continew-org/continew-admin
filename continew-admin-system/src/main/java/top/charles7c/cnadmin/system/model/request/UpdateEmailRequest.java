@@ -44,7 +44,7 @@ public class UpdateEmailRequest implements Serializable {
     /**
      * 新邮箱
      */
-    @Schema(description = "新邮箱")
+    @Schema(description = "新邮箱", example = "123456789@qq.com")
     @NotBlank(message = "新邮箱不能为空")
     @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误")
     private String newEmail;
@@ -52,7 +52,7 @@ public class UpdateEmailRequest implements Serializable {
     /**
      * 验证码
      */
-    @Schema(description = "验证码")
+    @Schema(description = "验证码", example = "888888")
     @NotBlank(message = "验证码不能为空")
     @Length(max = 6, message = "验证码非法")
     private String captcha;
@@ -60,7 +60,8 @@ public class UpdateEmailRequest implements Serializable {
     /**
      * 当前密码（加密后）
      */
-    @Schema(description = "当前密码（加密后）")
+    @Schema(description = "当前密码（加密后）",
+        example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
     @NotBlank(message = "当前密码不能为空")
     private String currentPassword;
 }

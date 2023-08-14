@@ -43,13 +43,13 @@ public class OnlineUserQuery implements Serializable {
     /**
      * 用户昵称
      */
-    @Schema(description = "用户昵称")
+    @Schema(description = "用户昵称", example = "张三")
     private String nickname;
 
     /**
      * 登录时间
      */
-    @Schema(description = "登录时间")
+    @Schema(description = "登录时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> loginTime;
 }
