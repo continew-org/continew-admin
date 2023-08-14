@@ -41,7 +41,7 @@ public class UpdateStatusRequest implements Serializable {
     /**
      * 状态（1启用 2禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     @NotNull(message = "状态非法")
     private DisEnableStatusEnum status;
 }

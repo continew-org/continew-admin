@@ -45,14 +45,14 @@ public class BaseDetailVO extends BaseVO {
     /**
      * 修改人
      */
-    @Schema(description = "修改人")
+    @Schema(description = "修改人", example = "李四")
     @ExcelProperty(value = "修改人")
     private String updateUserString;
 
     /**
      * 修改时间
      */
-    @Schema(description = "修改时间")
+    @Schema(description = "修改时间", example = "2023-08-08 08:08:08")
     @ExcelProperty(value = "修改时间")
     private LocalDateTime updateTime;
 }

@@ -68,8 +68,7 @@ public class GeneratorController {
     @Parameters({
         @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
             in = ParameterIn.PATH),
-        @Parameter(name = "requireSync", description = "是否需要同步", example = "true",
-            in = ParameterIn.QUERY)})
+        @Parameter(name = "requireSync", description = "是否需要同步", example = "true", in = ParameterIn.QUERY)})
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
         @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {

@@ -41,7 +41,7 @@ public class BaseVO implements Serializable {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     @ExcelProperty(value = "ID")
     private Long id;
 
@@ -54,14 +54,14 @@ public class BaseVO implements Serializable {
     /**
      * 创建人
      */
-    @Schema(description = "创建人")
+    @Schema(description = "创建人", example = "超级管理员")
     @ExcelProperty(value = "创建人")
     private String createUserString;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
     @ExcelProperty(value = "创建时间")
     private LocalDateTime createTime;
 

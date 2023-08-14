@@ -40,13 +40,13 @@ public class LabelValueVO<V> implements Serializable {
     /**
      * 标签
      */
-    @Schema(description = "标签")
+    @Schema(description = "标签", example = "男")
     private String label;
 
     /**
      * 值
      */
-    @Schema(description = "值")
+    @Schema(description = "值", example = "1")
     private V value;
 
     public LabelValueVO(String label, V value) {

@@ -46,7 +46,7 @@ public class SortQuery implements Serializable {
     /**
      * 排序条件
      */
-    @Schema(description = "排序条件", example = "sort=published,desc&sort=title,asc")
+    @Schema(description = "排序条件", example = "createTime,desc")
     private String[] sort;
 
     /**
@@ -61,7 +61,7 @@ public class SortQuery implements Serializable {
 
         List<Sort.Order> orders = new ArrayList<>(sort.length);
         if (StrUtil.contains(sort[0], StringConsts.COMMA)) {
-            // e.g "sort=published,desc&sort=title,asc"
+            // e.g "sort=createTime,desc&sort=name,asc"
             for (String s : sort) {
                 List<String> sortList = StrUtil.splitTrim(s, StringConsts.COMMA);
                 Sort.Order order =
@@ -69,7 +69,7 @@ public class SortQuery implements Serializable {
                 orders.add(order);
             }
         } else {
-            // e.g "sort=published,desc"
+            // e.g "sort=createTime,desc"
             Sort.Order order = new Sort.Order(Sort.Direction.valueOf(sort[1].toUpperCase()), sort[0]);
             orders.add(order);
         }

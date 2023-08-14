@@ -39,12 +39,13 @@ public class CaptchaVO implements Serializable {
     /**
      * 验证码标识
      */
-    @Schema(description = "验证码标识")
+    @Schema(description = "验证码标识", example = "8a5a0296acd141a8b1bd789da867bc1a")
     private String uuid;
 
     /**
      * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
      */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）")
+    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）",
+        example = "data:image/png;base64,iVBORw0KGgoAAAAN...")
     private String img;
 }
