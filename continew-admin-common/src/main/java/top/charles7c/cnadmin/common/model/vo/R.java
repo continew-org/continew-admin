@@ -26,6 +26,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.springframework.http.HttpStatus;
 
+import cn.hutool.core.date.DateUtil;
+
 /**
  * 响应信息
  *
@@ -56,8 +58,8 @@ public class R<V> implements Serializable {
     private V data;
 
     /** 时间戳 */
-    @Schema(description = "时间戳", example = "1691453288000")
-    private long timestamp = System.currentTimeMillis();
+    @Schema(description = "时间戳", example = "1691453288")
+    private long timestamp = DateUtil.currentSeconds();
 
     /** 成功状态码 */
     private static final int SUCCESS_CODE = HttpStatus.OK.value();
