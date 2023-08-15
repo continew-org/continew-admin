@@ -39,7 +39,7 @@ public class LogVO implements Serializable {
     /**
      * ID
      */
-    @Schema(description = "ID")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
@@ -51,12 +51,12 @@ public class LogVO implements Serializable {
     /**
      * 创建人
      */
-    @Schema(description = "创建人")
+    @Schema(description = "创建人", example = "张三")
     private String createUserString;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
     private LocalDateTime createTime;
 }

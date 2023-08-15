@@ -46,14 +46,14 @@ public class LoginLogQuery implements Serializable {
     /**
      * 登录状态（1：成功，2：失败）
      */
-    @Schema(description = "登录状态（1：成功，2：失败）")
+    @Schema(description = "登录状态（1：成功，2：失败）", example = "1")
     @Query
     private Integer status;
 
     /**
      * 登录时间
      */
-    @Schema(description = "登录时间")
+    @Schema(description = "登录时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;

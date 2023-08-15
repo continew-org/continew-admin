@@ -37,37 +37,37 @@ public class OperationLogVO extends LogVO {
     /**
      * 操作内容
      */
-    @Schema(description = "操作内容")
+    @Schema(description = "操作内容", example = "新增数据")
     private String description;
 
     /**
      * 所属模块
      */
-    @Schema(description = "所属模块")
+    @Schema(description = "所属模块", example = "部门管理")
     private String module;
 
     /**
      * 操作状态（1成功 2失败）
      */
-    @Schema(description = "操作状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "操作状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private LogStatusEnum status;
 
     /**
      * 操作IP
      */
-    @Schema(description = "操作IP")
+    @Schema(description = "操作IP", example = "192.168.0.1")
     private String clientIp;
 
     /**
      * 操作地点
      */
-    @Schema(description = "操作地点")
+    @Schema(description = "操作地点", example = "中国北京北京市")
     private String location;
 
     /**
      * 浏览器
      */
-    @Schema(description = "浏览器")
+    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
 
     /**
