@@ -64,9 +64,9 @@ public class LogContextHolder {
      * @param e
      *            异常信息
      */
-    public static void setException(Exception e) {
+    public static void setException(Throwable e) {
         LogContext logContext = get();
-        if (logContext != null) {
+        if (null != logContext) {
             logContext.setErrorMsg(e.getMessage());
             logContext.setException(e);
         }
@@ -80,7 +80,7 @@ public class LogContextHolder {
      */
     public static void setErrorMsg(String errorMsg) {
         LogContext logContext = get();
-        if (logContext != null) {
+        if (null != logContext) {
             logContext.setErrorMsg(errorMsg);
         }
     }

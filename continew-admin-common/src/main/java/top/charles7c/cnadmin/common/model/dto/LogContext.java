@@ -50,5 +50,5 @@ public class LogContext implements Serializable {
     /**
      * 异常信息
      */
-    private Exception exception;
+    private Throwable exception;
 }

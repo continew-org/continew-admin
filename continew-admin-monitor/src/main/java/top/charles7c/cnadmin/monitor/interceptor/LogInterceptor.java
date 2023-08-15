@@ -141,7 +141,7 @@ public class LogInterceptor implements HandlerInterceptor {
                     logDO.setErrorMsg(errorMsg);
                 }
                 // 记录异常详情
-                Exception exception = logContext.getException();
+                Throwable exception = logContext.getException();
                 if (null != exception) {
                     logDO.setStatus(LogStatusEnum.FAILURE);
                     logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));

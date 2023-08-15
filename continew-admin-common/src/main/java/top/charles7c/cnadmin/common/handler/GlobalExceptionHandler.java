@@ -60,39 +60,6 @@ import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 public class GlobalExceptionHandler {
 
     /**
-     * 拦截未知的系统异常
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public R handleException(Exception e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，发生未知异常。", request.getRequestURI(), e);
-        LogContextHolder.setException(e);
-        return R.fail(e.getMessage());
-    }
-
-    /**
-     * 拦截未知的运行时异常
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(RuntimeException.class)
-    public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，发生系统异常。", request.getRequestURI(), e);
-        LogContextHolder.setException(e);
-        return R.fail(e.getMessage());
-    }
-
-    /**
-     * 拦截业务异常
-     */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(ServiceException.class)
-    public R handleServiceException(ServiceException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
-        LogContextHolder.setErrorMsg(e.getMessage());
-        return R.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-    }
-
-    /**
      * 拦截自定义验证异常-错误请求
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -104,18 +71,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 拦截校验异常-绑定异常
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BindException.class)
-    public R handleBindException(BindException e, HttpServletRequest request) {
-        log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
-        String errorMsg = StreamUtils.join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, "，");
-        LogContextHolder.setErrorMsg(errorMsg);
-        return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
-    }
-
-    /**
      * 拦截校验异常-违反约束异常
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -123,6 +78,18 @@ public class GlobalExceptionHandler {
     public R constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
         String errorMsg = StreamUtils.join(e.getConstraintViolations(), ConstraintViolation::getMessage, "，");
+        LogContextHolder.setErrorMsg(errorMsg);
+        return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
+    }
+
+    /**
+     * 拦截校验异常-绑定异常
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BindException.class)
+    public R handleBindException(BindException e, HttpServletRequest request) {
+        log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
+        String errorMsg = StreamUtils.join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, "，");
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
@@ -151,17 +118,6 @@ public class GlobalExceptionHandler {
         log.warn("请求地址 [{}]，参数转换失败，{}。", request.getRequestURI(), errorMsg, e);
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
-    }
-
-    /**
-     * 拦截校验异常-请求方式不支持异常
-     */
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public R handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-        LogContextHolder.setErrorMsg(e.getMessage());
-        log.error("请求地址 [{}]，不支持 [{}] 请求", request.getRequestURI(), e.getMethod());
-        return R.fail(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
     }
 
     /**
@@ -218,5 +174,49 @@ public class GlobalExceptionHandler {
     public R handleNotRoleException(NotRoleException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，角色权限校验失败。", request.getRequestURI(), e);
         return R.fail(HttpStatus.FORBIDDEN.value(), "没有访问权限，请联系管理员授权");
+    }
+
+    /**
+     * 拦截校验异常-请求方式不支持异常
+     */
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public R handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        LogContextHolder.setErrorMsg(e.getMessage());
+        log.error("请求地址 [{}]，不支持 [{}] 请求", request.getRequestURI(), e.getMethod());
+        return R.fail(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
+    }
+
+    /**
+     * 拦截业务异常
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ServiceException.class)
+    public R handleServiceException(ServiceException e, HttpServletRequest request) {
+        log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
+        LogContextHolder.setErrorMsg(e.getMessage());
+        return R.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+    }
+
+    /**
+     * 拦截未知的运行时异常
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(RuntimeException.class)
+    public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        log.error("请求地址 [{}]，发生系统异常。", request.getRequestURI(), e);
+        LogContextHolder.setException(e);
+        return R.fail(e.getMessage());
+    }
+
+    /**
+     * 拦截未知的系统异常
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Throwable.class)
+    public R handleException(Throwable e, HttpServletRequest request) {
+        log.error("请求地址 [{}]，发生未知异常。", request.getRequestURI(), e);
+        LogContextHolder.setException(e);
+        return R.fail(e.getMessage());
     }
 }
