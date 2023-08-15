@@ -26,6 +26,8 @@ import javax.annotation.Resource;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,7 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.FileConsts;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
@@ -70,6 +73,7 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConsts.USER_KEY_PREFIX)
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO, UserDetailVO, UserQuery, UserRequest>
     implements UserService, CommonUserService {
 
@@ -247,6 +251,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    @Cacheable(key = "#id")
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

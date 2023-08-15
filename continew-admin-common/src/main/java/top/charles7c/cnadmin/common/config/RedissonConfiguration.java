@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 2022/12/28 23:17
  */
 @Slf4j
+@EnableCaching
 @Configuration
 @RequiredArgsConstructor
 public class RedissonConfiguration {

@@ -42,4 +42,9 @@ public class CacheConsts {
      * 限流键前缀
      */
     public static final String LIMIT_KEY_PREFIX = "LIMIT";
+
+    /**
+     * 用户缓存键前缀
+     */
+    public static final String USER_KEY_PREFIX = "USER";
 }

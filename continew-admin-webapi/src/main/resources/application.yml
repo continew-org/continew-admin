@@ -190,6 +190,14 @@ spring:
     deserialization:
       # 允许反序列化不存在的属性
       FAIL_ON_UNKNOWN_PROPERTIES: false
+  ## 缓存配置（@Cacheable）
+  cache:
+    type: redis
+    redis:
+      # 缓存过期时长（单位：毫秒，默认 -1，表示永不过期）
+      time-to-live: 7200000
+      # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
+      cache-null-values: true
 
 --- ### 健康检查配置
 management.health:
