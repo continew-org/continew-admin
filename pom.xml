@@ -281,10 +281,17 @@ limitations under the License.
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/**</include>
+                    <include>**/*.yml</include>
                 </includes>
                 <!-- 启用过滤，即替换对应资源中的变量 -->
                 <filtering>true</filtering>
+            </resource>
+            <!-- 除 YAML 配置文件外，其他配置文件不需要进行变量替换 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
             </resource>
         </resources>
     </build>
