@@ -37,31 +37,31 @@ public class LoginLogVO extends LogVO {
     /**
      * 登录行为
      */
-    @Schema(description = "登录行为")
+    @Schema(description = "登录行为", example = "用户登录")
     private String description;
 
     /**
      * 登录状态（1：成功，2：失败）
      */
-    @Schema(description = "登录状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"})
+    @Schema(description = "登录状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private LogStatusEnum status;
 
     /**
      * 登录 IP
      */
-    @Schema(description = "登录 IP")
+    @Schema(description = "登录 IP", example = "192.168.0.1")
     private String clientIp;
 
     /**
      * 登录地点
      */
-    @Schema(description = "登录地点")
+    @Schema(description = "登录地点", example = "中国北京北京市")
     private String location;
 
     /**
      * 浏览器
      */
-    @Schema(description = "浏览器")
+    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
 
     /**

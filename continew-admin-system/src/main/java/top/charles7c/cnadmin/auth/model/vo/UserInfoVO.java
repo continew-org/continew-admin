@@ -89,7 +89,7 @@ public class UserInfoVO implements Serializable {
     /**
      * 描述
      */
-    @Schema(description = "描述", example = "张三用户")
+    @Schema(description = "描述", example = "张三描述信息")
     private String description;
 
     /**
@@ -126,13 +126,13 @@ public class UserInfoVO implements Serializable {
     /**
      * 权限码集合
      */
-    @Schema(description = "权限码集合", example = "[system:user:list,system:user:add]")
+    @Schema(description = "权限码集合", example = "[\"system:user:list\",\"system:user:add\"]")
     private Set<String> permissions;
 
     /**
      * 角色编码集合
      */
-    @Schema(description = "角色编码集合", example = "[admin,test]")
+    @Schema(description = "角色编码集合", example = "[\"test\"]")
     private Set<String> roles;
 
     public String getPhone() {

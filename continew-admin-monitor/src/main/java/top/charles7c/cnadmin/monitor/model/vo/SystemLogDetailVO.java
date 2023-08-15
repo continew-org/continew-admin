@@ -35,66 +35,66 @@ public class SystemLogDetailVO extends LogVO {
     /**
      * 状态码
      */
-    @Schema(description = "状态码")
+    @Schema(description = "状态码", example = "200")
     private Integer statusCode;
 
     /**
      * 请求方式
      */
-    @Schema(description = "请求方式")
+    @Schema(description = "请求方式", example = "POST")
     private String requestMethod;
 
     /**
      * 请求 URL
      */
-    @Schema(description = "请求 URL")
+    @Schema(description = "请求 URL", example = "http://api.charles7c.top/system/dept")
     private String requestUrl;
 
     /**
      * 请求头
      */
-    @Schema(description = "请求头")
+    @Schema(description = "请求头", example = "{\"Origin\": \"https://cnadmin.charles7c.top\",...}")
     private String requestHeaders;
 
     /**
      * 请求体
      */
-    @Schema(description = "请求体")
+    @Schema(description = "请求体", example = "{\"name\": \"测试部\",...}")
     private String requestBody;
 
     /**
      * 响应头
      */
-    @Schema(description = "响应头")
+    @Schema(description = "响应头", example = "{\"Content-Type\": [\"application/json\"],...}")
     private String responseHeaders;
 
     /**
      * 响应体
      */
-    @Schema(description = "响应体")
+    @Schema(description = "响应体", example = "{\"success\":true},...")
     private String responseBody;
 
     /**
      * 客户端IP
      */
-    @Schema(description = "客户端IP")
+    @Schema(description = "客户端IP", example = "192.168.0.1")
     private String clientIp;
 
     /**
      * IP归属地
      */
-    @Schema(description = "IP归属地")
+    @Schema(description = "IP归属地", example = "中国北京北京市")
     private String location;
 
     /**
      * 浏览器
      */
-    @Schema(description = "浏览器")
+    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
 
     /**
      * 请求耗时（ms）
      */
-    @Schema(description = "请求耗时（ms）")
+    @Schema(description = "请求耗时（ms）", example = "58")
     private Long elapsedTime;
 }

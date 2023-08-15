@@ -46,7 +46,7 @@ public class SystemLogQuery implements Serializable {
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间")
+    @Schema(description = "创建时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;

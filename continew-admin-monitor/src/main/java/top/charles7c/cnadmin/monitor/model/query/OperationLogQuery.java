@@ -46,21 +46,21 @@ public class OperationLogQuery implements Serializable {
     /**
      * 操作内容
      */
-    @Schema(description = "操作内容")
+    @Schema(description = "操作内容", example = "新增数据")
     @Query(type = QueryTypeEnum.INNER_LIKE)
     private String description;
 
     /**
      * 操作状态（1：成功，2：失败）
      */
-    @Schema(description = "操作状态（1：成功，2：失败）")
+    @Schema(description = "操作状态（1：成功，2：失败）", example = "1")
     @Query
     private Integer status;
 
     /**
      * 操作时间
      */
-    @Schema(description = "操作时间")
+    @Schema(description = "操作时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @Query(type = QueryTypeEnum.BETWEEN)
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;
@@ -68,7 +68,7 @@ public class OperationLogQuery implements Serializable {
     /**
      * 操作人
      */
-    @Schema(description = "操作人")
+    @Schema(description = "操作人", example = "张三")
     @Query(property = "createUser")
     private Long uid;
 }
