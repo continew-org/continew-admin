@@ -63,7 +63,7 @@ public class SwaggerConfiguration {
     @Bean
     public GlobalOpenApiCustomizer orderGlobalOpenApiCustomizer() {
         return openApi -> {
-            if (openApi.getTags() != null) {
+            if (null != openApi.getTags()) {
                 openApi.getTags()
                     .forEach(tag -> tag.setExtensions(MapUtil.of("x-order", RandomUtil.randomInt(0, 100))));
             }

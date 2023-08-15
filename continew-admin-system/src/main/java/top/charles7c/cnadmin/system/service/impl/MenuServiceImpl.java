@@ -100,6 +100,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
      */
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return baseMapper.lambdaQuery().eq(MenuDO::getTitle, name).eq(MenuDO::getParentId, parentId)
-            .ne(id != null, MenuDO::getId, id).exists();
+            .ne(null != id, MenuDO::getId, id).exists();
     }
 }

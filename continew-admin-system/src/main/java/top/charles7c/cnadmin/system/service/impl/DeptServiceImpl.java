@@ -153,7 +153,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      */
     private boolean checkNameExists(String name, Long parentId, Long id) {
         return baseMapper.lambdaQuery().eq(DeptDO::getName, name).eq(DeptDO::getParentId, parentId)
-            .ne(id != null, DeptDO::getId, id).exists();
+            .ne(null != id, DeptDO::getId, id).exists();
     }
 
     /**

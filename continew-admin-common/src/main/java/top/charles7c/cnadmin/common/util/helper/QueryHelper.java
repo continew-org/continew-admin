@@ -60,7 +60,7 @@ public class QueryHelper {
     public static <Q, R> QueryWrapper<R> build(Q query) {
         QueryWrapper<R> queryWrapper = new QueryWrapper<>();
         // 没有查询条件，直接返回
-        if (query == null) {
+        if (null == query) {
             return queryWrapper;
         }
 
@@ -90,7 +90,7 @@ public class QueryHelper {
             field.setAccessible(true);
             // 没有 @Query，直接返回
             Query queryAnnotation = field.getAnnotation(Query.class);
-            if (queryAnnotation == null) {
+            if (null == queryAnnotation) {
                 return;
             }
 

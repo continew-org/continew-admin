@@ -41,7 +41,7 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
     @Override
     protected RequestMappingInfo getMappingForMethod(@NonNull Method method, @NonNull Class<?> handlerType) {
         RequestMappingInfo requestMappingInfo = super.getMappingForMethod(method, handlerType);
-        if (requestMappingInfo == null) {
+        if (null == requestMappingInfo) {
             return null;
         }
 

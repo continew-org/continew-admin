@@ -21,7 +21,6 @@ import java.util.Collections;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 
@@ -80,13 +79,13 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
             String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringConsts.DOT) + 1);
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
-                DataPermission annotation = method.getAnnotation(DataPermission.class);
-                if (ObjectUtils.isNotEmpty(annotation)
+                DataPermission dataPermission = method.getAnnotation(DataPermission.class);
+                if (null != dataPermission
                     && (method.getName().equals(methodName) || (method.getName() + "_COUNT").equals(methodName))) {
                     // 获取当前登录用户
                     LoginUser loginUser = LoginHelper.getLoginUser();
-                    if (ObjectUtils.isNotEmpty(loginUser) && !loginUser.isAdmin()) {
-                        return buildDataScopeFilter(loginUser, annotation.value(), where);
+                    if (null != loginUser && !loginUser.isAdmin()) {
+                        return buildDataScopeFilter(loginUser, dataPermission.value(), where);
                     }
                 }
             }
@@ -134,20 +133,19 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 InExpression inExpression = new InExpression();
                 inExpression.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
                 inExpression.setRightExpression(subSelect);
-                expression =
-                    ObjectUtils.isNotEmpty(expression) ? new OrExpression(expression, inExpression) : inExpression;
+                expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             } else if (DataScopeEnum.DEPT.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`dept_id` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
                 equalsTo.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
                 equalsTo.setRightExpression(new LongValue(user.getDeptId()));
-                expression = ObjectUtils.isNotEmpty(expression) ? new OrExpression(expression, equalsTo) : equalsTo;
+                expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.SELF.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`create_user` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
                 equalsTo.setLeftExpression(buildColumn(tableAlias, CREATE_USER));
                 equalsTo.setRightExpression(new LongValue(user.getId()));
-                expression = ObjectUtils.isNotEmpty(expression) ? new OrExpression(expression, equalsTo) : equalsTo;
+                expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.CUSTOM.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`dept_id` in (select `dept_id` from `sys_role_dept` where
                 // `role_id` = xxx);
@@ -165,11 +163,10 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 InExpression inExpression = new InExpression();
                 inExpression.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
                 inExpression.setRightExpression(subSelect);
-                expression =
-                    ObjectUtils.isNotEmpty(expression) ? new OrExpression(expression, inExpression) : inExpression;
+                expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             }
         }
-        return ObjectUtils.isNotEmpty(where) ? new AndExpression(where, new Parenthesis(expression)) : expression;
+        return null != where ? new AndExpression(where, new Parenthesis(expression)) : expression;
     }
 
     /**

@@ -54,7 +54,7 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void login(LoginUser loginUser) {
-        if (loginUser == null) {
+        if (null == loginUser) {
             return;
         }
 
@@ -64,7 +64,7 @@ public class LoginHelper {
         loginUser.setLocation(IpUtils.getCityInfo(loginUser.getClientIp()));
         loginUser.setBrowser(ServletUtils.getBrowser(request));
         LogContext logContext = LogContextHolder.get();
-        loginUser.setLoginTime(logContext != null ? logContext.getCreateTime() : LocalDateTime.now());
+        loginUser.setLoginTime(null != logContext ? logContext.getCreateTime() : LocalDateTime.now());
 
         // 登录保存用户信息
         StpUtil.login(loginUser.getId());
@@ -79,7 +79,7 @@ public class LoginHelper {
      */
     public static LoginUser getLoginUser() {
         LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_KEY);
-        if (loginUser != null) {
+        if (null != loginUser) {
             return loginUser;
         }
         loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_KEY);

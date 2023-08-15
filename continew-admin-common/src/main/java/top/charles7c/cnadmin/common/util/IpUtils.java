@@ -91,7 +91,7 @@ public class IpUtils {
         }
         Ip2regionSearcher ip2regionSearcher = SpringUtil.getBean(Ip2regionSearcher.class);
         IpInfo ipInfo = ip2regionSearcher.memorySearch(ip);
-        if (ipInfo != null) {
+        if (null != ipInfo) {
             return ipInfo.getAddress();
         }
         return null;

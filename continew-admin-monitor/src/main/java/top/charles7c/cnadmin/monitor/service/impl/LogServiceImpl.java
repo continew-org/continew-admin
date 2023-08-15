@@ -83,7 +83,7 @@ public class LogServiceImpl implements LogService {
         PageDataVO<OperationLogVO> pageDataVO = PageDataVO.build(page, OperationLogVO.class);
 
         // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
-        if (query.getUid() != null) {
+        if (null != query.getUid()) {
             String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
             pageDataVO.getList().forEach(o -> o.setCreateUserString(nickname));
         } else {
@@ -150,7 +150,7 @@ public class LogServiceImpl implements LogService {
      */
     private void fill(LogVO logVO) {
         Long createUser = logVO.getCreateUser();
-        if (createUser == null) {
+        if (null == createUser) {
             return;
         }
         logVO.setCreateUserString(ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(createUser)));

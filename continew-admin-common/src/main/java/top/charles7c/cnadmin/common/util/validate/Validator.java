@@ -47,7 +47,7 @@ public class Validator {
      *            异常类型
      */
     protected static void throwIfNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
-        throwIf(obj == null, message, exceptionType);
+        throwIf(null == obj, message, exceptionType);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Validator {
      *            异常类型
      */
     protected static void throwIfNotNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
-        throwIf(obj != null, message, exceptionType);
+        throwIf(null != obj, message, exceptionType);
     }
 
     /**
@@ -219,7 +219,7 @@ public class Validator {
      */
     protected static void throwIf(BooleanSupplier conditionSupplier, String message,
         Class<? extends RuntimeException> exceptionType) {
-        if (conditionSupplier != null && conditionSupplier.getAsBoolean()) {
+        if (null != conditionSupplier && conditionSupplier.getAsBoolean()) {
             log.error(message);
             throw ReflectUtil.newInstance(exceptionType, message);
         }

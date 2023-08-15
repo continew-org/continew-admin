@@ -175,7 +175,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
         CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
-        assert newAvatarFile != null;
+        assert null != newAvatarFile;
 
         // 更新用户头像
         String newAvatar = newAvatarFile.getName();
@@ -266,7 +266,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long id) {
-        return baseMapper.lambdaQuery().eq(UserDO::getUsername, name).ne(id != null, UserDO::getId, id).exists();
+        return baseMapper.lambdaQuery().eq(UserDO::getUsername, name).ne(null != id, UserDO::getId, id).exists();
     }
 
     /**
@@ -279,7 +279,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      * @return 是否存在
      */
     private boolean checkEmailExists(String email, Long id) {
-        return baseMapper.lambdaQuery().eq(UserDO::getEmail, email).ne(id != null, UserDO::getId, id).exists();
+        return baseMapper.lambdaQuery().eq(UserDO::getEmail, email).ne(null != id, UserDO::getId, id).exists();
     }
 
     /**
@@ -292,6 +292,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      * @return 是否存在
      */
     private boolean checkPhoneExists(String phone, Long id) {
-        return baseMapper.lambdaQuery().eq(UserDO::getPhone, phone).ne(id != null, UserDO::getId, id).exists();
+        return baseMapper.lambdaQuery().eq(UserDO::getPhone, phone).ne(null != id, UserDO::getId, id).exists();
     }
 }

@@ -69,7 +69,7 @@ public class PageDataVO<V> implements Serializable {
      * @return 分页信息
      */
     public static <T, V> PageDataVO<V> build(IPage<T> page, Class<V> targetClass) {
-        if (page == null) {
+        if (null == page) {
             return null;
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
@@ -88,7 +88,7 @@ public class PageDataVO<V> implements Serializable {
      * @return 分页信息
      */
     public static <V> PageDataVO<V> build(IPage<V> page) {
-        if (page == null) {
+        if (null == page) {
             return null;
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();

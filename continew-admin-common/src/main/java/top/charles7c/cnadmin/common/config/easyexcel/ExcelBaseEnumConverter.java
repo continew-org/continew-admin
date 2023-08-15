@@ -25,7 +25,6 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
 import top.charles7c.cnadmin.common.constant.StringConsts;
@@ -63,7 +62,7 @@ public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer, Strin
     @Override
     public WriteCellData<String> convertToExcelData(BaseEnum<Integer, String> value,
         ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
-        if (ObjectUtil.isNull(value)) {
+        if (null == value) {
             return new WriteCellData<>(StringConsts.EMPTY);
         }
         return new WriteCellData<>(value.getDescription());

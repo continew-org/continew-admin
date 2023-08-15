@@ -151,7 +151,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
         // 设置排序
         Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
         for (Sort.Order order : sort) {
-            queryWrapper.orderBy(order != null, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
+            queryWrapper.orderBy(null != order, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
         }
         List<T> entityList = baseMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(entityList, targetClass);
@@ -168,7 +168,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long add(C request) {
-        if (request == null) {
+        if (null == request) {
             return 0L;
         }
         T entity = BeanUtil.copyProperties(request, entityClass);
@@ -220,7 +220,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
         if (baseObj instanceof BaseVO) {
             BaseVO baseVO = (BaseVO)baseObj;
             Long createUser = baseVO.getCreateUser();
-            if (createUser == null) {
+            if (null == createUser) {
                 return;
             }
             CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
@@ -240,7 +240,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
             this.fill(detailVO);
 
             Long updateUser = detailVO.getUpdateUser();
-            if (updateUser == null) {
+            if (null == updateUser) {
                 return;
             }
             CommonUserService userService = SpringUtil.getBean(CommonUserService.class);

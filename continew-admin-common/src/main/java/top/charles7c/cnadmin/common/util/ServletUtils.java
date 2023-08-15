@@ -65,7 +65,7 @@ public class ServletUtils {
      * @return 浏览器及其版本信息
      */
     public static String getBrowser(HttpServletRequest request) {
-        if (request == null) {
+        if (null == request) {
             return null;
         }
         UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));

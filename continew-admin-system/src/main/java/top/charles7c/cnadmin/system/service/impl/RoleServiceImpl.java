@@ -189,7 +189,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkNameExists(String name, Long id) {
-        return baseMapper.lambdaQuery().eq(RoleDO::getName, name).ne(id != null, RoleDO::getId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getName, name).ne(null != id, RoleDO::getId, id).exists();
     }
 
     /**
@@ -202,6 +202,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      * @return 是否存在
      */
     private boolean checkCodeExists(String code, Long id) {
-        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).ne(id != null, RoleDO::getId, id).exists();
+        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).ne(null != id, RoleDO::getId, id).exists();
     }
 }

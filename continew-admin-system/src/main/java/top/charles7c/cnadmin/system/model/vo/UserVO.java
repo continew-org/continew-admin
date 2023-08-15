@@ -103,7 +103,7 @@ public class UserVO extends BaseVO {
     }
 
     public String getPhone() {
-        if (phone == null) {
+        if (null == phone) {
             return null;
         }
         return DesensitizedUtil.mobilePhone(phone);

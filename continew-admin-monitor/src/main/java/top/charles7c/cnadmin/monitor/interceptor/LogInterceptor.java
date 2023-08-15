@@ -91,7 +91,7 @@ public class LogInterceptor implements HandlerInterceptor {
         @NonNull Object handler, Exception e) {
         // 记录请求耗时及异常信息
         LogDO logDO = this.logElapsedTimeAndException();
-        if (logDO == null) {
+        if (null == logDO) {
             return;
         }
 
@@ -127,7 +127,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private LogDO logElapsedTimeAndException() {
         LogContext logContext = LogContextHolder.get();
         try {
-            if (logContext != null) {
+            if (null != logContext) {
                 LogDO logDO = new LogDO();
                 logDO.setCreateTime(logContext.getCreateTime());
                 logDO
@@ -142,7 +142,7 @@ public class LogInterceptor implements HandlerInterceptor {
                 }
                 // 记录异常详情
                 Exception exception = logContext.getException();
-                if (exception != null) {
+                if (null != exception) {
                     logDO.setStatus(LogStatusEnum.FAILURE);
                     logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
                 }
@@ -169,16 +169,16 @@ public class LogInterceptor implements HandlerInterceptor {
 
         // 例如：@Tag(name = "部门管理") -> 部门管理
         // （本框架代码规范）例如：@Tag(name = "部门管理 API") -> 部门管理
-        if (classTag != null) {
+        if (null != classTag) {
             String name = classTag.name();
             logDO
                 .setModule(StrUtil.isNotBlank(name) ? name.replace("API", StringConsts.EMPTY).trim() : "请在该接口类上指定所属模块");
         }
         // 例如：@Log(module = "部门管理") -> 部门管理
-        if (classLog != null && StrUtil.isNotBlank(classLog.module())) {
+        if (null != classLog && StrUtil.isNotBlank(classLog.module())) {
             logDO.setModule(classLog.module());
         }
-        if (methodLog != null && StrUtil.isNotBlank(methodLog.module())) {
+        if (null != methodLog && StrUtil.isNotBlank(methodLog.module())) {
             logDO.setModule(methodLog.module());
         }
     }
@@ -196,11 +196,11 @@ public class LogInterceptor implements HandlerInterceptor {
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
 
         // 例如：@Operation(summary="新增部门") -> 新增部门
-        if (methodOperation != null) {
+        if (null != methodOperation) {
             logDO.setDescription(StrUtil.blankToDefault(methodOperation.summary(), "请在该接口方法上指定日志描述"));
         }
         // 例如：@Log("新增部门") -> 新增部门
-        if (methodLog != null && StrUtil.isNotBlank(methodLog.value())) {
+        if (null != methodLog && StrUtil.isNotBlank(methodLog.value())) {
             logDO.setDescription(methodLog.value());
         }
     }
@@ -227,7 +227,7 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
         logDO.setBrowser(ServletUtils.getBrowser(request));
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
-        if (logDO.getCreateUser() == null && SysConsts.LOGIN_URI.equals(request.getRequestURI())) {
+        if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(request.getRequestURI())) {
             LoginRequest loginRequest = JSONUtil.toBean(requestBody, LoginRequest.class);
             logDO.setCreateUser(
                 ExceptionUtils.exToNull(() -> userService.getByUsername(loginRequest.getUsername()).getId()));
@@ -291,7 +291,7 @@ public class LogInterceptor implements HandlerInterceptor {
     private String getRequestBody(HttpServletRequest request) {
         String requestBody = "";
         ContentCachingRequestWrapper wrapper = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
-        if (wrapper != null) {
+        if (null != wrapper) {
             requestBody = StrUtil.utf8Str(wrapper.getContentAsByteArray());
         }
         return requestBody;
@@ -308,7 +308,7 @@ public class LogInterceptor implements HandlerInterceptor {
         String responseBody = "";
         ContentCachingResponseWrapper wrapper =
             WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
-        if (wrapper != null) {
+        if (null != wrapper) {
             responseBody = StrUtil.utf8Str(wrapper.getContentAsByteArray());
         }
         return responseBody;
@@ -340,22 +340,22 @@ public class LogInterceptor implements HandlerInterceptor {
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
         // 3.1 如果接口方法上既没有 @Log 注解，也没有 @Operation 注解，则不记录系统日志
         Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
-        if (methodLog == null && methodOperation == null) {
+        if (null == methodLog && null == methodOperation) {
             return false;
         }
         // 3.2 请求方式不要求记录且接口方法上没有 @Log 注解，则不记录系统日志
-        if (methodLog == null && operationLogProperties.getExcludeMethods().contains(request.getMethod())) {
+        if (null == methodLog && operationLogProperties.getExcludeMethods().contains(request.getMethod())) {
             return false;
         }
         // 3.3 如果接口被隐藏，不记录系统日志
-        if (methodOperation != null && methodOperation.hidden()) {
+        if (null != methodOperation && methodOperation.hidden()) {
             return false;
         }
         // 3.4 如果接口方法或类上有 @Log 注解，但是要求忽略该接口，则不记录系统日志
-        if (methodLog != null && methodLog.ignore()) {
+        if (null != methodLog && methodLog.ignore()) {
             return false;
         }
         Log classLog = handlerMethod.getBeanType().getDeclaredAnnotation(Log.class);
-        return classLog == null || !classLog.ignore();
+        return null == classLog || !classLog.ignore();
     }
 }

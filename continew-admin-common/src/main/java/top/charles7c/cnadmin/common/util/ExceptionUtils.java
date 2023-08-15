@@ -46,7 +46,7 @@ public class ExceptionUtils {
      *            异常
      */
     public static void printException(Runnable runnable, Throwable throwable) {
-        if (throwable == null && runnable instanceof Future<?>) {
+        if (null == throwable && runnable instanceof Future<?>) {
             try {
                 Future<?> future = (Future<?>)runnable;
                 if (future.isDone()) {
@@ -60,7 +60,7 @@ public class ExceptionUtils {
                 Thread.currentThread().interrupt();
             }
         }
-        if (throwable != null) {
+        if (null != throwable) {
             log.error(throwable.getMessage(), throwable);
         }
     }
@@ -135,9 +135,9 @@ public class ExceptionUtils {
     public static <T> T exToDefault(ExSupplier<T> exSupplier, T defaultValue, Consumer<Exception> exConsumer) {
         try {
             return exSupplier.get();
-        } catch (Exception ex) {
-            if (exConsumer != null) {
-                exConsumer.accept(ex);
+        } catch (Exception e) {
+            if (null != exConsumer) {
+                exConsumer.accept(e);
             }
             return defaultValue;
         }

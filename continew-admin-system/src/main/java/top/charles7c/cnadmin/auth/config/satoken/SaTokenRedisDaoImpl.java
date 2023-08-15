@@ -97,7 +97,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public void setObject(String key, Object object, long timeout) {
-        if (timeout == 0 || timeout <= SaTokenDao.NOT_VALUE_EXPIRE) {
+        if (0 == timeout || timeout <= SaTokenDao.NOT_VALUE_EXPIRE) {
             return;
         }
         // 判断是否为永不过期
