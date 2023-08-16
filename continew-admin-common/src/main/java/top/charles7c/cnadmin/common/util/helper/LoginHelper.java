@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -68,8 +69,9 @@ public class LoginHelper {
 
         // 登录保存用户信息
         StpUtil.login(loginUser.getId());
+        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         loginUser.setToken(StpUtil.getTokenValue());
-        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        StpUtil.getSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -82,7 +84,11 @@ public class LoginHelper {
         if (null != loginUser) {
             return loginUser;
         }
-        loginUser = (LoginUser)StpUtil.getTokenSession().get(CacheConsts.LOGIN_USER_KEY);
+        SaSession session = StpUtil.getSession();
+        if (null == session) {
+            return null;
+        }
+        loginUser = (LoginUser)session.get(CacheConsts.LOGIN_USER_KEY);
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         return loginUser;
     }
@@ -95,18 +101,12 @@ public class LoginHelper {
      * @return 登录用户信息
      */
     public static LoginUser getLoginUser(String token) {
-        return StpUtil.getTokenSessionByToken(token).get(CacheConsts.LOGIN_USER_KEY, new LoginUser());
-    }
-
-    /**
-     * 更新登录用户信息
-     *
-     * @param loginUser
-     *            登录用户信息
-     */
-    public static void updateLoginUser(LoginUser loginUser) {
-        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
-        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        Object loginId = StpUtil.getLoginIdByToken(token);
+        SaSession session = StpUtil.getSessionByLoginId(loginId);
+        if (null == session) {
+            return null;
+        }
+        return (LoginUser)session.get(CacheConsts.LOGIN_USER_KEY);
     }
 
     /**
