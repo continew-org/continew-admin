@@ -19,7 +19,7 @@
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 
-📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require.html) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
 ## 简介
 
@@ -48,40 +48,7 @@ ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以�
 
 ##  系统功能
 
-> v1.x 开发和 v2.x 开发同步进行中。小步快跑，快速迭代。
->
-> 详细进度请查看 <a href="https://github.com/Charles7c/continew-admin/projects" target="_blank">GitHub Project</a> 
-
-**v2.0.0：** :fire: 升级并适配 Spring Boot 3.x。
-
-- [x] 依赖升级：升级并适配 Spring Boot 3.x
-- [x] 依赖升级：其他依赖升级
-- [x] 适配 Java 8 => Java 17 新 API 及特性
-- [ ] 计划对接 <a href="https://gitee.com/aizuda/flowlong" target="_blank">FlowLong</a> 纯国产工作流引擎
-- [ ] 其他需求汇集中...
-
-**v1.2.0：** 第三方服务支持。
-
-- [ ] 文件管理：提供 OSS 及本地文件管理
-- [ ] 支持第三方登录
-- [ ] 支持 SMS
-- [x] 文档：整理使用文档，创建文档站点
-- [ ] 依赖升级：升级至最新 Spring Boot 2.x 版本
-- [ ] 依赖升级：其他依赖升级
-- [ ] 其他需求汇集中...
-
-**v1.1.0：** 丰富中后台管理框架/脚手架的基础功能。
-
-- [ ] 代码生成：高灵活度生成前后端代码，减少大量重复的工作任务
-- [ ] 公告管理：提供系统公告的发布和维护功能
-- [ ] 通知管理：提供系统通知管理，设为已读、未读
-- [ ] 仪表盘优化：各区块数据动态渲染
-- [ ] 网站配置：支持配置系统网站标题、网站 Logo、favicon、版权信息等
-- [x] 依赖升级：升级至最新 Spring Boot 2.x 版本
-- [x] 依赖升级：其他依赖升级
-- [ ] 其他需求汇集中...
-
-**v1.0.0：** 初步完成中后台管理框架/脚手架的基础功能。
+> 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects)
 
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
@@ -416,7 +383,7 @@ pnpm dev
 
 💬 非常欢迎各位小伙伴儿在 Issues、Discussions 中进行交流探讨~
 
-💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），作者拉你进群，现有作者（群主）及 7 位群友，随意聊聊技术、提提需求，吐吐槽~
+💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin），作者拉你进群，随意聊聊技术、提提需求，吐吐槽~
 
 <div align="left">
   <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
