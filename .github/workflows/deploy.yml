@@ -4,15 +4,18 @@ on:
   # 推送时执行
   push:
     branches: [dev]
-  # pr 时执行
-  pull_request:
+  # pr 被批准合并时执行 1
+  pull_request_review:
     branches: [dev]
+    types: [submitted]
   # 可手动执行
   workflow_dispatch:
 
 jobs:
   # 部署后端服务
   deploy-server:
+    # pr 被批准合并时执行 2
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
