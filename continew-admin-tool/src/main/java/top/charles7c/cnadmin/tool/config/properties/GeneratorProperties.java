@@ -61,5 +61,10 @@ public class GeneratorProperties {
          * 包名称
          */
         private String packageName;
+
+        /**
+         * 排除字段
+         */
+        private String[] excludeFields;
     }
 }

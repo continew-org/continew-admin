@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 
-const BASE_URL = '/${moduleName}/${apiName}';
+const BASE_URL = '/${apiModuleName}/${apiName}';
 
 export interface ${classNamePrefix}Record {
 <#if fieldConfigs??>

@@ -38,5 +38,5 @@ import ${packageName}.service.${classNamePrefix}Service;
  */
 @Tag(name = "${businessName}管理 API")
 @RestController
-@CrudRequestMapping(value = "/${moduleName}/${apiName}", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/${apiModuleName}/${apiName}", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class ${className} extends BaseController<${classNamePrefix}Service, ${classNamePrefix}VO, ${classNamePrefix}DetailVO, ${classNamePrefix}Query, ${classNamePrefix}Request> {}

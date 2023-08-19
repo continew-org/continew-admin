@@ -245,8 +245,17 @@ generator:
   # 模板配置
   templateConfigs:
     DO:
+      # 模板路径
       templatePath: generator/Entity.ftl
+      # 包名称
       packageName: model.entity
+      # 排除字段
+      excludeFields:
+        - id
+        - createUser
+        - createTime
+        - updateUser
+        - updateTime
     Query:
       templatePath: generator/Query.ftl
       packageName: model.query
@@ -256,9 +265,19 @@ generator:
     VO:
       templatePath: generator/VO.ftl
       packageName: model.vo
+      excludeFields:
+        - id
+        - createUser
+        - createTime
     DetailVO:
       templatePath: generator/DetailVO.ftl
       packageName: model.vo
+      excludeFields:
+        - id
+        - createUser
+        - createTime
+        - updateUser
+        - updateTime
     Mapper:
       templatePath: generator/Mapper.ftl
       packageName: mapper

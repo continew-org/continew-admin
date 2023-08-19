@@ -55,12 +55,7 @@
               {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
             </template>
           </a-table-column>
-          <a-table-column
-            title="表名称"
-            data-index="tableName"
-            :width="200"
-            tooltip
-          />
+          <a-table-column title="表名称" data-index="tableName" :width="225" />
           <a-table-column title="描述" data-index="comment" tooltip />
           <a-table-column title="存储引擎" data-index="engine" align="center" />
           <a-table-column title="字符集" data-index="charset" />

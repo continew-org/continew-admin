@@ -40,7 +40,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
@@ -212,7 +211,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         CheckUtils.throwIfNull(genConfig, "请先进行数据表 [{}] 生成配置", tableName);
         List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
         CheckUtils.throwIfEmpty(fieldConfigList, "请先进行数据表 [{}] 字段配置", tableName);
-        Map<String, Object> genConfigMap = this.pretreatment(genConfig, fieldConfigList);
+        Map<String, Object> genConfigMap = BeanUtil.beanToMap(genConfig);
+        genConfigMap.put("date", DateUtil.date().toString("yyyy/MM/dd HH:mm"));
+        String packageName = genConfig.getPackageName();
+        String apiModuleName =
+            StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConsts.DOT) + 1);
+        genConfigMap.put("apiModuleName", apiModuleName);
+        genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
 
         try {
             String classNamePrefix = genConfig.getClassNamePrefix();
@@ -232,13 +237,12 @@ public class GeneratorServiceImpl implements GeneratorService {
             Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
             for (Map.Entry<String, TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
                 // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/cnadmin/tool/service/impl/XxxServiceImpl.java
-                TemplateConfig templateConfig = templateConfigEntry.getValue();
-                String subPackageName = templateConfig.getPackageName();
-                genConfigMap.put("subPackageName", subPackageName);
-                File classParentFile =
-                    FileUtil.file(backendParentFile, StrUtil.splitToArray(subPackageName, StringConsts.DOT));
+                this.pretreatment(genConfigMap, fieldConfigList, templateConfigEntry);
                 String className = classNamePrefix + StrUtil.nullToEmpty(templateConfigEntry.getKey());
                 genConfigMap.put("className", className);
+                TemplateConfig templateConfig = templateConfigEntry.getValue();
+                File classParentFile = FileUtil.file(backendParentFile,
+                    StrUtil.splitToArray(templateConfig.getPackageName(), StringConsts.DOT));
                 File classFile = new File(classParentFile, className + FileNameUtil.EXT_JAVA);
                 // 如果已经存在，且不允许覆盖，则跳过
                 if (classFile.exists() && !isOverride) {
@@ -284,15 +288,22 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 预处理生成配置
      *
-     * @param genConfig
+     * @param genConfigMap
      *            生成配置
-     * @param fieldConfigList
-     *            字段配置列表
-     * @return 处理后的生成配置
+     * @param originFieldConfigList
+     *            原始字段配置列表
+     * @param templateConfigEntry
+     *            模板配置
      */
-    private Map<String, Object> pretreatment(GenConfigDO genConfig, List<FieldConfigDO> fieldConfigList) {
-        Map<String, Object> genConfigMap = MapUtil.newHashMap();
-        genConfigMap.put("date", DateUtil.date().toString("yyyy/MM/dd HH:mm"));
+    private void pretreatment(Map<String, Object> genConfigMap, List<FieldConfigDO> originFieldConfigList,
+        Map.Entry<String, TemplateConfig> templateConfigEntry) {
+        TemplateConfig templateConfig = templateConfigEntry.getValue();
+        // 移除需要忽略的字段
+        List<FieldConfigDO> fieldConfigList = originFieldConfigList.stream()
+            .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig.getExcludeFields()))
+            .collect(Collectors.toList());
+        genConfigMap.put("fieldConfigs", fieldConfigList);
+        // 统计部分特殊字段特征
         genConfigMap.put("hasLocalDateTime", false);
         genConfigMap.put("hasBigDecimal", false);
         genConfigMap.put("hasRequiredField", false);
@@ -303,7 +314,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfigMap.put("hasLocalDateTime", true);
             }
             if ("BigDecimal".equals(fieldType)) {
-                genConfigMap.put("hasLocalDateTime", true);
+                genConfigMap.put("hasBigDecimal", true);
             }
             if (Boolean.TRUE.equals(fieldConfig.getIsRequired())) {
                 genConfigMap.put("hasRequiredField", true);
@@ -314,13 +325,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfigMap.put("hasListQueryField", true);
             }
         }
-        genConfig.setFieldConfigs(fieldConfigList);
-        genConfigMap.putAll(BeanUtil.beanToMap(genConfig));
-        String packageName = genConfig.getPackageName();
-        String moduleName =
-            StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConsts.DOT) + 1);
-        genConfigMap.put("moduleName", moduleName);
-        genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
-        return genConfigMap;
+        String subPackageName = templateConfig.getPackageName();
+        genConfigMap.put("subPackageName", subPackageName);
     }
 }

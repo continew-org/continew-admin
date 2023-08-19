@@ -18,7 +18,6 @@ package top.charles7c.cnadmin.tool.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -137,13 +136,6 @@ public class GenConfigDO implements Serializable {
     @JsonIgnore
     @TableField(exist = false)
     private String classNamePrefix;
-
-    /**
-     * 字段配置信息
-     */
-    @JsonIgnore
-    @TableField(exist = false)
-    private List<FieldConfigDO> fieldConfigs;
 
     public GenConfigDO(String tableName) {
         this.tableName = tableName;

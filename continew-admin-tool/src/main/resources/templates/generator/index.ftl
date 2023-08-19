@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <Breadcrumb :items="['menu.${moduleName}', 'menu.${moduleName}.${apiName}.list']" />
-    <a-card class="general-card" :title="$t('menu.${moduleName}.${apiName}.list')">
+    <Breadcrumb :items="['menu.${apiModuleName}', 'menu.${apiModuleName}.${apiName}.list']" />
+    <a-card class="general-card" :title="$t('menu.${apiModuleName}.${apiName}.list')">
       <!-- 头部区域 -->
       <div class="header">
         <!-- 搜索栏 -->
@@ -38,14 +38,14 @@
             <a-col :span="12">
               <a-space>
                 <a-button
-                  v-permission="['${moduleName}:${apiName}:add']"
+                  v-permission="['${apiModuleName}:${apiName}:add']"
                   type="primary"
                   @click="toAdd"
                 >
                   <template #icon><icon-plus /></template>新增
                 </a-button>
                 <a-button
-                  v-permission="['${moduleName}:${apiName}:update']"
+                  v-permission="['${apiModuleName}:${apiName}:update']"
                   type="primary"
                   status="success"
                   :disabled="single"
@@ -55,7 +55,7 @@
                   <template #icon><icon-edit /></template>修改
                 </a-button>
                 <a-button
-                  v-permission="['${moduleName}:${apiName}:delete']"
+                  v-permission="['${apiModuleName}:${apiName}:delete']"
                   type="primary"
                   status="danger"
                   :disabled="multiple"
@@ -65,7 +65,7 @@
                   <template #icon><icon-delete /></template>删除
                 </a-button>
                 <a-button
-                  v-permission="['${moduleName}:${apiName}:export']"
+                  v-permission="['${apiModuleName}:${apiName}:export']"
                   :loading="exportLoading"
                   type="primary"
                   status="warning"
@@ -117,13 +117,13 @@
             </#if>
           </#list>
           <a-table-column
-            v-if="checkPermission(['${moduleName}:${apiName}:update', '${moduleName}:${apiName}:delete'])"
+            v-if="checkPermission(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])"
             title="操作"
             align="center"
           >
             <template #cell="{ record }">
               <a-button
-                v-permission="['${moduleName}:${apiName}:update']"
+                v-permission="['${apiModuleName}:${apiName}:update']"
                 type="text"
                 size="small"
                 title="修改"
@@ -137,7 +137,7 @@
                 @ok="handleDelete([record.id])"
               >
                 <a-button
-                  v-permission="['${moduleName}:${apiName}:delete']"
+                  v-permission="['${apiModuleName}:${apiName}:delete']"
                   type="text"
                   size="small"
                   title="删除"
@@ -244,7 +244,7 @@
     add${classNamePrefix},
     update${classNamePrefix},
     delete${classNamePrefix},
-  } from '@/api/${moduleName}/${apiName}';
+  } from '@/api/${apiModuleName}/${apiName}';
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
@@ -442,7 +442,7 @@
     if (exportLoading.value) return;
     exportLoading.value = true;
     proxy
-      .download('/${moduleName}/${apiName}/export', { ...queryParams.value }, '${businessName}数据')
+      .download('/${apiModuleName}/${apiName}/export', { ...queryParams.value }, '${businessName}数据')
       .finally(() => {
         exportLoading.value = false;
       });
