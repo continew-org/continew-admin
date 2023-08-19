@@ -59,9 +59,29 @@ springdoc:
     enabled: ${springdoc.swagger-ui.enabled}
     path: /v3/api-docs
   group-configs:
-    - group: 'default'
+    - group: 'all'
       paths-to-match: '/**'
       packages-to-scan: top.charles7c.cnadmin.webapi.controller
+    - group: 'auth'
+      display-name: '系统认证'
+      paths-to-match: '/auth/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller.auth
+    - group: 'common'
+      display-name: '通用接口'
+      paths-to-match: '/common/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller.common
+    - group: 'system'
+      display-name: '系统管理'
+      paths-to-match: '/system/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller.system
+    - group: 'tool'
+      display-name: '系统工具'
+      paths-to-match: '/tool/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller.tool
+    - group: 'monitor'
+      display-name: '系统监控'
+      paths-to-match: '/monitor/**'
+      packages-to-scan: top.charles7c.cnadmin.webapi.controller.monitor
 ## 接口文档增强配置
 knife4j:
   enable: true
