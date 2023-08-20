@@ -3,17 +3,17 @@ import qs from 'query-string';
 
 const BASE_URL = '/${apiModuleName}/${apiName}';
 
-export interface ${classNamePrefix}Record {
+export interface DataRecord {
 <#if fieldConfigs??>
 <#list fieldConfigs as fieldConfig>
-  <#if fieldConfig.showInList>
-  ${fieldConfig.fieldName}: string;
-  </#if>
+  ${fieldConfig.fieldName}?: string;
 </#list>
+  createUserString?: string;
+  updateUserString?: string;
 </#if>
 }
 
-export interface ${classNamePrefix}Param {
+export interface ListParam {
 <#if fieldConfigs??>
 <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInQuery>
@@ -26,13 +26,13 @@ export interface ${classNamePrefix}Param {
   sort?: Array<string>;
 }
 
-export interface ${classNamePrefix}ListRes {
-  list: ${classNamePrefix}Record[];
+export interface ListRes {
+  list: DataRecord[];
   total: number;
 }
 
-export function list${classNamePrefix}(params: ${classNamePrefix}Param) {
-  return axios.get<${classNamePrefix}ListRes>(`${BASE_URL}`, {
+export function list(params: ListParam) {
+  return axios.get<ListRes>(`${'$'}{BASE_URL}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -40,18 +40,18 @@ export function list${classNamePrefix}(params: ${classNamePrefix}Param) {
   });
 }
 
-export function get${classNamePrefix}(id: string) {
-  return axios.get<${classNamePrefix}Record>(`${BASE_URL}/${id}`);
+export function get(id: string) {
+  return axios.get<DataRecord>(`${'$'}{BASE_URL}/${'$'}{id}`);
 }
 
-export function add${classNamePrefix}(req: ${classNamePrefix}Record) {
+export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function update${classNamePrefix}(req: ${classNamePrefix}Record, id: string) {
-  return axios.put(`${BASE_URL}/${id}`, req);
+export function update(req: DataRecord, id: string) {
+  return axios.put(`${'$'}{BASE_URL}/${'$'}{id}`, req);
 }
 
-export function delete${classNamePrefix}(ids: string | Array<string>) {
-  return axios.delete(`${BASE_URL}/${ids}`);
+export function del(ids: string | Array<string>) {
+  return axios.delete(`${'$'}{BASE_URL}/${'$'}{ids}`);
 }

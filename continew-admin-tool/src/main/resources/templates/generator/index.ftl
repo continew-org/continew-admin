@@ -89,7 +89,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
-        :data="${apiName}List"
+        :data="dataList"
         :loading="loading"
         :row-selection="{
           type: 'checkbox',
@@ -112,9 +112,17 @@
       >
         <template #columns>
           <#list fieldConfigs as fieldConfig>
-            <#if fieldConfig.showInList>
-            <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}" />
-            </#if>
+          <#if fieldConfig_index = 0>
+          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}">
+            <template #cell="{ record }">
+              <a-link @click="toDetail(record.id)">{{ record.${fieldConfig.fieldName} }}</a-link>
+            </template>
+          </a-table-column>
+          <#else>
+          <#if fieldConfig.showInList>
+          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}" />
+          </#if>
+          </#if>
           </#list>
           <a-table-column
             v-if="checkPermission(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])"
@@ -166,9 +174,9 @@
           <#list fieldConfigs as fieldConfig>
           <#if fieldConfig.showInForm>
           <a-form-item label="${fieldConfig.comment}" field="${fieldConfig.fieldName}">
-            <#if fieldConfig.formType == 'TEXT'>
+            <#if fieldConfig.formType = 'TEXT'>
             <a-input v-model="form.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" />
-            <#elseif fieldConfig.formType == 'TEXT_AREA'>
+            <#elseif fieldConfig.formType = 'TEXT_AREA'>
             <a-textarea
               v-model="form.${fieldConfig.fieldName}"
               :max-length="200"
@@ -178,7 +186,7 @@
               }"
               show-word-limit
             />
-            <#elseif fieldConfig.formType == 'SELECT'>
+            <#elseif fieldConfig.formType = 'SELECT'>
               <#--<a-select
                 v-model="form.${fieldConfig.fieldName}"
                 :options="${apiName}Options"
@@ -189,12 +197,12 @@
                 :allow-search="{ retainInputValue: true }"
                 style="width: 416px"
               />-->
-            <#elseif fieldConfig.formType == 'RADIO'>
+            <#elseif fieldConfig.formType = 'RADIO'>
             <#--<a-radio-group v-model="form.${fieldConfig.fieldName}" type="button">
             </a-radio-group>-->
-            <#elseif fieldConfig.formType == 'DATE'>
+            <#elseif fieldConfig.formType = 'DATE'>
             <a-date-picker v-model="form.${fieldConfig.fieldName}" placeholder="请选择${fieldConfig.comment}"/>
-            <#elseif fieldConfig.formType == 'DATE_TIME'>
+            <#elseif fieldConfig.formType = 'DATE_TIME'>
             <a-date-picker
               v-model="form.${fieldConfig.fieldName}"
               placeholder="请选择${fieldConfig.comment}"
@@ -225,7 +233,13 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ ${apiName}.${fieldConfig.fieldName} }}</span>
+            <#if fieldConfig.fieldName = 'createUser'>
+            <span v-else>{{ detail.createUserString }}</span>
+            <#elseif fieldConfig.fieldName = 'updateUser'>
+            <span v-else>{{ detail.updateUserString }}</span>
+            <#else>
+            <span v-else>{{ detail.${fieldConfig.fieldName} }}</span>
+            </#if>
           </a-descriptions-item>
           </#list>
         </a-descriptions>
@@ -237,22 +251,24 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
-    ${classNamePrefix}Record,
-    ${classNamePrefix}Param,
-    list${classNamePrefix},
-    get${classNamePrefix},
-    add${classNamePrefix},
-    update${classNamePrefix},
-    delete${classNamePrefix},
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
   } from '@/api/${apiModuleName}/${apiName}';
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
   // const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
-  const ${apiName}List = ref<${classNamePrefix}Record[]>([]);
-  const ${apiName} = ref<${classNamePrefix}Record>({
+  const dataList = ref<DataRecord[]>([]);
+  const detail = ref<DataRecord>({
+    // TODO 待补充详情字段默认值
   });
+  const total = ref(0);
   const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
@@ -272,10 +288,12 @@
       ${fieldConfig.fieldName}: undefined,
       </#if>
       </#list>
+      page: 1,
+      size: 10,
       sort: ['createTime,desc'],
     },
     // 表单数据
-    form: {} as ${classNamePrefix}Record,
+    form: {} as DataRecord,
     // 表单验证规则
     rules: {
       <#list fieldConfigs as fieldConfig>
@@ -292,11 +310,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: ${classNamePrefix}Param = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    list${classNamePrefix}(params)
+    list(params)
       .then((res) => {
-        ${apiName}List.value = res.data.list;
+        dataList.value = res.data.list;
         total.value = res.data.total;
       })
       .finally(() => {
@@ -321,7 +339,7 @@
    */
   const toUpdate = (id: string) => {
     reset();
-    get${classNamePrefix}(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       title.value = '修改${businessName}';
       visible.value = true;
@@ -333,6 +351,7 @@
    */
   const reset = () => {
     form.value = {
+      // TODO 待补充需要重置的字段默认值，详情请参考其他模块 index.vue
     };
     proxy.$refs.formRef?.resetFields();
   };
@@ -352,13 +371,13 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          update${classNamePrefix}(form.value, form.value.id).then((res) => {
+          update(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
-          add${classNamePrefix}(form.value).then((res) => {
+          add(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -377,9 +396,9 @@
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
-    get${classNamePrefix}(id)
+    get(id)
       .then((res) => {
-        ${apiName}.value = res.data;
+        detail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -418,7 +437,7 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<string>) => {
-    delete${classNamePrefix}(ids).then((res) => {
+    del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });

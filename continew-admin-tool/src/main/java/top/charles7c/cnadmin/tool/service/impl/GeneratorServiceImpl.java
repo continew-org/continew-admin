@@ -259,11 +259,11 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             // 1、生成 api 代码
             // 例如：D:/continew-admin/continew-admin-ui
+            genConfigMap.put("fieldConfigs", fieldConfigList);
             List<String> frontendSubPathList = StrUtil.split(frontendPath, "src");
             String frontendModulePath = frontendSubPathList.get(0);
             // 例如：D:/continew-admin/continew-admin-ui/src/api/tool/xxx.ts
-            String moduleSimpleName = new File(frontendPath).getName();
-            File apiParentFile = FileUtil.file(frontendModulePath, "src", "api", moduleSimpleName);
+            File apiParentFile = FileUtil.file(frontendModulePath, "src", "api", apiModuleName);
             String apiFileName = classNamePrefix.toLowerCase() + ".ts";
             File apiFile = new File(apiParentFile, apiFileName);
             if (apiFile.exists() && !isOverride) {
@@ -273,7 +273,8 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.writeString(apiContent, apiFile, StandardCharsets.UTF_8);
             // 2、生成 view 代码
             // 例如：D:/continew-admin/continew-admin-ui/src/views/tool/xxx/index.vue
-            File indexFile = FileUtil.file(frontendPath, classNamePrefix, "index.vue");
+            File indexFile =
+                FileUtil.file(frontendPath, apiModuleName, StrUtil.lowerFirst(classNamePrefix), "index.vue");
             if (indexFile.exists() && !isOverride) {
                 return;
             }
