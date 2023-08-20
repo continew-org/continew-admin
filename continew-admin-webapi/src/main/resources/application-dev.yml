@@ -157,8 +157,8 @@ local-storage:
   avatarMaxSizeInMb: 5
   ## Windows 系统本地存储配置
   windows:
-    file: C:\continew-admin\data\file\
-    avatar: C:\continew-admin\data\avatar\
+    file: C:\${project.appName}\data\file\
+    avatar: C:\${project.appName}\data\avatar\
   ## Linux 系统本地存储配置
   linux:
     file: /data/file/

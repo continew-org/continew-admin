@@ -37,7 +37,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
-import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -67,7 +67,7 @@ public class CommonController {
     private final DeptService deptService;
     private final MenuService menuService;
     private final RoleService roleService;
-    private final ContiNewAdminProperties properties;
+    private final ProjectProperties projectProperties;
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
@@ -95,7 +95,7 @@ public class CommonController {
     @GetMapping("/dict/enum/{enumTypeName}")
     public R<List<LabelValueVO>> listEnumDict(@PathVariable String enumTypeName) {
         // 扫描所有 BaseEnum 枚举基类的子类
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(properties.getBasePackage(), BaseEnum.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
         Optional<Class<?>> first =
             classSet.stream().filter(c -> c.getSimpleName().equalsIgnoreCase(enumTypeName)).findFirst();
         if (!first.isPresent()) {

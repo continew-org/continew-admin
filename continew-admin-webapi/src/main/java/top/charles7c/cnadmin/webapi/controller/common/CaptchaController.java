@@ -40,7 +40,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
-import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
@@ -65,7 +65,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 public class CaptchaController {
 
     private final CaptchaProperties captchaProperties;
-    private final ContiNewAdminProperties properties;
+    private final ProjectProperties projectProperties;
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
@@ -101,7 +101,7 @@ public class CaptchaController {
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
         String content = TemplateUtils.render(captchaMail.getTemplatePath(),
             Dict.create().set("captcha", captcha).set("expiration", expirationInMinutes));
-        MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", properties.getName()), content);
+        MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", projectProperties.getName()), content);
 
         // 保存验证码
         String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, email);

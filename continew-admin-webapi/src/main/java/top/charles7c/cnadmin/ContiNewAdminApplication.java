@@ -38,7 +38,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 
 /**
  * 启动程序
@@ -54,7 +54,7 @@ import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 @ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
 public class ContiNewAdminApplication implements ApplicationRunner {
 
-    private final ContiNewAdminProperties properties;
+    private final ProjectProperties projectProperties;
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
@@ -70,7 +70,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @SaIgnore
     @GetMapping("/")
     public String index() {
-        return String.format("%s backend service started successfully.", properties.getName());
+        return String.format("%s backend service started successfully.", projectProperties.getName());
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         String contextPath = serverProperties.getServlet().getContextPath();
         String baseUrl = URLUtil.normalize(String.format("%s:%s%s", hostAddress, port, contextPath));
         log.info("------------------------------------------------------");
-        log.info("{} backend service started successfully.", properties.getName());
+        log.info("{} backend service started successfully.", projectProperties.getName());
         log.info("后端 API 地址：{}", baseUrl);
         Boolean docEnabled = Convert.toBool(SpringUtil.getProperty("springdoc.swagger-ui.enabled"));
         if (Boolean.TRUE.equals(docEnabled)) {

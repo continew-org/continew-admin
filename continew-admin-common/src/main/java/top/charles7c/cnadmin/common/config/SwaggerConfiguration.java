@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RandomUtil;
 
-import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 
 /**
  * 接口文档配置
@@ -42,17 +42,17 @@ import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
 @ConditionalOnProperty(name = "springdoc.swagger-ui.enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfiguration {
 
-    private final ContiNewAdminProperties continewAdminProperties;
+    private final ProjectProperties projectProperties;
 
     /**
      * 接口文档配置
      */
     @Bean
     public OpenAPI openApi() {
-        return new OpenAPI().info(new Info().title(continewAdminProperties.getName() + " 接口文档")
-            .version(String.format("v%s", continewAdminProperties.getVersion()))
-            .description(continewAdminProperties.getDescription()).termsOfService(continewAdminProperties.getUrl())
-            .contact(continewAdminProperties.getAuthor()).license(continewAdminProperties.getLicense()));
+        return new OpenAPI().info(new Info().title(projectProperties.getName() + " 接口文档")
+            .version(String.format("v%s", projectProperties.getVersion()))
+            .description(projectProperties.getDescription()).termsOfService(projectProperties.getUrl())
+            .contact(projectProperties.getAuthor()).license(projectProperties.getLicense()));
     }
 
     /**

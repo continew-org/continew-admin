@@ -154,8 +154,8 @@ local-storage:
   avatarMaxSizeInMb: 5
   ## Windows 系统本地存储配置
   windows:
-    file: C:\continew-admin\data\file\
-    avatar: C:\continew-admin\data\avatar\
+    file: C:\${project.appName}\data\file\
+    avatar: C:\${project.appName}\data\avatar\
   ## Linux 系统本地存储配置
   linux:
     file: /data/file/
@@ -169,8 +169,7 @@ local-storage:
 cors:
   # 配置允许跨域的域名
   allowedOrigins:
-    - http://cnadmin.charles7c.top
-    - https://cnadmin.charles7c.top
+    - ${project.url}
   # 配置允许跨域的请求方式
   allowedMethods: '*'
   # 配置允许跨域的请求头

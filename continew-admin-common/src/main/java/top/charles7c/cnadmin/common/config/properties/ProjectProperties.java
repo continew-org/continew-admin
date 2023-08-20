@@ -36,8 +36,8 @@ import cn.hutool.extra.spring.SpringUtil;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "continew-admin")
-public class ContiNewAdminProperties {
+@ConfigurationProperties(prefix = "project")
+public class ProjectProperties {
 
     /**
      * 名称
@@ -87,6 +87,6 @@ public class ContiNewAdminProperties {
     public static final boolean IP_ADDR_LOCAL_PARSE_ENABLED;
 
     static {
-        IP_ADDR_LOCAL_PARSE_ENABLED = Convert.toBool(SpringUtil.getProperty("continew-admin.ipAddrLocalParseEnabled"));
+        IP_ADDR_LOCAL_PARSE_ENABLED = Convert.toBool(SpringUtil.getProperty("project.ipAddrLocalParseEnabled"));
     }
 }

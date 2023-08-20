@@ -4,5 +4,5 @@
  | |___| (_) || | | || |_ | || |\  ||  __/ \ V  V /|_____|/ ___ \| (_| || | | | | || || | | |
   \____|\___/ |_| |_| \__||_||_| \_| \___|  \_/\_/       /_/   \_\\__,_||_| |_| |_||_||_| |_|
 
- :: ${continew-admin.name} ::                                               v${continew-admin.version}
+ :: ${project.name} ::                                               v${project.version}
  :: Spring Boot    ::                                               v${spring-boot.version}

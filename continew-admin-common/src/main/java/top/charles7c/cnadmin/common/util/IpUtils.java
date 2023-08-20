@@ -27,7 +27,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
-import top.charles7c.cnadmin.common.config.properties.ContiNewAdminProperties;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 
 import net.dreamlu.mica.ip2region.core.Ip2regionSearcher;
 import net.dreamlu.mica.ip2region.core.IpInfo;
@@ -55,7 +55,7 @@ public class IpUtils {
      * @return 归属地信息
      */
     public static String getCityInfo(String ip) {
-        if (ContiNewAdminProperties.IP_ADDR_LOCAL_PARSE_ENABLED) {
+        if (ProjectProperties.IP_ADDR_LOCAL_PARSE_ENABLED) {
             return getLocalCityInfo(ip);
         } else {
             return getHttpCityInfo(ip);

@@ -1,5 +1,5 @@
 --- ### 项目配置
-continew-admin:
+project:
   # 名称
   name: ContiNew Admin
   # 应用名称
@@ -9,7 +9,7 @@ continew-admin:
   # 描述
   description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
   # URL
-  url: https://github.com/Charles7c/continew-admin
+  url: https://cnadmin.charles7c.top
   # 基本包
   basePackage: top.charles7c.cnadmin
   ## 作者信息配置
@@ -61,27 +61,27 @@ springdoc:
   group-configs:
     - group: 'all'
       paths-to-match: '/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller
+      packages-to-scan: ${project.basePackage}.webapi.controller
     - group: 'auth'
       display-name: '系统认证'
       paths-to-match: '/auth/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller.auth
+      packages-to-scan: ${project.basePackage}.webapi.controller.auth
     - group: 'common'
       display-name: '通用接口'
       paths-to-match: '/common/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller.common
+      packages-to-scan: ${project.basePackage}.webapi.controller.common
     - group: 'system'
       display-name: '系统管理'
       paths-to-match: '/system/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller.system
+      packages-to-scan: ${project.basePackage}.webapi.controller.system
     - group: 'tool'
       display-name: '系统工具'
       paths-to-match: '/tool/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller.tool
+      packages-to-scan: ${project.basePackage}.webapi.controller.tool
     - group: 'monitor'
       display-name: '系统监控'
       paths-to-match: '/monitor/**'
-      packages-to-scan: top.charles7c.cnadmin.webapi.controller.monitor
+      packages-to-scan: ${project.basePackage}.webapi.controller.monitor
 ## 接口文档增强配置
 knife4j:
   enable: true
@@ -93,7 +93,7 @@ knife4j:
     # 是否自定义 footer（默认 false 非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
-    footer-custom-content: 'Copyright © 2022-present [${continew-admin.author.name}](${continew-admin.author.url})&nbsp;⋅&nbsp;[${continew-admin.name}](${continew-admin.url}) v${continew-admin.version}'
+    footer-custom-content: 'Copyright © 2022-present [${project.author.name}](${project.author.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
 
 --- ### Sa-Token 配置
 sa-token:
@@ -124,11 +124,11 @@ sa-token:
 mybatis-plus:
   # Mapper 接口扫描包配置（该配置为自定义配置，非 MP 配置，不支持多包，如有需要可通过注解配置或提升扫描包层级）
   # 该配置目前的唯一使用场景为：@MapperScan("${mybatis-plus.mapper-package}")
-  mapper-package: top.charles7c.**.mapper
+  mapper-package: ${project.basePackage}.**.mapper
   # Mapper XML 文件目录配置
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
-  type-aliases-package: top.charles7c.**.model
+  type-aliases-package: ${project.basePackage}.**.model
   check-config-location: true
   configuration:
     # 自动驼峰命名规则（camel case）映射
@@ -180,7 +180,7 @@ server:
 --- ### Spring 配置
 spring:
   application:
-    name: ${continew-admin.appName}
+    name: ${project.appName}
   ## 环境配置
   profiles:
     # 启用的环境
