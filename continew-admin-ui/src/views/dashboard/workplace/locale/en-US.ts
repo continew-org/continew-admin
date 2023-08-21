@@ -10,10 +10,10 @@ export default {
   'workplace.newFromYesterday': 'New From Yesterday',
   'workplace.minute': 'Min',
   'workplace.docs': 'Documents',
-  'workplace.docs.productOverview': 'Product Overview',
+  'workplace.docs.intro': 'Project Introduction',
   'workplace.docs.userGuide': 'User Guide',
-  'workplace.docs.workflow': 'Workflow',
-  'workplace.docs.interfaceDocs': 'Interface Docs',
+  'workplace.docs.faq': 'FAQ',
+  'workplace.docs.changelog': 'Change Log',
   //
   'workplace.contentManagement': 'Content Management',
   'workplace.contentStatistical': 'Content Statistical',
