@@ -7,26 +7,42 @@
     style="height: 166px"
   >
     <template #extra>
-      <a-link href="https://doc.charles7c.top">{{ $t('workplace.viewMore') }}</a-link>
+      <a-link href="https://doc.charles7c.top" target="_blank" rel="noopener">{{ $t('workplace.viewMore') }}</a-link>
     </template>
     <a-row>
       <a-col :span="12">
-        <a-link href="https://doc.charles7c.top/guide/quickstart/intro.html">
+        <a-link
+          href="https://doc.charles7c.top/guide/quickstart/intro.html"
+          target="_blank"
+          rel="noopener"
+        >
           {{ $t('workplace.docs.intro') }}
         </a-link>
       </a-col>
       <a-col :span="12">
-        <a-link href="https://doc.charles7c.top/guide/quickstart/">
+        <a-link
+          href="https://doc.charles7c.top/guide/quickstart/"
+          target="_blank"
+          rel="noopener"
+        >
           {{ $t('workplace.docs.userGuide') }}
         </a-link>
       </a-col>
       <a-col :span="12">
-        <a-link href="https://doc.charles7c.top/faq.html">
+        <a-link
+          href="https://doc.charles7c.top/faq.html"
+          target="_blank"
+          rel="noopener"
+        >
           {{ $t('workplace.docs.faq') }}
         </a-link>
       </a-col>
       <a-col :span="12">
-        <a-link href="https://doc.charles7c.top/other/changelog.html">
+        <a-link
+          href="https://doc.charles7c.top/other/changelog.html"
+          target="_blank"
+          rel="noopener"
+        >
           {{ $t('workplace.docs.changelog') }}
         </a-link>
       </a-col>
