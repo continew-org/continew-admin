@@ -1,6 +1,18 @@
 import axios from 'axios';
 import type { TableData } from '@arco-design/web-vue/es/table/interface';
 
+const BASE_URL = '/dashboard';
+
+export interface AnnouncementDashboardRecord {
+  id: string;
+  title: string;
+  type: number;
+}
+
+export function listAnnouncement() {
+  return axios.get<AnnouncementDashboardRecord[]>(`${BASE_URL}/announcement`);
+}
+
 export interface ContentDataRecord {
   x: string;
   y: number;

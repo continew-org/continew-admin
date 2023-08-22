@@ -14,26 +14,43 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.mapper;
+package top.charles7c.cnadmin.system.model.vo;
 
-import java.util.List;
+import java.io.Serializable;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
-import top.charles7c.cnadmin.system.model.entity.AnnouncementDO;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDashboardVO;
+import lombok.Data;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
- * 公告 Mapper
+ * 仪表盘公告信息
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-public interface AnnouncementMapper extends BaseMapper<AnnouncementDO> {
+@Data
+@Schema(description = "仪表盘公告信息")
+public class AnnouncementDashboardVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 查询仪表盘公告列表
-     *
-     * @return 公告列表
+     * ID
      */
-    List<AnnouncementDashboardVO> selectDashboardList();
+    @Schema(description = "ID", example = "1")
+    private Long id;
+
+    /**
+     * 标题
+     */
+    @Schema(description = "标题", example = "这是标题")
+    private String title;
+
+    /**
+     * 类型
+     */
+    @Schema(description = "类型")
+    private AnnouncementTypeEnum type;
 }
