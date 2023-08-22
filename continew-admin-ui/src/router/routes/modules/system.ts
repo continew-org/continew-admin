@@ -52,6 +52,16 @@ const System: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
+    {
+      path: '/system/announcement',
+      name: 'Announcement',
+      component: () => import('@/views/system/announcement/index.vue'),
+      meta: {
+        locale: 'menu.system.announcement.list',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
   ],
 };
 

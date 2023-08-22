@@ -31,3 +31,20 @@ CREATE TABLE IF NOT EXISTS `gen_field_config` (
     `create_time` datetime NOT NULL COMMENT '创建时间',
     INDEX `idx_table_name`(`table_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字段配置表';
+
+CREATE TABLE IF NOT EXISTS `sys_announcement` (
+    `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
+    `title` varchar(255) NOT NULL COMMENT '标题',
+    `content` mediumtext NOT NULL COMMENT '内容',
+    `type` tinyint(1) UNSIGNED DEFAULT 1 COMMENT '类型（1：活动，2：消息，3：通知）',
+    `effective_time` datetime DEFAULT NULL COMMENT '生效时间',
+    `terminate_time` datetime DEFAULT NULL COMMENT '终止时间',
+    `sort` int(11) UNSIGNED DEFAULT 999 COMMENT '排序',
+    `create_user` bigint(20) UNSIGNED NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '修改人',
+    `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_create_user`(`create_user`) USING BTREE,
+    INDEX `idx_update_user`(`update_user`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公告表';

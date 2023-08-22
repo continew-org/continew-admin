@@ -9,3 +9,12 @@ declare module '*.vue' {
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL: string;
 }
+
+declare module '@kangc/v-md-editor';
+declare module '@kangc/v-md-editor/lib/preview';
+declare module '@kangc/v-md-editor/lib/theme/github.js';
+declare module '@kangc/v-md-editor/lib/plugins/emoji/index';
+declare module '@kangc/v-md-editor/lib/plugins/copy-code/index';
+declare module '@kangc/v-md-editor/lib/plugins/todo-list/index';
+declare module 'highlight.js';
+declare module 'highlight.js/lib/languages/json';

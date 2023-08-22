@@ -4,6 +4,7 @@ import localeUser from '@/views/system/user/locale/zh-CN';
 import localeRole from '@/views/system/role/locale/zh-CN';
 import localeMenu from '@/views/system/menu/locale/zh-CN';
 import localeDept from '@/views/system/dept/locale/zh-CN';
+import localeAnnouncement from '@/views/system/announcement/locale/zh-CN';
 
 import localeGenerator from '@/views/tool/generator/locale/zh-CN';
 
@@ -58,6 +59,7 @@ export default {
   ...localeRole,
   ...localeMenu,
   ...localeDept,
+  ...localeAnnouncement,
 
   ...localeGenerator,
 
