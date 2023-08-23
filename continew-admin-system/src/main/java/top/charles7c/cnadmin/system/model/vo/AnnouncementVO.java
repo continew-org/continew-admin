@@ -40,27 +40,33 @@ public class AnnouncementVO extends BaseVO {
     /**
      * 标题
      */
-    @Schema(description = "标题")
+    @Schema(description = "标题", example = "这是公告标题")
     private String title;
 
     /**
      * 类型
      */
-    @Schema(description = "类型")
+    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
     private AnnouncementTypeEnum type;
 
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间")
+    @Schema(description = "生效时间", example = "2023-08-08 00:00:00")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间")
+    @Schema(description = "终止时间", example = "2023-08-08 23:59:59")
     private LocalDateTime terminateTime;
 
+    /**
+     * 状态
+     * 
+     * @return 公告状态
+     */
+    @Schema(description = "状态（1：已发布，2：已过期）", example = "1")
     public Integer getStatus() {
         int status = 1;
         if (null != this.effectiveTime) {

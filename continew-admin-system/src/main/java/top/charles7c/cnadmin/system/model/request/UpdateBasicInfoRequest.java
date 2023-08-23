@@ -52,7 +52,7 @@ public class UpdateBasicInfoRequest implements Serializable {
     /**
      * 性别（0未知 1男 2女）
      */
-    @Schema(description = "性别（0未知 1男 2女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
+    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
     @NotNull(message = "性别非法")
     private GenderEnum gender;
 }

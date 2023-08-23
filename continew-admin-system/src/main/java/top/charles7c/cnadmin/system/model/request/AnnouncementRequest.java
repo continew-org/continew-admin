@@ -44,7 +44,7 @@ public class AnnouncementRequest extends BaseRequest {
     /**
      * 标题
      */
-    @Schema(description = "标题")
+    @Schema(description = "标题", example = "这是公告标题")
     @NotBlank(message = "标题不能为空")
     @Length(max = 255, message = "标题长度不能超过 {max} 个字符")
     private String title;
@@ -52,27 +52,27 @@ public class AnnouncementRequest extends BaseRequest {
     /**
      * 内容
      */
-    @Schema(description = "内容")
+    @Schema(description = "内容", example = "这是公告内容")
     @NotBlank(message = "内容不能为空")
     private String content;
 
     /**
      * 类型
      */
-    @Schema(description = "类型")
+    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
     @NotNull(message = "类型非法")
     private AnnouncementTypeEnum type;
 
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间")
+    @Schema(description = "生效时间", example = "2023-08-08 00:00:00")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间")
+    @Schema(description = "终止时间", example = "2023-08-08 23:59:59")
     @Future(message = "终止时间必须是未来时间")
     private LocalDateTime terminateTime;
 }

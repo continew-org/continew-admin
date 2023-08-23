@@ -44,7 +44,7 @@ public class MenuRequest extends BaseRequest {
     /**
      * 菜单类型（1目录 2菜单 3按钮）
      */
-    @Schema(description = "菜单类型（1目录 2菜单 3按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @Schema(description = "菜单类型（1：目录，2：菜单，3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
     @NotNull(message = "菜单类型非法")
     private MenuTypeEnum type;
 
@@ -120,6 +120,6 @@ public class MenuRequest extends BaseRequest {
     /**
      * 状态（1启用 2禁用）
      */
-    @Schema(description = "状态（1启用 2禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

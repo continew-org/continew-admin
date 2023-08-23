@@ -81,7 +81,7 @@ public class MenuVO extends BaseVO {
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 
@@ -123,7 +123,7 @@ public class MenuVO extends BaseVO {
     /**
      * 菜单类型（1：目录，2：菜单，3：按钮）
      */
-    @Schema(description = "菜单类型（1：目录，2：菜单，3：按钮）", example = "2")
+    @Schema(description = "菜单类型（1：目录，2：菜单，3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
     @ExcelProperty(value = "菜单类型", converter = ExcelBaseEnumConverter.class)
     private MenuTypeEnum type;
 

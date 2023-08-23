@@ -26,6 +26,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
+import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
@@ -44,34 +45,35 @@ public class AnnouncementDetailVO extends BaseDetailVO {
     /**
      * 标题
      */
-    @Schema(description = "标题")
+    @Schema(description = "标题", example = "这是公告标题")
     @ExcelProperty(value = "标题")
     private String title;
 
     /**
      * 内容
      */
-    @Schema(description = "内容")
+    @Schema(description = "内容", example = "这是公告内容")
     @ExcelProperty(value = "内容")
     private String content;
 
     /**
      * 类型
      */
-    @Schema(description = "类型")
+    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
+    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private AnnouncementTypeEnum type;
 
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间")
+    @Schema(description = "生效时间", example = "2023-08-08 00:00:00")
     @ExcelProperty(value = "生效时间")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间")
+    @Schema(description = "终止时间", example = "2023-08-08 23:59:59")
     @ExcelProperty(value = "终止时间")
     private LocalDateTime terminateTime;
 }

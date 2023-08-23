@@ -68,7 +68,9 @@ springdoc:
       packages-to-scan: ${project.basePackage}.webapi.controller.auth
     - group: 'common'
       display-name: '通用接口'
-      paths-to-match: '/common/**'
+      paths-to-match:
+        - '/common/**'
+        - '/dashboard/**'
       packages-to-scan: ${project.basePackage}.webapi.controller.common
     - group: 'system'
       display-name: '系统管理'

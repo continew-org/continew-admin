@@ -45,12 +45,12 @@ public class AnnouncementDashboardVO implements Serializable {
     /**
      * 标题
      */
-    @Schema(description = "标题", example = "这是标题")
+    @Schema(description = "标题", example = "这是公告标题")
     private String title;
 
     /**
      * 类型
      */
-    @Schema(description = "类型")
+    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
     private AnnouncementTypeEnum type;
 }

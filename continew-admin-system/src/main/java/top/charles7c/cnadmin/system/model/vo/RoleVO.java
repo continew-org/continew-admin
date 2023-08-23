@@ -52,7 +52,8 @@ public class RoleVO extends BaseVO {
     /**
      * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
      */
-    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", example = "5")
+    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", type = "Integer",
+        allowableValues = {"1", "2", "3", "4", "5"}, example = "5")
     private DataScopeEnum dataScope;
 
     /**
@@ -64,13 +65,13 @@ public class RoleVO extends BaseVO {
     /**
      * 状态（1：启用，2：禁用）
      */
-    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
+    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 
     /**
      * 类型（1：系统内置，2：自定义）
      */
-    @Schema(description = "类型（1：系统内置，2：自定义）", example = "2")
+    @Schema(description = "类型（1：系统内置，2：自定义）", type = "Integer", allowableValues = {"1", "2"}, example = "2")
     private DataTypeEnum type;
 
     /**

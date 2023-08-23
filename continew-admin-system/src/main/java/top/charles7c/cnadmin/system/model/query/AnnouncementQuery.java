@@ -40,14 +40,14 @@ public class AnnouncementQuery implements Serializable {
     /**
      * 标题
      */
-    @Schema(description = "标题")
+    @Schema(description = "标题", example = "这是公告标题")
     @Query(type = QueryTypeEnum.INNER_LIKE)
     private String title;
 
     /**
      * 类型（1：活动，2：消息，3：通知）
      */
-    @Schema(description = "类型（1：活动，2：消息，3：通知）")
+    @Schema(description = "类型（1：活动，2：消息，3：通知）", example = "1")
     @Query(type = QueryTypeEnum.EQUAL)
     private Integer type;
 }
