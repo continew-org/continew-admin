@@ -207,7 +207,6 @@
               v-model="form.${fieldConfig.fieldName}"
               placeholder="请选择${fieldConfig.comment}"
               show-time
-              :time-picker-props="{ defaultValue: '09:09:06' }"
               format="YYYY-MM-DD HH:mm:ss"
             />
             </#if>
@@ -234,11 +233,11 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <#if fieldConfig.fieldName = 'createUser'>
-            <span v-else>{{ detail.createUserString }}</span>
+            <span v-else>{{ dataDetail.createUserString }}</span>
             <#elseif fieldConfig.fieldName = 'updateUser'>
-            <span v-else>{{ detail.updateUserString }}</span>
+            <span v-else>{{ dataDetail.updateUserString }}</span>
             <#else>
-            <span v-else>{{ detail.${fieldConfig.fieldName} }}</span>
+            <span v-else>{{ dataDetail.${fieldConfig.fieldName} }}</span>
             </#if>
           </a-descriptions-item>
           </#list>
@@ -265,7 +264,7 @@
   // const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
   const dataList = ref<DataRecord[]>([]);
-  const detail = ref<DataRecord>({
+  const dataDetail = ref<DataRecord>({
     // TODO 待补充详情字段默认值
   });
   const total = ref(0);
@@ -398,7 +397,7 @@
     detailVisible.value = true;
     get(id)
       .then((res) => {
-        detail.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
