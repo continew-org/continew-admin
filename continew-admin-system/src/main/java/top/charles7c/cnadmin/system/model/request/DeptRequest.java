@@ -81,6 +81,6 @@ public class DeptRequest extends BaseRequest {
     /**
      * 祖级列表
      */
-    @Schema(description = "祖级列表")
+    @Schema(hidden = true)
     private String ancestors;
 }
