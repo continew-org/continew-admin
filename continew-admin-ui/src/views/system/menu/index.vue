@@ -97,7 +97,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
-        :data="menuList"
+        :data="dataList"
         :loading="loading"
         :row-selection="{
           type: 'checkbox',
@@ -343,13 +343,13 @@
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { TreeNodeData, TableData } from '@arco-design/web-vue';
   import {
-    MenuRecord,
-    MenuParam,
-    listMenu,
-    getMenu,
-    addMenu,
-    updateMenu,
-    deleteMenu,
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
   } from '@/api/system/menu';
   import { listMenuTree } from '@/api/common';
   import checkPermission from '@/utils/permission';
@@ -357,7 +357,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
-  const menuList = ref<MenuRecord[]>([]);
+  const dataList = ref<DataRecord[]>([]);
   const ids = ref<Array<string>>([]);
   const title = ref('');
   const single = ref(true);
@@ -378,7 +378,7 @@
       sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
     },
     // 表单数据
-    form: {} as MenuRecord,
+    form: {} as DataRecord,
     // 表单验证规则
     rules: {
       title: [{ required: true, message: '请输入菜单标题' }],
@@ -396,11 +396,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: MenuParam = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    listMenu(params)
+    list(params)
       .then((res) => {
-        menuList.value = res.data;
+        dataList.value = res.data;
       })
       .finally(() => {
         loading.value = false;
@@ -431,7 +431,7 @@
       treeData.value = res.data;
     });
 
-    getMenu(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       title.value = '修改菜单';
       visible.value = true;
@@ -476,13 +476,13 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          updateMenu(form.value, form.value.id).then((res) => {
+          update(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
-          addMenu(form.value).then((res) => {
+          add(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -518,7 +518,7 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<string>) => {
-    deleteMenu(ids).then((res) => {
+    del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });
@@ -589,10 +589,10 @@
    *
    * @param record 记录信息
    */
-  const handleChangeStatus = (record: MenuRecord) => {
+  const handleChangeStatus = (record: DataRecord) => {
     if (record.id) {
       const tip = record.status === 1 ? '启用' : '禁用';
-      updateMenu(record, record.id)
+      update(record, record.id)
         .then(() => {
           proxy.$message.success(`${tip}成功`);
         })

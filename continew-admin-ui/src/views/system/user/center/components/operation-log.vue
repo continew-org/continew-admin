@@ -4,7 +4,7 @@
     <a-table
       ref="tableRef"
       row-key="id"
-      :data="operationLogList"
+      :data="dataList"
       :loading="loading"
       :pagination="{
         showTotal: true,
@@ -66,7 +66,7 @@
 
   const loginStore = useLoginStore();
 
-  const operationLogList = ref<OperationLogRecord[]>([]);
+  const dataList = ref<OperationLogRecord[]>([]);
   const total = ref(0);
   const loading = ref(false);
 
@@ -90,7 +90,7 @@
     loading.value = true;
     listOperationLog(params)
       .then((res) => {
-        operationLogList.value = res.data.list;
+        dataList.value = res.data.list;
         total.value = res.data.total;
       })
       .finally(() => {

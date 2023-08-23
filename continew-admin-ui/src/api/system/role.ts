@@ -3,7 +3,7 @@ import qs from 'query-string';
 
 const BASE_URL = '/system/role';
 
-export interface RoleRecord {
+export interface DataRecord {
   id?: string;
   name: string;
   code?: string;
@@ -21,7 +21,7 @@ export interface RoleRecord {
   disabled?: boolean;
 }
 
-export interface RoleParam {
+export interface ListParam {
   name?: string;
   status?: number;
   page?: number;
@@ -29,13 +29,13 @@ export interface RoleParam {
   sort?: Array<string>;
 }
 
-export interface RoleListRes {
-  list: RoleRecord[];
+export interface ListRes {
+  list: DataRecord[];
   total: number;
 }
 
-export function listRole(params: RoleParam) {
-  return axios.get<RoleListRes>(`${BASE_URL}`, {
+export function list(params: ListParam) {
+  return axios.get<ListRes>(`${BASE_URL}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -43,18 +43,18 @@ export function listRole(params: RoleParam) {
   });
 }
 
-export function getRole(id: string) {
-  return axios.get<RoleRecord>(`${BASE_URL}/${id}`);
+export function get(id: string) {
+  return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
-export function addRole(req: RoleRecord) {
+export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateRole(req: RoleRecord, id: string) {
+export function update(req: DataRecord, id: string) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 
-export function deleteRole(ids: string | Array<string>) {
+export function del(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }

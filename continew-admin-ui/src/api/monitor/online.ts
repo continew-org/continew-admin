@@ -3,7 +3,7 @@ import qs from 'query-string';
 
 const BASE_URL = '/monitor/online/user';
 
-export interface OnlineUserRecord {
+export interface DataRecord {
   token: string;
   username: string;
   nickname: string;
@@ -13,19 +13,19 @@ export interface OnlineUserRecord {
   loginTime: string;
 }
 
-export interface OnlineUserParam extends Partial<OnlineUserRecord> {
+export interface ListParam extends Partial<DataRecord> {
   page: number;
   size: number;
   sort: Array<string>;
 }
 
-export interface OnlineUserListRes {
-  list: OnlineUserRecord[];
+export interface ListRes {
+  list: DataRecord[];
   total: number;
 }
 
-export function listOnlineUser(params: OnlineUserParam) {
-  return axios.get<OnlineUserListRes>(BASE_URL, {
+export function list(params: ListParam) {
+  return axios.get<ListRes>(BASE_URL, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

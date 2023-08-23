@@ -3,7 +3,7 @@ import qs from 'query-string';
 
 const BASE_URL = '/system/dept';
 
-export interface DeptRecord {
+export interface DataRecord {
   id?: string;
   name: string;
   parentId?: string;
@@ -15,18 +15,18 @@ export interface DeptRecord {
   createTime?: string;
   updateUserString?: string;
   updateTime?: string;
-  children?: Array<DeptRecord>;
+  children?: Array<DataRecord>;
   parentName?: string;
   disabled?: boolean;
 }
 
-export interface DeptParam {
+export interface ListParam {
   name?: string;
   status?: number;
 }
 
-export function listDept(params: DeptParam) {
-  return axios.get<DeptRecord[]>(`${BASE_URL}/tree`, {
+export function list(params: ListParam) {
+  return axios.get<DataRecord[]>(`${BASE_URL}/tree`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -34,18 +34,18 @@ export function listDept(params: DeptParam) {
   });
 }
 
-export function getDept(id: string) {
-  return axios.get<DeptRecord>(`${BASE_URL}/${id}`);
+export function get(id: string) {
+  return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
-export function addDept(req: DeptRecord) {
+export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateDept(req: DeptRecord, id: string) {
+export function update(req: DataRecord, id: string) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 
-export function deleteDept(ids: string | Array<string>) {
+export function del(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }

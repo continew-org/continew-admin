@@ -37,7 +37,7 @@
       <a-table
         ref="tableRef"
         row-key="token"
-        :data="onlineUserList"
+        :data="dataList"
         :loading="loading"
         :pagination="{
           showTotal: true,
@@ -103,9 +103,9 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
-    OnlineUserParam,
-    OnlineUserRecord,
-    listOnlineUser,
+    DataRecord,
+    ListParam,
+    list,
     kickout,
   } from '@/api/monitor/online';
   import { getToken } from '@/utils/auth';
@@ -113,7 +113,7 @@
 
   const { proxy } = getCurrentInstance() as any;
 
-  const onlineUserList = ref<OnlineUserRecord[]>([]);
+  const dataList = ref<DataRecord[]>([]);
   const total = ref(0);
   const loading = ref(false);
   const currentToken = getToken();
@@ -135,11 +135,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: OnlineUserParam = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    listOnlineUser(params)
+    list(params)
       .then((res) => {
-        onlineUserList.value = res.data.list;
+        dataList.value = res.data.list;
         total.value = res.data.total;
       })
       .finally(() => {

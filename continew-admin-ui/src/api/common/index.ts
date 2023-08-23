@@ -1,8 +1,8 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { DeptParam } from '@/api/system/dept';
-import { MenuParam } from '@/api/system/menu';
-import { RoleParam } from '@/api/system/role';
+import { ListParam as DeptParam } from '@/api/system/dept';
+import { ListParam as MenuParam } from '@/api/system/menu';
+import { ListParam as RoleParam } from '@/api/system/role';
 import { TreeNodeData } from '@arco-design/web-vue';
 import { LabelValueState } from '@/store/modules/dict/types';
 

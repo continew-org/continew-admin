@@ -11,8 +11,8 @@
       }}</a-link>
     </template>
     <div>
-      <a-empty v-if="list.length === 0">暂无公告</a-empty>
-      <div v-for="(item, idx) in list" :key="idx" class="item">
+      <a-empty v-if="dataList.length === 0">暂无公告</a-empty>
+      <div v-for="(item, idx) in dataList" :key="idx" class="item">
         <a-tag v-if="item.type === 1" color="orangered">活动</a-tag>
         <a-tag v-else-if="item.type === 2" color="cyan">消息</a-tag>
         <a-tag v-else color="blue">通知</a-tag>
@@ -42,7 +42,7 @@
         </template>
         <a-typography :style="{ marginTop: '-40px', textAlign: 'center' }">
           <a-typography-title>
-            {{ detail.title }}
+            {{ dataDetail.title }}
           </a-typography-title>
           <a-typography-paragraph>
             <div class="meta-data">
@@ -50,16 +50,16 @@
                 <span>
                   <icon-user class="icon" />
                   <span class="label">发布人：</span>
-                  <span>{{ detail.createUserString }}</span>
+                  <span>{{ dataDetail.createUserString }}</span>
                 </span>
                 <a-divider direction="vertical" />
                 <span>
                   <svg-icon icon-class="clock-circle" class="icon" />
                   <span class="label">发布时间：</span>
                   <span>{{
-                    detail.effectiveTime
-                      ? detail.effectiveTime
-                      : detail.createTime
+                      dataDetail.effectiveTime
+                      ? dataDetail.effectiveTime
+                      : dataDetail.createTime
                   }}</span>
                 </span>
               </a-space>
@@ -67,13 +67,13 @@
           </a-typography-paragraph>
         </a-typography>
         <a-divider />
-        <v-md-preview :text="detail.content"></v-md-preview>
+        <v-md-preview :text="dataDetail.content"></v-md-preview>
         <a-divider />
-        <div v-if="detail.updateTime" class="update-time-row">
+        <div v-if="dataDetail.updateTime" class="update-time-row">
           <span>
             <icon-schedule class="icon" />
             <span>最后更新于：</span>
-            <span>{{ detail.updateTime }}</span>
+            <span>{{ dataDetail.updateTime }}</span>
           </span>
         </div>
       </a-spin>
@@ -89,8 +89,8 @@
   } from '@/api/dashboard';
   import { DataRecord, get } from '@/api/system/announcement';
 
-  const list = ref<AnnouncementDashboardRecord[]>([]);
-  const detail = ref<DataRecord>({});
+  const dataList = ref<AnnouncementDashboardRecord[]>([]);
+  const dataDetail = ref<DataRecord>({});
   const detailLoading = ref(false);
   const detailVisible = ref(false);
 
@@ -99,7 +99,7 @@
    */
   const getList = () => {
     listAnnouncement().then((res) => {
-      list.value = res.data;
+      dataList.value = res.data;
     });
   };
   getList();
@@ -115,7 +115,7 @@
     detailVisible.value = true;
     get(id)
       .then((res) => {
-        detail.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -127,7 +127,7 @@
    */
   const handleDetailCancel = () => {
     detailVisible.value = false;
-    detail.value = {};
+    dataDetail.value = {};
   };
 </script>
 

@@ -3,7 +3,7 @@ import qs from 'query-string';
 
 const BASE_URL = '/system/user';
 
-export interface UserRecord {
+export interface DataRecord {
   id?: string;
   username: string;
   nickname: string;
@@ -25,7 +25,7 @@ export interface UserRecord {
   disabled?: boolean;
 }
 
-export interface UserParam {
+export interface ListParam {
   username?: string;
   status?: number;
   createTime?: Array<string>;
@@ -34,13 +34,13 @@ export interface UserParam {
   sort?: Array<string>;
 }
 
-export interface UserListRes {
-  list: UserRecord[];
+export interface ListRes {
+  list: DataRecord[];
   total: number;
 }
 
-export function listUser(params: UserParam) {
-  return axios.get<UserListRes>(`${BASE_URL}`, {
+export function list(params: ListParam) {
+  return axios.get<ListRes>(`${BASE_URL}`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -48,19 +48,19 @@ export function listUser(params: UserParam) {
   });
 }
 
-export function getUser(id: string) {
-  return axios.get<UserRecord>(`${BASE_URL}/${id}`);
+export function get(id: string) {
+  return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
-export function addUser(req: UserRecord) {
+export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function updateUser(req: UserRecord, id: string) {
+export function update(req: DataRecord, id: string) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 
-export function deleteUser(ids: string | Array<string>) {
+export function del(ids: string | Array<string>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }
 

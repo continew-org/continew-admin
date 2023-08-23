@@ -94,7 +94,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
-        :data="roleList"
+        :data="dataList"
         :loading="loading"
         :row-selection="{
           type: 'checkbox',
@@ -337,20 +337,20 @@
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.name }}</span>
+              <span v-else>{{ dataDetail.name }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="角色编码">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.code }}</span>
+              <span v-else>{{ dataDetail.code }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="状态">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>
-                <a-tag v-if="role.status === 1" color="green">启用</a-tag>
+                <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
                 <a-tag v-else color="red">禁用</a-tag>
               </span>
             </a-descriptions-item>
@@ -359,12 +359,12 @@
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>
-                <span v-if="role.dataScope === 1">全部数据权限</span>
-                <span v-else-if="role.dataScope === 2"
+                <span v-if="dataDetail.dataScope === 1">全部数据权限</span>
+                <span v-else-if="dataDetail.dataScope === 2"
                   >本部门及以下数据权限</span
                 >
-                <span v-else-if="role.dataScope === 3">本部门数据权限</span>
-                <span v-else-if="role.dataScope === 4">仅本人数据权限</span>
+                <span v-else-if="dataDetail.dataScope === 3">本部门数据权限</span>
+                <span v-else-if="dataDetail.dataScope === 4">仅本人数据权限</span>
                 <span v-else>自定义数据权限</span>
               </span>
             </a-descriptions-item>
@@ -372,52 +372,52 @@
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.createUserString }}</span>
+              <span v-else>{{ dataDetail.createUserString }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="创建时间">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.createTime }}</span>
+              <span v-else>{{ dataDetail.createTime }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="修改人">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.updateUserString }}</span>
+              <span v-else>{{ dataDetail.updateUserString }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="修改时间">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.updateTime }}</span>
+              <span v-else>{{ dataDetail.updateTime }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="描述">
               <a-skeleton v-if="detailLoading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ role.description }}</span>
+              <span v-else>{{ dataDetail.description }}</span>
             </a-descriptions-item>
           </a-descriptions>
         </a-card>
         <a-card :loading="menuLoading" title="功能权限" :bordered="false">
           <a-tree
             :data="menuOptions"
-            :checked-keys="role.menuIds"
+            :checked-keys="dataDetail.menuIds"
             :default-expand-all="false"
             check-strictly
             checkable
           />
         </a-card>
         <a-card
-          v-if="role.dataScope === 5"
+          v-if="dataDetail.dataScope === 5"
           :loading="deptLoading"
           title="数据权限"
           :bordered="false"
         >
           <a-tree
             :data="deptOptions"
-            :checked-keys="role.deptIds"
+            :checked-keys="dataDetail.deptIds"
             default-expand-all
             check-strictly
             checkable
@@ -432,13 +432,13 @@
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { TreeNodeData } from '@arco-design/web-vue';
   import {
-    RoleRecord,
-    RoleParam,
-    listRole,
-    getRole,
-    addRole,
-    updateRole,
-    deleteRole,
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
   } from '@/api/system/role';
   import { listMenuTree, listDeptTree } from '@/api/common';
   import checkPermission from '@/utils/permission';
@@ -449,8 +449,8 @@
     'DisEnableStatusEnum'
   );
 
-  const roleList = ref<RoleRecord[]>([]);
-  const role = ref<RoleRecord>({
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({
     name: '',
     code: '',
     status: 1,
@@ -495,7 +495,7 @@
       sort: ['createTime,desc'],
     },
     // 表单数据
-    form: {} as RoleRecord,
+    form: {} as DataRecord,
     // 表单验证规则
     rules: {
       name: [
@@ -524,11 +524,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: RoleParam = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    listRole(params)
+    list(params)
       .then((res) => {
-        roleList.value = res.data.list;
+        dataList.value = res.data.list;
         total.value = res.data.total;
       })
       .finally(() => {
@@ -559,7 +559,7 @@
     deptCheckStrictly.value = false;
     getMenuTree();
     getDeptTree();
-    getRole(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       title.value = '修改角色';
       visible.value = true;
@@ -681,7 +681,7 @@
         if (form.value.id !== undefined) {
           form.value.menuIds = getMenuAllCheckedKeys();
           form.value.deptIds = getDeptAllCheckedKeys();
-          updateRole(form.value, form.value.id).then((res) => {
+          update(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -689,7 +689,7 @@
         } else {
           form.value.menuIds = getMenuAllCheckedKeys();
           form.value.deptIds = getDeptAllCheckedKeys();
-          addRole(form.value).then((res) => {
+          add(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -710,9 +710,9 @@
     getDeptTree();
     detailLoading.value = true;
     detailVisible.value = true;
-    getRole(id)
+    get(id)
       .then((res) => {
-        role.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -751,7 +751,7 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<string>) => {
-    deleteRole(ids).then((res) => {
+    del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });
@@ -786,10 +786,10 @@
    *
    * @param record 记录信息
    */
-  const handleChangeStatus = (record: RoleRecord) => {
+  const handleChangeStatus = (record: DataRecord) => {
     if (record.id) {
       const tip = record.status === 1 ? '启用' : '禁用';
-      updateRole(record, record.id)
+      update(record, record.id)
         .then(() => {
           proxy.$message.success(`${tip}成功`);
         })

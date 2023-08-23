@@ -94,7 +94,7 @@
       <a-table
         ref="tableRef"
         row-key="id"
-        :data="deptList"
+        :data="dataList"
         :loading="loading"
         :row-selection="{
           type: 'checkbox',
@@ -241,20 +241,20 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.name }}</span>
+            <span v-else>{{ dataDetail.name }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="上级部门">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.parentName || '无' }}</span>
+            <span v-else>{{ dataDetail.parentName || '无' }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="状态">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dept.status === 1" color="green">启用</a-tag>
+              <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
               <a-tag v-else color="red">禁用</a-tag>
             </span>
           </a-descriptions-item>
@@ -262,37 +262,37 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.sort }}</span>
+            <span v-else>{{ dataDetail.sort }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.createUserString }}</span>
+            <span v-else>{{ dataDetail.createUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.createTime }}</span>
+            <span v-else>{{ dataDetail.createTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.updateUserString }}</span>
+            <span v-else>{{ dataDetail.updateUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.updateTime }}</span>
+            <span v-else>{{ dataDetail.updateTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="描述">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ dept.description }}</span>
+            <span v-else>{{ dataDetail.description }}</span>
           </a-descriptions-item>
         </a-descriptions>
       </a-drawer>
@@ -304,13 +304,13 @@
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { TreeNodeData, TableData } from '@arco-design/web-vue';
   import {
-    DeptRecord,
-    DeptParam,
-    listDept,
-    getDept,
-    addDept,
-    updateDept,
-    deleteDept,
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
   } from '@/api/system/dept';
   import { listDeptTree } from '@/api/common';
   import checkPermission from '@/utils/permission';
@@ -318,8 +318,8 @@
   const { proxy } = getCurrentInstance() as any;
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
-  const deptList = ref<DeptRecord[]>([]);
-  const dept = ref<DeptRecord>({
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({
     name: '',
     sort: 0,
     description: '',
@@ -350,7 +350,7 @@
       sort: ['parentId,asc', 'sort,asc', 'createTime,desc'],
     },
     // 表单数据
-    form: {} as DeptRecord,
+    form: {} as DataRecord,
     // 表单验证规则
     rules: {
       parentId: [{ required: true, message: '请选择上级部门' }],
@@ -365,11 +365,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: DeptParam = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    listDept(params)
+    list(params)
       .then((res) => {
-        deptList.value = res.data;
+        dataList.value = res.data;
         setTimeout(() => {
           proxy.$refs.tableRef.expandAll();
         }, 0);
@@ -403,7 +403,7 @@
       treeData.value = res.data;
     });
 
-    getDept(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       title.value = '修改部门';
       visible.value = true;
@@ -441,13 +441,13 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          updateDept(form.value, form.value.id).then((res) => {
+          update(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
-          addDept(form.value).then((res) => {
+          add(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -466,9 +466,9 @@
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
-    getDept(id)
+    get(id)
       .then((res) => {
-        dept.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -507,7 +507,7 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<string>) => {
-    deleteDept(ids).then((res) => {
+    del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });
@@ -570,10 +570,10 @@
    *
    * @param record 记录信息
    */
-  const handleChangeStatus = (record: DeptRecord) => {
+  const handleChangeStatus = (record: DataRecord) => {
     if (record.id) {
       const tip = record.status === 1 ? '启用' : '禁用';
-      updateDept(record, record.id)
+      update(record, record.id)
         .then(() => {
           proxy.$message.success(`${tip}成功`);
         })

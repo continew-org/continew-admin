@@ -121,7 +121,7 @@
           <a-table
             ref="tableRef"
             row-key="id"
-            :data="userList"
+            :data="dataList"
             :loading="loading"
             :row-selection="{
               type: 'checkbox',
@@ -417,20 +417,20 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.username }}</span>
+            <span v-else>{{ dataDetail.username }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="昵称">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.nickname }}</span>
+            <span v-else>{{ dataDetail.nickname }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="性别">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <span v-if="user.gender === 1">男</span>
+              <span v-if="dataDetail.gender === 1">男</span>
               <span v-else>女</span>
             </span>
           </a-descriptions-item>
@@ -439,7 +439,7 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="user.status === 1" color="green">启用</a-tag>
+              <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
               <a-tag v-else color="red">禁用</a-tag>
             </span>
           </a-descriptions-item>
@@ -447,55 +447,55 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.email || '无' }}</span>
+            <span v-else>{{ dataDetail.email || '无' }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="手机号码">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.phone || '无' }}</span>
+            <span v-else>{{ dataDetail.phone || '无' }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="所属部门">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.deptName }}</span>
+            <span v-else>{{ dataDetail.deptName }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="所属角色">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.roleNames }}</span>
+            <span v-else>{{ dataDetail.roleNames }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.createUserString }}</span>
+            <span v-else>{{ dataDetail.createUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="创建时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.createTime }}</span>
+            <span v-else>{{ dataDetail.createTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改人">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.updateUserString }}</span>
+            <span v-else>{{ dataDetail.updateUserString }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="修改时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.updateTime }}</span>
+            <span v-else>{{ dataDetail.updateTime }}</span>
           </a-descriptions-item>
           <a-descriptions-item label="描述">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else>{{ user.description }}</span>
+            <span v-else>{{ dataDetail.description }}</span>
           </a-descriptions-item>
         </a-descriptions>
       </a-drawer>
@@ -507,13 +507,13 @@
   import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
   import { TreeNodeData } from '@arco-design/web-vue';
   import {
-    UserRecord,
-    UserParam,
-    listUser,
-    getUser,
-    addUser,
-    updateUser,
-    deleteUser,
+    DataRecord,
+    ListParam,
+    list,
+    get,
+    add,
+    update,
+    del,
     resetPassword,
     updateUserRole,
   } from '@/api/system/user';
@@ -525,8 +525,8 @@
   const { proxy } = getCurrentInstance() as any;
   const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
 
-  const userList = ref<UserRecord[]>([]);
-  const user = ref<UserRecord>({
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({
     username: '',
     nickname: '',
     gender: 1,
@@ -573,7 +573,7 @@
       sort: ['createTime,desc'],
     },
     // 表单数据
-    form: {} as UserRecord,
+    form: {} as DataRecord,
     // 表单验证规则
     rules: {
       username: [{ required: true, message: '请输入用户名' }],
@@ -607,11 +607,11 @@
    *
    * @param params 查询参数
    */
-  const getList = (params: UserParam = { ...queryParams.value }) => {
+  const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    listUser(params)
+    list(params)
       .then((res) => {
-        userList.value = res.data.list;
+        dataList.value = res.data.list;
         total.value = res.data.total;
       })
       .finally(() => {
@@ -640,7 +640,7 @@
     reset();
     getDeptOptions();
     getRoleOptions();
-    getUser(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       title.value = '修改用户';
       visible.value = true;
@@ -655,7 +655,7 @@
   const toUpdateRole = (id: string) => {
     reset();
     getRoleOptions();
-    getUser(id).then((res) => {
+    get(id).then((res) => {
       form.value = res.data;
       userRoleVisible.value = true;
     });
@@ -726,13 +726,13 @@
     proxy.$refs.formRef.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
-          updateUser(form.value, form.value.id).then((res) => {
+          update(form.value, form.value.id).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
           });
         } else {
-          addUser(form.value).then((res) => {
+          add(form.value).then((res) => {
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
@@ -768,9 +768,9 @@
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
-    getUser(id)
+    get(id)
       .then((res) => {
-        user.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -809,7 +809,7 @@
    * @param ids ID 列表
    */
   const handleDelete = (ids: Array<string>) => {
-    deleteUser(ids).then((res) => {
+    del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
     });
@@ -855,14 +855,14 @@
    *
    * @param record 记录信息
    */
-  const handleChangeStatus = (record: UserRecord) => {
+  const handleChangeStatus = (record: DataRecord) => {
     const { id } = record;
     if (id) {
       const tip = record.status === 1 ? '启用' : '禁用';
-      getUser(id)
+      get(id)
         .then((res) => {
           res.data.status = record.status;
-          updateUser(res.data, id)
+          update(res.data, id)
             .then(() => {
               proxy.$message.success(`${tip}成功`);
             })

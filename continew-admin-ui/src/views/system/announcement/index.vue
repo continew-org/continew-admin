@@ -303,7 +303,7 @@
           </template>
           <a-typography :style="{ marginTop: '-40px', textAlign: 'center' }">
             <a-typography-title>
-              {{ detail.title }}
+              {{ dataDetail.title }}
             </a-typography-title>
             <a-typography-paragraph>
               <div class="meta-data">
@@ -311,26 +311,26 @@
                   <span>
                     <icon-user class="icon" />
                     <span class="label">发布人：</span>
-                    <span>{{ detail.createUserString }}</span>
+                    <span>{{ dataDetail.createUserString }}</span>
                   </span>
                   <a-divider direction="vertical" />
                   <span>
                     <svg-icon icon-class="clock-circle" class="icon" />
                     <span class="label">发布时间：</span>
-                    <span>{{ detail.effectiveTime ? detail.effectiveTime : detail.createTime }}</span>
+                    <span>{{ dataDetail.effectiveTime ? dataDetail.effectiveTime : dataDetail.createTime }}</span>
                   </span>
                 </a-space>
               </div>
             </a-typography-paragraph>
           </a-typography>
           <a-divider />
-          <v-md-preview :text="detail.content"></v-md-preview>
+          <v-md-preview :text="dataDetail.content"></v-md-preview>
           <a-divider />
-          <div v-if="detail.updateTime" class="update-time-row">
+          <div v-if="dataDetail.updateTime" class="update-time-row">
             <span>
               <icon-schedule class="icon" />
               <span>最后更新于：</span>
-              <span>{{ detail.updateTime }}</span>
+              <span>{{ dataDetail.updateTime }}</span>
             </span>
           </div>
         </a-spin>
@@ -356,7 +356,7 @@
   const { AnnouncementTypeEnum } = proxy.useDict('AnnouncementTypeEnum');
 
   const dataList = ref<DataRecord[]>([]);
-  const detail = ref<DataRecord>({
+  const dataDetail = ref<DataRecord>({
     // TODO 待补充详情字段默认值
   });
   const total = ref(0);
@@ -485,7 +485,7 @@
     detailVisible.value = true;
     get(id)
       .then((res) => {
-        detail.value = res.data;
+        dataDetail.value = res.data;
       })
       .finally(() => {
         detailLoading.value = false;
@@ -497,7 +497,7 @@
    */
   const handleDetailCancel = () => {
     detailVisible.value = false;
-    detail.value = {};
+    dataDetail.value = {};
   };
 
   /**
