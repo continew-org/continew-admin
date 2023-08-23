@@ -11,6 +11,7 @@
       }}</a-link>
     </template>
     <div>
+      <a-empty v-if="list.length === 0">暂无公告</a-empty>
       <div v-for="(item, idx) in list" :key="idx" class="item">
         <a-tag v-if="item.type === 1" color="orangered">活动</a-tag>
         <a-tag v-else-if="item.type === 2" color="cyan">消息</a-tag>
