@@ -317,7 +317,6 @@
       tableName: undefined,
       page: 1,
       size: 10,
-      sort: ['createTime,desc', 'updateTime,desc'],
     },
     // 表单数据
     form: {} as GenConfigRecord,
