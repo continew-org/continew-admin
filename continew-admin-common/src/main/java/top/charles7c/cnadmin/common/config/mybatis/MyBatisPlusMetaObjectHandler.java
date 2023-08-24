@@ -65,14 +65,10 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
                 BaseDO baseDO = (BaseDO)metaObject.getOriginalObject();
                 baseDO.setCreateUser(ObjectUtil.defaultIfNull(baseDO.getCreateUser(), createUser));
                 baseDO.setCreateTime(ObjectUtil.defaultIfNull(baseDO.getCreateTime(), createTime));
-                baseDO.setUpdateUser(ObjectUtil.defaultIfNull(baseDO.getUpdateUser(), createUser));
-                baseDO.setUpdateTime(ObjectUtil.defaultIfNull(baseDO.getUpdateTime(), createTime));
             } else {
-                // 未继承 BaseDO 的类，根据类中拥有的创建信息进行填充，不存在创建信息不进行填充
+                // 未继承 BaseDO 的类，如存在创建信息则进行填充
                 this.fillFieldValue(metaObject, CREATE_USER, createUser, false);
                 this.fillFieldValue(metaObject, CREATE_TIME, createTime, false);
-                this.fillFieldValue(metaObject, UPDATE_USER, createUser, false);
-                this.fillFieldValue(metaObject, UPDATE_TIME, createTime, false);
             }
         } catch (Exception e) {
             throw new ServiceException("插入数据时自动填充异常：" + e.getMessage());

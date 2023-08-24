@@ -126,7 +126,7 @@ public class GenConfigDO implements Serializable {
      * 修改时间
      */
     @Schema(description = "修改时间", example = "2023-08-08 08:08:08")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 
     /**
