@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
     `update_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '修改人',
     `update_time` datetime DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `uk_title_parent_id`(`title`, `parent_id`) USING BTREE,
     INDEX `idx_parent_id`(`parent_id`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
@@ -40,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
     `update_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '修改人',
     `update_time` datetime DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `uk_name_parent_id`(`name`, `parent_id`) USING BTREE,
     INDEX `idx_parent_id`(`parent_id`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
@@ -59,6 +61,8 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
     `update_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '修改人',
     `update_time` datetime DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `uk_name`(`name`) USING BTREE,
+    UNIQUE INDEX `uk_code`(`code`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
@@ -96,6 +100,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `uk_username`(`username`) USING BTREE,
     UNIQUE INDEX `uk_email`(`email`) USING BTREE,
+    UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
     INDEX `idx_dept_id`(`dept_id`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
