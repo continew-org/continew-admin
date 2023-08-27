@@ -57,7 +57,7 @@
                   <svg-icon icon-class="clock-circle" class="icon" />
                   <span class="label">发布时间：</span>
                   <span>{{
-                      dataDetail.effectiveTime
+                    dataDetail.effectiveTime
                       ? dataDetail.effectiveTime
                       : dataDetail.createTime
                   }}</span>

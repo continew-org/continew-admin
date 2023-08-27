@@ -9,14 +9,10 @@ const useDictStore = defineStore('dict', {
       if (_name == null || _name === '') {
         return null;
       }
-      try {
-        for (let i = 0; i < this.dict.length; i += 1) {
-          if (this.dict[i].name === _name) {
-            return this.dict[i].detail;
-          }
+      for (let i = 0; i < this.dict.length; i += 1) {
+        if (this.dict[i].name === _name) {
+          return this.dict[i].detail;
         }
-      } catch (e) {
-        console.log(e);
       }
       return null;
     },

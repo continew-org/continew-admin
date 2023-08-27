@@ -22,7 +22,6 @@ axios.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.log(error);
     return Promise.reject(error);
   }
 );
@@ -63,7 +62,6 @@ axios.interceptors.response.use(
     return Promise.reject(new Error(res.msg));
   },
   (error) => {
-    console.error(`err: ${error}`);
     const res = error.response.data;
     Message.error({
       content: res.msg || '网络错误',

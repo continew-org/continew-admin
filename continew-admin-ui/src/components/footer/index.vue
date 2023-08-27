@@ -1,7 +1,13 @@
 <template>
   <a-layout-footer class="footer">
     {{ `Copyright © 2022-${new Date().getFullYear()}` }}&nbsp;
-    <a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>
+    <a
+      href="https://blog.charles7c.top/about/me"
+      target="_blank"
+      rel="noopener"
+    >
+      Charles7c
+    </a>
     <span>&nbsp;⋅&nbsp;</span>
     <a
       href="https://github.com/Charles7c/continew-admin"

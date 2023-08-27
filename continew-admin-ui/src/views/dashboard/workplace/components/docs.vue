@@ -7,7 +7,9 @@
     style="height: 166px"
   >
     <template #extra>
-      <a-link href="https://doc.charles7c.top" target="_blank" rel="noopener">{{ $t('workplace.viewMore') }}</a-link>
+      <a-link href="https://doc.charles7c.top" target="_blank" rel="noopener">{{
+        $t('workplace.viewMore')
+      }}</a-link>
     </template>
     <a-row>
       <a-col :span="12">

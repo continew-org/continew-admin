@@ -184,7 +184,11 @@
                 align="center"
               >
                 <template #cell="{ record }">
-                  <a-checkbox v-if="record.showInForm" v-model="record.isRequired" value="true" />
+                  <a-checkbox
+                    v-if="record.showInForm"
+                    v-model="record.isRequired"
+                    value="true"
+                  />
                   <a-checkbox v-else disabled />
                 </template>
               </a-table-column>

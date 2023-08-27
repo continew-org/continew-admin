@@ -53,8 +53,7 @@ export default function download(
       // 释放掉 blob 对象
       window.URL.revokeObjectURL(href);
     })
-    .catch((error) => {
-      console.error(error);
+    .catch(() => {
       Notification.warning({
         title: '警告',
         content:
