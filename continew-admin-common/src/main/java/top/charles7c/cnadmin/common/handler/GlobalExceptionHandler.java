@@ -143,13 +143,13 @@ public class GlobalExceptionHandler {
         String errorMsg;
         switch (e.getType()) {
             case NotLoginException.KICK_OUT:
-                errorMsg = "您已被踢下线";
+                errorMsg = "您已被踢下线。";
                 break;
             case NotLoginException.BE_REPLACED_MESSAGE:
-                errorMsg = "您已被顶下线";
+                errorMsg = "您已被顶下线。";
                 break;
             default:
-                errorMsg = "登录状态已过期，请重新登录";
+                errorMsg = "您的登录状态已过期，请重新登录。";
                 break;
         }
         LogContextHolder.setErrorMsg(errorMsg);

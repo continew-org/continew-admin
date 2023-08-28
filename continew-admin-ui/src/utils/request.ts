@@ -1,12 +1,22 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Message } from '@arco-design/web-vue';
+import { useLoginStore } from '@/store';
 import { getToken } from '@/utils/auth';
+import modalErrorWrapper from '@/utils/modal-error-wrapper';
+import messageErrorWrapper from '@/utils/message-error-wrapper';
 
 // default config
 if (import.meta.env.VITE_API_BASE_URL) {
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
   axios.defaults.timeout = 60000; // 1 分钟
+}
+
+export interface HttpResponse<T = unknown> {
+  success: boolean; // 是否成功
+  code: number; // 状态码
+  msg: string; // 状态信息
+  data: T; // 返回数据
+  timestamp: string; // 时间戳
 }
 
 // request interceptors
@@ -26,14 +36,6 @@ axios.interceptors.request.use(
   }
 );
 
-export interface HttpResponse<T = unknown> {
-  success: boolean; // 是否成功
-  code: number; // 状态码
-  msg: string; // 状态信息
-  data: T; // 返回数据
-  timestamp: string; // 时间戳
-}
-
 // response interceptors
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
@@ -45,28 +47,34 @@ axios.interceptors.response.use(
       return response;
     }
 
-    // 操作成功则直接返回
     const res = response.data;
     if (res.success) {
       return res;
     }
-    // 操作失败，弹出错误提示
-    Message.error({
-      content: res.msg,
-      duration: 3000,
-    });
-    //
-    // if (res.code === 401) {
-    //   // 重定向路由到登录页面
-    // }
-    return Promise.reject(new Error(res.msg));
+    return Promise.reject(new Error(res.msg || '未知错误'));
   },
   (error) => {
-    const res = error.response.data;
-    Message.error({
-      content: res.msg || '网络错误',
-      duration: 3000,
-    });
+    const { response } = error;
+    const res = response.data;
+    if ([401].includes(res.code) && response.config.url !== '/auth/user/info') {
+      modalErrorWrapper({
+        title: '确认退出',
+        content: res.msg,
+        maskClosable: false,
+        escToClose: false,
+        okText: '重新登录',
+        async onOk() {
+          const userStore = useLoginStore();
+          await userStore.logout();
+          window.location.reload();
+        },
+      });
+    } else {
+      messageErrorWrapper({
+        content: res.msg || '网络错误',
+        duration: 5 * 1000,
+      });
+    }
     return Promise.reject(error);
   }
 );
