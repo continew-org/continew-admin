@@ -19,10 +19,7 @@ package top.charles7c.cnadmin.tool.service.impl;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -91,7 +88,9 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
         tableList.removeIf(table -> StrUtil.equalsAny(table.getTableName(), generatorProperties.getExcludeTables()));
         CollUtil.sort(tableList,
-            Comparator.comparing(Table::getCreateTime).thenComparing(Table::getUpdateTime).reversed());
+            Comparator.comparing(Table::getCreateTime)
+                .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
+                .reversed());
         List<TableVO> tableVOList = BeanUtil.copyToList(tableList, TableVO.class);
         PageDataVO<TableVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
         for (TableVO tableVO : pageDataVO.getList()) {
