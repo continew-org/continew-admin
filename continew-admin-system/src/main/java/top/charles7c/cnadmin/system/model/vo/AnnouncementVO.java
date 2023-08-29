@@ -52,13 +52,13 @@ public class AnnouncementVO extends BaseVO {
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间", example = "2023-08-08 00:00:00")
+    @Schema(description = "生效时间", example = "2023-08-08 00:00:00", type = "string")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间", example = "2023-08-08 23:59:59")
+    @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
     private LocalDateTime terminateTime;
 
     /**

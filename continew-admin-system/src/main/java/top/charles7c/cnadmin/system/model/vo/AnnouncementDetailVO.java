@@ -66,14 +66,14 @@ public class AnnouncementDetailVO extends BaseDetailVO {
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间", example = "2023-08-08 00:00:00")
+    @Schema(description = "生效时间", example = "2023-08-08 00:00:00", type = "string")
     @ExcelProperty(value = "生效时间")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间", example = "2023-08-08 23:59:59")
+    @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
     @ExcelProperty(value = "终止时间")
     private LocalDateTime terminateTime;
 }

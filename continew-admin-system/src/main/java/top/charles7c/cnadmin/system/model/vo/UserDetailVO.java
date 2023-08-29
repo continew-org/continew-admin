@@ -114,7 +114,7 @@ public class UserDetailVO extends BaseDetailVO {
     /**
      * 最后一次修改密码时间
      */
-    @Schema(description = "最后一次修改密码时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "最后一次修改密码时间", example = "2023-08-08 08:08:08", type = "string")
     private LocalDateTime pwdResetTime;
 
     /**

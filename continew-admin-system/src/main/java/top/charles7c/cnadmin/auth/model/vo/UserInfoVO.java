@@ -95,13 +95,13 @@ public class UserInfoVO implements Serializable {
     /**
      * 最后一次修改密码时间
      */
-    @Schema(description = "最后一次修改密码时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "最后一次修改密码时间", example = "2023-08-08 08:08:08", type = "string")
     private LocalDateTime pwdResetTime;
 
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")
     @JsonIgnore
     private LocalDateTime createTime;
 

@@ -118,14 +118,14 @@ public class GenConfigDO implements Serializable {
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    @Schema(description = "修改时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "修改时间", example = "2023-08-08 08:08:08", type = "string")
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 

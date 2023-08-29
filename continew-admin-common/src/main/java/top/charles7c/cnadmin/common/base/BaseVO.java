@@ -61,7 +61,7 @@ public class BaseVO implements Serializable {
     /**
      * 创建时间
      */
-    @Schema(description = "创建时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")
     @ExcelProperty(value = "创建时间")
     private LocalDateTime createTime;
 

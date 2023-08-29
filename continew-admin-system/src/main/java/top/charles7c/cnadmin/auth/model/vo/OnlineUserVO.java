@@ -81,6 +81,6 @@ public class OnlineUserVO implements Serializable {
     /**
      * 登录时间
      */
-    @Schema(description = "登录时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "登录时间", example = "2023-08-08 08:08:08", type = "string")
     private LocalDateTime loginTime;
 }

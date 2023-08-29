@@ -52,7 +52,7 @@ public class BaseDetailVO extends BaseVO {
     /**
      * 修改时间
      */
-    @Schema(description = "修改时间", example = "2023-08-08 08:08:08")
+    @Schema(description = "修改时间", example = "2023-08-08 08:08:08", type = "string")
     @ExcelProperty(value = "修改时间")
     private LocalDateTime updateTime;
 }
