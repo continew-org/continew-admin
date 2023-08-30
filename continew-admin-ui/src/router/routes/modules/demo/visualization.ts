@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const VISUALIZATION: AppRouteRecordRaw = {
-  path: '/visualization',
+  path: '/demo/visualization',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.visualization',
@@ -15,7 +15,7 @@ const VISUALIZATION: AppRouteRecordRaw = {
       name: 'DataAnalysis',
       path: 'data-analysis',
       component: () =>
-        import('@/views/arco-design/visualization/data-analysis/index.vue'),
+        import('@/views/demo/visualization/data-analysis/index.vue'),
       meta: {
         locale: 'menu.visualization.dataAnalysis',
         requiresAuth: true,
@@ -27,7 +27,7 @@ const VISUALIZATION: AppRouteRecordRaw = {
       path: 'multi-dimension-data-analysis',
       component: () =>
         import(
-          '@/views/arco-design/visualization/multi-dimension-data-analysis/index.vue'
+          '@/views/demo/visualization/multi-dimension-data-analysis/index.vue'
         ),
       meta: {
         locale: 'menu.visualization.multiDimensionDataAnalysis',
@@ -39,7 +39,7 @@ const VISUALIZATION: AppRouteRecordRaw = {
       name: 'Monitor',
       path: 'monitor',
       component: () =>
-        import('@/views/arco-design/visualization/monitor/index.vue'),
+        import('@/views/demo/visualization/monitor/index.vue'),
       meta: {
         locale: 'menu.dashboard.monitor',
         requiresAuth: true,

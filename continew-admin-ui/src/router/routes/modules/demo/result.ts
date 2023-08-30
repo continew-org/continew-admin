@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const RESULT: AppRouteRecordRaw = {
-  path: '/result',
+  path: '/demo/result',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.result',
@@ -14,7 +14,7 @@ const RESULT: AppRouteRecordRaw = {
     {
       name: 'Success',
       path: 'success',
-      component: () => import('@/views/arco-design/result/success/index.vue'),
+      component: () => import('@/views/demo/result/success/index.vue'),
       meta: {
         locale: 'menu.result.success',
         requiresAuth: true,
@@ -24,7 +24,7 @@ const RESULT: AppRouteRecordRaw = {
     {
       name: 'Error',
       path: 'error',
-      component: () => import('@/views/arco-design/result/error/index.vue'),
+      component: () => import('@/views/demo/result/error/index.vue'),
       meta: {
         locale: 'menu.result.error',
         requiresAuth: true,

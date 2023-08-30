@@ -5,17 +5,17 @@ import './message-box';
 
 import '@/views/dashboard/workplace/mock';
 
-import '@/views/arco-design/visualization/monitor/mock';
+import '@/views/demo/visualization/monitor/mock';
 
-import '@/views/arco-design/list/card/mock';
-import '@/views/arco-design/list/search-table/mock';
+import '@/views/demo/list/card/mock';
+import '@/views/demo/list/search-table/mock';
 
-import '@/views/arco-design/form/step/mock';
+import '@/views/demo/form/step/mock';
 
-import '@/views/arco-design/profile/basic/mock';
+import '@/views/demo/profile/basic/mock';
 
-import '@/views/arco-design/visualization/data-analysis/mock';
-import '@/views/arco-design/visualization/multi-dimension-data-analysis/mock';
+import '@/views/demo/visualization/data-analysis/mock';
+import '@/views/demo/visualization/multi-dimension-data-analysis/mock';
 
 import '@/views/system/user/center/mock';
 

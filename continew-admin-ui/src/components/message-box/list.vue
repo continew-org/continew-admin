@@ -72,7 +72,7 @@
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
-  import { MessageRecord, MessageListType } from '@/api/message';
+  import { MessageRecord, MessageListType } from '@/api/demo/message';
 
   const props = defineProps({
     renderList: {

@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const PROFILE: AppRouteRecordRaw = {
-  path: '/profile',
+  path: '/demo/profile',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.profile',
@@ -14,7 +14,7 @@ const PROFILE: AppRouteRecordRaw = {
     {
       name: 'Basic',
       path: 'basic',
-      component: () => import('@/views/arco-design/profile/basic/index.vue'),
+      component: () => import('@/views/demo/profile/basic/index.vue'),
       meta: {
         locale: 'menu.profile.basic',
         requiresAuth: true,

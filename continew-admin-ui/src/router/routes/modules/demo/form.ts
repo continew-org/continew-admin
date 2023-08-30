@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const FORM: AppRouteRecordRaw = {
-  path: '/form',
+  path: '/demo/form',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.form',
@@ -14,7 +14,7 @@ const FORM: AppRouteRecordRaw = {
     {
       name: 'Step',
       path: 'step',
-      component: () => import('@/views/arco-design/form/step/index.vue'),
+      component: () => import('@/views/demo/form/step/index.vue'),
       meta: {
         locale: 'menu.form.step',
         requiresAuth: true,
@@ -24,7 +24,7 @@ const FORM: AppRouteRecordRaw = {
     {
       name: 'Group',
       path: 'group',
-      component: () => import('@/views/arco-design/form/group/index.vue'),
+      component: () => import('@/views/demo/form/group/index.vue'),
       meta: {
         locale: 'menu.form.group',
         requiresAuth: true,

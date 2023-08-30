@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const EXCEPTION: AppRouteRecordRaw = {
-  path: '/exception',
+  path: '/demo/exception',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.exception',
@@ -14,7 +14,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     {
       name: '403',
       path: '403',
-      component: () => import('@/views/arco-design/exception/403/index.vue'),
+      component: () => import('@/views/demo/exception/403/index.vue'),
       meta: {
         locale: 'menu.exception.403',
         requiresAuth: true,
@@ -24,7 +24,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     {
       name: '404',
       path: '404',
-      component: () => import('@/views/arco-design/exception/404/index.vue'),
+      component: () => import('@/views/demo/exception/404/index.vue'),
       meta: {
         locale: 'menu.exception.404',
         requiresAuth: true,
@@ -34,7 +34,7 @@ const EXCEPTION: AppRouteRecordRaw = {
     {
       name: '500',
       path: '500',
-      component: () => import('@/views/arco-design/exception/500/index.vue'),
+      component: () => import('@/views/demo/exception/500/index.vue'),
       meta: {
         locale: 'menu.exception.500',
         requiresAuth: true,
