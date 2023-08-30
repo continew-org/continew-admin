@@ -1,8 +1,8 @@
-import { appRoutes, appExternalRoutes } from '../routes';
+import { fixedRoutes, demoRoutes } from '../routes';
 
-const mixinRoutes = [...appRoutes, ...appExternalRoutes];
+const mixinRoutes = [...fixedRoutes, ...demoRoutes];
 
-const appClientMenus = mixinRoutes.map((el) => {
+const staticMenus = mixinRoutes.map((el) => {
   const { name, path, meta, redirect, children } = el;
   return {
     name,
@@ -13,4 +13,4 @@ const appClientMenus = mixinRoutes.map((el) => {
   };
 });
 
-export default appClientMenus;
+export default staticMenus;

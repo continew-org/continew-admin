@@ -3,18 +3,17 @@ import { AppRouteRecordRaw } from '../../types';
 
 const LIST: AppRouteRecordRaw = {
   path: '/list',
-  name: 'list',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.list',
     requiresAuth: true,
     icon: 'list',
-    order: 100,
+    order: 900,
   },
   children: [
     {
-      path: 'search-table', // The midline path complies with SEO specifications
       name: 'SearchTable',
+      path: 'search-table', // The midline path complies with SEO specifications
       component: () =>
         import('@/views/arco-design/list/search-table/index.vue'),
       meta: {
@@ -24,8 +23,8 @@ const LIST: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'card',
       name: 'Card',
+      path: 'card',
       component: () => import('@/views/arco-design/list/card/index.vue'),
       meta: {
         locale: 'menu.list.cardList',

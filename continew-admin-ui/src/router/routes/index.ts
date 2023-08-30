@@ -1,9 +1,8 @@
 import type { RouteRecordNormalized } from 'vue-router';
 
-const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
-const externalModules = import.meta.glob('./externalModules/*.ts', {
-  eager: true,
-});
+const appModules = import.meta.glob('./modules/*.ts', { eager: true });
+const fixedModules = import.meta.glob('./modules/fixed/*.ts', { eager: true });
+const demoModules = import.meta.glob('./modules/demo/*.ts', { eager: true });
 
 function formatModules(_modules: any, result: RouteRecordNormalized[]) {
   Object.keys(_modules).forEach((key) => {
@@ -17,9 +16,12 @@ function formatModules(_modules: any, result: RouteRecordNormalized[]) {
   return result;
 }
 
-export const appRoutes: RouteRecordNormalized[] = formatModules(modules, []);
-
-export const appExternalRoutes: RouteRecordNormalized[] = formatModules(
-  externalModules,
+export const appRoutes: RouteRecordNormalized[] = formatModules(appModules, []);
+export const fixedRoutes: RouteRecordNormalized[] = formatModules(
+  fixedModules,
+  []
+);
+export const demoRoutes: RouteRecordNormalized[] = formatModules(
+  demoModules,
   []
 );

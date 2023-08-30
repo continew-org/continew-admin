@@ -3,7 +3,7 @@ import NProgress from 'nprogress'; // progress bar
 
 import usePermission from '@/hooks/permission';
 import { useLoginStore, useAppStore } from '@/store';
-import { appRoutes } from '../routes';
+import { fixedRoutes, demoRoutes } from '../routes';
 import { WHITE_LIST, NOT_FOUND } from '../constants';
 
 export default function setupPermissionGuard(router: Router) {
@@ -16,7 +16,7 @@ export default function setupPermissionGuard(router: Router) {
       // 针对来自服务端的菜单配置进行处理
       // Handle routing configuration from the server
 
-      // 根据需要自行完善来源于服务端的菜单配置的permission逻辑
+      // 根据需要自行完善来源于服务端的菜单配置的 permission 逻辑
       // Refine the permission logic from the server's menu configuration as needed
       if (
         !appStore.appAsyncMenus.length &&
@@ -24,7 +24,12 @@ export default function setupPermissionGuard(router: Router) {
       ) {
         await appStore.fetchServerMenuConfig();
       }
-      const serverMenuConfig = [...appStore.appAsyncMenus, ...WHITE_LIST];
+      const serverMenuConfig = [
+        ...appStore.appAsyncMenus,
+        ...WHITE_LIST,
+        ...fixedRoutes,
+        ...demoRoutes,
+      ];
 
       let exist = false;
       while (serverMenuConfig.length && !exist) {
@@ -45,8 +50,10 @@ export default function setupPermissionGuard(router: Router) {
       if (permissionsAllow) next();
       else {
         const destination =
-          Permission.findFirstPermissionRoute(appRoutes, loginStore.roles[0]) ||
-          NOT_FOUND;
+          Permission.findFirstPermissionRoute(
+            [...fixedRoutes, ...demoRoutes],
+            loginStore.roles[0]
+          ) || NOT_FOUND;
         next(destination);
       }
     }

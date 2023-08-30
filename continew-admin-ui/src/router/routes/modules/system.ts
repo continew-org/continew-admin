@@ -3,7 +3,6 @@ import { AppRouteRecordRaw } from '../types';
 
 const System: AppRouteRecordRaw = {
   path: '/system',
-  name: 'system',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.system',
@@ -13,53 +12,48 @@ const System: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: '/system/user',
       name: 'User',
+      path: '/system/user',
       component: () => import('@/views/system/user/index.vue'),
       meta: {
         locale: 'menu.system.user.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/system/role',
       name: 'Role',
+      path: '/system/role',
       component: () => import('@/views/system/role/index.vue'),
       meta: {
         locale: 'menu.system.role.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/system/menu',
       name: 'Menu',
+      path: '/system/menu',
       component: () => import('@/views/system/menu/index.vue'),
       meta: {
         locale: 'menu.system.menu.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/system/dept',
       name: 'Dept',
+      path: '/system/dept',
       component: () => import('@/views/system/dept/index.vue'),
       meta: {
         locale: 'menu.system.dept.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/system/announcement',
       name: 'Announcement',
+      path: '/system/announcement',
       component: () => import('@/views/system/announcement/index.vue'),
       meta: {
         locale: 'menu.system.announcement.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
   ],

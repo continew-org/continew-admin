@@ -3,7 +3,6 @@ import { AppRouteRecordRaw } from '../types';
 
 const Monitor: AppRouteRecordRaw = {
   path: '/monitor',
-  name: 'monitor',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.monitor',
@@ -13,23 +12,21 @@ const Monitor: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: '/monitor/online',
       name: 'OnlineUser',
+      path: '/monitor/online',
       component: () => import('@/views/monitor/online/index.vue'),
       meta: {
         locale: 'menu.online.user.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/monitor/log/login',
       name: 'LoginLog',
+      path: '/monitor/log/login',
       component: () => import('@/views/monitor/log/login/index.vue'),
       meta: {
         locale: 'menu.log.login.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
@@ -39,17 +36,15 @@ const Monitor: AppRouteRecordRaw = {
       meta: {
         locale: 'menu.log.operation.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
     {
-      path: '/monitor/log/system',
       name: 'SystemLog',
+      path: '/monitor/log/system',
       component: () => import('@/views/monitor/log/system/index.vue'),
       meta: {
         locale: 'menu.log.system.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
   ],

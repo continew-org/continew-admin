@@ -3,18 +3,17 @@ import { AppRouteRecordRaw } from '../../types';
 
 const RESULT: AppRouteRecordRaw = {
   path: '/result',
-  name: 'result',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.result',
     icon: 'check-circle',
     requiresAuth: true,
-    order: 103,
+    order: 903,
   },
   children: [
     {
-      path: 'success',
       name: 'Success',
+      path: 'success',
       component: () => import('@/views/arco-design/result/success/index.vue'),
       meta: {
         locale: 'menu.result.success',
@@ -23,8 +22,8 @@ const RESULT: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'error',
       name: 'Error',
+      path: 'error',
       component: () => import('@/views/arco-design/result/error/index.vue'),
       meta: {
         locale: 'menu.result.error',

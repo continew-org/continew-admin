@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
@@ -59,6 +60,7 @@ public class GeneratorController {
     private final GeneratorService generatorService;
 
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
+    @SaCheckPermission("tool:generator:list")
     @GetMapping("/table")
     public R<PageDataVO<TableVO>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
         return R.ok(generatorService.pageTable(query, pageQuery));
@@ -69,6 +71,7 @@ public class GeneratorController {
         @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
             in = ParameterIn.PATH),
         @Parameter(name = "requireSync", description = "是否需要同步", example = "true", in = ParameterIn.QUERY)})
+    @SaCheckPermission("tool:generator:list")
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
         @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
@@ -77,6 +80,7 @@ public class GeneratorController {
 
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("tool:generator:list")
     @GetMapping("/config/{tableName}")
     public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
         return R.ok(generatorService.getGenConfig(tableName));
@@ -84,6 +88,7 @@ public class GeneratorController {
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("tool:generator:list")
     @PostMapping("/config/{tableName}")
     public R saveConfig(@Validated @RequestBody GenConfigRequest request, @PathVariable String tableName) {
         generatorService.saveConfig(request, tableName);
@@ -92,6 +97,7 @@ public class GeneratorController {
 
     @Operation(summary = "生成代码", description = "生成代码")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("tool:generator:list")
     @PostMapping("/{tableName}")
     public R generate(@PathVariable String tableName) {
         ValidationUtils.throwIf("prod".equals(SpringUtil.getActiveProfile()), "仅支持在开发环境生成代码");

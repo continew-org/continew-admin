@@ -47,6 +47,12 @@ public class MetaVO implements Serializable {
     private String icon;
 
     /**
+     * 排序
+     */
+    @Schema(description = "排序", example = "1")
+    private Integer order;
+
+    /**
      * 是否隐藏
      */
     @Schema(description = "是否隐藏", example = "false")

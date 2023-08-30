@@ -3,18 +3,17 @@ import { AppRouteRecordRaw } from '../../types';
 
 const VISUALIZATION: AppRouteRecordRaw = {
   path: '/visualization',
-  name: 'visualization',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.visualization',
     requiresAuth: true,
     icon: 'bar-chart',
-    order: 105,
+    order: 905,
   },
   children: [
     {
-      path: 'data-analysis',
       name: 'DataAnalysis',
+      path: 'data-analysis',
       component: () =>
         import('@/views/arco-design/visualization/data-analysis/index.vue'),
       meta: {
@@ -24,8 +23,8 @@ const VISUALIZATION: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'multi-dimension-data-analysis',
       name: 'MultiDimensionDataAnalysis',
+      path: 'multi-dimension-data-analysis',
       component: () =>
         import(
           '@/views/arco-design/visualization/multi-dimension-data-analysis/index.vue'
@@ -37,8 +36,8 @@ const VISUALIZATION: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'monitor',
       name: 'Monitor',
+      path: 'monitor',
       component: () =>
         import('@/views/arco-design/visualization/monitor/index.vue'),
       meta: {

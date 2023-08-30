@@ -3,18 +3,17 @@ import { AppRouteRecordRaw } from '../../types';
 
 const FORM: AppRouteRecordRaw = {
   path: '/form',
-  name: 'form',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.form',
     icon: 'bookmark',
     requiresAuth: true,
-    order: 101,
+    order: 901,
   },
   children: [
     {
-      path: 'step',
       name: 'Step',
+      path: 'step',
       component: () => import('@/views/arco-design/form/step/index.vue'),
       meta: {
         locale: 'menu.form.step',
@@ -23,8 +22,8 @@ const FORM: AppRouteRecordRaw = {
       },
     },
     {
-      path: 'group',
       name: 'Group',
+      path: 'group',
       component: () => import('@/views/arco-design/form/group/index.vue'),
       meta: {
         locale: 'menu.form.group',

@@ -49,21 +49,21 @@ const useAppStore = defineStore('app', {
       try {
         notifyInstance = Notification.info({
           id: 'menuNotice', // Keep the instance id the same
-          content: 'loading',
+          content: '菜单加载中...',
           closable: true,
         });
         const { data } = await listRoute();
         this.serverMenu = data;
         notifyInstance = Notification.success({
           id: 'menuNotice',
-          content: 'success',
+          content: '菜单加载成功',
           closable: true,
         });
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         notifyInstance = Notification.error({
           id: 'menuNotice',
-          content: 'error',
+          content: '菜单加载失败',
           closable: true,
         });
       }

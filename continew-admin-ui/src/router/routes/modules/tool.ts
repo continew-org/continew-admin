@@ -3,7 +3,6 @@ import { AppRouteRecordRaw } from '../types';
 
 const Tool: AppRouteRecordRaw = {
   path: '/tool',
-  name: 'tool',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.tool',
@@ -13,13 +12,12 @@ const Tool: AppRouteRecordRaw = {
   },
   children: [
     {
-      path: '/tool/generator',
       name: 'Generator',
+      path: '/tool/generator',
       component: () => import('@/views/tool/generator/index.vue'),
       meta: {
         locale: 'menu.tool.generator.list',
         requiresAuth: true,
-        roles: ['*'],
       },
     },
   ],

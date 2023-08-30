@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { RouteRecordRaw, RouteRecordNormalized } from 'vue-router';
 import usePermission from '@/hooks/permission';
 import { useAppStore } from '@/store';
-import appClientMenus from '@/router/app-menus';
+import staticMenus from '@/router/app-menus';
 import { cloneDeep } from 'lodash';
 
 export default function useMenuTree() {
@@ -10,9 +10,9 @@ export default function useMenuTree() {
   const appStore = useAppStore();
   const appRoute = computed(() => {
     if (appStore.menuFromServer) {
-      return appStore.appAsyncMenus;
+      return [...staticMenus, ...appStore.appAsyncMenus];
     }
-    return appClientMenus;
+    return staticMenus;
   });
   const menuTree = computed(() => {
     const copyRouter = cloneDeep(appRoute.value) as RouteRecordNormalized[];
