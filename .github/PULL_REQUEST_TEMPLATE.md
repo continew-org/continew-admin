@@ -40,7 +40,7 @@
 |     |           |                |
 
 <!-- 如果有多种类型的变更，可以在变更日志表中增加 “类型” 列，该列的值与上方 “PR 类型” 相同。 -->
-<!-- Related issues 格式为 fixes #<issue号>，或者 closes #<issue号>。 -->
+<!-- Related issues 格式为 Closes #<issue号>，或者 Fixes #<issue号>，或者 Resolves #<issue号>。 -->
 
 ## 其他信息
 
