@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DataTypeEnum;
@@ -82,6 +84,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheConsts.MENU_KEY_PREFIX, key = "#request.code == 'admin' ? 'ALL' : #request.code")
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request, Long id) {
         String name = request.getName();
@@ -167,15 +170,15 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
 
     @Override
     public Set<String> listCodeByUserId(Long userId) {
-        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
-        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
+        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
+        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
         return roleList.stream().map(RoleDO::getCode).collect(Collectors.toSet());
     }
 
     @Override
     public Set<RoleDTO> listByUserId(Long userId) {
-        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
-        List<RoleDO> roleList = baseMapper.lambdaQuery().in(RoleDO::getId, roleIds).list();
+        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
+        List<RoleDO> roleList = baseMapper.lambdaQuery().in(RoleDO::getId, roleIdList).list();
         return new HashSet<>(BeanUtil.copyToList(roleList, RoleDTO.class));
     }
 

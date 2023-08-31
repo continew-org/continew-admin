@@ -20,12 +20,16 @@ import java.util.*;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MenuMapper;
@@ -43,10 +47,12 @@ import top.charles7c.cnadmin.system.service.MenuService;
  */
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConsts.MENU_KEY_PREFIX)
 public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO, MenuVO, MenuQuery, MenuRequest>
     implements MenuService {
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public Long add(MenuRequest request) {
         String title = request.getTitle();
@@ -58,6 +64,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public void update(MenuRequest request, Long id) {
         String title = request.getTitle();
@@ -68,6 +75,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
@@ -80,11 +88,20 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     }
 
     @Override
-    public List<MenuVO> listByUserId(Long userId) {
-        List<MenuDO> menuList = baseMapper.selectListByUserId(userId);
+    @Cacheable(key = "#roleCode")
+    public List<MenuVO> listByRoleCode(String roleCode) {
+        List<MenuDO> menuList = baseMapper.selectListByRoleCode(roleCode);
         List<MenuVO> list = BeanUtil.copyToList(menuList, MenuVO.class);
         list.forEach(this::fill);
         return list;
+    }
+
+    @Override
+    @Cacheable(key = "'ALL'")
+    public List<MenuVO> list() {
+        MenuQuery menuQuery = new MenuQuery();
+        menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());
+        return super.list(menuQuery, null);
     }
 
     /**

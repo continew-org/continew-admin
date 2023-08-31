@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.common.config.jackson;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,7 +31,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -57,19 +54,12 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
 public class JacksonConfiguration {
 
     /**
-     * 针对数值类型：Long、BigInteger、BigDecimal，时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
+     * 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
      */
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer customizer() {
         return builder -> {
             JavaTimeModule javaTimeModule = new JavaTimeModule();
-            // 针对数值类型：Long、BigInteger、BigDecimal 的序列化
-            javaTimeModule.addSerializer(Long.class, ToStringSerializer.instance);
-            javaTimeModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-            javaTimeModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
-            javaTimeModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
-
-            // 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
             javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
             javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));

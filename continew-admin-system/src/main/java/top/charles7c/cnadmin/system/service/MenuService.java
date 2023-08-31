@@ -42,11 +42,18 @@ public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, Menu
     Set<String> listPermissionByUserId(Long userId);
 
     /**
-     * 根据用户 ID 查询
+     * 根据角色编码查询
      *
-     * @param userId
-     *            用户 ID
+     * @param roleCode
+     *            角色编码
      * @return 菜单列表
      */
-    List<MenuVO> listByUserId(Long userId);
+    List<MenuVO> listByRoleCode(String roleCode);
+
+    /**
+     * 查询所有菜单
+     *
+     * @return 菜单列表
+     */
+    List<MenuVO> list();
 }

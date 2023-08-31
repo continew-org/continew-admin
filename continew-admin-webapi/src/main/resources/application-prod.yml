@@ -50,7 +50,7 @@ spring.liquibase:
   # 配置文件路径
   change-log: classpath:/db/changelog/db.changelog-master.yaml
 
---- ### Redis 单机配置
+--- ### Redis 配置（单机版）
 spring:
   redis:
     # 地址
@@ -65,6 +65,13 @@ spring:
     timeout: 10s
     # 是否开启 SSL
     ssl: false
+  ## Spring Cache 配置
+  cache:
+    redis:
+      # 缓存过期时长（单位：毫秒，默认 -1，表示永不过期）
+      time-to-live: 7200000
+      # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
+      cache-null-values: true
 
 --- ### 邮件配置
 spring.mail:

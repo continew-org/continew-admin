@@ -47,4 +47,9 @@ public class CacheConsts {
      * 用户缓存键前缀
      */
     public static final String USER_KEY_PREFIX = "USER";
+
+    /**
+     * 菜单缓存键前缀
+     */
+    public static final String MENU_KEY_PREFIX = "MENU";
 }

@@ -45,6 +45,7 @@ import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.service.UserService;
 
@@ -92,6 +93,7 @@ public class LoginController {
         return R.ok();
     }
 
+    @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
     public R<UserInfoVO> getUserInfo() {
@@ -103,9 +105,10 @@ public class LoginController {
         return R.ok(userInfoVO);
     }
 
+    @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
-    public R<List<RouteVO>> listMenu() {
+    public R<List<RouteVO>> listRoute() {
         Long userId = LoginHelper.getUserId();
         List<RouteVO> routeTree = loginService.buildRouteTree(userId);
         return R.ok(routeTree);

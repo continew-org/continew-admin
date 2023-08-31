@@ -16,9 +16,8 @@
 
 package top.charles7c.cnadmin.auth.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +43,6 @@ import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
-import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.DeptService;
@@ -91,21 +89,20 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public List<RouteVO> buildRouteTree(Long userId) {
-        Set<String> roleSet = permissionService.listRoleCodeByUserId(userId);
-        if (CollUtil.isEmpty(roleSet)) {
+        Set<String> roleCodeSet = permissionService.listRoleCodeByUserId(userId);
+        if (CollUtil.isEmpty(roleCodeSet)) {
             return new ArrayList<>(0);
         }
 
         // 查询菜单列表
-        List<MenuVO> menuList;
-        if (roleSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
-            MenuQuery menuQuery = new MenuQuery();
-            menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());
-            menuList = menuService.list(menuQuery, null);
+        Set<MenuVO> menuSet = new LinkedHashSet<>();
+        if (roleCodeSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
+            menuSet.addAll(menuService.list());
         } else {
-            menuList = menuService.listByUserId(userId);
+            roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));
         }
-        menuList.removeIf(m -> MenuTypeEnum.BUTTON.equals(m.getType()));
+        List<MenuVO> menuList =
+            menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).collect(Collectors.toList());
 
         // 构建路由树
         TreeField treeField = MenuVO.class.getDeclaredAnnotation(TreeField.class);
