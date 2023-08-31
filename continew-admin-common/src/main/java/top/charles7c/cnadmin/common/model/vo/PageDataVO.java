@@ -70,7 +70,7 @@ public class PageDataVO<V> implements Serializable {
      */
     public static <T, V> PageDataVO<V> build(IPage<T> page, Class<V> targetClass) {
         if (null == page) {
-            return null;
+            return empty();
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(BeanUtil.copyToList(page.getRecords(), targetClass));
@@ -89,7 +89,7 @@ public class PageDataVO<V> implements Serializable {
      */
     public static <V> PageDataVO<V> build(IPage<V> page) {
         if (null == page) {
-            return null;
+            return empty();
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(page.getRecords());
@@ -111,11 +111,10 @@ public class PageDataVO<V> implements Serializable {
      * @return 分页信息
      */
     public static <V> PageDataVO<V> build(int page, int size, List<V> list) {
-        PageDataVO<V> pageDataVO = new PageDataVO<>();
         if (CollUtil.isEmpty(list)) {
-            return pageDataVO;
+            return empty();
         }
-
+        PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setTotal(list.size());
         // 对列表数据进行分页
         int fromIndex = (page - 1) * size;
@@ -127,6 +126,19 @@ public class PageDataVO<V> implements Serializable {
         } else {
             pageDataVO.setList(list.subList(fromIndex, toIndex));
         }
+        return pageDataVO;
+    }
+
+    /**
+     * 空分页信息
+     *
+     * @param <V>
+     *            列表数据类型
+     * @return 分页信息
+     */
+    private static <V> PageDataVO<V> empty() {
+        PageDataVO<V> pageDataVO = new PageDataVO<>();
+        pageDataVO.setList(new ArrayList<>(0));
         return pageDataVO;
     }
 }
