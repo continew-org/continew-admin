@@ -51,7 +51,11 @@ axios.interceptors.response.use(
     if (res.success) {
       return res;
     }
-    return Promise.reject(new Error(res.msg || '未知错误'));
+    messageErrorWrapper({
+      content: res.msg || '网络错误',
+      duration: 5 * 1000,
+    });
+    return Promise.reject(new Error(res.msg || '网络错误'));
   },
   (error) => {
     const { response } = error;
