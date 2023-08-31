@@ -20,4 +20,4 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           body: |
-            详情请参阅 [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/dev/CHANGELOG.md)。
+            详情请参阅 [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/dev/CHANGELOG.md) 。
