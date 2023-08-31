@@ -53,7 +53,7 @@ public class PageDataVO<V> implements Serializable {
      * 总记录数
      */
     @Schema(description = "总记录数", example = "10")
-    private int total;
+    private long total;
 
     /**
      * 基于 MyBatis Plus 分页数据构建分页信息，并将源数据转换为指定类型数据
@@ -74,7 +74,7 @@ public class PageDataVO<V> implements Serializable {
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(BeanUtil.copyToList(page.getRecords(), targetClass));
-        pageDataVO.setTotal((int)page.getTotal());
+        pageDataVO.setTotal(page.getTotal());
         return pageDataVO;
     }
 
@@ -93,7 +93,7 @@ public class PageDataVO<V> implements Serializable {
         }
         PageDataVO<V> pageDataVO = new PageDataVO<>();
         pageDataVO.setList(page.getRecords());
-        pageDataVO.setTotal((int)page.getTotal());
+        pageDataVO.setTotal(page.getTotal());
         return pageDataVO;
     }
 
