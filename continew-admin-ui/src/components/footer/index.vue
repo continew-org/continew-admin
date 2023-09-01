@@ -14,7 +14,7 @@
       target="_blank"
       rel="noopener"
       >{{ $t('title') }}</a
-    >&nbsp; v1.1.0
+    >&nbsp; v1.2.0-SNAPSHOT
     <span>&nbsp;⋅&nbsp;</span>
     <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">
       津ICP备2022005864号-2

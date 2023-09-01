@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin/tree/1.0.x" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v1.1.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v1.2.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -32,6 +32,24 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 | GitHub        | https://github.com/Charles7c/continew-admin |
 | Gitee（码云） | https://gitee.com/Charles7c/continew-admin  |
 
+## 反馈交流
+
+💬 欢迎各位小伙伴儿扫描下方二维码，加入微信交流群，探讨技术、提提需求~。加入交流群后，你将会：
+
+- 第一时间收到框架动态
+- 第一时间收到框架更新通知
+- 第一时间收到框架 Bug 通知
+- 和众多大佬一起互相 (huá shuǐ) 交流 (mō yú)
+
+<div align="left">
+  <img src="https://doc.charles7c.top/qrcode.jpg" alt="二维码" width="350px" />
+</div>
+
+<details>
+<summary>无加群意愿 😖</summary>
+💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/discussions" target="_blank">Discussions</a> 中进行交流探讨~ 🍻
+</details>
+
 ## 主要特性
 
 - 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
@@ -49,7 +67,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ##  系统功能
 
-> 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects)
+> 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
@@ -401,26 +419,28 @@ pnpm dev
 # 6.2 其他方式部署
 ```
 
-## 反馈交流
-
-💬 非常欢迎各位小伙伴儿在 [Issues](https://github.com/Charles7c/continew-admin/issues)、[Discussions](https://github.com/Charles7c/continew-admin/discussions) 中进行交流探讨~
-
-💬 也欢迎各位小伙伴儿扫码加作者好友（请备注：cnadmin 已点亮 star），作者拉你进群，随意聊聊技术、提提需求，吐吐槽~
-
-<div align="left">
-  <img src="https://s1.ax1x.com/2023/03/09/ppnhe0A.jpg" alt="二维码" width="200" />
-</div>
 
 ## 贡献代码
 
 ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，迭代优化。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。我们非常欢迎广大社区用户为 ContiNew Admin 贡献或优化代码。
 
+### 分支说明
+
+ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://doc.charles7c.top/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
+
+| 分支  | 说明                                                         |
+| ----- | ------------------------------------------------------------ |
+| dev   | 开发分支，默认为下个大版本的 SNAPSHOT 版本，接受新功能或新功能优化 PR |
+| x.x.x | 维护分支，在 vx.x.x 版本维护期终止前（一般为下个大版本发布前），用于修复上个版本的 Bug，只接受已有功能修复，不接受新功能 PR |
+
+### 流程步骤
+
 如果您想进行贡献或优化代码，可以按照以下步骤操作：
 
 1. 首先，在 Gitee 或 Github 上将项目 fork 到您自己的仓库
 2. 然后，将 fork 过来的项目（即您的项目）克隆到本地
-3. 修改代码时，请务必在 dev 分支上进行修改
-4. 修改完成后，将代码 commit 并 push 到您的远程仓库的 dev 分支
+3. 切换到当前仍在维护的分支（请务必充分了解分支使用说明，可进群联系维护者确认）
+4. 开始修改代码，修改完成后，将代码 commit 并 push 到您的远程仓库
 5. 在 Gitee 或 Github 上新建 pull request（pr），选择好源和目标，按模板要求填写说明信息后提交即可（多多参考 [已批准合并的 pr 记录](https://github.com/Charles7c/continew-admin/pulls?q=is%3Apr+is%3Amerged)，会大大增加批准合并率）
 6. 最后，耐心等待维护者合并您的请求即可
 
