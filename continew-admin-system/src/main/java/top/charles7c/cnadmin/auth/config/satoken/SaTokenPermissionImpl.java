@@ -48,6 +48,6 @@ public class SaTokenPermissionImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        return new ArrayList<>(loginUser.getRoles());
+        return new ArrayList<>(loginUser.getRoleCodes());
     }
 }

@@ -79,8 +79,8 @@ public class LoginServiceImpl implements LoginService {
         // 登录
         LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
-        loginUser.setRoles(permissionService.listRoleCodeByUserId(userId));
-        loginUser.setRoleSet(roleService.listByUserId(userId));
+        loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
+        loginUser.setRoles(roleService.listByUserId(userId));
         LoginHelper.login(loginUser);
 
         // 返回令牌

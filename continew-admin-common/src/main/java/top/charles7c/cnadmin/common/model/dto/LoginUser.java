@@ -60,12 +60,12 @@ public class LoginUser implements Serializable {
     /**
      * 角色编码集合
      */
-    private Set<String> roles;
+    private Set<String> roleCodes;
 
     /**
      * 角色集合
      */
-    private Set<RoleDTO> roleSet;
+    private Set<RoleDTO> roles;
 
     /**
      * 令牌

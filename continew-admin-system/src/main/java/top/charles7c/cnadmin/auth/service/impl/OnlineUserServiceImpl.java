@@ -85,7 +85,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     public void cleanByRoleId(Long roleId) {
         List<LoginUser> loginUserList = this.list(new OnlineUserQuery());
         loginUserList.parallelStream().forEach(u -> {
-            if (u.getRoleSet().stream().anyMatch(r -> r.getId().equals(roleId))) {
+            if (u.getRoles().stream().anyMatch(r -> r.getId().equals(roleId))) {
                 try {
                     StpUtil.logoutByTokenValue(u.getToken());
                 } catch (NotLoginException ignored) {

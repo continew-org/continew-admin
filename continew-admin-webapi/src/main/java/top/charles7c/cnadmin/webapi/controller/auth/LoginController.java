@@ -101,7 +101,7 @@ public class LoginController {
         UserDetailVO userDetailVO = userService.get(loginUser.getId());
         UserInfoVO userInfoVO = BeanUtil.copyProperties(userDetailVO, UserInfoVO.class);
         userInfoVO.setPermissions(loginUser.getPermissions());
-        userInfoVO.setRoles(loginUser.getRoles());
+        userInfoVO.setRoles(loginUser.getRoleCodes());
         return R.ok(userInfoVO);
     }
 

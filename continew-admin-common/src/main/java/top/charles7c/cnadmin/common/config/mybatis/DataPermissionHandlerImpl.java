@@ -108,7 +108,7 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
      */
     private static Expression buildDataScopeFilter(LoginUser user, String tableAlias, Expression where) {
         Expression expression = null;
-        for (RoleDTO role : user.getRoleSet()) {
+        for (RoleDTO role : user.getRoles()) {
             DataScopeEnum dataScope = role.getDataScope();
             if (DataScopeEnum.ALL.equals(dataScope)) {
                 return where;
