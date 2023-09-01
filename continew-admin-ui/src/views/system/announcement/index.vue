@@ -135,8 +135,9 @@
           </a-table-column>
           <a-table-column title="状态" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.status === 1" color="green">已发布</a-tag>
-              <a-tag v-else color="orangered">已过期</a-tag>
+              <a-tag v-if="record.status === 1" color="blue">待发布</a-tag>
+              <a-tag v-else-if="record.status === 2" color="green">已发布</a-tag>
+              <a-tag v-else color="red">已过期</a-tag>
             </template>
           </a-table-column>
           <a-table-column title="生效时间">
