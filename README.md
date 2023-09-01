@@ -207,6 +207,7 @@ continew-admin
     ├─ public               # 公共静态资源（favicon.ico、logo.svg）
     ├─ src
     │  ├─ api               # 请求接口
+    │  │  ├─ demo             # 示例模块
     │  │  ├─ auth             # 认证模块
     │  │  ├─ common           # 公共模块
     │  │  ├─ monitor          # 系统监控模块
@@ -229,7 +230,7 @@ continew-admin
     │  ├─ types             # TypeScript 类型
     │  ├─ utils             # 工具库
     │  ├─ views             # 页面模板
-    │  │  ├─ arco-design      # Arco Design 相关示例模块
+    │  │  ├─ demo             # Arco Design 相关示例模块
     │  │  ├─ dashboard        # 仪表盘模块
     │  │  ├─ login            # 登录模块
     │  │  ├─ monitor          # 系统监控模块
