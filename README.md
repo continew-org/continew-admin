@@ -276,9 +276,9 @@ continew-admin
 
 | 名称                                                         | 版本         | 简介                                                         |
 | :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.2.47       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.44.7       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.51.0       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 2.7.15       | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.2.26.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.35.0.RC    | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
