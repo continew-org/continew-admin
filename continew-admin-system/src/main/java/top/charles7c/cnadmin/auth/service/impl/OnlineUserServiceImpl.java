@@ -67,7 +67,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         for (String tokenKey : tokenKeyList) {
             String token = StrUtil.subAfter(tokenKey, StringConsts.COLON, true);
             // 忽略已过期或失效 Token
-            if (StpUtil.stpLogic.getTokenActivityTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
+            if (StpUtil.stpLogic.getTokenActiveTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
                 continue;
             }
             // 检查是否符合查询条件
