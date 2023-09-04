@@ -77,12 +77,11 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
             Class<?> clazz =
                 Class.forName(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(StringConsts.DOT)));
             String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringConsts.DOT) + 1);
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
+            Method[] methodArr = clazz.getMethods();
+            for (Method method : methodArr) {
                 DataPermission dataPermission = method.getAnnotation(DataPermission.class);
                 if (null != dataPermission
                     && (method.getName().equals(methodName) || (method.getName() + "_COUNT").equals(methodName))) {
-                    // 获取当前登录用户
                     LoginUser loginUser = LoginHelper.getLoginUser();
                     if (null != loginUser && !loginUser.isAdmin()) {
                         return buildDataScopeFilter(loginUser, dataPermission.value(), where);
@@ -106,7 +105,7 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
      *            当前查询条件
      * @return 构建后查询条件
      */
-    private static Expression buildDataScopeFilter(LoginUser user, String tableAlias, Expression where) {
+    private Expression buildDataScopeFilter(LoginUser user, String tableAlias, Expression where) {
         Expression expression = null;
         for (RoleDTO role : user.getRoles()) {
             DataScopeEnum dataScope = role.getDataScope();
@@ -131,19 +130,19 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 subSelect.setSelectBody(select);
                 // 构建父查询
                 InExpression inExpression = new InExpression();
-                inExpression.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
+                inExpression.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
                 inExpression.setRightExpression(subSelect);
                 expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             } else if (DataScopeEnum.DEPT.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`dept_id` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
+                equalsTo.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
                 equalsTo.setRightExpression(new LongValue(user.getDeptId()));
                 expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.SELF.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`create_user` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(buildColumn(tableAlias, CREATE_USER));
+                equalsTo.setLeftExpression(this.buildColumn(tableAlias, CREATE_USER));
                 equalsTo.setRightExpression(new LongValue(user.getId()));
                 expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.CUSTOM.equals(dataScope)) {
@@ -161,7 +160,7 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 subSelect.setSelectBody(select);
                 // 构建父查询
                 InExpression inExpression = new InExpression();
-                inExpression.setLeftExpression(buildColumn(tableAlias, DEPT_ID));
+                inExpression.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
                 inExpression.setRightExpression(subSelect);
                 expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             }
@@ -178,7 +177,7 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
      *            字段名称
      * @return 带表别名字段
      */
-    private static Column buildColumn(String tableAlias, String columnName) {
+    private Column buildColumn(String tableAlias, String columnName) {
         if (StringUtils.isNotEmpty(tableAlias)) {
             columnName = String.format("%s.%s", tableAlias, columnName);
         }

@@ -16,17 +16,10 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-
-import top.charles7c.cnadmin.common.annotation.DataPermission;
-import top.charles7c.cnadmin.common.base.BaseMapper;
+import top.charles7c.cnadmin.common.base.DataPermissionMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 
 /**
@@ -35,15 +28,7 @@ import top.charles7c.cnadmin.system.model.entity.UserDO;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
-public interface UserMapper extends BaseMapper<UserDO> {
-
-    @Override
-    @DataPermission
-    List<UserDO> selectList(@Param(Constants.WRAPPER) Wrapper<UserDO> queryWrapper);
-
-    @Override
-    @DataPermission
-    <P extends IPage<UserDO>> P selectPage(P page, @Param(Constants.WRAPPER) Wrapper<UserDO> queryWrapper);
+public interface UserMapper extends DataPermissionMapper<UserDO> {
 
     /**
      * 根据用户名查询
