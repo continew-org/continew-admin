@@ -5,7 +5,7 @@ import './message-box';
 
 import '@/views/dashboard/workplace/mock';
 
-import '@/views/demo/visualization/monitor/mock';
+import '@/views/demo/visualization/real-time-monitor/mock';
 
 import '@/views/demo/list/card/mock';
 import '@/views/demo/list/search-table/mock';

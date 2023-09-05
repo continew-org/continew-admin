@@ -12,8 +12,8 @@
       :pagination="false"
     />
     <a-typography-text type="secondary" class="data-statistic-list-tip">
-      {{ $t('monitor.list.tip.rotations') }} {{ data.length }}
-      {{ $t('monitor.list.tip.rest') }}
+      {{ $t('realTimeMonitor.list.tip.rotations') }} {{ data.length }}
+      {{ $t('realTimeMonitor.list.tip.rest') }}
     </a-typography-text>
   </div>
 </template>
@@ -47,7 +47,7 @@
   const renderTag = (status: number) => {
     if (status === -1) {
       return `<a-tag  color="red" class='data-statistic-list-cover-tag'>
-            ${t('monitor.list.tag.auditFailed')}
+            ${t('realTimeMonitor.list.tag.auditFailed')}
         </a-tag>`;
     }
     return '';
@@ -58,7 +58,7 @@
   const columns = computed(() => {
     return [
       {
-        title: t('monitor.list.title.order'),
+        title: t('realTimeMonitor.list.title.order'),
         render({
           rowIndex,
         }: {
@@ -71,7 +71,7 @@
         },
       },
       {
-        title: t('monitor.list.title.cover'),
+        title: t('realTimeMonitor.list.title.cover'),
         render({
           record,
         }: {
@@ -87,16 +87,16 @@
         },
       },
       {
-        title: t('monitor.list.title.name'),
+        title: t('realTimeMonitor.list.title.name'),
         dataIndex: 'name',
       },
       {
         dataIndex: 'duration',
-        title: t('monitor.list.title.duration'),
+        title: t('realTimeMonitor.list.title.duration'),
       },
       {
         dataIndex: 'id',
-        title: t('monitor.list.title.id'),
+        title: t('realTimeMonitor.list.title.id'),
       },
     ];
   });

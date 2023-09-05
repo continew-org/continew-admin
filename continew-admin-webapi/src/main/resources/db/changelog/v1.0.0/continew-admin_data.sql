@@ -2,7 +2,7 @@
 
 -- changeset Charles7c:1
 -- 初始化默认菜单
-INSERT IGNORE INTO `sys_menu` VALUES (1000, '系统管理', 0, 1, '/system', NULL, NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (1000, '系统管理', 0, 1, '/system', 'System', NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1010, '用户管理', 1000, 2, '/system/user', 'User', '/system/user/index', NULL, b'0', b'0', b'0', 'system:user:list', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1011, '用户新增', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:add', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1012, '用户修改', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:update', 2, 1, 1, NOW(), NULL, NULL);
@@ -25,7 +25,7 @@ INSERT IGNORE INTO `sys_menu` VALUES (1901, '菜单新增', 1900, 3, NULL, NULL,
 INSERT IGNORE INTO `sys_menu` VALUES (1902, '菜单修改', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:update', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1903, '菜单删除', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:delete', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1904, '菜单导出', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:export', 4, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (9000, '系统监控', 0, 1, '/monitor', NULL, NULL, 'computer', b'0', b'0', b'0', NULL, 899, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (9000, '系统监控', 0, 1, '/monitor', 'Monitor', NULL, 'computer', b'0', b'0', b'0', NULL, 899, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (9010, '在线用户', 9000, 2, '/monitor/online', 'OnlineUser', '/monitor/online/index', NULL, b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (9011, '强退用户', 9010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'monitor:online:user:delete', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (9030, '登录日志', 9000, 2, '/monitor/log/login', 'LoginLog', '/monitor/log/login/index', NULL, b'0', b'0', b'0', 'monitor:log:login:list', 2, 1, 1, NOW(), NULL, NULL);

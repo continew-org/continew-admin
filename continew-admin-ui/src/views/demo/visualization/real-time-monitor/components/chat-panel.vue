@@ -1,7 +1,7 @@
 <template>
   <a-card
     class="general-card chat-panel"
-    :title="$t('monitor.title.chatPanel')"
+    :title="$t('realTimeMonitor.title.chatPanel')"
     :bordered="false"
     :header-style="{ paddingBottom: '0' }"
     :body-style="{
@@ -14,11 +14,11 @@
     <a-space :size="8">
       <a-select style="width: 86px" default-value="all">
         <a-option value="all">
-          {{ $t('monitor.chat.options.all') }}
+          {{ $t('realTimeMonitor.chat.options.all') }}
         </a-option>
       </a-select>
       <a-input-search
-        :placeholder="$t('monitor.chat.placeholder.searchCategory')"
+        :placeholder="$t('realTimeMonitor.chat.placeholder.searchCategory')"
       />
       <a-button type="text">
         <icon-download />
@@ -36,7 +36,7 @@
             <icon-face-smile-fill />
           </template>
         </a-Input>
-        <a-button type="primary">{{ $t('monitor.chat.update') }}</a-button>
+        <a-button type="primary">{{ $t('realTimeMonitor.chat.update') }}</a-button>
       </a-space>
     </div>
   </a-card>

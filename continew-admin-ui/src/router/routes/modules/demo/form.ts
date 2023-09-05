@@ -2,6 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const FORM: AppRouteRecordRaw = {
+  name: 'Form',
   path: '/demo/form',
   component: DEFAULT_LAYOUT,
   meta: {

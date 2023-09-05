@@ -2,6 +2,7 @@ import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
 const System: AppRouteRecordRaw = {
+  name: 'System',
   path: '/system',
   component: DEFAULT_LAYOUT,
   meta: {

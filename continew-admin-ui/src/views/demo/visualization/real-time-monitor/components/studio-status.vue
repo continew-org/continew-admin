@@ -1,10 +1,10 @@
 <template>
   <a-card
     class="general-card"
-    :title="$t('monitor.studioStatus.title.studioStatus')"
+    :title="$t('realTimeMonitor.studioStatus.title.studioStatus')"
   >
     <template #extra>
-      <a-tag color="green">{{ $t('monitor.studioStatus.smooth') }}</a-tag>
+      <a-tag color="green">{{ $t('realTimeMonitor.studioStatus.smooth') }}</a-tag>
     </template>
     <a-descriptions layout="horizontal" :data="dataStatus" :column="2">
       <template #label="{ label }">
@@ -12,15 +12,15 @@
           v-if="['mainstream', 'hotStandby', 'coldStandby'].includes(label)"
         >
           <a-typography-text style="padding-right: 8px">
-            {{ $t(`monitor.studioStatus.${label}`) }}
+            {{ $t(`realTimeMonitor.studioStatus.${label}`) }}
           </a-typography-text>
-          {{ $t('monitor.studioStatus.bitRate') }}
+          {{ $t('realTimeMonitor.studioStatus.bitRate') }}
         </span>
         <span v-else>{{ label }}</span>
       </template>
     </a-descriptions>
     <a-typography-title style="margin-bottom: 16px" :heading="6">
-      {{ $t('monitor.studioStatus.title.pictureInfo') }}
+      {{ $t('realTimeMonitor.studioStatus.title.pictureInfo') }}
     </a-typography-title>
     <a-descriptions layout="horizontal" :data="dataPicture" :column="2" />
   </a-card>
@@ -37,7 +37,7 @@
       value: '6 Mbps',
     },
     {
-      label: t('monitor.studioStatus.frameRate'),
+      label: t('realTimeMonitor.studioStatus.frameRate'),
       value: '60',
     },
     {
@@ -45,7 +45,7 @@
       value: '6 Mbps',
     },
     {
-      label: t('monitor.studioStatus.frameRate'),
+      label: t('realTimeMonitor.studioStatus.frameRate'),
       value: '60',
     },
     {
@@ -53,13 +53,13 @@
       value: '6 Mbps',
     },
     {
-      label: t('monitor.studioStatus.frameRate'),
+      label: t('realTimeMonitor.studioStatus.frameRate'),
       value: '60',
     },
   ]);
   const dataPicture = computed(() => [
     {
-      label: t('monitor.studioStatus.line'),
+      label: t('realTimeMonitor.studioStatus.line'),
       value: '热备',
     },
     {
@@ -67,11 +67,11 @@
       value: 'KS',
     },
     {
-      label: t('monitor.studioStatus.play'),
+      label: t('realTimeMonitor.studioStatus.play'),
       value: 'FLV',
     },
     {
-      label: t('monitor.studioStatus.pictureQuality'),
+      label: t('realTimeMonitor.studioStatus.pictureQuality'),
       value: '原画',
     },
   ]);

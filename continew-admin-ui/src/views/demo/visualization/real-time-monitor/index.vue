@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <Breadcrumb :items="['menu.dashboard', 'menu.dashboard.monitor']" />
+    <Breadcrumb :items="['menu.dashboard', 'menu.dashboard.realTimeMonitor']" />
     <div class="layout">
       <div class="layout-left-side">
         <ChatPanel />
@@ -33,7 +33,7 @@
 
 <script lang="ts">
   export default {
-    name: 'Monitor',
+    name: 'RealTimeMonitor',
   };
 </script>
 

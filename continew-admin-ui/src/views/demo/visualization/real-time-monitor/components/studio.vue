@@ -1,5 +1,5 @@
 <template>
-  <a-card class="general-card" :title="$t('monitor.title.studioPreview')">
+  <a-card class="general-card" :title="$t('realTimeMonitor.title.studioPreview')">
     <template #extra>
       <icon-more />
     </template>
@@ -15,12 +15,12 @@
               <img :src="getAvatar(userInfo.avatar, userInfo.gender)" />
             </a-avatar>
             <a-typography-text>
-              {{ userInfo.nickname }} {{ $t('monitor.studioPreview.studio') }}
+              {{ userInfo.nickname }} {{ $t('realTimeMonitor.studioPreview.studio') }}
             </a-typography-text>
           </a-space>
         </div>
         <a-typography-text type="secondary">
-          36,000 {{ $t('monitor.studioPreview.watching') }}
+          36,000 {{ $t('realTimeMonitor.studioPreview.watching') }}
         </a-typography-text>
       </div>
     </div>
