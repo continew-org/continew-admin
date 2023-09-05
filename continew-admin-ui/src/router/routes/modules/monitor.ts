@@ -2,6 +2,7 @@ import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
 const Monitor: AppRouteRecordRaw = {
+  name: 'Monitor',
   path: '/monitor',
   component: DEFAULT_LAYOUT,
   meta: {

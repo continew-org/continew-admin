@@ -95,7 +95,10 @@
             _route.forEach((element) => {
               // This is demo, modify nodes as needed
               const icon = element?.meta?.icon
-                ? () => h(compile(`<icon-${element?.meta?.icon}/>`))
+                ? () =>
+                    h(
+                      compile(`<svg-icon icon-class="${element?.meta?.icon}"/>`)
+                    )
                 : null;
               const node =
                 element?.children && element?.children.length !== 0 ? (

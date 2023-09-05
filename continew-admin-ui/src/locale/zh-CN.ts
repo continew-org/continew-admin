@@ -25,7 +25,7 @@ import locale404 from '@/views/demo/exception/404/locale/zh-CN';
 import locale500 from '@/views/demo/exception/500/locale/zh-CN';
 import localeDataAnalysis from '@/views/demo/visualization/data-analysis/locale/zh-CN';
 import localeMultiDAnalysis from '@/views/demo/visualization/multi-dimension-data-analysis/locale/zh-CN';
-import localeMonitor from '@/views/demo/visualization/monitor/locale/zh-CN';
+import localeRealTimeMonitor from '@/views/demo/visualization/real-time-monitor/locale/zh-CN';
 
 import localeMessageBox from '@/components/message-box/locale/zh-CN';
 import localeLogin from '@/views/login/locale/zh-CN';
@@ -80,7 +80,7 @@ export default {
   ...locale500,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
-  ...localeMonitor,
+  ...localeRealTimeMonitor,
 
   ...localeMessageBox,
   ...localeLogin,

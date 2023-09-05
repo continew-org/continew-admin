@@ -2,6 +2,7 @@ import { DEFAULT_LAYOUT } from '../base';
 import { AppRouteRecordRaw } from '../types';
 
 const Tool: AppRouteRecordRaw = {
+  name: 'Tool',
   path: '/tool',
   component: DEFAULT_LAYOUT,
   meta: {

@@ -2,12 +2,13 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const EXCEPTION: AppRouteRecordRaw = {
+  name: 'Exception',
   path: '/demo/exception',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.exception',
     requiresAuth: true,
-    icon: 'exclamation-circle',
+    icon: 'exclamation-2',
     order: 904,
   },
   children: [

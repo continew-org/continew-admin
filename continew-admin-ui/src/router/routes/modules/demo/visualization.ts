@@ -2,6 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const VISUALIZATION: AppRouteRecordRaw = {
+  name: 'Visualization',
   path: '/demo/visualization',
   component: DEFAULT_LAYOUT,
   meta: {
@@ -36,12 +37,12 @@ const VISUALIZATION: AppRouteRecordRaw = {
       },
     },
     {
-      name: 'Monitor',
-      path: 'monitor',
+      name: 'RealTimeMonitor',
+      path: 'real-time-monitor',
       component: () =>
-        import('@/views/demo/visualization/monitor/index.vue'),
+        import('@/views/demo/visualization/real-time-monitor/index.vue'),
       meta: {
-        locale: 'menu.dashboard.monitor',
+        locale: 'menu.dashboard.realTimeMonitor',
         requiresAuth: true,
         roles: ['*'],
       },

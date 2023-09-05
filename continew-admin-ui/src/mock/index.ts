@@ -5,7 +5,7 @@ import './message-box';
 
 import '@/views/dashboard/workplace/mock';
 
-import '@/views/demo/visualization/monitor/mock';
+import '@/views/demo/visualization/real-time-monitor/mock';
 
 import '@/views/demo/list/card/mock';
 import '@/views/demo/list/search-table/mock';
@@ -20,5 +20,5 @@ import '@/views/demo/visualization/multi-dimension-data-analysis/mock';
 import '@/views/system/user/center/mock';
 
 Mock.setup({
-  timeout: '600-1000',
+  timeout: '15-150',
 });

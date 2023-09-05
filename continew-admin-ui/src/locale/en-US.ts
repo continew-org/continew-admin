@@ -25,7 +25,7 @@ import locale404 from '@/views/demo/exception/404/locale/en-US';
 import locale500 from '@/views/demo/exception/500/locale/en-US';
 import localeDataAnalysis from '@/views/demo/visualization/data-analysis/locale/en-US';
 import localeMultiDAnalysis from '@/views/demo/visualization/multi-dimension-data-analysis/locale/en-US';
-import localeMonitor from '@/views/demo/visualization/monitor/locale/en-US';
+import localeRealTimeMonitor from '@/views/demo/visualization/real-time-monitor/locale/en-US';
 
 import localeMessageBox from '@/components/message-box/locale/en-US';
 import localeLogin from '@/views/login/locale/en-US';
@@ -80,7 +80,7 @@ export default {
   ...locale500,
   ...localeDataAnalysis,
   ...localeMultiDAnalysis,
-  ...localeMonitor,
+  ...localeRealTimeMonitor,
 
   ...localeMessageBox,
   ...localeLogin,
