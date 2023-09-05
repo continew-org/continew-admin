@@ -67,6 +67,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ##  系统功能
 
+> **Note**
 > 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
@@ -84,6 +85,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 采用按功能拆分模块的开发方式，项目目录结构如下：
 
+> **Note**
 > 下方项目目录结构是按照模块的层次顺序进行介绍的，实际 IDE 中 `continew-admin-common` 模块会因为字母排序原因排在上方。
 
 ```bash
@@ -300,6 +302,7 @@ continew-admin
 
 ## 系统截图
 
+> **Note**
 > 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能 **2023年8月26日** 截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
 
 <table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
@@ -365,7 +368,8 @@ continew-admin
 
 ## 快速开始
 
-> 注意：下方步骤有重叠部分，无需重复执行。
+> **Note**
+> 下方步骤有重叠部分，无需重复执行。
 
 ### 后端
 
@@ -420,7 +424,6 @@ pnpm dev
 # 6.2 其他方式部署
 ```
 
-
 ## 贡献代码
 
 ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，迭代优化。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。我们非常欢迎广大社区用户为 ContiNew Admin 贡献或优化代码。
@@ -436,7 +439,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 ### 流程步骤
 
-如果您想进行贡献或优化代码，可以按照以下步骤操作：
+如果您想提交新功能或优化现有代码，可以按照以下步骤操作：
 
 1. 首先，在 Gitee 或 Github 上将项目 fork 到您自己的仓库
 2. 然后，将 fork 过来的项目（即您的项目）克隆到本地
@@ -447,6 +450,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 请记住，如果您有任何疑问或需要帮助，我们将随时提供支持。
 
+> **Note**
 > 欢迎大家为 ContiNew Admin 贡献代码，我们非常感谢您的支持！为了更好地管理项目，维护者有一些要求：
 >
 > 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
