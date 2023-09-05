@@ -25,9 +25,9 @@
   const iconName = computed(() => `#icon-${props.iconClass}`);
   const svgClass = computed(() => {
     if (props.className) {
-      return `svg-icon ${props.className}`;
+      return `arco-icon ${props.className}`;
     }
-    return 'svg-icon';
+    return 'arco-icon';
   });
 </script>
 
@@ -37,19 +37,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  .sub-el-icon,
-  .nav-icon {
-    display: inline-block;
-    font-size: 15px;
-    margin-right: 12px;
-    position: relative;
-  }
-  .svg-icon {
-    width: 1em;
-    height: 1em;
-    position: relative;
-    fill: currentColor;
-    vertical-align: -2px;
-  }
-</style>
+<style scoped lang="less"></style>
