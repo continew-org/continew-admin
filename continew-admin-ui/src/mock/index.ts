@@ -20,5 +20,5 @@ import '@/views/demo/visualization/multi-dimension-data-analysis/mock';
 import '@/views/system/user/center/mock';
 
 Mock.setup({
-  timeout: '600-1000',
+  timeout: '15-150',
 });
