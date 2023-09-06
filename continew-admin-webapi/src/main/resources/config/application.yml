@@ -26,10 +26,6 @@ project:
 
 --- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
-  level:
-    top.charles7c: @logging.level@
-  file:
-    path: @logging.file.path@
   config: classpath:logback-spring.xml
   ## 系统日志配置
   system:
@@ -186,8 +182,7 @@ spring:
   ## 环境配置
   profiles:
     # 启用的环境
-    # 配合 Maven Profile 选择不同配置文件进行启动，在 IntelliJ IDEA 右侧 Maven 工具窗口可以快速切换环境
-    active: @profiles.active@
+    active: dev
   main:
     # 允许定义重名的 bean 对象覆盖原有的 bean
     allow-bean-definition-overriding: true

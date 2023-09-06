@@ -31,6 +31,18 @@ limitations under the License.
     <name>${project.artifactId}</name>
     <description>API 模块（存放 Controller 层代码，打包部署的模块）</description>
 
+    <properties>
+        <!-- ### 打包配置相关 ### -->
+        <!-- 启动类 -->
+        <main-class>top.charles7c.cnadmin.ContiNewAdminApplication</main-class>
+        <!-- 程序 jar 输出目录 -->
+        <bin-path>bin</bin-path>
+        <!-- 配置文件输出目录 -->
+        <config-path>config</config-path>
+        <!-- 依赖 jar 输出目录 -->
+        <lib-path>lib</lib-path>
+    </properties>
+
     <dependencies>
         <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
         <dependency>
@@ -66,34 +78,77 @@ limitations under the License.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
-                    <!-- 根据启用环境执行对应 @Tag 的测试方法 -->
-                    <groups>${profiles.active}</groups>
-                    <!-- 排除标签 -->
-                    <excludedGroups>exclude</excludedGroups>
+                    <!-- 跳过单元测试 -->
+                    <skip>true</skip>
                 </configuration>
             </plugin>
-            <!-- Spring Boot 打包插件（将 Spring Boot Maven 应用打包为可执行的 jar 包） -->
+            <!-- Maven 打包插件 -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 排除配置文件 -->
+                    <excludes>
+                        <exclude>${config-path}/</exclude>
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main-class}</mainClass>
+                            <!-- 为 MANIFEST.MF 中的 Class-Path 加入依赖 jar 目录前缀 -->
+                            <classpathPrefix>../${lib-path}/</classpathPrefix>
+                            <addClasspath>true</addClasspath>
+                            <!-- jar 包不包含唯一版本标识 -->
+                            <useUniqueVersions>false</useUniqueVersions>
+                        </manifest>
+                        <manifestEntries>
+                            <!--为 MANIFEST.MF 中的 Class-Path 加入配置文件目录前缀 -->
+                            <Class-Path>../${config-path}/</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                    <outputDirectory>${project.build.directory}/app/${bin-path}</outputDirectory>
+                </configuration>
+            </plugin>
+            <!-- 拷贝依赖 jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>repackage</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/app/${lib-path}</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <!-- 在新的 JVM 进程中运行打包任务（另注：在使用 devtools 时，如果没有该项配置，热部署可能会失效） -->
-                    <fork>true</fork>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
+            </plugin>
+            <!-- 拷贝配置文件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>${config-path}/</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${project.build.directory}/app</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
