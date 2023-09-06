@@ -41,8 +41,8 @@ import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 /**
  * 登录助手
  *
- * @author Lion Li（RuoYi-Vue-Plus）
  * @author Charles7c
+ * @author Lion Li（RuoYi-Vue-Plus）
  * @since 2022/12/24 12:58
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -55,10 +55,6 @@ public class LoginHelper {
      *            登录用户信息
      */
     public static void login(LoginUser loginUser) {
-        if (null == loginUser) {
-            return;
-        }
-
         // 记录登录信息
         HttpServletRequest request = ServletUtils.getRequest();
         loginUser.setClientIp(ServletUtil.getClientIP(request));
@@ -66,12 +62,11 @@ public class LoginHelper {
         loginUser.setBrowser(ServletUtils.getBrowser(request));
         LogContext logContext = LogContextHolder.get();
         loginUser.setLoginTime(null != logContext ? logContext.getCreateTime() : LocalDateTime.now());
-
-        // 登录保存用户信息
+        // 登录并缓存用户信息
         StpUtil.login(loginUser.getId());
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         loginUser.setToken(StpUtil.getTokenValue());
-        StpUtil.getSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -84,11 +79,11 @@ public class LoginHelper {
         if (null != loginUser) {
             return loginUser;
         }
-        SaSession session = StpUtil.getSession();
-        if (null == session) {
+        SaSession tokenSession = StpUtil.getTokenSession();
+        if (null == tokenSession) {
             return null;
         }
-        loginUser = (LoginUser)session.get(CacheConsts.LOGIN_USER_KEY);
+        loginUser = (LoginUser)tokenSession.get(CacheConsts.LOGIN_USER_KEY);
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
         return loginUser;
     }
@@ -101,12 +96,11 @@ public class LoginHelper {
      * @return 登录用户信息
      */
     public static LoginUser getLoginUser(String token) {
-        Object loginId = StpUtil.getLoginIdByToken(token);
-        SaSession session = StpUtil.getSessionByLoginId(loginId);
-        if (null == session) {
+        SaSession tokenSession = StpUtil.getTokenSessionByToken(token);
+        if (null == tokenSession) {
             return null;
         }
-        return (LoginUser)session.get(CacheConsts.LOGIN_USER_KEY);
+        return (LoginUser)tokenSession.get(CacheConsts.LOGIN_USER_KEY);
     }
 
     /**
