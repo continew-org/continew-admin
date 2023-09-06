@@ -98,9 +98,9 @@ public class LoginUser implements Serializable {
      * @return true：是，false：否
      */
     public boolean isAdmin() {
-        if (CollUtil.isEmpty(roles)) {
+        if (CollUtil.isEmpty(roleCodes)) {
             return false;
         }
-        return roles.contains(SysConsts.ADMIN_ROLE_CODE);
+        return roleCodes.contains(SysConsts.ADMIN_ROLE_CODE);
     }
 }
