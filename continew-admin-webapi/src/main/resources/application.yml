@@ -5,7 +5,7 @@ project:
   # 应用名称
   appName: continew-admin
   # 版本
-  version: 1.1.0
+  version: 1.1.1
   # 描述
   description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
   # URL

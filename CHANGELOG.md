@@ -1,3 +1,17 @@
+## [v1.1.1](https://github.com/Charles7c/continew-admin/compare/v1.1.0...v1.1.1) (2023-09-06)
+
+### 💎 功能优化
+
+- 调整 Mock 响应时长，以解决前端偶发需重复登录问题 ([df19c5d](https://github.com/Charles7c/continew-admin/commit/df19c5d2197fabb61cbdd4dccf1c427fb23d77d4))
+
+### 🐛 问题修复
+
+- 还原登录 Helper 优化（导致重大登录问题及查询在线用户错误） ([#15](https://github.com/Charles7c/continew-admin/pull/15)) ([7a6db2d](https://github.com/Charles7c/continew-admin/commit/7a6db2d14e60a5fcc1a2786e6eaa3d46a0714e6c)) ([#9](https://github.com/Charles7c/continew-admin/pull/9)) ([9e2a5ef](https://github.com/Charles7c/continew-admin/commit/9e2a5ef1249fd93dd10f2c255bf77c3eaa64a241))
+- 修复刷新页面后，选中菜单无法保持展开状态的问题 ([3fc7adb](https://github.com/Charles7c/continew-admin/commit/3fc7adb1e2bd4b648753bd2999df725417e01680))
+- 修复侧边栏菜单无法显示自定义图标的问题 ([10ca5d8](https://github.com/Charles7c/continew-admin/commit/10ca5d8c76aa39a207ea7db4442bf63ff4578273))
+- 更正 README 文档项目结构部分内容 ([486da2f](https://github.com/Charles7c/continew-admin/commit/486da2f79bfc5379213bf666b8f325fb8096ebc6))
+- 修复公告缺失待发布状态的问题 ([#14](https://github.com/Charles7c/continew-admin/pull/14)) ([46cc4c9](https://github.com/Charles7c/continew-admin/commit/46cc4c9307e3cc7060ae436f59f007831104884a))
+
 ## [v1.1.0](https://github.com/Charles7c/continew-admin/compare/v1.0.1...v1.1.0) (2023-09-01)
 
 ### ✨ 新特性
