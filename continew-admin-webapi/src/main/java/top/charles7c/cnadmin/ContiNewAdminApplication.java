@@ -70,7 +70,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @SaIgnore
     @GetMapping("/")
     public String index() {
-        return String.format("%s backend service started successfully.", projectProperties.getName());
+        return String.format("%s service started successfully.", projectProperties.getName());
     }
 
     @Override
@@ -79,13 +79,13 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         Integer port = serverProperties.getPort();
         String contextPath = serverProperties.getServlet().getContextPath();
         String baseUrl = URLUtil.normalize(String.format("%s:%s%s", hostAddress, port, contextPath));
-        log.info("------------------------------------------------------");
-        log.info("{} backend service started successfully.", projectProperties.getName());
-        log.info("后端 API 地址：{}", baseUrl);
+        log.info("----------------------------------------------");
+        log.info("{} service started successfully.", projectProperties.getName());
+        log.info("API 地址：{}", baseUrl);
         Boolean docEnabled = Convert.toBool(SpringUtil.getProperty("springdoc.swagger-ui.enabled"));
         if (Boolean.TRUE.equals(docEnabled)) {
-            log.info("后端 API 文档：{}/doc.html", baseUrl);
+            log.info("API 文档：{}/doc.html", baseUrl);
         }
-        log.info("------------------------------------------------------");
+        log.info("----------------------------------------------");
     }
 }
