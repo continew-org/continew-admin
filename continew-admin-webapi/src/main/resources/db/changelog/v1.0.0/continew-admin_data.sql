@@ -3,34 +3,34 @@
 -- changeset Charles7c:1
 -- 初始化默认菜单
 INSERT IGNORE INTO `sys_menu` VALUES (1000, '系统管理', 0, 1, '/system', 'System', NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (1010, '用户管理', 1000, 2, '/system/user', 'User', '/system/user/index', 'user', b'0', b'0', b'0', 'system:user:list', 1, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (1010, '用户管理', 1000, 2, '/system/user', 'User', 'system/user/index', 'user', b'0', b'0', b'0', 'system:user:list', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1011, '用户新增', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:add', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1012, '用户修改', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:update', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1013, '用户删除', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:delete', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1014, '用户导出', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:export', 4, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1015, '重置密码', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:password:reset', 5, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1016, '分配角色', 1010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:user:role:update', 6, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (1020, '角色管理', 1000, 2, '/system/role', 'Role', '/system/role/index', 'safe', b'0', b'0', b'0', 'system:role:list', 2, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (1020, '角色管理', 1000, 2, '/system/role', 'Role', 'system/role/index', 'safe', b'0', b'0', b'0', 'system:role:list', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1021, '角色新增', 1020, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:add', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1022, '角色修改', 1020, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:update', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1023, '角色删除', 1020, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:delete', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1024, '角色导出', 1020, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:role:export', 4, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (1030, '部门管理', 1000, 2, '/system/dept', 'Dept', '/system/dept/index', 'user-group', b'0', b'0', b'0', 'system:dept:list', 3, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (1030, '部门管理', 1000, 2, '/system/dept', 'Dept', 'system/dept/index', 'user-group', b'0', b'0', b'0', 'system:dept:list', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1031, '部门新增', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:add', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1032, '部门修改', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:update', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1033, '部门删除', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:delete', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1034, '部门导出', 1030, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dept:export', 4, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (1900, '菜单管理', 1000, 2, '/system/menu', 'Menu', '/system/menu/index', 'menu', b'0', b'0', b'0', 'system:menu:list', 999, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (1900, '菜单管理', 1000, 2, '/system/menu', 'Menu', 'system/menu/index', 'menu', b'0', b'0', b'0', 'system:menu:list', 999, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1901, '菜单新增', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:add', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1902, '菜单修改', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:update', 2, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1903, '菜单删除', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:delete', 3, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (1904, '菜单导出', 1900, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:export', 4, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (9000, '系统监控', 0, 1, '/monitor', 'Monitor', NULL, 'computer', b'0', b'0', b'0', NULL, 899, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (9010, '在线用户', 9000, 2, '/monitor/online', 'OnlineUser', '/monitor/online/index', 'anonymity', b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (9010, '在线用户', 9000, 2, '/monitor/online', 'OnlineUser', 'monitor/online/index', 'anonymity', b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (9011, '强退用户', 9010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'monitor:online:user:delete', 1, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (9030, '登录日志', 9000, 2, '/monitor/log/login', 'LoginLog', '/monitor/log/login/index', 'old-version', b'0', b'0', b'0', 'monitor:log:login:list', 2, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (9050, '操作日志', 9000, 2, '/monitor/log/operation', 'OperationLog', '/monitor/log/operation/index', 'history', b'0', b'0', b'0', 'monitor:log:operation:list', 3, 1, 1, NOW(), NULL, NULL);
-INSERT IGNORE INTO `sys_menu` VALUES (9070, '系统日志', 9000, 2, '/monitor/log/system', 'SystemLog', '/monitor/log/system/index', 'behavior-anal', b'0', b'0', b'0', 'monitor:log:system:list', 4, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (9030, '登录日志', 9000, 2, '/monitor/log/login', 'LoginLog', 'monitor/log/login/index', 'old-version', b'0', b'0', b'0', 'monitor:log:login:list', 2, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (9050, '操作日志', 9000, 2, '/monitor/log/operation', 'OperationLog', 'monitor/log/operation/index', 'history', b'0', b'0', b'0', 'monitor:log:operation:list', 3, 1, 1, NOW(), NULL, NULL);
+INSERT IGNORE INTO `sys_menu` VALUES (9070, '系统日志', 9000, 2, '/monitor/log/system', 'SystemLog', 'monitor/log/system/index', 'behavior-anal', b'0', b'0', b'0', 'monitor:log:system:list', 4, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (10000, 'Arco Design Vue', 0, 1, 'https://arco.design/vue/docs/start', NULL, NULL, 'link', b'1', b'0', b'0', NULL, 998, 1, 1, NOW(), NULL, NULL);
 INSERT IGNORE INTO `sys_menu` VALUES (10001, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL);
 
