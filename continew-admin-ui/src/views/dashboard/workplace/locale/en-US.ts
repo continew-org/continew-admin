@@ -14,12 +14,6 @@ export default {
   'workplace.docs.userGuide': 'User Guide',
   'workplace.docs.faq': 'FAQ',
   'workplace.docs.changelog': 'Change Log',
-  //
-  'workplace.contentManagement': 'Content Management',
-  'workplace.contentStatistical': 'Content Statistical',
-  'workplace.advanced': 'Advanced',
-  'workplace.onlinePromotion': 'Online Promotion',
-  'workplace.contentPutIn': 'Put In',
   'workplace.announcement': 'Announcement',
   'workplace.recently.visited': 'Recently Visited',
   'workplace.record.nodata': 'No data',

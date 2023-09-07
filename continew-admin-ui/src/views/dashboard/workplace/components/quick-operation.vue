@@ -5,17 +5,16 @@
     :header-style="{ paddingBottom: '0' }"
     :body-style="{ padding: '24px 20px 0 20px' }"
   >
-    <template #extra>
-      <a-link>{{ $t('workplace.quickOperation.setup') }}</a-link>
-    </template>
     <a-row :gutter="8">
       <a-col v-for="link in links" :key="link.text" :span="8" class="wrapper">
-        <div class="icon">
-          <component :is="link.icon" />
+        <div @click="router.replace({ path: link.path })">
+          <div class="icon">
+            <svg-icon :icon-class="link.icon" />
+          </div>
+          <a-typography-paragraph class="text">
+            {{ link.text }}
+          </a-typography-paragraph>
         </div>
-        <a-typography-paragraph class="text">
-          {{ $t(link.text) }}
-        </a-typography-paragraph>
       </a-col>
     </a-row>
     <a-divider class="split-line" style="margin: 0" />
@@ -23,12 +22,16 @@
 </template>
 
 <script lang="ts" setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
   const links = [
-    { text: 'workplace.contentManagement', icon: 'icon-file' },
-    { text: 'workplace.contentStatistical', icon: 'icon-storage' },
-    { text: 'workplace.advanced', icon: 'icon-settings' },
-    { text: 'workplace.onlinePromotion', icon: 'icon-mobile' },
-    { text: 'workplace.contentPutIn', icon: 'icon-fire' },
+    { text: '用户管理', icon: 'user', path: '/system/user' },
+    { text: '角色管理', icon: 'safe', path: '/system/role' },
+    { text: '部门管理', icon: 'user-group', path: '/system/dept' },
+    { text: '代码生成', icon: 'code', path: '/tool/generator' },
+    { text: '在线用户', icon: 'anonymity', path: '/monitor/online' },
+    { text: '操作日志', icon: 'history', path: '/monitor/log/operation' },
   ];
 </script>
 
