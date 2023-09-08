@@ -74,8 +74,9 @@ public class LogServiceImpl implements LogService {
 
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
-        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
-            .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
+        List<String> columnNameList =
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+                .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
@@ -100,8 +101,9 @@ public class LogServiceImpl implements LogService {
 
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
-        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
-            .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
+        List<String> columnNameList =
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+                .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
@@ -119,8 +121,9 @@ public class LogServiceImpl implements LogService {
 
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
-        List<String> columnNameList = fieldNameList.stream().map(StrUtil::toUnderlineCase)
-            .filter(n -> !n.endsWith("string")).collect(Collectors.toList());
+        List<String> columnNameList =
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+                .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
