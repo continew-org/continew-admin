@@ -133,5 +133,6 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `create_user` bigint(20) UNSIGNED DEFAULT NULL COMMENT '创建人',
     `create_time` datetime NOT NULL COMMENT '创建时间',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `idx_create_user`(`create_user`) USING BTREE
+    INDEX `idx_client_ip`(`client_ip`) USING BTREE,
+    INDEX `idx_create_time`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统日志表';

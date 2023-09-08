@@ -62,22 +62,18 @@ public class AnnouncementVO extends BaseVO {
     private LocalDateTime terminateTime;
 
     /**
-     * 状态
+     * 状态（1：待发布，2：已发布，3：已过期）
      * 
      * @return 公告状态
      */
     @Schema(description = "状态（1：待发布，2：已发布，3：已过期）", example = "1")
     public Integer getStatus() {
         int status = 2;
-        if (null != this.effectiveTime) {
-            if (this.effectiveTime.isAfter(LocalDateTime.now())) {
-                status = 1;
-            }
+        if (null != this.effectiveTime && this.effectiveTime.isAfter(LocalDateTime.now())) {
+            status = 1;
         }
-        if (null != this.terminateTime) {
-            if (this.terminateTime.isBefore(LocalDateTime.now())) {
-                status = 3;
-            }
+        if (null != this.terminateTime && this.terminateTime.isBefore(LocalDateTime.now())) {
+            status = 3;
         }
         return status;
     }
