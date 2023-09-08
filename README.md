@@ -42,7 +42,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 和众多大佬一起互相 (huá shuǐ) 交流 (mō yú)
 
 <div align="left">
-  <img src="https://doc.charles7c.top/qrcode.jpg" alt="二维码" width="350px" />
+  <img src="https://doc.charles7c.top/qrcode.jpg?123456" alt="二维码" width="350px" />
 </div>
 
 <details>
@@ -404,7 +404,8 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 # 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
 
-# 3.配置淘宝源
+# 3.安装 pnpm，配置淘宝源
+npm install -g pnpm
 pnpm config set registry https://registry.npm.taobao.org
 
 # 4.安装依赖
