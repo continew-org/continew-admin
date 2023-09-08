@@ -30,8 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDashboardVO;
-import top.charles7c.cnadmin.system.service.AnnouncementService;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
+import top.charles7c.cnadmin.monitor.service.DashboardService;
+import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
 
 /**
  * 仪表盘 API
@@ -47,11 +48,17 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
 @RequestMapping("/dashboard")
 public class DashboardController {
 
-    private final AnnouncementService announcementService;
+    private final DashboardService dashboardService;
+
+    @Operation(summary = "查询总计信息", description = "查询总计信息")
+    @GetMapping("/total")
+    public R<DashboardTotalVO> getTotal() {
+        return R.ok(dashboardService.getTotal());
+    }
 
     @Operation(summary = "查询公告列表", description = "查询公告列表")
     @GetMapping("/announcement")
-    public R<List<AnnouncementDashboardVO>> listAnnouncement() {
-        return R.ok(announcementService.listDashboard());
+    public R<List<DashboardAnnouncementVO>> listAnnouncement() {
+        return R.ok(dashboardService.listAnnouncement());
     }
 }

@@ -6,21 +6,17 @@
     >
       <a-space>
         <a-avatar :size="54" class="col-avatar">
-          <img
-            alt="avatar"
-            src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/288b89194e657603ff40db39e8072640.svg~tplv-49unhts6dw-image.image"
-          />
+          <svg-icon icon-class="popularity" />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.onlineContent')"
-          :value="373.5"
-          :precision="1"
+          :title="$t('workplace.pvCount')"
+          :value="totalData.pvCount"
           :value-from="0"
           animation
           show-group-separator
         >
           <template #suffix>
-            W+ <span class="unit">{{ $t('workplace.pecs') }}</span>
+            <span class="unit">{{ $t('workplace.unit.times') }}</span>
           </template>
         </a-statistic>
       </a-space>
@@ -31,20 +27,17 @@
     >
       <a-space>
         <a-avatar :size="54" class="col-avatar">
-          <img
-            alt="avatar"
-            src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/fdc66b07224cdf18843c6076c2587eb5.svg~tplv-49unhts6dw-image.image"
-          />
+          <svg-icon icon-class="same-city" />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.putIn')"
-          :value="368"
+          :title="$t('workplace.ipCount')"
+          :value="totalData.ipCount"
           :value-from="0"
           animation
           show-group-separator
         >
           <template #suffix>
-            <span class="unit">{{ $t('workplace.pecs') }}</span>
+            <span class="unit">{{ $t('workplace.unit.pecs') }}</span>
           </template>
         </a-statistic>
       </a-space>
@@ -55,20 +48,17 @@
     >
       <a-space>
         <a-avatar :size="54" class="col-avatar">
-          <img
-            alt="avatar"
-            src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/77d74c9a245adeae1ec7fb5d4539738d.svg~tplv-49unhts6dw-image.image"
-          />
+          <svg-icon icon-class="hot" />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.newDay')"
-          :value="8874"
+          :title="$t('workplace.todayPvCount')"
+          :value="totalData.todayPvCount"
           :value-from="0"
           animation
           show-group-separator
         >
           <template #suffix>
-            <span class="unit">{{ $t('workplace.pecs') }}</span>
+            <span class="unit">{{ $t('workplace.unit.times') }}</span>
           </template>
         </a-statistic>
       </a-space>
@@ -80,19 +70,26 @@
     >
       <a-space>
         <a-avatar :size="54" class="col-avatar">
-          <img
-            alt="avatar"
-            src="//p3-armor.byteimg.com/tos-cn-i-49unhts6dw/c8b36e26d2b9bb5dbf9b74dd6d7345af.svg~tplv-49unhts6dw-image.image"
-          />
+          <svg-icon icon-class="data" />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.newFromYesterday')"
-          :value="2.8"
+          :title="$t('workplace.newPvFromYesterday')"
+          :value="totalData.newPvFromYesterday"
           :precision="1"
           :value-from="0"
           animation
         >
-          <template #suffix> % <icon-caret-up class="up-icon" /> </template>
+          <template #suffix>
+            %
+            <icon-caret-up
+              v-if="totalData.newPvFromYesterday > 0"
+              class="up-icon"
+            />
+            <icon-caret-down
+              v-if="totalData.newPvFromYesterday < 0"
+              class="down-icon"
+            />
+          </template>
         </a-statistic>
       </a-space>
     </a-grid-item>
@@ -102,7 +99,30 @@
   </a-grid>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import { ref } from 'vue';
+  import { DashboardTotalRecord, getTotal } from '@/api/common/dashboard';
+
+  const totalData = ref<DashboardTotalRecord>({
+    pvCount: 0,
+    ipCount: 0,
+    todayPvCount: 0,
+    newPvFromYesterday: 0.0,
+  });
+
+  /**
+   * 查询总计信息
+   */
+  const getData = async () => {
+    try {
+      const { data } = await getTotal();
+      totalData.value = data;
+    } catch (err) {
+      // you can report use errorHandler or other
+    }
+  };
+  getData();
+</script>
 
 <style lang="less" scoped>
   .arco-grid.panel {
@@ -119,6 +139,9 @@
   }
   .up-icon {
     color: rgb(var(--red-6));
+  }
+  .down-icon {
+    color: rgb(var(--green-6));
   }
   .unit {
     margin-left: 8px;

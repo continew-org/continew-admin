@@ -21,10 +21,7 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
-import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
-import top.charles7c.cnadmin.monitor.model.vo.SystemLogDetailVO;
-import top.charles7c.cnadmin.monitor.model.vo.SystemLogVO;
+import top.charles7c.cnadmin.monitor.model.vo.*;
 
 /**
  * 系统日志业务接口
@@ -75,4 +72,11 @@ public interface LogService {
      * @return 系统日志详情
      */
     SystemLogDetailVO get(Long logId);
+
+    /**
+     * 查询仪表盘总计信息
+     * 
+     * @return 仪表盘总计信息
+     */
+    DashboardTotalVO getDashboardTotal();
 }

@@ -13,7 +13,8 @@ export default {
   'realTimeMonitor.list.title.duration': 'Duration',
   'realTimeMonitor.list.title.id': 'ID',
   'realTimeMonitor.list.tip.rotations': 'Rotations ',
-  'realTimeMonitor.list.tip.rest': ', The program list is not visible to viewers',
+  'realTimeMonitor.list.tip.rest':
+    ', The program list is not visible to viewers',
   'realTimeMonitor.list.tag.auditFailed': 'Audit Failed',
   'realTimeMonitor.tab.title.liveMethod': 'Live Method',
   'realTimeMonitor.tab.title.onlinePopulation': 'Online Population',

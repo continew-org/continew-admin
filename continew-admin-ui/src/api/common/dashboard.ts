@@ -3,14 +3,25 @@ import type { TableData } from '@arco-design/web-vue/es/table/interface';
 
 const BASE_URL = '/dashboard';
 
-export interface AnnouncementDashboardRecord {
+export interface DashboardTotalRecord {
+  pvCount: number;
+  ipCount: number;
+  todayPvCount: number;
+  newPvFromYesterday: number;
+}
+
+export interface DashboardAnnouncementRecord {
   id: string;
   title: string;
   type: number;
 }
 
+export function getTotal() {
+  return axios.get<DashboardTotalRecord>(`${BASE_URL}/total`);
+}
+
 export function listAnnouncement() {
-  return axios.get<AnnouncementDashboardRecord[]>(`${BASE_URL}/announcement`);
+  return axios.get<DashboardAnnouncementRecord[]>(`${BASE_URL}/announcement`);
 }
 
 export interface ContentDataRecord {

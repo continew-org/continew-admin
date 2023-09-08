@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.monitor.mapper;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 
 /**
  * 系统日志 Mapper
@@ -25,4 +26,12 @@ import top.charles7c.cnadmin.monitor.model.entity.LogDO;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
-public interface LogMapper extends BaseMapper<LogDO> {}
+public interface LogMapper extends BaseMapper<LogDO> {
+
+    /**
+     * 查询仪表盘总计信息
+     *
+     * @return 总计信息
+     */
+    DashboardTotalVO selectDashboardTotal();
+}

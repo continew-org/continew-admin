@@ -145,6 +145,11 @@ public class LogServiceImpl implements LogService {
         return detailVO;
     }
 
+    @Override
+    public DashboardTotalVO getDashboardTotal() {
+        return logMapper.selectDashboardTotal();
+    }
+
     /**
      * 填充数据
      *

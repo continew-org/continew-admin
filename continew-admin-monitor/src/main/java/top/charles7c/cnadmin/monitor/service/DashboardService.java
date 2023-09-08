@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.service;
+package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.base.BaseService;
-import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
-import top.charles7c.cnadmin.system.model.request.AnnouncementRequest;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDetailVO;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementVO;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
 
 /**
- * 公告业务接口
+ * 仪表盘业务接口
  *
  * @author Charles7c
- * @since 2023/8/20 10:55
+ * @since 2023/9/8 21:32
  */
-public interface AnnouncementService
-    extends BaseService<AnnouncementVO, AnnouncementDetailVO, AnnouncementQuery, AnnouncementRequest> {
+public interface DashboardService {
 
     /**
-     * 查询仪表盘公告列表
+     * 查询总计信息
+     *
+     * @return 总计信息
+     */
+    DashboardTotalVO getTotal();
+
+    /**
+     * 查询公告列表
      *
      * @return 公告列表
      */
-    List<DashboardAnnouncementVO> listDashboard();
+    List<DashboardAnnouncementVO> listAnnouncement();
 }

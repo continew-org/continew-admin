@@ -3,7 +3,7 @@
 <mapper namespace="top.charles7c.cnadmin.system.mapper.AnnouncementMapper">
 
     <select id="selectDashboardList"
-            resultType="top.charles7c.cnadmin.system.model.vo.AnnouncementDashboardVO">
+            resultType="top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO">
         SELECT
             `id`, `title`, `type`
         FROM `sys_announcement`

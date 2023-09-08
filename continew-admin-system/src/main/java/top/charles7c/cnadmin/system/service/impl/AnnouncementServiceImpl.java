@@ -27,9 +27,9 @@ import top.charles7c.cnadmin.system.mapper.AnnouncementMapper;
 import top.charles7c.cnadmin.system.model.entity.AnnouncementDO;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
 import top.charles7c.cnadmin.system.model.request.AnnouncementRequest;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDashboardVO;
 import top.charles7c.cnadmin.system.model.vo.AnnouncementDetailVO;
 import top.charles7c.cnadmin.system.model.vo.AnnouncementVO;
+import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
 import top.charles7c.cnadmin.system.service.AnnouncementService;
 
 /**
@@ -44,7 +44,7 @@ public class AnnouncementServiceImpl extends BaseServiceImpl<AnnouncementMapper,
     AnnouncementDetailVO, AnnouncementQuery, AnnouncementRequest> implements AnnouncementService {
 
     @Override
-    public List<AnnouncementDashboardVO> listDashboard() {
+    public List<DashboardAnnouncementVO> listDashboard() {
         return baseMapper.selectDashboardList();
     }
 }

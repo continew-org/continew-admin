@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
  */
 @Data
 @Schema(description = "仪表盘公告信息")
-public class AnnouncementDashboardVO implements Serializable {
+public class DashboardAnnouncementVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

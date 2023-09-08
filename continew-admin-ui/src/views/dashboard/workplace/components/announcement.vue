@@ -84,12 +84,12 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import {
-    AnnouncementDashboardRecord,
+    DashboardAnnouncementRecord,
     listAnnouncement,
-  } from '@/api/dashboard';
+  } from '@/api/common/dashboard';
   import { DataRecord, get } from '@/api/system/announcement';
 
-  const dataList = ref<AnnouncementDashboardRecord[]>([]);
+  const dataList = ref<DashboardAnnouncementRecord[]>([]);
   const dataDetail = ref<DataRecord>({});
   const detailLoading = ref(false);
   const detailVisible = ref(false);
