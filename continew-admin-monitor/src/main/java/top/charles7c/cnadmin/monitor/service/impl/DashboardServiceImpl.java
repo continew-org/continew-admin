@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
+import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
@@ -61,6 +62,11 @@ public class DashboardServiceImpl implements DashboardService {
             : NumberUtil.round(NumberUtil.mul(NumberUtil.div(newPvCountFromYesterday, yesterdayPvCount), 100), 1);
         totalVO.setNewPvFromYesterday(newPvFromYesterday);
         return totalVO;
+    }
+
+    @Override
+    public List<DashboardAccessTrendVO> listAccessTrend(Integer days) {
+        return logService.listDashboardAccessTrend(days);
     }
 
     @Override

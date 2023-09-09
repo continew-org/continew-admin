@@ -152,6 +152,11 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
+    public List<DashboardAccessTrendVO> listDashboardAccessTrend(Integer days) {
+        return logMapper.selectListDashboardAccessTrend(days);
+    }
+
+    @Override
     public List<DashboardPopularModuleVO> listDashboardPopularModule() {
         return logMapper.selectListDashboardPopularModule();
     }

@@ -44,7 +44,7 @@
 <script lang="ts" setup>
   import Banner from './components/banner.vue';
   import DataPanel from './components/data-panel.vue';
-  import ContentChart from './components/content-chart.vue';
+  import ContentChart from './components/access-trend.vue';
   import PopularModule from './components/popular-module.vue';
   import CategoriesPercent from './components/geo-distribution.vue';
   import RecentlyVisited from './components/recently-visited.vue';

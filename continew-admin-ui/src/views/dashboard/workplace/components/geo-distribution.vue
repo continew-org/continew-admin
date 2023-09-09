@@ -4,7 +4,7 @@
       class="general-card"
       :header-style="{ paddingBottom: '0' }"
       :body-style="{
-        padding: '0 20px',
+        padding: '0 20px 15px 20px',
       }"
     >
       <template #title>
@@ -58,6 +58,9 @@
         itemStyle: {
           borderWidth: 0,
         },
+        textStyle: {
+          color: '#4E5969',
+        },
       },
       tooltip: {
         show: true,
@@ -66,15 +69,15 @@
       series: [
         {
           type: 'pie',
-          radius: '70%',
+          radius: '65%',
           label: {
             formatter: '{d}%',
             fontSize: 14,
             color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#4E5969',
           },
           itemStyle: {
-            borderColor: isDark ? '#232324' : '#fff',
             borderWidth: 1,
+            borderColor: '#D9F6FF',
           },
           data: statisticsData.value.locationIpStatistics,
         },
@@ -85,6 +88,6 @@
 
 <style scoped lang="less">
   .general-card {
-    min-height: 566px;
+    min-height: 568px;
   }
 </style>

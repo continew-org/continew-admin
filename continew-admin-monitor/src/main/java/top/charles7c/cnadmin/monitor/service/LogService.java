@@ -84,8 +84,15 @@ public interface LogService {
     DashboardTotalVO getDashboardTotal();
 
     /**
+     * 查询仪表盘访问趋势信息
+     *
+     * @return 仪表盘访问趋势信息
+     */
+    List<DashboardAccessTrendVO> listDashboardAccessTrend(Integer days);
+
+    /**
      * 查询仪表盘热门模块列表
-     * 
+     *
      * @return 仪表盘热门模块列表
      */
     List<DashboardPopularModuleVO> listDashboardPopularModule();

@@ -19,8 +19,11 @@ package top.charles7c.cnadmin.monitor.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 
@@ -40,8 +43,18 @@ public interface LogMapper extends BaseMapper<LogDO> {
     DashboardTotalVO selectDashboardTotal();
 
     /**
+     * 查询仪表盘访问趋势信息
+     *
+     * @param days
+     *            日期数
+     *
+     * @return 仪表盘访问趋势信息
+     */
+    List<DashboardAccessTrendVO> selectListDashboardAccessTrend(@Param("days") Integer days);
+
+    /**
      * 查询仪表盘热门模块列表
-     * 
+     *
      * @return 仪表盘热门模块列表
      */
     List<DashboardPopularModuleVO> selectListDashboardPopularModule();

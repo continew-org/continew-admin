@@ -4,7 +4,7 @@
     :title="$t('workplace.docs')"
     :header-style="{ paddingBottom: 0 }"
     :body-style="{ paddingTop: '10px', paddingBottom: '10px' }"
-    style="height: 198px"
+    style="height: 200px"
   >
     <template #extra>
       <a-link href="https://doc.charles7c.top" target="_blank" rel="noopener">{{
@@ -70,10 +70,11 @@
   </a-card>
 </template>
 
+<script setup lang="ts"></script>
+
 <style lang="less" scoped>
   .arco-card-body .arco-link {
     margin: 10px 0;
     color: rgb(var(--gray-8));
   }
 </style>
-<script setup lang="ts"></script>

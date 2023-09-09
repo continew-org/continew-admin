@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
 
+import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
@@ -39,15 +40,24 @@ public interface DashboardService {
     DashboardTotalVO getTotal();
 
     /**
+     * 查询访问趋势信息
+     *
+     * @param days
+     *            日期数
+     * @return 访问趋势信息
+     */
+    List<DashboardAccessTrendVO> listAccessTrend(Integer days);
+
+    /**
      * 查询热门模块列表
-     * 
+     *
      * @return 热门模块列表
      */
     List<DashboardPopularModuleVO> listPopularModule();
 
     /**
      * 查询访客地域分布信息
-     * 
+     *
      * @return 访客地域分布信息
      */
     DashboardGeoDistributionVO getGeoDistribution();

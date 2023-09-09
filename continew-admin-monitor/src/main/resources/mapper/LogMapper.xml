@@ -9,6 +9,18 @@
             (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
     </select>
 
+    <select id="selectListDashboardAccessTrend"
+            resultType="top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO">
+        SELECT
+            DATE(`create_time`) AS date,
+            COUNT(*) AS pvCount,
+            COUNT(DISTINCT `client_ip`) AS ipCount
+        FROM `sys_log`
+        GROUP BY DATE(`create_time`)
+        ORDER BY DATE(`create_time`) DESC
+        LIMIT #{days}
+    </select>
+
     <select id="selectListDashboardPopularModule"
             resultType="top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO">
         SELECT

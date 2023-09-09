@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { TableData } from '@arco-design/web-vue/es/table/interface';
 
 const BASE_URL = '/dashboard';
 
@@ -8,6 +7,12 @@ export interface DashboardTotalRecord {
   ipCount: number;
   todayPvCount: number;
   newPvFromYesterday: number;
+}
+
+export interface DashboardAccessTrendRecord {
+  date: string;
+  pvCount: number;
+  ipCount: number;
 }
 
 export interface DashboardPopularModuleRecord {
@@ -31,6 +36,12 @@ export function getTotal() {
   return axios.get<DashboardTotalRecord>(`${BASE_URL}/total`);
 }
 
+export function listAccessTrend(days: number) {
+  return axios.get<DashboardAccessTrendRecord[]>(
+    `${BASE_URL}/access/trend/${days}`
+  );
+}
+
 export function listPopularModule() {
   return axios.get<DashboardPopularModuleRecord[]>(
     `${BASE_URL}/popular/module`
@@ -45,13 +56,4 @@ export function getGeoDistribution() {
 
 export function listAnnouncement() {
   return axios.get<DashboardAnnouncementRecord[]>(`${BASE_URL}/announcement`);
-}
-
-export interface ContentDataRecord {
-  x: string;
-  y: number;
-}
-
-export function queryContentData() {
-  return axios.get<ContentDataRecord[]>('/api/content-data');
 }
