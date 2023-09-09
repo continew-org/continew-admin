@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @since 2023/9/8 21:32
  */
 @Data
+@Schema(description = "仪表盘-总计信息")
 public class DashboardTotalVO implements Serializable {
 
     private static final long serialVersionUID = 1L;

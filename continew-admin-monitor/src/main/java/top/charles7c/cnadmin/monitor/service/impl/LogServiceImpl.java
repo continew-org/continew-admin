@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.monitor.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -151,8 +152,13 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public List<DashboardPopularModuleVO> listPopularModule() {
+    public List<DashboardPopularModuleVO> listDashboardPopularModule() {
         return logMapper.selectListDashboardPopularModule();
+    }
+
+    @Override
+    public List<Map<String, Object>> listDashboardGeoDistribution() {
+        return logMapper.selectListDashboardGeoDistribution();
     }
 
     /**

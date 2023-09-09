@@ -14,43 +14,38 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.vo;
+package top.charles7c.cnadmin.monitor.model.vo;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
-
 /**
- * 仪表盘-公告信息
+ * 仪表盘-访客地域分布信息
  *
  * @author Charles7c
- * @since 2023/8/20 10:55
+ * @since 2023/9/9 12:07
  */
 @Data
-@Schema(description = "仪表盘-公告信息")
-public class DashboardAnnouncementVO implements Serializable {
+@Schema(description = "仪表盘-访客地域分布信息")
+public class DashboardGeoDistributionVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 地点列表
      */
-    @Schema(description = "ID", example = "1")
-    private Long id;
+    @Schema(description = "地点列表", example = "[\"中国北京北京市\",\"中国广东省深圳市\"]")
+    private List<String> locations;
 
     /**
-     * 标题
+     * 地点 IP 统计信息
      */
-    @Schema(description = "标题", example = "这是公告标题")
-    private String title;
-
-    /**
-     * 类型
-     */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
-    private AnnouncementTypeEnum type;
+    @Schema(description = "地点 IP 统计信息",
+        example = "[{\"name\":\"中国北京北京市\",\"value\":1000},{\"name\":\"中国广东省深圳市\",\"value\": 500}]")
+    private List<Map<String, Object>> locationIpStatistics;
 }

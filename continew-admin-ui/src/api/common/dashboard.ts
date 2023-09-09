@@ -16,6 +16,11 @@ export interface DashboardPopularModuleRecord {
   newPvFromYesterday: number;
 }
 
+export interface DashboardGeoDistributionRecord {
+  locations: string[];
+  locationIpStatistics: [];
+}
+
 export interface DashboardAnnouncementRecord {
   id: string;
   title: string;
@@ -32,6 +37,12 @@ export function listPopularModule() {
   );
 }
 
+export function getGeoDistribution() {
+  return axios.get<DashboardGeoDistributionRecord>(
+    `${BASE_URL}/geo/distribution`
+  );
+}
+
 export function listAnnouncement() {
   return axios.get<DashboardAnnouncementRecord[]>(`${BASE_URL}/announcement`);
 }
@@ -43,15 +54,4 @@ export interface ContentDataRecord {
 
 export function queryContentData() {
   return axios.get<ContentDataRecord[]>('/api/content-data');
-}
-
-export interface PopularRecord {
-  key: number;
-  clickNumber: string;
-  title: string;
-  increases: number;
-}
-
-export function queryPopularList(params: { type: string }) {
-  return axios.get<TableData[]>('/api/popular/list', { params });
 }

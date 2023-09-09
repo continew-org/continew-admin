@@ -3,7 +3,7 @@
     <a-card
       class="general-card"
       :header-style="{ paddingBottom: '0' }"
-      :body-style="{ padding: '17px 20px 21px 20px' }"
+      :body-style="{ padding: '17px 20px 20px 20px' }"
     >
       <template #title>
         {{ $t('workplace.popularModule') }}
@@ -13,7 +13,7 @@
           :data="dataList"
           :pagination="false"
           :bordered="false"
-          :scroll="{ x: '100%', y: '310px' }"
+          :scroll="{ x: '100%', y: '484px' }"
         >
           <template #columns>
             <a-table-column title="排名">
@@ -89,7 +89,7 @@
 
 <style scoped lang="less">
   .general-card {
-    min-height: 395px;
+    min-height: 400px;
   }
   :deep(.arco-table-tr) {
     height: 44px;

@@ -22,4 +22,14 @@
         ORDER BY `pvCount` DESC
         LIMIT 10
     </select>
+
+    <select id="selectListDashboardGeoDistribution" resultType="java.util.Map">
+        SELECT
+            `location` AS name,
+            COUNT(DISTINCT `client_ip`) AS value
+        FROM `sys_log`
+        GROUP BY `location`
+        ORDER BY COUNT(DISTINCT `client_ip`) DESC
+        LIMIT 10
+    </select>
 </mapper>

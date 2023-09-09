@@ -18,14 +18,18 @@ package top.charles7c.cnadmin.monitor.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
+import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 import top.charles7c.cnadmin.monitor.service.DashboardService;
@@ -61,7 +65,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardPopularModuleVO> listPopularModule() {
-        List<DashboardPopularModuleVO> popularModuleList = logService.listPopularModule();
+        List<DashboardPopularModuleVO> popularModuleList = logService.listDashboardPopularModule();
         for (DashboardPopularModuleVO popularModule : popularModuleList) {
             Long todayPvCount = popularModule.getTodayPvCount();
             Long yesterdayPvCount = popularModule.getYesterdayPvCount();
@@ -71,6 +75,16 @@ public class DashboardServiceImpl implements DashboardService {
             popularModule.setNewPvFromYesterday(newPvFromYesterday);
         }
         return popularModuleList;
+    }
+
+    @Override
+    public DashboardGeoDistributionVO getGeoDistribution() {
+        List<Map<String, Object>> locationIpStatistics = logService.listDashboardGeoDistribution();
+        DashboardGeoDistributionVO geoDistribution = new DashboardGeoDistributionVO();
+        geoDistribution.setLocationIpStatistics(locationIpStatistics);
+        geoDistribution.setLocations(
+            locationIpStatistics.stream().map(m -> Convert.toStr(m.get("name"))).collect(Collectors.toList()));
+        return geoDistribution;
     }
 
     @Override

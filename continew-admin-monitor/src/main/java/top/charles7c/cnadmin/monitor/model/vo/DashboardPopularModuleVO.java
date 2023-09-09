@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @since 2023/9/9 9:52
  */
 @Data
+@Schema(description = "仪表盘-热门模块信息")
 public class DashboardPopularModuleVO implements Serializable {
 
     private static final long serialVersionUID = 1L;

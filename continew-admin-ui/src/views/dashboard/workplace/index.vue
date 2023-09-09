@@ -46,7 +46,7 @@
   import DataPanel from './components/data-panel.vue';
   import ContentChart from './components/content-chart.vue';
   import PopularModule from './components/popular-module.vue';
-  import CategoriesPercent from './components/categories-percent.vue';
+  import CategoriesPercent from './components/geo-distribution.vue';
   import RecentlyVisited from './components/recently-visited.vue';
   import QuickOperation from './components/quick-operation.vue';
   import Announcement from './components/announcement.vue';

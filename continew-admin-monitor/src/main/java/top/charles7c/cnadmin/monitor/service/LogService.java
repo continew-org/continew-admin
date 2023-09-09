@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
+import java.util.Map;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
@@ -87,5 +88,12 @@ public interface LogService {
      * 
      * @return 仪表盘热门模块列表
      */
-    List<DashboardPopularModuleVO> listPopularModule();
+    List<DashboardPopularModuleVO> listDashboardPopularModule();
+
+    /**
+     * 查询仪表盘访客地域分布信息
+     *
+     * @return 仪表盘访客地域分布信息
+     */
+    List<Map<String, Object>> listDashboardGeoDistribution();
 }

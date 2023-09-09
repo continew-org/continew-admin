@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
 
+import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
@@ -43,6 +44,13 @@ public interface DashboardService {
      * @return 热门模块列表
      */
     List<DashboardPopularModuleVO> listPopularModule();
+
+    /**
+     * 查询访客地域分布信息
+     * 
+     * @return 访客地域分布信息
+     */
+    DashboardGeoDistributionVO getGeoDistribution();
 
     /**
      * 查询公告列表

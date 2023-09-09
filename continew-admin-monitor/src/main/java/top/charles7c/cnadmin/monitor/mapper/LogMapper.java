@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.monitor.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
@@ -44,4 +45,11 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @return 仪表盘热门模块列表
      */
     List<DashboardPopularModuleVO> selectListDashboardPopularModule();
+
+    /**
+     * 查询仪表盘访客地域分布信息
+     *
+     * @return 仪表盘访客地域分布信息
+     */
+    List<Map<String, Object>> selectListDashboardGeoDistribution();
 }

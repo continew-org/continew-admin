@@ -3,8 +3,8 @@
     class="general-card"
     :title="$t('workplace.docs')"
     :header-style="{ paddingBottom: 0 }"
-    :body-style="{ paddingTop: 0 }"
-    style="height: 166px"
+    :body-style="{ paddingTop: '10px', paddingBottom: '10px' }"
+    style="height: 198px"
   >
     <template #extra>
       <a-link href="https://doc.charles7c.top" target="_blank" rel="noopener">{{
@@ -48,6 +48,24 @@
           {{ $t('workplace.docs.changelog') }}
         </a-link>
       </a-col>
+      <a-col :span="12">
+        <a-link
+          href="https://blog.charles7c.top"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ $t('workplace.docs.authorSite') }}👋
+        </a-link>
+      </a-col>
+      <a-col :span="12">
+        <a-link
+          href="https://doc.charles7c.top/require.html"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ $t('workplace.docs.require') }}✨
+        </a-link>
+      </a-col>
     </a-row>
   </a-card>
 </template>
@@ -58,3 +76,4 @@
     color: rgb(var(--gray-8));
   }
 </style>
+<script setup lang="ts"></script>
