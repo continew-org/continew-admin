@@ -17,6 +17,7 @@
             COUNT(DISTINCT `client_ip`) AS ipCount
         FROM `sys_log`
         GROUP BY DATE(`create_time`)
+        HAVING `date` != CURDATE()
         ORDER BY DATE(`create_time`) DESC
         LIMIT #{days}
     </select>

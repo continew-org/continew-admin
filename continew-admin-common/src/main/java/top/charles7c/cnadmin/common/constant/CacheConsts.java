@@ -52,4 +52,9 @@ public class CacheConsts {
      * 菜单缓存键前缀
      */
     public static final String MENU_KEY_PREFIX = "MENU";
+
+    /**
+     * 仪表盘缓存键前缀
+     */
+    public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD";
 }

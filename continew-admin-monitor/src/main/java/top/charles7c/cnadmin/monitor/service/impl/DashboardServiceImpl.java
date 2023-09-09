@@ -22,13 +22,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
@@ -44,9 +46,9 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
  * @author Charles7c
  * @since 2023/9/8 21:32
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConsts.DASHBOARD_KEY_PREFIX)
 public class DashboardServiceImpl implements DashboardService {
 
     private final LogService logService;
@@ -65,6 +67,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @Cacheable(key = "#days")
     public List<DashboardAccessTrendVO> listAccessTrend(Integer days) {
         return logService.listDashboardAccessTrend(days);
     }
