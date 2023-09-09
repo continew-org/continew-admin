@@ -97,8 +97,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.lambda().and(qw -> qw.like(LogDO::getRequestUrl, SysConsts.LOGIN_URI).or()
-            .like(LogDO::getRequestUrl, SysConsts.LOGOUT_URI));
+        queryWrapper.eq("module", "登录");
 
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
