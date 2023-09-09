@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
 
+import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
 
@@ -35,6 +36,13 @@ public interface DashboardService {
      * @return 总计信息
      */
     DashboardTotalVO getTotal();
+
+    /**
+     * 查询热门模块列表
+     * 
+     * @return 热门模块列表
+     */
+    List<DashboardPopularModuleVO> listPopularModule();
 
     /**
      * 查询公告列表

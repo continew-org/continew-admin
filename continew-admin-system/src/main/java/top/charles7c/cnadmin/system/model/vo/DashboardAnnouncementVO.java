@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
- * 仪表盘公告信息
+ * 仪表盘-公告信息
  *
  * @author Charles7c
  * @since 2023/8/20 10:55

@@ -10,6 +10,12 @@ export interface DashboardTotalRecord {
   newPvFromYesterday: number;
 }
 
+export interface DashboardPopularModuleRecord {
+  module: string;
+  pvCount: number;
+  newPvFromYesterday: number;
+}
+
 export interface DashboardAnnouncementRecord {
   id: string;
   title: string;
@@ -18,6 +24,12 @@ export interface DashboardAnnouncementRecord {
 
 export function getTotal() {
   return axios.get<DashboardTotalRecord>(`${BASE_URL}/total`);
+}
+
+export function listPopularModule() {
+  return axios.get<DashboardPopularModuleRecord[]>(
+    `${BASE_URL}/popular/module`
+  );
 }
 
 export function listAnnouncement() {

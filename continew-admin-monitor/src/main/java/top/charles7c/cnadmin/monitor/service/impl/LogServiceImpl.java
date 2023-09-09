@@ -150,6 +150,11 @@ public class LogServiceImpl implements LogService {
         return logMapper.selectDashboardTotal();
     }
 
+    @Override
+    public List<DashboardPopularModuleVO> listPopularModule() {
+        return logMapper.selectListDashboardPopularModule();
+    }
+
     /**
      * 填充数据
      *

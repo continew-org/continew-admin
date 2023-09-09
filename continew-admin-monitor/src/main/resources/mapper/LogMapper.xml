@@ -8,4 +8,18 @@
             (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = CURDATE()) AS todayPvCount,
             (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
     </select>
+
+    <select id="selectListDashboardPopularModule"
+            resultType="top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO">
+        SELECT
+            `module`,
+            COUNT(*) AS pvCount,
+            SUM(CASE WHEN DATE(`create_time`) = CURDATE() THEN 1 ELSE 0 END) AS todayPvCount,
+            SUM(CASE WHEN DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 1 ELSE 0 END) AS yesterdayPvCount
+        FROM `sys_log`
+        GROUP BY `module`
+        HAVING `module` != '验证码' AND `module` != '登录'
+        ORDER BY `pvCount` DESC
+        LIMIT 10
+    </select>
 </mapper>

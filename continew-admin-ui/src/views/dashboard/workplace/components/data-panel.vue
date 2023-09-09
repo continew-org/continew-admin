@@ -5,8 +5,8 @@
       :span="{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12, xxl: 6 }"
     >
       <a-space>
-        <a-avatar :size="54" class="col-avatar">
-          <svg-icon icon-class="popularity" />
+        <a-avatar :size="50" class="col-avatar">
+          <img :src="PvCountIcon" alt="PvCountIcon" />
         </a-avatar>
         <a-statistic
           :title="$t('workplace.pvCount')"
@@ -26,8 +26,8 @@
       :span="{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12, xxl: 6 }"
     >
       <a-space>
-        <a-avatar :size="54" class="col-avatar">
-          <svg-icon icon-class="same-city" />
+        <a-avatar :size="50" class="col-avatar">
+          <img :src="IpCountIcon" alt="IpCountIcon" />
         </a-avatar>
         <a-statistic
           :title="$t('workplace.ipCount')"
@@ -47,8 +47,8 @@
       :span="{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12, xxl: 6 }"
     >
       <a-space>
-        <a-avatar :size="54" class="col-avatar">
-          <svg-icon icon-class="hot" />
+        <a-avatar :size="50" class="col-avatar">
+          <img :src="TodayPvCountIcon" alt="TodayPvCountIcon" />
         </a-avatar>
         <a-statistic
           :title="$t('workplace.todayPvCount')"
@@ -69,8 +69,8 @@
       style="border-right: none"
     >
       <a-space>
-        <a-avatar :size="54" class="col-avatar">
-          <svg-icon icon-class="data" />
+        <a-avatar :size="50" class="col-avatar">
+          <img :src="NewPvFromYesterdayIcon" alt="NewPvFromYesterdayIcon" />
         </a-avatar>
         <a-statistic
           :title="$t('workplace.newPvFromYesterday')"
@@ -102,6 +102,10 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { DashboardTotalRecord, getTotal } from '@/api/common/dashboard';
+  import PvCountIcon from '@/assets/icons/png/popularity.png';
+  import IpCountIcon from '@/assets/icons/png/same-city.png';
+  import TodayPvCountIcon from '@/assets/icons/png/hot.png';
+  import NewPvFromYesterdayIcon from '@/assets/icons/png/data.png';
 
   const totalData = ref<DashboardTotalRecord>({
     pvCount: 0,

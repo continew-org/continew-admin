@@ -16,8 +16,11 @@
 
 package top.charles7c.cnadmin.monitor.mapper;
 
+import java.util.List;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 
 /**
@@ -31,7 +34,14 @@ public interface LogMapper extends BaseMapper<LogDO> {
     /**
      * 查询仪表盘总计信息
      *
-     * @return 总计信息
+     * @return 仪表盘总计信息
      */
     DashboardTotalVO selectDashboardTotal();
+
+    /**
+     * 查询仪表盘热门模块列表
+     * 
+     * @return 仪表盘热门模块列表
+     */
+    List<DashboardPopularModuleVO> selectListDashboardPopularModule();
 }

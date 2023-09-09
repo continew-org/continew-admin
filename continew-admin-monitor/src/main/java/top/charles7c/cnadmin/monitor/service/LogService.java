@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.monitor.service;
 
+import java.util.List;
+
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
@@ -79,4 +81,11 @@ public interface LogService {
      * @return 仪表盘总计信息
      */
     DashboardTotalVO getDashboardTotal();
+
+    /**
+     * 查询仪表盘热门模块列表
+     * 
+     * @return 仪表盘热门模块列表
+     */
+    List<DashboardPopularModuleVO> listPopularModule();
 }

@@ -33,7 +33,7 @@ public interface AnnouncementMapper extends BaseMapper<AnnouncementDO> {
     /**
      * 查询仪表盘公告列表
      *
-     * @return 公告列表
+     * @return 仪表盘公告列表
      */
     List<DashboardAnnouncementVO> selectDashboardList();
 }

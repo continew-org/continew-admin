@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
+import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
 import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
 import top.charles7c.cnadmin.monitor.service.DashboardService;
 import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
@@ -54,6 +55,12 @@ public class DashboardController {
     @GetMapping("/total")
     public R<DashboardTotalVO> getTotal() {
         return R.ok(dashboardService.getTotal());
+    }
+
+    @Operation(summary = "查询热门模块列表", description = "查询热门模块列表")
+    @GetMapping("/popular/module")
+    public R<List<DashboardPopularModuleVO>> listPopularModule() {
+        return R.ok(dashboardService.listPopularModule());
     }
 
     @Operation(summary = "查询公告列表", description = "查询公告列表")
