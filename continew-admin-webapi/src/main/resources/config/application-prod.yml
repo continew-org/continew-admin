@@ -136,7 +136,7 @@ logging:
   level:
     top.charles7c: INFO
   file:
-    path: ./logs
+    path: ../logs
 
 --- ### 接口文档配置
 springdoc:
@@ -172,8 +172,8 @@ local-storage:
     avatar: C:\${project.appName}\data\avatar\
   ## Linux 系统本地存储配置
   linux:
-    file: /data/file/
-    avatar: /data/avatar/
+    file: ../data/file/
+    avatar: ../data/avatar/
   ## Mac 系统本地存储配置
   mac:
     file: ~/data/file/
