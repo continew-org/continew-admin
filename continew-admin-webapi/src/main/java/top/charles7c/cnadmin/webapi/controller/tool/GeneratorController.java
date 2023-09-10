@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -67,10 +66,8 @@ public class GeneratorController {
     }
 
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
-    @Parameters({
-        @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
-            in = ParameterIn.PATH),
-        @Parameter(name = "requireSync", description = "是否需要同步", example = "true", in = ParameterIn.QUERY)})
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "requireSync", description = "是否需要同步", example = "false", in = ParameterIn.QUERY)
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,

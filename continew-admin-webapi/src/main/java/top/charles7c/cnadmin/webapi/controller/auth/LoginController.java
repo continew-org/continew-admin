@@ -68,13 +68,11 @@ public class LoginController {
     @Operation(summary = "用户登录", description = "根据用户名和密码进行登录认证")
     @PostMapping("/login")
     public R<LoginVO> login(@Validated @RequestBody LoginRequest loginRequest) {
-        // 校验验证码
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);
         ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
-
         // 用户登录
         String rawPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));

@@ -72,7 +72,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(this.checkNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = request.getCode();
         CheckUtils.throwIf(this.checkCodeExists(code, null), "新增失败，[{}] 已存在", code);
-
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long roleId = super.add(request);
@@ -101,7 +100,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
             CheckUtils.throwIfNotEqual(request.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
                 oldRole.getName());
         }
-
         // 更新信息
         super.update(request, id);
         // 更新关联信息
@@ -128,7 +126,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
             isSystemData.orElseGet(RoleDO::new).getName());
         CheckUtils.throwIf(userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
-
         // 删除角色和菜单关联
         roleMenuService.deleteByRoleIds(ids);
         // 删除角色和部门关联

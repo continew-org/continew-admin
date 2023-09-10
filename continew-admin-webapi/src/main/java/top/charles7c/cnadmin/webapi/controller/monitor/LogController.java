@@ -19,6 +19,8 @@ package top.charles7c.cnadmin.webapi.controller.monitor;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -55,7 +57,7 @@ public class LogController {
     private final LogService logService;
 
     @Log(module = "登录日志")
-    @Operation(summary = "分页查询登录日志列表")
+    @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
     public R<PageDataVO<LoginLogVO>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<LoginLogVO> pageDataVO = logService.page(query, pageQuery);
@@ -63,7 +65,7 @@ public class LogController {
     }
 
     @Log(module = "操作日志")
-    @Operation(summary = "分页查询操作日志列表")
+    @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
     public R<PageDataVO<OperationLogVO>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<OperationLogVO> pageDataVO = logService.page(query, pageQuery);
@@ -71,7 +73,7 @@ public class LogController {
     }
 
     @Log(module = "系统日志")
-    @Operation(summary = "分页查询系统日志列表")
+    @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
     public R<PageDataVO<SystemLogVO>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
         PageDataVO<SystemLogVO> pageDataVO = logService.page(query, pageQuery);
@@ -79,7 +81,8 @@ public class LogController {
     }
 
     @Log(module = "系统日志")
-    @Operation(summary = "查看系统日志详情")
+    @Operation(summary = "查看系统日志详情", description = "查看系统日志详情")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/system/{id}")
     public R<SystemLogDetailVO> get(@PathVariable Long id) {
         SystemLogDetailVO detailVO = logService.get(id);

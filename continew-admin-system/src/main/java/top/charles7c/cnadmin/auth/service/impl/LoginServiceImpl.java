@@ -75,15 +75,12 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
         DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
-
-        // 登录
+        // 登录并缓存用户信息
         LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
         loginUser.setRoles(roleService.listByUserId(userId));
         LoginHelper.login(loginUser);
-
-        // 返回令牌
         return StpUtil.getTokenValue();
     }
 
@@ -93,7 +90,6 @@ public class LoginServiceImpl implements LoginService {
         if (CollUtil.isEmpty(roleCodeSet)) {
             return new ArrayList<>(0);
         }
-
         // 查询菜单列表
         Set<MenuVO> menuSet = new LinkedHashSet<>();
         if (roleCodeSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
@@ -103,7 +99,6 @@ public class LoginServiceImpl implements LoginService {
         }
         List<MenuVO> menuList =
             menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).collect(Collectors.toList());
-
         // 构建路由树
         TreeField treeField = MenuVO.class.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
@@ -112,7 +107,6 @@ public class LoginServiceImpl implements LoginService {
             tree.setParentId(m.getParentId());
             tree.setName(m.getTitle());
             tree.setWeight(m.getSort());
-
             tree.putExtra("path", m.getPath());
             tree.putExtra("name", m.getName());
             tree.putExtra("component", m.getComponent());

@@ -58,7 +58,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         String title = request.getTitle();
         boolean isExists = this.checkNameExists(title, request.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", title);
-
         request.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(request);
     }
@@ -70,7 +69,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
         String title = request.getTitle();
         boolean isExists = this.checkNameExists(title, request.getParentId(), id);
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", title);
-
         super.update(request, id);
     }
 

@@ -84,9 +84,7 @@
                   size="small"
                   :disabled="currentToken === record.token"
                   :title="
-                    currentToken === record.token
-                      ? '不能强退当前登录用户'
-                      : '强退'
+                    currentToken === record.token ? '不能强退自己' : '强退'
                   "
                 >
                   <template #icon><icon-delete /></template>强退

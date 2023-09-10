@@ -15,8 +15,7 @@ const LIST: AppRouteRecordRaw = {
     {
       name: 'SearchTable',
       path: 'search-table', // The midline path complies with SEO specifications
-      component: () =>
-        import('@/views/demo/list/search-table/index.vue'),
+      component: () => import('@/views/demo/list/search-table/index.vue'),
       meta: {
         locale: 'menu.list.searchTable',
         requiresAuth: true,

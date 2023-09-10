@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -92,6 +94,7 @@ public class CommonController {
     }
 
     @Operation(summary = "查询枚举字典", description = "查询枚举字典列表")
+    @Parameter(name = "enumTypeName", description = "枚举类型名称", example = "DataScopeEnum", in = ParameterIn.PATH)
     @GetMapping("/dict/enum/{enumTypeName}")
     public R<List<LabelValueVO>> listEnumDict(@PathVariable String enumTypeName) {
         // 扫描所有 BaseEnum 枚举基类的子类

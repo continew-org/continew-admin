@@ -68,7 +68,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         String name = request.getName();
         boolean isExists = this.checkNameExists(name, request.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
-
         request.setAncestors(this.getAncestors(request.getParentId()));
         request.setStatus(DisEnableStatusEnum.DISABLE);
         return super.add(request);
@@ -99,7 +98,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
             CheckUtils.throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus)
                 && DisEnableStatusEnum.DISABLE.equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
-
         // 变更上级部门
         if (ObjectUtil.notEqual(request.getParentId(), oldParentId)) {
             // 更新祖级列表
@@ -121,7 +119,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
             isSystemData.orElseGet(DeptDO::new).getName());
         CheckUtils.throwIf(this.countChildren(ids) > 0, "所选部门存在下级部门，不允许删除");
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
-
         // 删除角色和部门关联
         roleDeptService.deleteByDeptIds(ids);
         // 删除部门

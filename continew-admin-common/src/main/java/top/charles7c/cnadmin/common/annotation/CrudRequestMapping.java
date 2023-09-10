@@ -78,6 +78,6 @@ public @interface CrudRequestMapping {
         /**
          * 导出
          */
-        EXPORT,;
+        EXPORT,
     }
 }

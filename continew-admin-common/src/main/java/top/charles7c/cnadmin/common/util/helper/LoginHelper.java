@@ -72,7 +72,7 @@ public class LoginHelper {
     /**
      * 获取登录用户信息
      *
-     * @return 登录用户信息
+     * @return 登录用户信息（获取 TokenSession 时如未登录，会抛出异常）
      */
     public static LoginUser getLoginUser() {
         LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_KEY);

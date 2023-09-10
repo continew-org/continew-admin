@@ -17,6 +17,8 @@
 package top.charles7c.cnadmin.webapi.controller.system;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -59,6 +61,7 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:password:reset")
     @PatchMapping("/{id}/password")
     public R resetPassword(@PathVariable Long id) {
@@ -67,9 +70,10 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:role:update")
     @PatchMapping("/{id}/role")
-    public R updateRole(@PathVariable Long id, @Validated @RequestBody UpdateUserRoleRequest request) {
+    public R updateRole(@Validated @RequestBody UpdateUserRoleRequest request, @PathVariable Long id) {
         baseService.updateRole(request, id);
         return R.ok("分配成功");
     }

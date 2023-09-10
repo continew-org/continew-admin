@@ -36,7 +36,9 @@
             <icon-face-smile-fill />
           </template>
         </a-Input>
-        <a-button type="primary">{{ $t('realTimeMonitor.chat.update') }}</a-button>
+        <a-button type="primary">{{
+          $t('realTimeMonitor.chat.update')
+        }}</a-button>
       </a-space>
     </div>
   </a-card>

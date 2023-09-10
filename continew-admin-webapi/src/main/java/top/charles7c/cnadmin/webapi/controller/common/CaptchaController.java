@@ -73,7 +73,6 @@ public class CaptchaController {
         // 生成验证码
         CaptchaProperties.CaptchaImage captchaImage = captchaProperties.getImage();
         Captcha captcha = captchaImage.getCaptcha();
-
         // 保存验证码
         String uuid = IdUtil.fastUUID();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);

@@ -1,7 +1,10 @@
 <template>
   <a-card class="general-card" :title="$t('realTimeMonitor.title.studioInfo')">
     <a-form :model="{}" layout="vertical">
-      <a-form-item :label="$t('realTimeMonitor.studioInfo.label.studioTitle')" required>
+      <a-form-item
+        :label="$t('realTimeMonitor.studioInfo.label.studioTitle')"
+        required
+      >
         <a-input
           :placeholder="`王立群${$t(
             'realTimeMonitor.studioInfo.placeholder.studioTitle'
@@ -27,7 +30,9 @@
         <a-input-search />
       </a-form-item>
     </a-form>
-    <a-button type="primary">{{ $t('realTimeMonitor.studioInfo.btn.fresh') }}</a-button>
+    <a-button type="primary">{{
+      $t('realTimeMonitor.studioInfo.btn.fresh')
+    }}</a-button>
   </a-card>
 </template>
 

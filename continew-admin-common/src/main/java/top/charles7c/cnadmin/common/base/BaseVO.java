@@ -68,6 +68,7 @@ public class BaseVO implements Serializable {
     /**
      * 是否禁用修改
      */
+    @Schema(description = "是否禁用修改", example = "true")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean disabled;
 }

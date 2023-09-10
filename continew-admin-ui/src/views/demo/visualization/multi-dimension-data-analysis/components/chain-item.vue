@@ -31,7 +31,10 @@
 <script lang="ts" setup>
   import { computed, ref } from 'vue';
   import useLoading from '@/hooks/loading';
-  import { queryDataChainGrowth, DataChainGrowth } from '@/api/demo/visualization';
+  import {
+    queryDataChainGrowth,
+    DataChainGrowth,
+  } from '@/api/demo/visualization';
   import useChartOption from '@/hooks/chart-option';
 
   const props = defineProps({

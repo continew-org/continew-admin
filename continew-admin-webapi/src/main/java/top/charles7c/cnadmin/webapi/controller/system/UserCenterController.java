@@ -62,8 +62,6 @@ public class UserCenterController {
     @PostMapping("/avatar")
     public R<AvatarVO> uploadAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) {
         ValidationUtils.throwIf(avatarFile::isEmpty, "头像不能为空");
-
-        // 上传头像
         String newAvatar = userService.uploadAvatar(avatarFile, LoginHelper.getUserId());
         return R.ok("上传成功", AvatarVO.builder().avatar(newAvatar).build());
     }
@@ -86,8 +84,6 @@ public class UserCenterController {
         ValidationUtils.throwIfBlank(rawNewPassword, "新密码解密失败");
         ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
             "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
-
-        // 修改密码
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
@@ -99,14 +95,12 @@ public class UserCenterController {
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateEmailRequest.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
 
-        // 校验验证码
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateEmailRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
 
-        // 修改邮箱
         userService.updateEmail(updateEmailRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }

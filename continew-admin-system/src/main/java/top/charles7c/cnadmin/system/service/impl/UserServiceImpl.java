@@ -92,7 +92,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.checkEmailExists(email, null), "新增失败，[{}] 已存在", email);
         String phone = request.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.checkPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
-
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long userId = super.add(request);
@@ -125,7 +124,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
                 CollUtil.disjunction(request.getRoleIds(), userRoleService.listRoleIdByUserId(id));
             CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更所属角色", oldUser.getNickname());
         }
-
         // 更新信息
         super.update(request, id);
         // 保存用户和角色关联
@@ -141,7 +139,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         Optional<UserDO> isSystemData = list.stream().filter(u -> DataTypeEnum.SYSTEM.equals(u.getType())).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
             isSystemData.orElseGet(UserDO::new).getNickname());
-
         // 删除用户和角色关联
         userRoleService.deleteByUserIds(ids);
         // 删除用户
@@ -169,18 +166,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         String[] avatarSupportImgTypes = FileConsts.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
             String.join(StringConsts.CHINESE_COMMA, avatarSupportImgTypes));
-
-        UserDO user = super.getById(id);
         // 上传新头像
+        UserDO user = super.getById(id);
         String avatarPath = localStorageProperties.getPath().getAvatar();
         File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
         CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
         assert null != newAvatarFile;
-
         // 更新用户头像
         String newAvatar = newAvatarFile.getName();
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
-
         // 删除原头像
         String oldAvatar = user.getAvatar();
         if (StrUtil.isNotBlank(oldAvatar)) {
@@ -203,7 +197,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), user.getPassword(), "当前密码错误");
-
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
         baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
@@ -218,7 +211,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
-
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
     }

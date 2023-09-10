@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.common.config.easyexcel;
 
-import java.math.BigDecimal;
-
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.enums.CellDataTypeEnum;
 import com.alibaba.excel.metadata.GlobalConfiguration;
@@ -26,6 +24,7 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.NumberUtil;
 
 /**
  * Easy Excel 大数值转换器（Excel 中对长度超过 15 位的数值输入是有限制的，从 16 位开始无论录入什么数字均会变为 0，因此输入时只能以文本的形式进行录入）
@@ -71,7 +70,7 @@ public class ExcelBigNumberConverter implements Converter<Long> {
                 return new WriteCellData<>(str);
             }
         }
-        WriteCellData<Object> writeCellData = new WriteCellData<>(BigDecimal.valueOf(value));
+        WriteCellData<Object> writeCellData = new WriteCellData<>(NumberUtil.toBigDecimal(value));
         writeCellData.setType(CellDataTypeEnum.NUMBER);
         return writeCellData;
     }

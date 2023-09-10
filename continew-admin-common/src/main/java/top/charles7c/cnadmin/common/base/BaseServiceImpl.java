@@ -151,7 +151,9 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
         // 设置排序
         Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
         for (Sort.Order order : sort) {
-            queryWrapper.orderBy(null != order, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
+            if (null != order) {
+                queryWrapper.orderBy(true, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
+            }
         }
         List<T> entityList = baseMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(entityList, targetClass);

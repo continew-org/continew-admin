@@ -50,20 +50,20 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://blog.charles7c.top"
-          target="_blank"
-          rel="noopener"
-        >
-          {{ $t('workplace.docs.authorSite') }}👋
-        </a-link>
-      </a-col>
-      <a-col :span="12">
-        <a-link
           href="https://doc.charles7c.top/require.html"
           target="_blank"
           rel="noopener"
         >
           {{ $t('workplace.docs.require') }}✨
+        </a-link>
+      </a-col>
+      <a-col :span="12">
+        <a-link
+          href="https://blog.charles7c.top"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ $t('workplace.docs.authorSite') }}👋
         </a-link>
       </a-col>
     </a-row>

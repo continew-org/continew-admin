@@ -74,7 +74,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            分页查询条件
      * @return 分页信息
      */
-    @Operation(summary = "分页查询列表")
+    @Operation(summary = "分页查询列表", description = "分页查询列表")
     @ResponseBody
     @GetMapping
     public R<PageDataVO<V>> page(Q query, @Validated PageQuery pageQuery) {
@@ -92,7 +92,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            排序查询条件
      * @return 树列表信息
      */
-    @Operation(summary = "查询树列表")
+    @Operation(summary = "查询树列表", description = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
     public R<List<Tree<Long>>> tree(Q query, SortQuery sortQuery) {
@@ -110,7 +110,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            排序查询条件
      * @return 列表信息
      */
-    @Operation(summary = "查询列表")
+    @Operation(summary = "查询列表", description = "查询列表")
     @ResponseBody
     @GetMapping("/list")
     public R<List<V>> list(Q query, SortQuery sortQuery) {
@@ -126,8 +126,8 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID
      * @return 详情信息
      */
-    @Operation(summary = "查看详情")
-    @Parameter(name = "id", description = "ID", in = ParameterIn.PATH)
+    @Operation(summary = "查看详情", description = "查看详情")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
     public R<D> get(@PathVariable Long id) {
@@ -143,7 +143,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            创建信息
      * @return 自增 ID
      */
-    @Operation(summary = "新增数据")
+    @Operation(summary = "新增数据", description = "新增数据")
     @ResponseBody
     @PostMapping
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody C request) {
@@ -161,7 +161,8 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID
      * @return /
      */
-    @Operation(summary = "修改数据")
+    @Operation(summary = "修改数据", description = "修改数据")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @PutMapping("/{id}")
     public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody C request, @PathVariable Long id) {
@@ -177,8 +178,8 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            ID 列表
      * @return /
      */
-    @Operation(summary = "删除数据")
-    @Parameter(name = "ids", description = "ID 列表", in = ParameterIn.PATH)
+    @Operation(summary = "删除数据", description = "删除数据")
+    @Parameter(name = "ids", description = "ID 列表", example = "1,2", in = ParameterIn.PATH)
     @ResponseBody
     @DeleteMapping("/{ids}")
     public R delete(@PathVariable List<Long> ids) {
@@ -197,7 +198,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      * @param response
      *            响应对象
      */
-    @Operation(summary = "导出数据")
+    @Operation(summary = "导出数据", description = "导出数据")
     @GetMapping("/export")
     public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
         this.checkPermission(Api.EXPORT);
