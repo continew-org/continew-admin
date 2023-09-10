@@ -183,7 +183,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         LogContextHolder.setErrorMsg(e.getMessage());
-        log.error("请求地址 [{}]，不支持 [{}] 请求", request.getRequestURI(), e.getMethod());
+        log.error("请求地址 [{}]，不支持 [{}] 请求。", request.getRequestURI(), e.getMethod());
         return R.fail(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
     }
 

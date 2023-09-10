@@ -116,6 +116,7 @@ captcha:
 
 --- ### 安全配置-排除路径配置
 security.excludes:
+  - /error
   # 静态资源
   - /*.html
   - /**/*.html
