@@ -70,7 +70,7 @@ public class GlobalErrorHandler extends BasicErrorController {
         R<Object> result = R.fail(status.value(), (String)errorAttributeMap.get("error"));
         result.setData(path);
         try {
-            response.setStatus(status.value());
+            response.setStatus(HttpStatus.OK.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(response.getWriter(), result);
         } catch (IOException e) {
@@ -89,6 +89,6 @@ public class GlobalErrorHandler extends BasicErrorController {
         R<Object> result = R.fail(status.value(), (String)errorAttributeMap.get("error"));
         result.setData(path);
         log.error("请求地址 [{}]，发生错误，错误信息：{}。", path, JSONUtil.toJsonStr(errorAttributeMap));
-        return new ResponseEntity<>(BeanUtil.beanToMap(result), status);
+        return new ResponseEntity<>(BeanUtil.beanToMap(result), HttpStatus.OK);
     }
 }

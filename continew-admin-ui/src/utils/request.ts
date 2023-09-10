@@ -46,20 +46,10 @@ axios.interceptors.response.use(
     ) {
       return response;
     }
-
     const res = response.data;
     if (res.success) {
       return res;
     }
-    messageErrorWrapper({
-      content: res.msg || '网络错误',
-      duration: 5 * 1000,
-    });
-    return Promise.reject(new Error(res.msg || '网络错误'));
-  },
-  (error) => {
-    const { response } = error;
-    const res = response.data;
     if ([401].includes(res.code) && response.config.url !== '/auth/user/info') {
       modalErrorWrapper({
         title: '确认退出',
@@ -68,8 +58,8 @@ axios.interceptors.response.use(
         escToClose: false,
         okText: '重新登录',
         async onOk() {
-          const userStore = useLoginStore();
-          await userStore.logout();
+          const loginStore = useLoginStore();
+          await loginStore.logout();
           window.location.reload();
         },
       });
@@ -79,6 +69,13 @@ axios.interceptors.response.use(
         duration: 5 * 1000,
       });
     }
+    return Promise.reject(new Error(res.msg || '网络错误'));
+  },
+  (error) => {
+    messageErrorWrapper({
+      content: error.msg || '网络错误',
+      duration: 5 * 1000,
+    });
     return Promise.reject(error);
   }
 );

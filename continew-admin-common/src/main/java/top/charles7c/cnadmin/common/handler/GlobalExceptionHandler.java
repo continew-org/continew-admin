@@ -30,7 +30,6 @@ import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -62,7 +61,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截自定义验证异常-错误请求
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，自定义验证失败。", request.getRequestURI(), e);
@@ -73,7 +71,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截校验异常-违反约束异常
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
@@ -85,7 +82,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截校验异常-绑定异常
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public R handleBindException(BindException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
@@ -97,7 +93,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截校验异常-方法参数无效异常
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
@@ -110,7 +105,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截校验异常-方法参数类型不匹配异常
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public R handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e,
         HttpServletRequest request) {
@@ -123,7 +117,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截文件上传异常-超过上传大小限制
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，上传文件失败，文件大小超过限制。", request.getRequestURI(), e);
@@ -136,7 +129,6 @@ public class GlobalExceptionHandler {
     /**
      * 认证异常-登录认证
      */
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，认证失败，无法访问系统资源。", request.getRequestURI(), e);
@@ -159,7 +151,6 @@ public class GlobalExceptionHandler {
     /**
      * 认证异常-权限认证
      */
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(NotPermissionException.class)
     public R handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，权限码校验失败。", request.getRequestURI(), e);
@@ -169,7 +160,6 @@ public class GlobalExceptionHandler {
     /**
      * 认证异常-角色认证
      */
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(NotRoleException.class)
     public R handleNotRoleException(NotRoleException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，角色权限校验失败。", request.getRequestURI(), e);
@@ -179,7 +169,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截校验异常-请求方式不支持异常
      */
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         LogContextHolder.setErrorMsg(e.getMessage());
@@ -190,7 +179,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截业务异常
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(ServiceException.class)
     public R handleServiceException(ServiceException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
@@ -201,7 +189,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截未知的运行时异常
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生系统异常。", request.getRequestURI(), e);
@@ -212,7 +199,6 @@ public class GlobalExceptionHandler {
     /**
      * 拦截未知的系统异常
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable.class)
     public R handleException(Throwable e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生未知异常。", request.getRequestURI(), e);

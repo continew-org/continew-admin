@@ -45,12 +45,12 @@ public class R<V> implements Serializable {
     @Schema(description = "是否成功", example = "true")
     private boolean success;
 
-    /** 状态码 */
-    @Schema(description = "状态码", example = "200")
+    /** 业务状态码 */
+    @Schema(description = "业务状态码", example = "200")
     private int code;
 
-    /** 状态信息 */
-    @Schema(description = "状态信息", example = "操作成功")
+    /** 业务状态信息 */
+    @Schema(description = "业务状态信息", example = "操作成功")
     private String msg;
 
     /** 返回数据 */

@@ -117,7 +117,7 @@
       <a-drawer
         title="日志详情"
         :visible="visible"
-        :width="580"
+        :width="660"
         :footer="false"
         unmount-on-close
         render-to-body

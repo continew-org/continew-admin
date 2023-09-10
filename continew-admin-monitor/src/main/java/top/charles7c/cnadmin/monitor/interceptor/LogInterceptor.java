@@ -50,6 +50,7 @@ import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
+import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
@@ -94,7 +95,6 @@ public class LogInterceptor implements HandlerInterceptor {
         if (null == logDO) {
             return;
         }
-
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         // 记录所属模块
         this.logModule(logDO, handlerMethod);
@@ -104,7 +104,6 @@ public class LogInterceptor implements HandlerInterceptor {
         this.logRequest(logDO, request);
         // 记录响应信息
         this.logResponse(logDO, response);
-
         // 保存系统日志
         SpringUtil.getApplicationContext().publishEvent(logDO);
     }
@@ -126,32 +125,30 @@ public class LogInterceptor implements HandlerInterceptor {
      */
     private LogDO logElapsedTimeAndException() {
         LogContext logContext = LogContextHolder.get();
+        if (null == logContext) {
+            return null;
+        }
         try {
-            if (null != logContext) {
-                LogDO logDO = new LogDO();
-                logDO.setCreateTime(logContext.getCreateTime());
-                logDO
-                    .setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(logDO.getCreateTime()));
-                logDO.setStatus(LogStatusEnum.SUCCESS);
-
-                // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
-                String errorMsg = logContext.getErrorMsg();
-                if (StrUtil.isNotBlank(errorMsg)) {
-                    logDO.setStatus(LogStatusEnum.FAILURE);
-                    logDO.setErrorMsg(errorMsg);
-                }
-                // 记录异常详情
-                Throwable exception = logContext.getException();
-                if (null != exception) {
-                    logDO.setStatus(LogStatusEnum.FAILURE);
-                    logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
-                }
-                return logDO;
+            LogDO logDO = new LogDO();
+            logDO.setCreateTime(logContext.getCreateTime());
+            logDO.setElapsedTime(System.currentTimeMillis() - LocalDateTimeUtil.toEpochMilli(logDO.getCreateTime()));
+            logDO.setStatus(LogStatusEnum.SUCCESS);
+            // 记录错误信息（非未知异常不记录异常详情，只记录错误信息）
+            String errorMsg = logContext.getErrorMsg();
+            if (StrUtil.isNotBlank(errorMsg)) {
+                logDO.setStatus(LogStatusEnum.FAILURE);
+                logDO.setErrorMsg(errorMsg);
             }
+            // 记录异常详情
+            Throwable exception = logContext.getException();
+            if (null != exception) {
+                logDO.setStatus(LogStatusEnum.FAILURE);
+                logDO.setExceptionDetail(ExceptionUtil.stacktraceToString(exception, -1));
+            }
+            return logDO;
         } finally {
             LogContextHolder.remove();
         }
-        return null;
     }
 
     /**
@@ -166,7 +163,6 @@ public class LogInterceptor implements HandlerInterceptor {
         Tag classTag = handlerMethod.getBeanType().getDeclaredAnnotation(Tag.class);
         Log classLog = handlerMethod.getBeanType().getDeclaredAnnotation(Log.class);
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
-
         // 例如：@Tag(name = "部门管理") -> 部门管理
         // （本框架代码规范）例如：@Tag(name = "部门管理 API") -> 部门管理
         if (null != classTag) {
@@ -194,7 +190,6 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logDescription(LogDO logDO, HandlerMethod handlerMethod) {
         Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
-
         // 例如：@Operation(summary="新增部门") -> 新增部门
         if (null != methodOperation) {
             logDO.setDescription(StrUtil.blankToDefault(methodOperation.summary(), "请在该接口方法上指定日志描述"));
@@ -245,14 +240,20 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logResponse(LogDO logDO, HttpServletResponse response) {
         int status = response.getStatus();
         logDO.setStatusCode(status);
+        logDO.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : logDO.getStatus());
         logDO.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
             logDO.setResponseBody(responseBody);
+            // 业务状态码优先级高
+            try {
+                R result = JSONUtil.toBean(responseBody, R.class);
+                logDO.setStatusCode(result.getCode());
+                logDO.setStatus(result.isSuccess() ? LogStatusEnum.SUCCESS : LogStatusEnum.FAILURE);
+            } catch (Exception ignored) {
+            }
         }
-        // 操作失败：>= 400
-        logDO.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : logDO.getStatus());
     }
 
     /**
@@ -269,7 +270,6 @@ public class LogInterceptor implements HandlerInterceptor {
             if (CollUtil.isEmpty(waitDesensitizeData)) {
                 return desensitizeDataStr;
             }
-
             for (String desensitizeProperty : operationLogProperties.getDesensitizeFields()) {
                 waitDesensitizeData.computeIfPresent(desensitizeProperty, (k, v) -> ENCRYPT_SYMBOL);
                 waitDesensitizeData.computeIfPresent(desensitizeProperty.toLowerCase(), (k, v) -> ENCRYPT_SYMBOL);
@@ -328,13 +328,11 @@ public class LogInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod) || Boolean.FALSE.equals(operationLogProperties.getEnabled())) {
             return false;
         }
-
         // 2、检查是否需要记录内网 IP 操作
         boolean isInnerIp = IpUtils.isInnerIp(ServletUtil.getClientIP(request));
         if (isInnerIp && Boolean.FALSE.equals(operationLogProperties.getIncludeInnerIp())) {
             return false;
         }
-
         // 3、排除不需要记录系统日志的接口
         HandlerMethod handlerMethod = (HandlerMethod)handler;
         Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
