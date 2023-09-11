@@ -115,10 +115,10 @@
         @selection-change="handleSelectionChange"
       >
         <template #columns>
-          <a-table-column title="菜单标题" data-index="title" />
-          <a-table-column title="图标" align="center">
+          <a-table-column title="菜单标题">
             <template #cell="{ record }">
               <svg-icon :icon-class="record.icon ? record.icon : ''" />
+              {{ record.title }}
             </template>
           </a-table-column>
           <a-table-column title="排序" align="center" data-index="sort" />
