@@ -32,6 +32,12 @@ export interface DashboardAnnouncementRecord {
   type: number;
 }
 
+export interface DashboardRecentlyVisitedRecord {
+  title?: string;
+  path: string;
+  icon?: string;
+}
+
 export function getTotal() {
   return axios.get<DashboardTotalRecord>(`${BASE_URL}/total`);
 }

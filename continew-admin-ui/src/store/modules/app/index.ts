@@ -6,6 +6,19 @@ import defaultSettings from '@/config/settings.json';
 import { listRoute } from '@/api/auth/login';
 import { AppState } from './types';
 
+const recursionMenu = (
+  appMenu: RouteRecordNormalized[],
+  list: Array<RouteRecordNormalized>
+) => {
+  appMenu.forEach((item) => {
+    const childrenAppMenu = item.children as RouteRecordNormalized[];
+    if (childrenAppMenu != null && childrenAppMenu.length > 0) {
+      recursionMenu(childrenAppMenu, list);
+    } else {
+      list.push(item);
+    }
+  });
+};
 const useAppStore = defineStore('app', {
   state: (): AppState => ({ ...defaultSettings }),
 
@@ -18,6 +31,14 @@ const useAppStore = defineStore('app', {
     },
     appAsyncMenus(state: AppState): RouteRecordNormalized[] {
       return state.serverMenu as unknown as RouteRecordNormalized[];
+    },
+    appAsyncMenusAll(state: AppState): RouteRecordNormalized[] {
+      const menuList: RouteRecordNormalized[] = [];
+      recursionMenu(
+        state.serverMenu as unknown as RouteRecordNormalized[],
+        menuList
+      );
+      return menuList;
     },
   },
 

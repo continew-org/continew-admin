@@ -7,13 +7,18 @@
   >
     <div style="margin-bottom: -1rem">
       <a-row :gutter="8">
-        <a-col v-for="link in links" :key="link.text" :span="8" class="wrapper">
+        <a-col
+          v-for="link in links"
+          :key="link.title"
+          :span="8"
+          class="wrapper"
+        >
           <div @click="router.replace({ path: link.path })">
             <div class="icon">
               <svg-icon :icon-class="link.icon" />
             </div>
             <a-typography-paragraph class="text">
-              {{ link.text }}
+              {{ link.title }}
             </a-typography-paragraph>
           </div>
         </a-col>
@@ -23,14 +28,24 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
+  import { DashboardRecentlyVisitedRecord } from '@/api/common/dashboard';
 
   const router = useRouter();
-  const links = [
-    { text: '在线用户', icon: 'anonymity', path: '/monitor/online' },
-    { text: '代码生成', icon: 'code', path: '/tool/generator' },
-    { text: '角色管理', icon: 'safe', path: '/system/role' },
-  ];
+  const links = ref<DashboardRecentlyVisitedRecord[]>();
+
+  /**
+   * 加载最近访问菜单列表
+   */
+  onMounted(() => {
+    const recentlyVisitedList = window.localStorage.getItem('recently-visited');
+    if (recentlyVisitedList === null) {
+      links.value = [];
+    } else {
+      links.value = JSON.parse(recentlyVisitedList);
+    }
+  });
 </script>
 
 <style lang="less" scoped>

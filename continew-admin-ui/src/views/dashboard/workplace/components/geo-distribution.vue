@@ -88,6 +88,6 @@
 
 <style scoped lang="less">
   .general-card {
-    min-height: 568px;
+    min-height: 566.14px;
   }
 </style>
