@@ -43,10 +43,10 @@ public @interface Query {
     QueryTypeEnum type() default QueryTypeEnum.EQUAL;
 
     /**
-     * 多属性模糊查询，仅支持 String 类型属性，多个属性之间用逗号分隔
+     * 多属性模糊查询，仅支持 String 类型属性
      * <p>
-     * 例如：@Query(blurry = "username,email") 表示根据用户名和邮箱模糊查询
+     * 例如：@Query(blurry = {"username", "email"}) 表示根据用户名和邮箱模糊查询
      * </p>
      */
-    String blurry() default "";
+    String[] blurry() default {};
 }

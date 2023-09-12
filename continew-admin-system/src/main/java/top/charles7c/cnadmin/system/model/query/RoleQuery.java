@@ -40,7 +40,7 @@ public class RoleQuery implements Serializable {
      * 角色名称
      */
     @Schema(description = "角色名称", example = "测试人员")
-    @Query(blurry = "name,code")
+    @Query(blurry = {"name", "code"})
     private String name;
 
     /**

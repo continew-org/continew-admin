@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -131,12 +132,11 @@ public class QueryHelper {
         QueryWrapper<R> queryWrapper) {
         // 解析多属性模糊查询
         // 如果设置了多属性模糊查询，分割属性进行条件拼接
-        String blurry = queryAnnotation.blurry();
-        if (StrUtil.isNotBlank(blurry)) {
-            String[] propertyArr = blurry.split(",");
+        String[] blurryPropertyArr = queryAnnotation.blurry();
+        if (ArrayUtil.isNotEmpty(blurryPropertyArr)) {
             queryWrapper.and(wrapper -> {
-                for (String property : propertyArr) {
-                    wrapper.or().like(StrUtil.toUnderlineCase(property), fieldValue);
+                for (String blurryProperty : blurryPropertyArr) {
+                    wrapper.or().like(StrUtil.toUnderlineCase(blurryProperty), fieldValue);
                 }
             });
             return;

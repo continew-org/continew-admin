@@ -47,7 +47,7 @@ public class UserQuery implements Serializable {
      * 用户名
      */
     @Schema(description = "用户名", example = "zhangsan")
-    @Query(blurry = "username,nickname,email,phone")
+    @Query(blurry = {"username", "nickname", "email", "phone"})
     private String username;
 
     /**
