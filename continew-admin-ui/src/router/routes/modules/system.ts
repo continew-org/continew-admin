@@ -22,11 +22,29 @@ const System: AppRouteRecordRaw = {
       },
     },
     {
+      name: 'Dept',
+      path: '/system/dept',
+      component: () => import('@/views/system/dept/index.vue'),
+      meta: {
+        locale: 'menu.system.dept.list',
+        requiresAuth: true,
+      },
+    },
+    {
       name: 'Role',
       path: '/system/role',
       component: () => import('@/views/system/role/index.vue'),
       meta: {
         locale: 'menu.system.role.list',
+        requiresAuth: true,
+      },
+    },
+    {
+      name: 'Announcement',
+      path: '/system/announcement',
+      component: () => import('@/views/system/announcement/index.vue'),
+      meta: {
+        locale: 'menu.system.announcement.list',
         requiresAuth: true,
       },
     },
@@ -40,20 +58,11 @@ const System: AppRouteRecordRaw = {
       },
     },
     {
-      name: 'Dept',
-      path: '/system/dept',
-      component: () => import('@/views/system/dept/index.vue'),
+      name: 'Dict',
+      path: '/system/dict',
+      component: () => import('@/views/system/dict/index.vue'),
       meta: {
-        locale: 'menu.system.dept.list',
-        requiresAuth: true,
-      },
-    },
-    {
-      name: 'Announcement',
-      path: '/system/announcement',
-      component: () => import('@/views/system/announcement/index.vue'),
-      meta: {
-        locale: 'menu.system.announcement.list',
+        locale: 'menu.system.dict.list',
         requiresAuth: true,
       },
     },
