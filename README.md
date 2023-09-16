@@ -42,7 +42,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 和众多大佬一起互相 (huá shuǐ) 交流 (mō yú)
 
 <div align="left">
-  <img src="https://doc.charles7c.top/qrcode.jpg?123456" alt="二维码" width="350px" />
+  <img src="https://doc.charles7c.top/qrcode.jpg?654321" alt="二维码" width="350px" />
 </div>
 
 <details>
@@ -71,10 +71,11 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
+- 部门管理：可配置系统组织架构，树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
-- 部门管理：可配置系统组织架构，树形表格展示
 - 公告管理：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
+- 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
 - 在线用户：管理当前登录用户，可一键踢下线
 - 日志管理：提供在线用户监控、登录日志监控、操作日志监控和系统日志监控等监控功能
