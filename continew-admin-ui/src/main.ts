@@ -21,6 +21,9 @@ import hljs from 'highlight.js';
 import json from 'highlight.js/lib/languages/json';
 import java from 'highlight.js/lib/languages/java';
 
+import Vue3ColorPicker from 'vue3-colorpicker';
+import 'vue3-colorpicker/style.css';
+
 // eslint-disable-next-line import/no-unresolved
 import 'virtual:svg-icons-register';
 import globalComponents from '@/components';
@@ -61,4 +64,5 @@ app.use(globalComponents);
 app.use(directive);
 app.use(VueMarkdownEditor);
 app.use(VMdPreview);
+app.use(Vue3ColorPicker);
 app.mount('#app');

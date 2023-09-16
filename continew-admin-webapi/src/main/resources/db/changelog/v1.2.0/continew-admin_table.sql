@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_item` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
     `label` varchar(50) NOT NULL COMMENT '字典标签',
     `value` varchar(50) NOT NULL COMMENT '字典值',
-    `color` varchar(20) DEFAULT NULL COMMENT '背景颜色',
+    `color` varchar(30) DEFAULT NULL COMMENT '背景颜色',
     `sort` int(11) UNSIGNED DEFAULT 999 COMMENT '字典项排序',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `dict_id` bigint(20) UNSIGNED NOT NULL COMMENT '字典ID',

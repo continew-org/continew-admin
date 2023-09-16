@@ -9,7 +9,7 @@
             v-permission="['system:dictItem:add']"
             type="primary"
             :disabled="!dictId"
-            :title="!dictId ? '请先点击左侧字典' : ''"
+            :title="!dictId ? '请先点击字典' : ''"
             @click="toAdd"
           >
             <template #icon><icon-plus /></template>新增
@@ -37,6 +37,10 @@
       @page-change="handlePageChange"
       @page-size-change="handlePageSizeChange"
     >
+      <template #empty>
+        <a-empty v-if="!dictId">点击字典查看详情</a-empty>
+        <a-empty v-else>暂无数据</a-empty>
+      </template>
       <template #columns>
         <a-table-column title="字典标签" align="center">
           <template #cell="{ record }">
@@ -46,11 +50,9 @@
             <a-tag v-else-if="record.color === 'success'" color="green">{{
               record.label
             }}</a-tag>
-            <a-tag
-              v-else-if="record.color === 'warning'"
-              color="orangered"
-              >{{ record.label }}</a-tag
-            >
+            <a-tag v-else-if="record.color === 'warning'" color="orangered">{{
+              record.label
+            }}</a-tag>
             <a-tag v-else-if="record.color === 'error'" color="red">{{
               record.label
             }}</a-tag>
@@ -129,20 +131,23 @@
             placeholder="请选择或输入背景颜色"
             allow-clear
           >
-            <template #option="{ data }">
-              <a-tag v-if="data.value === 'primary'" color="arcoblue">{{
-                data.value
+            <template #option="{ record }">
+              <a-tag v-if="record.value === 'primary'" color="arcoblue">{{
+                record.value
               }}</a-tag>
-              <a-tag v-else-if="data.value === 'success'" color="green">{{
-                data.value
+              <a-tag v-else-if="record.value === 'success'" color="green">{{
+                record.value
               }}</a-tag>
-              <a-tag v-else-if="data.value === 'warning'" color="orangered">{{
-                data.value
+              <a-tag v-else-if="record.value === 'warning'" color="orangered">{{
+                record.value
               }}</a-tag>
-              <a-tag v-else-if="data.value === 'error'" color="red">{{
-                data.value
+              <a-tag v-else-if="record.value === 'error'" color="red">{{
+                record.value
               }}</a-tag>
-              <a-tag v-else color="gray">{{ data.value }}</a-tag>
+              <a-tag v-else color="gray">{{ record.value }}</a-tag>
+            </template>
+            <template #suffix>
+              <color-picker v-model:pureColor="form.color" shape="circle" />
             </template>
           </a-auto-complete>
         </a-form-item>
@@ -267,7 +272,7 @@
       id: undefined,
       label: '',
       value: '',
-      color: '',
+      color: '#165DFF',
       sort: 999,
       description: '',
       dictId: dictId.value,
@@ -319,21 +324,6 @@
   };
 
   /**
-   * 查询
-   */
-  const handleQuery = () => {
-    getList(dictId.value);
-  };
-
-  /**
-   * 重置
-   */
-  const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
-    handleQuery();
-  };
-
-  /**
    * 切换页码
    *
    * @param current 页码
@@ -360,4 +350,8 @@
   };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  :deep(.vc-color-wrap) {
+    margin-right: -3px;
+  }
+</style>

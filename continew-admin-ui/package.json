@@ -49,7 +49,8 @@
     "vue-echarts": "^6.6.1",
     "vue-i18n": "^9.2.2",
     "vue-json-pretty": "^2.2.4",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "vue3-colorpicker": "^2.2.2"
   },
   "devDependencies": {
     "@arco-plugins/vite-vue": "^1.4.5",

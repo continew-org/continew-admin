@@ -102,6 +102,7 @@
             }"
             :bordered="false"
             column-resizable
+            class="dictTable"
             size="large"
             @page-change="handlePageChange"
             @page-size-change="handlePageSizeChange"
@@ -120,15 +121,21 @@
                 data-index="code"
                 ellipsis
                 tooltip
+                :width="100"
               />
-              <a-table-column title="描述" data-index="description" />
+              <a-table-column
+                title="描述"
+                data-index="description"
+                ellipsis
+                tooltip
+                :width="100"
+              />
               <a-table-column
                 v-if="
                   checkPermission(['system:dict:update', 'system:dict:delete'])
                 "
                 title="操作"
                 align="center"
-                :width="191"
               >
                 <template #cell="{ record }">
                   <a-button
@@ -447,7 +454,7 @@
 </script>
 
 <style scoped lang="less">
-  :deep(.arco-table-td) {
+  :deep(.dictTable .arco-table-td) {
     cursor: pointer;
   }
 </style>
