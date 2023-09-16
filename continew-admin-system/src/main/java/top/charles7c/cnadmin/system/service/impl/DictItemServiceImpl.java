@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictItemMapper;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
@@ -59,6 +60,17 @@ public class DictItemServiceImpl
         String value = request.getValue();
         CheckUtils.throwIf(this.checkValueExists(value, id, request.getDictId()), "修改失败，字典值 [{}] 已存在", value);
         super.update(request, id);
+    }
+
+    @Override
+    public List<DictItemDetailVO> listByDictId(Long dictId) {
+        DictItemQuery dictItemQuery = new DictItemQuery();
+        dictItemQuery.setDictId(dictId);
+        SortQuery sortQuery = new SortQuery();
+        sortQuery.setSort(new String[] {"sort,asc"});
+        List<DictItemDetailVO> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailVO.class);
+        detailList.forEach(super::fillDetail);
+        return detailList;
     }
 
     @Override

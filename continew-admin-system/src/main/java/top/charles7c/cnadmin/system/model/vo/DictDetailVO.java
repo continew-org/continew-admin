@@ -20,9 +20,6 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
 
 /**
@@ -32,7 +29,6 @@ import top.charles7c.cnadmin.common.base.BaseDetailVO;
  * @since 2023/9/11 21:29
  */
 @Data
-@ExcelIgnoreUnannotated
 @Schema(description = "字典详情信息")
 public class DictDetailVO extends BaseDetailVO {
 
@@ -42,20 +38,17 @@ public class DictDetailVO extends BaseDetailVO {
      * 字典名称
      */
     @Schema(description = "字典名称", example = "公告类型")
-    @ExcelProperty(value = "字典名称")
     private String name;
 
     /**
      * 字典编码
      */
     @Schema(description = "字典编码", example = "announcement_type")
-    @ExcelProperty(value = "字典编码")
     private String code;
 
     /**
      * 描述
      */
     @Schema(description = "描述", example = "公告类型描述信息")
-    @ExcelProperty(value = "描述")
     private String description;
 }

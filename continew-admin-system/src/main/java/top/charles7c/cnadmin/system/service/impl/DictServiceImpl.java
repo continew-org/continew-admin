@@ -16,7 +16,10 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,13 +27,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.model.query.SortQuery;
+import top.charles7c.cnadmin.common.util.ExcelUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictMapper;
 import top.charles7c.cnadmin.system.model.entity.DictDO;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
 import top.charles7c.cnadmin.system.model.request.DictRequest;
-import top.charles7c.cnadmin.system.model.vo.DictDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DictVO;
+import top.charles7c.cnadmin.system.model.vo.*;
 import top.charles7c.cnadmin.system.service.DictItemService;
 import top.charles7c.cnadmin.system.service.DictService;
 
@@ -72,6 +76,21 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
     public void delete(List<Long> ids) {
         dictItemService.deleteByDictIds(ids);
         super.delete(ids);
+    }
+
+    @Override
+    public void export(DictQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        List<DictVO> dictList = this.list(query, sortQuery);
+        List<DictItemDetailVO> dictItemList = new ArrayList<>();
+        for (DictVO dict : dictList) {
+            List<DictItemDetailVO> tempDictItemList = dictItemService.listByDictId(dict.getId());
+            for (DictItemDetailVO dictItem : tempDictItemList) {
+                dictItem.setDictName(dict.getName());
+                dictItem.setDictCode(dict.getCode());
+                dictItemList.add(dictItem);
+            }
+        }
+        ExcelUtils.export(dictItemList, "导出数据", DictItemDetailVO.class, response);
     }
 
     /**

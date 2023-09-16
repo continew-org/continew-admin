@@ -42,41 +42,54 @@ public class DictItemDetailVO extends BaseDetailVO {
      * 字典标签
      */
     @Schema(description = "字典标签", example = "通知")
-    @ExcelProperty(value = "字典标签")
+    @ExcelProperty(value = "字典标签", order = 2)
     private String label;
 
     /**
      * 字典值
      */
     @Schema(description = "字典值", example = "1")
-    @ExcelProperty(value = "字典值")
+    @ExcelProperty(value = "字典值", order = 3)
     private String value;
 
     /**
      * 背景颜色
      */
     @Schema(description = "背景颜色", example = "blue")
-    @ExcelProperty(value = "背景颜色")
+    @ExcelProperty(value = "背景颜色", order = 4)
     private String color;
 
     /**
      * 排序
      */
     @Schema(description = "排序", example = "1")
-    @ExcelProperty(value = "排序")
+    @ExcelProperty(value = "排序", order = 5)
     private Integer sort;
 
     /**
      * 描述
      */
     @Schema(description = "描述", example = "通知描述信息")
-    @ExcelProperty(value = "描述")
+    @ExcelProperty(value = "描述", order = 6)
     private String description;
 
     /**
-     * 所属字典
+     * 字典 ID
      */
-    @Schema(description = "所属字典", example = "1")
-    @ExcelProperty(value = "所属字典")
+    @Schema(description = "字典 ID", example = "1")
     private Long dictId;
+
+    /**
+     * 字典名称
+     */
+    @Schema(hidden = true)
+    @ExcelProperty(value = "字典名称", order = 7)
+    private String dictName;
+
+    /**
+     * 字典编码
+     */
+    @Schema(hidden = true)
+    @ExcelProperty(value = "字典编码", order = 8)
+    private String dictCode;
 }

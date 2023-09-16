@@ -33,6 +33,15 @@ import top.charles7c.cnadmin.system.model.vo.DictItemVO;
 public interface DictItemService extends BaseService<DictItemVO, DictItemDetailVO, DictItemQuery, DictItemRequest> {
 
     /**
+     * 根据字典 ID 查询
+     *
+     * @param dictId
+     *            字典 ID
+     * @return 字典项列表
+     */
+    List<DictItemDetailVO> listByDictId(Long dictId);
+
+    /**
      * 根据字典 ID 列表删除
      *
      * @param dictIds

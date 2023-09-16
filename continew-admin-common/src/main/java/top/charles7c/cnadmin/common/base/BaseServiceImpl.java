@@ -236,7 +236,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      * @param detailObj
      *            待填充详情信息
      */
-    protected void fillDetail(Object detailObj) {
+    public void fillDetail(Object detailObj) {
         if (detailObj instanceof BaseDetailVO) {
             BaseDetailVO detailVO = (BaseDetailVO)detailObj;
             this.fill(detailVO);
