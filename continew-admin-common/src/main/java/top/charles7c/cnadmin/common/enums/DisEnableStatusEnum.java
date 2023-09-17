@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DisEnableStatusEnum implements BaseEnum<Integer, String> {
+public enum DisEnableStatusEnum implements BaseEnum<Integer> {
 
     /** 启用 */
     ENABLE(1, "启用"),

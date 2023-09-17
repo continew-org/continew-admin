@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum QueryTypeEnum implements BaseEnum<Integer, String> {
+public enum QueryTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 等值查询，例如：WHERE `age` = 18

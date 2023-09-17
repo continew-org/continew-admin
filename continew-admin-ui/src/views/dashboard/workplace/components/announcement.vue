@@ -13,7 +13,7 @@
     <div>
       <a-empty v-if="dataList.length === 0">暂无公告</a-empty>
       <div v-for="(item, idx) in dataList" :key="idx" class="item">
-        <dict-tag :dict="announcement_type" :value="item.type" />
+        <dict-tag :value="item.type" :dict="announcement_type" />
         <span class="item-content">
           <a-link @click="toDetail(item.id)">{{ item.title }}</a-link>
         </span>
@@ -88,10 +88,7 @@
   import { DataRecord, get } from '@/api/system/announcement';
 
   const { proxy } = getCurrentInstance() as any;
-  const { announcement_type } = proxy.useDict({
-    name: 'announcement_type',
-    isEnum: false,
-  });
+  const { announcement_type } = proxy.useDict('announcement_type');
 
   const dataList = ref<DashboardAnnouncementRecord[]>([]);
   const dataDetail = ref<DataRecord>({});

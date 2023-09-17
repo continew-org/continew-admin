@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +38,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -92,31 +95,43 @@ public class CommonController {
         return R.ok(labelValueVOList);
     }
 
-    @Operation(summary = "查询枚举字典", description = "查询枚举字典列表")
-    @Parameter(name = "enumTypeName", description = "枚举类型名称", example = "DataScopeEnum", in = ParameterIn.PATH)
-    @GetMapping("/dict/enum/{enumTypeName}")
-    public R<List<LabelValueVO>> listEnumDict(@PathVariable String enumTypeName) {
-        // 扫描所有 BaseEnum 枚举基类的子类
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
-        Optional<Class<?>> first =
-            classSet.stream().filter(c -> c.getSimpleName().equalsIgnoreCase(enumTypeName)).findFirst();
-        if (!first.isPresent()) {
-            return R.fail("枚举字典不存在");
-        }
-        // 转换枚举为字典列表
-        Class<?> enumClass = first.get();
-        Object[] enumConstants = enumClass.getEnumConstants();
-        List<LabelValueVO> labelValueVOList = Arrays.stream(enumConstants).map(e -> {
-            BaseEnum<Integer, String> baseEnum = (BaseEnum<Integer, String>)e;
-            return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue());
-        }).collect(Collectors.toList());
-        return R.ok(labelValueVOList);
-    }
-
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
+    @Cacheable(key = "#code", cacheNames = CacheConsts.DICT_KEY_PREFIX)
     public R<List<LabelValueVO>> listDict(@PathVariable String code) {
-        return R.ok(dictItemService.listByDictCode(code));
+        Optional<Class<?>> enumClass = this.getEnumClassByName(code);
+        return enumClass.map(this::listEnumDict).orElseGet(() -> R.ok(dictItemService.listByDictCode(code)));
+    }
+
+    /**
+     * 根据枚举类名查询
+     *
+     * @param enumClassName
+     *            枚举类名
+     * @return 枚举类型
+     */
+    private Optional<Class<?>> getEnumClassByName(String enumClassName) {
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
+        return classSet.stream()
+            .filter(
+                c -> StrUtil.equalsAnyIgnoreCase(c.getSimpleName(), enumClassName, StrUtil.toCamelCase(enumClassName)))
+            .findFirst();
+    }
+
+    /**
+     * 查询枚举字典
+     * 
+     * @param enumClass
+     *            枚举类型
+     * @return 枚举字典
+     */
+    private R<List<LabelValueVO>> listEnumDict(Class<?> enumClass) {
+        Object[] enumConstants = enumClass.getEnumConstants();
+        List<LabelValueVO> labelValueList = Arrays.stream(enumConstants).map(e -> {
+            BaseEnum<Integer> baseEnum = (BaseEnum<Integer>)e;
+            return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
+        }).collect(Collectors.toList());
+        return R.ok(labelValueList);
     }
 }

@@ -23,6 +23,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
+import top.charles7c.cnadmin.system.enums.AnnouncementStatusEnum;
 
 /**
  * 公告信息
@@ -65,15 +66,14 @@ public class AnnouncementVO extends BaseVO {
      * 
      * @return 公告状态
      */
-    @Schema(description = "状态（1：待发布，2：已发布，3：已过期）", example = "1")
-    public Integer getStatus() {
-        int status = 2;
+    @Schema(description = "状态（1：待发布，2：已发布，3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
+    public AnnouncementStatusEnum getStatus() {
         if (null != this.effectiveTime && this.effectiveTime.isAfter(LocalDateTime.now())) {
-            status = 1;
+            return AnnouncementStatusEnum.PENDING_RELEASE;
         }
         if (null != this.terminateTime && this.terminateTime.isBefore(LocalDateTime.now())) {
-            status = 3;
+            return AnnouncementStatusEnum.EXPIRED;
         }
-        return status;
+        return AnnouncementStatusEnum.PUBLISHED;
     }
 }

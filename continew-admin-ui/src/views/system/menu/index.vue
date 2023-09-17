@@ -19,7 +19,7 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="DisEnableStatusEnum"
+                :options="dis_enable_status_enum"
                 placeholder="状态搜索"
                 allow-clear
                 style="width: 150px"
@@ -355,10 +355,7 @@
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { DisEnableStatusEnum } = proxy.useDict({
-    name: 'DisEnableStatusEnum',
-    isEnum: true,
-  });
+  const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
 
   const dataList = ref<DataRecord[]>([]);
   const ids = ref<Array<string>>([]);

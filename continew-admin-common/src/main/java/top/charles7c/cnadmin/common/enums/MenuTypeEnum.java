@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum MenuTypeEnum implements BaseEnum<Integer, String> {
+public enum MenuTypeEnum implements BaseEnum<Integer> {
 
     /** 目录 */
     DIR(1, "目录"),

@@ -211,7 +211,7 @@
                   <a-select
                     v-if="record.showInForm || record.showInQuery"
                     v-model="record.formType"
-                    :options="FormTypeEnum"
+                    :options="form_type_enum"
                     placeholder="请选择表单类型"
                   />
                   <span v-else>无需设置</span>
@@ -222,7 +222,7 @@
                   <a-select
                     v-if="record.showInQuery"
                     v-model="record.queryType"
-                    :options="QueryTypeEnum"
+                    :options="query_type_Enum"
                     placeholder="请选择查询方式"
                   />
                   <span v-else>无需设置</span>
@@ -301,15 +301,9 @@
   } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
-  const { FormTypeEnum, QueryTypeEnum } = proxy.useDict(
-    {
-      name: 'DisEnableStatusEnum',
-      isEnum: true,
-    },
-    {
-      name: 'QueryTypeEnum',
-      isEnum: true,
-    }
+  const { form_type_enum, query_type_Enum } = proxy.useDict(
+    'form_type_enum',
+    'query_type_Enum'
   );
 
   const tableList = ref<TableRecord[]>([]);

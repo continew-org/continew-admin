@@ -44,7 +44,7 @@
       <template #columns>
         <a-table-column title="字典标签" align="center">
           <template #cell="{ record }">
-            <dict-tag :dict="dataList" :value="record.value" />
+            <dict-tag :value="record.value" :dict="dataList" />
           </template>
         </a-table-column>
         <a-table-column title="字典值" align="center" data-index="value" />
@@ -115,20 +115,20 @@
             placeholder="请选择或输入背景颜色"
             allow-clear
           >
-            <template #option="{ record }">
-              <a-tag v-if="record.value === 'primary'" color="arcoblue">{{
-                record.value
+            <template #option="{ data }">
+              <a-tag v-if="data.value === 'primary'" color="arcoblue">{{
+                data.value
               }}</a-tag>
-              <a-tag v-else-if="record.value === 'success'" color="green">{{
-                record.value
+              <a-tag v-else-if="data.value === 'success'" color="green">{{
+                data.value
               }}</a-tag>
-              <a-tag v-else-if="record.value === 'warning'" color="orangered">{{
-                record.value
+              <a-tag v-else-if="data.value === 'warning'" color="orangered">{{
+                data.value
               }}</a-tag>
-              <a-tag v-else-if="record.value === 'error'" color="red">{{
-                record.value
+              <a-tag v-else-if="data.value === 'error'" color="red">{{
+                data.value
               }}</a-tag>
-              <a-tag v-else color="gray">{{ record.value }}</a-tag>
+              <a-tag v-else color="gray">{{ data.value }}</a-tag>
             </template>
             <template #suffix>
               <color-picker v-model:pureColor="form.color" shape="circle" />

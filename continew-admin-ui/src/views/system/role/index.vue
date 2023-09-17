@@ -19,7 +19,7 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="DisEnableStatusEnum"
+                :options="dis_enable_status_enum"
                 placeholder="状态搜索"
                 allow-clear
                 style="width: 150px"
@@ -125,13 +125,7 @@
           <a-table-column title="角色编码" data-index="code" />
           <a-table-column title="数据权限" :width="130">
             <template #cell="{ record }">
-              <span v-if="record.dataScope === 1">全部数据权限</span>
-              <span v-else-if="record.dataScope === 2"
-                >本部门及以下数据权限</span
-              >
-              <span v-else-if="record.dataScope === 3">本部门数据权限</span>
-              <span v-else-if="record.dataScope === 4">仅本人数据权限</span>
-              <span v-else>自定义数据权限</span>
+              <dict-tag :value="record.dataScope" :dict="data_scope_enum" />
             </template>
           </a-table-column>
           <a-table-column title="角色排序" align="center" data-index="sort" />
@@ -282,7 +276,7 @@
             >
               <a-select
                 v-model="form.dataScope"
-                :options="DataScopeEnum"
+                :options="data_scope_enum"
                 placeholder="请选择数据权限"
               />
             </a-form-item>
@@ -359,17 +353,10 @@
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>
-                <span v-if="dataDetail.dataScope === 1">全部数据权限</span>
-                <span v-else-if="dataDetail.dataScope === 2"
-                  >本部门及以下数据权限</span
-                >
-                <span v-else-if="dataDetail.dataScope === 3"
-                  >本部门数据权限</span
-                >
-                <span v-else-if="dataDetail.dataScope === 4"
-                  >仅本人数据权限</span
-                >
-                <span v-else>自定义数据权限</span>
+                <dict-tag
+                  :value="dataDetail.dataScope"
+                  :dict="data_scope_enum"
+                />
               </span>
             </a-descriptions-item>
             <a-descriptions-item label="创建人">
@@ -448,15 +435,9 @@
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { DataScopeEnum, DisEnableStatusEnum } = proxy.useDict(
-    {
-      name: 'DataScopeEnum',
-      isEnum: true,
-    },
-    {
-      name: 'DisEnableStatusEnum',
-      isEnum: true,
-    }
+  const { data_scope_enum, dis_enable_status_enum } = proxy.useDict(
+    'data_scope_enum',
+    'dis_enable_status_enum'
   );
 
   const dataList = ref<DataRecord[]>([]);

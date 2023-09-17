@@ -128,16 +128,15 @@
           </a-table-column>
           <a-table-column title="类型" align="center">
             <template #cell="{ record }">
-              <dict-tag :dict="announcement_type" :value="record.type" />
+              <dict-tag :value="record.type" :dict="announcement_type" />
             </template>
           </a-table-column>
           <a-table-column title="状态" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.status === 1" color="blue">待发布</a-tag>
-              <a-tag v-else-if="record.status === 2" color="green"
-                >已发布</a-tag
-              >
-              <a-tag v-else color="red">已过期</a-tag>
+              <dict-tag
+                :value="record.status"
+                :dict="announcement_status_enum"
+              />
             </template>
           </a-table-column>
           <a-table-column title="生效时间">
@@ -354,10 +353,10 @@
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { announcement_type } = proxy.useDict({
-    name: 'announcement_type',
-    isEnum: false,
-  });
+  const { announcement_type, announcement_status_enum } = proxy.useDict(
+    'announcement_type',
+    'announcement_status_enum'
+  );
 
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({

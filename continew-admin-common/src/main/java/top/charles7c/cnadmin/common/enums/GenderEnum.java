@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GenderEnum implements BaseEnum<Integer, String> {
+public enum GenderEnum implements BaseEnum<Integer> {
 
     /** 未知 */
     UNKNOWN(0, "未知"),

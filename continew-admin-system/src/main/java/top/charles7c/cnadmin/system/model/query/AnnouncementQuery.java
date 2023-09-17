@@ -45,9 +45,9 @@ public class AnnouncementQuery implements Serializable {
     private String title;
 
     /**
-     * 类型（1：活动，2：消息，3：通知）
+     * 类型
      */
-    @Schema(description = "类型（1：活动，2：消息，3：通知）", example = "1")
+    @Schema(description = "类型", example = "1")
     @Query(type = QueryTypeEnum.EQUAL)
-    private Integer type;
+    private String type;
 }

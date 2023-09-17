@@ -5,32 +5,32 @@ const useDictStore = defineStore('dict', {
   state: () => ({ dict: [] as Array<DictState> }),
   actions: {
     // 获取字典
-    getDict(_name: string) {
-      if (_name == null || _name === '') {
+    getDict(_code: string) {
+      if (_code == null || _code === '') {
         return null;
       }
       for (let i = 0; i < this.dict.length; i += 1) {
-        if (this.dict[i].name === _name) {
-          return this.dict[i].detail;
+        if (this.dict[i].code === _code) {
+          return this.dict[i].items;
         }
       }
       return null;
     },
     // 设置字典
-    setDict(_name: string, detail: Array<LabelValueState>) {
-      if (_name !== null && _name !== '') {
+    setDict(_code: string, items: Array<LabelValueState>) {
+      if (_code !== null && _code !== '') {
         this.dict.push({
-          name: _name,
-          detail,
+          code: _code,
+          items,
         });
       }
     },
     // 删除字典
-    deleteDict(_name: string) {
+    deleteDict(_code: string) {
       let bln = false;
       try {
         for (let i = 0; i < this.dict.length; i += 1) {
-          if (this.dict[i].name === _name) {
+          if (this.dict[i].code === _code) {
             this.dict.splice(i, 1);
             return true;
           }

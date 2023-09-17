@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DataScopeEnum implements BaseEnum<Integer, String> {
+public enum DataScopeEnum implements BaseEnum<Integer> {
 
     /** 全部数据权限 */
     ALL(1, "全部数据权限"),
@@ -43,8 +43,8 @@ public enum DataScopeEnum implements BaseEnum<Integer, String> {
     /** 仅本人数据权限 */
     SELF(4, "仅本人数据权限"),
 
-    /** 自定数据权限 */
-    CUSTOM(5, "自定数据权限"),;
+    /** 自定义数据权限 */
+    CUSTOM(5, "自定义数据权限"),;
 
     private final Integer value;
     private final String description;

@@ -14,48 +14,42 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.tool.enums;
+package top.charles7c.cnadmin.common.constant;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * 表单类型枚举
+ * UI 相关常量
  *
  * @author Charles7c
- * @since 2023/8/6 10:49
+ * @since 2023/9/17 14:12
  */
-@Getter
-@RequiredArgsConstructor
-public enum FormTypeEnum implements BaseEnum<Integer> {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class UIConsts {
 
     /**
-     * 文本框
+     * 主色（极致蓝）
      */
-    TEXT(1, "文本框"),
-    /**
-     * 文本域
-     */
-    TEXT_AREA(2, "文本域"),
-    /**
-     * 下拉框
-     */
-    SELECT(3, "下拉框"),
-    /**
-     * 单选框
-     */
-    RADIO(4, "单选框"),
-    /**
-     * 日期框
-     */
-    DATE(5, "日期框"),
-    /**
-     * 日期时间框
-     */
-    DATE_TIME(6, "日期时间框"),;
+    public static final String COLOR_PRIMARY = "arcoblue";
 
-    private final Integer value;
-    private final String description;
+    /**
+     * 成功色（仙野绿）
+     */
+    public static final String COLOR_SUCCESS = "green";
+
+    /**
+     * 警告色（活力橙）
+     */
+    public static final String COLOR_WARNING = "orangered";
+
+    /**
+     * 错误色（浪漫红）
+     */
+    public static final String COLOR_ERROR = "red";
+
+    /**
+     * 默认色（中性灰）
+     */
+    public static final String COLOR_DEFAULT = "gray";
 }

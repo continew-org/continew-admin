@@ -20,26 +20,28 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
- * 公告类型枚举（计划 v1.2.0 增加字典管理，用于维护此类信息）
+ * 公告状态枚举
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Getter
 @RequiredArgsConstructor
-public enum AnnouncementTypeEnum implements BaseEnum<Integer, String> {
+public enum AnnouncementStatusEnum implements BaseEnum<Integer> {
 
-    /** 活动 */
-    ACTIVITY(1, "活动"),
+    /** 待发布 */
+    PENDING_RELEASE(1, "待发布", UIConsts.COLOR_PRIMARY),
 
-    /** 消息 */
-    MESSAGE(2, "消息"),
+    /** 已发布 */
+    PUBLISHED(2, "已发布", UIConsts.COLOR_SUCCESS),
 
-    /** 通知 */
-    NOTICE(3, "通知"),;
+    /** 已过期 */
+    EXPIRED(3, "已过期", UIConsts.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;
+    private final String color;
 }

@@ -30,12 +30,21 @@ import com.baomidou.mybatisplus.annotation.IEnum;
  * @author Charles7c
  * @since 2023/2/5 20:44
  */
-public interface BaseEnum<V extends Serializable, D extends Serializable> extends IEnum<V> {
+public interface BaseEnum<V extends Serializable> extends IEnum<V> {
 
     /**
      * 枚举描述
      *
      * @return 枚举描述
      */
-    D getDescription();
+    String getDescription();
+
+    /**
+     * 颜色
+     *
+     * @return 颜色
+     */
+    default String getColor() {
+        return null;
+    }
 }

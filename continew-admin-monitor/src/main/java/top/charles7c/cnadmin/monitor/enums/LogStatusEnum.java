@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum LogStatusEnum implements BaseEnum<Integer, String> {
+public enum LogStatusEnum implements BaseEnum<Integer> {
 
     /** 成功 */
     SUCCESS(1, "成功"),

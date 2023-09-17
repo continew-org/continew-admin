@@ -35,7 +35,7 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
  * @author Charles7c
  * @since 2023/2/5 19:29
  */
-public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer, String>> {
+public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer>> {
 
     @Override
     public Class<BaseEnum> supportJavaTypeKey() {
@@ -60,8 +60,8 @@ public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer, Strin
      * 转换为 Excel 数据（写入 Excel）
      */
     @Override
-    public WriteCellData<String> convertToExcelData(BaseEnum<Integer, String> value,
-        ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(BaseEnum<Integer> value, ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (null == value) {
             return new WriteCellData<>(StringConsts.EMPTY);
         }
@@ -77,11 +77,11 @@ public class ExcelBaseEnumConverter implements Converter<BaseEnum<Integer, Strin
      *            描述
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
-    private BaseEnum<Integer, String> getEnum(Class<?> enumType, String description) {
+    private BaseEnum<Integer> getEnum(Class<?> enumType, String description) {
         Object[] enumConstants = enumType.getEnumConstants();
         for (Object enumConstant : enumConstants) {
             if (ClassUtil.isAssignable(BaseEnum.class, enumType)) {
-                BaseEnum<Integer, String> baseEnum = (BaseEnum<Integer, String>)enumConstant;
+                BaseEnum<Integer> baseEnum = (BaseEnum<Integer>)enumConstant;
                 if (baseEnum.getDescription().equals(description)) {
                     return baseEnum;
                 }

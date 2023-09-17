@@ -35,10 +35,6 @@ export function listRoleDict(params: RoleParam) {
   });
 }
 
-export function listEnumDict(enumTypeName: string) {
-  return axios.get<LabelValueState[]>(`${BASE_URL}/dict/enum/${enumTypeName}`);
-}
-
 export function listDict(code: string) {
   return axios.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`);
 }

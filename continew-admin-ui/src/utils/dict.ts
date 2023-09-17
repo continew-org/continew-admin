@@ -1,32 +1,24 @@
 import { ref, toRefs } from 'vue';
-import { listEnumDict, listDict } from '@/api/common';
+import { listDict } from '@/api/common';
 import { useDictStore } from '@/store';
 
 /**
  * 获取字典数据
  *
- * @param dicts 字典列表
+ * @param codes 字典编码列表
  */
-export default function useDict(
-  ...dicts: Array<{ name: string; isEnum: boolean }>
-) {
+export default function useDict(...codes: Array<string>) {
   const res = ref<any>({});
   return (() => {
-    dicts.forEach((d) => {
-      const { name } = d;
-      res.value[name] = [];
-      const dict = useDictStore().getDict(name);
+    codes.forEach((code) => {
+      res.value[code] = [];
+      const dict = useDictStore().getDict(code);
       if (dict) {
-        res.value[name] = dict;
-      } else if (d.isEnum) {
-        listEnumDict(name).then((resp) => {
-          res.value[name] = resp.data;
-          useDictStore().setDict(name, res.value[name]);
-        });
+        res.value[code] = dict;
       } else {
-        listDict(name).then((resp) => {
-          res.value[name] = resp.data;
-          useDictStore().setDict(name, res.value[name]);
+        listDict(code).then((resp) => {
+          res.value[code] = resp.data;
+          useDictStore().setDict(code, res.value[code]);
         });
       }
     });

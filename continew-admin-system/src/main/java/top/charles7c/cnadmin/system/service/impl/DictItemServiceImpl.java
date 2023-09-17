@@ -20,10 +20,13 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
+import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -43,11 +46,13 @@ import top.charles7c.cnadmin.system.service.DictItemService;
  */
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = CacheConsts.DICT_KEY_PREFIX)
 public class DictItemServiceImpl
     extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemVO, DictItemDetailVO, DictItemQuery, DictItemRequest>
     implements DictItemService {
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public Long add(DictItemRequest request) {
         String value = request.getValue();
@@ -56,6 +61,7 @@ public class DictItemServiceImpl
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public void update(DictItemRequest request, Long id) {
         String value = request.getValue();
@@ -80,6 +86,7 @@ public class DictItemServiceImpl
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public void deleteByDictIds(List<Long> dictIds) {
         baseMapper.lambdaUpdate().in(DictItemDO::getDictId, dictIds).remove();
     }

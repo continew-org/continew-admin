@@ -5,6 +5,6 @@ export interface LabelValueState {
 }
 
 export interface DictState {
-  name: string;
-  detail: Array<LabelValueState>;
+  code: string;
+  items: Array<LabelValueState>;
 }

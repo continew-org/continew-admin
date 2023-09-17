@@ -10,7 +10,7 @@
             <a-form-item field="status" hide-label>
               <a-select
                 v-model="queryParams.status"
-                :options="SuccessFailureStatusEnum"
+                :options="success_failure_status_enum"
                 placeholder="登录状态搜索"
                 allow-clear
                 style="width: 150px"
@@ -91,10 +91,9 @@
   } from '@/api/monitor/log';
 
   const { proxy } = getCurrentInstance() as any;
-  const { SuccessFailureStatusEnum } = proxy.useDict({
-    name: 'SuccessFailureStatusEnum',
-    isEnum: true,
-  });
+  const { success_failure_status_enum } = proxy.useDict(
+    'success_failure_status_enum'
+  );
 
   const loginLogList = ref<LoginLogRecord[]>([]);
   const total = ref(0);

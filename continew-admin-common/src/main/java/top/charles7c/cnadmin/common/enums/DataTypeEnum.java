@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
  * 数据类型枚举
@@ -29,14 +30,15 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DataTypeEnum implements BaseEnum<Integer, String> {
+public enum DataTypeEnum implements BaseEnum<Integer> {
 
     /** 系统内置 */
-    SYSTEM(1, "系统内置"),
+    SYSTEM(1, "系统内置", UIConsts.COLOR_ERROR),
 
     /** 自定义 */
-    CUSTOM(2, "自定义"),;
+    CUSTOM(2, "自定义", UIConsts.COLOR_PRIMARY),;
 
     private final Integer value;
     private final String description;
+    private final String color;
 }

@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
  * 成功/失败状态枚举
@@ -29,14 +30,15 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum SuccessFailureStatusEnum implements BaseEnum<Integer, String> {
+public enum SuccessFailureStatusEnum implements BaseEnum<Integer> {
 
     /** 成功 */
-    SUCCESS(1, "成功"),
+    SUCCESS(1, "成功", UIConsts.COLOR_SUCCESS),
 
     /** 失败 */
-    FAILURE(2, "失败"),;
+    FAILURE(2, "失败", UIConsts.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;
+    private final String color;
 }
