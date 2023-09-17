@@ -51,4 +51,10 @@ public class DictVO extends BaseVO {
      */
     @Schema(description = "描述", example = "公告类型描述信息")
     private String description;
+
+    /**
+     * 是否为系统内置数据
+     */
+    @Schema(description = "是否为系统内置数据", example = "true")
+    private Boolean isSystem;
 }

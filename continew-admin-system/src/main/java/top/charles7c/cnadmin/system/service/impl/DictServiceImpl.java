@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,12 +69,22 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
         CheckUtils.throwIf(this.checkNameExists(name, id), "修改失败，[{}] 已存在", name);
         String code = request.getCode();
         CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
+        DictDO oldDict = super.getById(id);
+        if (oldDict.getIsSystem()) {
+            CheckUtils.throwIfNotEqual(request.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码",
+                oldDict.getName());
+        }
         super.update(request, id);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
+        List<DictDO> list =
+            baseMapper.lambdaQuery().select(DictDO::getName, DictDO::getIsSystem).in(DictDO::getId, ids).list();
+        Optional<DictDO> isSystemData = list.stream().filter(DictDO::getIsSystem).findFirst();
+        CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除",
+            isSystemData.orElseGet(DictDO::new).getName());
         dictItemService.deleteByDictIds(ids);
         super.delete(ids);
     }

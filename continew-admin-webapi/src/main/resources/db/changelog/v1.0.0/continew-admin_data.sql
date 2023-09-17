@@ -39,30 +39,30 @@ VALUES
 
 -- 初始化默认部门
 INSERT IGNORE INTO `sys_dept`
-(`id`, `name`, `parent_id`, `ancestors`, `description`, `sort`, `status`, `type`, `create_user`, `create_time`, `update_user`, `update_time`)
+(`id`, `name`, `parent_id`, `ancestors`, `description`, `sort`, `status`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, 'Xxx科技有限公司', 0, '0', '系统初始部门', 1, 1, 1, 1, NOW(), NULL, NULL),
-(2, '天津总部', 1, '0,1', NULL, 1, 1, 2, 1, NOW(), NULL, NULL),
-(3, '研发部', 2, '0,1,2', NULL, 1, 1, 2, 1, NOW(), NULL, NULL),
-(4, 'UI部', 2, '0,1,2', NULL, 2, 1, 2, 1, NOW(), NULL, NULL),
-(5, '测试部', 2, '0,1,2', NULL, 3, 1, 2, 1, NOW(), NULL, NULL),
-(6, '运维部', 2, '0,1,2', NULL, 4, 1, 2, 1, NOW(), NULL, NULL),
-(7, '研发一组', 3, '0,1,2,3', NULL, 1, 1, 2, 1, NOW(), NULL, NULL),
-(8, '研发二组', 3, '0,1,2,3', NULL, 2, 2, 2, 1, NOW(), NULL, NULL);
+(1, 'Xxx科技有限公司', 0, '0', '系统初始部门', 1, 1, b'1', 1, NOW(), NULL, NULL),
+(2, '天津总部', 1, '0,1', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
+(3, '研发部', 2, '0,1,2', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
+(4, 'UI部', 2, '0,1,2', NULL, 2, 1, b'0', 1, NOW(), NULL, NULL),
+(5, '测试部', 2, '0,1,2', NULL, 3, 1, b'0', 1, NOW(), NULL, NULL),
+(6, '运维部', 2, '0,1,2', NULL, 4, 1, b'0', 1, NOW(), NULL, NULL),
+(7, '研发一组', 3, '0,1,2,3', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
+(8, '研发二组', 3, '0,1,2,3', NULL, 2, 2, b'0', 1, NOW(), NULL, NULL);
 
 -- 初始化默认角色
 INSERT IGNORE INTO `sys_role`
-(`id`, `name`, `code`, `data_scope`, `description`, `sort`, `status`, `type`, `create_user`, `create_time`, `update_user`, `update_time`)
+(`id`, `name`, `code`, `data_scope`, `description`, `sort`, `status`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, 1, 1, NOW(), NULL, NULL),
-(2, '测试人员', 'test', 5, NULL, 2, 1, 2, 1, NOW(), NULL, NULL);
+(1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, b'1', 1, NOW(), NULL, NULL),
+(2, '测试人员', 'test', 5, NULL, 2, 1, b'0', 1, NOW(), NULL, NULL);
 
 -- 初始化默认用户：admin/admin123；test/123456
 INSERT IGNORE INTO `sys_user`
-(`id`, `username`, `nickname`, `password`, `gender`, `email`, `phone`, `avatar`, `description`, `status`, `type`, `pwd_reset_time`, `dept_id`, `create_user`, `create_time`, `update_user`, `update_time`)
+(`id`, `username`, `nickname`, `password`, `gender`, `email`, `phone`, `avatar`, `description`, `status`, `is_system`, `pwd_reset_time`, `dept_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, 'charles7c@126.com', '18888888888', NULL, '系统初始用户', 1, 1, NOW(), 1, 1, NOW(), NULL, NULL),
-(2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 2, NULL, NULL, NULL, NULL, 2, 2, NOW(), 5, 1, NOW(), NULL, NULL);
+(1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, 'charles7c@126.com', '18888888888', NULL, '系统初始用户', 1, b'1', NULL, 1, 1, NOW(), NULL, NULL),
+(2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 2, NULL, NULL, NULL, NULL, 2, b'0', NULL, 5, 1, NOW(), NULL, NULL);
 
 -- 初始化默认角色和菜单关联数据
 INSERT IGNORE INTO `sys_role_menu`

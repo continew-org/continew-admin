@@ -22,7 +22,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -68,7 +67,7 @@ public class RoleDO extends BaseDO {
     private DisEnableStatusEnum status;
 
     /**
-     * 类型（1：系统内置，2：自定义）
+     * 是否为系统内置数据
      */
-    private DataTypeEnum type;
+    private Boolean isSystem;
 }

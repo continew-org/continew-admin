@@ -13,7 +13,7 @@ export interface DataRecord {
   dataScope: number;
   deptIds?: Array<number>;
   status?: number;
-  type?: number;
+  isSystem?: boolean;
   createUserString?: string;
   createTime?: string;
   updateUserString?: string;

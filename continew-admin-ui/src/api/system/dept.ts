@@ -10,7 +10,7 @@ export interface DataRecord {
   description?: string;
   sort: number;
   status?: number;
-  type?: number;
+  isSystem?: boolean;
   createUserString?: string;
   createTime?: string;
   updateUserString?: string;

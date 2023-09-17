@@ -8,6 +8,7 @@ export interface DataRecord {
   name: string;
   code: string;
   description?: string;
+  isSystem: boolean;
   createUser?: string;
   createTime?: string;
   updateUser?: string;

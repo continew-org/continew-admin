@@ -25,7 +25,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import cn.hutool.core.util.DesensitizedUtil;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -86,10 +85,10 @@ public class UserVO extends BaseVO {
     private DisEnableStatusEnum status;
 
     /**
-     * 类型（1：系统内置，2：自定义）
+     * 是否为系统内置数据
      */
-    @Schema(description = "类型（1：系统内置，2：自定义）", type = "Integer", allowableValues = {"1", "2"}, example = "2")
-    private DataTypeEnum type;
+    @Schema(description = "是否为系统内置数据", example = "false")
+    private Boolean isSystem;
 
     /**
      * 描述
@@ -99,7 +98,7 @@ public class UserVO extends BaseVO {
 
     @Override
     public Boolean getDisabled() {
-        return Objects.equals(this.getId(), LoginHelper.getUserId());
+        return this.getIsSystem() || Objects.equals(this.getId(), LoginHelper.getUserId());
     }
 
     public String getPhone() {

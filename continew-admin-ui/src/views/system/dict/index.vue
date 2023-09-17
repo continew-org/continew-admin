@@ -156,8 +156,8 @@
                       v-permission="['system:dict:delete']"
                       type="text"
                       size="small"
-                      title="删除"
-                      :disabled="record.disabled"
+                      :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
+                      :disabled="record.isSystem"
                     >
                       <template #icon><icon-delete /></template>删除
                     </a-button>
@@ -188,7 +188,7 @@
             <a-input v-model="form.name" placeholder="请输入字典名称" />
           </a-form-item>
           <a-form-item label="字典编码" field="code">
-            <a-input v-model="form.code" placeholder="请输入字典编码" />
+            <a-input v-model="form.code" placeholder="请输入字典编码" :disabled="form.isSystem" />
           </a-form-item>
           <a-form-item label="描述" field="description">
             <a-textarea
@@ -317,6 +317,7 @@
       name: '',
       code: '',
       description: '',
+      isSystem: false,
     };
     proxy.$refs.formRef?.resetFields();
   };

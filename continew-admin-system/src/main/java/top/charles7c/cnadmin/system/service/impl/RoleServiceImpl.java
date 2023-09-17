@@ -34,7 +34,6 @@ import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
@@ -93,7 +92,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         RoleDO oldRole = super.getById(id);
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         String oldCode = oldRole.getCode();
-        if (DataTypeEnum.SYSTEM.equals(oldRole.getType())) {
+        if (oldRole.getIsSystem()) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置角色，不允许禁用",
                 oldRole.getName());
             CheckUtils.throwIfNotEqual(request.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
@@ -121,8 +120,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         List<RoleDO> list =
-            baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getType).in(RoleDO::getId, ids).list();
-        Optional<RoleDO> isSystemData = list.stream().filter(r -> DataTypeEnum.SYSTEM.equals(r.getType())).findFirst();
+            baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getIsSystem).in(RoleDO::getId, ids).list();
+        Optional<RoleDO> isSystemData = list.stream().filter(RoleDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
             isSystemData.orElseGet(RoleDO::new).getName());
         CheckUtils.throwIf(userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");

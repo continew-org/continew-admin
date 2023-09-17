@@ -44,7 +44,6 @@ import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.FileConsts;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -117,7 +116,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
             DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper.getUserId()),
             "不允许禁用当前用户");
         UserDO oldUser = super.getById(id);
-        if (DataTypeEnum.SYSTEM.equals(oldUser.getType())) {
+        if (oldUser.getIsSystem()) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用",
                 oldUser.getNickname());
             Collection<Long> disjunctionRoleIds =
@@ -135,8 +134,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(CollUtil.contains(ids, LoginHelper.getUserId()), "不允许删除当前用户");
         List<UserDO> list =
-            baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getType).in(UserDO::getId, ids).list();
-        Optional<UserDO> isSystemData = list.stream().filter(u -> DataTypeEnum.SYSTEM.equals(u.getType())).findFirst();
+            baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getIsSystem).in(UserDO::getId, ids).list();
+        Optional<UserDO> isSystemData = list.stream().filter(UserDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
             isSystemData.orElseGet(UserDO::new).getNickname());
         // 删除用户和角色关联

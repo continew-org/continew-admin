@@ -23,7 +23,6 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
@@ -85,9 +84,9 @@ public class UserDO extends BaseDO {
     private DisEnableStatusEnum status;
 
     /**
-     * 类型（1：系统内置，2：自定义）
+     * 是否为系统内置数据
      */
-    private DataTypeEnum type;
+    private Boolean isSystem;
 
     /**
      * 最后一次修改密码时间

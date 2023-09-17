@@ -33,7 +33,6 @@ import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
-import top.charles7c.cnadmin.common.enums.DataTypeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -83,7 +82,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
         String oldName = oldDept.getName();
         DisEnableStatusEnum newStatus = request.getStatus();
         Long oldParentId = oldDept.getParentId();
-        if (DataTypeEnum.SYSTEM.equals(oldDept.getType())) {
+        if (oldDept.getIsSystem()) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用", oldName);
             CheckUtils.throwIfNotEqual(request.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
         }
@@ -113,8 +112,8 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         List<DeptDO> list =
-            baseMapper.lambdaQuery().select(DeptDO::getName, DeptDO::getType).in(DeptDO::getId, ids).list();
-        Optional<DeptDO> isSystemData = list.stream().filter(d -> DataTypeEnum.SYSTEM.equals(d.getType())).findFirst();
+            baseMapper.lambdaQuery().select(DeptDO::getName, DeptDO::getIsSystem).in(DeptDO::getId, ids).list();
+        Optional<DeptDO> isSystemData = list.stream().filter(DeptDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
             isSystemData.orElseGet(DeptDO::new).getName());
         CheckUtils.throwIf(this.countChildren(ids) > 0, "所选部门存在下级部门，不允许删除");

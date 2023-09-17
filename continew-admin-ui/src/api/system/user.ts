@@ -12,7 +12,7 @@ export interface DataRecord {
   phone?: string;
   description?: string;
   status?: number;
-  type?: number;
+  isSystem?: boolean;
   pwdResetTime?: string;
   createUserString?: string;
   createTime?: string;

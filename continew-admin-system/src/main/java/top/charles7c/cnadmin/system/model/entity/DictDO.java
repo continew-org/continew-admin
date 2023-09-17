@@ -48,4 +48,9 @@ public class DictDO extends BaseDO {
      * 描述
      */
     private String description;
+
+    /**
+     * 是否为系统内置数据
+     */
+    private Boolean isSystem;
 }

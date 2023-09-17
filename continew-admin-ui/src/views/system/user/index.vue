@@ -192,10 +192,10 @@
                   />
                 </template>
               </a-table-column>
-              <a-table-column title="类型" align="center">
+              <a-table-column title="系统内置" align="center" :width="90">
                 <template #cell="{ record }">
-                  <a-tag v-if="record.type === 1" color="red">系统内置</a-tag>
-                  <a-tag v-else color="arcoblue">自定义</a-tag>
+                  <a-tag v-if="record.isSystem" color="red">是</a-tag>
+                  <a-tag v-else color="arcoblue">否</a-tag>
                 </template>
               </a-table-column>
               <a-table-column title="创建人/创建时间" :width="175">
@@ -237,7 +237,7 @@
                       v-permission="['system:user:delete']"
                       type="text"
                       size="small"
-                      title="删除"
+                      :title="record.isSystem ? '系统内置数据不能删除' : '删除'"
                       :disabled="record.disabled"
                     >
                       <template #icon><icon-delete /></template>

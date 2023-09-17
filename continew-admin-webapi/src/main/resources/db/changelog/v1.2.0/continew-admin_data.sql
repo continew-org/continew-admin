@@ -13,9 +13,9 @@ VALUES
 
 -- 初始化默认字典
 INSERT IGNORE INTO `sys_dict`
-(`id`, `name`, `code`, `description`, `create_user`, `create_time`, `update_user`, `update_time`)
+(`id`, `name`, `code`, `description`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, '公告类型', 'announcement_type', NULL, 1, NOW(), NULL, NULL);
+(1, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
 
 -- 初始化默认字典项
 INSERT IGNORE INTO `sys_dict_item`
