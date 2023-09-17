@@ -23,6 +23,8 @@ import lombok.NoArgsConstructor;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * 键值对信息
  *
@@ -49,8 +51,21 @@ public class LabelValueVO<V> implements Serializable {
     @Schema(description = "值", example = "1")
     private V value;
 
+    /**
+     * 颜色
+     */
+    @Schema(description = "颜色", example = "#165DFF")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String color;
+
     public LabelValueVO(String label, V value) {
         this.label = label;
         this.value = value;
+    }
+
+    public LabelValueVO(String label, V value, String color) {
+        this.label = label;
+        this.value = value;
+        this.color = color;
     }
 }

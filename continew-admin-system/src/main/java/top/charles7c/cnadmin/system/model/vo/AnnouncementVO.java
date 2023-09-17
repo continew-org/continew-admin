@@ -23,7 +23,6 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.cnadmin.common.base.BaseVO;
-import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
  * 公告信息
@@ -44,10 +43,10 @@ public class AnnouncementVO extends BaseVO {
     private String title;
 
     /**
-     * 类型
+     * 类型（取值于字典 announcement_type）
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
-    private AnnouncementTypeEnum type;
+    @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
+    private String type;
 
     /**
      * 生效时间

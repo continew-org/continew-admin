@@ -23,7 +23,6 @@ import lombok.Data;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
  * 公告实体
@@ -50,7 +49,7 @@ public class AnnouncementDO extends BaseDO {
     /**
      * 类型
      */
-    private AnnouncementTypeEnum type;
+    private String type;
 
     /**
      * 生效时间

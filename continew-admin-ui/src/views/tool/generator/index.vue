@@ -302,8 +302,14 @@
 
   const { proxy } = getCurrentInstance() as any;
   const { FormTypeEnum, QueryTypeEnum } = proxy.useDict(
-    'FormTypeEnum',
-    'QueryTypeEnum'
+    {
+      name: 'DisEnableStatusEnum',
+      isEnum: true,
+    },
+    {
+      name: 'QueryTypeEnum',
+      isEnum: true,
+    }
   );
 
   const tableList = ref<TableRecord[]>([]);

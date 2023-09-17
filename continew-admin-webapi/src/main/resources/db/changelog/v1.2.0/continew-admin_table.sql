@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS `sys_dict` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
     `name` varchar(50) NOT NULL COMMENT '字典名称',
-    `code` varchar(50) NOT NULL COMMENT '字典编码',
+    `code` varchar(30) NOT NULL COMMENT '字典编码',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',
     `create_user` bigint(20) UNSIGNED NOT NULL COMMENT '创建人',
     `create_time` datetime NOT NULL COMMENT '创建时间',
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict` (
 CREATE TABLE IF NOT EXISTS `sys_dict_item` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
     `label` varchar(50) NOT NULL COMMENT '字典标签',
-    `value` varchar(50) NOT NULL COMMENT '字典值',
+    `value` varchar(30) NOT NULL COMMENT '字典值',
     `color` varchar(30) DEFAULT NULL COMMENT '背景颜色',
     `sort` int(11) UNSIGNED DEFAULT 999 COMMENT '字典项排序',
     `description` varchar(512) DEFAULT NULL COMMENT '描述',

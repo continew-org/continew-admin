@@ -16,7 +16,12 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
 
 /**
@@ -25,4 +30,14 @@ import top.charles7c.cnadmin.system.model.entity.DictItemDO;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictItemMapper extends BaseMapper<DictItemDO> {}
+public interface DictItemMapper extends BaseMapper<DictItemDO> {
+
+    /**
+     * 根据字典编码查询
+     * 
+     * @param dictCode
+     *            字典编码
+     * @return 字典项列表
+     */
+    List<LabelValueVO> listByDictCode(@Param("dictCode") String dictCode);
+}

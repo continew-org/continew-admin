@@ -13,9 +13,7 @@
     <div>
       <a-empty v-if="dataList.length === 0">暂无公告</a-empty>
       <div v-for="(item, idx) in dataList" :key="idx" class="item">
-        <a-tag v-if="item.type === 1" color="orangered">活动</a-tag>
-        <a-tag v-else-if="item.type === 2" color="cyan">消息</a-tag>
-        <a-tag v-else color="blue">通知</a-tag>
+        <dict-tag :dict="announcement_type" :value="item.type" />
         <span class="item-content">
           <a-link @click="toDetail(item.id)">{{ item.title }}</a-link>
         </span>
@@ -82,12 +80,18 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { getCurrentInstance, ref } from 'vue';
   import {
     DashboardAnnouncementRecord,
     listAnnouncement,
   } from '@/api/common/dashboard';
   import { DataRecord, get } from '@/api/system/announcement';
+
+  const { proxy } = getCurrentInstance() as any;
+  const { announcement_type } = proxy.useDict({
+    name: 'announcement_type',
+    isEnum: false,
+  });
 
   const dataList = ref<DashboardAnnouncementRecord[]>([]);
   const dataDetail = ref<DataRecord>({});

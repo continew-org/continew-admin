@@ -7,7 +7,7 @@ export interface DataRecord {
   id?: string;
   title?: string;
   content?: string;
-  status?: string;
+  status?: number;
   type?: string;
   effectiveTime?: string;
   terminateTime?: string;
@@ -21,7 +21,7 @@ export interface DataRecord {
 
 export interface ListParam {
   title?: string;
-  status?: string;
+  status?: number;
   type?: string;
   page?: number;
   size?: number;

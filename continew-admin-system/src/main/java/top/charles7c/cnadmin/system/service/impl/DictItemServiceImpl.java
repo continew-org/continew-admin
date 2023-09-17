@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictItemMapper;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
@@ -71,6 +72,11 @@ public class DictItemServiceImpl
         List<DictItemDetailVO> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailVO.class);
         detailList.forEach(super::fillDetail);
         return detailList;
+    }
+
+    @Override
+    public List<LabelValueVO> listByDictCode(String dictCode) {
+        return baseMapper.listByDictCode(dictCode);
     }
 
     @Override

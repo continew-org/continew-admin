@@ -363,8 +363,12 @@
                 <span v-else-if="dataDetail.dataScope === 2"
                   >本部门及以下数据权限</span
                 >
-                <span v-else-if="dataDetail.dataScope === 3">本部门数据权限</span>
-                <span v-else-if="dataDetail.dataScope === 4">仅本人数据权限</span>
+                <span v-else-if="dataDetail.dataScope === 3"
+                  >本部门数据权限</span
+                >
+                <span v-else-if="dataDetail.dataScope === 4"
+                  >仅本人数据权限</span
+                >
                 <span v-else>自定义数据权限</span>
               </span>
             </a-descriptions-item>
@@ -445,8 +449,14 @@
 
   const { proxy } = getCurrentInstance() as any;
   const { DataScopeEnum, DisEnableStatusEnum } = proxy.useDict(
-    'DataScopeEnum',
-    'DisEnableStatusEnum'
+    {
+      name: 'DataScopeEnum',
+      isEnum: true,
+    },
+    {
+      name: 'DisEnableStatusEnum',
+      isEnum: true,
+    }
   );
 
   const dataList = ref<DataRecord[]>([]);

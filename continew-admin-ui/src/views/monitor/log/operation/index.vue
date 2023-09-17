@@ -101,9 +101,10 @@
   } from '@/api/monitor/log';
 
   const { proxy } = getCurrentInstance() as any;
-  const { SuccessFailureStatusEnum } = proxy.useDict(
-    'SuccessFailureStatusEnum'
-  );
+  const { SuccessFailureStatusEnum } = proxy.useDict({
+    name: 'SuccessFailureStatusEnum',
+    isEnum: true,
+  });
 
   const operationLogList = ref<OperationLogRecord[]>([]);
   const total = ref(0);

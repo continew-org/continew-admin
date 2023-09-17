@@ -27,7 +27,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseRequest;
-import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
  * 创建或修改公告信息
@@ -57,11 +56,11 @@ public class AnnouncementRequest extends BaseRequest {
     private String content;
 
     /**
-     * 类型
+     * 类型（取值于字典 announcement_type）
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
-    @NotNull(message = "类型非法")
-    private AnnouncementTypeEnum type;
+    @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
+    @NotBlank(message = "类型不能为空")
+    private String type;
 
     /**
      * 生效时间

@@ -26,8 +26,6 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.charles7c.cnadmin.common.base.BaseDetailVO;
-import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
-import top.charles7c.cnadmin.system.enums.AnnouncementTypeEnum;
 
 /**
  * 公告详情信息
@@ -57,11 +55,11 @@ public class AnnouncementDetailVO extends BaseDetailVO {
     private String content;
 
     /**
-     * 类型
+     * 类型（取值于字典 announcement_type）
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
-    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
-    private AnnouncementTypeEnum type;
+    @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
+    @ExcelProperty(value = "类型")
+    private String type;
 
     /**
      * 生效时间

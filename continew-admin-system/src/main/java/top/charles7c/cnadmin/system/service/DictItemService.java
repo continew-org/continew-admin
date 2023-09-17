@@ -19,6 +19,7 @@ package top.charles7c.cnadmin.system.service;
 import java.util.List;
 
 import top.charles7c.cnadmin.common.base.BaseService;
+import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.system.model.query.DictItemQuery;
 import top.charles7c.cnadmin.system.model.request.DictItemRequest;
 import top.charles7c.cnadmin.system.model.vo.DictItemDetailVO;
@@ -40,6 +41,15 @@ public interface DictItemService extends BaseService<DictItemVO, DictItemDetailV
      * @return 字典项列表
      */
     List<DictItemDetailVO> listByDictId(Long dictId);
+
+    /**
+     * 根据字典编码查询
+     * 
+     * @param dictCode
+     *            字典编码
+     * @return 字典项列表
+     */
+    List<LabelValueVO> listByDictCode(String dictCode);
 
     /**
      * 根据字典 ID 列表删除

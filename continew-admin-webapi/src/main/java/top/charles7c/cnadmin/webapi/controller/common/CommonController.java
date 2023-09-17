@@ -48,9 +48,7 @@ import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
-import top.charles7c.cnadmin.system.service.DeptService;
-import top.charles7c.cnadmin.system.service.MenuService;
-import top.charles7c.cnadmin.system.service.RoleService;
+import top.charles7c.cnadmin.system.service.*;
 
 /**
  * 公共 API
@@ -69,6 +67,7 @@ public class CommonController {
     private final DeptService deptService;
     private final MenuService menuService;
     private final RoleService roleService;
+    private final DictItemService dictItemService;
     private final ProjectProperties projectProperties;
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
@@ -112,5 +111,12 @@ public class CommonController {
             return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue());
         }).collect(Collectors.toList());
         return R.ok(labelValueVOList);
+    }
+
+    @Operation(summary = "查询字典", description = "查询字典列表")
+    @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
+    @GetMapping("/dict/{code}")
+    public R<List<LabelValueVO>> listDict(@PathVariable String code) {
+        return R.ok(dictItemService.listByDictCode(code));
     }
 }

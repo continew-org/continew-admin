@@ -6,8 +6,10 @@ import { ListParam as RoleParam } from '@/api/system/role';
 import { TreeNodeData } from '@arco-design/web-vue';
 import { LabelValueState } from '@/store/modules/dict/types';
 
+const BASE_URL = '/common';
+
 export function listDeptTree(params: DeptParam) {
-  return axios.get<TreeNodeData[]>('/common/tree/dept', {
+  return axios.get<TreeNodeData[]>(`${BASE_URL}/tree/dept`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -16,7 +18,7 @@ export function listDeptTree(params: DeptParam) {
 }
 
 export function listMenuTree(params: MenuParam) {
-  return axios.get<TreeNodeData[]>('/common/tree/menu', {
+  return axios.get<TreeNodeData[]>(`${BASE_URL}/tree/menu`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -25,7 +27,7 @@ export function listMenuTree(params: MenuParam) {
 }
 
 export function listRoleDict(params: RoleParam) {
-  return axios.get<LabelValueState[]>('/common/dict/role', {
+  return axios.get<LabelValueState[]>(`${BASE_URL}/dict/role`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);
@@ -34,5 +36,9 @@ export function listRoleDict(params: RoleParam) {
 }
 
 export function listEnumDict(enumTypeName: string) {
-  return axios.get<LabelValueState[]>(`/common/dict/enum/${enumTypeName}`);
+  return axios.get<LabelValueState[]>(`${BASE_URL}/dict/enum/${enumTypeName}`);
+}
+
+export function listDict(code: string) {
+  return axios.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`);
 }

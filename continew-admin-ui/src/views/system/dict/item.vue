@@ -44,23 +44,7 @@
       <template #columns>
         <a-table-column title="字典标签" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.color === 'primary'" color="arcoblue">{{
-              record.label
-            }}</a-tag>
-            <a-tag v-else-if="record.color === 'success'" color="green">{{
-              record.label
-            }}</a-tag>
-            <a-tag v-else-if="record.color === 'warning'" color="orangered">{{
-              record.label
-            }}</a-tag>
-            <a-tag v-else-if="record.color === 'error'" color="red">{{
-              record.label
-            }}</a-tag>
-            <a-tag v-else-if="record.color === 'default'" color="gray">{{
-              record.label
-            }}</a-tag>
-            <span v-else-if="!record.color">{{ record.label }}</span>
-            <a-tag v-else :color="record.color">{{ record.label }}</a-tag>
+            <dict-tag :dict="dataList" :value="record.value" />
           </template>
         </a-table-column>
         <a-table-column title="字典值" align="center" data-index="value" />

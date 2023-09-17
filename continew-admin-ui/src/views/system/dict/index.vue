@@ -168,7 +168,7 @@
           </a-table>
         </a-col>
         <a-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-          <dictItem ref="dictItemRef" :dict-id="dictId" />
+          <dict-item ref="dictItemRef" :dict-id="dictId" />
         </a-col>
       </a-row>
 

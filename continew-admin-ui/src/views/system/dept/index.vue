@@ -316,7 +316,10 @@
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { DisEnableStatusEnum } = proxy.useDict('DisEnableStatusEnum');
+  const { DisEnableStatusEnum } = proxy.useDict({
+    name: 'DisEnableStatusEnum',
+    isEnum: true,
+  });
 
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({

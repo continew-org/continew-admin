@@ -19,7 +19,7 @@
             <a-form-item field="type" hide-label>
               <a-select
                 v-model="queryParams.type"
-                :options="AnnouncementTypeEnum"
+                :options="announcement_type"
                 placeholder="类型搜索"
                 allow-clear
                 style="width: 150px"
@@ -128,15 +128,15 @@
           </a-table-column>
           <a-table-column title="类型" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.type === 1" color="orangered">活动</a-tag>
-              <a-tag v-else-if="record.type === 2" color="cyan">消息</a-tag>
-              <a-tag v-else color="blue">通知</a-tag>
+              <dict-tag :dict="announcement_type" :value="record.type" />
             </template>
           </a-table-column>
           <a-table-column title="状态" align="center">
             <template #cell="{ record }">
               <a-tag v-if="record.status === 1" color="blue">待发布</a-tag>
-              <a-tag v-else-if="record.status === 2" color="green">已发布</a-tag>
+              <a-tag v-else-if="record.status === 2" color="green"
+                >已发布</a-tag
+              >
               <a-tag v-else color="red">已过期</a-tag>
             </template>
           </a-table-column>
@@ -226,14 +226,10 @@
           </a-row>
           <a-row :gutter="16">
             <a-col :span="8">
-              <a-form-item
-                label="类型"
-                field="type"
-                tooltip="计划 v1.2.0 增加字典管理，用于维护此类信息"
-              >
+              <a-form-item label="类型" field="type">
                 <a-select
                   v-model="form.type"
-                  :options="AnnouncementTypeEnum"
+                  :options="announcement_type"
                   placeholder="请选择类型"
                 />
               </a-form-item>
@@ -358,7 +354,10 @@
   import checkPermission from '@/utils/permission';
 
   const { proxy } = getCurrentInstance() as any;
-  const { AnnouncementTypeEnum } = proxy.useDict('AnnouncementTypeEnum');
+  const { announcement_type } = proxy.useDict({
+    name: 'announcement_type',
+    isEnum: false,
+  });
 
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({
