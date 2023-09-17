@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
  * 启用/禁用状态枚举
@@ -32,11 +33,12 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
 public enum DisEnableStatusEnum implements BaseEnum<Integer> {
 
     /** 启用 */
-    ENABLE(1, "启用"),
+    ENABLE(1, "启用", UIConsts.COLOR_SUCCESS),
 
     /** 禁用 */
-    DISABLE(2, "禁用"),;
+    DISABLE(2, "禁用", UIConsts.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;
+    private final String color;
 }

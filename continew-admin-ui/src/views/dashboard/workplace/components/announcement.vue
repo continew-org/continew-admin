@@ -110,7 +110,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: string) => {
+  const toDetail = async (id: number) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;

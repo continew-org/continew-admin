@@ -14,10 +14,7 @@
             :title="$t('basicProfile.column.updateContent')"
             data-index="updateContent"
           />
-          <a-table-column
-            :title="$t('basicProfile.column.status')"
-            data-index="status"
-          >
+          <a-table-column :title="$t('basicProfile.column.status')">
             <template #cell="{ record }">
               <p v-if="record.status === 0">
                 <span class="circle"></span>

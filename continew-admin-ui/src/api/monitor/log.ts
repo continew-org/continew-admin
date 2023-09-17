@@ -4,7 +4,7 @@ import qs from 'query-string';
 const BASE_URL = '/monitor/log';
 
 export interface LogRecord {
-  id?: string;
+  id?: number;
   clientIp: string;
   location: string;
   browser: string;
@@ -102,6 +102,6 @@ export function listSystemLog(params: SystemLogParam) {
   });
 }
 
-export function getSystemLog(id: string) {
+export function getSystemLog(id: number) {
   return axios.get<SystemLogDetailRecord>(`${BASE_URL}/system/${id}`);
 }

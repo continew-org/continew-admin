@@ -4,14 +4,14 @@ import qs from 'query-string';
 const BASE_URL = '/system/role';
 
 export interface DataRecord {
-  id?: string;
+  id?: number;
   name: string;
   code?: string;
   sort?: number;
   description?: string;
-  menuIds?: Array<string>;
+  menuIds?: Array<number>;
   dataScope: number;
-  deptIds?: Array<string>;
+  deptIds?: Array<number>;
   status?: number;
   type?: number;
   createUserString?: string;
@@ -43,7 +43,7 @@ export function list(params: ListParam) {
   });
 }
 
-export function get(id: string) {
+export function get(id: number) {
   return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
@@ -51,10 +51,10 @@ export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function update(req: DataRecord, id: string) {
+export function update(req: DataRecord, id: number) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 
-export function del(ids: string | Array<string>) {
+export function del(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }

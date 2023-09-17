@@ -358,7 +358,7 @@
   const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
 
   const dataList = ref<DataRecord[]>([]);
-  const ids = ref<Array<string>>([]);
+  const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -425,7 +425,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: string) => {
+  const toUpdate = (id: number) => {
     reset();
     listMenuTree({}).then((res) => {
       treeData.value = res.data;
@@ -517,7 +517,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<string>) => {
+  const handleDelete = (ids: Array<number>) => {
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

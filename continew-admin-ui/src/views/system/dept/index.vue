@@ -254,8 +254,10 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
-              <a-tag v-else color="red">禁用</a-tag>
+              <dict-tag
+                :value="dataDetail.status"
+                :dict="dis_enable_status_enum"
+              />
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="部门排序">
@@ -330,7 +332,7 @@
     updateTime: '',
     parentName: '',
   });
-  const ids = ref<Array<string>>([]);
+  const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -397,7 +399,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: string) => {
+  const toUpdate = (id: number) => {
     reset();
     listDeptTree({}).then((res) => {
       treeData.value = res.data;
@@ -462,7 +464,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: string) => {
+  const toDetail = async (id: number) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
@@ -506,7 +508,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<string>) => {
+  const handleDelete = (ids: Array<number>) => {
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

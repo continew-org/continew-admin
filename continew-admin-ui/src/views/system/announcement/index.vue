@@ -363,7 +363,7 @@
     // TODO 待补充详情字段默认值
   });
   const total = ref(0);
-  const ids = ref<Array<string>>([]);
+  const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -427,7 +427,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: string) => {
+  const toUpdate = (id: number) => {
     reset();
     get(id).then((res) => {
       form.value = res.data;
@@ -482,7 +482,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: string) => {
+  const toDetail = async (id: number) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
@@ -527,7 +527,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<string>) => {
+  const handleDelete = (ids: Array<number>) => {
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

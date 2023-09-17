@@ -4,7 +4,7 @@ import qs from 'query-string';
 const BASE_URL = '/system/user';
 
 export interface DataRecord {
-  id?: string;
+  id?: number;
   username: string;
   nickname: string;
   gender: number;
@@ -18,9 +18,9 @@ export interface DataRecord {
   createTime?: string;
   updateUserString?: string;
   updateTime?: string;
-  deptId?: string;
+  deptId?: number;
   deptName?: string;
-  roleIds?: Array<string>;
+  roleIds?: Array<number>;
   roleNames?: Array<string>;
   disabled?: boolean;
 }
@@ -48,7 +48,7 @@ export function list(params: ListParam) {
   });
 }
 
-export function get(id: string) {
+export function get(id: number) {
   return axios.get<DataRecord>(`${BASE_URL}/${id}`);
 }
 
@@ -56,22 +56,22 @@ export function add(req: DataRecord) {
   return axios.post(BASE_URL, req);
 }
 
-export function update(req: DataRecord, id: string) {
+export function update(req: DataRecord, id: number) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 
-export function del(ids: string | Array<string>) {
+export function del(ids: number | Array<number>) {
   return axios.delete(`${BASE_URL}/${ids}`);
 }
 
-export function resetPassword(id: string) {
+export function resetPassword(id: number) {
   return axios.patch(`${BASE_URL}/${id}/password`);
 }
 
 export interface UpdateUserRoleReq {
-  roleIds?: Array<string>;
+  roleIds?: Array<number>;
 }
 
-export function updateUserRole(req: UpdateUserRoleReq, id: string) {
+export function updateUserRole(req: UpdateUserRoleReq, id: number) {
   return axios.patch(`${BASE_URL}/${id}/role`, req);
 }

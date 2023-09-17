@@ -21,7 +21,7 @@
                 {{ rowIndex + 1 }}
               </template>
             </a-table-column>
-            <a-table-column title="模块" data-index="module">
+            <a-table-column title="模块">
               <template #cell="{ record }">
                 <a-typography-paragraph
                   :ellipsis="{
@@ -35,7 +35,6 @@
             <a-table-column title="总浏览量" data-index="pvCount" />
             <a-table-column
               title="日涨幅"
-              data-index="newPvFromYesterday"
               :sortable="{
                 sortDirections: ['ascend', 'descend'],
               }"

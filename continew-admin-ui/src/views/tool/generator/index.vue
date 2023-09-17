@@ -152,37 +152,22 @@
                 ellipsis
                 tooltip
               />
-              <a-table-column title="描述" data-index="comment" :width="170">
+              <a-table-column title="描述" :width="170">
                 <template #cell="{ record }">
                   <a-input v-model="record.comment" />
                 </template>
               </a-table-column>
-              <a-table-column
-                title="列表"
-                data-index="showInList"
-                :width="60"
-                align="center"
-              >
+              <a-table-column title="列表" :width="60" align="center">
                 <template #cell="{ record }">
                   <a-checkbox v-model="record.showInList" value="true" />
                 </template>
               </a-table-column>
-              <a-table-column
-                title="表单"
-                data-index="showInForm"
-                :width="60"
-                align="center"
-              >
+              <a-table-column title="表单" :width="60" align="center">
                 <template #cell="{ record }">
                   <a-checkbox v-model="record.showInForm" value="true" />
                 </template>
               </a-table-column>
-              <a-table-column
-                title="必填"
-                data-index="isRequired"
-                :width="60"
-                align="center"
-              >
+              <a-table-column title="必填" :width="60" align="center">
                 <template #cell="{ record }">
                   <a-checkbox
                     v-if="record.showInForm"
@@ -192,21 +177,12 @@
                   <a-checkbox v-else disabled />
                 </template>
               </a-table-column>
-              <a-table-column
-                title="查询"
-                data-index="showInQuery"
-                :width="60"
-                align="center"
-              >
+              <a-table-column title="查询" :width="60" align="center">
                 <template #cell="{ record }">
                   <a-checkbox v-model="record.showInQuery" value="true" />
                 </template>
               </a-table-column>
-              <a-table-column
-                title="表单类型"
-                data-index="formType"
-                :width="150"
-              >
+              <a-table-column title="表单类型" :width="150">
                 <template #cell="{ record }">
                   <a-select
                     v-if="record.showInForm || record.showInQuery"
@@ -217,7 +193,7 @@
                   <span v-else>无需设置</span>
                 </template>
               </a-table-column>
-              <a-table-column title="查询方式" data-index="queryType">
+              <a-table-column title="查询方式">
                 <template #cell="{ record }">
                   <a-select
                     v-if="record.showInQuery"

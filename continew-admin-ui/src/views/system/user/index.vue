@@ -439,8 +439,10 @@
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
-              <a-tag v-else color="red">禁用</a-tag>
+              <dict-tag
+                :value="dataDetail.status"
+                :dict="dis_enable_status_enum"
+              />
             </span>
           </a-descriptions-item>
           <a-descriptions-item label="邮箱">
@@ -543,7 +545,7 @@
     deptId: undefined,
   });
   const total = ref(0);
-  const ids = ref<Array<string>>([]);
+  const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -636,7 +638,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: string) => {
+  const toUpdate = (id: number) => {
     reset();
     getDeptOptions();
     getRoleOptions();
@@ -652,7 +654,7 @@
    *
    * @param id ID
    */
-  const toUpdateRole = (id: string) => {
+  const toUpdateRole = (id: number) => {
     reset();
     getRoleOptions();
     get(id).then((res) => {
@@ -703,7 +705,7 @@
       description: '',
       status: 1,
       deptId: undefined,
-      roleIds: [] as Array<string>,
+      roleIds: [] as Array<number>,
       disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
@@ -764,7 +766,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: string) => {
+  const toDetail = async (id: number) => {
     if (detailLoading.value) return;
     detailLoading.value = true;
     detailVisible.value = true;
@@ -808,7 +810,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<string>) => {
+  const handleDelete = (ids: Array<number>) => {
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
@@ -820,7 +822,7 @@
    *
    * @param id ID
    */
-  const handleResetPassword = (id: string) => {
+  const handleResetPassword = (id: number) => {
     resetPassword(id).then((res) => {
       proxy.$message.success(res.msg);
     });

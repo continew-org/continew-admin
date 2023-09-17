@@ -117,7 +117,7 @@
       >
         <template #columns>
           <a-table-column title="ID" data-index="id" />
-          <a-table-column title="角色名称" data-index="name" :width="130">
+          <a-table-column title="角色名称" :width="130">
             <template #cell="{ record }">
               <a-link @click="toDetail(record.id)">{{ record.name }}</a-link>
             </template>
@@ -129,7 +129,7 @@
             </template>
           </a-table-column>
           <a-table-column title="角色排序" align="center" data-index="sort" />
-          <a-table-column title="状态" align="center" data-index="status">
+          <a-table-column title="状态" align="center">
             <template #cell="{ record }">
               <a-switch
                 v-model="record.status"
@@ -344,8 +344,10 @@
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>
-                <a-tag v-if="dataDetail.status === 1" color="green">启用</a-tag>
-                <a-tag v-else color="red">禁用</a-tag>
+                <dict-tag
+                  :value="dataDetail.status"
+                  :dict="dis_enable_status_enum"
+                />
               </span>
             </a-descriptions-item>
             <a-descriptions-item label="数据权限">
@@ -455,7 +457,7 @@
     deptIds: undefined,
   });
   const total = ref(0);
-  const ids = ref<Array<string>>([]);
+  const ids = ref<Array<number>>([]);
   const title = ref('');
   const single = ref(true);
   const multiple = ref(true);
@@ -544,7 +546,7 @@
    *
    * @param id ID
    */
-  const toUpdate = (id: string) => {
+  const toUpdate = (id: number) => {
     reset();
     menuCheckStrictly.value = false;
     deptCheckStrictly.value = false;
@@ -695,7 +697,7 @@
    *
    * @param id ID
    */
-  const toDetail = async (id: string) => {
+  const toDetail = async (id: number) => {
     if (detailLoading.value) return;
     getMenuTree();
     getDeptTree();
@@ -741,7 +743,7 @@
    *
    * @param ids ID 列表
    */
-  const handleDelete = (ids: Array<string>) => {
+  const handleDelete = (ids: Array<number>) => {
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();

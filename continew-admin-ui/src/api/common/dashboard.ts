@@ -27,7 +27,7 @@ export interface DashboardGeoDistributionRecord {
 }
 
 export interface DashboardAnnouncementRecord {
-  id: string;
+  id: number;
   title: string;
   type: number;
 }
