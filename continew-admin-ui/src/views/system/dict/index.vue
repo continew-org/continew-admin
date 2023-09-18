@@ -110,18 +110,25 @@
             @row-click="handleSelect"
           >
             <template #columns>
-              <a-table-column title="序号" :width="60">
+              <a-table-column
+                title="序号"
+                :width="60"
+                :body-cell-style="bodyCellStyle"
+              >
                 <template #cell="{ rowIndex }">
                   {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
                 </template>
               </a-table-column>
-              <a-table-column title="字典名称" data-index="name" :width="100" />
+              <a-table-column
+                title="字典名称"
+                data-index="name"
+                :width="100"
+                :body-cell-style="bodyCellStyle"
+              />
               <a-table-column
                 title="字典编码"
                 data-index="code"
-                ellipsis
-                tooltip
-                :width="100"
+                :body-cell-style="bodyCellStyle"
               />
               <a-table-column
                 title="描述"
@@ -129,6 +136,7 @@
                 ellipsis
                 tooltip
                 :width="100"
+                :body-cell-style="bodyCellStyle"
               />
               <a-table-column
                 v-if="
@@ -136,6 +144,7 @@
                 "
                 title="操作"
                 align="center"
+                :body-cell-style="bodyCellStyle"
               >
                 <template #cell="{ record }">
                   <a-button
@@ -188,7 +197,11 @@
             <a-input v-model="form.name" placeholder="请输入字典名称" />
           </a-form-item>
           <a-form-item label="字典编码" field="code">
-            <a-input v-model="form.code" placeholder="请输入字典编码" :disabled="form.isSystem" />
+            <a-input
+              v-model="form.code"
+              placeholder="请输入字典编码"
+              :disabled="form.isSystem"
+            />
           </a-form-item>
           <a-form-item label="描述" field="description">
             <a-textarea
@@ -235,6 +248,16 @@
   const exportLoading = ref(false);
   const visible = ref(false);
   const dictId = ref();
+  const lastSelectDict = ref<TableData>();
+  const bodyCellStyle = (record: TableData) => {
+    if (record.click) {
+      return {
+        color: 'rgb(var(--arcoblue-6))',
+        cursor: 'pointer',
+      };
+    }
+    return { cursor: 'pointer' };
+  };
 
   const data = reactive({
     // 查询参数
@@ -260,8 +283,11 @@
    * @param record 所选行记录
    */
   const handleSelect = (record: TableData) => {
-    proxy.$refs.tableRef.selectAll(false);
-    proxy.$refs.tableRef.select(record.id);
+    if (lastSelectDict.value) {
+      delete lastSelectDict.value.click;
+    }
+    lastSelectDict.value = record;
+    record.click = true;
     dictId.value = record.id;
     proxy.$refs.dictItemRef.getList(record.id);
   };
@@ -272,7 +298,6 @@
    * @param params 查询参数
    */
   const getList = (params: ListParam = { ...queryParams.value }) => {
-    dictId.value = null;
     loading.value = true;
     list(params)
       .then((res) => {
@@ -393,9 +418,6 @@
     ids.value = rowKeys;
     single.value = rowKeys.length !== 1;
     multiple.value = !rowKeys.length;
-    if (!rowKeys.length) {
-      dictId.value = null;
-    }
   };
 
   /**
@@ -454,8 +476,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  :deep(.dictTable .arco-table-td) {
-    cursor: pointer;
-  }
-</style>
+<style scoped lang="less"></style>

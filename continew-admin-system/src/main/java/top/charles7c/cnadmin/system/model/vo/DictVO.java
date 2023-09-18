@@ -57,4 +57,9 @@ public class DictVO extends BaseVO {
      */
     @Schema(description = "是否为系统内置数据", example = "true")
     private Boolean isSystem;
+
+    @Override
+    public Boolean getDisabled() {
+        return this.getIsSystem();
+    }
 }
