@@ -31,9 +31,9 @@ import cn.hutool.core.lang.RegexPool;
 public class RegexConsts implements RegexPool {
 
     /**
-     * 用户名正则（长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头）
+     * 用户名正则（长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头）
      */
-    public static final String USERNAME = "^[a-zA-Z][a-zA-Z0-9_]{3,15}$";
+    public static final String USERNAME = "^[a-zA-Z][a-zA-Z0-9_]{3,64}$";
 
     /**
      * 密码正则（长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字）
@@ -41,14 +41,14 @@ public class RegexConsts implements RegexPool {
     public static final String PASSWORD = "^(?=.*\\d)(?=.*[a-z]).{6,32}$";
 
     /**
-     * 通用编码正则（长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头）
+     * 通用编码正则（长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头）
      */
-    public static final String GENERAL_CODE = "^[a-zA-Z][a-zA-Z0-9_]{1,15}$";
+    public static final String GENERAL_CODE = "^[a-zA-Z][a-zA-Z0-9_]{1,29}$";
 
     /**
-     * 通用名称正则（长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线）
+     * 通用名称正则（长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线）
      */
-    public static final String GENERAL_NAME = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{1,20}$";
+    public static final String GENERAL_NAME = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{2,30}$";
 
     /**
      * 包名正则（可以包含大小写字母、数字、下划线，每一级包名不能以数字开头）

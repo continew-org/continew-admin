@@ -15,7 +15,7 @@
         <a-input
           v-model="form.username"
           :placeholder="$t('login.form.placeholder.username')"
-          max-length="50"
+          :max-length="64"
         >
           <template #prefix><icon-user /></template>
         </a-input>
@@ -24,7 +24,7 @@
         <a-input-password
           v-model="form.password"
           :placeholder="$t('login.form.placeholder.password')"
-          max-length="32"
+          :max-length="32"
           allow-clear
         >
           <template #prefix><icon-lock /></template>
@@ -34,6 +34,7 @@
         <a-input
           v-model="form.captcha"
           :placeholder="$t('login.form.placeholder.captcha')"
+          :max-length="4"
           allow-clear
           style="width: 63%"
         >

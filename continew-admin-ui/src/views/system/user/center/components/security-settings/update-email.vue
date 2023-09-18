@@ -71,7 +71,7 @@
               'userCenter.securitySettings.updateEmail.form.placeholder.captcha'
             )
           "
-          max-length="6"
+          :max-length="6"
           allow-clear
           style="width: 80%"
         />
@@ -100,7 +100,7 @@
               'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword'
             )
           "
-          max-length="32"
+          :max-length="32"
           allow-clear
         />
       </a-form-item>

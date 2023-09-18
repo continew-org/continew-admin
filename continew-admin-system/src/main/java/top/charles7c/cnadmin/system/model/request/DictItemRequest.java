@@ -43,6 +43,7 @@ public class DictItemRequest extends BaseRequest {
      */
     @Schema(description = "字典标签", example = "通知")
     @NotBlank(message = "字典标签不能为空")
+    @Length(max = 30, message = "字典标签长度不能超过 {max} 个字符")
     private String label;
 
     /**
@@ -50,18 +51,21 @@ public class DictItemRequest extends BaseRequest {
      */
     @Schema(description = "字典值", example = "1")
     @NotBlank(message = "字典值不能为空")
+    @Length(max = 30, message = "字典值长度不能超过 {max} 个字符")
     private String value;
 
     /**
      * 背景颜色
      */
     @Schema(description = "背景颜色", example = "blue")
+    @Length(max = 30, message = "背景颜色长度不能超过 {max} 个字符")
     private String color;
 
     /**
      * 排序
      */
     @Schema(description = "排序", example = "1")
+    @Min(value = 1, message = "排序最小值为 {value}")
     private Integer sort;
 
     /**

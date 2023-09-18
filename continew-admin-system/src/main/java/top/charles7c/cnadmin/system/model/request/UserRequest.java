@@ -51,7 +51,7 @@ public class UserRequest extends BaseRequest {
      */
     @Schema(description = "用户名", example = "zhangsan")
     @NotBlank(message = "用户名不能为空")
-    @Pattern(regexp = RegexConsts.USERNAME, message = "用户名长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头")
+    @Pattern(regexp = RegexConsts.USERNAME, message = "用户名长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头")
     private String username;
 
     /**
@@ -59,7 +59,7 @@ public class UserRequest extends BaseRequest {
      */
     @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{4,30}$", message = "昵称长度为 4 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**
@@ -67,6 +67,7 @@ public class UserRequest extends BaseRequest {
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
     @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误")
+    @Length(max = 255, message = "邮箱长度不能超过 {max} 个字符")
     private String email;
 
     /**

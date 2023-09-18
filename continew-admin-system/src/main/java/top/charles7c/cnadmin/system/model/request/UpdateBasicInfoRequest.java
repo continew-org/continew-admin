@@ -46,7 +46,7 @@ public class UpdateBasicInfoRequest implements Serializable {
      */
     @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**

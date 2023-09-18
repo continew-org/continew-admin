@@ -494,20 +494,19 @@
       name: [
         { required: true, message: '请输入角色名称' },
         {
-          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
+          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}$/,
           message:
-            '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线',
+            '长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线',
         },
       ],
       code: [
         { required: true, message: '请输入角色编码' },
         {
-          match: /^[a-zA-Z][a-zA-Z0-9_]{1,15}$/,
-          message: '长度为 2 到 16 位，可以包含字母、数字，下划线，以字母开头',
+          match: /^[a-zA-Z][a-zA-Z0-9_]{1,29}$/,
+          message: '长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头',
         },
       ],
       dataScope: [{ required: true, message: '请选择数据权限' }],
-      sort: [{ required: true, message: '请输入角色排序' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);

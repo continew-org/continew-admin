@@ -246,6 +246,7 @@
             <a-input
               v-model="form.title"
               placeholder="请输入菜单标题"
+              :max-length="30"
               style="width: 182px"
             />
           </a-form-item>
@@ -266,6 +267,7 @@
             <a-input
               v-model="form.permission"
               placeholder="请输入权限标识"
+              :max-length="100"
               style="width: 182px"
             />
           </a-form-item>
@@ -273,6 +275,7 @@
             <a-input
               v-model="form.path"
               placeholder="请输入路由地址"
+              :max-length="255"
               style="width: 473px"
             />
           </a-form-item>
@@ -284,6 +287,7 @@
             <a-input
               v-model="form.name"
               placeholder="请输入组件名称"
+              :max-length="50"
               style="width: 182px"
             />
           </a-form-item>
@@ -295,6 +299,7 @@
             <a-input
               v-model="form.component"
               placeholder="请输入组件路径"
+              :max-length="255"
               style="width: 182px"
             />
           </a-form-item>

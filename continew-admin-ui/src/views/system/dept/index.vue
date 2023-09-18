@@ -356,8 +356,14 @@
     // 表单验证规则
     rules: {
       parentId: [{ required: true, message: '请选择上级部门' }],
-      name: [{ required: true, message: '请输入部门名称' }],
-      sort: [{ required: true, message: '请输入部门排序' }],
+      name: [
+        { required: true, message: '请输入部门名称' },
+        {
+          match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}$/,
+          message:
+            '长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线',
+        },
+      ],
     },
   });
   const { queryParams, form, rules } = toRefs(data);

@@ -103,16 +103,25 @@
     >
       <a-form ref="formRef" :model="form" :rules="rules" size="large">
         <a-form-item label="字典标签" field="label">
-          <a-input v-model="form.label" placeholder="请输入字典标签" />
+          <a-input
+            v-model="form.label"
+            placeholder="请输入字典标签"
+            :max-length="30"
+          />
         </a-form-item>
         <a-form-item label="字典值" field="value">
-          <a-input v-model="form.value" placeholder="请输入字典值" />
+          <a-input
+            v-model="form.value"
+            placeholder="请输入字典值"
+            :max-length="30"
+          />
         </a-form-item>
         <a-form-item label="背景颜色" field="color">
           <a-auto-complete
             v-model="form.color"
             :data="colors"
             placeholder="请选择或输入背景颜色"
+            :max-length="30"
             allow-clear
           >
             <template #option="{ data }">
@@ -198,8 +207,8 @@
     form: {} as DataRecord,
     // 表单验证规则
     rules: {
-      label: [{ required: true, message: '字典标签不能为空' }],
-      value: [{ required: true, message: '字典值不能为空' }],
+      label: [{ required: true, message: '请输入字典标签' }],
+      value: [{ required: true, message: '请输入字典值' }],
     },
   });
   const { queryParams, form, rules } = toRefs(data);

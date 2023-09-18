@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 
 /**
  * 创建或修改字典信息
@@ -43,6 +44,7 @@ public class DictRequest extends BaseRequest {
      */
     @Schema(description = "字典名称", example = "公告类型")
     @NotBlank(message = "字典名称不能为空")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "字典名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
@@ -50,6 +52,7 @@ public class DictRequest extends BaseRequest {
      */
     @Schema(description = "字典编码", example = "announcement_type")
     @NotBlank(message = "字典编码不能为空")
+    @Pattern(regexp = RegexConsts.GENERAL_CODE, message = "字典编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
     private String code;
 
     /**

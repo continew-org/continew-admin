@@ -15,7 +15,7 @@
       <a-input
         v-model="form.username"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.username')"
-        max-length="16"
+        :max-length="64"
       />
     </a-form-item>
     <a-form-item
@@ -25,7 +25,7 @@
       <a-input
         v-model="form.nickname"
         :placeholder="$t('userCenter.basicInfo.form.placeholder.nickname')"
-        max-length="20"
+        :max-length="30"
       />
     </a-form-item>
     <a-form-item

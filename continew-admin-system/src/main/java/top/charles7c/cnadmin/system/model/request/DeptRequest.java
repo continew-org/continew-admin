@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -55,14 +56,14 @@ public class DeptRequest extends BaseRequest {
      */
     @Schema(description = "部门名称", example = "测试部")
     @NotBlank(message = "部门名称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "部门名称长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "部门名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
      * 部门排序
      */
     @Schema(description = "部门排序", example = "1")
-    @NotNull(message = "部门排序不能为空")
+    @Min(value = 1, message = "部门排序最小值为 {value}")
     private Integer sort;
 
     /**

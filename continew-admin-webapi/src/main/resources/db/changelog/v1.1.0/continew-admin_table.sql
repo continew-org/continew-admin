@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `gen_field_config` (
 
 CREATE TABLE IF NOT EXISTS `sys_announcement` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
-    `title` varchar(255) NOT NULL COMMENT '标题',
+    `title` varchar(150) NOT NULL COMMENT '标题',
     `content` mediumtext NOT NULL COMMENT '内容',
     `type` varchar(30) NOT NULL COMMENT '类型',
     `effective_time` datetime DEFAULT NULL COMMENT '生效时间',

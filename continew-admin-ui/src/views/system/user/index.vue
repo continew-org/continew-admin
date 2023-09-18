@@ -303,12 +303,14 @@
               v-model="form.username"
               placeholder="请输入用户名"
               style="width: 162px"
+              :max-length="64"
             />
           </a-form-item>
           <a-form-item label="昵称" field="nickname">
             <a-input
               v-model="form.nickname"
               placeholder="请输入昵称"
+              :max-length="30"
               style="width: 162px"
             />
           </a-form-item>
@@ -316,6 +318,7 @@
             <a-input
               v-model="form.email"
               placeholder="请输入邮箱"
+              :max-length="255"
               style="width: 162px"
             />
           </a-form-item>
@@ -323,6 +326,7 @@
             <a-input
               v-model="form.phone"
               placeholder="请输入手机号码"
+              :max-length="15"
               style="width: 162px"
             />
           </a-form-item>

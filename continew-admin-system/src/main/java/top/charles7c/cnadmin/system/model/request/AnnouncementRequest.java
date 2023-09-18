@@ -45,7 +45,7 @@ public class AnnouncementRequest extends BaseRequest {
      */
     @Schema(description = "标题", example = "这是公告标题")
     @NotBlank(message = "标题不能为空")
-    @Length(max = 255, message = "标题长度不能超过 {max} 个字符")
+    @Length(max = 150, message = "标题长度不能超过 {max} 个字符")
     private String title;
 
     /**
@@ -60,6 +60,7 @@ public class AnnouncementRequest extends BaseRequest {
      */
     @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
     @NotBlank(message = "类型不能为空")
+    @Length(max = 30, message = "类型长度不能超过 {max} 个字符")
     private String type;
 
     /**

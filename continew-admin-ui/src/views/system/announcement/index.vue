@@ -217,7 +217,7 @@
                 <a-input
                   v-model="form.title"
                   placeholder="请输入标题"
-                  max-length="255"
+                  :max-length="150"
                   style="width: 100%"
                 />
               </a-form-item>

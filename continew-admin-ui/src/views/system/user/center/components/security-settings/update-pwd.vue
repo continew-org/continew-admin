@@ -55,7 +55,7 @@
               'userCenter.securitySettings.updatePwd.form.placeholder.oldPassword'
             )
           "
-          max-length="32"
+          :max-length="32"
           allow-clear
         />
       </a-form-item>
@@ -72,7 +72,7 @@
               'userCenter.securitySettings.updatePwd.form.placeholder.newPassword'
             )
           "
-          max-length="32"
+          :max-length="32"
           allow-clear
         />
       </a-form-item>
@@ -89,7 +89,7 @@
               'userCenter.securitySettings.updatePwd.form.placeholder.rePassword'
             )
           "
-          max-length="32"
+          :max-length="32"
           allow-clear
         />
       </a-form-item>

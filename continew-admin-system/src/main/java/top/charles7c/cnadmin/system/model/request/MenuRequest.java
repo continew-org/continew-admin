@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -23,6 +24,8 @@ import javax.validation.constraints.Pattern;
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseRequest;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
@@ -52,6 +55,7 @@ public class MenuRequest extends BaseRequest {
      * 菜单图标
      */
     @Schema(description = "菜单图标", example = "user")
+    @Length(max = 50, message = "菜单图标长度不能超过 {max} 个字符")
     private String icon;
 
     /**
@@ -59,7 +63,7 @@ public class MenuRequest extends BaseRequest {
      */
     @Schema(description = "菜单标题", example = "用户管理")
     @NotBlank(message = "菜单标题不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "菜单标题长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "菜单标题长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String title;
 
     /**
@@ -67,30 +71,35 @@ public class MenuRequest extends BaseRequest {
      */
     @Schema(description = "菜单排序", example = "1")
     @NotNull(message = "菜单排序不能为空")
+    @Min(value = 1, message = "菜单排序最小值为 {value}")
     private Integer sort;
 
     /**
      * 权限标识
      */
     @Schema(description = "权限标识", example = "system:user:list")
+    @Length(max = 100, message = "权限标识长度不能超过 {max} 个字符")
     private String permission;
 
     /**
      * 路由地址
      */
     @Schema(description = "路由地址", example = "/system/user")
+    @Length(max = 255, message = "路由地址长度不能超过 {max} 个字符")
     private String path;
 
     /**
      * 组件名称
      */
     @Schema(description = "组件名称", example = "User")
+    @Length(max = 50, message = "组件名称长度不能超过 {max} 个字符")
     private String name;
 
     /**
      * 组件路径
      */
     @Schema(description = "组件路径", example = "/system/user/index")
+    @Length(max = 255, message = "组件路径长度不能超过 {max} 个字符")
     private String component;
 
     /**
