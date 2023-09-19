@@ -160,7 +160,7 @@
           const { rememberMe } = loginConfig.value;
           const { username } = values;
           loginConfig.value.username = rememberMe ? username : '';
-          proxy.$message.success(t('login.form.login.success'));
+          proxy.$notification.success(t('login.form.login.success'));
         })
         .catch(() => {
           getCaptcha();

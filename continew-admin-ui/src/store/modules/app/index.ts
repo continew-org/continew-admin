@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
-import { Notification } from '@arco-design/web-vue';
-import type { NotificationReturn } from '@arco-design/web-vue/es/notification/interface';
+import { h } from 'vue';
+import { Message } from '@arco-design/web-vue';
+import {
+  IconCheckCircleFill,
+  IconCloseCircleFill,
+} from '@arco-design/web-vue/es/icon';
+import type { MessageReturn } from '@arco-design/web-vue/es/message/interface';
 import type { RouteRecordNormalized } from 'vue-router';
 import defaultSettings from '@/config/settings.json';
 import { listRoute } from '@/api/auth/login';
@@ -66,26 +71,26 @@ const useAppStore = defineStore('app', {
       this.hideMenu = value;
     },
     async fetchServerMenuConfig() {
-      let notifyInstance: NotificationReturn | null = null;
+      let messageInstance: MessageReturn | null = null;
       try {
-        notifyInstance = Notification.info({
+        messageInstance = Message.loading({
           id: 'menuNotice', // Keep the instance id the same
-          content: '菜单加载中...',
-          closable: true,
+          content: '菜单加载中',
         });
         const { data } = await listRoute();
         this.serverMenu = data;
-        notifyInstance = Notification.success({
+        messageInstance = Message.success({
           id: 'menuNotice',
           content: '菜单加载成功',
-          closable: true,
+          duration: 1000,
+          icon: () => h(IconCheckCircleFill),
         });
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        notifyInstance = Notification.error({
+        messageInstance = Message.error({
           id: 'menuNotice',
           content: '菜单加载失败',
-          closable: true,
+          icon: () => h(IconCloseCircleFill),
         });
       }
     },
