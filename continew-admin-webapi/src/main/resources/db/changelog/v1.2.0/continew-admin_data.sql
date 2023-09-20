@@ -26,3 +26,12 @@ INSERT IGNORE INTO `sys_dict_item`
 VALUES
 (1, '通知', '1', 'blue', 1, NULL, 1, 1, NOW(), NULL, NULL),
 (2, '活动', '2', 'orangered', 2, NULL, 1, 1, NOW(), NULL, NULL);
+
+-- 初始化默认参数
+INSERT IGNORE INTO `sys_option`
+(`name`, `code`, `value`, `default_value`, `description`, `update_user`, `update_time`)
+VALUES
+('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
+('版权信息', 'site_copyright', NULL, 'Copyright © 2022-2023 Charles7c ⋅ ContiNew Admin ⋅ 津ICP备2022005864号-2', '用于显示登录页面的底部版权信息。', NULL, NULL),
+('系统LOGO（16*16）', 'site_favicon', NULL, 'https://cnadmin.charles7c.top/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
+('系统LOGO（48*48）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
