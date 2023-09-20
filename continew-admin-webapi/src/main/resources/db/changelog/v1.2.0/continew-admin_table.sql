@@ -34,3 +34,14 @@ CREATE TABLE IF NOT EXISTS `sys_dict_item` (
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
+
+CREATE TABLE IF NOT EXISTS `sys_option` (
+    `name` varchar(50) NOT NULL COMMENT '参数名称',
+    `code` varchar(100) NOT NULL COMMENT '参数键',
+    `value` text DEFAULT NULL COMMENT '参数值',
+    `default_value` text DEFAULT NULL COMMENT '参数默认值',
+    `description` varchar(200) DEFAULT NULL COMMENT '描述',
+    `update_user` bigint(20) unsigned DEFAULT NULL COMMENT '修改人',
+    `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+    PRIMARY KEY (`code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='参数表';
