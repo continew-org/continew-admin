@@ -29,3 +29,7 @@ export function list(params: ListParam) {
     },
   });
 }
+
+export function resetValue(params: ListParam) {
+  return axios.patch(`${BASE_URL}/value`, params);
+}

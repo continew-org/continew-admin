@@ -12,7 +12,7 @@ VALUES
 (1064, '字典导出', 1060, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dict:export', 4, 1, 1, NOW(), NULL, NULL),
 (1070, '系统配置', 1000, 2, '/system/config', 'Config', 'system/config/index', 'desktop', b'0', b'0', b'0', 'system:config:list', 7, 1, 1, NOW(), NULL, NULL),
 (1071, '修改配置', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:config:update', 1, 1, 1, NOW(), NULL, NULL),
-(1072, '恢复默认', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:config:delete', 2, 1, 1, NOW(), NULL, NULL);
+(1072, '恢复默认', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:config:reset', 2, 1, 1, NOW(), NULL, NULL);
 
 -- 初始化默认字典
 INSERT IGNORE INTO `sys_dict`

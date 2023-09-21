@@ -122,10 +122,10 @@
             </a-button>
             <a-button
               v-if="!isEdit"
-              v-permission="['system:config:delete']"
-              @click="toRestore"
+              v-permission="['system:config:reset']"
+              @click="toResetValue"
             >
-              <template #icon><icon-redo /></template>恢复默认值
+              <template #icon><icon-redo /></template>恢复默认
             </a-button>
             <a-button
               v-if="isEdit"
@@ -138,7 +138,7 @@
             <a-button
               v-if="isEdit"
               v-permission="['system:config:update']"
-              @click="handleReset"
+              @click="reset"
             >
               <template #icon><icon-refresh /></template>重置
             </a-button>
@@ -164,6 +164,7 @@
     DataRecord,
     ListParam,
     list,
+    resetValue,
   } from '@/api/system/config';
 
   const { proxy } = getCurrentInstance() as any;
@@ -187,13 +188,6 @@
     },
   });
   const { queryParams, form, rules } = toRefs(data);
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    proxy.$refs.formRef?.resetFields();
-  };
 
   /**
    * 查询配置
@@ -284,23 +278,26 @@
   };
 
   /**
-   * 恢复默认值
+   * 恢复默认
    */
-  const handleRestore = () => {
-    console.log('恢复默认值');
+  const handleResetValue = async () => {
+    await resetValue(queryParams.value);
+    proxy.$message.success('恢复成功');
+    await getConfig();
   };
 
   /**
-   * 点击恢复默认值
+   * 点击恢复默认
    */
-  const toRestore = () => {
+  const toResetValue = () => {
     proxy.$modal.warning({
       title: '警告',
       titleAlign: 'start',
-      content: '确定要恢复基础配置为默认值吗？',
+      content: '确认恢复基础配置为默认值吗？',
+      okText: '确认恢复',
       hideCancel: false,
       onOk: () => {
-        handleRestore();
+        handleResetValue();
       },
     });
   };
@@ -313,10 +310,10 @@
   };
 
   /**
-   * 重置
+   * 重置表单
    */
-  const handleReset = () => {
-    reset();
+  const reset = () => {
+    proxy.$refs.formRef?.resetFields();
   };
 
   /**
@@ -324,7 +321,7 @@
    */
   const handleCancel = () => {
     isEdit.value = false;
-    handleReset();
+    reset();
   };
 </script>
 
