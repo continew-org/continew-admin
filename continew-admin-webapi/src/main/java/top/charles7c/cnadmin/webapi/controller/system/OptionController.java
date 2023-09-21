@@ -18,6 +18,7 @@ package top.charles7c.cnadmin.webapi.controller.system;
 
 import java.util.List;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +49,7 @@ public class OptionController {
     private final OptionService optionService;
 
     @Operation(summary = "查询系统参数列表", description = "查询系统参数列表")
+    @SaCheckPermission("system:config:list")
     @GetMapping
     public R<List<OptionVO>> list(@Validated OptionQuery query) {
         return R.ok(optionService.list(query));

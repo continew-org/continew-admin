@@ -9,7 +9,7 @@
     :disabled="!isEdit"
   >
     <a-list class="list-layout" :bordered="false">
-      <a-list-item class="list-item">
+      <a-list-item>
         <a-form-item class="image-item" hide-label field="favicon">
           {{ siteFavicon?.name }}
           <template #extra>
@@ -52,7 +52,7 @@
           </template>
         </a-form-item>
       </a-list-item>
-      <a-list-item class="list-item">
+      <a-list-item>
         <a-form-item class="image-item" hide-label field="site_logo">
           {{ siteLogo?.name }}
           <template #extra>
@@ -95,7 +95,7 @@
           </template>
         </a-form-item>
       </a-list-item>
-      <a-list-item class="list-item" style="border: none">
+      <a-list-item style="padding-top: 20px; border: none">
         <a-form-item
           class="input-item"
           :label="siteTitle?.name"
@@ -344,16 +344,20 @@
   }
 
   .arco-form .image-item {
-    margin-left: 2px;
     margin-bottom: 0;
   }
 
   .arco-form .input-item {
-    margin-left: -18px;
+    margin-left: -20px;
   }
 
-  .list-layout .list-item {
-    padding: 20px 0;
+  :deep(
+      .arco-list-medium
+        .arco-list-content-wrapper
+        .arco-list-content
+        > .arco-list-item
+    ) {
+    padding: 13px;
     border-bottom: 1px solid var(--color-fill-3);
   }
 </style>

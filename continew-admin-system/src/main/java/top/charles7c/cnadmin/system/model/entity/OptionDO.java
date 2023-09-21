@@ -21,11 +21,13 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
- * 系统参数表
+ * 系统参数实体
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:20
@@ -65,10 +67,12 @@ public class OptionDO implements Serializable {
     /**
      * 修改人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private Long updateUser;
 
     /**
      * 修改时间
      */
+    @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 }
