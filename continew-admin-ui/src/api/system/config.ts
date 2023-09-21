@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'query-string';
 
-const BASE_URL = '/api/system/option';
+const BASE_URL = '/system/option';
 
 export interface BasicConfigRecord {
   site_title?: string;
