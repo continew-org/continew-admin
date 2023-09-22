@@ -27,13 +27,13 @@ import org.hibernate.validator.constraints.Length;
 import top.charles7c.cnadmin.common.base.BaseRequest;
 
 /**
- * 修改系统参数信息
+ * 修改参数信息
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
 @Data
-@Schema(description = "修改系统参数信息")
+@Schema(description = "修改参数信息")
 public class OptionRequest extends BaseRequest {
 
     private static final long serialVersionUID = 1L;

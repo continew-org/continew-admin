@@ -24,7 +24,7 @@ import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 
 /**
- * 系统参数业务接口
+ * 参数业务接口
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
@@ -41,7 +41,7 @@ public interface OptionService {
     List<OptionVO> list(OptionQuery query);
 
     /**
-     * 修改系统参数
+     * 修改参数
      *
      * @param request
      *            参数信息
@@ -49,7 +49,7 @@ public interface OptionService {
     void update(List<OptionRequest> request);
 
     /**
-     * 重置系统参数
+     * 重置参数
      *
      * @param request
      *            重置参数信息

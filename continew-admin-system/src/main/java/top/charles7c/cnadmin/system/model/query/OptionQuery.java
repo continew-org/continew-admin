@@ -29,13 +29,13 @@ import top.charles7c.cnadmin.common.annotation.Query;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 
 /**
- * 系统参数查询条件
+ * 参数查询条件
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
 @Data
-@Schema(description = "系统参数查询条件")
+@Schema(description = "参数查询条件")
 public class OptionQuery implements Serializable {
 
     private static final long serialVersionUID = 1L;

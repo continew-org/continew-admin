@@ -27,7 +27,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
- * 系统参数实体
+ * 参数实体
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:20

@@ -34,7 +34,7 @@ import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
 /**
- * 系统参数业务实现
+ * 参数业务实现
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38

@@ -36,12 +36,12 @@ import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
 /**
- * 系统参数管理 API
+ * 参数管理 API
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
-@Tag(name = "系统参数管理 API")
+@Tag(name = "参数管理 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/option")
@@ -49,14 +49,14 @@ public class OptionController {
 
     private final OptionService optionService;
 
-    @Operation(summary = "查询系统参数列表", description = "查询系统参数列表")
+    @Operation(summary = "查询参数列表", description = "查询参数列表")
     @SaCheckPermission("system:config:list")
     @GetMapping
     public R<List<OptionVO>> list(@Validated OptionQuery query) {
         return R.ok(optionService.list(query));
     }
 
-    @Operation(summary = "修改系统参数", description = "修改系统参数")
+    @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
     public R update(@Validated @RequestBody List<OptionRequest> request) {
@@ -64,7 +64,7 @@ public class OptionController {
         return R.ok();
     }
 
-    @Operation(summary = "重置系统参数", description = "重置系统参数")
+    @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
     public R resetValue(@Validated @RequestBody ResetOptionValueRequest request) {

@@ -20,7 +20,7 @@ import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.OptionDO;
 
 /**
- * 系统参数 Mapper
+ * 参数 Mapper
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38

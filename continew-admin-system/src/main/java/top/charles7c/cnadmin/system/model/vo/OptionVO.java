@@ -27,13 +27,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * 系统参数信息
+ * 参数信息
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
 @Data
-@Schema(description = "系统参数信息")
+@Schema(description = "参数信息")
 public class OptionVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
