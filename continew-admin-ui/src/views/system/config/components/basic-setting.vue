@@ -164,6 +164,7 @@
     DataRecord,
     ListParam,
     list,
+    save,
     resetValue,
   } from '@/api/system/config';
 
@@ -207,18 +208,49 @@
     siteFavicon.value = dataList.value.find(
       (option) => option.code === 'site_favicon'
     );
-    form.value.site_title = siteTitle.value?.value;
-    form.value.site_copyright = siteCopyright.value?.value;
+    form.value = {
+      site_title: siteTitle.value?.value,
+      site_copyright: siteCopyright.value?.value,
+      site_logo: {
+        url: siteLogo.value?.value,
+      },
+      site_favicon: {
+        url: siteFavicon.value?.value,
+      },
+    };
     logoFile.value.url = siteLogo.value?.value;
     faviconFile.value.url = siteFavicon.value?.value;
   };
   getConfig();
 
   /**
+   * 取消
+   */
+  const handleCancel = () => {
+    isEdit.value = false;
+  };
+
+  /**
    * 保存
    */
-  const handleSave = async () => {
-    isEdit.value = false;
+  const handleSave = () => {
+    proxy.$refs.formRef.validate((valid: any) => {
+      if (!valid) {
+        const optionList: DataRecord[] = Object.entries(form.value).map(
+          (item) => {
+            return {
+              code: item[0],
+              value: item[1]?.url || item[1],
+            };
+          }
+        );
+        save(optionList).then((res) => {
+          // siteConfigStore().save(data.form);
+          handleCancel();
+          proxy.$message.success(res.msg);
+        });
+      }
+    });
   };
 
   /**
@@ -314,14 +346,6 @@
    */
   const reset = () => {
     proxy.$refs.formRef?.resetFields();
-  };
-
-  /**
-   * 取消
-   */
-  const handleCancel = () => {
-    isEdit.value = false;
-    reset();
   };
 </script>
 

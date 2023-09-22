@@ -17,6 +17,8 @@
 package top.charles7c.cnadmin.monitor.interceptor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +46,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpStatus;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
@@ -214,19 +218,31 @@ public class LogInterceptor implements HandlerInterceptor {
         logDO.setRequestMethod(request.getMethod());
         logDO.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
-        if (StrUtil.isNotBlank(requestBody)) {
-            logDO.setRequestBody(this.desensitize(
-                JSONUtil.isTypeJSON(requestBody) ? JSONUtil.parseObj(requestBody) : ServletUtil.getParamMap(request)));
-        }
-        logDO.setClientIp(ServletUtil.getClientIP(request));
-        logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
-        logDO.setBrowser(ServletUtils.getBrowser(request));
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
         if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(request.getRequestURI())) {
             LoginRequest loginRequest = JSONUtil.toBean(requestBody, LoginRequest.class);
             logDO.setCreateUser(
                 ExceptionUtils.exToNull(() -> userService.getByUsername(loginRequest.getUsername()).getId()));
         }
+        if (StrUtil.isNotBlank(requestBody)) {
+            if (JSONUtil.isTypeJSONObject(requestBody)) {
+                requestBody = this.desensitize(JSONUtil.parseObj(requestBody));
+            } else if (JSONUtil.isTypeJSONArray(requestBody)) {
+                JSONArray requestBodyJsonArr = JSONUtil.parseArray(requestBody);
+                List<JSONObject> requestBodyJsonObjList = new ArrayList<>(requestBodyJsonArr.size());
+                for (Object requestBodyJsonObj : requestBodyJsonArr) {
+                    requestBodyJsonObjList
+                        .add(JSONUtil.parseObj(this.desensitize(JSONUtil.parseObj(requestBodyJsonObj))));
+                }
+                requestBody = JSONUtil.toJsonStr(requestBodyJsonObjList);
+            } else {
+                requestBody = this.desensitize(ServletUtil.getParamMap(request));
+            }
+            logDO.setRequestBody(requestBody);
+        }
+        logDO.setClientIp(ServletUtil.getClientIP(request));
+        logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
+        logDO.setBrowser(ServletUtils.getBrowser(request));
     }
 
     /**

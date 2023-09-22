@@ -11,7 +11,7 @@ export interface BasicConfigRecord {
 }
 
 export interface DataRecord {
-  name: string;
+  name?: string;
   code: string;
   value: string;
   description?: string;
@@ -28,6 +28,10 @@ export function list(params: ListParam) {
       return qs.stringify(obj);
     },
   });
+}
+
+export function save(req: DataRecord[]) {
+  return axios.patch(`${BASE_URL}`, req);
 }
 
 export function resetValue(params: ListParam) {
