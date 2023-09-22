@@ -18,19 +18,20 @@ package top.charles7c.cnadmin.webapi.controller.system;
 
 import java.util.List;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import cn.dev33.satoken.annotation.SaCheckPermission;
 
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
+import top.charles7c.cnadmin.system.model.request.OptionRequest;
+import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
@@ -53,5 +54,21 @@ public class OptionController {
     @GetMapping
     public R<List<OptionVO>> list(@Validated OptionQuery query) {
         return R.ok(optionService.list(query));
+    }
+
+    @Operation(summary = "修改系统参数", description = "修改系统参数")
+    @SaCheckPermission("system:config:update")
+    @PatchMapping
+    public R update(@Validated @RequestBody List<OptionRequest> request) {
+        optionService.update(request);
+        return R.ok();
+    }
+
+    @Operation(summary = "重置系统参数", description = "重置系统参数")
+    @SaCheckPermission("system:config:reset")
+    @PatchMapping("/value")
+    public R resetValue(@Validated @RequestBody ResetOptionValueRequest request) {
+        optionService.resetValue(request);
+        return R.ok();
     }
 }

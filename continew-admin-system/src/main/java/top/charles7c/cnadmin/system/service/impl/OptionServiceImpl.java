@@ -26,7 +26,10 @@ import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.system.mapper.OptionMapper;
+import top.charles7c.cnadmin.system.model.entity.OptionDO;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
+import top.charles7c.cnadmin.system.model.request.OptionRequest;
+import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
@@ -45,5 +48,15 @@ public class OptionServiceImpl implements OptionService {
     @Override
     public List<OptionVO> list(OptionQuery query) {
         return BeanUtil.copyToList(baseMapper.selectList(QueryHelper.build(query)), OptionVO.class);
+    }
+
+    @Override
+    public void update(List<OptionRequest> request) {
+        baseMapper.updateBatchById(BeanUtil.copyToList(request, OptionDO.class));
+    }
+
+    @Override
+    public void resetValue(ResetOptionValueRequest request) {
+        baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, request.getCode()).update();
     }
 }
