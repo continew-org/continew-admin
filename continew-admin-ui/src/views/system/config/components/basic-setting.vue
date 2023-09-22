@@ -1,10 +1,9 @@
 <template>
   <a-form
     ref="formRef"
+    layout="vertical"
     :model="form"
     :rules="rules"
-    :label-col-props="{ span: 2 }"
-    :wrapper-col-props="{ span: 10 }"
     size="large"
     :disabled="!isEdit"
   >
@@ -95,7 +94,7 @@
           </template>
         </a-form-item>
       </a-list-item>
-      <a-list-item style="padding-top: 20px; border: none">
+      <a-list-item style="padding-top: 13px; border: none">
         <a-form-item
           class="input-item"
           :label="siteTitle?.name"
@@ -110,7 +109,7 @@
         >
           <a-input v-model="form.site_copyright" placeholder="请输入版权信息" />
         </a-form-item>
-        <div style="margin: 0 0 0 3px">
+        <div>
           <a-space>
             <a-button
               v-if="!isEdit"
@@ -211,12 +210,8 @@
     form.value = {
       site_title: siteTitle.value?.value,
       site_copyright: siteCopyright.value?.value,
-      site_logo: {
-        url: siteLogo.value?.value,
-      },
-      site_favicon: {
-        url: siteFavicon.value?.value,
-      },
+      site_logo: siteLogo.value?.value,
+      site_favicon: siteFavicon.value?.value,
     };
     logoFile.value.url = siteLogo.value?.value;
     faviconFile.value.url = siteFavicon.value?.value;
@@ -240,7 +235,7 @@
           (item) => {
             return {
               code: item[0],
-              value: item[1]?.url || item[1],
+              value: item[1],
             };
           }
         );
@@ -368,10 +363,6 @@
     margin-bottom: 0;
   }
 
-  .arco-form .input-item {
-    margin-left: -20px;
-  }
-
   :deep(
       .arco-list-medium
         .arco-list-content-wrapper
@@ -380,5 +371,9 @@
     ) {
     padding: 13px;
     border-bottom: 1px solid var(--color-fill-3);
+  }
+
+  :deep(.arco-form-item-wrapper-col) {
+    width: 50%;
   }
 </style>

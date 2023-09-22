@@ -6,8 +6,8 @@ const BASE_URL = '/system/option';
 export interface BasicConfigRecord {
   site_title?: string;
   site_copyright?: string;
-  site_logo: { url?: string };
-  site_favicon: { url?: string };
+  site_logo?: string;
+  site_favicon?: string;
 }
 
 export interface DataRecord {
