@@ -38,3 +38,7 @@ export function listRoleDict(params: RoleParam) {
 export function listDict(code: string) {
   return axios.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`);
 }
+
+export function upload(data: FormData) {
+  return axios.post(`${BASE_URL}/file`, data);
+}

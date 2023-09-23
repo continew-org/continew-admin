@@ -3,6 +3,7 @@
     <a-space :size="54">
       <a-upload
         :file-list="avatarList"
+        accept="image/*"
         :show-file-list="false"
         list-type="picture-card"
         :show-upload-button="true"

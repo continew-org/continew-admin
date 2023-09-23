@@ -1,3 +1,3 @@
 export default {
-  'menu.system.config': '系统配置（开发中）',
+  'menu.system.config': '系统配置',
 };

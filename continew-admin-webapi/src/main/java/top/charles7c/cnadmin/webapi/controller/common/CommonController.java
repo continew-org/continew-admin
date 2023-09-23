@@ -16,11 +16,14 @@
 
 package top.charles7c.cnadmin.webapi.controller.common;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,21 +34,23 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
 import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.util.FileUtils;
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
@@ -72,6 +77,20 @@ public class CommonController {
     private final RoleService roleService;
     private final DictItemService dictItemService;
     private final ProjectProperties projectProperties;
+    private final LocalStorageProperties localStorageProperties;
+
+    @Operation(summary = "上传文件", description = "上传文件")
+    @PostMapping("/file")
+    public R<String> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
+        ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
+        Long maxSizeInMb = localStorageProperties.getMaxSizeInMb();
+        CheckUtils.throwIf(file.getSize() > maxSizeInMb * 1024 * 1024, "请上传小于 {}MB 的文件", maxSizeInMb);
+        String filePath = localStorageProperties.getPath().getFile();
+        File newFile = FileUtils.upload(file, filePath, false);
+        CheckUtils.throwIfNull(newFile, "上传文件失败");
+        assert null != newFile;
+        return R.ok("上传成功", newFile.getName());
+    }
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")

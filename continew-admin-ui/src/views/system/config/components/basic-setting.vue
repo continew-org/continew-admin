@@ -16,6 +16,7 @@
             <br />
             <a-upload
               :file-list="faviconFile ? [faviconFile] : []"
+              accept="image/*"
               :show-file-list="false"
               :custom-request="handleUploadFavicon"
               @change="handleChangeFavicon"
@@ -32,7 +33,7 @@
                     v-if="faviconFile && faviconFile.url"
                     class="arco-upload-list-picture custom-upload-avatar favicon"
                   >
-                    <img :src="faviconFile.url" />
+                    <img :src="getFile(faviconFile.url)" />
                     <div
                       v-if="isEdit"
                       class="arco-upload-list-picture-mask favicon"
@@ -59,6 +60,7 @@
             <br />
             <a-upload
               :file-list="logoFile ? [logoFile] : []"
+              accept="image/*"
               :show-file-list="false"
               :custom-request="handleUploadLogo"
               @change="handleChangeLogo"
@@ -75,7 +77,7 @@
                     v-if="logoFile && logoFile.url"
                     class="arco-upload-list-picture custom-upload-avatar logo"
                   >
-                    <img :src="logoFile.url" />
+                    <img :src="getFile(logoFile.url)" />
                     <div
                       v-if="isEdit"
                       class="arco-upload-list-picture-mask logo"
@@ -109,8 +111,15 @@
         >
           <a-input v-model="form.site_copyright" placeholder="请输入版权信息" />
         </a-form-item>
-        <div>
+        <div style="margin-top: 20px">
           <a-space>
+            <a-button
+              v-if="!isEdit"
+              v-permission="['system:config:reset']"
+              @click="toResetValue"
+            >
+              <template #icon><icon-redo /></template>恢复默认
+            </a-button>
             <a-button
               v-if="!isEdit"
               v-permission="['system:config:update']"
@@ -118,13 +127,6 @@
               @click="toEdit"
             >
               <template #icon><icon-edit /></template>修改
-            </a-button>
-            <a-button
-              v-if="!isEdit"
-              v-permission="['system:config:reset']"
-              @click="toResetValue"
-            >
-              <template #icon><icon-redo /></template>恢复默认
             </a-button>
             <a-button
               v-if="isEdit"
@@ -166,6 +168,8 @@
     save,
     resetValue,
   } from '@/api/system/config';
+  import { upload } from '@/api/common';
+  import getFile from '@/utils/file';
 
   const { proxy } = getCurrentInstance() as any;
   const dataList = ref<DataRecord[]>([]);
@@ -190,6 +194,20 @@
   const { queryParams, form, rules } = toRefs(data);
 
   /**
+   * 重置表单
+   */
+  const reset = () => {
+    form.value = {
+      site_title: siteTitle.value?.value,
+      site_copyright: siteCopyright.value?.value,
+      site_logo: siteLogo.value?.value,
+      site_favicon: siteFavicon.value?.value,
+    };
+    logoFile.value.url = siteLogo.value?.value;
+    faviconFile.value.url = siteFavicon.value?.value;
+  };
+
+  /**
    * 查询配置
    */
   const getConfig = async (params: ListParam = { ...queryParams.value }) => {
@@ -207,14 +225,7 @@
     siteFavicon.value = dataList.value.find(
       (option) => option.code === 'site_favicon'
     );
-    form.value = {
-      site_title: siteTitle.value?.value,
-      site_copyright: siteCopyright.value?.value,
-      site_logo: siteLogo.value?.value,
-      site_favicon: siteFavicon.value?.value,
-    };
-    logoFile.value.url = siteLogo.value?.value;
-    faviconFile.value.url = siteFavicon.value?.value;
+    reset();
   };
   getConfig();
 
@@ -254,8 +265,28 @@
    * @param options /
    */
   const handleUploadLogo = (options: RequestOption) => {
-    console.log(options);
     const controller = new AbortController();
+    (async function requestWrap() {
+      const {
+        onProgress,
+        onError,
+        onSuccess,
+        fileItem,
+        name = 'file',
+      } = options;
+      onProgress(20);
+      const formData = new FormData();
+      formData.append(name as string, fileItem.file as Blob);
+      upload(formData)
+        .then((res) => {
+          onSuccess(res);
+          form.value.site_logo = res.data;
+          proxy.$message.success(res.msg);
+        })
+        .catch((error) => {
+          onError(error);
+        });
+    })();
     return {
       abort() {
         controller.abort();
@@ -269,8 +300,28 @@
    * @param options /
    */
   const handleUploadFavicon = (options: RequestOption) => {
-    console.log(options);
     const controller = new AbortController();
+    (async function requestWrap() {
+      const {
+        onProgress,
+        onError,
+        onSuccess,
+        fileItem,
+        name = 'file',
+      } = options;
+      onProgress(20);
+      const formData = new FormData();
+      formData.append(name as string, fileItem.file as Blob);
+      upload(formData)
+        .then((res) => {
+          onSuccess(res);
+          form.value.site_favicon = res.data;
+          proxy.$message.success(res.msg);
+        })
+        .catch((error) => {
+          onError(error);
+        });
+    })();
     return {
       abort() {
         controller.abort();
@@ -287,7 +338,6 @@
   const handleChangeLogo = (_: any, currentFile: any) => {
     logoFile.value = {
       ...currentFile,
-      // url: URL.createObjectURL(currentFile.file),
     };
   };
 
@@ -300,7 +350,6 @@
   const handleChangeFavicon = (_: any, currentFile: any) => {
     faviconFile.value = {
       ...currentFile,
-      // url: URL.createObjectURL(currentFile.file),
     };
   };
 
@@ -335,13 +384,6 @@
   const toEdit = () => {
     isEdit.value = true;
   };
-
-  /**
-   * 重置表单
-   */
-  const reset = () => {
-    proxy.$refs.formRef?.resetFields();
-  };
 </script>
 
 <style scoped lang="less">
@@ -359,7 +401,8 @@
     line-height: 16px;
   }
 
-  .arco-form .image-item {
+  .arco-form .image-item,
+  .input-item {
     margin-bottom: 0;
   }
 
