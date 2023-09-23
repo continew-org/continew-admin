@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="logo">
-      <img src="/logo.svg" alt="logo" />
-      <div class="logo-text">{{ $t('title') }}</div>
+      <img :src="getFile(appStore.getLogo)" alt="logo" height="33" />
+      <div class="logo-text">{{ appStore.getTitle }}</div>
     </div>
     <LoginBanner />
     <div class="content">
@@ -18,8 +18,12 @@
 
 <script lang="ts" setup>
   import Footer from '@/components/footer/index.vue';
+  import { useAppStore } from '@/store';
+  import getFile from '@/utils/file';
   import LoginBanner from './components/banner.vue';
   import LoginForm from './components/login-form.vue';
+
+  const appStore = useAppStore();
 </script>
 
 <style lang="less" scoped>

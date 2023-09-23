@@ -37,6 +37,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
@@ -54,6 +55,7 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
+import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.vo.RoleVO;
 import top.charles7c.cnadmin.system.service.*;
@@ -78,6 +80,7 @@ public class CommonController {
     private final DictItemService dictItemService;
     private final ProjectProperties projectProperties;
     private final LocalStorageProperties localStorageProperties;
+    private final OptionService optionService;
 
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
@@ -123,6 +126,14 @@ public class CommonController {
         return enumClass.map(this::listEnumDict).orElseGet(() -> R.ok(dictItemService.listByDictCode(code)));
     }
 
+    @SaIgnore
+    @Operation(summary = "查询参数", description = "查询参数")
+    @GetMapping("/option")
+    public R<List<LabelValueVO>> listOption(@Validated OptionQuery query) {
+        return R.ok(optionService.list(query).stream().map(option -> new LabelValueVO(option.getCode(),
+            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList()));
+    }
+
     /**
      * 根据枚举类名查询
      *
@@ -140,7 +151,7 @@ public class CommonController {
 
     /**
      * 查询枚举字典
-     * 
+     *
      * @param enumClass
      *            枚举类型
      * @return 枚举字典

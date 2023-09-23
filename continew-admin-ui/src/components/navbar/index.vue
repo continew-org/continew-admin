@@ -2,12 +2,12 @@
   <div class="navbar">
     <div class="left-side">
       <a-space>
-        <img alt="logo" src="/logo.svg" />
+        <img alt="logo" :src="getFile(appStore.getLogo)" height="33"/>
         <a-typography-title
           :style="{ margin: 0, fontSize: '18px' }"
           :heading="5"
         >
-          {{ $t('title') }}
+          {{ appStore.getTitle }}
         </a-typography-title>
         <icon-menu-fold
           v-if="!topMenu && appStore.device === 'mobile'"
@@ -198,6 +198,7 @@
   import useUser from '@/hooks/user';
   import Menu from '@/components/menu/index.vue';
   import getAvatar from '@/utils/avatar';
+  import getFile from '@/utils/file';
   import MessageBox from '../message-box/index.vue';
 
   const appStore = useAppStore();
