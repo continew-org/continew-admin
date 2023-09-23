@@ -27,7 +27,7 @@ const recursionMenu = (
   });
 };
 const useAppStore = defineStore('app', {
-  state: (): AppState => ({ ...defaultSettings }),
+  state: (): AppState => ({ ...defaultSettings, config: {} }),
 
   getters: {
     appCurrentSetting(state: AppState): AppState {

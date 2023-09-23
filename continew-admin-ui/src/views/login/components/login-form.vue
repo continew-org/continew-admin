@@ -184,7 +184,7 @@
 
 <style lang="less" scoped>
   .login-form {
-    margin-top: 32px;
+    margin-top: 15px;
     &-wrapper {
       width: 320px;
     }
