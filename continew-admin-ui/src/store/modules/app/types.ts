@@ -24,5 +24,5 @@ export interface AppState {
   menuFromServer: boolean;
   serverMenu: RouteRecordNormalized[];
   [key: string]: unknown;
-  config?: Config;
+  config: Config;
 }
