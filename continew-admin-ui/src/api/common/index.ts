@@ -3,6 +3,7 @@ import qs from 'query-string';
 import { ListParam as DeptParam } from '@/api/system/dept';
 import { ListParam as MenuParam } from '@/api/system/menu';
 import { ListParam as RoleParam } from '@/api/system/role';
+import { ListParam as OptionParam } from '@/api/system/config';
 import { TreeNodeData } from '@arco-design/web-vue';
 import { LabelValueState } from '@/store/modules/dict/types';
 
@@ -37,6 +38,15 @@ export function listRoleDict(params: RoleParam) {
 
 export function listDict(code: string) {
   return axios.get<LabelValueState[]>(`${BASE_URL}/dict/${code}`);
+}
+
+export function listOption(params: OptionParam) {
+  return axios.get<LabelValueState[]>(`${BASE_URL}/option`, {
+    params,
+    paramsSerializer: (obj) => {
+      return qs.stringify(obj);
+    },
+  });
 }
 
 export function upload(data: FormData) {

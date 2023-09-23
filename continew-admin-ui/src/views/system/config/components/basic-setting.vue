@@ -170,6 +170,7 @@
   } from '@/api/system/config';
   import { upload } from '@/api/common';
   import getFile from '@/utils/file';
+  import { useAppStore } from '@/store';
 
   const { proxy } = getCurrentInstance() as any;
   const dataList = ref<DataRecord[]>([]);
@@ -180,6 +181,7 @@
   const siteCopyright = ref<DataRecord>();
   const siteLogo = ref<DataRecord>();
   const siteFavicon = ref<DataRecord>();
+  const appStore = useAppStore();
 
   const data = reactive({
     queryParams: {
@@ -251,7 +253,7 @@
           }
         );
         save(optionList).then((res) => {
-          // siteConfigStore().save(data.form);
+          appStore.save(form.value);
           handleCancel();
           proxy.$message.success(res.msg);
         });
@@ -360,6 +362,7 @@
     await resetValue(queryParams.value);
     proxy.$message.success('恢复成功');
     await getConfig();
+    appStore.save(form.value);
   };
 
   /**

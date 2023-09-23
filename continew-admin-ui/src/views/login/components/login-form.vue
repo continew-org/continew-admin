@@ -1,6 +1,6 @@
 <template>
   <div class="login-form-wrapper">
-    <div class="login-form-title">{{ $t('login.form.title') }}</div>
+    <div class="login-form-title">登录 {{ appStore.getTitle }}</div>
     <div class="login-form-sub-title">{{ $t('login.form.subTitle') }}</div>
     <a-form
       ref="formRef"
@@ -71,7 +71,7 @@
   import { useI18n } from 'vue-i18n';
   import { useRouter } from 'vue-router';
   import { useStorage } from '@vueuse/core';
-  import { useLoginStore } from '@/store';
+  import { useLoginStore, useAppStore } from '@/store';
   import { encryptByRsa } from '@/utils/encrypt';
   // import debug from '@/utils/env';
 
@@ -79,6 +79,7 @@
 
   const captchaImgBase64 = ref('');
   const loginStore = useLoginStore();
+  const appStore = useAppStore();
   const loading = ref(false);
   const { t } = useI18n();
   const router = useRouter();

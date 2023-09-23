@@ -9,7 +9,9 @@ import type { MessageReturn } from '@arco-design/web-vue/es/message/interface';
 import type { RouteRecordNormalized } from 'vue-router';
 import defaultSettings from '@/config/settings.json';
 import { listRoute } from '@/api/auth/login';
-import { AppState } from './types';
+import { listOption } from '@/api/common';
+import getFile from '@/utils/file';
+import { AppState, Config } from './types';
 
 const recursionMenu = (
   appMenu: RouteRecordNormalized[],
@@ -44,6 +46,18 @@ const useAppStore = defineStore('app', {
         menuList
       );
       return menuList;
+    },
+    getLogo(state: AppState): string | undefined {
+      return state.config?.site_logo;
+    },
+    getFavicon(state: AppState): string | undefined {
+      return state.config?.site_favicon;
+    },
+    getTitle(state: AppState): string | undefined {
+      return state.config?.site_title;
+    },
+    getCopyright(state: AppState): string | undefined {
+      return state.config?.site_copyright;
     },
   },
 
@@ -96,6 +110,51 @@ const useAppStore = defineStore('app', {
     },
     clearServerMenu() {
       this.serverMenu = [];
+    },
+
+    /**
+     * 初始化系统配置信息
+     */
+    init() {
+      listOption({
+        code: ['site_title', 'site_copyright', 'site_favicon', 'site_logo'],
+      }).then((res) => {
+        const resMap = new Map();
+        res.data.forEach((item) => {
+          resMap.set(item.label, item.value);
+        });
+        this.config = {
+          site_title: resMap.get('site_title'),
+          site_copyright: resMap.get('site_copyright'),
+          site_logo: resMap.get('site_logo'),
+          site_favicon: resMap.get('site_logo'),
+        };
+        document.title = resMap.get('site_title');
+        document
+          .querySelector('link[rel="shortcut icon"]')
+          ?.setAttribute(
+            'href',
+            getFile(resMap.get('site_favicon')) ||
+              'https://cnadmin.charles7c.top/favicon.ico'
+          );
+      });
+    },
+
+    /**
+     * 保存系统配置
+     *
+     * @param config 系统配置
+     */
+    save(config: Config) {
+      this.$state.config = config;
+      document.title = config.site_title || '';
+      document
+        .querySelector('link[rel="shortcut icon"]')
+        ?.setAttribute(
+          'href',
+          getFile(config.site_favicon) ||
+            'https://cnadmin.charles7c.top/favicon.ico'
+        );
     },
   },
 });
