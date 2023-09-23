@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="left-side">
       <a-space>
-        <img alt="logo" :src="getFile(appStore.getLogo)" height="33"/>
+        <img alt="logo" :src="getFile(appStore.getLogo)" height="33" />
         <a-typography-title
           :style="{ margin: 0, fontSize: '18px' }"
           :heading="5"

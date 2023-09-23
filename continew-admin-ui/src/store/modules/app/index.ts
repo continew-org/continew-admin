@@ -146,7 +146,7 @@ const useAppStore = defineStore('app', {
      * @param config 系统配置
      */
     save(config: Config) {
-      this.$state.config = config;
+      this.config = config;
       document.title = config.site_title || '';
       document
         .querySelector('link[rel="shortcut icon"]')

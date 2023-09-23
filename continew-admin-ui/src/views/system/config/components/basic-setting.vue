@@ -102,14 +102,26 @@
           :label="siteTitle?.name"
           field="site_title"
         >
-          <a-input v-model="form.site_title" placeholder="请输入网站标题" />
+          <a-input
+            v-model="form.site_title"
+            placeholder="请输入网站标题"
+            :max-length="18"
+          />
         </a-form-item>
         <a-form-item
           class="input-item"
           :label="siteCopyright?.name"
           field="site_copyright"
+          tooltip="支持HTML标签"
         >
-          <a-input v-model="form.site_copyright" placeholder="请输入版权信息" />
+          <a-textarea
+            v-model="form.site_copyright"
+            placeholder="请输入版权信息"
+            :auto-size="{
+              minRows: 3,
+            }"
+            show-word-limit
+          />
         </a-form-item>
         <div style="margin-top: 20px">
           <a-space>
@@ -391,10 +403,10 @@
 
 <style scoped lang="less">
   .logo {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    line-height: 48px;
+    width: 33px;
+    height: 33px;
+    min-width: 33px;
+    line-height: 33px;
   }
 
   .favicon {

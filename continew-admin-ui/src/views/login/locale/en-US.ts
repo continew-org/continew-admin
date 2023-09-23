@@ -1,8 +1,4 @@
 export default {
-  'login.form.title': 'Login to ContiNew Admin',
-  'login.form.subTitle':
-    'Continue to build the latest popular technology stack in the background management framework',
-
   'login.form.placeholder.username': 'Please enter username',
   'login.form.placeholder.password': 'Please enter password',
   'login.form.placeholder.captcha': 'Please enter captcha',

@@ -32,6 +32,11 @@ INSERT IGNORE INTO `sys_option`
 (`name`, `code`, `value`, `default_value`, `description`, `update_user`, `update_time`)
 VALUES
 ('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
-('版权信息', 'site_copyright', NULL, 'Copyright © 2022-2023 Charles7c ⋅ ContiNew Admin ⋅ 津ICP备2022005864号-2', '用于显示登录页面的底部版权信息。', NULL, NULL),
+('版权信息', 'site_copyright', NULL, 'Copyright © 2022-present
+<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">Charles7c</a>
+<span>⋅</span>
+<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">ContiNew Admin</a>
+<span>⋅</span>
+<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">津ICP备2022005864号-2</a>', '用于显示登录页面的底部版权信息。', NULL, NULL),
 ('系统LOGO（16*16）', 'site_favicon', NULL, 'https://cnadmin.charles7c.top/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
-('系统LOGO（48*48）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
+('系统LOGO（33*33）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);

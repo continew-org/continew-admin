@@ -1,7 +1,4 @@
 export default {
-  'login.form.title': '登录 ContiNew Admin',
-  'login.form.subTitle': '持续以最新流行技术栈构建的中后台管理框架',
-
   'login.form.placeholder.username': '请输入用户名',
   'login.form.placeholder.password': '请输入密码',
   'login.form.placeholder.captcha': '请输入验证码',

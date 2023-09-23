@@ -1,7 +1,6 @@
 <template>
   <div class="login-form-wrapper">
     <div class="login-form-title">登录 {{ appStore.getTitle }}</div>
-    <div class="login-form-sub-title">{{ $t('login.form.subTitle') }}</div>
     <a-form
       ref="formRef"
       :model="form"
