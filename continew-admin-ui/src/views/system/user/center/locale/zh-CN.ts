@@ -25,11 +25,9 @@ export default {
   'userCenter.basicInfo.form.placeholder.nickname': '请输入昵称',
 
   'userCenter.basicInfo.form.error.required.username': '请输入用户名',
-  'userCenter.basicInfo.form.error.match.username':
-    '长度为 4 到 16 位，可以包含字母、数字，下划线，以字母开头',
   'userCenter.basicInfo.form.error.required.nickname': '请输入昵称',
   'userCenter.basicInfo.form.error.match.nickname':
-    '长度为 1 到 20 位，可以包含中文、字母、数字、下划线，短横线',
+    '长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线',
 
   'userCenter.basicInfo.form.save': '保存',
   'userCenter.basicInfo.form.save.success': '保存成功',

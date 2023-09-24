@@ -25,11 +25,9 @@ export default {
   'userCenter.basicInfo.form.placeholder.nickname': 'Please enter nickname',
 
   'userCenter.basicInfo.form.error.required.username': 'Please enter username',
-  'userCenter.basicInfo.form.error.match.username':
-    'Username are 4 to 16 characters long and can contain letters, numbers, underscores, and start with a letter',
   'userCenter.basicInfo.form.error.required.nickname': 'Please enter nickname',
   'userCenter.basicInfo.form.error.match.nickname':
-    'Nickname are 1 to 20 digits long and can contain Chinese, letters, numbers, underscores, dashes',
+    'Nickname are 2 to 30 digits long and can contain Chinese, letters, numbers, underscores, dashes',
 
   'userCenter.basicInfo.form.save': 'Save',
   'userCenter.basicInfo.form.save.success': 'Save success',

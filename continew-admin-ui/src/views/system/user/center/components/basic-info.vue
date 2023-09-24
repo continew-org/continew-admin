@@ -79,10 +79,6 @@
             required: true,
             message: t('userCenter.basicInfo.form.error.required.username'),
           },
-          {
-            match: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/,
-            message: t('userCenter.basicInfo.form.error.match.username'),
-          },
         ],
         nickname: [
           {
@@ -90,7 +86,7 @@
             message: t('userCenter.basicInfo.form.error.required.nickname'),
           },
           {
-            match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{1,20}$/,
+            match: /^[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}$/,
             message: t('userCenter.basicInfo.form.error.match.nickname'),
           },
         ],

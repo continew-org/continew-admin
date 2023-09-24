@@ -59,7 +59,7 @@ public class UserRequest extends BaseRequest {
      */
     @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
-    @Pattern(regexp = "^[\\u4e00-\\u9fa5a-zA-Z0-9_-]{4,30}$", message = "昵称长度为 4 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**
