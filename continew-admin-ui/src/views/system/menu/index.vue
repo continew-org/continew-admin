@@ -517,6 +517,7 @@
     del(ids).then((res) => {
       proxy.$message.success(res.msg);
       getList();
+      proxy.$refs.tableRef.selectAll(false);
     });
   };
 
