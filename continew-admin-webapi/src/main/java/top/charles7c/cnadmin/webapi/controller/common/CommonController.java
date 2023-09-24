@@ -129,6 +129,7 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
+    @Cacheable(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
     public R<List<LabelValueVO>> listOption(@Validated OptionQuery query) {
         return R.ok(optionService.list(query).stream().map(option -> new LabelValueVO(option.getCode(),
             StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList()));

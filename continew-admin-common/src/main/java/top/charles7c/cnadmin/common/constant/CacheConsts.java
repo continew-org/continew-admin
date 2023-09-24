@@ -59,6 +59,11 @@ public class CacheConsts {
     public static final String DICT_KEY_PREFIX = "DICT";
 
     /**
+     * 参数缓存键前缀
+     */
+    public static final String OPTION_KEY_PREFIX = "OPTION";
+
+    /**
      * 仪表盘缓存键前缀
      */
     public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD";
