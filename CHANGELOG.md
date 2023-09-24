@@ -1,3 +1,44 @@
+## [v1.2.0](https://github.com/Charles7c/continew-admin/compare/v1.1.2...v1.2.0) (2023-09-24)
+
+### ✨ 新特性
+
+* 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
+* 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致
+* 完善仪表盘最近访问区块内容 ([36fda57](https://github.com/Charles7c/continew-admin/commit/36fda57d499b0c3fb092a13f269bc9ffb7a26a9e))
+* 完善仪表盘访问趋势区块内容 ([a1c20af](https://github.com/Charles7c/continew-admin/commit/a1c20afb1b9eb447f62bfd2e4f2996dfdf37c8ca)) ([1722133](https://github.com/Charles7c/continew-admin/commit/1722133ac4872b40d6d47f65f359dea8a354b91a))
+* 完善仪表盘访客地域分布区块内容 ([dc1691f](https://github.com/Charles7c/continew-admin/commit/dc1691f0195ef6c96aee36f50fc7e86cfcf651b9))
+* 完善仪表盘热门模块区块内容 ([83b2e2a](https://github.com/Charles7c/continew-admin/commit/83b2e2a7c02d38c7041497e0ac5b3b0e78abac29))
+* 完善仪表盘总计区块内容 ([3440aa4](https://github.com/Charles7c/continew-admin/commit/3440aa4faa23e267735f564476d8bccaf8c0208f))
+* 完善仪表盘快捷操作区块内容 ([0178fbb](https://github.com/Charles7c/continew-admin/commit/0178fbb89a0e75729aa60443a812496bd5b19cb8))
+
+### 💎 功能优化
+
+- 前端表单重置优化 ([e947312](https://github.com/Charles7c/continew-admin/commit/e947312f244d6af01f18b542ff7395440c68b089))
+- 优化登录和菜单加载相关提示 ([d080120](https://github.com/Charles7c/continew-admin/commit/d080120d4228e77200d8f152397b0ebee413b089))
+- 完善前后端校验 ([90d825a](https://github.com/Charles7c/continew-admin/commit/90d825a02fdc54e8685508a6fe4fb2d5f20e77f4)) ([8e506dc](https://github.com/Charles7c/continew-admin/commit/8e506dc6e69529627a0aace6118f7310cc2f030a))
+- 优化枚举字典处理，增加颜色类型 ([1f73aa7](https://github.com/Charles7c/continew-admin/commit/1f73aa732d101c7f7a58bc678e85d597d54d9770))
+- 公告类型适配字典数据 ([3a3a5d6](https://github.com/Charles7c/continew-admin/commit/3a3a5d6b712f435d77ea04301afa0bdd8703567f))
+- 优化通用查询注解多字段模糊查询 ([3758107](https://github.com/Charles7c/continew-admin/commit/375810772aa8cb928fb1f6820e781cb43f869e03))
+- 合并菜单管理图标和标题列 ([36d38ae](https://github.com/Charles7c/continew-admin/commit/36d38aec1602f5ac6d2afbb5c5adf4d6e455ab97))
+- 封装 Spring Boot 默认错误处理 ([b874ca0](https://github.com/Charles7c/continew-admin/commit/b874ca0782eb116bdedfc08023959a977f170a94))
+- 优化分页查询登录日志列表接口实现 ([566c9a1](https://github.com/Charles7c/continew-admin/commit/566c9a122453980b585bd68442bb545073504a3d))
+- 更换登录页面 banner ([6f19660](https://github.com/Charles7c/continew-admin/commit/6f19660cfbc3be6e0d702e3f488e266c50622f0a))
+- 优化登录用户信息角色相关信息命名 ([be394f3](https://github.com/Charles7c/continew-admin/commit/be394f3de4ea7ea692042db3556f706a3d141b51)) ([31f0abb](https://github.com/Charles7c/continew-admin/commit/31f0abbae2e38d1cfa3f6221c9be0b54cf5337ad))
+- 升级前端依赖 ([c665902](https://github.com/Charles7c/continew-admin/commit/c6659020f8bac7319c5c407389cd745527a8cd97))
+- 升级后端依赖 ([5049e1e](https://github.com/Charles7c/continew-admin/commit/5049e1e312ab500e284abccbbee4186db2710d01)) ([d20aadf](https://github.com/Charles7c/continew-admin/commit/d20aadfc93b54339d19d173fce364310e90b016d)) ([32904b5](https://github.com/Charles7c/continew-admin/commit/32904b54ef63536ef5c5106adc00a7376b907632))
+
+### 🐛 问题修复
+
+- 修复删除列表数据后 Select 选择框重置问题 ([#21](https://github.com/Charles7c/continew-admin/pull/21)) ([3288f2d](https://github.com/Charles7c/continew-admin/commit/3288f2d38dfebc1381842d67cdfb17675c786859))
+- 修复前端部分拼写错误 ([62021f8](https://github.com/Charles7c/continew-admin/commit/62021f8fdc171ad04d07c25c5a9357a64cc4a087))
+
+### 💥 破坏性变更
+
+- 优化系统内置类型数据标识 ([8a02401](https://github.com/Charles7c/continew-admin/commit/8a02401a24b546f2a6aab04cf05371ecb4236ca0))
+- 分离 HTTP 状态码和业务状态码 ([b3b6446](https://github.com/Charles7c/continew-admin/commit/b3b6446433972422cf62dfc47c031134b91cd7ec))
+- 调整生产环境本地存储、日志位置 ([2254e55](https://github.com/Charles7c/continew-admin/commit/2254e555af9cade4897d5335b252a0312d6805eb))
+- 调整项目打包结构，分离依赖、配置文件 ([e679abf](https://github.com/Charles7c/continew-admin/commit/e679abfccc6c80198512958b6d07b363074d9d76))
+
 ## [v1.1.2](https://github.com/Charles7c/continew-admin/compare/v1.1.1...v1.1.2) (2023-09-24)
 
 ### 💎 功能优化
