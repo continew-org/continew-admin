@@ -34,15 +34,17 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ## 反馈交流
 
-💬 欢迎各位小伙伴儿扫描下方二维码，加入微信交流群，探讨技术、提提需求~。加入交流群后，你将会：
+💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
+
+加入交流群后，你将会：
 
 - 第一时间收到框架动态
 - 第一时间收到框架更新通知
 - 第一时间收到框架 Bug 通知
-- 和众多大佬一起互相 (huá shuǐ) 交流 (mō yú)
+- 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
 
 <div align="left">
-  <img src="https://doc.charles7c.top/qrcode.jpg?654321" alt="二维码" width="350px" />
+  <img src="https://doc.charles7c.top/qrcode.jpg" alt="二维码" width="230px" />
 </div>
 
 <details>
@@ -76,6 +78,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
 - 公告管理：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
 - 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
+- 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致（暂未开放高级配置）
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
 - 在线用户：管理当前登录用户，可一键踢下线
 - 日志管理：提供在线用户监控、登录日志监控、操作日志监控和系统日志监控等监控功能
@@ -262,7 +265,9 @@ continew-admin
     │  │  │  └─ online           # 在线用户
     │  │  └─ system           # 系统管理模块
     │  │    ├─ announcement     # 公告管理
+    │  │    ├─ config           # 系统配置
     │  │    ├─ dept             # 部门管理
+    │  │    ├─ dict             # 字典管理
     │  │    ├─ menu             # 菜单管理
     │  │    ├─ role             # 角色管理
     │  │    └─ user             # 用户模块
@@ -304,65 +309,73 @@ continew-admin
 ## 系统截图
 
 > **Note**
-> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能 **2023年8月26日** 截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
+> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能 **2023年9月23日** 截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
 
 <table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
     <tbody>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNoOv8.png" alt="登录页面" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNojKS.png" alt="仪表盘" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ878.png" alt="登录页面" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJYtg.png" alt="仪表盘" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNLU3R.png" alt="仪表盘-查看公告" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNTPCq.png" alt="数据可视化-分析页" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJUpj.png" alt="仪表盘-查看公告" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJa1s.png" alt="数据可视化-分析页" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNTna9.png" alt="数据可视化-多维数据分析页" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNT8KO.png" alt="数据可视化-实时监控" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJBn0.png" alt="数据可视化-多维数据分析页" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJyAU.png" alt="数据可视化-实时监控" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNLag1.png" alt="系统管理-公告管理-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNLdjx.png" alt="系统管理-公告管理-新增" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ6NF.png" alt="系统管理-公告管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ29J.png" alt="系统管理-公告管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNL0u6.png" alt="系统工具-代码生成-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNLBDK.png" alt="系统工具-代码生成-配置" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoUxzQ.png" alt="系统工具-代码生成-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaSMj.png" alt="系统工具-代码生成-配置" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrGVS.png" alt="系统管理-用户管理-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrJUg.png" alt="系统管理-用户管理-新增" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaFoV.png" alt="系统管理-角色管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaVWF.png" alt="系统管理-角色管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/20/ppNrMvt.png" alt="系统管理-角色管理-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/20/ppNr0K0.png" alt="系统管理-角色管理-新增" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoa9Ln.png" alt="系统管理-用户管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaid0.png" alt="系统管理-用户管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNTHZ4.png" alt="系统管理-部门管理-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/08/26/pPNTqo9.png" alt="系统管理-部门管理-新增" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoany9.png" alt="系统管理-部门管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaQdx.png" alt="系统管理-部门管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5Qsg.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5lLQ.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogKIJ.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogQi9.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwLSe.png" alt="个人中心-安全设置-修改密码" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwXyd.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPog1R1.png" alt="系统管理-字典管理-列表" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPog3xx.png" alt="系统管理-字典管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/20/pSOwbWD.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/01/14/pSM3lxx.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/23/pPTJbWQ.png" alt="系统管理-系统配置" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/23/pPTJqzj.png" alt="系统管理-系统配置-恢复默认" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/02/23/pSvhOEV.png" alt="个人中心-操作日志" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5ise.png" alt="系统监控-操作日志" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogJsK.png" alt="个人中心-安全设置-修改密码" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogYqO.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn4bMF.png" alt="系统监控-在线用户" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogNZD.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPogUde.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPob69f.png" alt="个人中心-操作日志" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPobc38.png" alt="系统监控-操作日志" width="1920" /></td>
+        </tr>
+        <tr>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPob2jg.png" alt="系统监控-在线用户" width="1920" /></td>
             <td><img src="https://s1.ax1x.com/2023/03/09/ppn5SG6.png" alt="系统监控-登录日志" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5eit.png" alt="系统监控-系统日志" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5VII.png" alt="系统监控-系统日志-详情" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPobfBj.png" alt="系统监控-系统日志" width="1920" /></td>
+            <td><img src="https://z1.ax1x.com/2023/09/22/pPob5En.png" alt="系统监控-系统日志-详情" width="1920" /></td>
         </tr>
     </tbody>
 </table>
