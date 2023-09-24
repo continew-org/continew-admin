@@ -262,12 +262,8 @@
    */
   const reset = () => {
     form.value = {
-      id: undefined,
-      label: '',
-      value: '',
       color: '#165DFF',
       sort: 999,
-      description: '',
       dictId: dictId.value,
     };
     proxy.$refs.formRef?.resetFields();

@@ -1,3 +1,19 @@
+## [v1.1.2](https://github.com/Charles7c/continew-admin/compare/v1.1.1...v1.1.2) (2023-09-24)
+
+### 💎 功能优化
+
+- 优化后端程序启动成功输出内容 ([6322859](https://github.com/Charles7c/continew-admin/commit/63228598d9fcd6e5d00172c12418a371d4c96766))
+- 配置子级菜单图标 ([5544836](https://github.com/Charles7c/continew-admin/commit/55448364a39085debb776463f5e95a15b186c447))
+
+### 🐛 问题修复
+
+- 修复生产环境和开发环境样式不一致的问题 ([be8732d](https://github.com/Charles7c/continew-admin/commit/be8732d812e021631864b0ff6225b4da24cafcee))
+- 排除路径配置放开 /error ([0428fe7](https://github.com/Charles7c/continew-admin/commit/0428fe776224afb64601901cef4d3100e5d30bd6))
+- 修复初始数据缺失字段列表的问题 ([d5138e1](https://github.com/Charles7c/continew-admin/commit/d5138e1e43bdc8b347e061890131ac2646b2dd3c))
+- 修复系统日志表索引缺失导致查询耗时较长的问题 ([ac43833](https://github.com/Charles7c/continew-admin/commit/ac438337219f5a160d49b255805774da36ab865c))
+- 修复部分菜单数据 component 信息配置错误 ([11ea072](https://github.com/Charles7c/continew-admin/commit/11ea072d600f24fe97fe8145208e821712b84839))
+- 修复图标 SVG 内容格式错误 ([20f1e8a](https://github.com/Charles7c/continew-admin/commit/20f1e8aecc737b28ab869d363957513d868b4ab7))
+
 ## [v1.1.1](https://github.com/Charles7c/continew-admin/compare/v1.1.0...v1.1.1) (2023-09-06)
 
 ### 💎 功能优化

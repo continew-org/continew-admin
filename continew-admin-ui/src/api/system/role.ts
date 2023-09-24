@@ -5,12 +5,12 @@ const BASE_URL = '/system/role';
 
 export interface DataRecord {
   id?: number;
-  name: string;
+  name?: string;
   code?: string;
   sort?: number;
   description?: string;
   menuIds?: Array<number>;
-  dataScope: number;
+  dataScope?: number;
   deptIds?: Array<number>;
   status?: number;
   isSystem?: boolean;

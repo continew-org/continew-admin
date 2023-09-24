@@ -351,13 +351,7 @@
    * 重置表单
    */
   const reset = () => {
-    form.value = {
-      id: undefined,
-      name: '',
-      code: '',
-      description: '',
-      isSystem: false,
-    };
+    form.value = {};
     proxy.$refs.formRef?.resetFields();
   };
 

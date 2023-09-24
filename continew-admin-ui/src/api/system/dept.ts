@@ -5,10 +5,10 @@ const BASE_URL = '/system/dept';
 
 export interface DataRecord {
   id?: number;
-  name: string;
+  name?: string;
   parentId?: number;
   description?: string;
-  sort: number;
+  sort?: number;
   status?: number;
   isSystem?: boolean;
   createUserString?: string;

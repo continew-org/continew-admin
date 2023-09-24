@@ -448,20 +448,11 @@
    */
   const reset = () => {
     form.value = {
-      id: undefined,
-      title: '',
-      parentId: undefined,
       type: 1,
-      path: undefined,
-      name: undefined,
-      component: undefined,
-      icon: undefined,
       isExternal: false,
       isCache: false,
       isHidden: false,
-      permission: undefined,
       sort: 999,
-      status: 1,
     };
     proxy.$refs.formRef?.resetFields();
   };

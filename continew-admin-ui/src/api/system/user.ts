@@ -5,9 +5,9 @@ const BASE_URL = '/system/user';
 
 export interface DataRecord {
   id?: number;
-  username: string;
-  nickname: string;
-  gender: number;
+  username?: string;
+  nickname?: string;
+  gender?: number;
   email?: string;
   phone?: string;
   description?: string;

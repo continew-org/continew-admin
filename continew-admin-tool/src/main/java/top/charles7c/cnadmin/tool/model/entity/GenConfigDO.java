@@ -83,7 +83,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "前端路径", example = "D:/continew-admin/continew-admin-ui/src/views/system/user")
     @Length(max = 255, message = "前端路径不能超过 {max} 个字符")
-    @Pattern(regexp = "^(?=.*src\\/views)(?!.*\\/views\\/?$).*", message = "前端路径配置错误")
+    @Pattern(regexp = "^$|^(?=.*src\\/views)(?!.*\\/views\\/?$).*", message = "前端路径配置错误")
     private String frontendPath;
 
     /**

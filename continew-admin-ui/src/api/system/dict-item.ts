@@ -5,11 +5,11 @@ const BASE_URL = '/system/dict/item';
 
 export interface DataRecord {
   id?: number;
-  label: string;
-  value: string;
+  label?: string;
+  value?: string;
   color?: string;
   sort?: number;
-  description: string;
+  description?: string;
   dictId?: number;
   createUser?: string;
   createTime?: string;

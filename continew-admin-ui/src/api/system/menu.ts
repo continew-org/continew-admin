@@ -5,18 +5,18 @@ const BASE_URL = '/system/menu';
 
 export interface DataRecord {
   id?: number;
-  title: string;
+  title?: string;
   parentId?: number;
-  type: number;
+  type?: number;
   path?: string;
   name?: string;
   component?: string;
   icon?: string;
-  isExternal: boolean;
-  isCache: boolean;
-  isHidden: boolean;
+  isExternal?: boolean;
+  isCache?: boolean;
+  isHidden?: boolean;
   permission?: string;
-  sort: number;
+  sort?: number;
   status?: number;
   createUserString?: string;
   createTime?: string;

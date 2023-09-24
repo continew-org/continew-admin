@@ -532,22 +532,7 @@
   const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
 
   const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({
-    username: '',
-    nickname: '',
-    gender: 1,
-    phone: undefined,
-    email: undefined,
-    status: 1,
-    pwdResetTime: '',
-    createUserString: '',
-    createTime: '',
-    updateUserString: '',
-    updateTime: '',
-    description: '',
-    roleIds: undefined,
-    deptId: undefined,
-  });
+  const dataDetail = ref<DataRecord>({});
   const total = ref(0);
   const ids = ref<Array<number>>([]);
   const title = ref('');
@@ -700,17 +685,7 @@
    */
   const reset = () => {
     form.value = {
-      id: undefined,
-      username: '',
-      nickname: '',
       gender: 1,
-      email: undefined,
-      phone: undefined,
-      description: '',
-      status: 1,
-      deptId: undefined,
-      roleIds: [] as Array<number>,
-      disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
   };

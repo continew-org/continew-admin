@@ -359,9 +359,7 @@
   );
 
   const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({
-    // TODO 待补充详情字段默认值
-  });
+  const dataDetail = ref<DataRecord>({});
   const total = ref(0);
   const ids = ref<Array<number>>([]);
   const title = ref('');
@@ -440,9 +438,7 @@
    * 重置表单
    */
   const reset = () => {
-    form.value = {
-      // TODO 待补充需要重置的字段默认值，详情请参考其他模块 index.vue
-    };
+    form.value = {};
     proxy.$refs.formRef?.resetFields();
   };
 

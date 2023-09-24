@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept` (
 CREATE TABLE IF NOT EXISTS `sys_user` (
     `id` bigint(20) UNSIGNED AUTO_INCREMENT COMMENT 'ID',
     `username` varchar(64) NOT NULL COMMENT '用户名',
-    `nickname` varchar(30) DEFAULT NULL COMMENT '昵称',
+    `nickname` varchar(30) NOT NULL COMMENT '昵称',
     `password` varchar(32) DEFAULT NULL COMMENT '密码',
     `gender` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '性别（0：未知，1：男，2：女）',
     `email` varchar(255) DEFAULT NULL COMMENT '邮箱',

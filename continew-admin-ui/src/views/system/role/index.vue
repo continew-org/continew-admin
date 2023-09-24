@@ -443,19 +443,7 @@
   );
 
   const dataList = ref<DataRecord[]>([]);
-  const dataDetail = ref<DataRecord>({
-    name: '',
-    code: '',
-    status: 1,
-    dataScope: 1,
-    createUserString: '',
-    createTime: '',
-    updateUserString: '',
-    updateTime: '',
-    description: '',
-    menuIds: undefined,
-    deptIds: undefined,
-  });
+  const dataDetail = ref<DataRecord>({});
   const total = ref(0);
   const ids = ref<Array<number>>([]);
   const title = ref('');
@@ -603,16 +591,8 @@
     proxy.$refs.menuRef?.expandAll(menuExpandAll.value);
     proxy.$refs.deptRef?.expandAll(deptExpandAll.value);
     form.value = {
-      id: undefined,
-      name: '',
-      code: undefined,
       dataScope: 4,
-      description: '',
       sort: 999,
-      status: 1,
-      menuIds: [],
-      deptIds: [],
-      disabled: false,
     };
     proxy.$refs.formRef?.resetFields();
   };
