@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin/tree/1.0.x" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v1.2.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v1.3.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -44,7 +44,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
 
 <div align="left">
-  <img src="https://doc.charles7c.top/qrcode.jpg" alt="二维码" width="230px" />
+  <img src="https://doc.charles7c.top/qrcode.jpg?1695656050" alt="二维码" width="230px" />
 </div>
 
 <details>
