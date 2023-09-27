@@ -86,7 +86,7 @@
 
 <style lang="less" scoped>
   .root {
-    background-image: url(../../assets/images/login/login-bg.png);
+    background-image: url(https://z1.ax1x.com/2023/09/27/pPbnTOK.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
