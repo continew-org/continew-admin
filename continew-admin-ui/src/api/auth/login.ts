@@ -5,6 +5,7 @@ import { UserState } from '@/store/modules/login/types';
 const BASE_URL = '/auth';
 
 export interface LoginReq {
+  phone?: string;
   username: string;
   password: string;
   captcha: string;
