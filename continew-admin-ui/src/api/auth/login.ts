@@ -6,10 +6,11 @@ const BASE_URL = '/auth';
 
 export interface LoginReq {
   phone?: string;
-  username: string;
-  password: string;
+  email?: string;
+  username?: string;
+  password?: string;
   captcha: string;
-  uuid: string;
+  uuid?: string;
 }
 
 export interface LoginRes {

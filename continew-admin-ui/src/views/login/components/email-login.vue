@@ -7,19 +7,17 @@
     size="large"
     class="login-form"
   >
-    <a-form-item field="phone" hide-label>
-      <a-select :options="['+86']" style="flex: 1 1" default-value="+86" />
+    <a-form-item field="email" hide-label>
       <a-input
-        v-model="form.phone"
-        :placeholder="$t('login.phone.placeholder.phone')"
-        :max-length="11"
+        v-model="form.email"
+        :placeholder="$t('login.email.placeholder.email')"
         allow-clear
       />
     </a-form-item>
     <a-form-item field="captcha" hide-label>
       <a-input
         v-model="form.captcha"
-        :placeholder="$t('login.phone.placeholder.captcha')"
+        :placeholder="$t('login.email.placeholder.captcha')"
         :max-length="6"
         allow-clear
         style="flex: 1 1"
@@ -58,15 +56,11 @@
   const data = reactive({
     form: {} as LoginReq,
     rules: {
-      phone: [
-        { required: true, message: t('login.phone.error.required.phone') },
-        {
-          match: /^1[3-9]\d{9}$/,
-          message: t('login.phone.error.match.phone'),
-        },
+      email: [
+        { required: true, message: t('login.email.error.required.email') },
       ],
       captcha: [
-        { required: true, message: t('login.phone.error.required.captcha') },
+        { required: true, message: t('login.email.error.required.captcha') },
       ],
     },
   });
@@ -87,7 +81,7 @@
    */
   const handleSendCaptcha = () => {
     if (captchaLoading.value) return;
-    proxy.$refs.formRef.validateField('phone', (valid: any) => {
+    proxy.$refs.formRef.validateField('email', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';
@@ -116,7 +110,7 @@
 <style lang="less" scoped>
   .login-form {
     box-sizing: border-box;
-    padding: 0 5px;
+    padding: 32px 5px 0;
     margin-top: 16px;
     .arco-input-wrapper,
     :deep(.arco-select-view-single) {

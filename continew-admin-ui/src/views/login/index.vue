@@ -12,26 +12,34 @@
       <div class="left-banner"></div>
       <div class="login-card">
         <div class="title"
-          >{{ $t('login.welcome') }} {{ appStore.getTitle }}</div
+        >{{ $t('login.welcome') }} {{ appStore.getTitle }}</div
         >
-        <a-tabs class="account-tab" default-active-key="1">
-          <a-tab-pane key="1" :title="$t('login.account')"
-            ><AccountLogin
-          /></a-tab-pane>
-          <a-tab-pane key="2" :title="$t('login.phone')"
-            ><PhoneLogin
-          /></a-tab-pane>
+        <EmailLogin v-if="isEmailLogin" />
+        <a-tabs v-else class="account-tab" default-active-key="1">
+          <a-tab-pane
+            key="1"
+            :title="$t('login.account')"
+          >
+            <AccountLogin />
+          </a-tab-pane>
+          <a-tab-pane
+            key="2"
+            :title="$t('login.phone')"
+          >
+            <PhoneLogin />
+          </a-tab-pane>
         </a-tabs>
         <div class="oauth">
           <a-divider class="text" orientation="center">{{
             $t('login.other')
           }}</a-divider>
           <div class="idps">
-            <a-tooltip content="邮箱登录（即将开放）" mini>
-              <div class="mail app">
-                <icon-email /> {{ $t('login.email.txt') }}
-              </div>
-            </a-tooltip>
+            <div v-if="!isEmailLogin" class="mail app" @click="toggleLoginMode">
+              <icon-email /> {{ $t('login.email.txt') }}
+            </div>
+            <div v-else class="account app" @click="toggleLoginMode">
+              <icon-user /> {{ $t('login.account.txt') }}
+            </div>
             <a-tooltip content="Gitee（即将开放）" mini>
               <a href="javascript: void(0);" class="app">
                 <svg
@@ -65,7 +73,7 @@
         </div>
       </div>
     </div>
-    <div class="footer">
+    <div v-if="appStore.device === 'desktop'" class="footer">
       <div class="beian">
         <div class="below text" v-html="appStore.getCopyright"></div>
       </div>
@@ -74,14 +82,23 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useAppStore } from '@/store';
   import getFile from '@/utils/file';
+  import useResponsive from '@/hooks/responsive';
   import AccountLogin from './components/account-login.vue';
   import PhoneLogin from './components/phone-login.vue';
+  import EmailLogin from './components/email-login.vue';
 
   const { t } = useI18n();
   const appStore = useAppStore();
+  useResponsive(true);
+  const isEmailLogin = ref(false);
+
+  const toggleLoginMode = () => {
+    isEmailLogin.value = !isEmailLogin.value;
+  };
 </script>
 
 <style lang="less" scoped>
@@ -137,7 +154,7 @@
           max-width: 500px;
           object-fit: contain;
           position: absolute;
-          top: 5%;
+          top: 4.5%;
           width: 100%;
         }
       }
@@ -225,16 +242,31 @@
             .mail {
               min-width: 81px;
               width: 81px;
+            }
+            .account {
+              min-width: 147px;
+              width: 147px;
+            }
+            .mail,
+            .account {
               color: #41464f;
               font-size: 12px;
               font-weight: 400;
               line-height: 20px;
               padding: 6px 10px;
-              svg {
-                color: #000;
-                font-size: 16px;
-                margin-right: 10px;
-              }
+            }
+            .mail svg,
+            .account svg {
+              font-size: 16px;
+              margin-right: 10px;
+            }
+            .mail:hover,
+            .account:hover {
+              color: rgb(var(--primary-6));
+            }
+            .mail svg:hover,
+            .account svg:hover {
+              color: rgb(var(--primary-6));
             }
           }
         }
