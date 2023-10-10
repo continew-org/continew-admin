@@ -54,7 +54,7 @@ public class UserDO extends BaseDO {
     private String password;
 
     /**
-     * 性别（0：未知，1：男，2：女）
+     * 性别
      */
     private GenderEnum gender;
 
@@ -79,7 +79,7 @@ public class UserDO extends BaseDO {
     private String description;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
     private DisEnableStatusEnum status;
 

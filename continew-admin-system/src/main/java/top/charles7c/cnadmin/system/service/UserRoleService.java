@@ -33,7 +33,7 @@ public interface UserRoleService {
      *            角色 ID 列表
      * @param userId
      *            用户 ID
-     * @return true：成功，false：无变更/失败
+     * @return true：成功；false：无变更/失败
      */
     boolean save(List<Long> roleIds, Long userId);
 

@@ -95,7 +95,7 @@ public class LoginUser implements Serializable {
     /**
      * 是否为管理员
      *
-     * @return true：是，false：否
+     * @return true：是；false：否
      */
     public boolean isAdmin() {
         if (CollUtil.isEmpty(roleCodes)) {

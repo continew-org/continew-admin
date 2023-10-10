@@ -61,7 +61,7 @@ public class DeptDO extends BaseDO {
     private Integer sort;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
     private DisEnableStatusEnum status;
 

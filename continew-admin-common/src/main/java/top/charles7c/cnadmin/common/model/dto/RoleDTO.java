@@ -44,7 +44,7 @@ public class RoleDTO implements Serializable {
     private String code;
 
     /**
-     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
+     * 数据权限
      */
     private DataScopeEnum dataScope;
 }

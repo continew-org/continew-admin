@@ -51,9 +51,9 @@ public class UserQuery implements Serializable {
     private String username;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
     @Query
     private Integer status;
 

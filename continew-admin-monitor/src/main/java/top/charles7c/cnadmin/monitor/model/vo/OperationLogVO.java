@@ -47,9 +47,9 @@ public class OperationLogVO extends LogVO {
     private String module;
 
     /**
-     * 操作状态（1成功 2失败）
+     * 操作状态
      */
-    @Schema(description = "操作状态（1：成功，2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "操作状态（1：成功；2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private LogStatusEnum status;
 
     /**

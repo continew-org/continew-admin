@@ -78,9 +78,9 @@ public class UserRequest extends BaseRequest {
     private String phone;
 
     /**
-     * 性别（0：未知，1：男，2：女）
+     * 性别
      */
-    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
+    @Schema(description = "性别（0：未知；1：男；2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
     @NotNull(message = "性别非法")
     private GenderEnum gender;
 
@@ -106,8 +106,8 @@ public class UserRequest extends BaseRequest {
     private String description;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

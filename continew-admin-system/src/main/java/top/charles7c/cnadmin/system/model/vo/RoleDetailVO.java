@@ -58,9 +58,9 @@ public class RoleDetailVO extends BaseDetailVO {
     private String code;
 
     /**
-     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
+     * 数据权限
      */
-    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", type = "Integer",
+    @Schema(description = "数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）", type = "Integer",
         allowableValues = {"1", "2", "3", "4", "5"}, example = "5")
     @ExcelProperty(value = "数据权限", converter = ExcelBaseEnumConverter.class)
     private DataScopeEnum dataScope;
@@ -73,9 +73,9 @@ public class RoleDetailVO extends BaseDetailVO {
     private Integer sort;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 

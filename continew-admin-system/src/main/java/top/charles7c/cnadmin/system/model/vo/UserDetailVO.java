@@ -61,9 +61,9 @@ public class UserDetailVO extends BaseDetailVO {
     private String nickname;
 
     /**
-     * 性别（0：未知，1：男，2：女）
+     * 性别
      */
-    @Schema(description = "性别（0：未知，1：男，2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
+    @Schema(description = "性别（0：未知；1：男；2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
     @ExcelProperty(value = "性别", converter = ExcelBaseEnumConverter.class)
     private GenderEnum gender;
 
@@ -90,9 +90,9 @@ public class UserDetailVO extends BaseDetailVO {
     private String avatar;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 

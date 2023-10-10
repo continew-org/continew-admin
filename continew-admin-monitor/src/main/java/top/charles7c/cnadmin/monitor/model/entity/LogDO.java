@@ -95,7 +95,7 @@ public class LogDO implements Serializable {
     private Long elapsedTime;
 
     /**
-     * 操作状态（1：成功，2：失败）
+     * 操作状态
      */
     private LogStatusEnum status;
 

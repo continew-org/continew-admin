@@ -33,7 +33,7 @@ public interface RoleDeptService {
      *            部门 ID 列表
      * @param roleId
      *            角色 ID
-     * @return true：成功，false：无变更/失败
+     * @return true：成功；false：无变更/失败
      */
     boolean save(List<Long> deptIds, Long roleId);
 

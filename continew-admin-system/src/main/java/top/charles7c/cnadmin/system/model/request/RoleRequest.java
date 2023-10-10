@@ -83,9 +83,9 @@ public class RoleRequest extends BaseRequest {
     private List<Long> menuIds = new ArrayList<>();
 
     /**
-     * 数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）
+     * 数据权限
      */
-    @Schema(description = "数据权限（1：全部数据权限，2：本部门及以下数据权限，3：本部门数据权限，4：仅本人数据权限，5：自定义数据权限）", type = "Integer",
+    @Schema(description = "数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）", type = "Integer",
         allowableValues = {"1", "2", "3", "4", "5"}, example = "5")
     private DataScopeEnum dataScope;
 
@@ -96,8 +96,8 @@ public class RoleRequest extends BaseRequest {
     private List<Long> deptIds = new ArrayList<>();
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 }

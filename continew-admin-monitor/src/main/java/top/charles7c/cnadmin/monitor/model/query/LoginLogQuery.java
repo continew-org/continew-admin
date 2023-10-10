@@ -44,9 +44,9 @@ public class LoginLogQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 登录状态（1：成功，2：失败）
+     * 登录状态
      */
-    @Schema(description = "登录状态（1：成功，2：失败）", example = "1")
+    @Schema(description = "登录状态（1：成功；2：失败）", example = "1")
     @Query
     private Integer status;
 

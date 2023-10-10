@@ -47,7 +47,7 @@ public class MenuDO extends BaseDO {
     private Long parentId;
 
     /**
-     * 菜单类型（1：目录，2：菜单，3：按钮）
+     * 菜单类型
      */
     private MenuTypeEnum type;
 
@@ -97,7 +97,7 @@ public class MenuDO extends BaseDO {
     private Integer sort;
 
     /**
-     * 状态（1：启用，2：禁用）
+     * 状态
      */
     private DisEnableStatusEnum status;
 }

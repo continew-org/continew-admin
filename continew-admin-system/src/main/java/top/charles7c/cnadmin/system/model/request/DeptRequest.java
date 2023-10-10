@@ -74,9 +74,9 @@ public class DeptRequest extends BaseRequest {
     private String description;
 
     /**
-     * 状态（1启用 2禁用）
+     * 状态
      */
-    @Schema(description = "状态（1：启用，2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
     private DisEnableStatusEnum status;
 
     /**

@@ -62,11 +62,11 @@ public class AnnouncementVO extends BaseVO {
     private LocalDateTime terminateTime;
 
     /**
-     * 状态（1：待发布，2：已发布，3：已过期）
+     * 状态
      * 
      * @return 公告状态
      */
-    @Schema(description = "状态（1：待发布，2：已发布，3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
+    @Schema(description = "状态（1：待发布；2：已发布；3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
     public AnnouncementStatusEnum getStatus() {
         if (null != this.effectiveTime && this.effectiveTime.isAfter(LocalDateTime.now())) {
             return AnnouncementStatusEnum.PENDING_RELEASE;
