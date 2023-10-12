@@ -97,42 +97,39 @@ public class CommonController {
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
-    public R<List<Tree<Long>>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
-        List<Tree<Long>> treeList = deptService.tree(query, sortQuery, true);
-        return R.ok(treeList);
+    public List<Tree<Long>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
+        return deptService.tree(query, sortQuery, true);
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
-    public R<List<Tree<Long>>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
-        List<Tree<Long>> treeList = menuService.tree(query, sortQuery, true);
-        return R.ok(treeList);
+    public List<Tree<Long>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
+        return menuService.tree(query, sortQuery, true);
     }
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public R<List<LabelValueVO<Long>>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
+    public List<LabelValueVO<Long>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
         List<RoleVO> list = roleService.list(query, sortQuery);
-        List<LabelValueVO<Long>> labelValueVOList = roleService.buildDict(list);
-        return R.ok(labelValueVOList);
+        return roleService.buildDict(list);
     }
 
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
     @Cacheable(key = "#code", cacheNames = CacheConsts.DICT_KEY_PREFIX)
-    public R<List<LabelValueVO>> listDict(@PathVariable String code) {
+    public List<LabelValueVO> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);
-        return enumClass.map(this::listEnumDict).orElseGet(() -> R.ok(dictItemService.listByDictCode(code)));
+        return enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code));
     }
 
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
     @Cacheable(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
-    public R<List<LabelValueVO>> listOption(@Validated OptionQuery query) {
-        return R.ok(optionService.list(query).stream().map(option -> new LabelValueVO(option.getCode(),
-            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList()));
+    public List<LabelValueVO> listOption(@Validated OptionQuery query) {
+        return optionService.list(query).stream().map(option -> new LabelValueVO(option.getCode(),
+            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList());
     }
 
     /**
@@ -157,12 +154,11 @@ public class CommonController {
      *            枚举类型
      * @return 枚举字典
      */
-    private R<List<LabelValueVO>> listEnumDict(Class<?> enumClass) {
+    private List<LabelValueVO> listEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
-        List<LabelValueVO> labelValueList = Arrays.stream(enumConstants).map(e -> {
+        return Arrays.stream(enumConstants).map(e -> {
             BaseEnum<Integer> baseEnum = (BaseEnum<Integer>)e;
             return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
         }).collect(Collectors.toList());
-        return R.ok(labelValueList);
     }
 }

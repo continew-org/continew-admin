@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
@@ -59,33 +58,29 @@ public class LogController {
     @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
-    public R<PageDataVO<LoginLogVO>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataVO<LoginLogVO> pageDataVO = logService.page(query, pageQuery);
-        return R.ok(pageDataVO);
+    public PageDataVO<LoginLogVO> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
+        return logService.page(query, pageQuery);
     }
 
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public R<PageDataVO<OperationLogVO>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataVO<OperationLogVO> pageDataVO = logService.page(query, pageQuery);
-        return R.ok(pageDataVO);
+    public PageDataVO<OperationLogVO> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
+        return logService.page(query, pageQuery);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
-    public R<PageDataVO<SystemLogVO>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataVO<SystemLogVO> pageDataVO = logService.page(query, pageQuery);
-        return R.ok(pageDataVO);
+    public PageDataVO<SystemLogVO> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
+        return logService.page(query, pageQuery);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "查看系统日志详情", description = "查看系统日志详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/system/{id}")
-    public R<SystemLogDetailVO> get(@PathVariable Long id) {
-        SystemLogDetailVO detailVO = logService.get(id);
-        return R.ok(detailVO);
+    public SystemLogDetailVO get(@PathVariable Long id) {
+        return logService.get(id);
     }
 }

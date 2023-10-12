@@ -37,6 +37,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
+import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
@@ -77,10 +78,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @ResponseBody
     @GetMapping
-    public R<PageDataVO<V>> page(Q query, @Validated PageQuery pageQuery) {
+    public PageDataVO<V> page(Q query, @Validated PageQuery pageQuery) {
         this.checkPermission(Api.LIST);
-        PageDataVO<V> pageDataVO = baseService.page(query, pageQuery);
-        return R.ok(pageDataVO);
+        return baseService.page(query, pageQuery);
     }
 
     /**
@@ -95,10 +95,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询树列表", description = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
-    public R<List<Tree<Long>>> tree(Q query, SortQuery sortQuery) {
+    public List<Tree<Long>> tree(Q query, SortQuery sortQuery) {
         this.checkPermission(Api.LIST);
-        List<Tree<Long>> list = baseService.tree(query, sortQuery, false);
-        return R.ok(list);
+        return baseService.tree(query, sortQuery, false);
     }
 
     /**
@@ -113,10 +112,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询列表", description = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    public R<List<V>> list(Q query, SortQuery sortQuery) {
+    public List<V> list(Q query, SortQuery sortQuery) {
         this.checkPermission(Api.LIST);
-        List<V> list = baseService.list(query, sortQuery);
-        return R.ok(list);
+        return baseService.list(query, sortQuery);
     }
 
     /**
@@ -130,10 +128,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
-    public R<D> get(@PathVariable Long id) {
+    public D get(@PathVariable Long id) {
         this.checkPermission(Api.LIST);
-        D detail = baseService.get(id);
-        return R.ok(detail);
+        return baseService.get(id);
     }
 
     /**
@@ -199,6 +196,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
      *            响应对象
      */
     @Operation(summary = "导出数据", description = "导出数据")
+    @NoResponseAdvice
     @GetMapping("/export")
     public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
         this.checkPermission(Api.EXPORT);
