@@ -61,8 +61,8 @@ public class GeneratorController {
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/table")
-    public R<PageDataVO<TableVO>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
-        return R.ok(generatorService.pageTable(query, pageQuery));
+    public PageDataVO<TableVO> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
+        return generatorService.pageTable(query, pageQuery);
     }
 
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
@@ -70,17 +70,17 @@ public class GeneratorController {
     @Parameter(name = "requireSync", description = "是否需要同步", example = "false", in = ParameterIn.QUERY)
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/field/{tableName}")
-    public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
+    public List<FieldConfigDO> listFieldConfig(@PathVariable String tableName,
         @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
-        return R.ok(generatorService.listFieldConfig(tableName, requireSync));
+        return generatorService.listFieldConfig(tableName, requireSync);
     }
 
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/config/{tableName}")
-    public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
-        return R.ok(generatorService.getGenConfig(tableName));
+    public GenConfigDO getGenConfig(@PathVariable String tableName) throws SQLException {
+        return generatorService.getGenConfig(tableName);
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")

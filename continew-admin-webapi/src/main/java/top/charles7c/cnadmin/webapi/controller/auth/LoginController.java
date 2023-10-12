@@ -39,7 +39,6 @@ import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
@@ -67,7 +66,7 @@ public class LoginController {
     @SaIgnore
     @Operation(summary = "用户登录", description = "根据用户名和密码进行登录认证")
     @PostMapping("/login")
-    public R<LoginVO> login(@Validated @RequestBody LoginRequest loginRequest) {
+    public LoginVO login(@Validated @RequestBody LoginRequest loginRequest) {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
@@ -78,7 +77,7 @@ public class LoginController {
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
         String token = loginService.login(loginRequest.getUsername(), rawPassword);
-        return R.ok(LoginVO.builder().token(token).build());
+        return LoginVO.builder().token(token).build();
     }
 
     @SaIgnore
@@ -86,29 +85,27 @@ public class LoginController {
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx",
         in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public R logout() {
+    public void logout() {
         StpUtil.logout();
-        return R.ok();
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
-    public R<UserInfoVO> getUserInfo() {
+    public UserInfoVO getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         UserDetailVO userDetailVO = userService.get(loginUser.getId());
         UserInfoVO userInfoVO = BeanUtil.copyProperties(userDetailVO, UserInfoVO.class);
         userInfoVO.setPermissions(loginUser.getPermissions());
         userInfoVO.setRoles(loginUser.getRoleCodes());
-        return R.ok(userInfoVO);
+        return userInfoVO;
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
-    public R<List<RouteVO>> listRoute() {
+    public List<RouteVO> listRoute() {
         Long userId = LoginHelper.getUserId();
-        List<RouteVO> routeTree = loginService.buildRouteTree(userId);
-        return R.ok(routeTree);
+        return loginService.buildRouteTree(userId);
     }
 }
