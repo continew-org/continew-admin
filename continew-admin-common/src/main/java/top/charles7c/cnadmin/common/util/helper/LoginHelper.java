@@ -53,8 +53,9 @@ public class LoginHelper {
      *
      * @param loginUser
      *            登录用户信息
+     * @return 令牌
      */
-    public static void login(LoginUser loginUser) {
+    public static String login(LoginUser loginUser) {
         // 记录登录信息
         HttpServletRequest request = ServletUtils.getRequest();
         loginUser.setClientIp(ServletUtil.getClientIP(request));
@@ -65,8 +66,10 @@ public class LoginHelper {
         // 登录并缓存用户信息
         StpUtil.login(loginUser.getId());
         SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
-        loginUser.setToken(StpUtil.getTokenValue());
+        String tokenValue = StpUtil.getTokenValue();
+        loginUser.setToken(tokenValue);
         StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        return tokenValue;
     }
 
     /**

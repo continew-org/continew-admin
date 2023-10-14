@@ -49,16 +49,17 @@ import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
- * 登录 API
+ * 认证 API
  *
  * @author Charles7c
  * @since 2022/12/21 20:37
  */
-@Tag(name = "登录 API")
+@Log(module = "登录")
+@Tag(name = "认证 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class LoginController {
+public class AuthController {
 
     private final LoginService loginService;
     private final UserService userService;

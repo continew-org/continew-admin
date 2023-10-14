@@ -29,6 +29,14 @@ const router = createRouter({
         requiresAuth: false,
       },
     },
+    {
+      path: '/social/callback',
+      name: 'SocialCallback',
+      component: () => import('@/views/login/social/index.vue'),
+      meta: {
+        requiresAuth: false,
+      },
+    },
     ...appRoutes,
     ...fixedRoutes,
     ...demoRoutes,

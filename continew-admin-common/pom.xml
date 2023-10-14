@@ -115,6 +115,16 @@ limitations under the License.
         </dependency>
 
         <!-- ################ 工具库相关 ################ -->
+        <!-- Just Auth（开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy!） -->
+        <dependency>
+            <groupId>com.xkcoding.justauth</groupId>
+            <artifactId>justauth-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+        </dependency>
+
         <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
         <dependency>
             <groupId>com.alibaba</groupId>

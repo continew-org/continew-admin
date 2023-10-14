@@ -215,11 +215,16 @@ public class LogInterceptor implements HandlerInterceptor {
     private void logRequest(LogDO logDO, HttpServletRequest request) {
         logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
             : request.getRequestURL().append(StringConsts.QUESTION_MARK).append(request.getQueryString()).toString());
-        logDO.setRequestMethod(request.getMethod());
+        String method = request.getMethod();
+        logDO.setRequestMethod(method);
         logDO.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
-        if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(request.getRequestURI())) {
+        String requestURI = request.getRequestURI();
+        if (requestURI.startsWith("/auth") && !SysConsts.LOGOUT_URI.equals(requestURI)) {
+            logDO.setCreateUser(null);
+        }
+        if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(requestURI)) {
             LoginRequest loginRequest = JSONUtil.toBean(requestBody, LoginRequest.class);
             logDO.setCreateUser(
                 ExceptionUtils.exToNull(() -> userService.getByUsername(loginRequest.getUsername()).getId()));

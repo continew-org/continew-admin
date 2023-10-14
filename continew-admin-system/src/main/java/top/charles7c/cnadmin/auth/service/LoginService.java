@@ -20,6 +20,8 @@ import java.util.List;
 
 import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 
+import me.zhyd.oauth.model.AuthUser;
+
 /**
  * 登录业务接口
  *
@@ -38,6 +40,15 @@ public interface LoginService {
      * @return 令牌
      */
     String login(String username, String password);
+
+    /**
+     * 社交身份登录
+     *
+     * @param authUser
+     *            社交身份信息
+     * @return 令牌
+     */
+    String socialLogin(AuthUser authUser);
 
     /**
      * 构建路由树

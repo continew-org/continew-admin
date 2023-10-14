@@ -52,6 +52,7 @@ limitations under the License.
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
+        <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>2.7.15</ip2region.version>
         <knife4j.version>4.3.0</knife4j.version>
@@ -115,6 +116,28 @@ limitations under the License.
             </dependency>
 
             <!-- ################ 工具库相关 ################ -->
+            <!-- Just Auth（开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy!） -->
+            <dependency>
+                <groupId>com.xkcoding.justauth</groupId>
+                <artifactId>justauth-spring-boot-starter</artifactId>
+                <version>1.4.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>cn.hutool</groupId>
+                        <artifactId>hutool-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>me.zhyd.oauth</groupId>
+                        <artifactId>JustAuth</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>${justauth.version}</version>
+            </dependency>
+
             <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
             <dependency>
                 <groupId>com.alibaba</groupId>

@@ -34,6 +34,11 @@ public class SysConsts {
     public static final String ADMIN_ROLE_CODE = "admin";
 
     /**
+     * 顶级部门 ID
+     */
+    public static final Long SUPER_DEPT_ID = 1L;
+
+    /**
      * 顶级父 ID
      */
     public static final Long SUPER_PARENT_ID = 0L;
@@ -52,6 +57,11 @@ public class SysConsts {
      * 登录 URI
      */
     public static final String LOGIN_URI = "/auth/login";
+
+    /**
+     * 退出 URI
+     */
+    public static final String LOGOUT_URI = "/auth/logout";
 
     /**
      * VO 描述类字段后缀

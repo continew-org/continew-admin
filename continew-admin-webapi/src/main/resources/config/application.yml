@@ -8,8 +8,6 @@ project:
   version: 1.3.0-SNAPSHOT
   # 描述
   description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
-  # URL
-  url: https://cnadmin.charles7c.top
   # 基本包
   basePackage: top.charles7c.cnadmin
   ## 作者信息配置

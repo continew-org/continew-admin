@@ -38,6 +38,15 @@ import top.charles7c.cnadmin.system.model.vo.UserVO;
 public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery, UserRequest> {
 
     /**
+     * 保存用户信息
+     * 
+     * @param user
+     *            用户信息
+     * @return ID
+     */
+    Long save(UserDO user);
+
+    /**
      * 上传头像
      *
      * @param avatar

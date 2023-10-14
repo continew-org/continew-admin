@@ -8,7 +8,14 @@ export default function getAvatar(
 ) {
   if (avatar) {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    return `${baseUrl}/avatar/${avatar}`;
+    if (
+      !avatar.startsWith('http://') &&
+      !avatar.startsWith('https://') &&
+      !avatar.startsWith('blob:')
+    ) {
+      return `${baseUrl}/avatar/${avatar}`;
+    }
+    return avatar;
   }
 
   if (gender === 1) {

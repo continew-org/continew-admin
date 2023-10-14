@@ -67,4 +67,9 @@ public class CacheConsts {
      * 仪表盘缓存键前缀
      */
     public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD";
+
+    /**
+     * 社交身份认证状态键前缀
+     */
+    public static final String SOCIAL_AUTH_STATE_KEY_PREFIX = "SOCIAL_AUTH_STATE";
 }

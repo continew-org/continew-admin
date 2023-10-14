@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.auth.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,32 +24,38 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.auth.model.vo.MetaVO;
 import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.annotation.TreeField;
+import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
+import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
 import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.MenuVO;
-import top.charles7c.cnadmin.system.service.DeptService;
-import top.charles7c.cnadmin.system.service.MenuService;
-import top.charles7c.cnadmin.system.service.RoleService;
-import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.cnadmin.system.service.*;
+
+import me.zhyd.oauth.model.AuthUser;
 
 /**
  * 登录业务实现
@@ -65,6 +72,8 @@ public class LoginServiceImpl implements LoginService {
     private final RoleService roleService;
     private final MenuService menuService;
     private final PermissionService permissionService;
+    private final UserRoleService userRoleService;
+    private final UserSocialService userSocialService;
 
     @Override
     public String login(String username, String password) {
@@ -72,16 +81,44 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.throwIfNull(user, "用户名或密码错误");
         Long userId = user.getId();
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), user.getPassword(), "用户名或密码错误");
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
-        DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
-        // 登录并缓存用户信息
-        LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
-        loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
-        loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
-        loginUser.setRoles(roleService.listByUserId(userId));
-        LoginHelper.login(loginUser);
-        return StpUtil.getTokenValue();
+        this.checkUserStatus(user);
+        return this.login(user);
+    }
+
+    @Override
+    public String socialLogin(AuthUser authUser) {
+        String source = authUser.getSource();
+        String openId = authUser.getUuid();
+        UserSocialDO userSocial = userSocialService.getBySourceAndOpenId(source, openId);
+        UserDO user;
+        if (null == userSocial) {
+            String username = authUser.getUsername();
+            boolean isMatch = ReUtil.isMatch(RegexConsts.USERNAME, username);
+            UserDO existsUser = userService.getByUsername(username);
+            if (null != existsUser || !isMatch) {
+                username = RandomUtil.randomString(RandomUtil.BASE_CHAR, 5) + IdUtil.fastSimpleUUID();
+            }
+            user = new UserDO();
+            user.setUsername(username);
+            user.setNickname(authUser.getNickname());
+            user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
+            user.setAvatar(authUser.getAvatar());
+            user.setDeptId(SysConsts.SUPER_DEPT_ID);
+            Long userId = userService.save(user);
+            RoleDO role = roleService.getByCode(SysConsts.ADMIN_ROLE_CODE);
+            userRoleService.save(Collections.singletonList(role.getId()), userId);
+            userSocial = new UserSocialDO();
+            userSocial.setUserId(userId);
+            userSocial.setSource(source);
+            userSocial.setOpenId(openId);
+        } else {
+            user = BeanUtil.toBean(userService.get(userSocial.getUserId()), UserDO.class);
+        }
+        this.checkUserStatus(user);
+        userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
+        userSocial.setLastLoginTime(LocalDateTime.now());
+        userSocialService.saveOrUpdate(userSocial);
+        return this.login(user);
     }
 
     @Override
@@ -119,5 +156,33 @@ public class LoginServiceImpl implements LoginService {
             tree.putExtra("meta", metaVO);
         });
         return BeanUtil.copyToList(treeList, RouteVO.class);
+    }
+
+    /**
+     * 登录并缓存用户信息
+     * 
+     * @param user
+     *            用户信息
+     * @return 令牌
+     */
+    private String login(UserDO user) {
+        Long userId = user.getId();
+        LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
+        loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
+        loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
+        loginUser.setRoles(roleService.listByUserId(userId));
+        return LoginHelper.login(loginUser);
+    }
+
+    /**
+     * 检查用户状态
+     *
+     * @param user
+     *            用户信息
+     */
+    private void checkUserStatus(UserDO user) {
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
     }
 }

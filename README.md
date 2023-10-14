@@ -72,7 +72,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > **Note**
 > 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
-- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
+- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456，且支持第三方账号登录
 - 部门管理：可配置系统组织架构，树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
@@ -235,6 +235,7 @@ pnpm dev
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | <a href="https://redis.io/" target="_blank">Redis</a>        | 6.2.7        | 高性能的 key-value 数据库。                                  |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.20.1       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
+| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.5       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
 | Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
 | <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.3.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。本项目使用的是 <a href="https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo" target="_blank">knife4j-openapi3-spring-boot-starter</a> 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter，该模块包含了 UI 部分，底层基于 springdoc-openapi 项目。 |

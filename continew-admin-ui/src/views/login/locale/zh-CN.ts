@@ -4,6 +4,7 @@ export default {
   'login.phone': '手机号登录',
   'login.email': '邮箱登录',
   'login.other': '其他登录方式',
+  'login.ing': '登录中...',
 
   'login.account.placeholder.username': '请输入用户名',
   'login.account.placeholder.password': '请输入密码',

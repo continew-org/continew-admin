@@ -32,3 +32,11 @@ export function getUserInfo() {
 export function listRoute() {
   return axios.get<RouteRecordNormalized[]>(`${BASE_URL}/route`);
 }
+
+export function socialAuth(source: string) {
+  return axios.get<string>(`${BASE_URL}/${source}`);
+}
+
+export function socialLogin(source: string, req: any) {
+  return axios.post<LoginRes>(`${BASE_URL}/${source}`, req);
+}

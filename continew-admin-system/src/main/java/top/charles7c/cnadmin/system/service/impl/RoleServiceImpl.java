@@ -178,6 +178,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
         return new HashSet<>(BeanUtil.copyToList(roleList, RoleDTO.class));
     }
 
+    @Override
+    public RoleDO getByCode(String code) {
+        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).one();
+    }
+
     /**
      * 检查名称是否存在
      *

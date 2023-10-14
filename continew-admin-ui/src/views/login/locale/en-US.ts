@@ -4,6 +4,7 @@ export default {
   'login.phone': 'Phone Login',
   'login.email': 'Email Login',
   'login.other': 'Other Login',
+  'login.ing': 'Login...',
 
   'login.account.placeholder.username': 'Please enter username',
   'login.account.placeholder.password': 'Please enter password',

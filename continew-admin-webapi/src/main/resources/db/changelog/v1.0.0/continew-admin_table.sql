@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
     `is_system`      bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否为系统内置数据',
     `pwd_reset_time` datetime     DEFAULT NULL                COMMENT '最后一次修改密码时间',
     `dept_id`        bigint(20)   NOT NULL                    COMMENT '部门ID',
-    `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
+    `create_user`    bigint(20)   DEFAULT NULL                COMMENT '创建人',
     `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
     `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
     `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',

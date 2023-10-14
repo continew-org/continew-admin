@@ -147,7 +147,7 @@
           >
             <template #columns>
               <a-table-column title="ID" data-index="id" />
-              <a-table-column title="用户名" :width="115">
+              <a-table-column title="用户名" :width="120" ellipsis tooltip>
                 <template #cell="{ record }">
                   <a-link @click="toDetail(record.id)">{{
                     record.username

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import {
   login as userLogin,
+  socialLogin as userSocialLogin,
   logout as userLogout,
   getUserInfo,
   LoginReq,
@@ -45,6 +46,17 @@ const useLoginStore = defineStore('user', {
     async login(req: LoginReq) {
       try {
         const res = await userLogin(req);
+        setToken(res.data.token);
+      } catch (err) {
+        clearToken();
+        throw err;
+      }
+    },
+
+    // 社交身份登录
+    async socialLogin(source: string, req: any) {
+      try {
+        const res = await userSocialLogin(source, req);
         setToken(res.data.token);
       } catch (err) {
         clearToken();

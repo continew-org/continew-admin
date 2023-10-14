@@ -18,9 +18,7 @@ package top.charles7c.cnadmin.system.service.impl;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -81,6 +79,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     private final LocalStorageProperties localStorageProperties;
     @Resource
     private DeptService deptService;
+
+    @Override
+    public Long save(UserDO user) {
+        user.setStatus(DisEnableStatusEnum.ENABLE);
+        baseMapper.insert(user);
+        return user.getId();
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
