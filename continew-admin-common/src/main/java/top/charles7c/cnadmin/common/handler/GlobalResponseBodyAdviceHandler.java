@@ -29,6 +29,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.hutool.core.util.StrUtil;
+
 import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
 import top.charles7c.cnadmin.common.model.vo.R;
 
@@ -41,13 +43,15 @@ import top.charles7c.cnadmin.common.model.vo.R;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalResponseBodyAdviceHandler implements ResponseBodyAdvice<Object> {
+    private static final String[] EXCLUDE = {"MultipleOpenApiWebMvcResource", "SwaggerConfigResource",};
 
     private final ObjectMapper objectMapper;
 
     @Override
     public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> converterType) {
         return !methodParameter.getParameterType().isAssignableFrom(R.class)
-            && !methodParameter.hasMethodAnnotation(NoResponseAdvice.class);
+            && !methodParameter.hasMethodAnnotation(NoResponseAdvice.class)
+            && !StrUtil.equalsAny(methodParameter.getDeclaringClass().getSimpleName(), EXCLUDE);
     }
 
     @Override
