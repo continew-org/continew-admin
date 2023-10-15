@@ -11,6 +11,11 @@ export default function setupUserLoginInfoGuard(router: Router) {
     const appStore = useAppStore();
     appStore.init();
     if (isLogin()) {
+      if (to.name === 'login') {
+        next({ name: 'Workplace' });
+        NProgress.done();
+        return;
+      }
       if (loginStore.roles[0]) {
         next();
       } else {
