@@ -7,14 +7,14 @@
 <script setup lang="ts">
   import { getCurrentInstance, ref } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import { useI18n } from 'vue-i18n';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const loading = ref(false);
   const source = route.query.source as string;
 
@@ -25,7 +25,7 @@
     if (loading.value) return;
     loading.value = true;
     const { redirect, ...othersQuery } = router.currentRoute.value.query;
-    loginStore
+    userStore
       .socialLogin(source, othersQuery)
       .then(() => {
         router.push({

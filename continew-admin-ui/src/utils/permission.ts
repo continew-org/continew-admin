@@ -1,4 +1,4 @@
-import { useLoginStore } from '@/store';
+import { useUserStore } from '@/store';
 
 /**
  * 权限判断
@@ -7,8 +7,8 @@ import { useLoginStore } from '@/store';
  * @return true 有权限，false 没有权限
  */
 export default function checkPermission(value: Array<string>) {
-  const loginStore = useLoginStore();
-  const { permissions, roles } = loginStore;
+  const userStore = useUserStore();
+  const { permissions, roles } = userStore;
   const superAdmin = 'admin';
   const allPermission = '*';
 

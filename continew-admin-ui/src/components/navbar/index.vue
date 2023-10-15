@@ -162,7 +162,7 @@
           >
             <img
               alt="avatar"
-              :src="getAvatar(loginStore.avatar, loginStore.gender)"
+              :src="getAvatar(userStore.avatar, userStore.gender)"
             />
           </a-avatar>
           <template #content>
@@ -192,7 +192,7 @@
 <script lang="ts" setup>
   import { computed, ref, inject } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
-  import { useAppStore, useLoginStore } from '@/store';
+  import { useAppStore, useUserStore } from '@/store';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
@@ -202,7 +202,7 @@
   import MessageBox from '../message-box/index.vue';
 
   const appStore = useAppStore();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const { logout } = useUser();
   const { changeLocale, currentLocale } = useLocale();
   const { isFullscreen, toggle: toggleFullScreen } = useFullscreen();

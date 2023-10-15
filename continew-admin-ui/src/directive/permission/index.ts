@@ -1,10 +1,10 @@
 import { DirectiveBinding } from 'vue';
-import { useLoginStore } from '@/store';
+import { useUserStore } from '@/store';
 
 function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
   const { value } = binding;
-  const loginStore = useLoginStore();
-  const { permissions, roles } = loginStore;
+  const userStore = useUserStore();
+  const { permissions, roles } = userStore;
   const superAdmin = 'admin';
   const allPermission = '*';
 

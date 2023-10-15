@@ -56,7 +56,7 @@
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useStorage } from '@vueuse/core';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import { LoginReq } from '@/api/auth/login';
   import { ValidatedError } from '@arco-design/web-vue';
   import { encryptByRsa } from '@/utils/encrypt';
@@ -65,7 +65,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
   const router = useRouter();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const loading = ref(false);
   const captchaImgBase64 = ref();
   const loginConfig = useStorage('login-config', {
@@ -100,7 +100,7 @@
    * 获取验证码
    */
   const getCaptcha = () => {
-    loginStore.getImgCaptcha().then((res) => {
+    userStore.getImgCaptcha().then((res) => {
       form.value.uuid = res.data.uuid;
       captchaImgBase64.value = res.data.img;
     });
@@ -123,7 +123,7 @@
     if (loading.value) return;
     if (!errors) {
       loading.value = true;
-      loginStore
+      userStore
         .login({
           username: values.username,
           password: encryptByRsa(values.password) || '',

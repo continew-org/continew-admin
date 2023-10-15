@@ -62,9 +62,9 @@
     OperationLogRecord,
     listOperationLog,
   } from '@/api/monitor/log';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
 
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
 
   const dataList = ref<OperationLogRecord[]>([]);
   const total = ref(0);
@@ -73,7 +73,7 @@
   const data = reactive({
     // 查询参数
     queryParams: {
-      uid: loginStore.id,
+      uid: userStore.id,
       page: 1,
       size: 10,
       sort: ['createTime,desc'],

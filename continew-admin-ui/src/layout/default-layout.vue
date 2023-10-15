@@ -47,7 +47,7 @@
 <script lang="ts" setup>
   import { ref, computed, watch, provide, onMounted } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  import { useAppStore, useLoginStore } from '@/store';
+  import { useAppStore, useUserStore } from '@/store';
   import NavBar from '@/components/navbar/index.vue';
   import Menu from '@/components/menu/index.vue';
   import Footer from '@/components/footer/index.vue';
@@ -58,7 +58,7 @@
 
   const isInit = ref(false);
   const appStore = useAppStore();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const router = useRouter();
   const route = useRoute();
   const permission = usePermission();
@@ -88,7 +88,7 @@
     appStore.updateSettings({ menuCollapse: val });
   };
   watch(
-    () => loginStore.roles,
+    () => userStore.roles,
     (roleValue) => {
       if (roleValue && !permission.accessRouter(route))
         router.push({ name: 'notFound' });

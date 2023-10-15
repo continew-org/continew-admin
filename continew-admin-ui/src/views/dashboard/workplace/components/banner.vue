@@ -11,12 +11,12 @@
 
 <script lang="ts" setup>
   import { computed } from 'vue';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
 
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const userInfo = computed(() => {
     return {
-      nickname: loginStore.nickname,
+      nickname: userStore.nickname,
     };
   });
 </script>

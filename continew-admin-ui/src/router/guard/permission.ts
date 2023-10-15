@@ -2,14 +2,14 @@ import type { Router, RouteRecordNormalized } from 'vue-router';
 import NProgress from 'nprogress'; // progress bar
 
 import usePermission from '@/hooks/permission';
-import { useLoginStore, useAppStore } from '@/store';
+import { useUserStore, useAppStore } from '@/store';
 import { fixedRoutes, demoRoutes } from '../routes';
 import { WHITE_LIST, NOT_FOUND } from '../constants';
 
 export default function setupPermissionGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {
     const appStore = useAppStore();
-    const loginStore = useLoginStore();
+    const userStore = useUserStore();
     const Permission = usePermission();
     const permissionsAllow = Permission.accessRouter(to);
     if (appStore.menuFromServer) {
@@ -52,7 +52,7 @@ export default function setupPermissionGuard(router: Router) {
         const destination =
           Permission.findFirstPermissionRoute(
             [...fixedRoutes, ...demoRoutes],
-            loginStore.roles[0]
+              userStore.roles[0]
           ) || NOT_FOUND;
         next(destination);
       }

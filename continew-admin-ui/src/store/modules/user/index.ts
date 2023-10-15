@@ -12,7 +12,7 @@ import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
 import useAppStore from '../app';
 
-const useLoginStore = defineStore('user', {
+const useUserStore = defineStore('user', {
   state: (): UserState => ({
     id: '',
     username: '',
@@ -96,4 +96,4 @@ const useLoginStore = defineStore('user', {
   },
 });
 
-export default useLoginStore;
+export default useUserStore;

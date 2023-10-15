@@ -38,31 +38,31 @@
         layout="inline-horizontal"
       >
         <a-descriptions-item :label="$t('userCenter.panel.label.nickname')">{{
-          loginStore.nickname
+          userStore.nickname
         }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.gender')">
-          <div v-if="loginStore.gender === 1">
+          <div v-if="userStore.gender === 1">
             {{ $t('userCenter.panel.male') }}
             <icon-man style="color: #19bbf1" />
           </div>
-          <div v-else-if="loginStore.gender === 2">
+          <div v-else-if="userStore.gender === 2">
             {{ $t('userCenter.panel.female') }}
             <icon-woman style="color: #fa7fa9" />
           </div>
           <div v-else>{{ $t('userCenter.panel.unknown') }}</div>
         </a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.phone')">{{
-          loginStore.phone || '暂无'
+          userStore.phone || '暂无'
         }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.email')">{{
-          loginStore.email || '暂无'
+          userStore.email || '暂无'
         }}</a-descriptions-item>
         <a-descriptions-item :label="$t('userCenter.panel.label.deptName')">{{
-          loginStore.deptName
+          userStore.deptName
         }}</a-descriptions-item>
         <a-descriptions-item
           :label="$t('userCenter.panel.label.registrationDate')"
-          >{{ loginStore.registrationDate }}</a-descriptions-item
+          >{{ userStore.registrationDate }}</a-descriptions-item
         >
       </a-descriptions>
     </a-space>
@@ -73,16 +73,16 @@
   import { getCurrentInstance, ref } from 'vue';
   import { FileItem, RequestOption } from '@arco-design/web-vue';
   import { uploadAvatar } from '@/api/system/user-center';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import getAvatar from '@/utils/avatar';
 
   const { proxy } = getCurrentInstance() as any;
 
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const avatar = {
     uid: '-2',
     name: 'avatar.png',
-    url: getAvatar(loginStore.avatar, loginStore.gender),
+    url: getAvatar(userStore.avatar, userStore.gender),
   };
   const avatarList = ref<FileItem[]>([avatar]);
 
@@ -107,7 +107,7 @@
       uploadAvatar(formData)
         .then((res) => {
           onSuccess(res);
-          loginStore.avatar = res.data.avatar;
+          userStore.avatar = res.data.avatar;
           proxy.$message.success(res.msg);
         })
         .catch((error) => {

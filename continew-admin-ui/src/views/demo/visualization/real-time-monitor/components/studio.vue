@@ -36,10 +36,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import getAvatar from '@/utils/avatar';
 
-  const userInfo = useLoginStore();
+  const userInfo = useUserStore();
 </script>
 
 <style scoped lang="less">

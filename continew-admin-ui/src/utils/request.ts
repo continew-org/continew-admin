@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { useLoginStore } from '@/store';
+import { useUserStore } from '@/store';
 import { getToken } from '@/utils/auth';
 import modalErrorWrapper from '@/utils/modal-error-wrapper';
 import messageErrorWrapper from '@/utils/message-error-wrapper';
@@ -58,8 +58,8 @@ axios.interceptors.response.use(
         escToClose: false,
         okText: '重新登录',
         async onOk() {
-          const loginStore = useLoginStore();
-          await loginStore.logout();
+          const userStore = useUserStore();
+          await userStore.logout();
           window.location.reload();
         },
       });

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { RouteRecordNormalized } from 'vue-router';
-import { UserState } from '@/store/modules/login/types';
+import { UserState } from '@/store/modules/user/types';
 
 const BASE_URL = '/auth';
 

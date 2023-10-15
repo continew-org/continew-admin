@@ -7,12 +7,12 @@
     </template>
     <template #description>
       <div class="content">
-        <a-typography-paragraph v-if="loginStore.phone">
+        <a-typography-paragraph v-if="userStore.phone">
           {{
             $t(
               'userCenter.securitySettings.updatePhone.placeholder.success.phone'
             )
-          }}：{{ loginStore.phone }}
+          }}：{{ userStore.phone }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
           {{
@@ -32,9 +32,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
 
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
 </script>
 
 <style scoped lang="less"></style>

@@ -1,15 +1,15 @@
 import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router';
-import { useLoginStore } from '@/store';
+import { useUserStore } from '@/store';
 
 export default function usePermission() {
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   return {
     accessRouter(route: RouteLocationNormalized | RouteRecordRaw) {
       return (
         !route.meta?.requiresAuth ||
         !route.meta?.roles ||
         route.meta?.roles?.includes('*') ||
-        this.includeRole(route.meta?.roles, loginStore.roles)
+        this.includeRole(route.meta?.roles, userStore.roles)
       );
     },
     includeRole(arr1: Array<string>, arr2: Array<string>) {

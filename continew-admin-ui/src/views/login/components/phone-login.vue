@@ -42,12 +42,12 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import { LoginReq } from '@/api/auth/login';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const loading = ref(false);
   const captchaLoading = ref(false);
   const captchaDisable = ref(false);

@@ -7,12 +7,12 @@
     </template>
     <template #description>
       <div class="content">
-        <a-typography-paragraph v-if="loginStore.email">
+        <a-typography-paragraph v-if="userStore.email">
           {{
             $t(
               'userCenter.securitySettings.updateEmail.placeholder.success.email'
             )
-          }}：{{ loginStore.email }}
+          }}：{{ userStore.email }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
           {{
@@ -114,13 +114,13 @@
   import { getMailCaptcha } from '@/api/common/captcha';
   import { updateEmail } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import { encryptByRsa } from '@/utils/encrypt';
 
   const { proxy } = getCurrentInstance() as any;
 
   const { t } = useI18n();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const captchaTime = ref(60);
   const captchaTimer = ref();
   const captchaLoading = ref(false);
@@ -155,7 +155,7 @@
         },
         {
           validator: (value, callback) => {
-            if (value === loginStore.email) {
+            if (value === userStore.email) {
               callback(
                 t(
                   'userCenter.securitySettings.updateEmail.form.error.validator.newEmail'
@@ -261,7 +261,7 @@
           currentPassword: encryptByRsa(form.currentPassword) || '',
         }).then((res) => {
           handleCancel();
-          loginStore.getInfo();
+          userStore.getInfo();
           proxy.$message.success(res.msg);
         });
       }

@@ -56,20 +56,20 @@
   import { FieldRule } from '@arco-design/web-vue';
   import { BasicInfoModel, updateBasicInfo } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
 
   const { proxy } = getCurrentInstance() as any;
 
   const { t } = useI18n();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const loading = ref(false);
 
   const data = reactive({
     // 表单数据
     form: {
-      username: loginStore.username,
-      nickname: loginStore.nickname,
-      gender: loginStore.gender,
+      username: userStore.username,
+      nickname: userStore.nickname,
+      gender: userStore.gender,
     } as BasicInfoModel,
     // 表单验证规则
     rules: computed((): Record<string, FieldRule[]> => {
@@ -107,8 +107,8 @@
           nickname: form.value.nickname,
           gender: form.value.gender,
         })
-          .then((res) => {
-            loginStore.getInfo();
+          .then(() => {
+            userStore.getInfo();
             proxy.$message.success(t('userCenter.basicInfo.form.save.success'));
           })
           .finally(() => {

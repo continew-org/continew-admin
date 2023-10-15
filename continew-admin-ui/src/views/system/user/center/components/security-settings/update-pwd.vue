@@ -7,7 +7,7 @@
     </template>
     <template #description>
       <div class="content">
-        <a-typography-paragraph v-if="loginStore.pwdResetTime">
+        <a-typography-paragraph v-if="userStore.pwdResetTime">
           {{
             $t(
               'userCenter.securitySettings.updatePwd.placeholder.success.password'
@@ -102,13 +102,13 @@
   import { FieldRule } from '@arco-design/web-vue';
   import { updatePassword } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
-  import { useLoginStore } from '@/store';
+  import { useUserStore } from '@/store';
   import { encryptByRsa } from '@/utils/encrypt';
 
   const { proxy } = getCurrentInstance() as any;
 
   const { t } = useI18n();
-  const loginStore = useLoginStore();
+  const userStore = useUserStore();
   const visible = ref(false);
 
   // 表单数据
