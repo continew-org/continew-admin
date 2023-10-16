@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import com.xkcoding.justauth.AuthRequestFactory;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
@@ -81,6 +82,9 @@ public class SocialAuthController {
 
     private AuthRequest getAuthRequest(String source) {
         try {
+            if (StpUtil.isLogin()) {
+                StpUtil.logout();
+            }
             return authRequestFactory.get(source);
         } catch (Exception e) {
             throw new BadRequestException(String.format("暂不支持 [%s] 登录", source));
