@@ -43,6 +43,7 @@
   >
     <a-form ref="formRef" :model="form" :rules="rules" size="large">
       <a-form-item
+        v-if="userStore.pwdResetTime"
         :label="
           $t('userCenter.securitySettings.updatePwd.form.label.oldPassword')
         "
@@ -197,6 +198,7 @@
           oldPassword: encryptByRsa(form.oldPassword) || '',
           newPassword: encryptByRsa(form.newPassword) || '',
         }).then((res) => {
+          userStore.getInfo();
           handleCancel();
           proxy.$message.success(res.msg);
         });

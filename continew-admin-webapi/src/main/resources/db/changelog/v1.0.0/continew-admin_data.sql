@@ -61,8 +61,8 @@ VALUES
 INSERT IGNORE INTO `sys_user`
 (`id`, `username`, `nickname`, `password`, `gender`, `email`, `phone`, `avatar`, `description`, `status`, `is_system`, `pwd_reset_time`, `dept_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, 'charles7c@126.com', '18888888888', NULL, '系统初始用户', 1, b'1', NULL, 1, 1, NOW(), NULL, NULL),
-(2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 2, NULL, NULL, NULL, NULL, 2, b'0', NULL, 5, 1, NOW(), NULL, NULL);
+(1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, 'charles7c@126.com', '18888888888', NULL, '系统初始用户', 1, b'1', NOW(), 1, 1, NOW(), NULL, NULL),
+(2, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 2, NULL, NULL, NULL, NULL, 2, b'0', NOW(), 5, 1, NOW(), NULL, NULL);
 
 -- 初始化默认角色和菜单关联数据
 INSERT IGNORE INTO `sys_role_menu`

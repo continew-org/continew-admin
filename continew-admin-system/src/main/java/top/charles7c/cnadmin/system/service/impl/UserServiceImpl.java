@@ -200,7 +200,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), user.getPassword(), "当前密码错误");
+        String password = user.getPassword();
+        if (StrUtil.isNotBlank(password)) {
+            CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), password, "当前密码错误");
+        }
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
         baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
