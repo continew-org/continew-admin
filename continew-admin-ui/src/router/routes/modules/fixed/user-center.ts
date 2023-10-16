@@ -2,7 +2,7 @@ import { DEFAULT_LAYOUT } from '../../base';
 import { AppRouteRecordRaw } from '../../types';
 
 const UserCenter: AppRouteRecordRaw = {
-  path: '/login/user',
+  path: '/user',
   component: DEFAULT_LAYOUT,
   meta: {
     locale: 'menu.user',
