@@ -93,14 +93,18 @@ public class LoginServiceImpl implements LoginService {
         UserDO user;
         if (null == userSocial) {
             String username = authUser.getUsername();
-            boolean isMatch = ReUtil.isMatch(RegexConsts.USERNAME, username);
+            String nickname = authUser.getNickname();
             UserDO existsUser = userService.getByUsername(username);
-            if (null != existsUser || !isMatch) {
-                username = RandomUtil.randomString(RandomUtil.BASE_CHAR, 5) + IdUtil.fastSimpleUUID();
+            String randomStr = RandomUtil.randomString(RandomUtil.BASE_CHAR, 5);
+            if (null != existsUser || !ReUtil.isMatch(RegexConsts.USERNAME, username)) {
+                username = randomStr + IdUtil.fastSimpleUUID();
+            }
+            if (!ReUtil.isMatch(RegexConsts.GENERAL_NAME, nickname)) {
+                nickname = source.toLowerCase() + randomStr;
             }
             user = new UserDO();
             user.setUsername(username);
-            user.setNickname(authUser.getNickname());
+            user.setNickname(nickname);
             user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
             user.setAvatar(authUser.getAvatar());
             user.setDeptId(SysConsts.SUPER_DEPT_ID);
