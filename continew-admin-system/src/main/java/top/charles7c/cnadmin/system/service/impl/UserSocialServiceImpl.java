@@ -16,14 +16,24 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.hutool.json.JSONUtil;
+
+import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserSocialMapper;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
 import top.charles7c.cnadmin.system.service.UserSocialService;
+
+import me.zhyd.oauth.model.AuthUser;
 
 /**
  * 用户社会化关联业务实现
@@ -53,5 +63,33 @@ public class UserSocialServiceImpl implements UserSocialService {
                 .eq(UserSocialDO::getSource, userSocial.getSource()).eq(UserSocialDO::getOpenId, userSocial.getOpenId())
                 .update();
         }
+    }
+
+    @Override
+    public List<UserSocialDO> listByUserId(Long userId) {
+        return baseMapper.lambdaQuery().eq(UserSocialDO::getUserId, userId).list();
+    }
+
+    @Override
+    public void bind(AuthUser authUser, Long userId) {
+        String source = authUser.getSource();
+        String openId = authUser.getUuid();
+        List<UserSocialDO> userSocialList = this.listByUserId(userId);
+        Set<String> boundSocialSet = userSocialList.stream().map(UserSocialDO::getSource).collect(Collectors.toSet());
+        CheckUtils.throwIf(boundSocialSet.contains(source), "您已经绑定过了 [{}] 平台，请先解绑");
+        UserSocialDO userSocial = this.getBySourceAndOpenId(source, openId);
+        CheckUtils.throwIfNotNull(userSocial, "[{}] 平台账号 [{}] 已被其他用户绑定", source, authUser.getUsername());
+        userSocial = new UserSocialDO();
+        userSocial.setUserId(userId);
+        userSocial.setSource(source);
+        userSocial.setOpenId(openId);
+        userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
+        userSocial.setLastLoginTime(LocalDateTime.now());
+        baseMapper.insert(userSocial);
+    }
+
+    @Override
+    public void deleteBySourceAndUserId(String source, Long userId) {
+        baseMapper.lambdaUpdate().eq(UserSocialDO::getSource, source).eq(UserSocialDO::getUserId, userId).remove();
     }
 }

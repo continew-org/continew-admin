@@ -1,5 +1,5 @@
 <template>
-  <a-spin :loading="loading" :tip="$t('login.ing')">
+  <a-spin :loading="loading" :tip="isLogin() ? $t('bind.ing') : $t('login.ing')">
     <div></div>
   </a-spin>
 </template>
@@ -9,6 +9,8 @@
   import { useRoute, useRouter } from 'vue-router';
   import { useUserStore } from '@/store';
   import { useI18n } from 'vue-i18n';
+  import { isLogin } from '@/utils/auth';
+  import { bindSocial } from '@/api/system/user-center';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
@@ -45,7 +47,42 @@
         loading.value = false;
       });
   };
-  handleSocialLogin();
+
+  /**
+   * 绑定第三方账号
+   */
+  const handleBindSocial = () => {
+    if (loading.value) return;
+    loading.value = true;
+    const { redirect, ...othersQuery } = router.currentRoute.value.query;
+    bindSocial(source, othersQuery)
+      .then((res) => {
+        router.push({
+          name: 'UserCenter',
+          query: {
+            tab: 'security-setting',
+          },
+        });
+        proxy.$message.success(res.msg);
+      })
+      .catch(() => {
+        router.push({
+          name: 'UserCenter',
+          query: {
+            tab: 'security-setting',
+          },
+        });
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+
+  if (isLogin()) {
+    handleBindSocial();
+  } else {
+    handleSocialLogin();
+  }
 </script>
 
 <script lang="ts">

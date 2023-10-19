@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = '/system/user/center';
+const BASE_URL = '/system/user';
 
 export interface BasicInfoModel {
   username: string;
@@ -42,4 +42,21 @@ export interface UpdateEmailReq {
 
 export function updateEmail(req: UpdateEmailReq) {
   return axios.patch(`${BASE_URL}/email`, req);
+}
+
+export interface UserSocialBindRecord {
+  source: string;
+  description: string;
+}
+
+export function listSocial() {
+  return axios.get<UserSocialBindRecord[]>(`${BASE_URL}/social`);
+}
+
+export function bindSocial(source: string, req: any) {
+  return axios.post(`${BASE_URL}/social/${source}`, req);
+}
+
+export function unbindSocial(source: string) {
+  return axios.delete(`${BASE_URL}/social/${source}`);
 }

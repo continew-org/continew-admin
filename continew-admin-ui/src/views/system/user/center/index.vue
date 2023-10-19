@@ -8,7 +8,11 @@
     </a-row>
     <a-row class="wrapper">
       <a-col :span="24">
-        <a-tabs default-active-key="1" type="rounded">
+        <a-tabs
+          v-model:active-key="activeKey"
+          default-active-key="1"
+          type="rounded"
+        >
           <a-tab-pane key="1" :title="$t('userCenter.tab.basicInfo')">
             <BasicInfo />
           </a-tab-pane>
@@ -25,10 +29,22 @@
 </template>
 
 <script lang="ts" setup>
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
   import UserPanel from './components/user-panel.vue';
   import BasicInfo from './components/basic-info.vue';
   import SecuritySettings from './components/security-settings.vue';
   import OperationLog from './components/operation-log.vue';
+
+  const route = useRoute();
+  const activeKey = ref('1');
+  const tab = route.query.tab as string;
+
+  onMounted(() => {
+    if (tab === 'security-setting') {
+      activeKey.value = '2';
+    }
+  });
 </script>
 
 <script lang="ts">

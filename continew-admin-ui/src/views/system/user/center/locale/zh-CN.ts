@@ -35,11 +35,9 @@ export default {
 
   // security-settings
   // update-pwd
-  'userCenter.securitySettings.updatePwd.label.password': '登录密码',
-  'userCenter.securitySettings.updatePwd.placeholder.success.password':
-    '已设置',
-  'userCenter.securitySettings.updatePwd.placeholder.error.password':
-    '您暂未设置密码，密码至少6位字符，支持数字、字母和除空格外的特殊字符。',
+  'userCenter.securitySettings.password.label': '登录密码',
+  'userCenter.securitySettings.password.tip': '登录账号时需要输入的密码',
+  'userCenter.securitySettings.password.content': '未设置',
 
   'userCenter.securitySettings.updatePwd.modal.title': '修改登录密码',
   'userCenter.securitySettings.updatePwd.form.label.oldPassword': '当前密码',
@@ -67,16 +65,15 @@ export default {
     '两次输入的密码不一致',
 
   // update-phone
-  'userCenter.securitySettings.updatePhone.label.phone': '安全手机',
-  'userCenter.securitySettings.updatePhone.placeholder.success.phone': '已绑定',
-  'userCenter.securitySettings.updatePhone.placeholder.error.phone':
-    '您暂未设置手机号，绑定手机号可以用来找回密码、接收通知、短信登录等。',
+  'userCenter.securitySettings.phone.label': '安全手机',
+  'userCenter.securitySettings.phone.tip':
+    '用于接收消息、验证身份，绑定后可支持手机验证码登录',
+  'userCenter.securitySettings.phone.content': '未绑定',
 
   // update-email
-  'userCenter.securitySettings.updateEmail.label.email': '安全邮箱',
-  'userCenter.securitySettings.updateEmail.placeholder.success.email': '已绑定',
-  'userCenter.securitySettings.updateEmail.placeholder.error.email':
-    '您暂未设置邮箱，绑定邮箱可以用来找回密码、接收通知等。',
+  'userCenter.securitySettings.email.label': '安全邮箱',
+  'userCenter.securitySettings.email.tip': '用于接收消息、验证身份',
+  'userCenter.securitySettings.email.content': '未绑定',
 
   'userCenter.securitySettings.updateEmail.modal.title': '修改邮箱',
   'userCenter.securitySettings.updateEmail.form.label.newEmail': '新邮箱',
@@ -106,5 +103,11 @@ export default {
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':
     '请输入当前密码',
 
+  // bind-social
+  'userCenter.securitySettings.social.label': '三方登录',
+  'userCenter.securitySettings.social.tip': '支持三方账号快速登录',
+  'userCenter.securitySettings.social.content': '未绑定',
+
+  'userCenter.securitySettings.content.hasBeenSet': '已设置',
   'userCenter.securitySettings.button.update': '修改',
 };

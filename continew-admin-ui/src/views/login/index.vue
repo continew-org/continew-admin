@@ -34,7 +34,7 @@
             <div v-else class="account app" @click="toggleLoginMode">
               <icon-user /> {{ $t('login.account.txt') }}
             </div>
-            <a-tooltip content="Gitee" mini>
+            <a-tooltip content="码云" mini>
               <a-link class="app" @click="handleSocialAuth('gitee')">
                 <svg
                   class="icon"

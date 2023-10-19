@@ -2,24 +2,19 @@
   <a-list-item-meta>
     <template #avatar>
       <a-typography-paragraph>
-        {{ $t('userCenter.securitySettings.updateEmail.label.email') }}
+        {{ $t('userCenter.securitySettings.email.label') }}
       </a-typography-paragraph>
     </template>
     <template #description>
+      <div class="tip">
+        {{ $t('userCenter.securitySettings.email.tip') }}
+      </div>
       <div class="content">
         <a-typography-paragraph v-if="userStore.email">
-          {{
-            $t(
-              'userCenter.securitySettings.updateEmail.placeholder.success.email'
-            )
-          }}：{{ userStore.email }}
+          {{ userStore.email }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
-          {{
-            $t(
-              'userCenter.securitySettings.updateEmail.placeholder.error.email'
-            )
-          }}
+          {{ $t('userCenter.securitySettings.email.content') }}
         </a-typography-paragraph>
       </div>
       <div class="operation">

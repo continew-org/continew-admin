@@ -2,24 +2,19 @@
   <a-list-item-meta>
     <template #avatar>
       <a-typography-paragraph>
-        {{ $t('userCenter.securitySettings.updatePwd.label.password') }}
+        {{ $t('userCenter.securitySettings.password.label') }}
       </a-typography-paragraph>
     </template>
     <template #description>
+      <div class="tip">
+        {{ $t('userCenter.securitySettings.password.tip') }}
+      </div>
       <div class="content">
         <a-typography-paragraph v-if="userStore.pwdResetTime">
-          {{
-            $t(
-              'userCenter.securitySettings.updatePwd.placeholder.success.password'
-            )
-          }}
+          {{ $t('userCenter.securitySettings.content.hasBeenSet') }}
         </a-typography-paragraph>
         <a-typography-paragraph v-else class="tip">
-          {{
-            $t(
-              'userCenter.securitySettings.updatePwd.placeholder.error.password'
-            )
-          }}
+          {{ $t('userCenter.securitySettings.password.content') }}
         </a-typography-paragraph>
       </div>
       <div class="operation">

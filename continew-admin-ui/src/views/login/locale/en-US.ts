@@ -5,6 +5,7 @@ export default {
   'login.email': 'Email Login',
   'login.other': 'Other Login',
   'login.ing': 'Login...',
+  'bind.ing': 'Bind...',
 
   'login.account.placeholder.username': 'Please enter username',
   'login.account.placeholder.password': 'Please enter password',

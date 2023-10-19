@@ -35,11 +35,10 @@ export default {
 
   // security-settings
   // update-pwd
-  'userCenter.securitySettings.updatePwd.label.password': 'Login Password',
-  'userCenter.securitySettings.updatePwd.placeholder.success.password':
-    'Has been set',
-  'userCenter.securitySettings.updatePwd.placeholder.error.password':
-    'You have not set a password yet. The password must contain at least six letters, digits, and special characters except Spaces.',
+  'userCenter.securitySettings.password.label': 'Login Password',
+  'userCenter.securitySettings.password.tip':
+    'The password you need to enter when logging in to your account',
+  'userCenter.securitySettings.password.content': 'Not set',
 
   'userCenter.securitySettings.updatePwd.modal.title': 'Update login password',
   'userCenter.securitySettings.updatePwd.form.label.oldPassword':
@@ -70,18 +69,16 @@ export default {
     'Two passwords are different',
 
   // update-phone
-  'userCenter.securitySettings.updatePhone.label.phone': 'Phone',
-  'userCenter.securitySettings.updatePhone.placeholder.success.phone':
-    'Has been bound',
-  'userCenter.securitySettings.updatePhone.placeholder.error.phone':
-    'You have not set a phone yet. The phone binding can be used to retrieve passwords and receive notifications and SMS login.',
+  'userCenter.securitySettings.phone.label': 'Phone',
+  'userCenter.securitySettings.phone.tip':
+    'It is used to receive messages, verify identity, and support mobile phone verification code login after binding',
+  'userCenter.securitySettings.phone.content': 'Unbound',
 
   // update-email
-  'userCenter.securitySettings.updateEmail.label.email': 'Email',
-  'userCenter.securitySettings.updateEmail.placeholder.success.email':
-    'Has been bound',
-  'userCenter.securitySettings.updateEmail.placeholder.error.email':
-    'You have not set a mailbox yet. The mailbox binding can be used to retrieve passwords and receive notifications.',
+  'userCenter.securitySettings.email.label': 'Email',
+  'userCenter.securitySettings.email.tip':
+    'Used to receive messages, verify identity',
+  'userCenter.securitySettings.email.content': 'Unbound',
 
   'userCenter.securitySettings.updateEmail.modal.title': 'Update email',
   'userCenter.securitySettings.updateEmail.form.label.newEmail': 'New email',
@@ -112,5 +109,12 @@ export default {
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':
     'Please enter current password',
 
+  // bind-social
+  'userCenter.securitySettings.social.label': 'Three-party login',
+  'userCenter.securitySettings.social.tip':
+    'Support quick login of third-party accounts',
+  'userCenter.securitySettings.social.content': 'Unbound',
+
+  'userCenter.securitySettings.content.hasBeenSet': 'Has been set',
   'userCenter.securitySettings.button.update': 'Update',
 };

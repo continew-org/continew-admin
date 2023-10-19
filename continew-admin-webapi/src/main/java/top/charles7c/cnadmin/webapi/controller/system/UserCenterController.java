@@ -16,32 +16,48 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.xkcoding.justauth.AuthRequestFactory;
+
 import cn.hutool.core.util.ReUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
 import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
 import top.charles7c.cnadmin.system.model.request.UpdateEmailRequest;
 import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
+import top.charles7c.cnadmin.system.model.vo.UserSocialBindVO;
 import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.cnadmin.system.service.UserSocialService;
+
+import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
+import me.zhyd.oauth.request.AuthRequest;
 
 /**
  * 个人中心 API
@@ -53,10 +69,12 @@ import top.charles7c.cnadmin.system.service.UserService;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/system/user/center")
+@RequestMapping("/system/user")
 public class UserCenterController {
 
     private final UserService userService;
+    private final UserSocialService userSocialService;
+    private final AuthRequestFactory authRequestFactory;
 
     @Operation(summary = "上传头像", description = "用户上传个人头像")
     @PostMapping("/avatar")
@@ -94,14 +112,45 @@ public class UserCenterController {
         String rawCurrentPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateEmailRequest.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateEmailRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
-
         userService.updateEmail(updateEmailRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
+    }
+
+    @Operation(summary = "查询绑定的第三方账号", description = "查询绑定的第三方账号")
+    @GetMapping("/social")
+    public List<UserSocialBindVO> listSocial() {
+        List<UserSocialDO> userSocialList = userSocialService.listByUserId(LoginHelper.getUserId());
+        return userSocialList.stream().map(userSocial -> {
+            String source = userSocial.getSource();
+            UserSocialBindVO userSocialBind = new UserSocialBindVO();
+            userSocialBind.setSource(source);
+            userSocialBind.setDescription(SocialSourceEnum.valueOf(source).getDescription());
+            return userSocialBind;
+        }).collect(Collectors.toList());
+    }
+
+    @Operation(summary = "绑定第三方账号", description = "绑定第三方账号")
+    @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
+    @PostMapping("/social/{source}")
+    public R bindSocial(@PathVariable String source, @RequestBody AuthCallback callback) {
+        AuthRequest authRequest = authRequestFactory.get(source);
+        AuthResponse<AuthUser> response = authRequest.login(callback);
+        ValidationUtils.throwIf(!response.ok(), response.getMsg());
+        AuthUser authUser = response.getData();
+        userSocialService.bind(authUser, LoginHelper.getUserId());
+        return R.ok("绑定成功");
+    }
+
+    @Operation(summary = "解绑第三方账号", description = "解绑第三方账号")
+    @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
+    @DeleteMapping("/social/{source}")
+    public R unbindSocial(@PathVariable String source) {
+        userSocialService.deleteBySourceAndUserId(source, LoginHelper.getUserId());
+        return R.ok("解绑成功");
     }
 }

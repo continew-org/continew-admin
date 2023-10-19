@@ -72,6 +72,9 @@ public class SocialAuthController {
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/{source}")
     public LoginVO login(@PathVariable String source, @RequestBody AuthCallback callback) {
+        if (StpUtil.isLogin()) {
+            StpUtil.logout();
+        }
         AuthRequest authRequest = this.getAuthRequest(source);
         AuthResponse<AuthUser> response = authRequest.login(callback);
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
@@ -82,9 +85,6 @@ public class SocialAuthController {
 
     private AuthRequest getAuthRequest(String source) {
         try {
-            if (StpUtil.isLogin()) {
-                StpUtil.logout();
-            }
             return authRequestFactory.get(source);
         } catch (Exception e) {
             throw new BadRequestException(String.format("暂不支持 [%s] 登录", source));

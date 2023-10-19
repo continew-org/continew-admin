@@ -16,7 +16,11 @@
 
 package top.charles7c.cnadmin.system.service;
 
+import java.util.List;
+
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
+
+import me.zhyd.oauth.model.AuthUser;
 
 /**
  * 用户社会化关联业务接口
@@ -44,4 +48,33 @@ public interface UserSocialService {
      *            用户社会化关联信息
      */
     void saveOrUpdate(UserSocialDO userSocial);
+
+    /**
+     * 根据用户 ID 查询
+     * 
+     * @param userId
+     *            用户 ID
+     * @return 用户社会化关联信息
+     */
+    List<UserSocialDO> listByUserId(Long userId);
+
+    /**
+     * 绑定
+     * 
+     * @param authUser
+     *            社交身份信息
+     * @param userId
+     *            用户 ID
+     */
+    void bind(AuthUser authUser, Long userId);
+
+    /**
+     * 根据来源和用户 ID 删除
+     * 
+     * @param source
+     *            来源
+     * @param userId
+     *            用户 ID
+     */
+    void deleteBySourceAndUserId(String source, Long userId);
 }
