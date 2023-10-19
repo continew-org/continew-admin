@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.json.JSONUtil;
 
+import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserSocialMapper;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
@@ -76,9 +77,10 @@ public class UserSocialServiceImpl implements UserSocialService {
         String openId = authUser.getUuid();
         List<UserSocialDO> userSocialList = this.listByUserId(userId);
         Set<String> boundSocialSet = userSocialList.stream().map(UserSocialDO::getSource).collect(Collectors.toSet());
-        CheckUtils.throwIf(boundSocialSet.contains(source), "您已经绑定过了 [{}] 平台，请先解绑");
+        String description = SocialSourceEnum.valueOf(source).getDescription();
+        CheckUtils.throwIf(boundSocialSet.contains(source), "您已经绑定过了 [{}] 平台，请先解绑", description);
         UserSocialDO userSocial = this.getBySourceAndOpenId(source, openId);
-        CheckUtils.throwIfNotNull(userSocial, "[{}] 平台账号 [{}] 已被其他用户绑定", source, authUser.getUsername());
+        CheckUtils.throwIfNotNull(userSocial, "[{}] 平台账号 [{}] 已被其他用户绑定", description, authUser.getUsername());
         userSocial = new UserSocialDO();
         userSocial.setUserId(userId);
         userSocial.setSource(source);

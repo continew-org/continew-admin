@@ -87,7 +87,7 @@ public class CheckUtils extends Validator {
     }
 
     /**
-     * 如果不为空，抛出异常
+     * 如果存在，抛出异常
      *
      * @param obj
      *            被检测的对象
@@ -98,7 +98,7 @@ public class CheckUtils extends Validator {
      * @param fieldValue
      *            字段值
      */
-    public static void throwIfNotNull(Object obj, String entityName, String fieldName, Object fieldValue) {
+    public static void throwIfExists(Object obj, String entityName, String fieldName, Object fieldValue) {
         String message = String.format("%s 为 [%s] 的 %s 记录已存在", fieldName, fieldValue, entityName);
         throwIfNotNull(obj, message, EXCEPTION_TYPE);
     }
