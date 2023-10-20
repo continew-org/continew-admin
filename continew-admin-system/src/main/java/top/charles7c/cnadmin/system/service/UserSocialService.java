@@ -62,7 +62,7 @@ public interface UserSocialService {
      * 绑定
      * 
      * @param authUser
-     *            社交身份信息
+     *            三方账号信息
      * @param userId
      *            用户 ID
      */

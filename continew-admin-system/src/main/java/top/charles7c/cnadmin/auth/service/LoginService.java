@@ -42,10 +42,10 @@ public interface LoginService {
     String login(String username, String password);
 
     /**
-     * 社交身份登录
+     * 三方账号登录
      *
      * @param authUser
-     *            社交身份信息
+     *            三方账号信息
      * @return 令牌
      */
     String socialLogin(AuthUser authUser);

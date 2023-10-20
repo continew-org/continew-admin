@@ -53,7 +53,7 @@ const useUserStore = defineStore('user', {
       }
     },
 
-    // 社交身份登录
+    // 三方账号身份登录
     async socialLogin(source: string, req: any) {
       try {
         const res = await userSocialLogin(source, req);

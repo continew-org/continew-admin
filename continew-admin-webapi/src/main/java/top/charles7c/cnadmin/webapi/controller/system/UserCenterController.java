@@ -121,9 +121,9 @@ public class UserCenterController {
         return R.ok("修改成功");
     }
 
-    @Operation(summary = "查询绑定的第三方账号", description = "查询绑定的第三方账号")
+    @Operation(summary = "查询绑定的三方账号", description = "查询绑定的三方账号")
     @GetMapping("/social")
-    public List<UserSocialBindVO> listSocial() {
+    public List<UserSocialBindVO> listSocialBind() {
         List<UserSocialDO> userSocialList = userSocialService.listByUserId(LoginHelper.getUserId());
         return userSocialList.stream().map(userSocial -> {
             String source = userSocial.getSource();
@@ -134,7 +134,7 @@ public class UserCenterController {
         }).collect(Collectors.toList());
     }
 
-    @Operation(summary = "绑定第三方账号", description = "绑定第三方账号")
+    @Operation(summary = "绑定三方账号", description = "绑定三方账号")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/social/{source}")
     public R bindSocial(@PathVariable String source, @RequestBody AuthCallback callback) {
@@ -146,7 +146,7 @@ public class UserCenterController {
         return R.ok("绑定成功");
     }
 
-    @Operation(summary = "解绑第三方账号", description = "解绑第三方账号")
+    @Operation(summary = "解绑三方账号", description = "解绑三方账号")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @DeleteMapping("/social/{source}")
     public R unbindSocial(@PathVariable String source) {

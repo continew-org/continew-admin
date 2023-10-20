@@ -44,13 +44,13 @@ import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 
 /**
- * 社交身份认证 API
+ * 三方账号认证 API
  *
  * @author Charles7c
  * @since 2023/10/8 22:52
  */
 @Log(module = "登录")
-@Tag(name = "社交身份认证 API")
+@Tag(name = "三方账号认证 API")
 @SaIgnore
 @RestController
 @RequiredArgsConstructor
@@ -60,7 +60,7 @@ public class SocialAuthController {
     private final LoginService loginService;
     private final AuthRequestFactory authRequestFactory;
 
-    @Operation(summary = "社交身份登录授权", description = "社交身份登录授权")
+    @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @GetMapping("/{source}")
     public R authorize(@PathVariable String source) {
@@ -68,7 +68,7 @@ public class SocialAuthController {
         return R.ok("操作成功", authRequest.authorize(AuthStateUtils.createState()));
     }
 
-    @Operation(summary = "社交身份登录", description = "社交身份登录")
+    @Operation(summary = "三方账号登录", description = "三方账号登录")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/{source}")
     public LoginVO login(@PathVariable String source, @RequestBody AuthCallback callback) {
@@ -87,7 +87,7 @@ public class SocialAuthController {
         try {
             return authRequestFactory.get(source);
         } catch (Exception e) {
-            throw new BadRequestException(String.format("暂不支持 [%s] 登录", source));
+            throw new BadRequestException(String.format("暂不支持 [%s] 平台账号登录", source));
         }
     }
 }
