@@ -6,6 +6,7 @@
     layout="vertical"
     size="large"
     class="login-form"
+    @submit="handleLogin"
   >
     <a-form-item field="email" hide-label>
       <a-input
@@ -32,7 +33,7 @@
       </a-button>
     </a-form-item>
     <a-button class="btn" :loading="loading" type="primary" html-type="submit"
-      >{{ $t('login.button') }}（即将开放）
+      >{{ $t('login.button') }}
     </a-button>
   </a-form>
 </template>
@@ -40,11 +41,15 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
+  import { ValidatedError } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
-  import { LoginReq } from '@/api/auth/login';
+  import { EmailLoginReq } from '@/api/auth/login';
+  import { getMailCaptcha } from '@/api/common/captcha';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
+  const router = useRouter();
   const userStore = useUserStore();
   const loading = ref(false);
   const captchaLoading = ref(false);
@@ -54,7 +59,10 @@
   const captchaBtnNameKey = ref('login.captcha.get');
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
   const data = reactive({
-    form: {} as LoginReq,
+    form: {
+      email: '',
+      captcha: '',
+    } as EmailLoginReq,
     rules: {
       email: [
         { required: true, message: t('login.email.error.required.email') },
@@ -85,25 +93,75 @@
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';
-        captchaLoading.value = false;
-        captchaDisable.value = true;
-        captchaBtnNameKey.value = `${t(
-          'login.captcha.get'
-        )}(${(captchaTime.value -= 1)}s)`;
-        captchaTimer.value = window.setInterval(() => {
-          captchaTime.value -= 1;
-          captchaBtnNameKey.value = `${t('login.captcha.get')}(${
-            captchaTime.value
-          }s)`;
-          if (captchaTime.value < 0) {
-            window.clearInterval(captchaTimer.value);
-            captchaTime.value = 60;
-            captchaBtnNameKey.value = t('login.captcha.get');
-            captchaDisable.value = false;
-          }
-        }, 1000);
+        getMailCaptcha({
+          email: form.value.email,
+        })
+          .then((res) => {
+            captchaLoading.value = false;
+            captchaDisable.value = true;
+            captchaBtnNameKey.value = `${t(
+              'login.captcha.get'
+            )}(${(captchaTime.value -= 1)}s)`;
+            captchaTimer.value = window.setInterval(() => {
+              captchaTime.value -= 1;
+              captchaBtnNameKey.value = `${t('login.captcha.get')}(${
+                captchaTime.value
+              }s)`;
+              if (captchaTime.value <= 0) {
+                window.clearInterval(captchaTimer.value);
+                captchaTime.value = 60;
+                captchaBtnNameKey.value = t('login.captcha.get');
+                captchaDisable.value = false;
+              }
+            }, 1000);
+            proxy.$message.success(res.msg);
+          })
+          .catch(() => {
+            resetCaptcha();
+            captchaLoading.value = false;
+          });
       }
     });
+  };
+
+  /**
+   * 登录
+   *
+   * @param errors 表单验证错误
+   * @param values 表单数据
+   */
+  const handleLogin = ({
+    errors,
+    values,
+  }: {
+    errors: Record<string, ValidatedError> | undefined;
+    values: Record<string, any>;
+  }) => {
+    if (loading.value) return;
+    if (!errors) {
+      loading.value = true;
+      userStore
+        .emailLogin({
+          email: values.email,
+          captcha: values.captcha,
+        })
+        .then(() => {
+          const { redirect, ...othersQuery } = router.currentRoute.value.query;
+          router.push({
+            name: (redirect as string) || 'Workplace',
+            query: {
+              ...othersQuery,
+            },
+          });
+          proxy.$notification.success(t('login.success'));
+        })
+        .catch(() => {
+          form.value.captcha = '';
+        })
+        .finally(() => {
+          loading.value = false;
+        });
+    }
   };
 </script>
 

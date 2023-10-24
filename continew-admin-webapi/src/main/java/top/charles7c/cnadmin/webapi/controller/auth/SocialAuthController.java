@@ -54,7 +54,7 @@ import me.zhyd.oauth.utils.AuthStateUtils;
 @SaIgnore
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/oauth")
 public class SocialAuthController {
 
     private final LoginService loginService;

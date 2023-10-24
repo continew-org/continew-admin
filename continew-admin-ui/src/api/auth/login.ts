@@ -6,7 +6,6 @@ const BASE_URL = '/auth';
 
 export interface LoginReq {
   phone?: string;
-  email?: string;
   username?: string;
   password?: string;
   captcha: string;
@@ -17,8 +16,17 @@ export interface LoginRes {
   token: string;
 }
 
-export function login(req: LoginReq) {
-  return axios.post<LoginRes>(`${BASE_URL}/login`, req);
+export function accountLogin(req: LoginReq) {
+  return axios.post<LoginRes>(`${BASE_URL}/account`, req);
+}
+
+export interface EmailLoginReq {
+  email: string;
+  captcha: string;
+}
+
+export function emailLogin(req: EmailLoginReq) {
+  return axios.post<LoginRes>(`${BASE_URL}/email`, req);
 }
 
 export function logout() {
@@ -34,9 +42,9 @@ export function listRoute() {
 }
 
 export function socialAuth(source: string) {
-  return axios.get<string>(`${BASE_URL}/${source}`);
+  return axios.get<string>(`/oauth/${source}`);
 }
 
 export function socialLogin(source: string, req: any) {
-  return axios.post<LoginRes>(`${BASE_URL}/${source}`, req);
+  return axios.post<LoginRes>(`/oauth/${source}`, req);
 }

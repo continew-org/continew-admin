@@ -72,7 +72,8 @@ export default {
 
   // update-email
   'userCenter.securitySettings.email.label': '安全邮箱',
-  'userCenter.securitySettings.email.tip': '用于接收消息、验证身份',
+  'userCenter.securitySettings.email.tip':
+    '用于接收消息、验证身份，绑定后可支持邮箱登录',
   'userCenter.securitySettings.email.content': '未绑定',
 
   'userCenter.securitySettings.updateEmail.modal.title': '修改邮箱',

@@ -41,6 +41,16 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     UserDO selectByUsername(@Param("username") String username);
 
     /**
+     * 根据邮箱查询
+     *
+     * @param email
+     *            邮箱
+     * @return 用户信息
+     */
+    @Select("SELECT * FROM `sys_user` WHERE `email` = #{email}")
+    UserDO selectByEmail(@Param("email") String email);
+
+    /**
      * 根据 ID 查询昵称
      *
      * @param id

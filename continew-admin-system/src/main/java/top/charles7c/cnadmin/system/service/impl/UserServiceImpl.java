@@ -245,6 +245,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    public UserDO getByEmail(String email) {
+        return baseMapper.selectByEmail(email);
+    }
+
+    @Override
     public Long countByDeptIds(List<Long> deptIds) {
         return baseMapper.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
     }

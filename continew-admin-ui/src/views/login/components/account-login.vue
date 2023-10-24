@@ -124,7 +124,7 @@
     if (!errors) {
       loading.value = true;
       userStore
-        .login({
+        .accountLogin({
           username: values.username,
           password: encryptByRsa(values.password) || '',
           captcha: values.captcha,

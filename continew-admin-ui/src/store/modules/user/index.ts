@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 import {
-  login as userLogin,
+  LoginReq,
+  EmailLoginReq,
+  accountLogin as userAccountLogin,
+  emailLogin as userEmailLogin,
   socialLogin as userSocialLogin,
   logout as userLogout,
   getUserInfo,
-  LoginReq,
 } from '@/api/auth/login';
 import { getImageCaptcha as getCaptcha } from '@/api/common/captcha';
 import { setToken, clearToken } from '@/utils/auth';
@@ -42,10 +44,21 @@ const useUserStore = defineStore('user', {
       return getCaptcha();
     },
 
-    // 用户登录
-    async login(req: LoginReq) {
+    // 账号登录
+    async accountLogin(req: LoginReq) {
       try {
-        const res = await userLogin(req);
+        const res = await userAccountLogin(req);
+        setToken(res.data.token);
+      } catch (err) {
+        clearToken();
+        throw err;
+      }
+    },
+
+    // 邮箱登录
+    async emailLogin(req: EmailLoginReq) {
+      try {
+        const res = await userEmailLogin(req);
         setToken(res.data.token);
       } catch (err) {
         clearToken();

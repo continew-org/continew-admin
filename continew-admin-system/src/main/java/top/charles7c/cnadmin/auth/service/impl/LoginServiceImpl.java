@@ -76,11 +76,19 @@ public class LoginServiceImpl implements LoginService {
     private final UserSocialService userSocialService;
 
     @Override
-    public String login(String username, String password) {
+    public String accountLogin(String username, String password) {
         UserDO user = userService.getByUsername(username);
-        CheckUtils.throwIfNull(user, "用户名或密码错误");
+        CheckUtils.throwIfNull(user, "用户名或密码不正确");
         Long userId = user.getId();
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), user.getPassword(), "用户名或密码错误");
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), user.getPassword(), "用户名或密码不正确");
+        this.checkUserStatus(user);
+        return this.login(user);
+    }
+
+    @Override
+    public String emailLogin(String email) {
+        UserDO user = userService.getByEmail(email);
+        CheckUtils.throwIfNull(user, "此邮箱未绑定本系统账号");
         this.checkUserStatus(user);
         return this.login(user);
     }
@@ -187,6 +195,6 @@ public class LoginServiceImpl implements LoginService {
     private void checkUserStatus(UserDO user) {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
         DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号部门已被禁用，如有疑问，请联系管理员");
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
     }
 }

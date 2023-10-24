@@ -31,7 +31,7 @@ import me.zhyd.oauth.model.AuthUser;
 public interface LoginService {
 
     /**
-     * 用户登录
+     * 账号登录
      *
      * @param username
      *            用户名
@@ -39,7 +39,16 @@ public interface LoginService {
      *            密码
      * @return 令牌
      */
-    String login(String username, String password);
+    String accountLogin(String username, String password);
+
+    /**
+     * 邮箱登录
+     *
+     * @param email
+     *            邮箱
+     * @return 令牌
+     */
+    String emailLogin(String email);
 
     /**
      * 三方账号登录

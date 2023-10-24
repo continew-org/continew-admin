@@ -77,7 +77,7 @@ export default {
   // update-email
   'userCenter.securitySettings.email.label': 'Email',
   'userCenter.securitySettings.email.tip':
-    'Used to receive messages, verify identity',
+    'It is used to receive messages, verify identity, and support email login after binding',
   'userCenter.securitySettings.email.content': 'Unbound',
 
   'userCenter.securitySettings.updateEmail.modal.title': 'Update email',

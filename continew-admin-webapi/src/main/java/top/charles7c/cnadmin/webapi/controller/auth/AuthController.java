@@ -32,6 +32,7 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
+import top.charles7c.cnadmin.auth.model.request.EmailLoginRequest;
 import top.charles7c.cnadmin.auth.model.request.LoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.RouteVO;
@@ -65,9 +66,9 @@ public class AuthController {
     private final UserService userService;
 
     @SaIgnore
-    @Operation(summary = "用户登录", description = "根据用户名和密码进行登录认证")
-    @PostMapping("/login")
-    public LoginVO login(@Validated @RequestBody LoginRequest loginRequest) {
+    @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
+    @PostMapping("/account")
+    public LoginVO accountLogin(@Validated @RequestBody LoginRequest loginRequest) {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginRequest.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
@@ -77,7 +78,21 @@ public class AuthController {
         String rawPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
-        String token = loginService.login(loginRequest.getUsername(), rawPassword);
+        String token = loginService.accountLogin(loginRequest.getUsername(), rawPassword);
+        return LoginVO.builder().token(token).build();
+    }
+
+    @SaIgnore
+    @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
+    @PostMapping("/email")
+    public LoginVO emailLogin(@Validated @RequestBody EmailLoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, email);
+        String captcha = RedisUtils.getCacheObject(captchaKey);
+        ValidationUtils.throwIfBlank(captcha, "验证码已失效");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        RedisUtils.deleteCacheObject(captchaKey);
+        String token = loginService.emailLogin(email);
         return LoginVO.builder().token(token).build();
     }
 

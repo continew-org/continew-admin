@@ -119,6 +119,15 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     UserDO getByUsername(String username);
 
     /**
+     * 根据邮箱查询
+     *
+     * @param email
+     *            邮箱
+     * @return 用户信息
+     */
+    UserDO getByEmail(String email);
+
+    /**
      * 根据部门 ID 列表查询
      *
      * @param deptIds
