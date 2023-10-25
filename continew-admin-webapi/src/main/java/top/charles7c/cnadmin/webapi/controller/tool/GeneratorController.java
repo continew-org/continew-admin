@@ -30,8 +30,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.extra.spring.SpringUtil;
 
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
 import top.charles7c.cnadmin.common.model.vo.R;
@@ -57,6 +57,7 @@ import top.charles7c.cnadmin.tool.service.GeneratorService;
 public class GeneratorController {
 
     private final GeneratorService generatorService;
+    private final ProjectProperties projectProperties;
 
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")
@@ -97,7 +98,7 @@ public class GeneratorController {
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/{tableName}")
     public R generate(@PathVariable String tableName) {
-        ValidationUtils.throwIf("prod".equals(SpringUtil.getActiveProfile()), "仅支持在开发环境生成代码");
+        ValidationUtils.throwIf(projectProperties.isProduction(), "仅支持在开发环境生成代码");
         generatorService.generate(tableName);
         return R.ok("生成成功，请查看生成代码是否正确");
     }

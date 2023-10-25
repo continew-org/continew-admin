@@ -82,6 +82,11 @@ public class ProjectProperties {
     private License license;
 
     /**
+     * 是否为生产环境
+     */
+    private boolean production = false;
+
+    /**
      * 是否本地解析 IP 归属地
      */
     public static final boolean IP_ADDR_LOCAL_PARSE_ENABLED;

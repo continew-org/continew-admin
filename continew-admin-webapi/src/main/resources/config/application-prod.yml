@@ -2,6 +2,8 @@
 project:
   # URL
   url: https://cnadmin.charles7c.top
+  # 是否为生产环境
+  production: true
 
 --- ### 服务器配置
 server:
