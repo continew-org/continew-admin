@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 通用枚举基类 BaseEnum 反序列化器
@@ -36,13 +36,13 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  * @since 2023/1/8 13:56
  */
 @JacksonStdImpl
-public class BaseEnumDeserializer extends JsonDeserializer<BaseEnum> {
+public class BaseEnumDeserializer extends JsonDeserializer<IBaseEnum> {
 
     /** 静态实例 */
     public static final BaseEnumDeserializer SERIALIZER_INSTANCE = new BaseEnumDeserializer();
 
     @Override
-    public BaseEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+    public IBaseEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
         throws IOException {
         Class<?> targetClass = jsonParser.getCurrentValue().getClass();
         String fieldName = jsonParser.getCurrentName();
@@ -61,13 +61,13 @@ public class BaseEnumDeserializer extends JsonDeserializer<BaseEnum> {
      *            字段名
      * @return 对应枚举实例 ，获取不到时为 {@code null}
      */
-    private BaseEnum getEnum(Class<?> targetClass, String value, String fieldName) {
+    private IBaseEnum getEnum(Class<?> targetClass, String value, String fieldName) {
         Field field = ReflectUtil.getField(targetClass, fieldName);
         Class<?> fieldTypeClass = field.getType();
         Object[] enumConstants = fieldTypeClass.getEnumConstants();
         for (Object enumConstant : enumConstants) {
-            if (ClassUtil.isAssignable(BaseEnum.class, fieldTypeClass)) {
-                BaseEnum baseEnum = (BaseEnum)enumConstant;
+            if (ClassUtil.isAssignable(IBaseEnum.class, fieldTypeClass)) {
+                IBaseEnum baseEnum = (IBaseEnum)enumConstant;
                 if (baseEnum.getValue().equals(Integer.valueOf(value))) {
                     return baseEnum;
                 }

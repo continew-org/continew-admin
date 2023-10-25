@@ -41,7 +41,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 
 import cn.hutool.core.date.DatePattern;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * Jackson 配置
@@ -83,10 +83,10 @@ public class JacksonConfiguration {
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
         SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(BaseEnum.class, BaseEnumSerializer.SERIALIZER_INSTANCE);
+        simpleModule.addSerializer(IBaseEnum.class, BaseEnumSerializer.SERIALIZER_INSTANCE);
 
         SimpleDeserializersWrapper deserializers = new SimpleDeserializersWrapper();
-        deserializers.addDeserializer(BaseEnum.class, BaseEnumDeserializer.SERIALIZER_INSTANCE);
+        deserializers.addDeserializer(IBaseEnum.class, BaseEnumDeserializer.SERIALIZER_INSTANCE);
         simpleModule.setDeserializers(deserializers);
 
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();

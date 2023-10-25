@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.monitor.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 操作状态枚举
@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum LogStatusEnum implements BaseEnum<Integer> {
+public enum LogStatusEnum implements IBaseEnum<Integer> {
 
     /** 成功 */
     SUCCESS(1, "成功"),

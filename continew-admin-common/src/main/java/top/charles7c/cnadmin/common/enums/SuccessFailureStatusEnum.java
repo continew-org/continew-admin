@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
@@ -30,7 +30,7 @@ import top.charles7c.cnadmin.common.constant.UIConsts;
  */
 @Getter
 @RequiredArgsConstructor
-public enum SuccessFailureStatusEnum implements BaseEnum<Integer> {
+public enum SuccessFailureStatusEnum implements IBaseEnum<Integer> {
 
     /** 成功 */
     SUCCESS(1, "成功", UIConsts.COLOR_SUCCESS),

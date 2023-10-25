@@ -21,16 +21,14 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 /**
- * 枚举基类
+ * 枚举接口
  *
  * @param <V>
  *            value 类型
- * @param <D>
- *            description 类型
  * @author Charles7c
  * @since 2023/2/5 20:44
  */
-public interface BaseEnum<V extends Serializable> extends IEnum<V> {
+public interface IBaseEnum<V extends Serializable> extends IEnum<V> {
 
     /**
      * 枚举描述

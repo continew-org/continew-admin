@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 数据权限枚举
@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DataScopeEnum implements BaseEnum<Integer> {
+public enum DataScopeEnum implements IBaseEnum<Integer> {
 
     /** 全部数据权限 */
     ALL(1, "全部数据权限"),

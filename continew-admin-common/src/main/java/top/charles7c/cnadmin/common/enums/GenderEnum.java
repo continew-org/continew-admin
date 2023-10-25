@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 性别枚举
@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GenderEnum implements BaseEnum<Integer> {
+public enum GenderEnum implements IBaseEnum<Integer> {
 
     /** 未知 */
     UNKNOWN(0, "未知"),

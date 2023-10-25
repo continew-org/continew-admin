@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 查询类型枚举
@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum QueryTypeEnum implements BaseEnum<Integer> {
+public enum QueryTypeEnum implements IBaseEnum<Integer> {
 
     /**
      * 等值查询，例如：WHERE `age` = 18

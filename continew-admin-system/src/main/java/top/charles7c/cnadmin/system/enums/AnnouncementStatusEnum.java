@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.system.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
@@ -30,7 +30,7 @@ import top.charles7c.cnadmin.common.constant.UIConsts;
  */
 @Getter
 @RequiredArgsConstructor
-public enum AnnouncementStatusEnum implements BaseEnum<Integer> {
+public enum AnnouncementStatusEnum implements IBaseEnum<Integer> {
 
     /** 待发布 */
     PENDING_RELEASE(1, "待发布", UIConsts.COLOR_PRIMARY),

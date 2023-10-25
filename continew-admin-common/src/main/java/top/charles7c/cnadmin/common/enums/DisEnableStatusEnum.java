@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.constant.UIConsts;
 
 /**
@@ -30,7 +30,7 @@ import top.charles7c.cnadmin.common.constant.UIConsts;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DisEnableStatusEnum implements BaseEnum<Integer> {
+public enum DisEnableStatusEnum implements IBaseEnum<Integer> {
 
     /** 启用 */
     ENABLE(1, "启用", UIConsts.COLOR_SUCCESS),

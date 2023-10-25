@@ -43,8 +43,8 @@ import top.charles7c.cnadmin.common.model.vo.R;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalResponseBodyAdviceHandler implements ResponseBodyAdvice<Object> {
-    private static final String[] EXCLUDE = {"MultipleOpenApiWebMvcResource", "SwaggerConfigResource",};
 
+    private static final String[] EXCLUDE = {"MultipleOpenApiWebMvcResource", "SwaggerConfigResource",};
     private final ObjectMapper objectMapper;
 
     @Override

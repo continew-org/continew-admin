@@ -19,7 +19,7 @@ package top.charles7c.cnadmin.tool.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 
 /**
  * 表单类型枚举
@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.base.BaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum FormTypeEnum implements BaseEnum<Integer> {
+public enum FormTypeEnum implements IBaseEnum<Integer> {
 
     /**
      * 文本框

@@ -42,7 +42,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.base.BaseEnum;
+import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
@@ -140,7 +140,7 @@ public class CommonController {
      * @return 枚举类型
      */
     private Optional<Class<?>> getEnumClassByName(String enumClassName) {
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), IBaseEnum.class);
         return classSet.stream()
             .filter(
                 c -> StrUtil.equalsAnyIgnoreCase(c.getSimpleName(), enumClassName, StrUtil.toCamelCase(enumClassName)))
@@ -157,7 +157,7 @@ public class CommonController {
     private List<LabelValueVO> listEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
         return Arrays.stream(enumConstants).map(e -> {
-            BaseEnum<Integer> baseEnum = (BaseEnum<Integer>)e;
+            IBaseEnum<Integer> baseEnum = (IBaseEnum<Integer>)e;
             return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
         }).collect(Collectors.toList());
     }
