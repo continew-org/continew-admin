@@ -64,7 +64,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 前后端统一异常拦截处理，统一输出异常信息，避免繁琐的异常判断
 - 自动初始化数据：通过 Liquibase 管理数据库脚本版本记录，并在系统第一次启动时自动进行数据初始化，无须额外配置导入
 - 提供多项实用基础配置，例如：Jackson 针对日期、通用枚举的序列化、反序列化配置，统一线程池配置等
-- 良好的代码、配置文件结构和命名，完善的代码注释甚至包括接口文档参数示例，遵循阿里巴巴 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 的代码规范，保证代码质量和可维护性
+- 良好的代码、配置文件结构和命名，完善的代码注释甚至包括 Git Commit 信息、接口文档参数示例，遵循阿里巴巴 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 的代码规范，保证代码质量和可维护性
 - 更多细节及实践，敬请探索与关注
 
 ##  系统功能
@@ -72,7 +72,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > **Note**
 > 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
-- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456，且支持第三方账号登录
+- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456，且支持第三方账号登录、邮箱登录，可在个人中心灵活修改
 - 部门管理：可配置系统组织架构，树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
@@ -466,7 +466,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 请记住，如果您有任何疑问或需要帮助，我们将随时提供支持。
 
-> **Note**
+> **IMPORTANT**
 > 欢迎大家为 ContiNew Admin 贡献代码，我们非常感谢您的支持！为了更好地管理项目，维护者有一些要求：
 >
 > 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
