@@ -8,7 +8,7 @@ import {
 import type { MessageReturn } from '@arco-design/web-vue/es/message/interface';
 import type { RouteRecordNormalized } from 'vue-router';
 import defaultSettings from '@/config/settings.json';
-import { listRoute } from '@/api/auth/login';
+import { listRoute } from '@/api/auth';
 import { listOption } from '@/api/common';
 import getFile from '@/utils/file';
 import { AppState, Config } from './types';

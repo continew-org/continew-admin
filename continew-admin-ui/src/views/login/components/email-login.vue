@@ -44,7 +44,7 @@
   import { useRouter } from 'vue-router';
   import { ValidatedError } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
-  import { EmailLoginReq } from '@/api/auth/login';
+  import { EmailLoginReq } from '@/api/auth';
   import { getMailCaptcha } from '@/api/common/captcha';
 
   const { proxy } = getCurrentInstance() as any;

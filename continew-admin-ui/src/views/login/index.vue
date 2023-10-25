@@ -81,7 +81,7 @@
   import { useAppStore } from '@/store';
   import getFile from '@/utils/file';
   import useResponsive from '@/hooks/responsive';
-  import { socialAuth } from '@/api/auth/login';
+  import { socialAuth } from '@/api/auth';
   import AccountLogin from './components/account-login.vue';
   import PhoneLogin from './components/phone-login.vue';
   import EmailLogin from './components/email-login.vue';

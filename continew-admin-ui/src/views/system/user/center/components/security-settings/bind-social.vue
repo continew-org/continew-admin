@@ -83,7 +83,7 @@
     listSocial,
     unbindSocial,
   } from '@/api/system/user-center';
-  import { socialAuth } from '@/api/auth/login';
+  import { socialAuth } from '@/api/auth';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();

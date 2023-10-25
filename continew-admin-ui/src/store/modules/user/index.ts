@@ -7,7 +7,7 @@ import {
   socialLogin as userSocialLogin,
   logout as userLogout,
   getUserInfo,
-} from '@/api/auth/login';
+} from '@/api/auth';
 import { getImageCaptcha as getCaptcha } from '@/api/common/captcha';
 import { setToken, clearToken } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';

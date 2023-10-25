@@ -57,7 +57,7 @@
   import { useI18n } from 'vue-i18n';
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
-  import { LoginReq } from '@/api/auth/login';
+  import { LoginReq } from '@/api/auth';
   import { ValidatedError } from '@arco-design/web-vue';
   import { encryptByRsa } from '@/utils/encrypt';
   import { useRouter } from 'vue-router';

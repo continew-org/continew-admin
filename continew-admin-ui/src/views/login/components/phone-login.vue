@@ -43,7 +43,7 @@
   import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import { useUserStore } from '@/store';
-  import { LoginReq } from '@/api/auth/login';
+  import { LoginReq } from '@/api/auth';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
