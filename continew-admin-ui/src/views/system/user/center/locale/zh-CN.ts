@@ -97,8 +97,6 @@ export default {
     '请输入新邮箱',
   'userCenter.securitySettings.updateEmail.form.error.match.newEmail':
     '请输入正确的邮箱',
-  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail':
-    '新邮箱不能与当前邮箱相同',
   'userCenter.securitySettings.updateEmail.form.error.required.captcha':
     '请输入邮箱验证码',
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':

@@ -134,6 +134,10 @@ public class UserInfoVO implements Serializable {
     @Schema(description = "角色编码集合", example = "[\"test\"]")
     private Set<String> roles;
 
+    public String getEmail() {
+        return DesensitizedUtil.email(email);
+    }
+
     public String getPhone() {
         return DesensitizedUtil.mobilePhone(phone);
     }

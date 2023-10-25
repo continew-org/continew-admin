@@ -102,8 +102,6 @@ export default {
     'Please enter new email',
   'userCenter.securitySettings.updateEmail.form.error.match.newEmail':
     'Please enter the correct email',
-  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail':
-    'New email cannot be the same as the old email',
   'userCenter.securitySettings.updateEmail.form.error.required.captcha':
     'Please enter email captcha',
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':

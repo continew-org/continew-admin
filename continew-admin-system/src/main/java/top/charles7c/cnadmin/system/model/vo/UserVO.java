@@ -96,15 +96,16 @@ public class UserVO extends BaseVO {
     @Schema(description = "描述", example = "张三描述信息")
     private String description;
 
-    @Override
-    public Boolean getDisabled() {
-        return this.getIsSystem() || Objects.equals(this.getId(), LoginHelper.getUserId());
+    public String getEmail() {
+        return DesensitizedUtil.email(email);
     }
 
     public String getPhone() {
-        if (null == phone) {
-            return null;
-        }
         return DesensitizedUtil.mobilePhone(phone);
+    }
+
+    @Override
+    public Boolean getDisabled() {
+        return this.getIsSystem() || Objects.equals(this.getId(), LoginHelper.getUserId());
     }
 }

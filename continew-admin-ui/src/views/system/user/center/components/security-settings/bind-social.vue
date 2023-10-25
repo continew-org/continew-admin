@@ -77,7 +77,6 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref } from 'vue';
-  import { useI18n } from 'vue-i18n';
   import {
     UserSocialBindRecord,
     listSocial,
@@ -86,7 +85,6 @@
   import { socialAuth } from '@/api/auth';
 
   const { proxy } = getCurrentInstance() as any;
-  const { t } = useI18n();
   const socialBinds = ref<UserSocialBindRecord[]>([]);
   const giteeSocial = ref<UserSocialBindRecord>();
   const githubSocial = ref<UserSocialBindRecord>();

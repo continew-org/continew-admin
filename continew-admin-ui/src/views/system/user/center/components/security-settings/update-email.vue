@@ -148,19 +148,6 @@
             'userCenter.securitySettings.updateEmail.form.error.match.newEmail'
           ),
         },
-        {
-          validator: (value, callback) => {
-            if (value === userStore.email) {
-              callback(
-                t(
-                  'userCenter.securitySettings.updateEmail.form.error.validator.newEmail'
-                )
-              );
-            } else {
-              callback();
-            }
-          },
-        },
       ],
       captcha: [
         {
