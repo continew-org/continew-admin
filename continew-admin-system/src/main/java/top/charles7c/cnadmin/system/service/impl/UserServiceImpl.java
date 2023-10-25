@@ -52,9 +52,9 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
-import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
+import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
+import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
 import top.charles7c.cnadmin.system.service.DeptService;
@@ -189,10 +189,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateBasicInfo(UpdateBasicInfoRequest request, Long id) {
+    public void updateBasicInfo(UserBasicInfoUpdateRequest updateRequest, Long id) {
         super.getById(id);
-        baseMapper.lambdaUpdate().set(UserDO::getNickname, request.getNickname())
-            .set(UserDO::getGender, request.getGender()).eq(UserDO::getId, id).update();
+        baseMapper.lambdaUpdate().set(UserDO::getNickname, updateRequest.getNickname())
+            .set(UserDO::getGender, updateRequest.getGender()).eq(UserDO::getId, id).update();
     }
 
     @Override
@@ -233,10 +233,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRole(UpdateUserRoleRequest request, Long id) {
+    public void updateRole(UserRoleUpdateRequest updateRequest, Long id) {
         super.getById(id);
         // 保存用户和角色关联
-        userRoleService.save(request.getRoleIds(), id);
+        userRoleService.save(updateRequest.getRoleIds(), id);
     }
 
     @Override

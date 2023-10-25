@@ -25,14 +25,14 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 修改密码信息
+ * 用户密码修改信息
  *
  * @author Charles7c
  * @since 2023/1/9 23:28
  */
 @Data
-@Schema(description = "修改密码信息")
-public class UpdatePasswordRequest implements Serializable {
+@Schema(description = "用户密码修改信息")
+public class UserPasswordUpdateRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

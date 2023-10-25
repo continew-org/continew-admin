@@ -35,8 +35,8 @@ import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.vo.R;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
+import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -73,8 +73,8 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:role:update")
     @PatchMapping("/{id}/role")
-    public R updateRole(@Validated @RequestBody UpdateUserRoleRequest request, @PathVariable Long id) {
-        baseService.updateRole(request, id);
+    public R updateRole(@Validated @RequestBody UserRoleUpdateRequest updateRequest, @PathVariable Long id) {
+        baseService.updateRole(updateRequest, id);
         return R.ok("分配成功");
     }
 }

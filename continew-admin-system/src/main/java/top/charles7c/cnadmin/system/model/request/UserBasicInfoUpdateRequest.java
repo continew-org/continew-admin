@@ -30,14 +30,14 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
 /**
- * 修改基础信息
+ * 用户基础信息修改信息
  *
  * @author Charles7c
  * @since 2023/1/7 23:08
  */
 @Data
-@Schema(description = "修改基础信息")
-public class UpdateBasicInfoRequest implements Serializable {
+@Schema(description = "用户基础信息修改信息")
+public class UserBasicInfoUpdateRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

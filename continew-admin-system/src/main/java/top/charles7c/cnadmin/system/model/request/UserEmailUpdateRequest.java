@@ -30,14 +30,14 @@ import org.hibernate.validator.constraints.Length;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 
 /**
- * 修改邮箱信息
+ * 用户邮箱修改信息
  *
  * @author Charles7c
  * @since 2023/1/12 20:18
  */
 @Data
-@Schema(description = "修改邮箱信息")
-public class UpdateEmailRequest implements Serializable {
+@Schema(description = "用户邮箱修改信息")
+public class UserEmailUpdateRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

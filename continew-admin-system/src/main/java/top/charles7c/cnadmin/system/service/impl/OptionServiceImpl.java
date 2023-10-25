@@ -32,7 +32,7 @@ import top.charles7c.cnadmin.system.mapper.OptionMapper;
 import top.charles7c.cnadmin.system.model.entity.OptionDO;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.request.OptionRequest;
-import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
+import top.charles7c.cnadmin.system.model.request.OptionResetValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
@@ -62,7 +62,7 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     @CacheEvict(allEntries = true)
-    public void resetValue(ResetOptionValueRequest request) {
+    public void resetValue(OptionResetValueRequest request) {
         baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, request.getCode()).update();
     }
 }

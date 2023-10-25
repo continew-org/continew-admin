@@ -25,14 +25,14 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 登录信息
+ * 账号登录信息
  *
  * @author Charles7c
  * @since 2022/12/21 20:43
  */
 @Data
-@Schema(description = "登录信息")
-public class LoginRequest implements Serializable {
+@Schema(description = "账号登录信息")
+public class AccountLoginRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

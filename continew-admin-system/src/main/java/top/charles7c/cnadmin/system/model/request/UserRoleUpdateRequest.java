@@ -26,14 +26,14 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 修改用户角色信息
+ * 用户角色修改信息
  *
  * @author Charles7c
  * @since 2023/2/24 23:05
  */
 @Data
-@Schema(description = "修改用户角色信息")
-public class UpdateUserRoleRequest implements Serializable {
+@Schema(description = "用户角色修改信息")
+public class UserRoleUpdateRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

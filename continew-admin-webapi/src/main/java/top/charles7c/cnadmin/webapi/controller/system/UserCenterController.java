@@ -46,9 +46,9 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
-import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
-import top.charles7c.cnadmin.system.model.request.UpdateEmailRequest;
-import top.charles7c.cnadmin.system.model.request.UpdatePasswordRequest;
+import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
+import top.charles7c.cnadmin.system.model.request.UserEmailUpdateRequest;
+import top.charles7c.cnadmin.system.model.request.UserPasswordUpdateRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.model.vo.UserSocialBindVO;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -86,19 +86,19 @@ public class UserCenterController {
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public R updateBasicInfo(@Validated @RequestBody UpdateBasicInfoRequest updateBasicInfoRequest) {
-        userService.updateBasicInfo(updateBasicInfoRequest, LoginHelper.getUserId());
+    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateRequest updateRequest) {
+        userService.updateBasicInfo(updateRequest, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
-    public R updatePassword(@Validated @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+    public R updatePassword(@Validated @RequestBody UserPasswordUpdateRequest updateRequest) {
         String rawOldPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getOldPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getOldPassword()));
         ValidationUtils.throwIfNull(rawOldPassword, "当前密码解密失败");
         String rawNewPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updatePasswordRequest.getNewPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
         ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
             "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
@@ -108,16 +108,16 @@ public class UserCenterController {
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
-    public R updateEmail(@Validated @RequestBody UpdateEmailRequest updateEmailRequest) {
+    public R updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateRequest) {
         String rawCurrentPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateEmailRequest.getCurrentPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateEmailRequest.getNewEmail());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateRequest.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        ValidationUtils.throwIfNotEqualIgnoreCase(updateEmailRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(updateRequest.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
-        userService.updateEmail(updateEmailRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
+        userService.updateEmail(updateRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 

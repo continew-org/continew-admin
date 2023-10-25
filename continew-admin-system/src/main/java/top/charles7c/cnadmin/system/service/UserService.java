@@ -23,9 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UpdateBasicInfoRequest;
-import top.charles7c.cnadmin.system.model.request.UpdateUserRoleRequest;
+import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
 import top.charles7c.cnadmin.system.model.request.UserRequest;
+import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
 import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
 import top.charles7c.cnadmin.system.model.vo.UserVO;
 
@@ -60,12 +60,12 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     /**
      * 修改基础信息
      *
-     * @param request
+     * @param updateRequest
      *            修改信息
      * @param id
      *            ID
      */
-    void updateBasicInfo(UpdateBasicInfoRequest request, Long id);
+    void updateBasicInfo(UserBasicInfoUpdateRequest updateRequest, Long id);
 
     /**
      * 修改密码
@@ -102,12 +102,12 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     /**
      * 修改角色
      *
-     * @param request
+     * @param updateRequest
      *            修改信息
      * @param id
      *            ID
      */
-    void updateRole(UpdateUserRoleRequest request, Long id);
+    void updateRole(UserRoleUpdateRequest updateRequest, Long id);
 
     /**
      * 根据用户名查询

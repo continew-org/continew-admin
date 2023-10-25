@@ -26,14 +26,14 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * 重置参数信息
+ * 参数重置信息
  *
  * @author Bull-BCLS
  * @since 2023/9/21 23:10
  */
 @Data
-@Schema(description = "重置参数信息")
-public class ResetOptionValueRequest implements Serializable {
+@Schema(description = "参数重置信息")
+public class OptionResetValueRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

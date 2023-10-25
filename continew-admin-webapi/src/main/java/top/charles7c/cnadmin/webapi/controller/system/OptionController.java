@@ -30,7 +30,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.request.OptionRequest;
-import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
+import top.charles7c.cnadmin.system.model.request.OptionResetValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 import top.charles7c.cnadmin.system.service.OptionService;
 
@@ -65,7 +65,7 @@ public class OptionController {
     @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
-    public void resetValue(@Validated @RequestBody ResetOptionValueRequest request) {
+    public void resetValue(@Validated @RequestBody OptionResetValueRequest request) {
         optionService.resetValue(request);
     }
 }

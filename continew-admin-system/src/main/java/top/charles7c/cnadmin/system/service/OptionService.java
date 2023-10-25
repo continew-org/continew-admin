@@ -20,7 +20,7 @@ import java.util.List;
 
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.request.OptionRequest;
-import top.charles7c.cnadmin.system.model.request.ResetOptionValueRequest;
+import top.charles7c.cnadmin.system.model.request.OptionResetValueRequest;
 import top.charles7c.cnadmin.system.model.vo.OptionVO;
 
 /**
@@ -52,7 +52,7 @@ public interface OptionService {
      * 重置参数
      *
      * @param request
-     *            重置参数信息
+     *            重置信息
      */
-    void resetValue(ResetOptionValueRequest request);
+    void resetValue(OptionResetValueRequest request);
 }
