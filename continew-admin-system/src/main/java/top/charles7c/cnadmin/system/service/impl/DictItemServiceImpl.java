@@ -56,7 +56,7 @@ public class DictItemServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public Long add(DictItemRequest request) {
         String value = request.getValue();
-        CheckUtils.throwIf(this.checkValueExists(value, null, request.getDictId()), "新增失败，字典值 [{}] 已存在", value);
+        CheckUtils.throwIf(this.isValueExists(value, null, request.getDictId()), "新增失败，字典值 [{}] 已存在", value);
         return super.add(request);
     }
 
@@ -65,7 +65,7 @@ public class DictItemServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void update(DictItemRequest request, Long id) {
         String value = request.getValue();
-        CheckUtils.throwIf(this.checkValueExists(value, id, request.getDictId()), "修改失败，字典值 [{}] 已存在", value);
+        CheckUtils.throwIf(this.isValueExists(value, id, request.getDictId()), "修改失败，字典值 [{}] 已存在", value);
         super.update(request, id);
     }
 
@@ -92,7 +92,7 @@ public class DictItemServiceImpl
     }
 
     /**
-     * 检查字典值是否存在
+     * 字典值是否存在
      *
      * @param value
      *            字典值
@@ -102,7 +102,7 @@ public class DictItemServiceImpl
      *            字典 ID
      * @return 是否存在
      */
-    private boolean checkValueExists(String value, Long id, Long dictId) {
+    private boolean isValueExists(String value, Long id, Long dictId) {
         return baseMapper.lambdaQuery().eq(DictItemDO::getValue, value).eq(DictItemDO::getDictId, dictId)
             .ne(null != id, DictItemDO::getId, id).exists();
     }

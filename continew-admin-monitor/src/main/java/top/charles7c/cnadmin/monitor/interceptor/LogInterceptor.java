@@ -84,7 +84,7 @@ public class LogInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
         @NonNull Object handler) {
-        if (checkIsNeedRecord(handler, request)) {
+        if (this.isNeedRecord(handler, request)) {
             // 记录时间
             this.logCreateTime();
         }
@@ -336,15 +336,15 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 检查是否要记录系统日志
+     * 是否要记录系统日志
      *
      * @param handler
      *            处理器
      * @param request
      *            请求对象
-     * @return true 需要记录，false 不需要记录
+     * @return true 需要记录；false 不需要记录
      */
-    private boolean checkIsNeedRecord(Object handler, HttpServletRequest request) {
+    private boolean isNeedRecord(Object handler, HttpServletRequest request) {
         // 1、未启用时，不需要记录系统日志
         if (!(handler instanceof HandlerMethod) || Boolean.FALSE.equals(operationLogProperties.getEnabled())) {
             return false;

@@ -91,11 +91,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(UserRequest request) {
         String username = request.getUsername();
-        CheckUtils.throwIf(this.checkNameExists(username, null), "新增失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.isNameExists(username, null), "新增失败，[{}] 已存在", username);
         String email = request.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.checkEmailExists(email, null), "新增失败，[{}] 已存在", email);
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), "新增失败，[{}] 已存在", email);
         String phone = request.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.checkPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long userId = super.add(request);
@@ -111,11 +111,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(UserRequest request, Long id) {
         String username = request.getUsername();
-        CheckUtils.throwIf(this.checkNameExists(username, id), "修改失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.isNameExists(username, id), "修改失败，[{}] 已存在", username);
         String email = request.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.checkEmailExists(email, id), "修改失败，[{}] 已存在", email);
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, id), "修改失败，[{}] 已存在", email);
         String phone = request.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.checkPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
         DisEnableStatusEnum newStatus = request.getStatus();
         CheckUtils.throwIf(
             DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper.getUserId()),
@@ -261,7 +261,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     /**
-     * 检查名称是否存在
+     * 名称是否存在
      *
      * @param name
      *            名称
@@ -269,12 +269,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkNameExists(String name, Long id) {
+    private boolean isNameExists(String name, Long id) {
         return baseMapper.lambdaQuery().eq(UserDO::getUsername, name).ne(null != id, UserDO::getId, id).exists();
     }
 
     /**
-     * 检查邮箱是否存在
+     * 邮箱是否存在
      *
      * @param email
      *            邮箱
@@ -282,12 +282,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkEmailExists(String email, Long id) {
+    private boolean isEmailExists(String email, Long id) {
         return baseMapper.lambdaQuery().eq(UserDO::getEmail, email).ne(null != id, UserDO::getId, id).exists();
     }
 
     /**
-     * 检查手机号码是否存在
+     * 手机号码是否存在
      *
      * @param phone
      *            手机号码
@@ -295,7 +295,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkPhoneExists(String phone, Long id) {
+    private boolean isPhoneExists(String phone, Long id) {
         return baseMapper.lambdaQuery().eq(UserDO::getPhone, phone).ne(null != id, UserDO::getId, id).exists();
     }
 }

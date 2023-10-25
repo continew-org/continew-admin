@@ -72,7 +72,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             }
             // 检查是否符合查询条件
             LoginUser loginUser = LoginHelper.getLoginUser(token);
-            if (this.checkQuery(query, loginUser)) {
+            if (this.isMatchQuery(query, loginUser)) {
                 loginUserList.add(loginUser);
             }
         }
@@ -95,7 +95,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     /**
-     * 检查是否符合查询条件
+     * 是否符合查询条件
      *
      * @param query
      *            查询条件
@@ -103,7 +103,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
      *            登录用户信息
      * @return 是否符合查询条件
      */
-    private boolean checkQuery(OnlineUserQuery query, LoginUser loginUser) {
+    private boolean isMatchQuery(OnlineUserQuery query, LoginUser loginUser) {
         boolean flag1 = true;
         String nickname = query.getNickname();
         if (StrUtil.isNotBlank(nickname)) {

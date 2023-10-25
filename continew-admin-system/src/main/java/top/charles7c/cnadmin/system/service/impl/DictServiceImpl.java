@@ -56,9 +56,9 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(DictRequest request) {
         String name = request.getName();
-        CheckUtils.throwIf(this.checkNameExists(name, null), "新增失败，[{}] 已存在", name);
+        CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(this.checkCodeExists(code, null), "新增失败，[{}] 已存在", code);
+        CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         return super.add(request);
     }
 
@@ -66,9 +66,9 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(DictRequest request, Long id) {
         String name = request.getName();
-        CheckUtils.throwIf(this.checkNameExists(name, id), "修改失败，[{}] 已存在", name);
+        CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
+        CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DictDO oldDict = super.getById(id);
         if (oldDict.getIsSystem()) {
             CheckUtils.throwIfNotEqual(request.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码",
@@ -105,7 +105,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
     }
 
     /**
-     * 检查名称是否存在
+     * 名称是否存在
      *
      * @param name
      *            名称
@@ -113,12 +113,12 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkNameExists(String name, Long id) {
+    private boolean isNameExists(String name, Long id) {
         return baseMapper.lambdaQuery().eq(DictDO::getName, name).ne(null != id, DictDO::getId, id).exists();
     }
 
     /**
-     * 检查编码是否存在
+     * 编码是否存在
      *
      * @param code
      *            编码
@@ -126,7 +126,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkCodeExists(String code, Long id) {
+    private boolean isCodeExists(String code, Long id) {
         return baseMapper.lambdaQuery().eq(DictDO::getCode, code).ne(null != id, DictDO::getId, id).exists();
     }
 }

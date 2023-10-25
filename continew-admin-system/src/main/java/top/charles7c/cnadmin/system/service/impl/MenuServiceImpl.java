@@ -56,8 +56,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(MenuRequest request) {
         String title = request.getTitle();
-        boolean isExists = this.checkNameExists(title, request.getParentId(), null);
-        CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", title);
+        CheckUtils.throwIf(this.isNameExists(title, request.getParentId(), null), "新增失败，[{}] 已存在", title);
         request.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(request);
     }
@@ -67,8 +66,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(MenuRequest request, Long id) {
         String title = request.getTitle();
-        boolean isExists = this.checkNameExists(title, request.getParentId(), id);
-        CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", title);
+        CheckUtils.throwIf(this.isNameExists(title, request.getParentId(), id), "修改失败，[{}] 已存在", title);
         super.update(request, id);
     }
 
@@ -103,7 +101,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
     }
 
     /**
-     * 检查名称是否存在
+     * 名称是否存在
      *
      * @param name
      *            名称
@@ -113,7 +111,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkNameExists(String name, Long parentId, Long id) {
+    private boolean isNameExists(String name, Long parentId, Long id) {
         return baseMapper.lambdaQuery().eq(MenuDO::getTitle, name).eq(MenuDO::getParentId, parentId)
             .ne(null != id, MenuDO::getId, id).exists();
     }

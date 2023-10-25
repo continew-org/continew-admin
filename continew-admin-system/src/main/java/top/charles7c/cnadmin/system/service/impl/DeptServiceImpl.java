@@ -65,7 +65,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(DeptRequest request) {
         String name = request.getName();
-        boolean isExists = this.checkNameExists(name, request.getParentId(), null);
+        boolean isExists = this.isNameExists(name, request.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
         request.setAncestors(this.getAncestors(request.getParentId()));
         request.setStatus(DisEnableStatusEnum.DISABLE);
@@ -76,7 +76,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(DeptRequest request, Long id) {
         String name = request.getName();
-        boolean isExists = this.checkNameExists(name, request.getParentId(), id);
+        boolean isExists = this.isNameExists(name, request.getParentId(), id);
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
         DeptDO oldDept = super.getById(id);
         String oldName = oldDept.getName();
@@ -137,7 +137,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     }
 
     /**
-     * 检查名称是否存在
+     * 名称是否存在
      *
      * @param name
      *            名称
@@ -147,7 +147,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkNameExists(String name, Long parentId, Long id) {
+    private boolean isNameExists(String name, Long parentId, Long id) {
         return baseMapper.lambdaQuery().eq(DeptDO::getName, name).eq(DeptDO::getParentId, parentId)
             .ne(null != id, DeptDO::getId, id).exists();
     }

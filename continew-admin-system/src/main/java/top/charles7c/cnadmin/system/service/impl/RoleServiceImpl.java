@@ -68,9 +68,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public Long add(RoleRequest request) {
         String name = request.getName();
-        CheckUtils.throwIf(this.checkNameExists(name, null), "新增失败，[{}] 已存在", name);
+        CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(this.checkCodeExists(code, null), "新增失败，[{}] 已存在", code);
+        CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         // 新增信息
         request.setStatus(DisEnableStatusEnum.ENABLE);
         Long roleId = super.add(request);
@@ -86,9 +86,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleRequest request, Long id) {
         String name = request.getName();
-        CheckUtils.throwIf(this.checkNameExists(name, id), "修改失败，[{}] 已存在", name);
+        CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
         String code = request.getCode();
-        CheckUtils.throwIf(this.checkCodeExists(code, id), "修改失败，[{}] 已存在", code);
+        CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         RoleDO oldRole = super.getById(id);
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         String oldCode = oldRole.getCode();
@@ -184,7 +184,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     }
 
     /**
-     * 检查名称是否存在
+     * 名称是否存在
      *
      * @param name
      *            名称
@@ -192,12 +192,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkNameExists(String name, Long id) {
+    private boolean isNameExists(String name, Long id) {
         return baseMapper.lambdaQuery().eq(RoleDO::getName, name).ne(null != id, RoleDO::getId, id).exists();
     }
 
     /**
-     * 检查编码是否存在
+     * 编码是否存在
      *
      * @param code
      *            编码
@@ -205,7 +205,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
      *            ID
      * @return 是否存在
      */
-    private boolean checkCodeExists(String code, Long id) {
+    private boolean isCodeExists(String code, Long id) {
         return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).ne(null != id, RoleDO::getId, id).exists();
     }
 }
