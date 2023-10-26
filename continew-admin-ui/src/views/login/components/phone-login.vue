@@ -101,7 +101,7 @@
           captchaBtnNameKey.value = `${t('login.captcha.get')}(${
             captchaTime.value
           }s)`;
-          if (captchaTime.value < 0) {
+          if (captchaTime.value <= 0) {
             window.clearInterval(captchaTimer.value);
             captchaTime.value = 60;
             captchaBtnNameKey.value = t('login.captcha.get');
