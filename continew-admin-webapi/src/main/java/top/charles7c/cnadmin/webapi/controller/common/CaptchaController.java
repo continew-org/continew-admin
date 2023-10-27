@@ -17,6 +17,8 @@
 package top.charles7c.cnadmin.webapi.controller.common;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.validation.constraints.NotBlank;
@@ -27,6 +29,10 @@ import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.dromara.sms4j.api.SmsBlend;
+import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.sms4j.comm.constant.SupplierConstant;
+import org.dromara.sms4j.core.factory.SmsFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +42,7 @@ import com.wf.captcha.base.Captcha;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
@@ -90,22 +97,47 @@ public class CaptchaController {
         String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;
         String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
-        CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送邮箱验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
-
+        CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
         // 生成验证码
         CaptchaProperties.CaptchaMail captchaMail = captchaProperties.getMail();
         String captcha = RandomUtil.randomNumbers(captchaMail.getLength());
-
         // 发送验证码
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
         String content = TemplateUtils.render(captchaMail.getTemplatePath(),
             Dict.create().set("captcha", captcha).set("expiration", expirationInMinutes));
         MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", projectProperties.getName()), content);
-
         // 保存验证码
         String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, email);
         RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
+        return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
+    }
+
+    @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
+    @GetMapping("/sms")
+    public R getSmsCaptcha(
+        @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConsts.MOBILE, message = "手机号格式错误") String phone) {
+        String limitKeyPrefix = CacheConsts.LIMIT_KEY_PREFIX;
+        String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;
+        String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, phone);
+        long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
+        CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
+        // 生成验证码
+        CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
+        String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
+        // 发送验证码
+        Long expirationInMinutes = captchaSms.getExpirationInMinutes();
+        SmsBlend smsBlend = SmsFactory.getBySupplier(SupplierConstant.CLOOPEN);
+        Map<String, String> messageMap = MapUtil.newHashMap(2, true);
+        messageMap.put("captcha", captcha);
+        messageMap.put("expirationInMinutes", String.valueOf(expirationInMinutes));
+        SmsResponse smsResponse =
+            smsBlend.sendMessage(phone, captchaSms.getTemplateId(), (LinkedHashMap<String, String>)messageMap);
+        CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
+        // 保存验证码
+        String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, phone);
+        RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
+        RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaSms.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
     }
 }

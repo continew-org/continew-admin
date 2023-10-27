@@ -115,6 +115,12 @@ limitations under the License.
         </dependency>
 
         <!-- ################ 工具库相关 ################ -->
+        <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
+        <dependency>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- Just Auth（开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy!） -->
         <dependency>
             <groupId>com.xkcoding.justauth</groupId>

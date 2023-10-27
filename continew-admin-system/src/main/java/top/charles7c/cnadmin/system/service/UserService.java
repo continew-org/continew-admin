@@ -80,6 +80,18 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     void updatePassword(String oldPassword, String newPassword, Long id);
 
     /**
+     * 修改手机号
+     *
+     * @param newPhone
+     *            新手机号
+     * @param currentPassword
+     *            当前密码
+     * @param id
+     *            ID
+     */
+    void updatePhone(String newPhone, String currentPassword, Long id);
+
+    /**
      * 修改邮箱
      *
      * @param newEmail
@@ -117,6 +129,15 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
      * @return 用户信息
      */
     UserDO getByUsername(String username);
+
+    /**
+     * 根据手机号查询
+     *
+     * @param phone
+     *            手机号
+     * @return 用户信息
+     */
+    UserDO getByPhone(String phone);
 
     /**
      * 根据邮箱查询

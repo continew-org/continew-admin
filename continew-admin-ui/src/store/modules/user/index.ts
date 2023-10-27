@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
 import {
-  LoginReq,
+  AccountLoginReq,
   EmailLoginReq,
+  PhoneLoginReq,
   accountLogin as userAccountLogin,
   emailLogin as userEmailLogin,
+  phoneLogin as userPhoneLogin,
   socialLogin as userSocialLogin,
   logout as userLogout,
   getUserInfo,
@@ -45,7 +47,7 @@ const useUserStore = defineStore('user', {
     },
 
     // 账号登录
-    async accountLogin(req: LoginReq) {
+    async accountLogin(req: AccountLoginReq) {
       try {
         const res = await userAccountLogin(req);
         setToken(res.data.token);
@@ -59,6 +61,17 @@ const useUserStore = defineStore('user', {
     async emailLogin(req: EmailLoginReq) {
       try {
         const res = await userEmailLogin(req);
+        setToken(res.data.token);
+      } catch (err) {
+        clearToken();
+        throw err;
+      }
+    },
+
+    // 手机号登录
+    async phoneLogin(req: PhoneLoginReq) {
+      try {
+        const res = await userPhoneLogin(req);
         setToken(res.data.token);
       } catch (err) {
         clearToken();

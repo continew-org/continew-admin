@@ -53,6 +53,11 @@ public class CaptchaProperties {
     private CaptchaMail mail;
 
     /**
+     * 短信验证码配置
+     */
+    private CaptchaSms sms;
+
+    /**
      * 图片验证码配置
      */
     @Data
@@ -131,6 +136,32 @@ public class CaptchaProperties {
          * 模板路径
          */
         private String templatePath;
+    }
+
+    /**
+     * 短信验证码配置
+     */
+    @Data
+    public static class CaptchaSms {
+        /**
+         * 内容长度
+         */
+        private int length;
+
+        /**
+         * 过期时间
+         */
+        private long expirationInMinutes;
+
+        /**
+         * 限制时间
+         */
+        private long limitInSeconds;
+
+        /**
+         * 模板 ID
+         */
+        private String templateId;
     }
 
     /**

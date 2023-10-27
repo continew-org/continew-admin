@@ -6,6 +6,7 @@
     layout="vertical"
     size="large"
     class="login-form"
+    @submit="handleLogin"
   >
     <a-form-item field="phone" hide-label>
       <a-select :options="['+86']" style="flex: 1 1" default-value="+86" />
@@ -20,7 +21,7 @@
       <a-input
         v-model="form.captcha"
         :placeholder="$t('login.phone.placeholder.captcha')"
-        :max-length="6"
+        :max-length="4"
         allow-clear
         style="flex: 1 1"
       />
@@ -33,8 +34,13 @@
         {{ captchaBtnName }}
       </a-button>
     </a-form-item>
-    <a-button class="btn" :loading="loading" type="primary" html-type="submit"
-      >{{ $t('login.button') }}（即将开放）
+    <a-button
+      class="btn"
+      :loading="loading"
+      type="primary"
+      html-type="submit"
+      :disabled="captchaDisable"
+      >{{ $t('login.button') }}（演示不开放）
     </a-button>
   </a-form>
 </template>
@@ -42,21 +48,28 @@
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive, computed } from 'vue';
   import { useI18n } from 'vue-i18n';
+  import { useRouter } from 'vue-router';
+  import { ValidatedError } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
-  import { LoginReq } from '@/api/auth';
+  import { PhoneLoginReq } from '@/api/auth';
+  import { getSmsCaptcha } from '@/api/common/captcha';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
+  const router = useRouter();
   const userStore = useUserStore();
   const loading = ref(false);
   const captchaLoading = ref(false);
-  const captchaDisable = ref(false);
+  const captchaDisable = ref(true);
   const captchaTime = ref(60);
   const captchaTimer = ref();
   const captchaBtnNameKey = ref('login.captcha.get');
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
   const data = reactive({
-    form: {} as LoginReq,
+    form: {
+      phone: '',
+      captcha: '',
+    } as PhoneLoginReq,
     rules: {
       phone: [
         { required: true, message: t('login.phone.error.required.phone') },
@@ -91,25 +104,70 @@
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';
-        captchaLoading.value = false;
-        captchaDisable.value = true;
-        captchaBtnNameKey.value = `${t(
-          'login.captcha.get'
-        )}(${(captchaTime.value -= 1)}s)`;
-        captchaTimer.value = window.setInterval(() => {
-          captchaTime.value -= 1;
-          captchaBtnNameKey.value = `${t('login.captcha.get')}(${
-            captchaTime.value
-          }s)`;
-          if (captchaTime.value <= 0) {
-            window.clearInterval(captchaTimer.value);
-            captchaTime.value = 60;
-            captchaBtnNameKey.value = t('login.captcha.get');
-            captchaDisable.value = false;
-          }
-        }, 1000);
+        getSmsCaptcha(form.value.phone)
+          .then((res) => {
+            captchaLoading.value = false;
+            captchaDisable.value = true;
+            captchaBtnNameKey.value = `${t(
+              'login.captcha.get'
+            )}(${(captchaTime.value -= 1)}s)`;
+            captchaTimer.value = window.setInterval(() => {
+              captchaTime.value -= 1;
+              captchaBtnNameKey.value = `${t('login.captcha.get')}(${
+                captchaTime.value
+              }s)`;
+              if (captchaTime.value <= 0) {
+                resetCaptcha();
+              }
+            }, 1000);
+            proxy.$message.success(res.msg);
+          })
+          .catch(() => {
+            resetCaptcha();
+            captchaLoading.value = false;
+          });
       }
     });
+  };
+
+  /**
+   * 登录
+   *
+   * @param errors 表单验证错误
+   * @param values 表单数据
+   */
+  const handleLogin = ({
+    errors,
+    values,
+  }: {
+    errors: Record<string, ValidatedError> | undefined;
+    values: Record<string, any>;
+  }) => {
+    if (loading.value) return;
+    if (!errors) {
+      loading.value = true;
+      userStore
+        .phoneLogin({
+          phone: values.phone,
+          captcha: values.captcha,
+        })
+        .then(() => {
+          const { redirect, ...othersQuery } = router.currentRoute.value.query;
+          router.push({
+            name: (redirect as string) || 'Workplace',
+            query: {
+              ...othersQuery,
+            },
+          });
+          proxy.$notification.success(t('login.success'));
+        })
+        .catch(() => {
+          form.value.captcha = '';
+        })
+        .finally(() => {
+          loading.value = false;
+        });
+    }
   };
 </script>
 

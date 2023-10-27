@@ -86,6 +86,14 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    public String phoneLogin(String phone) {
+        UserDO user = userService.getByPhone(phone);
+        CheckUtils.throwIfNull(user, "此手机号未绑定本系统账号");
+        this.checkUserStatus(user);
+        return this.login(user);
+    }
+
+    @Override
     public String emailLogin(String email) {
         UserDO user = userService.getByEmail(email);
         CheckUtils.throwIfNull(user, "此邮箱未绑定本系统账号");

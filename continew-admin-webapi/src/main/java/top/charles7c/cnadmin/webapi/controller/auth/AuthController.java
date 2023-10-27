@@ -34,6 +34,7 @@ import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.auth.model.request.AccountLoginRequest;
 import top.charles7c.cnadmin.auth.model.request.EmailLoginRequest;
+import top.charles7c.cnadmin.auth.model.request.PhoneLoginRequest;
 import top.charles7c.cnadmin.auth.model.vo.LoginVO;
 import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
@@ -93,6 +94,20 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
         String token = loginService.emailLogin(email);
+        return LoginVO.builder().token(token).build();
+    }
+
+    @SaIgnore
+    @Operation(summary = "手机号登录", description = "根据手机号和验证码进行登录认证")
+    @PostMapping("/phone")
+    public LoginVO phoneLogin(@Validated @RequestBody PhoneLoginRequest loginRequest) {
+        String phone = loginRequest.getPhone();
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, phone);
+        String captcha = RedisUtils.getCacheObject(captchaKey);
+        ValidationUtils.throwIfBlank(captcha, "验证码已失效");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        RedisUtils.deleteCacheObject(captchaKey);
+        String token = loginService.phoneLogin(phone);
         return LoginVO.builder().token(token).build();
     }
 

@@ -42,6 +42,15 @@ public interface LoginService {
     String accountLogin(String username, String password);
 
     /**
+     * 手机号登录
+     *
+     * @param phone
+     *            手机号
+     * @return 令牌
+     */
+    String phoneLogin(String phone);
+
+    /**
      * 邮箱登录
      *
      * @param email

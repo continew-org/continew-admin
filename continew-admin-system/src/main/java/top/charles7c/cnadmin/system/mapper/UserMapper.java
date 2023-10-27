@@ -41,6 +41,16 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     UserDO selectByUsername(@Param("username") String username);
 
     /**
+     * 根据手机号查询
+     *
+     * @param phone
+     *            手机号
+     * @return 用户信息
+     */
+    @Select("SELECT * FROM `sys_user` WHERE `phone` = #{phone}")
+    UserDO selectByPhone(@Param("phone") String phone);
+
+    /**
      * 根据邮箱查询
      *
      * @param email

@@ -70,6 +70,25 @@ export default {
     '用于接收消息、验证身份，绑定后可支持手机验证码登录',
   'userCenter.securitySettings.phone.content': '未绑定',
 
+  'userCenter.securitySettings.updatePhone.modal.title': '修改手机号',
+  'userCenter.securitySettings.updatePhone.form.label.newPhone': '新手机号',
+  'userCenter.securitySettings.updatePhone.form.label.captcha': '验证码',
+  'userCenter.securitySettings.updatePhone.form.label.currentPassword':
+    '当前密码',
+
+  'userCenter.securitySettings.updatePhone.form.placeholder.newPhone':
+    '请输入新手机号',
+  'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword':
+    '请输入当前密码',
+
+  'userCenter.securitySettings.updatePhone.form.error.required.newPhone':
+    '请输入新手机号',
+  'userCenter.securitySettings.updatePhone.form.error.match.newPhone':
+    '请输入正确的手机号',
+
+  'userCenter.securitySettings.updatePhone.form.error.required.currentPassword':
+    '请输入当前密码',
+
   // update-email
   'userCenter.securitySettings.email.label': '安全邮箱',
   'userCenter.securitySettings.email.tip':
@@ -81,15 +100,9 @@ export default {
   'userCenter.securitySettings.updateEmail.form.label.captcha': '验证码',
   'userCenter.securitySettings.updateEmail.form.label.currentPassword':
     '当前密码',
-  'userCenter.securitySettings.updateEmail.form.sendCaptcha': '发送验证码',
-  'userCenter.securitySettings.updateEmail.form.reSendCaptcha': '重新发送',
-  'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha':
-    '发送中...',
 
   'userCenter.securitySettings.updateEmail.form.placeholder.newEmail':
     '请输入新邮箱',
-  'userCenter.securitySettings.updateEmail.form.placeholder.captcha':
-    '请输入邮箱验证码',
   'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword':
     '请输入当前密码',
 
@@ -97,8 +110,6 @@ export default {
     '请输入新邮箱',
   'userCenter.securitySettings.updateEmail.form.error.match.newEmail':
     '请输入正确的邮箱',
-  'userCenter.securitySettings.updateEmail.form.error.required.captcha':
-    '请输入邮箱验证码',
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':
     '请输入当前密码',
 
@@ -109,4 +120,8 @@ export default {
 
   'userCenter.securitySettings.content.hasBeenSet': '已设置',
   'userCenter.securitySettings.button.update': '修改',
+  'userCenter.securitySettings.captcha.get': '获取验证码',
+  'userCenter.securitySettings.captcha.ing': '发送中...',
+  'userCenter.securitySettings.form.placeholder.captcha': '请输入验证码',
+  'userCenter.securitySettings.form.error.required.captcha': '请输入验证码',
 };

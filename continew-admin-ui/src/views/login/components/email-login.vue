@@ -93,9 +93,7 @@
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';
-        getMailCaptcha({
-          email: form.value.email,
-        })
+        getMailCaptcha(form.value.email)
           .then((res) => {
             captchaLoading.value = false;
             captchaDisable.value = true;
@@ -108,10 +106,7 @@
                 captchaTime.value
               }s)`;
               if (captchaTime.value <= 0) {
-                window.clearInterval(captchaTimer.value);
-                captchaTime.value = 60;
-                captchaBtnNameKey.value = t('login.captcha.get');
-                captchaDisable.value = false;
+                resetCaptcha();
               }
             }, 1000);
             proxy.$message.success(res.msg);

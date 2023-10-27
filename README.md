@@ -218,29 +218,30 @@ pnpm dev
 
 ## 核心技术栈
 
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.52.0       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 2.7.16       | 简化新 Spring 应用的初始搭建以及开发过程。                   |
-| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.2.26.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
-| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.36.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://mariadb.org/" target="_blank">MariaDB</a>   | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
-| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.3.2      | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| 名称                                                                                                                                | 版本           | 简介                                                         |
+|:----------------------------------------------------------------------------------------------------------------------------------|:-------------| :----------------------------------------------------------- |
+| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>                                                                           | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a>                                                  | 2.52.0       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 2.7.16       | 简化新 Spring 应用的初始搭建以及开发过程。                   |
+| <a href="https://undertow.io/" target="_blank">Undertow</a>                                                                       | 2.2.26.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
+| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.36.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| <a href="https://mariadb.org/" target="_blank">MariaDB</a>                                                                        | 10.10.2      | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
+| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a>                                                                  | 3.5.3.2      | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 3.6.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                       | 4.0.3        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33       | MySQL Java 驱动。                                            |
-| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
-| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| <a href="https://redis.io/" target="_blank">Redis</a>        | 6.2.7        | 高性能的 key-value 数据库。                                  |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.20.1       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
-| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.5       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
-| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.3.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。本项目使用的是 <a href="https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo" target="_blank">knife4j-openapi3-spring-boot-starter</a> 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter，该模块包含了 UI 部分，底层基于 springdoc-openapi 项目。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.22       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+| Hikari                                                                                                                            | 4.0.3        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a>                                     | 8.0.33       | MySQL Java 驱动。                                            |
+| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a>                                                                | 3.9.1        | SQL 性能分析组件。                                           |
+| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a>                                                    | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
+| <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 6.2.7        | 高性能的 key-value 数据库。                                  |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 3.20.1       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
+| <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.0.3        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
+| <a href="https://justauth.cn/" target="_blank">Just Auth</a>                                                                      | 1.16.5       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
+| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a>                                                | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
+| Easy Captcha                                                                                                                      | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
+| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a>                                                                  | 4.3.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。本项目使用的是 <a href="https://gitee.com/xiaoym/swagger-bootstrap-ui-demo/tree/master/knife4j-springdoc-openapi-demo" target="_blank">knife4j-openapi3-spring-boot-starter</a> 基于 OpenAPI3 规范，在 Spring Boot < 3.0.0-M1 的单体架构下可以直接引用此 starter，该模块包含了 UI 部分，底层基于 springdoc-openapi 项目。 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.22       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| <a href="https://projectlombok.org/" target="_blank">Lombok</a>                                                                   | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 项目结构
 

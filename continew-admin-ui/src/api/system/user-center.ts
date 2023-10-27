@@ -16,31 +16,41 @@ export function uploadAvatar(data: FormData) {
   return axios.post<AvatarRes>(`${BASE_URL}/avatar`, data);
 }
 
-export interface UpdateBasicInfoReq {
+export interface UserBasicInfoUpdateReq {
   nickname: string;
   gender: number;
 }
 
-export function updateBasicInfo(req: UpdateBasicInfoReq) {
+export function updateBasicInfo(req: UserBasicInfoUpdateReq) {
   return axios.patch(`${BASE_URL}/basic/info`, req);
 }
 
-export interface UpdatePasswordReq {
+export interface UserPasswordUpdateReq {
   oldPassword: string;
   newPassword: string;
 }
 
-export function updatePassword(req: UpdatePasswordReq) {
+export function updatePassword(req: UserPasswordUpdateReq) {
   return axios.patch(`${BASE_URL}/password`, req);
 }
 
-export interface UpdateEmailReq {
+export interface UserPhoneUpdateReq {
+  newPhone: string;
+  captcha: string;
+  currentPassword: string;
+}
+
+export function updatePhone(req: UserPhoneUpdateReq) {
+  return axios.patch(`${BASE_URL}/phone`, req);
+}
+
+export interface UserEmailUpdateReq {
   newEmail: string;
   captcha: string;
   currentPassword: string;
 }
 
-export function updateEmail(req: UpdateEmailReq) {
+export function updateEmail(req: UserEmailUpdateReq) {
   return axios.patch(`${BASE_URL}/email`, req);
 }
 

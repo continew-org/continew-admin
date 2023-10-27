@@ -4,8 +4,7 @@ import { UserState } from '@/store/modules/user/types';
 
 const BASE_URL = '/auth';
 
-export interface LoginReq {
-  phone?: string;
+export interface AccountLoginReq {
   username?: string;
   password?: string;
   captcha: string;
@@ -16,7 +15,7 @@ export interface LoginRes {
   token: string;
 }
 
-export function accountLogin(req: LoginReq) {
+export function accountLogin(req: AccountLoginReq) {
   return axios.post<LoginRes>(`${BASE_URL}/account`, req);
 }
 
@@ -27,6 +26,15 @@ export interface EmailLoginReq {
 
 export function emailLogin(req: EmailLoginReq) {
   return axios.post<LoginRes>(`${BASE_URL}/email`, req);
+}
+
+export interface PhoneLoginReq {
+  phone: string;
+  captcha: string;
+}
+
+export function phoneLogin(req: PhoneLoginReq) {
+  return axios.post<LoginRes>(`${BASE_URL}/phone`, req);
 }
 
 export function logout() {

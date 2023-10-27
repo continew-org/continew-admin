@@ -49,6 +49,7 @@ import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
 import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
 import top.charles7c.cnadmin.system.model.request.UserEmailUpdateRequest;
 import top.charles7c.cnadmin.system.model.request.UserPasswordUpdateRequest;
+import top.charles7c.cnadmin.system.model.request.UserPhoneUpdateRequest;
 import top.charles7c.cnadmin.system.model.vo.AvatarVO;
 import top.charles7c.cnadmin.system.model.vo.UserSocialBindVO;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -103,6 +104,21 @@ public class UserCenterController {
         ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
             "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
+        return R.ok("修改成功");
+    }
+
+    @Operation(summary = "修改手机号", description = "修改手机号")
+    @PatchMapping("/phone")
+    public R updatePhone(@Validated @RequestBody UserPhoneUpdateRequest updateRequest) {
+        String rawCurrentPassword =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getCurrentPassword()));
+        ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateRequest.getNewPhone());
+        String captcha = RedisUtils.getCacheObject(captchaKey);
+        ValidationUtils.throwIfBlank(captcha, "验证码已失效");
+        ValidationUtils.throwIfNotEqualIgnoreCase(updateRequest.getCaptcha(), captcha, "验证码错误");
+        RedisUtils.deleteCacheObject(captchaKey);
+        userService.updatePhone(updateRequest.getNewPhone(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 

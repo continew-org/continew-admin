@@ -57,7 +57,7 @@
   import { useI18n } from 'vue-i18n';
   import { useStorage } from '@vueuse/core';
   import { useUserStore } from '@/store';
-  import { LoginReq } from '@/api/auth';
+  import { AccountLoginReq } from '@/api/auth';
   import { ValidatedError } from '@arco-design/web-vue';
   import { encryptByRsa } from '@/utils/encrypt';
   import { useRouter } from 'vue-router';
@@ -81,7 +81,7 @@
       password: loginConfig.value.password,
       captcha: '',
       uuid: '',
-    } as LoginReq,
+    } as AccountLoginReq,
     rules: {
       username: [
         { required: true, message: t('login.account.error.required.username') },

@@ -74,6 +74,24 @@ export default {
     'It is used to receive messages, verify identity, and support mobile phone verification code login after binding',
   'userCenter.securitySettings.phone.content': 'Unbound',
 
+  'userCenter.securitySettings.updatePhone.modal.title': 'Update phone',
+  'userCenter.securitySettings.updatePhone.form.label.newPhone': 'New phone',
+  'userCenter.securitySettings.updatePhone.form.label.captcha': 'Captcha',
+  'userCenter.securitySettings.updatePhone.form.label.currentPassword':
+    'Current password',
+
+  'userCenter.securitySettings.updatePhone.form.placeholder.newPhone':
+    'Please enter new phone',
+  'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword':
+    'Please enter current password',
+
+  'userCenter.securitySettings.updatePhone.form.error.required.newPhone':
+    'Please enter new phone',
+  'userCenter.securitySettings.updatePhone.form.error.match.newPhone':
+    'Please enter the correct phone',
+  'userCenter.securitySettings.updatePhone.form.error.required.currentPassword':
+    'Please enter current password',
+
   // update-email
   'userCenter.securitySettings.email.label': 'Email',
   'userCenter.securitySettings.email.tip':
@@ -85,16 +103,9 @@ export default {
   'userCenter.securitySettings.updateEmail.form.label.captcha': 'Captcha',
   'userCenter.securitySettings.updateEmail.form.label.currentPassword':
     'Current password',
-  'userCenter.securitySettings.updateEmail.form.sendCaptcha': 'Send captcha',
-  'userCenter.securitySettings.updateEmail.form.reSendCaptcha':
-    'Resend captcha',
-  'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha':
-    'Sending...',
 
   'userCenter.securitySettings.updateEmail.form.placeholder.newEmail':
     'Please enter new email',
-  'userCenter.securitySettings.updateEmail.form.placeholder.captcha':
-    'Please enter email captcha',
   'userCenter.securitySettings.updateEmail.form.placeholder.currentPassword':
     'Please enter current password',
 
@@ -102,8 +113,6 @@ export default {
     'Please enter new email',
   'userCenter.securitySettings.updateEmail.form.error.match.newEmail':
     'Please enter the correct email',
-  'userCenter.securitySettings.updateEmail.form.error.required.captcha':
-    'Please enter email captcha',
   'userCenter.securitySettings.updateEmail.form.error.required.currentPassword':
     'Please enter current password',
 
@@ -115,4 +124,10 @@ export default {
 
   'userCenter.securitySettings.content.hasBeenSet': 'Has been set',
   'userCenter.securitySettings.button.update': 'Update',
+  'userCenter.securitySettings.captcha.get': 'Get captcha',
+  'userCenter.securitySettings.captcha.ing': 'Sending...',
+  'userCenter.securitySettings.form.placeholder.captcha':
+    'Please enter captcha',
+  'userCenter.securitySettings.form.error.required.captcha':
+    'Please enter captcha',
 };

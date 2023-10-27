@@ -211,6 +211,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     }
 
     @Override
+    public void updatePhone(String newPhone, String currentPassword, Long id) {
+        UserDO user = super.getById(id);
+        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), user.getPassword(), "当前密码错误");
+        Long count = baseMapper.lambdaQuery().eq(UserDO::getPhone, newPhone).count();
+        CheckUtils.throwIf(count > 0, "手机号已绑定其他账号，请更换其他手机号");
+        CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
+        // 更新手机号
+        baseMapper.lambdaUpdate().set(UserDO::getPhone, newPhone).eq(UserDO::getId, id).update();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
@@ -242,6 +253,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     public UserDO getByUsername(String username) {
         return baseMapper.selectByUsername(username);
+    }
+
+    @Override
+    public UserDO getByPhone(String phone) {
+        return baseMapper.selectByPhone(phone);
     }
 
     @Override

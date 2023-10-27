@@ -62,9 +62,7 @@
         <a-input
           v-model="form.captcha"
           :placeholder="
-            $t(
-              'userCenter.securitySettings.updateEmail.form.placeholder.captcha'
-            )
+            $t('userCenter.securitySettings.form.placeholder.captcha')
           "
           :max-length="6"
           allow-clear
@@ -107,13 +105,12 @@
   import { getCurrentInstance, ref, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
   import { getMailCaptcha } from '@/api/common/captcha';
-  import { updateEmail } from '@/api/system/user-center';
+  import { UserEmailUpdateReq, updateEmail } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
   import { useUserStore } from '@/store';
   import { encryptByRsa } from '@/utils/encrypt';
 
   const { proxy } = getCurrentInstance() as any;
-
   const { t } = useI18n();
   const userStore = useUserStore();
   const captchaTime = ref(60);
@@ -121,13 +118,11 @@
   const captchaLoading = ref(false);
   const captchaDisable = ref(false);
   const visible = ref(false);
-  const captchaBtnNameKey = ref(
-    'userCenter.securitySettings.updateEmail.form.sendCaptcha'
-  );
+  const captchaBtnNameKey = ref('userCenter.securitySettings.captcha.get');
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
 
   // 表单数据
-  const form = reactive({
+  const form = reactive<UserEmailUpdateReq>({
     newEmail: '',
     captcha: '',
     currentPassword: '',
@@ -152,9 +147,7 @@
       captcha: [
         {
           required: true,
-          message: t(
-            'userCenter.securitySettings.updateEmail.form.error.required.captcha'
-          ),
+          message: t('userCenter.securitySettings.form.error.required.captcha'),
         },
       ],
       currentPassword: [
@@ -174,8 +167,7 @@
   const resetCaptcha = () => {
     window.clearInterval(captchaTimer.value);
     captchaTime.value = 60;
-    captchaBtnNameKey.value =
-      'userCenter.securitySettings.updateEmail.form.sendCaptcha';
+    captchaBtnNameKey.value = 'userCenter.securitySettings.captcha.get';
     captchaDisable.value = false;
   };
 
@@ -187,29 +179,21 @@
     proxy.$refs.formRef.validateField('newEmail', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
-        captchaBtnNameKey.value =
-          'userCenter.securitySettings.updateEmail.form.loading.sendCaptcha';
-        getMailCaptcha({
-          email: form.newEmail,
-        })
+        captchaBtnNameKey.value = 'userCenter.securitySettings.captcha.ing';
+        getMailCaptcha(form.newEmail)
           .then((res) => {
             captchaLoading.value = false;
             captchaDisable.value = true;
             captchaBtnNameKey.value = `${t(
-              'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
+              'userCenter.securitySettings.captcha.get'
             )}(${(captchaTime.value -= 1)}s)`;
             captchaTimer.value = window.setInterval(() => {
               captchaTime.value -= 1;
               captchaBtnNameKey.value = `${t(
-                'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
+                'userCenter.securitySettings.captcha.get'
               )}(${captchaTime.value}s)`;
               if (captchaTime.value <= 0) {
-                window.clearInterval(captchaTimer.value);
-                captchaTime.value = 60;
-                captchaBtnNameKey.value = t(
-                  'userCenter.securitySettings.updateEmail.form.reSendCaptcha'
-                );
-                captchaDisable.value = false;
+                resetCaptcha();
               }
             }, 1000);
             proxy.$message.success(res.msg);
