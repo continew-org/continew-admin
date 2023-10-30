@@ -75,6 +75,15 @@ const System: AppRouteRecordRaw = {
         requiresAuth: true,
       },
     },
+    {
+      name: 'Message',
+      path: '/system/message',
+      component: () => import('@/views/system/message/index.vue'),
+      meta: {
+        locale: 'menu.system.message',
+        requiresAuth: true,
+      },
+    },
   ],
 };
 

@@ -1,9 +1,9 @@
 <template>
   <a-spin style="display: block" :loading="loading">
     <a-tabs v-model:activeKey="messageType" type="rounded" destroy-on-hide>
-      <a-tab-pane v-for="item in tabList" :key="item.key">
+      <a-tab-pane v-for="item in message_type" :key="item.value">
         <template #title>
-          <span> {{ item.title }}{{ formatUnreadLength(item.key) }} </span>
+          <span> {{ item.label }}{{ formatUnreadLength(item.value) }} </span>
         </template>
         <a-result v-if="!renderList.length" status="404">
           <template #subtitle> {{ $t('messageBox.noContent') }} </template>
@@ -14,35 +14,26 @@
           @item-click="handleItemClick"
         />
       </a-tab-pane>
-      <template #extra>
-        <a-button type="text" @click="emptyList">
-          {{ $t('messageBox.tab.button') }}
-        </a-button>
-      </template>
     </a-tabs>
   </a-spin>
 </template>
 
 <script lang="ts" setup>
-  import { ref, reactive, toRefs, computed } from 'vue';
-  import { useI18n } from 'vue-i18n';
+  import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
   import {
-    queryMessageList,
-    setMessageStatus,
-    MessageRecord,
     MessageListType,
-  } from '@/api/demo/message';
+    MessageRecord,
+    list,
+    read,
+  } from '@/api/system/message';
   import useLoading from '@/hooks/loading';
   import List from './list.vue';
 
-  interface TabItem {
-    key: string;
-    title: string;
-    avatar?: string;
-  }
+  const { proxy } = getCurrentInstance() as any;
+  const { message_type } = proxy.useDict('message_type');
   const { loading, setLoading } = useLoading(true);
-  const messageType = ref('message');
-  const { t } = useI18n();
+  const messageType = ref('1');
+
   const messageData = reactive<{
     renderList: MessageRecord[];
     messageList: MessageRecord[];
@@ -51,59 +42,87 @@
     messageList: [],
   });
   toRefs(messageData);
-  const tabList: TabItem[] = [
-    {
-      key: 'message',
-      title: t('messageBox.tab.title.message'),
-    },
-    {
-      key: 'notice',
-      title: t('messageBox.tab.title.notice'),
-    },
-    {
-      key: 'todo',
-      title: t('messageBox.tab.title.todo'),
-    },
-  ];
+
+  /**
+   * 查询列表
+   */
   async function fetchSourceData() {
     setLoading(true);
     try {
-      const { data } = await queryMessageList();
-      messageData.messageList = data;
+      list({ sort: ['createTime,desc'] }).then((res) => {
+        messageData.messageList = res.data;
+      });
     } catch (err) {
       // you can report use errorHandler or other
     } finally {
       setLoading(false);
     }
   }
+
+  /**
+   * 将消息设置为已读
+   *
+   * @param data 消息列表
+   */
   async function readMessage(data: MessageListType) {
     const ids = data.map((item) => item.id);
-    await setMessageStatus({ ids });
+    await read(ids);
     fetchSourceData();
   }
+
+  /**
+   * 每个消息类型下的消息列表
+   */
   const renderList = computed(() => {
     return messageData.messageList.filter(
-      (item) => messageType.value === item.type
-    );
+      (item) => item.type === messageType.value && !item.readStatus
+    ).splice(0,3);
   });
+
+  /**
+   * 未读消息数量
+   */
   const unreadCount = computed(() => {
-    return renderList.value.filter((item) => !item.status).length;
+    return renderList.value.filter((item) => !item.readStatus).length;
   });
+
+  /**
+   * 未读消息列表
+   *
+   * @param type 消息类型
+   */
   const getUnreadList = (type: string) => {
-    const list = messageData.messageList.filter(
-      (item) => item.type === type && !item.status
+    return messageData.messageList.filter(
+      (item) => item.type === type && !item.readStatus
     );
-    return list;
   };
+
+  /**
+   * 每个类型的未读消息数量
+   *
+   * @param type 消息类型
+   */
   const formatUnreadLength = (type: string) => {
-    const list = getUnreadList(type);
-    return list.length ? `(${list.length})` : ``;
+    const unreadList = getUnreadList(type);
+    return unreadList.length ? `(${unreadList.length})` : ``;
   };
+
+  /**
+   * 点击消息事件
+   *
+   * @param items 消息
+   */
   const handleItemClick = (items: MessageListType) => {
     if (renderList.value.length) readMessage([...items]);
   };
+
+  /**
+   * 清空消息
+   */
   const emptyList = () => {
-    messageData.messageList = [];
+    read([]).then((res) => {
+      messageData.messageList = [];
+    });
   };
   fetchSourceData();
 </script>

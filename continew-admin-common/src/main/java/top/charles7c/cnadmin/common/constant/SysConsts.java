@@ -67,4 +67,9 @@ public class SysConsts {
      * VO 描述类字段后缀
      */
     public static final String VO_DESCRIPTION_FIELD_SUFFIX = "String";
+
+    /**
+     * 系统消息类型
+     */
+    public static final String SYSTEM_MESSAGE_TYPE = "1";
 }
