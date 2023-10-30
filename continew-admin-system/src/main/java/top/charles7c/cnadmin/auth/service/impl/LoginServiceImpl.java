@@ -28,6 +28,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
@@ -38,6 +39,7 @@ import top.charles7c.cnadmin.auth.model.vo.RouteVO;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.annotation.TreeField;
+import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
@@ -48,9 +50,11 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.cnadmin.system.enums.MessageTemplateEnum;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
+import top.charles7c.cnadmin.system.model.request.MessageRequest;
 import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
 import top.charles7c.cnadmin.system.model.vo.MenuVO;
 import top.charles7c.cnadmin.system.service.*;
@@ -74,6 +78,8 @@ public class LoginServiceImpl implements LoginService {
     private final PermissionService permissionService;
     private final UserRoleService userRoleService;
     private final UserSocialService userSocialService;
+    private final MessageService messageService;
+    private final ProjectProperties projectProperties;
 
     @Override
     public String accountLogin(String username, String password) {
@@ -131,6 +137,7 @@ public class LoginServiceImpl implements LoginService {
             userSocial.setUserId(userId);
             userSocial.setSource(source);
             userSocial.setOpenId(openId);
+            this.sendMsg(user);
         } else {
             user = BeanUtil.toBean(userService.get(userSocial.getUserId()), UserDO.class);
         }
@@ -180,7 +187,7 @@ public class LoginServiceImpl implements LoginService {
 
     /**
      * 登录并缓存用户信息
-     * 
+     *
      * @param user
      *            用户信息
      * @return 令牌
@@ -204,5 +211,23 @@ public class LoginServiceImpl implements LoginService {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
         DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
+    }
+
+    /**
+     * 发送消息
+     * 
+     * @param user
+     *            用户信息
+     */
+    private void sendMsg(UserDO user) {
+        MessageRequest request = new MessageRequest();
+        MessageTemplateEnum socialRegister = MessageTemplateEnum.SOCIAL_REGISTER;
+        request.setTitle(socialRegister.getTitle());
+        Map<String, Object> contentMap = MapUtil.newHashMap(2);
+        contentMap.put("nickname", user.getNickname());
+        contentMap.put("projectName", projectProperties.getName());
+        request.setContent(socialRegister.getContent(), contentMap);
+        request.setType(SysConsts.SYSTEM_MESSAGE_TYPE);
+        messageService.add(request, CollUtil.toList(user.getId()));
     }
 }

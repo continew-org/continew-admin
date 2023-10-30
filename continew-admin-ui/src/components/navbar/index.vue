@@ -82,7 +82,7 @@
       <li>
         <a-tooltip :content="$t('settings.navbar.alerts')">
           <div class="message-box-trigger">
-            <a-badge :count="9" dot>
+            <a-badge :count="unReadMessageCount" dot>
               <a-button
                 class="nav-btn"
                 type="outline"
@@ -190,9 +190,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, inject } from 'vue';
+  import { computed, ref, inject,watchEffect } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useUserStore } from '@/store';
+  import { list } from '@/api/system/message';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
@@ -223,6 +224,13 @@
     },
   });
   const toggleTheme = useToggle(isDark);
+
+  const unReadMessageCount = ref(0);
+  watchEffect(async () => {
+    const res = await list({ sort: ["createTime,desc"],readStatus:0 });
+    unReadMessageCount.value = res.data?.length ?? 0;
+  });
+
   const handleToggleTheme = () => {
     toggleTheme();
   };

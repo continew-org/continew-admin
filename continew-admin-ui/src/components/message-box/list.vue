@@ -5,15 +5,9 @@
       :key="item.id"
       action-layout="vertical"
       :style="{
-        opacity: item.status ? 0.5 : 1,
+        opacity: item.readStatus == 1 ? 0.5 : 1,
       }"
     >
-      <template #extra>
-        <a-tag v-if="item.messageType === 0" color="gray">未开始</a-tag>
-        <a-tag v-else-if="item.messageType === 1" color="green">已开通</a-tag>
-        <a-tag v-else-if="item.messageType === 2" color="blue">进行中</a-tag>
-        <a-tag v-else-if="item.messageType === 3" color="red">即将到期</a-tag>
-      </template>
       <div class="item-wrap" @click="onItemClick(item)">
         <a-list-item-meta>
           <template v-if="item.avatar" #avatar>
@@ -38,11 +32,8 @@
                 }"
                 >{{ item.content }}</a-typography-paragraph
               >
-              <a-typography-text
-                v-if="item.type === 'message'"
-                class="time-text"
-              >
-                {{ item.time }}
+              <a-typography-text class="time-text">
+                {{ item.createTime }}
               </a-typography-text>
             </div>
           </template>
@@ -59,7 +50,7 @@
           <a-link @click="allRead">{{ $t('messageBox.allRead') }}</a-link>
         </div>
         <div class="footer-wrap">
-          <a-link>{{ $t('messageBox.viewMore') }}</a-link>
+          <a-link @click="toList">{{ $t('messageBox.viewMore') }}</a-link>
         </div>
       </a-space>
     </template>
@@ -72,7 +63,10 @@
 
 <script lang="ts" setup>
   import { PropType } from 'vue';
-  import { MessageRecord, MessageListType } from '@/api/demo/message';
+  import { useRouter } from 'vue-router';
+  import { MessageRecord, MessageListType } from '@/api/system/message';
+
+  const router = useRouter();
 
   const props = defineProps({
     renderList: {
@@ -85,12 +79,29 @@
     },
   });
   const emit = defineEmits(['itemClick']);
+
+  /**
+   * 全部已读
+   */
   const allRead = () => {
     emit('itemClick', [...props.renderList]);
   };
 
+  /**
+   * 查看更多
+   */
+  const toList = ()=>{
+    router.push({
+      path: '/system/message',
+    });
+  };
+
+  /**
+   * 点击消息
+   * @param item 消息
+   */
   const onItemClick = (item: MessageRecord) => {
-    if (!item.status) {
+    if (!item.readStatus) {
       emit('itemClick', [item]);
     }
   };

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.charles7c.cnadmin.system.mapper.MessageMapper">
+    <select id="selectVoPage" resultType="top.charles7c.cnadmin.system.model.vo.MessageVO">
+        SELECT msg.id,
+               msg.type,
+               msg.title,
+               msg.content,
+               msg.create_user,
+               msg.create_time,
+               msgUser.read_status,
+               msgUser.read_time,
+               msgUser.user_id
+        FROM `sys_message` msg
+                 LEFT JOIN sys_message_user msgUser ON msg.id = msgUser.message_id
+        ${ew.getCustomSqlSegment}
+    </select>
+    <select id="selectVoList" resultType="top.charles7c.cnadmin.system.model.vo.MessageVO">
+        SELECT msg.id,
+               msg.type,
+               msg.title,
+               msg.content,
+               msg.create_user,
+               msg.create_time,
+               msgUser.read_status,
+               msgUser.read_time,
+               msgUser.user_id
+        FROM `sys_message` msg
+                 LEFT JOIN sys_message_user msgUser ON msg.id = msgUser.message_id
+            ${ew.getCustomSqlSegment}
+    </select>
+</mapper>

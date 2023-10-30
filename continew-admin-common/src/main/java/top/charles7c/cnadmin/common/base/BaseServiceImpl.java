@@ -149,14 +149,26 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     protected <E> List<E> list(Q query, SortQuery sortQuery, Class<E> targetClass) {
         QueryWrapper<T> queryWrapper = QueryHelper.build(query);
         // 设置排序
+        this.sort(queryWrapper, sortQuery);
+        List<T> entityList = baseMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(entityList, targetClass);
+    }
+
+    /**
+     * 设置排序
+     * 
+     * @param queryWrapper
+     *            查询 Wrapper
+     * @param sortQuery
+     *            排序查询条件
+     */
+    protected void sort(QueryWrapper<T> queryWrapper, SortQuery sortQuery) {
         Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
         for (Sort.Order order : sort) {
             if (null != order) {
                 queryWrapper.orderBy(true, order.isAscending(), StrUtil.toUnderlineCase(order.getProperty()));
             }
         }
-        List<T> entityList = baseMapper.selectList(queryWrapper);
-        return BeanUtil.copyToList(entityList, targetClass);
     }
 
     @Override
