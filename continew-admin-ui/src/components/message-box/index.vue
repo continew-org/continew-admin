@@ -52,8 +52,6 @@
       list({ sort: ['createTime,desc'] }).then((res) => {
         messageData.messageList = res.data;
       });
-    } catch (err) {
-      // you can report use errorHandler or other
     } finally {
       setLoading(false);
     }
@@ -67,16 +65,16 @@
   async function readMessage(data: MessageListType) {
     const ids = data.map((item) => item.id);
     await read(ids);
-    fetchSourceData();
+    await fetchSourceData();
   }
 
   /**
    * 每个消息类型下的消息列表
    */
   const renderList = computed(() => {
-    return messageData.messageList.filter(
-      (item) => item.type === messageType.value && !item.readStatus
-    ).splice(0,3);
+    return messageData.messageList
+      .filter((item) => item.type === messageType.value && !item.readStatus)
+      .splice(0, 3);
   });
 
   /**
@@ -114,15 +112,6 @@
    */
   const handleItemClick = (items: MessageListType) => {
     if (renderList.value.length) readMessage([...items]);
-  };
-
-  /**
-   * 清空消息
-   */
-  const emptyList = () => {
-    read([]).then((res) => {
-      messageData.messageList = [];
-    });
   };
   fetchSourceData();
 </script>

@@ -40,6 +40,15 @@ const System: AppRouteRecordRaw = {
       },
     },
     {
+      name: 'Menu',
+      path: '/system/menu',
+      component: () => import('@/views/system/menu/index.vue'),
+      meta: {
+        locale: 'menu.system.menu.list',
+        requiresAuth: true,
+      },
+    },
+    {
       name: 'Announcement',
       path: '/system/announcement',
       component: () => import('@/views/system/announcement/index.vue'),
@@ -49,11 +58,11 @@ const System: AppRouteRecordRaw = {
       },
     },
     {
-      name: 'Menu',
-      path: '/system/menu',
-      component: () => import('@/views/system/menu/index.vue'),
+      name: 'Message',
+      path: '/system/message',
+      component: () => import('@/views/system/message/index.vue'),
       meta: {
-        locale: 'menu.system.menu.list',
+        locale: 'menu.system.message',
         requiresAuth: true,
       },
     },
@@ -72,15 +81,6 @@ const System: AppRouteRecordRaw = {
       component: () => import('@/views/system/config/index.vue'),
       meta: {
         locale: 'menu.system.config',
-        requiresAuth: true,
-      },
-    },
-    {
-      name: 'Message',
-      path: '/system/message',
-      component: () => import('@/views/system/message/index.vue'),
-      meta: {
-        locale: 'menu.system.message',
         requiresAuth: true,
       },
     },

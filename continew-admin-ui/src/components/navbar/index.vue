@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, inject,watchEffect } from 'vue';
+  import { computed, ref, inject, watchEffect } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useUserStore } from '@/store';
   import { list } from '@/api/system/message';
@@ -227,7 +227,7 @@
 
   const unReadMessageCount = ref(0);
   watchEffect(async () => {
-    const res = await list({ sort: ["createTime,desc"],readStatus:0 });
+    const res = await list({ sort: ['createTime,desc'], readStatus: 0 });
     unReadMessageCount.value = res.data?.length ?? 0;
   });
 

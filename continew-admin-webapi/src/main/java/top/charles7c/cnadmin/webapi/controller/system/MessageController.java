@@ -54,8 +54,8 @@ public class MessageController
 
     private final MessageUserService messageUserService;
 
-    @Operation(description = "将消息标记已读", summary = "将消息标记已读")
-    @Parameter(name = "ids", description = "消息ID", example = "1,2", in = ParameterIn.PATH)
+    @Operation(description = "标记已读", summary = "将消息标记为已读状态")
+    @Parameter(name = "ids", description = "消息ID列表", example = "1,2", in = ParameterIn.QUERY)
     @PatchMapping("/read")
     public void readMessage(@RequestParam(required = false) List<Long> ids) {
         messageUserService.readMessage(ids);

@@ -5,17 +5,11 @@
       :key="item.id"
       action-layout="vertical"
       :style="{
-        opacity: item.readStatus == 1 ? 0.5 : 1,
+        opacity: item.readStatus ? 0.5 : 1,
       }"
     >
       <div class="item-wrap" @click="onItemClick(item)">
         <a-list-item-meta>
-          <template v-if="item.avatar" #avatar>
-            <a-avatar shape="circle">
-              <img v-if="item.avatar" :src="item.avatar" />
-              <icon-desktop v-else />
-            </a-avatar>
-          </template>
           <template #title>
             <a-space :size="4">
               <span>{{ item.title }}</span>
@@ -90,9 +84,9 @@
   /**
    * 查看更多
    */
-  const toList = ()=>{
+  const toList = () => {
     router.push({
-      path: '/system/message',
+      name: 'Message',
     });
   };
 
@@ -149,6 +143,9 @@
     }
     .footer-wrap {
       text-align: center;
+      .arco-link {
+        padding: 1px 10px;
+      }
     }
     .arco-typography {
       margin-bottom: 0;

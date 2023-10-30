@@ -27,7 +27,12 @@
             </a-form-item>
 
             <a-form-item field="type" hide-label>
-              <a-select :style="{width:'150px'}" placeholder="是否已读" allow-clear v-model="queryParams.readStatus">
+              <a-select
+                v-model="queryParams.readStatus"
+                :style="{ width: '150px' }"
+                placeholder="是否已读"
+                allow-clear
+              >
                 <a-option :value="true">是</a-option>
                 <a-option :value="false">否</a-option>
               </a-select>
@@ -66,7 +71,7 @@
                   <template #icon><icon-check /></template>全部已读
                 </a-button>
                 <a-button
-                  v-permission="['system:announcement:delete']"
+                  v-permission="['system:message:delete']"
                   type="primary"
                   status="danger"
                   :disabled="multiple"
@@ -136,7 +141,9 @@
           </a-table-column>
           <a-table-column title="发送时间" data-index="createTime" />
           <a-table-column
-            v-if="checkPermission(['system:message:delete'])"
+            v-if="
+              checkPermission(['system:message:delete'])
+            "
             title="操作"
             align="center"
           >
@@ -157,7 +164,7 @@
                 @ok="handleDelete([record.id])"
               >
                 <a-button
-                  v-permission="['system:announcement:delete']"
+                  v-permission="['system:message:delete']"
                   type="text"
                   size="small"
                   title="删除"
@@ -202,7 +209,9 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span v-else-if="dataDetail.createUserString">{{ dataDetail.createUserString }}</span>
+            <span v-else-if="dataDetail.createUserString">{{
+              dataDetail.createUserString
+            }}</span>
             <dict-tag
               v-if="dataDetail.createUserString == null"
               :value="dataDetail.type"
@@ -221,9 +230,9 @@
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
-            <span color="green" v-else>
-               <a-tag v-if="dataDetail.readStatus" color="green">已读</a-tag>
-               <a-tag v-else color="red">未读</a-tag>
+            <span v-else>
+              <a-tag v-if="dataDetail.readStatus" color="green">是</a-tag>
+              <a-tag v-else color="red">否</a-tag>
             </span>
           </a-descriptions-item>
 
@@ -262,7 +271,17 @@
   const { message_type } = proxy.useDict('message_type');
 
   const dataList = ref<MessageRecord[]>([]);
-  const dataDetail = ref<MessageRecord>({});
+  const dataDetail = ref<MessageRecord>({
+    id: 0,
+    title: '',
+    content: '',
+    type: '',
+    createUserString: '',
+    createTime: '',
+    subTitle: '',
+    readStatus: false,
+    readTime: '',
+  });
   const total = ref(0);
   const ids = ref<Array<number>>([]);
   const single = ref(true);
@@ -319,7 +338,6 @@
    */
   const handleDetailCancel = () => {
     detailVisible.value = false;
-    dataDetail.value = {};
   };
 
   /**
@@ -369,7 +387,7 @@
    * 批量所以消息设置为已读
    */
   const handleAllRedaMessage = () => {
-      handleReadMessage([]);
+    handleReadMessage([]);
   };
 
   /**
@@ -391,14 +409,13 @@
    * @param rowKeys ID 列表
    */
   const handleSelectionChange = (rowKeys: Array<any>) => {
-   const unReadMessageList = dataList.value.filter(
-      (item) => rowKeys.indexOf(item.id)!==-1 && !item.readStatus
+    const unReadMessageList = dataList.value.filter(
+      (item) => rowKeys.indexOf(item.id) !== -1 && !item.readStatus
     );
-    readMultiple.value=!unReadMessageList.length
+    readMultiple.value = !unReadMessageList.length;
     ids.value = rowKeys;
     single.value = rowKeys.length !== 1;
     multiple.value = !rowKeys.length;
-
   };
 
   /**
@@ -439,7 +456,7 @@
 
 <script lang="ts">
   export default {
-    name: 'Announcement',
+    name: 'Message',
   };
 </script>
 

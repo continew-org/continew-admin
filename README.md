@@ -3,7 +3,7 @@
 <a href="https://github.com/Charles7c/continew-admin/blob/dev/LICENSE" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin/tree/1.0.x" target="_blank">
+<a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v1.3.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
@@ -72,11 +72,12 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > **Note**
 > 更多功能和优化正在赶来💦，最新项目计划和进展请关注 [GitHub Project](https://github.com/Charles7c/continew-admin/projects) 和 [CHANGELOG.md](https://github.com/Charles7c/continew-admin/blob/dev/CHANGELOG.md)。
 
-- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456，且支持第三方账号登录、邮箱登录，可在个人中心灵活修改
+- 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456，且支持第三方账号登录、邮箱登录、手机号登录，可在个人中心灵活配置
 - 部门管理：可配置系统组织架构，树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
 - 公告管理：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
+- 消息管理：提供消息中心功能，暂时仅支持系统消息管理
 - 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
 - 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致（暂未开放高级配置）
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
@@ -429,6 +430,7 @@ continew-admin
     │  │    ├─ dept             # 部门管理
     │  │    ├─ dict             # 字典管理
     │  │    ├─ menu             # 菜单管理
+    │  │    ├─ message          # 消息管理
     │  │    ├─ role             # 角色管理
     │  │    └─ user             # 用户模块
     │  │      └─ center           # 个人中心

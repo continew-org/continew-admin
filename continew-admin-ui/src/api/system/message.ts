@@ -1,19 +1,18 @@
 import axios from 'axios';
 import qs from 'query-string';
-import { DataRecord } from "@/api/system/dict";
 
 const BASE_URL = '/system/message';
 
 export interface MessageRecord {
-  id?: number;
-  type?: string;
-  title?: string;
-  subTitle?: string;
-  avatar?: string;
-  content?: string;
-  createTime?: string;
-  readStatus?: 0 | 1;
-  messageType?: number;
+  id: number;
+  title: string;
+  content: string;
+  type: string;
+  createUserString: string;
+  createTime: string;
+  subTitle: string;
+  readStatus: boolean;
+  readTime: string;
 }
 
 export interface ChatRecord {
@@ -30,12 +29,12 @@ export interface ListParam {
   type?: string;
   page?: number;
   size?: number;
-  uid?:number
+  uid?: number;
   sort?: Array<string>;
 }
 
 export interface PageRes {
-  list: DataRecord[];
+  list: MessageRecord[];
   total: number;
 }
 
