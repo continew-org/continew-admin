@@ -144,7 +144,7 @@
     .footer-wrap {
       text-align: center;
       .arco-link {
-        padding: 1px 10px;
+        margin-left: 10px;
       }
     }
     .arco-typography {

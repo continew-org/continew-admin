@@ -77,7 +77,6 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue';
-  import { useI18n } from 'vue-i18n';
   import { useAppStore } from '@/store';
   import getFile from '@/utils/file';
   import useResponsive from '@/hooks/responsive';
@@ -86,7 +85,6 @@
   import PhoneLogin from './components/phone-login.vue';
   import EmailLogin from './components/email-login.vue';
 
-  const { t } = useI18n();
   const appStore = useAppStore();
   useResponsive(true);
   const isEmailLogin = ref(false);

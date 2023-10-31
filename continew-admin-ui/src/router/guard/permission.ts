@@ -52,7 +52,7 @@ export default function setupPermissionGuard(router: Router) {
         const destination =
           Permission.findFirstPermissionRoute(
             [...fixedRoutes, ...demoRoutes],
-              userStore.roles[0]
+            userStore.roles[0]
           ) || NOT_FOUND;
         next(destination);
       }
