@@ -34,8 +34,9 @@ VALUES
 (9030, '登录日志', 9000, 2, '/monitor/log/login', 'LoginLog', 'monitor/log/login/index', 'old-version', b'0', b'0', b'0', 'monitor:log:login:list', 2, 1, 1, NOW(), NULL, NULL),
 (9050, '操作日志', 9000, 2, '/monitor/log/operation', 'OperationLog', 'monitor/log/operation/index', 'history', b'0', b'0', b'0', 'monitor:log:operation:list', 3, 1, 1, NOW(), NULL, NULL),
 (9070, '系统日志', 9000, 2, '/monitor/log/system', 'SystemLog', 'monitor/log/system/index', 'behavior-anal', b'0', b'0', b'0', 'monitor:log:system:list', 4, 1, 1, NOW(), NULL, NULL),
-(10000, 'Arco Design Vue', 0, 1, 'https://arco.design/vue/docs/start', NULL, NULL, 'link', b'1', b'0', b'0', NULL, 998, 1, 1, NOW(), NULL, NULL),
-(10001, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL);
+(10000, '接口文档', 0, 1, 'https://api.charles7c.top/doc.html', NULL, NULL, 'code-square', b'1', b'0', b'0', NULL, 997, 1, 1, NOW(), NULL, NULL),
+(10001, 'Arco Design Vue', 0, 1, 'https://arco.design/vue/docs/start', NULL, NULL, 'link', b'1', b'0', b'0', NULL, 998, 1, 1, NOW(), NULL, NULL),
+(10002, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL);
 
 -- 初始化默认部门
 INSERT IGNORE INTO `sys_dept`
