@@ -58,6 +58,9 @@ dependencies:
   vue:
     specifier: ^3.3.4
     version: 3.3.4
+  vue-cropper:
+    specifier: ^1.0.9
+    version: 1.0.9
   vue-echarts:
     specifier: ^6.6.1
     version: 6.6.1(echarts@5.4.3)(vue@3.3.4)

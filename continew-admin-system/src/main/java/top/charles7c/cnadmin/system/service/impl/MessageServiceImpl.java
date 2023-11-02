@@ -61,8 +61,8 @@ public class MessageServiceImpl
     @Override
     public PageDataVO<MessageVO> page(MessageQuery query, PageQuery pageQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.apply(null != query.getUid(), "msgUser.user_id={0}", query.getUid());
-        queryWrapper.apply(null != query.getReadStatus(), "msgUser.read_status={0}", query.getReadStatus());
+        queryWrapper.apply(null != query.getUid(), "msgUser.user_id={0}", query.getUid())
+            .apply(null != query.getReadStatus(), "msgUser.read_status={0}", query.getReadStatus());
         IPage<MessageVO> page = baseMapper.selectVoPage(pageQuery.toPage(), queryWrapper);
         page.getRecords().forEach(this::fill);
         return PageDataVO.build(page);
@@ -71,8 +71,8 @@ public class MessageServiceImpl
     @Override
     public List<MessageVO> list(MessageQuery query, SortQuery sortQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.apply("msgUser.user_id={0}", LoginHelper.getUserId());
-        queryWrapper.apply(null != query.getReadStatus(), "msgUser.read_status={0}", query.getReadStatus());
+        queryWrapper.apply("msgUser.user_id={0}", LoginHelper.getUserId()).apply(null != query.getReadStatus(),
+            "msgUser.read_status={0}", query.getReadStatus());
         // 设置排序
         this.sort(queryWrapper, sortQuery);
         return baseMapper.selectVoList(queryWrapper);
@@ -99,8 +99,8 @@ public class MessageServiceImpl
         messageUserService.add(messageId, userIdList);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         super.delete(ids);
         messageUserService.delete(ids);
