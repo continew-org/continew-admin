@@ -7,8 +7,7 @@
         :show-file-list="false"
         list-type="picture-card"
         :show-upload-button="true"
-        :custom-request="handleUpload"
-        @change="handleAvatarChange"
+        :on-before-upload="handleBeforeUpload"
       >
         <template #upload-button>
           <a-avatar :size="100" class="info-avatar">
@@ -21,6 +20,56 @@
           </a-avatar>
         </template>
       </a-upload>
+
+      <div class="main">
+        <a-modal
+          :visible="cropperVisible"
+          width="40%"
+          :footer="false"
+          unmount-on-close
+          render-to-body
+          @cancel="handleCropperCancel"
+        >
+          <a-row>
+            <a-col :span="14">
+              <div style="width: 370px; height: 370px">
+                <!-- 头像裁剪框 -->
+                <vue-cropper
+                  ref="cropper"
+                  :info="true"
+                  :img="options.img"
+                  :full="options.full"
+                  :fixed="options.fixed"
+                  :fixed-box="options.fixedBox"
+                  :can-move="options.canMove"
+                  :center-box="options.centerBox"
+                  :auto-crop="options.autoCrop"
+                  :auto-crop-width="options.autoCropWidth"
+                  :auto-crop-height="options.autoCropHeight"
+                  :output-type="options.outputType"
+                  :output-size="options.outputSize"
+                  @realTime="realTime"
+                />
+              </div>
+            </a-col>
+            <a-col :span="6">
+              <!-- 实时预览 -->
+              <div :style="previewStyle">
+                <div :style="previews.div">
+                  <img :src="previews.url" :style="previews.img" alt="" />
+                </div>
+              </div>
+            </a-col>
+          </a-row>
+          <br />
+          <a-space>
+            <a-button type="primary" @click="handleUpload">提交</a-button>
+            <a-button type="outline" @click="handleCropperCancel"
+              >取消</a-button
+            >
+          </a-space>
+        </a-modal>
+      </div>
 
       <a-descriptions
         :column="2"
@@ -70,15 +119,22 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref } from 'vue';
-  import { FileItem, RequestOption } from '@arco-design/web-vue';
-  import { uploadAvatar } from '@/api/system/user-center';
-  import { useUserStore } from '@/store';
+  import { reactive, ref, getCurrentInstance } from 'vue';
+  import { FileItem } from '@arco-design/web-vue';
+  import { uploadAvatar, cropperOptions } from '@/api/system/user-center';
   import getAvatar from '@/utils/avatar';
+  import { useUserStore } from '@/store';
+  import { VueCropper } from 'vue-cropper';
+  import 'vue-cropper/dist/index.css';
 
+  const fileRef = ref(reactive({ name: 'avatar.png' }));
+  const previews: any = ref({});
+  const previewStyle: any = ref({});
+  const cropperVisible = ref(false);
+  const cropper = ref();
   const { proxy } = getCurrentInstance() as any;
-
   const userStore = useUserStore();
+
   const avatar = {
     uid: '-2',
     name: 'avatar.png',
@@ -86,52 +142,75 @@
   };
   const avatarList = ref<FileItem[]>([avatar]);
 
+  const options: cropperOptions = reactive({
+    autoCrop: true,
+    autoCropWidth: 200,
+    autoCropHeight: 200,
+    canMove: true,
+    centerBox: true,
+    full: false,
+    fixed: false,
+    fixedBox: false,
+    img: '',
+    outputSize: 1,
+    outputType: 'png',
+  });
+
   /**
-   * 上传头像
+   * 上传前弹出裁剪框
    *
-   * @param options 选项
+   * @param file 头像
    */
-  const handleUpload = (options: RequestOption) => {
-    const controller = new AbortController();
-    (async function requestWrap() {
-      const {
-        onProgress,
-        onError,
-        onSuccess,
-        fileItem,
-        name = 'avatarFile',
-      } = options;
-      onProgress(20);
-      const formData = new FormData();
-      formData.append(name as string, fileItem.file as Blob);
-      uploadAvatar(formData)
-        .then((res) => {
-          onSuccess(res);
-          userStore.avatar = res.data.avatar;
-          proxy.$message.success(res.msg);
-        })
-        .catch((error) => {
-          onError(error);
-        });
-    })();
-    return {
-      abort() {
-        controller.abort();
-      },
+  const handleBeforeUpload = (file: File): boolean => {
+    fileRef.value = file;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      options.img = reader.result;
     };
+    cropperVisible.value = true;
+    return false;
   };
 
   /**
-   * 切换头像
-   *
-   * @param fileItemList 文件列表
-   * @param currentFile 当前文件
+   * 关闭裁剪框
    */
-  const handleAvatarChange = (
-    fileItemList: FileItem[],
-    currentFile: FileItem
-  ) => {
-    avatarList.value = [currentFile];
+  const handleCropperCancel = () => {
+    fileRef.value = { name: '' };
+    options.img = '';
+    cropperVisible.value = false;
+  };
+
+  /**
+   * 上传头像
+   */
+  const handleUpload = () => {
+    cropper.value.getCropBlob((data: string | Blob) => {
+      const formData = new FormData();
+      formData.append('avatarFile', data, fileRef.value?.name);
+      uploadAvatar(formData).then((res) => {
+        userStore.avatar = res.data.avatar;
+        avatarList.value[0].url = getAvatar(res.data.avatar, undefined);
+        proxy.$message.success(res.msg);
+        handleCropperCancel();
+      });
+    });
+  };
+
+  /**
+   * 实时预览
+   * @param data data
+   */
+  const realTime = (data: any) => {
+    previewStyle.value = {
+      width: `${data.w}px`,
+      height: `${data.h}px`,
+      overflow: 'hidden',
+      margin: '0',
+      zoom: 0.8,
+      borderRadius: '50%',
+    };
+    previews.value = data;
   };
 </script>
 
@@ -151,5 +230,9 @@
       color: rgb(var(--arcoblue-6));
       font-size: 14px;
     }
+  }
+
+  .main {
+    position: relative;
   }
 </style>

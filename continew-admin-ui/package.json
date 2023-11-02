@@ -46,6 +46,7 @@
     "query-string": "^8.1.0",
     "sortablejs": "^1.15.0",
     "vue": "^3.3.4",
+    "vue-cropper": "^1.0.9",
     "vue-echarts": "^6.6.1",
     "vue-i18n": "^9.5.0",
     "vue-json-pretty": "^2.2.4",
