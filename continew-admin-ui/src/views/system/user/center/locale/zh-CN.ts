@@ -6,6 +6,7 @@ export default {
 
   // user-panel
   'userCenter.panel.avatar': '头像',
+  'userCenter.panel.avatar.upload': '上传头像',
   'userCenter.panel.label.nickname': '昵称 :',
   'userCenter.panel.label.gender': '性别 :',
   'userCenter.panel.label.phone': '手机号码 :',

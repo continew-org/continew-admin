@@ -20,56 +20,49 @@
           </a-avatar>
         </template>
       </a-upload>
-
-      <div class="main">
-        <a-modal
-          :visible="cropperVisible"
-          width="40%"
-          :footer="false"
-          unmount-on-close
-          render-to-body
-          @cancel="handleCropperCancel"
-        >
-          <a-row>
-            <a-col :span="14">
-              <div style="width: 370px; height: 370px">
-                <!-- 头像裁剪框 -->
-                <vue-cropper
-                  ref="cropper"
-                  :info="true"
-                  :img="options.img"
-                  :full="options.full"
-                  :fixed="options.fixed"
-                  :fixed-box="options.fixedBox"
-                  :can-move="options.canMove"
-                  :center-box="options.centerBox"
-                  :auto-crop="options.autoCrop"
-                  :auto-crop-width="options.autoCropWidth"
-                  :auto-crop-height="options.autoCropHeight"
-                  :output-type="options.outputType"
-                  :output-size="options.outputSize"
-                  @realTime="realTime"
-                />
+      <a-modal
+        :title="$t('userCenter.panel.avatar.upload')"
+        :visible="visible"
+        :width="400"
+        :footer="false"
+        unmount-on-close
+        render-to-body
+        @cancel="handleCancel"
+      >
+        <a-row>
+          <a-col :span="14" style="width: 200px; height: 200px">
+            <vue-cropper
+              ref="cropperRef"
+              :img="options.img"
+              :info="true"
+              :auto-crop="options.autoCrop"
+              :auto-crop-width="options.autoCropWidth"
+              :auto-crop-height="options.autoCropHeight"
+              :fixed-box="options.fixedBox"
+              :fixed="options.fixed"
+              :full="options.full"
+              :center-box="options.centerBox"
+              :can-move="options.canMove"
+              :output-type="options.outputType"
+              :output-size="options.outputSize"
+              @real-time="handleRealTime"
+            />
+          </a-col>
+          <a-col :span="10" style="display: flex; justify-content: center">
+            <div :style="previewStyle">
+              <div :style="previews.div">
+                <img :src="previews.url" :style="previews.img" alt="" />
               </div>
-            </a-col>
-            <a-col :span="6">
-              <!-- 实时预览 -->
-              <div :style="previewStyle">
-                <div :style="previews.div">
-                  <img :src="previews.url" :style="previews.img" alt="" />
-                </div>
-              </div>
-            </a-col>
-          </a-row>
-          <br />
+            </div>
+          </a-col>
+        </a-row>
+        <div style="text-align: center; padding-top: 30px">
           <a-space>
-            <a-button type="primary" @click="handleUpload">提交</a-button>
-            <a-button type="outline" @click="handleCropperCancel"
-              >取消</a-button
-            >
+            <a-button type="primary" @click="handleUpload">确定</a-button>
+            <a-button @click="handleCancel">取消</a-button>
           </a-space>
-        </a-modal>
-      </div>
+        </div>
+      </a-modal>
 
       <a-descriptions
         :column="2"
@@ -122,19 +115,18 @@
   import { reactive, ref, getCurrentInstance } from 'vue';
   import { FileItem } from '@arco-design/web-vue';
   import { uploadAvatar, cropperOptions } from '@/api/system/user-center';
-  import getAvatar from '@/utils/avatar';
   import { useUserStore } from '@/store';
+  import getAvatar from '@/utils/avatar';
   import { VueCropper } from 'vue-cropper';
   import 'vue-cropper/dist/index.css';
 
-  const fileRef = ref(reactive({ name: 'avatar.png' }));
-  const previews: any = ref({});
-  const previewStyle: any = ref({});
-  const cropperVisible = ref(false);
-  const cropper = ref();
   const { proxy } = getCurrentInstance() as any;
   const userStore = useUserStore();
-
+  const cropperRef = ref();
+  const visible = ref(false);
+  const previews: any = ref({});
+  const previewStyle: any = ref({});
+  const fileRef = ref(reactive({ name: 'avatar.png' }));
   const avatar = {
     uid: '-2',
     name: 'avatar.png',
@@ -143,15 +135,15 @@
   const avatarList = ref<FileItem[]>([avatar]);
 
   const options: cropperOptions = reactive({
-    autoCrop: true,
-    autoCropWidth: 200,
-    autoCropHeight: 200,
-    canMove: true,
-    centerBox: true,
-    full: false,
-    fixed: false,
-    fixedBox: false,
     img: '',
+    autoCrop: true,
+    autoCropWidth: 160,
+    autoCropHeight: 160,
+    fixedBox: true,
+    fixed: true,
+    full: false,
+    centerBox: true,
+    canMove: true,
     outputSize: 1,
     outputType: 'png',
   });
@@ -168,46 +160,47 @@
     reader.onload = () => {
       options.img = reader.result;
     };
-    cropperVisible.value = true;
+    visible.value = true;
     return false;
   };
 
   /**
    * 关闭裁剪框
    */
-  const handleCropperCancel = () => {
+  const handleCancel = () => {
     fileRef.value = { name: '' };
     options.img = '';
-    cropperVisible.value = false;
+    visible.value = false;
   };
 
   /**
    * 上传头像
    */
   const handleUpload = () => {
-    cropper.value.getCropBlob((data: string | Blob) => {
+    cropperRef.value.getCropBlob((data: string | Blob) => {
       const formData = new FormData();
       formData.append('avatarFile', data, fileRef.value?.name);
       uploadAvatar(formData).then((res) => {
         userStore.avatar = res.data.avatar;
         avatarList.value[0].url = getAvatar(res.data.avatar, undefined);
         proxy.$message.success(res.msg);
-        handleCropperCancel();
+        handleCancel();
       });
     });
   };
 
   /**
    * 实时预览
-   * @param data data
+   *
+   * @param data data 预览图像
    */
-  const realTime = (data: any) => {
+  const handleRealTime = (data: any) => {
     previewStyle.value = {
       width: `${data.w}px`,
       height: `${data.h}px`,
       overflow: 'hidden',
       margin: '0',
-      zoom: 0.8,
+      zoom: 100 / data.h,
       borderRadius: '50%',
     };
     previews.value = data;
@@ -230,9 +223,5 @@
       color: rgb(var(--arcoblue-6));
       font-size: 14px;
     }
-  }
-
-  .main {
-    position: relative;
   }
 </style>

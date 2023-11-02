@@ -6,6 +6,7 @@ export default {
 
   // user-panel
   'userCenter.panel.avatar': 'Avatar',
+  'userCenter.panel.avatar.upload': 'Upload Avatar',
   'userCenter.panel.label.nickname': 'Nick Name :',
   'userCenter.panel.label.gender': 'Gender :',
   'userCenter.panel.label.phone': 'Phone :',

@@ -74,7 +74,7 @@
         overflow: hidden;
         .tags-wrap {
           padding: 4px 0;
-          height: 48px;
+          height: 42px;
           white-space: nowrap;
           overflow-x: auto;
 
