@@ -5,7 +5,7 @@ import localeRole from '@/views/system/role/locale/en-US';
 import localeMenu from '@/views/system/menu/locale/en-US';
 import localeDept from '@/views/system/dept/locale/en-US';
 import localeAnnouncement from '@/views/system/announcement/locale/en-US';
-import localeNotice from '@/views/system/message/locale/en-US';
+import localeMessage from '@/views/system/message/locale/en-US';
 import localeDict from '@/views/system/dict/locale/en-US';
 import localeConfig from '@/views/system/config/locale/en-US';
 
@@ -63,7 +63,7 @@ export default {
   ...localeMenu,
   ...localeDept,
   ...localeAnnouncement,
-  ...localeNotice,
+  ...localeMessage,
   ...localeDict,
   ...localeConfig,
 

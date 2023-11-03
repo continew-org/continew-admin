@@ -17,6 +17,7 @@
 package top.charles7c.cnadmin.system.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,13 +25,14 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.collection.CollUtil;
 
+import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageUserMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageUserDO;
+import top.charles7c.cnadmin.system.model.vo.MessageTypeUnreadVO;
+import top.charles7c.cnadmin.system.model.vo.MessageUnreadVO;
 import top.charles7c.cnadmin.system.service.MessageUserService;
 
 /**
@@ -43,32 +45,52 @@ import top.charles7c.cnadmin.system.service.MessageUserService;
 @RequiredArgsConstructor
 public class MessageUserServiceImpl implements MessageUserService {
 
-    private final MessageUserMapper messageUserMapper;
+    private final MessageUserMapper baseMapper;
+
+    @Override
+    public MessageUnreadVO countUnreadMessageByUserId(Long userId, Boolean isDetail) {
+        MessageUnreadVO result = new MessageUnreadVO();
+        Long total = 0L;
+        if (Boolean.TRUE.equals(isDetail)) {
+            List<MessageTypeUnreadVO> detailList = new ArrayList<>();
+            for (MessageTypeEnum messageType : MessageTypeEnum.values()) {
+                MessageTypeUnreadVO vo = new MessageTypeUnreadVO();
+                vo.setType(messageType);
+                Long count = baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
+                vo.setCount(count);
+                detailList.add(vo);
+                total += count;
+            }
+            result.setDetails(detailList);
+        } else {
+            total = baseMapper.selectUnreadCountByUserIdAndType(userId, null);
+        }
+        result.setTotal(total);
+        return result;
+    }
 
     @Override
     public void add(Long messageId, List<Long> userIdList) {
-        CheckUtils.throwIf(() -> CollUtil.isEmpty(userIdList), "消息接收人不能为空");
-        List<MessageUserDO> messageUserDOList = userIdList.stream().map(userId -> {
-            MessageUserDO messageUserDO = new MessageUserDO();
-            messageUserDO.setUserId(userId);
-            messageUserDO.setMessageId(messageId);
-            messageUserDO.setReadStatus(false);
-            return messageUserDO;
+        CheckUtils.throwIfEmpty(userIdList, "消息接收人不能为空");
+        List<MessageUserDO> messageUserList = userIdList.stream().map(userId -> {
+            MessageUserDO messageUser = new MessageUserDO();
+            messageUser.setUserId(userId);
+            messageUser.setMessageId(messageId);
+            messageUser.setIsRead(false);
+            return messageUser;
         }).collect(Collectors.toList());
-        messageUserMapper.insertBatch(messageUserDOList);
+        baseMapper.insertBatch(messageUserList);
     }
 
     @Override
     public void readMessage(List<Long> ids) {
-        messageUserMapper.lambdaUpdate().set(MessageUserDO::getReadStatus, true)
-            .set(MessageUserDO::getReadTime, LocalDateTime.now()).eq(MessageUserDO::getReadStatus, false)
+        baseMapper.lambdaUpdate().set(MessageUserDO::getIsRead, true)
+            .set(MessageUserDO::getReadTime, LocalDateTime.now()).eq(MessageUserDO::getIsRead, false)
             .in(CollUtil.isNotEmpty(ids), MessageUserDO::getMessageId, ids).update();
     }
 
     @Override
-    public void delete(List<Long> ids) {
-        if (CollUtil.isNotEmpty(ids)) {
-            messageUserMapper.delete(Wrappers.<MessageUserDO>lambdaQuery().in(MessageUserDO::getMessageId, ids));
-        }
+    public void deleteByMessageIds(List<Long> messageIds) {
+        baseMapper.lambdaUpdate().in(MessageUserDO::getMessageId, messageIds).remove();
     }
 }

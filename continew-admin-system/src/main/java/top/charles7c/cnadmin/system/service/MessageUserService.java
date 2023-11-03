@@ -18,6 +18,8 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
+import top.charles7c.cnadmin.system.model.vo.MessageUnreadVO;
+
 /**
  * 消息和用户关联业务接口
  *
@@ -27,12 +29,23 @@ import java.util.List;
 public interface MessageUserService {
 
     /**
-     * 发送消息
+     * 根据用户 ID 查询未读消息数量
+     * 
+     * @param userId
+     *            用户 ID
+     * @param isDetail
+     *            是否查询详情
+     * @return 未读消息信息
+     */
+    MessageUnreadVO countUnreadMessageByUserId(Long userId, Boolean isDetail);
+
+    /**
+     * 新增
      *
      * @param messageId
-     *            消息ID
+     *            消息 ID
      * @param userIdList
-     *            接收人
+     *            用户 ID 列表
      */
     void add(Long messageId, List<Long> userIdList);
 
@@ -45,10 +58,10 @@ public interface MessageUserService {
     void readMessage(List<Long> ids);
 
     /**
-     * 删除消息
+     * 根据消息 ID 删除
      *
-     * @param ids
-     *            消息ID
+     * @param messageIds
+     *            消息 ID 列表
      */
-    void delete(List<Long> ids);
+    void deleteByMessageIds(List<Long> messageIds);
 }

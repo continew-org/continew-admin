@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.charles7c.cnadmin.system.mapper.MessageUserMapper">
+    <select id="selectUnreadCountByUserIdAndType" resultType="Long">
+        SELECT
+            COUNT(t1.`message_id`)
+        FROM `sys_message_user` AS t1
+            LEFT JOIN `sys_message` AS t2 ON t2.`id` = t1.`message_id`
+        WHERE t1.`user_id` = #{userId} AND t1.`is_read` = 0
+        <if test="type != null">
+            AND t2.`type` = #{type}
+        </if>
+    </select>
+</mapper>

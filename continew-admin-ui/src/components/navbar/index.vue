@@ -193,7 +193,7 @@
   import { computed, ref, inject, watchEffect } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useUserStore } from '@/store';
-  import { list } from '@/api/system/message';
+  import { countUnread } from '@/api/system/message';
   import { LOCALE_OPTIONS } from '@/locale';
   import useLocale from '@/hooks/locale';
   import useUser from '@/hooks/user';
@@ -224,12 +224,17 @@
     },
   });
   const toggleTheme = useToggle(isDark);
-
   const unReadMessageCount = ref(0);
-  watchEffect(async () => {
-    const res = await list({ sort: ['createTime,desc'], readStatus: 0 });
-    unReadMessageCount.value = res.data?.length ?? 0;
-  });
+
+  /**
+   * 查询未读消息总数
+   */
+  async function getUnreadCount() {
+    const res = await countUnread(false);
+    unReadMessageCount.value = res.data.total;
+  }
+  getUnreadCount();
+  setInterval(getUnreadCount, 10000);
 
   const handleToggleTheme = () => {
     toggleTheme();

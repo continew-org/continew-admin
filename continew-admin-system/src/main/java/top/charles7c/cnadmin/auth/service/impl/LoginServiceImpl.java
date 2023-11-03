@@ -28,10 +28,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.auth.model.vo.MetaVO;
@@ -45,6 +45,7 @@ import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
+import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.TreeUtils;
@@ -71,6 +72,7 @@ import me.zhyd.oauth.model.AuthUser;
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
+    private final ProjectProperties projectProperties;
     private final UserService userService;
     private final DeptService deptService;
     private final RoleService roleService;
@@ -79,7 +81,6 @@ public class LoginServiceImpl implements LoginService {
     private final UserRoleService userRoleService;
     private final UserSocialService userSocialService;
     private final MessageService messageService;
-    private final ProjectProperties projectProperties;
 
     @Override
     public String accountLogin(String username, String password) {
@@ -137,7 +138,7 @@ public class LoginServiceImpl implements LoginService {
             userSocial.setUserId(userId);
             userSocial.setSource(source);
             userSocial.setOpenId(openId);
-            this.sendMsg(user);
+            this.sendSystemMsg(user);
         } else {
             user = BeanUtil.toBean(userService.get(userSocial.getUserId()), UserDO.class);
         }
@@ -214,20 +215,17 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
-     * 发送消息
+     * 发送系统消息
      * 
      * @param user
      *            用户信息
      */
-    private void sendMsg(UserDO user) {
+    private void sendSystemMsg(UserDO user) {
         MessageRequest request = new MessageRequest();
         MessageTemplateEnum socialRegister = MessageTemplateEnum.SOCIAL_REGISTER;
-        request.setTitle(socialRegister.getTitle());
-        Map<String, Object> contentMap = MapUtil.newHashMap(2);
-        contentMap.put("nickname", user.getNickname());
-        contentMap.put("projectName", projectProperties.getName());
-        request.setContent(socialRegister.getContent(), contentMap);
-        request.setType(SysConsts.SYSTEM_MESSAGE_TYPE);
+        request.setTitle(StrUtil.format(socialRegister.getTitle(), projectProperties.getName()));
+        request.setContent(StrUtil.format(socialRegister.getContent(), user.getNickname()));
+        request.setType(MessageTypeEnum.SYSTEM);
         messageService.add(request, CollUtil.toList(user.getId()));
     }
 }

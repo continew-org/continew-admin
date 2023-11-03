@@ -16,9 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.request;
 
-import java.util.Map;
-
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -26,9 +25,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import cn.hutool.core.util.StrUtil;
-
 import top.charles7c.cnadmin.common.base.BaseRequest;
+import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 
 /**
  * 创建消息信息
@@ -36,37 +34,32 @@ import top.charles7c.cnadmin.common.base.BaseRequest;
  * @author BULL_BCLS
  * @since 2023/10/15 19:05
  */
-@Schema(description = "创建消息信息")
 @Data
+@Schema(description = "创建消息信息")
 public class MessageRequest extends BaseRequest {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主题
+     * 标题
      */
-    @Schema(description = "主题", example = "欢迎 xxx")
-    @NotBlank(message = "主题不能为空")
-    @Length(max = 50, message = "主题长度不能超过 {max} 个字符")
+    @Schema(description = "标题", example = "欢迎注册 xxx")
+    @NotBlank(message = "标题不能为空")
+    @Length(max = 50, message = "标题长度不能超过 {max} 个字符")
     private String title;
 
     /**
      * 内容
      */
-    @Schema(description = "内容", example = "欢迎 xxx 来到 ContiNew Admin")
+    @Schema(description = "内容", example = "尊敬的 xx，欢迎注册使用，请及时配置您的密码。")
     @NotBlank(message = "内容不能为空")
     @Length(max = 255, message = "内容长度不能超过 {max} 个字符")
     private String content;
 
     /**
-     * 类型（取值于字典 message_type）
+     * 类型
      */
-    @Schema(description = "类型（取值于字典 message_type）", example = "1")
-    @NotBlank(message = "类型不能为空")
-    @Length(max = 30, message = "类型长度不能超过 {max} 个字符")
-    private String type;
-
-    public void setContent(String content, Map<String, Object> contentMap) {
-        this.content = StrUtil.format(content, contentMap);
-    }
+    @Schema(description = "类型（1：系统消息）", example = "1")
+    @NotNull(message = "类型非法")
+    private MessageTypeEnum type;
 }

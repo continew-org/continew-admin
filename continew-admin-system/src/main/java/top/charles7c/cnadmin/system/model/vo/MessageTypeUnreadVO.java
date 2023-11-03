@@ -16,47 +16,35 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.base.BaseVO;
+import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 
 /**
- * 消息和用户关联信息
+ * 各类型未读消息信息
  *
- * @author BULL_BCLS
- * @since 2023/10/15 20:25
+ * @author Charles7c
+ * @since 2023/11/2 23:00
  */
 @Data
-@Schema(description = "消息和用户关联信息")
-public class MessageUserVO extends BaseVO {
+@Schema(description = "各类型未读消息信息")
+public class MessageTypeUnreadVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 消息ID
+     * 类型
      */
-    @Schema(description = "消息ID", example = "1")
-    private Long messageId;
+    @Schema(description = "类型（1：系统消息）", example = "1")
+    private MessageTypeEnum type;
 
     /**
-     * 用户ID
+     * 数量
      */
-    @Schema(description = "用户ID", example = "1")
-    private Long userId;
-
-    /**
-     * 是否已读
-     */
-    @Schema(description = "是否已读", example = "true")
-    private Boolean readStatus;
-
-    /**
-     * 读取时间
-     */
-    @Schema(description = "读取时间", example = "2023-08-08 23:59:59", type = "string")
-    private LocalDateTime readTime;
+    @Schema(description = "数量", example = "10")
+    private Long count;
 }

@@ -62,7 +62,7 @@ const System: AppRouteRecordRaw = {
       path: '/system/message',
       component: () => import('@/views/system/message/index.vue'),
       meta: {
-        locale: 'menu.system.message',
+        locale: 'menu.system.message.list',
         requiresAuth: true,
       },
     },

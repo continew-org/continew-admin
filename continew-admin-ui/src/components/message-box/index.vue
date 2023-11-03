@@ -1,56 +1,68 @@
 <template>
   <a-spin style="display: block" :loading="loading">
     <a-tabs v-model:activeKey="messageType" type="rounded" destroy-on-hide>
-      <a-tab-pane v-for="item in message_type" :key="item.value">
+      <a-tab-pane :key="1">
         <template #title>
-          <span> {{ item.label }}{{ formatUnreadLength(item.value) }} </span>
+          <span>
+            {{ $t('messageBox.tab.title.message.system')
+            }}{{ formatUnreadCount(messageType) }}
+          </span>
         </template>
-        <a-result v-if="!renderList.length" status="404">
+        <a-result v-if="!messageList.length" status="404">
           <template #subtitle> {{ $t('messageBox.noContent') }} </template>
         </a-result>
-        <List
-          :render-list="renderList"
-          :unread-count="unreadCount"
-          @item-click="handleItemClick"
-        />
+        <List :render-list="messageList" @item-click="handleItemClick" />
       </a-tab-pane>
     </a-tabs>
   </a-spin>
 </template>
 
 <script lang="ts" setup>
-  import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+  import { reactive, ref, toRefs } from 'vue';
   import {
-    MessageListType,
-    MessageRecord,
+    DataRecord,
+    MessageUnreadRes,
     list,
     read,
+    countUnread,
+    ListParam,
   } from '@/api/system/message';
   import useLoading from '@/hooks/loading';
   import List from './list.vue';
 
-  const { proxy } = getCurrentInstance() as any;
-  const { message_type } = proxy.useDict('message_type');
-  const { loading, setLoading } = useLoading(true);
-  const messageType = ref('1');
-
-  const messageData = reactive<{
-    renderList: MessageRecord[];
-    messageList: MessageRecord[];
-  }>({
-    renderList: [],
-    messageList: [],
+  const { loading, setLoading } = useLoading();
+  const messageType = ref(1);
+  const unreadCount = ref<MessageUnreadRes>();
+  const messageList = ref<DataRecord[]>([]);
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      type: messageType.value,
+      isRead: false,
+      page: 1,
+      size: 3,
+      sort: ['createTime,desc'],
+    },
   });
-  toRefs(messageData);
+  const { queryParams } = toRefs(data);
 
   /**
-   * 查询列表
+   * 查询未读消息数量
    */
-  async function fetchSourceData() {
+  async function getUnreadCount() {
+    const res = await countUnread(true);
+    unreadCount.value = res.data;
+  }
+
+  /**
+   * 查询未读消息列表
+   */
+  async function getList(params: ListParam = { ...queryParams.value }) {
+    await getUnreadCount();
     setLoading(true);
     try {
-      list({ sort: ['createTime,desc'] }).then((res) => {
-        messageData.messageList = res.data;
+      await list(params).then((res) => {
+        messageList.value = res.data.list;
       });
     } finally {
       setLoading(false);
@@ -60,49 +72,25 @@
   /**
    * 将消息设置为已读
    *
-   * @param data 消息列表
+   * @param items 消息列表
    */
-  async function readMessage(data: MessageListType) {
-    const ids = data.map((item) => item.id);
+  async function readMessage(items: DataRecord[]) {
+    const ids = items.map((item) => item.id);
     await read(ids);
-    await fetchSourceData();
+    await getList();
+    await getUnreadCount();
   }
-
-  /**
-   * 每个消息类型下的消息列表
-   */
-  const renderList = computed(() => {
-    return messageData.messageList
-      .filter((item) => item.type === messageType.value && !item.readStatus)
-      .splice(0, 3);
-  });
-
-  /**
-   * 未读消息数量
-   */
-  const unreadCount = computed(() => {
-    return renderList.value.filter((item) => !item.readStatus).length;
-  });
-
-  /**
-   * 未读消息列表
-   *
-   * @param type 消息类型
-   */
-  const getUnreadList = (type: string) => {
-    return messageData.messageList.filter(
-      (item) => item.type === type && !item.readStatus
-    );
-  };
 
   /**
    * 每个类型的未读消息数量
    *
    * @param type 消息类型
    */
-  const formatUnreadLength = (type: string) => {
-    const unreadList = getUnreadList(type);
-    return unreadList.length ? `(${unreadList.length})` : ``;
+  const formatUnreadCount = (type: number) => {
+    const count = unreadCount.value?.details.find(
+      (item) => item.type === type
+    )?.count;
+    return count && count !== 0 ? `(${count})` : '';
   };
 
   /**
@@ -110,10 +98,10 @@
    *
    * @param items 消息
    */
-  const handleItemClick = (items: MessageListType) => {
-    if (renderList.value.length) readMessage([...items]);
+  const handleItemClick = (items: DataRecord[]) => {
+    if (messageList.value.length) readMessage([...items]);
   };
-  fetchSourceData();
+  getList();
 </script>
 
 <style scoped lang="less">

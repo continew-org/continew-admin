@@ -16,7 +16,6 @@
 
 package top.charles7c.cnadmin.system.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.cnadmin.common.service.CommonUserService;
+import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageMapper;
@@ -52,57 +52,48 @@ import top.charles7c.cnadmin.system.service.MessageUserService;
  */
 @Service
 @RequiredArgsConstructor
-public class MessageServiceImpl
-    extends BaseServiceImpl<MessageMapper, MessageDO, MessageVO, MessageVO, MessageQuery, MessageRequest>
-    implements MessageService {
+public class MessageServiceImpl implements MessageService {
 
+    private final MessageMapper baseMapper;
     private final MessageUserService messageUserService;
 
     @Override
     public PageDataVO<MessageVO> page(MessageQuery query, PageQuery pageQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.apply(null != query.getUid(), "msgUser.user_id={0}", query.getUid())
-            .apply(null != query.getReadStatus(), "msgUser.read_status={0}", query.getReadStatus());
+        queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
+            .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
         IPage<MessageVO> page = baseMapper.selectVoPage(pageQuery.toPage(), queryWrapper);
         page.getRecords().forEach(this::fill);
         return PageDataVO.build(page);
     }
 
     @Override
-    public List<MessageVO> list(MessageQuery query, SortQuery sortQuery) {
-        QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
-        queryWrapper.apply("msgUser.user_id={0}", LoginHelper.getUserId()).apply(null != query.getReadStatus(),
-            "msgUser.read_status={0}", query.getReadStatus());
-        // 设置排序
-        this.sort(queryWrapper, sortQuery);
-        return baseMapper.selectVoList(queryWrapper);
-    }
-
-    @Override
-    public MessageVO get(Long id) {
-        MessageQuery messageQuery = new MessageQuery();
-        messageQuery.setId(id);
-        PageDataVO<MessageVO> page = this.page(messageQuery, new PageQuery());
-        List<MessageVO> messageVOList = page.getList();
-        if (CollUtil.isEmpty(messageVOList)) {
-            return new MessageVO();
-        }
-        MessageVO messageVO = messageVOList.get(0);
-        messageUserService.readMessage(Collections.singletonList(messageVO.getId()));
-        return messageVO;
-    }
-
-    @Override
     public void add(MessageRequest request, List<Long> userIdList) {
         CheckUtils.throwIf(() -> CollUtil.isEmpty(userIdList), "消息接收人不能为空");
-        Long messageId = super.add(request);
-        messageUserService.add(messageId, userIdList);
+        MessageDO message = BeanUtil.copyProperties(request, MessageDO.class);
+        baseMapper.insert(message);
+        messageUserService.add(message.getId(), userIdList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        super.delete(ids);
-        messageUserService.delete(ids);
+        baseMapper.deleteBatchIds(ids);
+        messageUserService.deleteByMessageIds(ids);
+    }
+
+    /**
+     * 填充数据
+     *
+     * @param message
+     *            待填充信息
+     */
+    private void fill(MessageVO message) {
+        Long createUser = message.getCreateUser();
+        if (null == createUser) {
+            return;
+        }
+        CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
+        message.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(createUser)));
     }
 }

@@ -10,7 +10,7 @@
             <a-form-item field="title" hide-label>
               <a-input
                 v-model="queryParams.title"
-                placeholder="输入主题搜索"
+                placeholder="输入标题搜索"
                 allow-clear
                 style="width: 230px"
                 @press-enter="handleQuery"
@@ -19,16 +19,15 @@
             <a-form-item field="type" hide-label>
               <a-select
                 v-model="queryParams.type"
-                :options="message_type"
+                :options="message_type_enum"
                 placeholder="类型搜索"
                 allow-clear
                 style="width: 150px"
               />
             </a-form-item>
-
-            <a-form-item field="type" hide-label>
+            <a-form-item field="isRead" hide-label>
               <a-select
-                v-model="queryParams.readStatus"
+                v-model="queryParams.isRead"
                 :style="{ width: '150px' }"
                 placeholder="是否已读"
                 allow-clear
@@ -58,7 +57,7 @@
                   type="primary"
                   status="success"
                   :disabled="readMultiple"
-                  :title="readMultiple ? '请选择要读取的数据' : ''"
+                  :title="readMultiple ? '请选择数据' : ''"
                   @click="handleBatchRedaMessage"
                 >
                   <template #icon><icon-check /></template>标记已读
@@ -123,33 +122,27 @@
               {{ rowIndex + 1 + (queryParams.page - 1) * queryParams.size }}
             </template>
           </a-table-column>
-          <a-table-column title="主题">
+          <a-table-column title="标题">
             <template #cell="{ record }">
-              <a-link @click="toDetail(record.id)">{{ record.title }}</a-link>
+              <a-link @click="toDetail(record)">{{ record.title }}</a-link>
             </template>
           </a-table-column>
           <a-table-column title="类型" align="center">
             <template #cell="{ record }">
-              <dict-tag :value="record.type" :dict="message_type" />
+              <dict-tag :value="record.type" :dict="message_type_enum" />
             </template>
           </a-table-column>
           <a-table-column title="是否已读" align="center">
             <template #cell="{ record }">
-              <a-tag v-if="record.readStatus" color="green">是</a-tag>
+              <a-tag v-if="record.isRead" color="green">是</a-tag>
               <a-tag v-else color="red">否</a-tag>
             </template>
           </a-table-column>
           <a-table-column title="发送时间" data-index="createTime" />
-          <a-table-column
-            v-if="
-              checkPermission(['system:message:delete'])
-            "
-            title="操作"
-            align="center"
-          >
+          <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
-                :disabled="record.readStatus"
+                :disabled="record.isRead"
                 type="text"
                 size="small"
                 title="标记已读"
@@ -157,7 +150,6 @@
               >
                 <template #icon><icon-check /></template>标记已读
               </a-button>
-
               <a-popconfirm
                 content="确定要删除当前选中的数据吗？"
                 type="warning"
@@ -189,60 +181,47 @@
         @cancel="handleDetailCancel"
       >
         <a-descriptions :column="2" bordered size="large">
-          <a-descriptions-item label="主题">
+          <a-descriptions-item label="标题">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>{{ dataDetail.title }}</span>
           </a-descriptions-item>
-
           <a-descriptions-item label="类型">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <dict-tag :value="dataDetail.type" :dict="message_type" />
+              <dict-tag :value="dataDetail.type" :dict="message_type_enum" />
             </span>
           </a-descriptions-item>
-
-          <a-descriptions-item label="发送人">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else-if="dataDetail.createUserString">{{
-              dataDetail.createUserString
-            }}</span>
-            <dict-tag
-              v-if="dataDetail.createUserString == null"
-              :value="dataDetail.type"
-              :dict="message_type"
-            />
-          </a-descriptions-item>
-
-          <a-descriptions-item label="发送时间">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <span v-else>{{ dataDetail.createTime }}</span>
-          </a-descriptions-item>
-
           <a-descriptions-item label="是否已读">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>
-              <a-tag v-if="dataDetail.readStatus" color="green">是</a-tag>
+              <a-tag v-if="dataDetail.isRead" color="green">是</a-tag>
               <a-tag v-else color="red">否</a-tag>
             </span>
           </a-descriptions-item>
-
           <a-descriptions-item label="读取时间">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
             </a-skeleton>
             <span v-else>{{ dataDetail.readTime }}</span>
           </a-descriptions-item>
-
+          <a-descriptions-item label="发送人">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.createUserString }}</span>
+          </a-descriptions-item>
+          <a-descriptions-item label="发送时间">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <span v-else>{{ dataDetail.createTime }}</span>
+          </a-descriptions-item>
           <a-descriptions-item label="内容">
             <a-skeleton v-if="detailLoading" :animation="true">
               <a-skeleton-line :rows="1" />
@@ -257,29 +236,19 @@
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
-  import {
-    MessageRecord,
-    page,
-    ListParam,
-    get,
-    del,
-    read,
-  } from '@/api/system/message';
-  import checkPermission from '@/utils/permission';
+  import { DataRecord, ListParam, list, del, read } from '@/api/system/message';
 
   const { proxy } = getCurrentInstance() as any;
-  const { message_type } = proxy.useDict('message_type');
-
-  const dataList = ref<MessageRecord[]>([]);
-  const dataDetail = ref<MessageRecord>({
+  const { message_type_enum } = proxy.useDict('message_type_enum');
+  const dataList = ref<DataRecord[]>([]);
+  const dataDetail = ref<DataRecord>({
     id: 0,
     title: '',
     content: '',
-    type: '',
+    type: 1,
     createUserString: '',
     createTime: '',
-    subTitle: '',
-    readStatus: false,
+    isRead: false,
     readTime: '',
   });
   const total = ref(0);
@@ -296,21 +265,22 @@
     // 查询参数
     queryParams: {
       title: undefined,
-      readStatus: undefined,
       type: undefined,
+      isRead: undefined,
       page: 1,
       size: 10,
-      sort: ['createTime,desc'],
+      sort: ['isRead,asc', 'createTime,desc'],
     },
   });
   const { queryParams } = toRefs(data);
+
   /**
    * 查询列表
    *
    */
   const getList = (params: ListParam = { ...queryParams.value }) => {
     loading.value = true;
-    page(params)
+    list(params)
       .then((res) => {
         dataList.value = res.data.list;
         total.value = res.data.total;
@@ -324,13 +294,11 @@
   /**
    * 查看详情
    *
-   * @param id ID
+   * @param record 记录信息
    */
-  const toDetail = async (id: number) => {
+  const toDetail = async (record: DataRecord) => {
     detailVisible.value = true;
-    get(id).then((res) => {
-      dataDetail.value = res.data;
-    });
+    dataDetail.value = record;
   };
 
   /**
@@ -377,7 +345,7 @@
    */
   const handleBatchRedaMessage = () => {
     if (ids.value.length === 0) {
-      proxy.$message.info('请选择要读取的数据');
+      proxy.$message.info('请选择数据');
     } else {
       handleReadMessage(ids.value);
     }
@@ -410,7 +378,7 @@
    */
   const handleSelectionChange = (rowKeys: Array<any>) => {
     const unReadMessageList = dataList.value.filter(
-      (item) => rowKeys.indexOf(item.id) !== -1 && !item.readStatus
+      (item) => rowKeys.indexOf(item.id) !== -1 && !item.isRead
     );
     readMultiple.value = !unReadMessageList.length;
     ids.value = rowKeys;
@@ -460,25 +428,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  :deep(.github-markdown-body) {
-    padding: 16px 32px 5px;
-  }
-
-  :deep(.arco-form-item-label-tooltip) {
-    margin-left: 3px;
-  }
-
-  .meta-data {
-    font-size: 15px;
-    text-align: center;
-  }
-
-  .icon {
-    margin-right: 3px;
-  }
-
-  .update-time-row {
-    text-align: right;
-  }
-</style>
+<style scoped lang="less"></style>

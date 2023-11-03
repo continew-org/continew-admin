@@ -16,13 +16,16 @@
 
 package top.charles7c.cnadmin.system.model.vo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.base.BaseVO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 
 /**
  * 消息信息
@@ -32,43 +35,61 @@ import top.charles7c.cnadmin.common.base.BaseVO;
  */
 @Data
 @Schema(description = "消息信息")
-public class MessageVO extends BaseVO {
+public class MessageVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 消息ID
+     * ID
      */
-    @Schema(description = "消息ID", example = "1")
+    @Schema(description = "ID", example = "1")
     private Long id;
 
     /**
-     * 主题
+     * 标题
      */
-    @Schema(description = "主题", example = "欢迎 xxx")
+    @Schema(description = "标题", example = "欢迎注册 xxx")
     private String title;
 
     /**
      * 内容
      */
-    @Schema(description = "内容", example = "欢迎 xxx")
+    @Schema(description = "内容", example = "尊敬的 xx，欢迎注册使用，请及时配置您的密码。")
     private String content;
 
     /**
-     * 类型（取值于字典 message_type）
+     * 类型
      */
-    @Schema(description = "类型（取值于字典 message_type）", example = "1")
-    private String type;
+    @Schema(description = "类型（1：系统消息）", example = "1")
+    private MessageTypeEnum type;
 
     /**
      * 是否已读
      */
     @Schema(description = "是否已读", example = "true")
-    private Boolean readStatus;
+    private Boolean isRead;
 
     /**
      * 读取时间
      */
     @Schema(description = "读取时间", example = "2023-08-08 23:59:59", type = "string")
     private LocalDateTime readTime;
+
+    /**
+     * 创建人
+     */
+    @JsonIgnore
+    private Long createUser;
+
+    /**
+     * 创建人
+     */
+    @Schema(description = "创建人", example = "超级管理员")
+    private String createUserString;
+
+    /**
+     * 创建时间
+     */
+    @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")
+    private LocalDateTime createTime;
 }

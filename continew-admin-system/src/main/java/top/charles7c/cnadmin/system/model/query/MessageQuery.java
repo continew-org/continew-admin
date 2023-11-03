@@ -41,32 +41,32 @@ public class MessageQuery implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
-    @Query(type = QueryTypeEnum.EQUAL)
+    @Query
     private Long id;
 
     /**
-     * 类型（取值于字典 message_type）
+     * 标题
      */
-    @Schema(description = "类型（取值于字典 message_type）", example = "1")
-    @Query(type = QueryTypeEnum.EQUAL)
-    private String type;
-
-    /**
-     * 主题
-     */
-    @Schema(description = "主题", example = "欢迎 xxx")
+    @Schema(description = "标题", example = "欢迎注册 xxx")
     @Query(type = QueryTypeEnum.INNER_LIKE)
     private String title;
 
     /**
-     * 用户ID
+     * 类型
      */
-    @Schema(description = "用户ID", example = "1")
-    private Long uid;
+    @Schema(description = "类型（1：系统消息）", example = "1")
+    @Query
+    private Integer type;
 
     /**
      * 是否已读
      */
     @Schema(description = "是否已读", example = "true")
-    private Boolean readStatus;
+    private Boolean isRead;
+
+    /**
+     * 用户 ID
+     */
+    @Schema(hidden = true)
+    private Long userId;
 }

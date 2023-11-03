@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -35,24 +33,16 @@ import top.charles7c.cnadmin.system.model.vo.MessageVO;
  * @since 2023/10/15 19:05
  */
 public interface MessageMapper extends BaseMapper<MessageDO> {
+
     /**
      * 分页查询列表
      *
-     * @param queryWrapper
-     *            查询条件
      * @param page
      *            分页查询条件
+     * @param queryWrapper
+     *            查询条件
      * @return 分页信息
      */
     IPage<MessageVO> selectVoPage(@Param("page") IPage<Object> page,
         @Param(Constants.WRAPPER) QueryWrapper<MessageDO> queryWrapper);
-
-    /**
-     * 查询列表
-     *
-     * @param queryWrapper
-     *            查询条件
-     * @return 列表信息
-     */
-    List<MessageVO> selectVoList(@Param(Constants.WRAPPER) QueryWrapper<MessageDO> queryWrapper);
 }

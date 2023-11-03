@@ -5,7 +5,7 @@
       :key="item.id"
       action-layout="vertical"
       :style="{
-        opacity: item.readStatus ? 0.5 : 1,
+        opacity: item.isRead ? 0.5 : 1,
       }"
     >
       <div class="item-wrap" @click="onItemClick(item)">
@@ -13,9 +13,6 @@
           <template #title>
             <a-space :size="4">
               <span>{{ item.title }}</span>
-              <a-typography-text type="secondary">
-                {{ item.subTitle }}
-              </a-typography-text>
             </a-space>
           </template>
           <template #description>
@@ -41,10 +38,12 @@
         :class="{ 'add-border-top': renderList.length < showMax }"
       >
         <div class="footer-wrap">
-          <a-link @click="allRead">{{ $t('messageBox.allRead') }}</a-link>
+          <a-link @click="handleReadAll">{{ $t('messageBox.allRead') }}</a-link>
         </div>
         <div class="footer-wrap">
-          <a-link @click="toList">{{ $t('messageBox.viewMore') }}</a-link>
+          <a-link @click="handleViewMore">{{
+            $t('messageBox.viewMore')
+          }}</a-link>
         </div>
       </a-space>
     </template>
@@ -58,18 +57,13 @@
 <script lang="ts" setup>
   import { PropType } from 'vue';
   import { useRouter } from 'vue-router';
-  import { MessageRecord, MessageListType } from '@/api/system/message';
+  import { DataRecord } from '@/api/system/message';
 
   const router = useRouter();
-
   const props = defineProps({
     renderList: {
-      type: Array as PropType<MessageListType>,
+      type: Array as PropType<DataRecord[]>,
       required: true,
-    },
-    unreadCount: {
-      type: Number,
-      default: 0,
     },
   });
   const emit = defineEmits(['itemClick']);
@@ -77,14 +71,14 @@
   /**
    * 全部已读
    */
-  const allRead = () => {
+  const handleReadAll = () => {
     emit('itemClick', [...props.renderList]);
   };
 
   /**
    * 查看更多
    */
-  const toList = () => {
+  const handleViewMore = () => {
     router.push({
       name: 'Message',
     });
@@ -92,10 +86,11 @@
 
   /**
    * 点击消息
+   *
    * @param item 消息
    */
-  const onItemClick = (item: MessageRecord) => {
-    if (!item.readStatus) {
+  const onItemClick = (item: DataRecord) => {
+    if (!item.isRead) {
       emit('itemClick', [item]);
     }
   };

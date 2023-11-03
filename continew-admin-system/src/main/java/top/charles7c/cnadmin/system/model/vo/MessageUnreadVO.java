@@ -14,44 +14,39 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.model.entity;
+package top.charles7c.cnadmin.system.model.vo;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * 消息和用户关联实体
+ * 未读消息信息
  *
- * @author BULL_BCLS
- * @since 2023/10/15 20:25
+ * @author Charles7c
+ * @since 2023/11/2 23:00
  */
 @Data
-@TableName("sys_message_user")
-public class MessageUserDO implements Serializable {
+@Schema(description = "未读消息信息")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class MessageUnreadVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 消息 ID
+     * 未读消息数量
      */
-    private Long messageId;
+    @Schema(description = "未读消息数量", example = "20")
+    private Long total;
 
     /**
-     * 用户 ID
+     * 各类型未读消息数量
      */
-    private Long userId;
-
-    /**
-     * 是否已读
-     */
-    private Boolean isRead;
-
-    /**
-     * 读取时间
-     */
-    private LocalDateTime readTime;
+    @Schema(description = "各类型未读消息数量")
+    private List<MessageTypeUnreadVO> details;
 }

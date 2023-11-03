@@ -16,13 +16,27 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageUserDO;
 
 /**
- * 消息和用户关联 Mapper
+ * 消息和用户 Mapper
  *
  * @author BULL_BCLS
  * @since 2023/10/15 20:25
  */
-public interface MessageUserMapper extends BaseMapper<MessageUserDO> {}
+public interface MessageUserMapper extends BaseMapper<MessageUserDO> {
+
+    /**
+     * 根据用户 ID 和消息类型查询未读消息数量
+     * 
+     * @param userId
+     *            用户 ID
+     * @param type
+     *            消息类型
+     * @return 未读消息信息
+     */
+    Long selectUnreadCountByUserIdAndType(@Param("userId") Long userId, @Param("type") Integer type);
+}

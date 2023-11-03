@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin.system.enums;
+package top.charles7c.cnadmin.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import top.charles7c.cnadmin.common.base.IBaseEnum;
+import top.charles7c.cnadmin.common.constant.UIConsts;
+
 /**
- * 消息模板枚举
+ * 消息类型枚举
  *
- * @author BULL_BCLS
- * @since 2023/10/15 19:51
+ * @author Charles7c
+ * @since 2023/11/2 20:08
  */
 @Getter
 @RequiredArgsConstructor
-public enum MessageTemplateEnum {
+public enum MessageTypeEnum implements IBaseEnum<Integer> {
 
-    /**
-     * 第三方登录
-     */
-    SOCIAL_REGISTER("欢迎注册 {}", "尊敬的 {}，欢迎注册使用，请及时配置您的密码。");
+    /** 系统消息 */
+    SYSTEM(1, "系统消息", UIConsts.COLOR_PRIMARY),;
 
-    private final String title;
-    private final String content;
+    private final Integer value;
+    private final String description;
+    private final String color;
 }
