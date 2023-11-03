@@ -1,3 +1,4 @@
+const TIMER_KEY = 'timer';
 const TOKEN_KEY = 'token';
 
 const isLogin = () => {
@@ -16,4 +17,13 @@ const clearToken = () => {
   localStorage.removeItem(TOKEN_KEY);
 };
 
-export { isLogin, getToken, setToken, clearToken };
+const setTimer = (timer: number) => {
+  localStorage.setItem(TIMER_KEY, String(timer));
+};
+
+const clearTimer = () => {
+  clearInterval(Number(localStorage.getItem(TIMER_KEY)));
+  localStorage.removeItem(TIMER_KEY);
+};
+
+export { isLogin, getToken, setToken, clearToken, setTimer, clearTimer };

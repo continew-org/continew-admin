@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref, inject, watchEffect } from 'vue';
+  import { computed, ref, inject } from 'vue';
   import { useDark, useToggle, useFullscreen } from '@vueuse/core';
   import { useAppStore, useUserStore } from '@/store';
   import { countUnread } from '@/api/system/message';
@@ -200,6 +200,7 @@
   import Menu from '@/components/menu/index.vue';
   import getAvatar from '@/utils/avatar';
   import getFile from '@/utils/file';
+  import { setTimer } from '@/utils/auth';
   import MessageBox from '../message-box/index.vue';
 
   const appStore = useAppStore();
@@ -234,7 +235,7 @@
     unReadMessageCount.value = res.data.total;
   }
   getUnreadCount();
-  setInterval(getUnreadCount, 10000);
+  setTimer(setInterval(getUnreadCount, 10000));
 
   const handleToggleTheme = () => {
     toggleTheme();

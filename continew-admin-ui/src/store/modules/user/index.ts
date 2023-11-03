@@ -11,7 +11,7 @@ import {
   getUserInfo,
 } from '@/api/auth';
 import { getImageCaptcha as getCaptcha } from '@/api/common/captcha';
-import { setToken, clearToken } from '@/utils/auth';
+import { setToken, clearToken, clearTimer } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
 import useAppStore from '../app';
@@ -102,6 +102,7 @@ const useUserStore = defineStore('user', {
       const appStore = useAppStore();
       this.resetInfo();
       clearToken();
+      clearTimer();
       removeRouteListener();
       appStore.clearServerMenu();
     },

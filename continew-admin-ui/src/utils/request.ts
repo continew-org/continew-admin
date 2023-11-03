@@ -51,6 +51,8 @@ axios.interceptors.response.use(
       return res;
     }
     if ([401].includes(res.code) && response.config.url !== '/auth/user/info') {
+      const userStore = useUserStore();
+      userStore.logout();
       modalErrorWrapper({
         title: '确认退出',
         content: res.msg,
@@ -58,8 +60,6 @@ axios.interceptors.response.use(
         escToClose: false,
         okText: '重新登录',
         async onOk() {
-          const userStore = useUserStore();
-          await userStore.logout();
           window.location.reload();
         },
       });
