@@ -216,5 +216,12 @@
       margin: 20px 0 12px;
       width: 100%;
     }
+
+    .arco-btn-primary.arco-btn-disabled,
+    .arco-btn-primary[type='submit'].arco-btn-disabled {
+      background-color: var(--color-neutral-4);
+      box-shadow: 0 0 0 1px var(--color-neutral-4),
+        0 2px 1px rgba(0, 0, 0, 0.15);
+    }
   }
 </style>
