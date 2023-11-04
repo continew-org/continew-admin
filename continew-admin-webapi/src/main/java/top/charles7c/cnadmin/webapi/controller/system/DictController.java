@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
-import top.charles7c.cnadmin.system.model.request.DictRequest;
-import top.charles7c.cnadmin.system.model.vo.DictDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DictVO;
+import top.charles7c.cnadmin.system.model.req.DictReq;
+import top.charles7c.cnadmin.system.model.resp.DictDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DictResp;
 import top.charles7c.cnadmin.system.service.DictService;
 
 /**
@@ -39,4 +39,4 @@ import top.charles7c.cnadmin.system.service.DictService;
 @Tag(name = "字典管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dict", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class DictController extends BaseController<DictService, DictVO, DictDetailVO, DictQuery, DictRequest> {}
+public class DictController extends BaseController<DictService, DictResp, DictDetailResp, DictQuery, DictReq> {}

@@ -31,13 +31,13 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardGeoDistributionResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardPopularModuleResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardTotalResp;
 import top.charles7c.cnadmin.monitor.service.DashboardService;
 import top.charles7c.cnadmin.monitor.service.LogService;
-import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
+import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.cnadmin.system.service.AnnouncementService;
 
 /**
@@ -55,27 +55,27 @@ public class DashboardServiceImpl implements DashboardService {
     private final AnnouncementService announcementService;
 
     @Override
-    public DashboardTotalVO getTotal() {
-        DashboardTotalVO totalVO = logService.getDashboardTotal();
-        Long todayPvCount = totalVO.getTodayPvCount();
-        Long yesterdayPvCount = totalVO.getYesterdayPvCount();
+    public DashboardTotalResp getTotal() {
+        DashboardTotalResp totalResp = logService.getDashboardTotal();
+        Long todayPvCount = totalResp.getTodayPvCount();
+        Long yesterdayPvCount = totalResp.getYesterdayPvCount();
         BigDecimal newPvCountFromYesterday = NumberUtil.sub(todayPvCount, yesterdayPvCount);
         BigDecimal newPvFromYesterday = (0 == yesterdayPvCount) ? BigDecimal.valueOf(100)
             : NumberUtil.round(NumberUtil.mul(NumberUtil.div(newPvCountFromYesterday, yesterdayPvCount), 100), 1);
-        totalVO.setNewPvFromYesterday(newPvFromYesterday);
-        return totalVO;
+        totalResp.setNewPvFromYesterday(newPvFromYesterday);
+        return totalResp;
     }
 
     @Override
     @Cacheable(key = "#days")
-    public List<DashboardAccessTrendVO> listAccessTrend(Integer days) {
+    public List<DashboardAccessTrendResp> listAccessTrend(Integer days) {
         return logService.listDashboardAccessTrend(days);
     }
 
     @Override
-    public List<DashboardPopularModuleVO> listPopularModule() {
-        List<DashboardPopularModuleVO> popularModuleList = logService.listDashboardPopularModule();
-        for (DashboardPopularModuleVO popularModule : popularModuleList) {
+    public List<DashboardPopularModuleResp> listPopularModule() {
+        List<DashboardPopularModuleResp> popularModuleList = logService.listDashboardPopularModule();
+        for (DashboardPopularModuleResp popularModule : popularModuleList) {
             Long todayPvCount = popularModule.getTodayPvCount();
             Long yesterdayPvCount = popularModule.getYesterdayPvCount();
             BigDecimal newPvCountFromYesterday = NumberUtil.sub(todayPvCount, yesterdayPvCount);
@@ -87,9 +87,9 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public DashboardGeoDistributionVO getGeoDistribution() {
+    public DashboardGeoDistributionResp getGeoDistribution() {
         List<Map<String, Object>> locationIpStatistics = logService.listDashboardGeoDistribution();
-        DashboardGeoDistributionVO geoDistribution = new DashboardGeoDistributionVO();
+        DashboardGeoDistributionResp geoDistribution = new DashboardGeoDistributionResp();
         geoDistribution.setLocationIpStatistics(locationIpStatistics);
         geoDistribution.setLocations(
             locationIpStatistics.stream().map(m -> Convert.toStr(m.get("name"))).collect(Collectors.toList()));
@@ -97,7 +97,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DashboardAnnouncementVO> listAnnouncement() {
+    public List<DashboardAnnouncementResp> listAnnouncement() {
         return announcementService.listDashboard();
     }
 }

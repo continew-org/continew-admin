@@ -20,12 +20,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
-import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
-import top.charles7c.cnadmin.tool.model.vo.TableVO;
+import top.charles7c.cnadmin.tool.model.req.GenConfigReq;
+import top.charles7c.cnadmin.tool.model.resp.TableResp;
 
 /**
  * 代码生成业务接口
@@ -46,7 +46,7 @@ public interface GeneratorService {
      * @throws SQLException
      *             /
      */
-    PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
+    PageDataResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
 
     /**
      * 查询生成配置信息
@@ -73,12 +73,12 @@ public interface GeneratorService {
     /**
      * 保存代码生成配置信息
      *
-     * @param request
+     * @param req
      *            代码生成配置信息
      * @param tableName
      *            表名称
      */
-    void saveConfig(GenConfigRequest request, String tableName);
+    void saveConfig(GenConfigReq req, String tableName);
 
     /**
      * 生成代码

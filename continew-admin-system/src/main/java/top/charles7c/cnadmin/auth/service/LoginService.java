@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.auth.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.auth.model.vo.RouteVO;
+import top.charles7c.cnadmin.auth.model.resp.RouteResp;
 
 import me.zhyd.oauth.model.AuthUser;
 
@@ -75,5 +75,5 @@ public interface LoginService {
      *            用户 ID
      * @return 路由树
      */
-    List<RouteVO> buildRouteTree(Long userId);
+    List<RouteResp> buildRouteTree(Long userId);
 }

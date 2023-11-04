@@ -18,11 +18,11 @@ package top.charles7c.cnadmin.monitor.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardGeoDistributionVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
-import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardGeoDistributionResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardPopularModuleResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardTotalResp;
+import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
 
 /**
  * 仪表盘业务接口
@@ -37,7 +37,7 @@ public interface DashboardService {
      *
      * @return 总计信息
      */
-    DashboardTotalVO getTotal();
+    DashboardTotalResp getTotal();
 
     /**
      * 查询访问趋势信息
@@ -46,26 +46,26 @@ public interface DashboardService {
      *            日期数
      * @return 访问趋势信息
      */
-    List<DashboardAccessTrendVO> listAccessTrend(Integer days);
+    List<DashboardAccessTrendResp> listAccessTrend(Integer days);
 
     /**
      * 查询热门模块列表
      *
      * @return 热门模块列表
      */
-    List<DashboardPopularModuleVO> listPopularModule();
+    List<DashboardPopularModuleResp> listPopularModule();
 
     /**
      * 查询访客地域分布信息
      *
      * @return 访客地域分布信息
      */
-    DashboardGeoDistributionVO getGeoDistribution();
+    DashboardGeoDistributionResp getGeoDistribution();
 
     /**
      * 查询公告列表
      *
      * @return 公告列表
      */
-    List<DashboardAnnouncementVO> listAnnouncement();
+    List<DashboardAnnouncementResp> listAnnouncement();
 }

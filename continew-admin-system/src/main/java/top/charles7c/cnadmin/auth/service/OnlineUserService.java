@@ -19,10 +19,10 @@ package top.charles7c.cnadmin.auth.service;
 import java.util.List;
 
 import top.charles7c.cnadmin.auth.model.query.OnlineUserQuery;
-import top.charles7c.cnadmin.auth.model.vo.OnlineUserVO;
+import top.charles7c.cnadmin.auth.model.resp.OnlineUserResp;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 
 /**
  * 在线用户业务接口
@@ -41,7 +41,7 @@ public interface OnlineUserService {
      *            分页查询条件
      * @return 分页列表信息
      */
-    PageDataVO<OnlineUserVO> page(OnlineUserQuery query, PageQuery pageQuery);
+    PageDataResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery);
 
     /**
      * 查询列表

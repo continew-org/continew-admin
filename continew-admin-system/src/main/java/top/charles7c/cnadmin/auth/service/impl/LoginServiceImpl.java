@@ -34,8 +34,8 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
-import top.charles7c.cnadmin.auth.model.vo.MetaVO;
-import top.charles7c.cnadmin.auth.model.vo.RouteVO;
+import top.charles7c.cnadmin.auth.model.resp.MetaResp;
+import top.charles7c.cnadmin.auth.model.resp.RouteResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.annotation.TreeField;
@@ -55,9 +55,9 @@ import top.charles7c.cnadmin.system.enums.MessageTemplateEnum;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
-import top.charles7c.cnadmin.system.model.request.MessageRequest;
-import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
+import top.charles7c.cnadmin.system.model.req.MessageReq;
+import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
+import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.*;
 
 import me.zhyd.oauth.model.AuthUser;
@@ -150,22 +150,22 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public List<RouteVO> buildRouteTree(Long userId) {
+    public List<RouteResp> buildRouteTree(Long userId) {
         Set<String> roleCodeSet = permissionService.listRoleCodeByUserId(userId);
         if (CollUtil.isEmpty(roleCodeSet)) {
             return new ArrayList<>(0);
         }
         // 查询菜单列表
-        Set<MenuVO> menuSet = new LinkedHashSet<>();
+        Set<MenuResp> menuSet = new LinkedHashSet<>();
         if (roleCodeSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
             menuSet.addAll(menuService.list());
         } else {
             roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));
         }
-        List<MenuVO> menuList =
+        List<MenuResp> menuList =
             menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).collect(Collectors.toList());
         // 构建路由树
-        TreeField treeField = MenuVO.class.getDeclaredAnnotation(TreeField.class);
+        TreeField treeField = MenuResp.class.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
         List<Tree<Long>> treeList = TreeUtils.build(menuList, treeNodeConfig, (m, tree) -> {
             tree.setId(m.getId());
@@ -175,15 +175,15 @@ public class LoginServiceImpl implements LoginService {
             tree.putExtra("path", m.getPath());
             tree.putExtra("name", m.getName());
             tree.putExtra("component", m.getComponent());
-            MetaVO metaVO = new MetaVO();
-            metaVO.setLocale(m.getTitle());
-            metaVO.setIcon(m.getIcon());
-            metaVO.setIgnoreCache(!m.getIsCache());
-            metaVO.setHideInMenu(m.getIsHidden());
-            metaVO.setOrder(m.getSort());
-            tree.putExtra("meta", metaVO);
+            MetaResp metaResp = new MetaResp();
+            metaResp.setLocale(m.getTitle());
+            metaResp.setIcon(m.getIcon());
+            metaResp.setIgnoreCache(!m.getIsCache());
+            metaResp.setHideInMenu(m.getIsHidden());
+            metaResp.setOrder(m.getSort());
+            tree.putExtra("meta", metaResp);
         });
-        return BeanUtil.copyToList(treeList, RouteVO.class);
+        return BeanUtil.copyToList(treeList, RouteResp.class);
     }
 
     /**
@@ -210,8 +210,8 @@ public class LoginServiceImpl implements LoginService {
      */
     private void checkUserStatus(UserDO user) {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
-        DeptDetailVO deptDetailVO = deptService.get(user.getDeptId());
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailVO.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
+        DeptDetailResp deptDetailResp = deptService.get(user.getDeptId());
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailResp.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
     }
 
     /**
@@ -221,11 +221,11 @@ public class LoginServiceImpl implements LoginService {
      *            用户信息
      */
     private void sendSystemMsg(UserDO user) {
-        MessageRequest request = new MessageRequest();
+        MessageReq req = new MessageReq();
         MessageTemplateEnum socialRegister = MessageTemplateEnum.SOCIAL_REGISTER;
-        request.setTitle(StrUtil.format(socialRegister.getTitle(), projectProperties.getName()));
-        request.setContent(StrUtil.format(socialRegister.getContent(), user.getNickname()));
-        request.setType(MessageTypeEnum.SYSTEM);
-        messageService.add(request, CollUtil.toList(user.getId()));
+        req.setTitle(StrUtil.format(socialRegister.getTitle(), projectProperties.getName()));
+        req.setContent(StrUtil.format(socialRegister.getContent(), user.getNickname()));
+        req.setType(MessageTypeEnum.SYSTEM);
+        messageService.add(req, CollUtil.toList(user.getId()));
     }
 }

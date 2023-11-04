@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.system.model.query.DictItemQuery;
-import top.charles7c.cnadmin.system.model.request.DictItemRequest;
-import top.charles7c.cnadmin.system.model.vo.DictItemDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DictItemVO;
+import top.charles7c.cnadmin.system.model.req.DictItemReq;
+import top.charles7c.cnadmin.system.model.resp.DictItemDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DictItemResp;
 import top.charles7c.cnadmin.system.service.DictItemService;
 
 /**
@@ -40,4 +40,4 @@ import top.charles7c.cnadmin.system.service.DictItemService;
 @RestController
 @CrudRequestMapping(value = "/system/dict/item", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
 public class DictItemController
-    extends BaseController<DictItemService, DictItemVO, DictItemDetailVO, DictItemQuery, DictItemRequest> {}
+    extends BaseController<DictItemService, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> {}

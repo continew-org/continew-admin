@@ -21,12 +21,12 @@ import java.util.Set;
 
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
-import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
+import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
-import top.charles7c.cnadmin.system.model.request.RoleRequest;
-import top.charles7c.cnadmin.system.model.vo.RoleDetailVO;
-import top.charles7c.cnadmin.system.model.vo.RoleVO;
+import top.charles7c.cnadmin.system.model.req.RoleReq;
+import top.charles7c.cnadmin.system.model.resp.RoleDetailResp;
+import top.charles7c.cnadmin.system.model.resp.RoleResp;
 
 /**
  * 角色业务接口
@@ -34,7 +34,7 @@ import top.charles7c.cnadmin.system.model.vo.RoleVO;
  * @author Charles7c
  * @since 2023/2/8 23:15
  */
-public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery, RoleRequest> {
+public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
 
     /**
      * 构建字典
@@ -43,7 +43,7 @@ public interface RoleService extends BaseService<RoleVO, RoleDetailVO, RoleQuery
      *            原始列表数据
      * @return 字典列表
      */
-    List<LabelValueVO<Long>> buildDict(List<RoleVO> list);
+    List<LabelValueResp<Long>> buildDict(List<RoleResp> list);
 
     /**
      * 根据 ID 列表查询

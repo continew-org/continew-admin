@@ -19,9 +19,9 @@ package top.charles7c.cnadmin.system.service;
 import java.util.List;
 
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
-import top.charles7c.cnadmin.system.model.request.OptionRequest;
-import top.charles7c.cnadmin.system.model.request.OptionResetValueRequest;
-import top.charles7c.cnadmin.system.model.vo.OptionVO;
+import top.charles7c.cnadmin.system.model.req.OptionReq;
+import top.charles7c.cnadmin.system.model.req.OptionResetValueReq;
+import top.charles7c.cnadmin.system.model.resp.OptionResp;
 
 /**
  * 参数业务接口
@@ -38,21 +38,21 @@ public interface OptionService {
      *            查询条件
      * @return 列表信息
      */
-    List<OptionVO> list(OptionQuery query);
+    List<OptionResp> list(OptionQuery query);
 
     /**
      * 修改参数
      *
-     * @param request
+     * @param req
      *            参数信息
      */
-    void update(List<OptionRequest> request);
+    void update(List<OptionReq> req);
 
     /**
      * 重置参数
      *
-     * @param request
+     * @param req
      *            重置信息
      */
-    void resetValue(OptionResetValueRequest request);
+    void resetValue(OptionResetValueReq req);
 }

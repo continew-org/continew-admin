@@ -57,7 +57,7 @@ public class ExcelUtils {
      * @param response
      *            响应对象
      */
-    public static <V> void export(List<V> list, String fileName, Class<V> clazz, HttpServletResponse response) {
+    public static <T> void export(List<T> list, String fileName, Class<T> clazz, HttpServletResponse response) {
         export(list, fileName, "Sheet1", clazz, response);
     }
 
@@ -75,7 +75,7 @@ public class ExcelUtils {
      * @param response
      *            响应对象
      */
-    public static <V> void export(List<V> list, String fileName, String sheetName, Class<V> clazz,
+    public static <T> void export(List<T> list, String fileName, String sheetName, Class<T> clazz,
         HttpServletResponse response) {
         try {
             fileName =

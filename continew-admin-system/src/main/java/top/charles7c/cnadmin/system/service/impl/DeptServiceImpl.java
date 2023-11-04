@@ -39,9 +39,9 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.DeptDO;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.DeptRequest;
-import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DeptVO;
+import top.charles7c.cnadmin.system.model.req.DeptReq;
+import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DeptResp;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.RoleDeptService;
 import top.charles7c.cnadmin.system.service.UserService;
@@ -54,7 +54,7 @@ import top.charles7c.cnadmin.system.service.UserService;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO, DeptDetailVO, DeptQuery, DeptRequest>
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq>
     implements DeptService {
 
     private final RoleDeptService roleDeptService;
@@ -63,28 +63,28 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(DeptRequest request) {
-        String name = request.getName();
-        boolean isExists = this.isNameExists(name, request.getParentId(), null);
+    public Long add(DeptReq req) {
+        String name = req.getName();
+        boolean isExists = this.isNameExists(name, req.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
-        request.setAncestors(this.getAncestors(request.getParentId()));
-        request.setStatus(DisEnableStatusEnum.DISABLE);
-        return super.add(request);
+        req.setAncestors(this.getAncestors(req.getParentId()));
+        req.setStatus(DisEnableStatusEnum.DISABLE);
+        return super.add(req);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(DeptRequest request, Long id) {
-        String name = request.getName();
-        boolean isExists = this.isNameExists(name, request.getParentId(), id);
+    public void update(DeptReq req, Long id) {
+        String name = req.getName();
+        boolean isExists = this.isNameExists(name, req.getParentId(), id);
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
         DeptDO oldDept = super.getById(id);
         String oldName = oldDept.getName();
-        DisEnableStatusEnum newStatus = request.getStatus();
+        DisEnableStatusEnum newStatus = req.getStatus();
         Long oldParentId = oldDept.getParentId();
         if (oldDept.getIsSystem()) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用", oldName);
-            CheckUtils.throwIfNotEqual(request.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
+            CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
         }
         // 启用/禁用部门
         if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
@@ -98,14 +98,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
                 && DisEnableStatusEnum.DISABLE.equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
         // 变更上级部门
-        if (ObjectUtil.notEqual(request.getParentId(), oldParentId)) {
+        if (ObjectUtil.notEqual(req.getParentId(), oldParentId)) {
             // 更新祖级列表
-            String newAncestors = this.getAncestors(request.getParentId());
-            request.setAncestors(newAncestors);
+            String newAncestors = this.getAncestors(req.getParentId());
+            req.setAncestors(newAncestors);
             // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
-        super.update(request, id);
+        super.update(req, id);
     }
 
     @Override
@@ -127,12 +127,12 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof DeptDetailVO) {
-            DeptDetailVO detailVO = (DeptDetailVO)detailObj;
-            if (Objects.equals(SysConsts.SUPER_PARENT_ID, detailVO.getParentId())) {
+        if (detailObj instanceof DeptDetailResp) {
+            DeptDetailResp detail = (DeptDetailResp)detailObj;
+            if (Objects.equals(SysConsts.SUPER_PARENT_ID, detail.getParentId())) {
                 return;
             }
-            detailVO.setParentName(ExceptionUtils.exToNull(() -> this.get(detailVO.getParentId()).getName()));
+            detail.setParentName(ExceptionUtils.exToNull(() -> this.get(detail.getParentId()).getName()));
         }
     }
 

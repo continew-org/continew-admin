@@ -23,11 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
-import top.charles7c.cnadmin.system.model.request.UserRequest;
-import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
-import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
-import top.charles7c.cnadmin.system.model.vo.UserVO;
+import top.charles7c.cnadmin.system.model.req.UserBasicInfoUpdateReq;
+import top.charles7c.cnadmin.system.model.req.UserReq;
+import top.charles7c.cnadmin.system.model.req.UserRoleUpdateReq;
+import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
+import top.charles7c.cnadmin.system.model.resp.UserResp;
 
 /**
  * 用户业务接口
@@ -35,7 +35,7 @@ import top.charles7c.cnadmin.system.model.vo.UserVO;
  * @author Charles7c
  * @since 2022/12/21 21:48
  */
-public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery, UserRequest> {
+public interface UserService extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq> {
 
     /**
      * 保存用户信息
@@ -60,12 +60,12 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     /**
      * 修改基础信息
      *
-     * @param updateRequest
+     * @param updateReq
      *            修改信息
      * @param id
      *            ID
      */
-    void updateBasicInfo(UserBasicInfoUpdateRequest updateRequest, Long id);
+    void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id);
 
     /**
      * 修改密码
@@ -114,12 +114,12 @@ public interface UserService extends BaseService<UserVO, UserDetailVO, UserQuery
     /**
      * 修改角色
      *
-     * @param updateRequest
+     * @param updateReq
      *            修改信息
      * @param id
      *            ID
      */
-    void updateRole(UserRoleUpdateRequest updateRequest, Long id);
+    void updateRole(UserRoleUpdateReq updateReq, Long id);
 
     /**
      * 根据用户名查询

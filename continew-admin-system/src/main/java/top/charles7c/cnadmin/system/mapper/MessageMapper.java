@@ -24,7 +24,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageDO;
-import top.charles7c.cnadmin.system.model.vo.MessageVO;
+import top.charles7c.cnadmin.system.model.resp.MessageResp;
 
 /**
  * 消息 Mapper
@@ -43,6 +43,6 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
      *            查询条件
      * @return 分页信息
      */
-    IPage<MessageVO> selectVoPage(@Param("page") IPage<Object> page,
+    IPage<MessageResp> selectPageByUserId(@Param("page") IPage<Object> page,
         @Param(Constants.WRAPPER) QueryWrapper<MessageDO> queryWrapper);
 }

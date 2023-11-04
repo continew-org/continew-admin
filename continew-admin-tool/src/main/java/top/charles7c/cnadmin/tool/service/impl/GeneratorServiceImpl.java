@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.util.TemplateUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
@@ -57,8 +57,8 @@ import top.charles7c.cnadmin.tool.mapper.GenConfigMapper;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
-import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
-import top.charles7c.cnadmin.tool.model.vo.TableVO;
+import top.charles7c.cnadmin.tool.model.req.GenConfigReq;
+import top.charles7c.cnadmin.tool.model.resp.TableResp;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
 import top.charles7c.cnadmin.tool.util.MetaUtils;
 import top.charles7c.cnadmin.tool.util.Table;
@@ -80,7 +80,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private final GenConfigMapper genConfigMapper;
 
     @Override
-    public PageDataVO<TableVO> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
+    public PageDataResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
         List<Table> tableList = MetaUtils.getTables(dataSource);
         String tableName = query.getTableName();
         if (StrUtil.isNotBlank(tableName)) {
@@ -91,14 +91,15 @@ public class GeneratorServiceImpl implements GeneratorService {
             Comparator.comparing(Table::getCreateTime)
                 .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
                 .reversed());
-        List<TableVO> tableVOList = BeanUtil.copyToList(tableList, TableVO.class);
-        PageDataVO<TableVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), tableVOList);
-        for (TableVO tableVO : pageDataVO.getList()) {
+        List<TableResp> tableRespList = BeanUtil.copyToList(tableList, TableResp.class);
+        PageDataResp<TableResp> pageDataResp =
+            PageDataResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
+        for (TableResp tableResp : pageDataResp.getList()) {
             long count = genConfigMapper.selectCount(
-                Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableVO.getTableName()));
-            tableVO.setIsConfiged(count > 0);
+                Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableResp.getTableName()));
+            tableResp.setIsConfiged(count > 0);
         }
-        return pageDataVO;
+        return pageDataResp;
     }
 
     @Override
@@ -166,10 +167,10 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveConfig(GenConfigRequest request, String tableName) {
+    public void saveConfig(GenConfigReq req, String tableName) {
         // 保存字段配置
         fieldConfigMapper.delete(Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
-        List<FieldConfigDO> fieldConfigList = request.getFieldConfigs();
+        List<FieldConfigDO> fieldConfigList = req.getFieldConfigs();
         for (FieldConfigDO fieldConfig : fieldConfigList) {
             if (fieldConfig.getShowInForm()) {
                 CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
@@ -193,7 +194,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         fieldConfigMapper.insertBatch(fieldConfigList);
 
         // 保存或更新生成配置信息
-        GenConfigDO newGenConfig = request.getGenConfig();
+        GenConfigDO newGenConfig = req.getGenConfig();
         String frontendPath = newGenConfig.getFrontendPath();
         if (StrUtil.isNotBlank(frontendPath)) {
             CheckUtils.throwIf(!StrUtil.containsAll(frontendPath, "src", "views"), "前端路径配置错误");

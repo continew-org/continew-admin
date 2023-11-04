@@ -33,14 +33,14 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
-import top.charles7c.cnadmin.tool.model.request.GenConfigRequest;
-import top.charles7c.cnadmin.tool.model.vo.TableVO;
+import top.charles7c.cnadmin.tool.model.req.GenConfigReq;
+import top.charles7c.cnadmin.tool.model.resp.TableResp;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
 
 /**
@@ -62,7 +62,7 @@ public class GeneratorController {
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/table")
-    public PageDataVO<TableVO> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
+    public PageDataResp<TableResp> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
         return generatorService.pageTable(query, pageQuery);
     }
 
@@ -88,8 +88,8 @@ public class GeneratorController {
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/config/{tableName}")
-    public R saveConfig(@Validated @RequestBody GenConfigRequest request, @PathVariable String tableName) {
-        generatorService.saveConfig(request, tableName);
+    public R saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
+        generatorService.saveConfig(req, tableName);
         return R.ok("保存成功");
     }
 

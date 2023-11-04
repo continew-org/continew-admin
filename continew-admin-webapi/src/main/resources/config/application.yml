@@ -246,19 +246,19 @@ generator:
     Query:
       templatePath: generator/Query.ftl
       packageName: model.query
-    Request:
-      templatePath: generator/Request.ftl
-      packageName: model.request
-    VO:
-      templatePath: generator/VO.ftl
-      packageName: model.vo
+    Req:
+      templatePath: generator/Req.ftl
+      packageName: model.req
+    Resp:
+      templatePath: generator/Resp.ftl
+      packageName: model.resp
       excludeFields:
         - id
         - createUser
         - createTime
-    DetailVO:
-      templatePath: generator/DetailVO.ftl
-      packageName: model.vo
+    DetailResp:
+      templatePath: generator/DetailResp.ftl
+      packageName: model.resp
       excludeFields:
         - id
         - createUser

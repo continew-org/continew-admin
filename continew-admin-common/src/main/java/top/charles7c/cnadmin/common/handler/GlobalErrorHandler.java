@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 
 /**
  * 全局错误处理器

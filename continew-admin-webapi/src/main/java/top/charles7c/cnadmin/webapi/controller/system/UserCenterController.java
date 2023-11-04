@@ -39,19 +39,19 @@ import cn.hutool.core.util.ReUtil;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
-import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
-import top.charles7c.cnadmin.system.model.request.UserEmailUpdateRequest;
-import top.charles7c.cnadmin.system.model.request.UserPasswordUpdateRequest;
-import top.charles7c.cnadmin.system.model.request.UserPhoneUpdateRequest;
-import top.charles7c.cnadmin.system.model.vo.AvatarVO;
-import top.charles7c.cnadmin.system.model.vo.UserSocialBindVO;
+import top.charles7c.cnadmin.system.model.req.UserBasicInfoUpdateReq;
+import top.charles7c.cnadmin.system.model.req.UserEmailUpdateRequest;
+import top.charles7c.cnadmin.system.model.req.UserPasswordUpdateReq;
+import top.charles7c.cnadmin.system.model.req.UserPhoneUpdateReq;
+import top.charles7c.cnadmin.system.model.resp.AvatarResp;
+import top.charles7c.cnadmin.system.model.resp.UserSocialBindResp;
 import top.charles7c.cnadmin.system.service.UserService;
 import top.charles7c.cnadmin.system.service.UserSocialService;
 
@@ -79,27 +79,27 @@ public class UserCenterController {
 
     @Operation(summary = "上传头像", description = "用户上传个人头像")
     @PostMapping("/avatar")
-    public R<AvatarVO> uploadAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) {
+    public R<AvatarResp> uploadAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) {
         ValidationUtils.throwIf(avatarFile::isEmpty, "头像不能为空");
         String newAvatar = userService.uploadAvatar(avatarFile, LoginHelper.getUserId());
-        return R.ok("上传成功", AvatarVO.builder().avatar(newAvatar).build());
+        return R.ok("上传成功", AvatarResp.builder().avatar(newAvatar).build());
     }
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateRequest updateRequest) {
-        userService.updateBasicInfo(updateRequest, LoginHelper.getUserId());
+    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq updateReq) {
+        userService.updateBasicInfo(updateReq, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
-    public R updatePassword(@Validated @RequestBody UserPasswordUpdateRequest updateRequest) {
+    public R updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
         String rawOldPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getOldPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getOldPassword()));
         ValidationUtils.throwIfNull(rawOldPassword, "当前密码解密失败");
         String rawNewPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getNewPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
         ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
             "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
@@ -109,41 +109,41 @@ public class UserCenterController {
 
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
-    public R updatePhone(@Validated @RequestBody UserPhoneUpdateRequest updateRequest) {
+    public R updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
         String rawCurrentPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getCurrentPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateRequest.getNewPhone());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        ValidationUtils.throwIfNotEqualIgnoreCase(updateRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
-        userService.updatePhone(updateRequest.getNewPhone(), rawCurrentPassword, LoginHelper.getUserId());
+        userService.updatePhone(updateReq.getNewPhone(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
-    public R updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateRequest) {
+    public R updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
         String rawCurrentPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateRequest.getCurrentPassword()));
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateRequest.getNewEmail());
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        ValidationUtils.throwIfNotEqualIgnoreCase(updateRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
-        userService.updateEmail(updateRequest.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
+        userService.updateEmail(updateReq.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "查询绑定的三方账号", description = "查询绑定的三方账号")
     @GetMapping("/social")
-    public List<UserSocialBindVO> listSocialBind() {
+    public List<UserSocialBindResp> listSocialBind() {
         List<UserSocialDO> userSocialList = userSocialService.listByUserId(LoginHelper.getUserId());
         return userSocialList.stream().map(userSocial -> {
             String source = userSocial.getSource();
-            UserSocialBindVO userSocialBind = new UserSocialBindVO();
+            UserSocialBindResp userSocialBind = new UserSocialBindResp();
             userSocialBind.setSource(source);
             userSocialBind.setDescription(SocialSourceEnum.valueOf(source).getDescription());
             return userSocialBind;

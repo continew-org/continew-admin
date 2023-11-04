@@ -31,8 +31,8 @@ import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageUserMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageUserDO;
-import top.charles7c.cnadmin.system.model.vo.MessageTypeUnreadVO;
-import top.charles7c.cnadmin.system.model.vo.MessageUnreadVO;
+import top.charles7c.cnadmin.system.model.resp.MessageTypeUnreadResp;
+import top.charles7c.cnadmin.system.model.resp.MessageUnreadResp;
 import top.charles7c.cnadmin.system.service.MessageUserService;
 
 /**
@@ -48,17 +48,17 @@ public class MessageUserServiceImpl implements MessageUserService {
     private final MessageUserMapper baseMapper;
 
     @Override
-    public MessageUnreadVO countUnreadMessageByUserId(Long userId, Boolean isDetail) {
-        MessageUnreadVO result = new MessageUnreadVO();
+    public MessageUnreadResp countUnreadMessageByUserId(Long userId, Boolean isDetail) {
+        MessageUnreadResp result = new MessageUnreadResp();
         Long total = 0L;
         if (Boolean.TRUE.equals(isDetail)) {
-            List<MessageTypeUnreadVO> detailList = new ArrayList<>();
+            List<MessageTypeUnreadResp> detailList = new ArrayList<>();
             for (MessageTypeEnum messageType : MessageTypeEnum.values()) {
-                MessageTypeUnreadVO vo = new MessageTypeUnreadVO();
-                vo.setType(messageType);
+                MessageTypeUnreadResp resp = new MessageTypeUnreadResp();
+                resp.setType(messageType);
                 Long count = baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
-                vo.setCount(count);
-                detailList.add(vo);
+                resp.setCount(count);
+                detailList.add(resp);
                 total += count;
             }
             result.setDetails(detailList);

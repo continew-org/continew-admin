@@ -34,8 +34,8 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictMapper;
 import top.charles7c.cnadmin.system.model.entity.DictDO;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
-import top.charles7c.cnadmin.system.model.request.DictRequest;
-import top.charles7c.cnadmin.system.model.vo.*;
+import top.charles7c.cnadmin.system.model.req.DictReq;
+import top.charles7c.cnadmin.system.model.resp.*;
 import top.charles7c.cnadmin.system.service.DictItemService;
 import top.charles7c.cnadmin.system.service.DictService;
 
@@ -47,34 +47,33 @@ import top.charles7c.cnadmin.system.service.DictService;
  */
 @Service
 @RequiredArgsConstructor
-public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO, DictDetailVO, DictQuery, DictRequest>
+public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictDetailResp, DictQuery, DictReq>
     implements DictService {
 
     private final DictItemService dictItemService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(DictRequest request) {
-        String name = request.getName();
+    public Long add(DictReq req) {
+        String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
-        String code = request.getCode();
+        String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
-        return super.add(request);
+        return super.add(req);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(DictRequest request, Long id) {
-        String name = request.getName();
+    public void update(DictReq req, Long id) {
+        String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
-        String code = request.getCode();
+        String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DictDO oldDict = super.getById(id);
         if (oldDict.getIsSystem()) {
-            CheckUtils.throwIfNotEqual(request.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码",
-                oldDict.getName());
+            CheckUtils.throwIfNotEqual(req.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码", oldDict.getName());
         }
-        super.update(request, id);
+        super.update(req, id);
     }
 
     @Override
@@ -91,17 +90,17 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictVO,
 
     @Override
     public void export(DictQuery query, SortQuery sortQuery, HttpServletResponse response) {
-        List<DictVO> dictList = this.list(query, sortQuery);
-        List<DictItemDetailVO> dictItemList = new ArrayList<>();
-        for (DictVO dict : dictList) {
-            List<DictItemDetailVO> tempDictItemList = dictItemService.listByDictId(dict.getId());
-            for (DictItemDetailVO dictItem : tempDictItemList) {
+        List<DictResp> dictList = this.list(query, sortQuery);
+        List<DictItemDetailResp> dictItemList = new ArrayList<>();
+        for (DictResp dict : dictList) {
+            List<DictItemDetailResp> tempDictItemList = dictItemService.listByDictId(dict.getId());
+            for (DictItemDetailResp dictItem : tempDictItemList) {
                 dictItem.setDictName(dict.getName());
                 dictItem.setDictCode(dict.getCode());
                 dictItemList.add(dictItem);
             }
         }
-        ExcelUtils.export(dictItemList, "导出数据", DictItemDetailVO.class, response);
+        ExcelUtils.export(dictItemList, "导出数据", DictItemDetailResp.class, response);
     }
 
     /**

@@ -24,12 +24,12 @@ import cn.hutool.core.lang.tree.Tree;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 
 /**
  * 业务接口基类
  *
- * @param <V>
+ * @param <L>
  *            列表信息
  * @param <D>
  *            详情信息
@@ -40,7 +40,7 @@ import top.charles7c.cnadmin.common.model.vo.PageDataVO;
  * @author Charles7c
  * @since 2023/1/26 16:54
  */
-public interface BaseService<V, D, Q, C extends BaseRequest> {
+public interface BaseService<L, D, Q, C extends BaseReq> {
 
     /**
      * 分页查询列表
@@ -51,7 +51,7 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *            分页查询条件
      * @return 分页列表信息
      */
-    PageDataVO<V> page(Q query, PageQuery pageQuery);
+    PageDataResp<L> page(Q query, PageQuery pageQuery);
 
     /**
      * 查询树列表
@@ -75,7 +75,7 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
      *            排序查询条件
      * @return 列表信息
      */
-    List<V> list(Q query, SortQuery sortQuery);
+    List<L> list(Q query, SortQuery sortQuery);
 
     /**
      * 查看详情
@@ -89,21 +89,21 @@ public interface BaseService<V, D, Q, C extends BaseRequest> {
     /**
      * 新增
      *
-     * @param request
+     * @param req
      *            创建信息
      * @return 自增 ID
      */
-    Long add(C request);
+    Long add(C req);
 
     /**
      * 修改
      *
-     * @param request
+     * @param req
      *            修改信息
      * @param id
      *            ID
      */
-    void update(C request, Long id);
+    void update(C req, Long id);
 
     /**
      * 删除

@@ -50,8 +50,8 @@ import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
-import top.charles7c.cnadmin.common.model.vo.CaptchaVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.CaptchaResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.MailUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.TemplateUtils;
@@ -76,7 +76,7 @@ public class CaptchaController {
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
-    public CaptchaVO getImageCaptcha() {
+    public CaptchaResp getImageCaptcha() {
         // 生成验证码
         CaptchaProperties.CaptchaImage captchaImage = captchaProperties.getImage();
         Captcha captcha = captchaImage.getCaptcha();
@@ -85,7 +85,7 @@ public class CaptchaController {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.setCacheObject(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
-        return CaptchaVO.builder().uuid(uuid).img(captcha.toBase64()).build();
+        return CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build();
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")

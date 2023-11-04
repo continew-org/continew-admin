@@ -29,13 +29,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
-import top.charles7c.cnadmin.system.model.vo.MessageUnreadVO;
-import top.charles7c.cnadmin.system.model.vo.MessageVO;
+import top.charles7c.cnadmin.system.model.resp.MessageResp;
+import top.charles7c.cnadmin.system.model.resp.MessageUnreadResp;
 import top.charles7c.cnadmin.system.service.MessageService;
 import top.charles7c.cnadmin.system.service.MessageUserService;
 
@@ -56,7 +56,7 @@ public class MessageController {
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @GetMapping
-    public PageDataVO<MessageVO> page(MessageQuery query, @Validated PageQuery pageQuery) {
+    public PageDataResp<MessageResp> page(MessageQuery query, @Validated PageQuery pageQuery) {
         query.setUserId(LoginHelper.getUserId());
         return baseService.page(query, pageQuery);
     }
@@ -69,7 +69,7 @@ public class MessageController {
         return R.ok("删除成功");
     }
 
-    @Operation(description = "标记已读", summary = "将消息标记为已读状态")
+    @Operation(summary = "标记已读", description = "将消息标记为已读状态")
     @Parameter(name = "ids", description = "消息ID列表", example = "1,2", in = ParameterIn.QUERY)
     @PatchMapping("/read")
     public void readMessage(@RequestParam(required = false) List<Long> ids) {
@@ -77,10 +77,10 @@ public class MessageController {
     }
 
     @Log(ignore = true)
-    @Operation(description = "查询未读消息数量", summary = "查询当前用户的未读消息数量")
+    @Operation(summary = "查询未读消息数量", description = "查询当前用户的未读消息数量")
     @Parameter(name = "isDetail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
     @GetMapping("/unread")
-    public MessageUnreadVO countUnreadMessage(@RequestParam(required = false) Boolean detail) {
+    public MessageUnreadResp countUnreadMessage(@RequestParam(required = false) Boolean detail) {
         return messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail);
     }
 }

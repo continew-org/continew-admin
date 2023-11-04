@@ -41,15 +41,15 @@ import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 
 /**
  * 控制器基类
  *
  * @param <S>
  *            业务接口
- * @param <V>
+ * @param <L>
  *            列表信息
  * @param <D>
  *            详情信息
@@ -61,7 +61,7 @@ import top.charles7c.cnadmin.common.model.vo.R;
  * @since 2023/1/26 10:45
  */
 @NoArgsConstructor
-public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q, C extends BaseRequest> {
+public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C extends BaseReq> {
 
     @Autowired
     protected S baseService;
@@ -78,7 +78,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @ResponseBody
     @GetMapping
-    public PageDataVO<V> page(Q query, @Validated PageQuery pageQuery) {
+    public PageDataResp<L> page(Q query, @Validated PageQuery pageQuery) {
         this.checkPermission(Api.LIST);
         return baseService.page(query, pageQuery);
     }
@@ -112,7 +112,7 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Operation(summary = "查询列表", description = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    public List<V> list(Q query, SortQuery sortQuery) {
+    public List<L> list(Q query, SortQuery sortQuery) {
         this.checkPermission(Api.LIST);
         return baseService.list(query, sortQuery);
     }
@@ -136,23 +136,23 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     /**
      * 新增
      *
-     * @param request
+     * @param req
      *            创建信息
      * @return 自增 ID
      */
     @Operation(summary = "新增数据", description = "新增数据")
     @ResponseBody
     @PostMapping
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody C request) {
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody C req) {
         this.checkPermission(Api.ADD);
-        Long id = baseService.add(request);
+        Long id = baseService.add(req);
         return R.ok("新增成功", id);
     }
 
     /**
      * 修改
      *
-     * @param request
+     * @param req
      *            修改信息
      * @param id
      *            ID
@@ -162,9 +162,9 @@ public abstract class BaseController<S extends BaseService<V, D, Q, C>, V, D, Q,
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @PutMapping("/{id}")
-    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody C request, @PathVariable Long id) {
+    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody C req, @PathVariable Long id) {
         this.checkPermission(Api.UPDATE);
-        baseService.update(request, id);
+        baseService.update(req, id);
         return R.ok("修改成功");
     }
 

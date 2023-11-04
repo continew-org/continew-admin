@@ -31,7 +31,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
@@ -39,8 +39,8 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageDO;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
-import top.charles7c.cnadmin.system.model.request.MessageRequest;
-import top.charles7c.cnadmin.system.model.vo.MessageVO;
+import top.charles7c.cnadmin.system.model.req.MessageReq;
+import top.charles7c.cnadmin.system.model.resp.MessageResp;
 import top.charles7c.cnadmin.system.service.MessageService;
 import top.charles7c.cnadmin.system.service.MessageUserService;
 
@@ -58,19 +58,19 @@ public class MessageServiceImpl implements MessageService {
     private final MessageUserService messageUserService;
 
     @Override
-    public PageDataVO<MessageVO> page(MessageQuery query, PageQuery pageQuery) {
+    public PageDataResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
             .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
-        IPage<MessageVO> page = baseMapper.selectVoPage(pageQuery.toPage(), queryWrapper);
+        IPage<MessageResp> page = baseMapper.selectPageByUserId(pageQuery.toPage(), queryWrapper);
         page.getRecords().forEach(this::fill);
-        return PageDataVO.build(page);
+        return PageDataResp.build(page);
     }
 
     @Override
-    public void add(MessageRequest request, List<Long> userIdList) {
+    public void add(MessageReq req, List<Long> userIdList) {
         CheckUtils.throwIf(() -> CollUtil.isEmpty(userIdList), "消息接收人不能为空");
-        MessageDO message = BeanUtil.copyProperties(request, MessageDO.class);
+        MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
         baseMapper.insert(message);
         messageUserService.add(message.getId(), userIdList);
     }
@@ -88,7 +88,7 @@ public class MessageServiceImpl implements MessageService {
      * @param message
      *            待填充信息
      */
-    private void fill(MessageVO message) {
+    private void fill(MessageResp message) {
         Long createUser = message.getCreateUser();
         if (null == createUser) {
             return;

@@ -30,12 +30,12 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
-import top.charles7c.cnadmin.system.model.request.AnnouncementRequest;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDetailVO;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementVO;
+import top.charles7c.cnadmin.system.model.req.AnnouncementReq;
+import top.charles7c.cnadmin.system.model.resp.AnnouncementDetailResp;
+import top.charles7c.cnadmin.system.model.resp.AnnouncementResp;
 import top.charles7c.cnadmin.system.service.AnnouncementService;
 
 /**
@@ -49,32 +49,32 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
 @CrudRequestMapping(value = "/system/announcement",
     api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class AnnouncementController extends
-    BaseController<AnnouncementService, AnnouncementVO, AnnouncementDetailVO, AnnouncementQuery, AnnouncementRequest> {
+    BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 
     @Override
     @SaCheckPermission("system:announcement:add")
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody AnnouncementRequest request) {
-        this.checkTime(request);
-        return super.add(request);
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody AnnouncementReq req) {
+        this.checkTime(req);
+        return super.add(req);
     }
 
     @Override
     @SaCheckPermission("system:announcement:update")
-    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementRequest request,
+    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementReq req,
         @PathVariable Long id) {
-        this.checkTime(request);
-        return super.update(request, id);
+        this.checkTime(req);
+        return super.update(req, id);
     }
 
     /**
      * 检查时间
      *
-     * @param request
+     * @param req
      *            创建或修改信息
      */
-    private void checkTime(AnnouncementRequest request) {
-        LocalDateTime effectiveTime = request.getEffectiveTime();
-        LocalDateTime terminateTime = request.getTerminateTime();
+    private void checkTime(AnnouncementReq req) {
+        LocalDateTime effectiveTime = req.getEffectiveTime();
+        LocalDateTime terminateTime = req.getTerminateTime();
         if (null != effectiveTime && null != terminateTime) {
             ValidationUtils.throwIf(terminateTime.isBefore(effectiveTime), "终止时间必须晚于生效时间");
         }

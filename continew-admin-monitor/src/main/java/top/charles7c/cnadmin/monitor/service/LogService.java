@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.*;
+import top.charles7c.cnadmin.monitor.model.resp.*;
 
 /**
  * 系统日志业务接口
@@ -43,7 +43,7 @@ public interface LogService {
      *            分页查询条件
      * @return 操作日志分页信息
      */
-    PageDataVO<OperationLogVO> page(OperationLogQuery query, PageQuery pageQuery);
+    PageDataResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询登录日志列表
@@ -54,7 +54,7 @@ public interface LogService {
      *            分页查询条件
      * @return 登录日志分页信息
      */
-    PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery);
+    PageDataResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询系统日志列表
@@ -65,7 +65,7 @@ public interface LogService {
      *            分页查询条件
      * @return 系统日志分页信息
      */
-    PageDataVO<SystemLogVO> page(SystemLogQuery query, PageQuery pageQuery);
+    PageDataResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery);
 
     /**
      * 查看系统日志详情
@@ -74,28 +74,28 @@ public interface LogService {
      *            日志 ID
      * @return 系统日志详情
      */
-    SystemLogDetailVO get(Long logId);
+    SystemLogDetailResp get(Long logId);
 
     /**
      * 查询仪表盘总计信息
      * 
      * @return 仪表盘总计信息
      */
-    DashboardTotalVO getDashboardTotal();
+    DashboardTotalResp getDashboardTotal();
 
     /**
      * 查询仪表盘访问趋势信息
      *
      * @return 仪表盘访问趋势信息
      */
-    List<DashboardAccessTrendVO> listDashboardAccessTrend(Integer days);
+    List<DashboardAccessTrendResp> listDashboardAccessTrend(Integer days);
 
     /**
      * 查询仪表盘热门模块列表
      *
      * @return 仪表盘热门模块列表
      */
-    List<DashboardPopularModuleVO> listDashboardPopularModule();
+    List<DashboardPopularModuleResp> listDashboardPopularModule();
 
     /**
      * 查询仪表盘访客地域分布信息

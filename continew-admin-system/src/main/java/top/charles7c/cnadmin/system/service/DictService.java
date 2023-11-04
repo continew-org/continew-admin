@@ -18,9 +18,9 @@ package top.charles7c.cnadmin.system.service;
 
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
-import top.charles7c.cnadmin.system.model.request.DictRequest;
-import top.charles7c.cnadmin.system.model.vo.DictDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DictVO;
+import top.charles7c.cnadmin.system.model.req.DictReq;
+import top.charles7c.cnadmin.system.model.resp.DictDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DictResp;
 
 /**
  * 字典业务接口
@@ -28,4 +28,4 @@ import top.charles7c.cnadmin.system.model.vo.DictVO;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictService extends BaseService<DictVO, DictDetailVO, DictQuery, DictRequest> {}
+public interface DictService extends BaseService<DictResp, DictDetailResp, DictQuery, DictReq> {}

@@ -50,11 +50,11 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
-import top.charles7c.cnadmin.auth.model.request.AccountLoginRequest;
+import top.charles7c.cnadmin.auth.model.req.AccountLoginReq;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
@@ -225,9 +225,9 @@ public class LogInterceptor implements HandlerInterceptor {
             logDO.setCreateUser(null);
         }
         if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(requestURI)) {
-            AccountLoginRequest loginRequest = JSONUtil.toBean(requestBody, AccountLoginRequest.class);
+            AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
             logDO.setCreateUser(
-                ExceptionUtils.exToNull(() -> userService.getByUsername(loginRequest.getUsername()).getId()));
+                ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername()).getId()));
         }
         if (StrUtil.isNotBlank(requestBody)) {
             if (JSONUtil.isTypeJSONObject(requestBody)) {

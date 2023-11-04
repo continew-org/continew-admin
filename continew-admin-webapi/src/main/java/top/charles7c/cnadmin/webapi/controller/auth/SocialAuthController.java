@@ -30,10 +30,10 @@ import com.xkcoding.justauth.AuthRequestFactory;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 
-import top.charles7c.cnadmin.auth.model.vo.LoginVO;
+import top.charles7c.cnadmin.auth.model.resp.LoginResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.exception.BadRequestException;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 
@@ -71,7 +71,7 @@ public class SocialAuthController {
     @Operation(summary = "三方账号登录", description = "三方账号登录")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/{source}")
-    public LoginVO login(@PathVariable String source, @RequestBody AuthCallback callback) {
+    public LoginResp login(@PathVariable String source, @RequestBody AuthCallback callback) {
         if (StpUtil.isLogin()) {
             StpUtil.logout();
         }
@@ -80,7 +80,7 @@ public class SocialAuthController {
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
         AuthUser authUser = response.getData();
         String token = loginService.socialLogin(authUser);
-        return LoginVO.builder().token(token).build();
+        return LoginResp.builder().token(token).build();
     }
 
     private AuthRequest getAuthRequest(String source) {

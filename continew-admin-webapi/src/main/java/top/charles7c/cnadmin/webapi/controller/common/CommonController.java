@@ -47,8 +47,8 @@ import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.FileUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
@@ -57,7 +57,7 @@ import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
-import top.charles7c.cnadmin.system.model.vo.RoleVO;
+import top.charles7c.cnadmin.system.model.resp.RoleResp;
 import top.charles7c.cnadmin.system.service.*;
 
 /**
@@ -109,8 +109,8 @@ public class CommonController {
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public List<LabelValueVO<Long>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
-        List<RoleVO> list = roleService.list(query, sortQuery);
+    public List<LabelValueResp<Long>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
+        List<RoleResp> list = roleService.list(query, sortQuery);
         return roleService.buildDict(list);
     }
 
@@ -118,7 +118,7 @@ public class CommonController {
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
     @Cacheable(key = "#code", cacheNames = CacheConsts.DICT_KEY_PREFIX)
-    public List<LabelValueVO> listDict(@PathVariable String code) {
+    public List<LabelValueResp> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);
         return enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code));
     }
@@ -127,8 +127,8 @@ public class CommonController {
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
     @Cacheable(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
-    public List<LabelValueVO> listOption(@Validated OptionQuery query) {
-        return optionService.list(query).stream().map(option -> new LabelValueVO(option.getCode(),
+    public List<LabelValueResp> listOption(@Validated OptionQuery query) {
+        return optionService.list(query).stream().map(option -> new LabelValueResp(option.getCode(),
             StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList());
     }
 
@@ -154,11 +154,11 @@ public class CommonController {
      *            枚举类型
      * @return 枚举字典
      */
-    private List<LabelValueVO> listEnumDict(Class<?> enumClass) {
+    private List<LabelValueResp> listEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
         return Arrays.stream(enumConstants).map(e -> {
             IBaseEnum<Integer> baseEnum = (IBaseEnum<Integer>)e;
-            return new LabelValueVO<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
+            return new LabelValueResp<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
         }).collect(Collectors.toList());
     }
 }

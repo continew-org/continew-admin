@@ -42,7 +42,7 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.exception.ServiceException;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.StreamUtils;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;

@@ -33,12 +33,12 @@ import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.constant.SysConsts;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UserRequest;
-import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
-import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
-import top.charles7c.cnadmin.system.model.vo.UserVO;
+import top.charles7c.cnadmin.system.model.req.UserReq;
+import top.charles7c.cnadmin.system.model.req.UserRoleUpdateReq;
+import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
+import top.charles7c.cnadmin.system.model.resp.UserResp;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -51,12 +51,12 @@ import top.charles7c.cnadmin.system.service.UserService;
 @Validated
 @RestController
 @CrudRequestMapping("/system/user")
-public class UserController extends BaseController<UserService, UserVO, UserDetailVO, UserQuery, UserRequest> {
+public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     @Override
     @SaCheckPermission("system:user:add")
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserRequest request) {
-        Long id = baseService.add(request);
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
+        Long id = baseService.add(req);
         return R.ok(String.format("新增成功，请牢记默认密码：%s", SysConsts.DEFAULT_PASSWORD), id);
     }
 
@@ -73,8 +73,8 @@ public class UserController extends BaseController<UserService, UserVO, UserDeta
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:role:update")
     @PatchMapping("/{id}/role")
-    public R updateRole(@Validated @RequestBody UserRoleUpdateRequest updateRequest, @PathVariable Long id) {
-        baseService.updateRole(updateRequest, id);
+    public R updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
+        baseService.updateRole(updateReq, id);
         return R.ok("分配成功");
     }
 }

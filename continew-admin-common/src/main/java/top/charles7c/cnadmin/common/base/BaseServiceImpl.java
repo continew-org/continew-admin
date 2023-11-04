@@ -44,7 +44,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExcelUtils;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
@@ -60,7 +60,7 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
  *            Mapper 接口
  * @param <T>
  *            实体类
- * @param <V>
+ * @param <L>
  *            列表信息
  * @param <D>
  *            详情信息
@@ -71,41 +71,41 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
  * @author Charles7c
  * @since 2023/1/26 21:52
  */
-public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO, V, D, Q, C extends BaseRequest>
-    implements BaseService<V, D, Q, C> {
+public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO, L, D, Q, C extends BaseReq>
+    implements BaseService<L, D, Q, C> {
 
     @Autowired
     protected M baseMapper;
 
     private final Class<T> entityClass;
-    private final Class<V> voClass;
-    private final Class<D> detailVoClass;
+    private final Class<L> listClass;
+    private final Class<D> detailClass;
 
     protected BaseServiceImpl() {
         this.entityClass = (Class<T>)ClassUtil.getTypeArgument(this.getClass(), 1);
-        this.voClass = (Class<V>)ClassUtil.getTypeArgument(this.getClass(), 2);
-        this.detailVoClass = (Class<D>)ClassUtil.getTypeArgument(this.getClass(), 3);
+        this.listClass = (Class<L>)ClassUtil.getTypeArgument(this.getClass(), 2);
+        this.detailClass = (Class<D>)ClassUtil.getTypeArgument(this.getClass(), 3);
     }
 
     @Override
-    public PageDataVO<V> page(Q query, PageQuery pageQuery) {
+    public PageDataResp<L> page(Q query, PageQuery pageQuery) {
         QueryWrapper<T> queryWrapper = QueryHelper.build(query);
         IPage<T> page = baseMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataVO<V> pageDataVO = PageDataVO.build(page, voClass);
-        pageDataVO.getList().forEach(this::fill);
-        return pageDataVO;
+        PageDataResp<L> pageDataResp = PageDataResp.build(page, listClass);
+        pageDataResp.getList().forEach(this::fill);
+        return pageDataResp;
     }
 
     @Override
     public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple) {
-        List<V> list = this.list(query, sortQuery);
+        List<L> list = this.list(query, sortQuery);
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>(0);
         }
 
         // 如果构建简单树结构，则不包含基本树结构之外的扩展字段
         TreeNodeConfig treeNodeConfig = TreeUtils.DEFAULT_CONFIG;
-        TreeField treeField = voClass.getDeclaredAnnotation(TreeField.class);
+        TreeField treeField = listClass.getDeclaredAnnotation(TreeField.class);
         if (!isSimple) {
             // 根据 @TreeField 配置生成树结构配置
             treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
@@ -119,7 +119,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
             tree.setName(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.nameKey())));
             tree.setWeight(ReflectUtil.invoke(node, StrUtil.genGetter(treeField.weightKey())));
             if (!isSimple) {
-                List<Field> fieldList = ReflectUtils.getNonStaticFields(voClass);
+                List<Field> fieldList = ReflectUtils.getNonStaticFields(listClass);
                 fieldList.removeIf(f -> StrUtil.containsAnyIgnoreCase(f.getName(), treeField.value(),
                     treeField.parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
                 fieldList
@@ -129,8 +129,8 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     }
 
     @Override
-    public List<V> list(Q query, SortQuery sortQuery) {
-        List<V> list = this.list(query, sortQuery, voClass);
+    public List<L> list(Q query, SortQuery sortQuery) {
+        List<L> list = this.list(query, sortQuery, listClass);
         list.forEach(this::fill);
         return list;
     }
@@ -174,27 +174,27 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     @Override
     public D get(Long id) {
         T entity = this.getById(id);
-        D detailVO = BeanUtil.copyProperties(entity, detailVoClass);
-        this.fillDetail(detailVO);
-        return detailVO;
+        D detail = BeanUtil.copyProperties(entity, detailClass);
+        this.fillDetail(detail);
+        return detail;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(C request) {
-        if (null == request) {
+    public Long add(C req) {
+        if (null == req) {
             return 0L;
         }
-        T entity = BeanUtil.copyProperties(request, entityClass);
+        T entity = BeanUtil.copyProperties(req, entityClass);
         baseMapper.insert(entity);
         return entity.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(C request, Long id) {
+    public void update(C req, Long id) {
         T entity = this.getById(id);
-        BeanUtil.copyProperties(request, entity, CopyOptions.create().ignoreNullValue());
+        BeanUtil.copyProperties(req, entity, CopyOptions.create().ignoreNullValue());
         baseMapper.updateById(entity);
     }
 
@@ -206,9 +206,9 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
 
     @Override
     public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
-        List<D> list = this.list(query, sortQuery, detailVoClass);
+        List<D> list = this.list(query, sortQuery, detailClass);
         list.forEach(this::fillDetail);
-        ExcelUtils.export(list, "导出数据", detailVoClass, response);
+        ExcelUtils.export(list, "导出数据", detailClass, response);
     }
 
     /**
@@ -231,14 +231,14 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充列表信息
      */
     protected void fill(Object baseObj) {
-        if (baseObj instanceof BaseVO) {
-            BaseVO baseVO = (BaseVO)baseObj;
-            Long createUser = baseVO.getCreateUser();
+        if (baseObj instanceof BaseResp) {
+            BaseResp baseResp = (BaseResp)baseObj;
+            Long createUser = baseResp.getCreateUser();
             if (null == createUser) {
                 return;
             }
             CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
-            baseVO.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(createUser)));
+            baseResp.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(createUser)));
         }
     }
 
@@ -249,16 +249,16 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充详情信息
      */
     public void fillDetail(Object detailObj) {
-        if (detailObj instanceof BaseDetailVO) {
-            BaseDetailVO detailVO = (BaseDetailVO)detailObj;
-            this.fill(detailVO);
+        if (detailObj instanceof BaseDetailResp) {
+            BaseDetailResp detail = (BaseDetailResp)detailObj;
+            this.fill(detail);
 
-            Long updateUser = detailVO.getUpdateUser();
+            Long updateUser = detail.getUpdateUser();
             if (null == updateUser) {
                 return;
             }
             CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
-            detailVO.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(updateUser)));
+            detail.setUpdateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(updateUser)));
         }
     }
 }

@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import ${packageName}.model.query.${classNamePrefix}Query;
-import ${packageName}.model.request.${classNamePrefix}Request;
-import ${packageName}.model.vo.${classNamePrefix}DetailVO;
-import ${packageName}.model.vo.${classNamePrefix}VO;
+import ${packageName}.model.req.${classNamePrefix}Req;
+import ${packageName}.model.resp.${classNamePrefix}DetailResp;
+import ${packageName}.model.resp.${classNamePrefix}Resp;
 import ${packageName}.service.${classNamePrefix}Service;
 
 /**
@@ -39,4 +39,4 @@ import ${packageName}.service.${classNamePrefix}Service;
 @Tag(name = "${businessName}管理 API")
 @RestController
 @CrudRequestMapping(value = "/${apiModuleName}/${apiName}", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class ${className} extends BaseController<${classNamePrefix}Service, ${classNamePrefix}VO, ${classNamePrefix}DetailVO, ${classNamePrefix}Query, ${classNamePrefix}Request> {}
+public class ${className} extends BaseController<${classNamePrefix}Service, ${classNamePrefix}Resp, ${classNamePrefix}DetailResp, ${classNamePrefix}Query, ${classNamePrefix}Req> {}

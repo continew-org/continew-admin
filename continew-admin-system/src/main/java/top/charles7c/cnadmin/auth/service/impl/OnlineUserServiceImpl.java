@@ -32,12 +32,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.auth.model.query.OnlineUserQuery;
-import top.charles7c.cnadmin.auth.model.vo.OnlineUserVO;
+import top.charles7c.cnadmin.auth.model.resp.OnlineUserResp;
 import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 
 /**
@@ -51,12 +51,12 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
-    public PageDataVO<OnlineUserVO> page(OnlineUserQuery query, PageQuery pageQuery) {
+    public PageDataResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
         List<LoginUser> loginUserList = this.list(query);
-        List<OnlineUserVO> list = BeanUtil.copyToList(loginUserList, OnlineUserVO.class);
-        PageDataVO<OnlineUserVO> pageDataVO = PageDataVO.build(pageQuery.getPage(), pageQuery.getSize(), list);
-        pageDataVO.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
-        return pageDataVO;
+        List<OnlineUserResp> list = BeanUtil.copyToList(loginUserList, OnlineUserResp.class);
+        PageDataResp<OnlineUserResp> pageDataResp = PageDataResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        pageDataResp.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
+        return pageDataResp;
     }
 
     @Override

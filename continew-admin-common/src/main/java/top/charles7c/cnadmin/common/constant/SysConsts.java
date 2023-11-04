@@ -64,7 +64,7 @@ public class SysConsts {
     public static final String LOGOUT_URI = "/auth/logout";
 
     /**
-     * VO 描述类字段后缀
+     * 描述类字段后缀
      */
-    public static final String VO_DESCRIPTION_FIELD_SUFFIX = "String";
+    public static final String DESCRIPTION_FIELD_SUFFIX = "String";
 }

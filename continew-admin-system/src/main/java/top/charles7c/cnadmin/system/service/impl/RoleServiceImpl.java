@@ -36,15 +36,15 @@ import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
-import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
+import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
-import top.charles7c.cnadmin.system.model.request.RoleRequest;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
-import top.charles7c.cnadmin.system.model.vo.RoleDetailVO;
-import top.charles7c.cnadmin.system.model.vo.RoleVO;
+import top.charles7c.cnadmin.system.model.req.RoleReq;
+import top.charles7c.cnadmin.system.model.resp.MenuResp;
+import top.charles7c.cnadmin.system.model.resp.RoleDetailResp;
+import top.charles7c.cnadmin.system.model.resp.RoleResp;
 import top.charles7c.cnadmin.system.service.*;
 
 /**
@@ -55,7 +55,7 @@ import top.charles7c.cnadmin.system.service.*;
  */
 @Service
 @RequiredArgsConstructor
-public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO, RoleDetailVO, RoleQuery, RoleRequest>
+public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq>
     implements RoleService {
 
     private final MenuService menuService;
@@ -66,51 +66,49 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(RoleRequest request) {
-        String name = request.getName();
+    public Long add(RoleReq req) {
+        String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
-        String code = request.getCode();
+        String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         // 新增信息
-        request.setStatus(DisEnableStatusEnum.ENABLE);
-        Long roleId = super.add(request);
+        req.setStatus(DisEnableStatusEnum.ENABLE);
+        Long roleId = super.add(req);
         // 保存角色和菜单关联
-        roleMenuService.save(request.getMenuIds(), roleId);
+        roleMenuService.save(req.getMenuIds(), roleId);
         // 保存角色和部门关联
-        roleDeptService.save(request.getDeptIds(), roleId);
+        roleDeptService.save(req.getDeptIds(), roleId);
         return roleId;
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheConsts.MENU_KEY_PREFIX, key = "#request.code == 'admin' ? 'ALL' : #request.code")
+    @CacheEvict(cacheNames = CacheConsts.MENU_KEY_PREFIX, key = "#req.code == 'admin' ? 'ALL' : #req.code")
     @Transactional(rollbackFor = Exception.class)
-    public void update(RoleRequest request, Long id) {
-        String name = request.getName();
+    public void update(RoleReq req, Long id) {
+        String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
-        String code = request.getCode();
+        String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         RoleDO oldRole = super.getById(id);
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         String oldCode = oldRole.getCode();
         if (oldRole.getIsSystem()) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, request.getStatus(), "[{}] 是系统内置角色，不允许禁用",
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用",
                 oldRole.getName());
-            CheckUtils.throwIfNotEqual(request.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
-            CheckUtils.throwIfNotEqual(request.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
-                oldRole.getName());
+            CheckUtils.throwIfNotEqual(req.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
+            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限", oldRole.getName());
         }
         // 更新信息
-        super.update(request, id);
+        super.update(req, id);
         // 更新关联信息
         if (!SysConsts.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
             // 保存角色和菜单关联
-            boolean isSaveMenuSuccess = roleMenuService.save(request.getMenuIds(), id);
+            boolean isSaveMenuSuccess = roleMenuService.save(req.getMenuIds(), id);
             // 保存角色和部门关联
-            boolean isSaveDeptSuccess = roleDeptService.save(request.getDeptIds(), id);
+            boolean isSaveDeptSuccess = roleDeptService.save(req.getDeptIds(), id);
             // 如果角色编码、功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
-            if (ObjectUtil.notEqual(request.getCode(), oldCode)
-                || ObjectUtil.notEqual(request.getDataScope(), oldDataScope) || isSaveMenuSuccess
-                || isSaveDeptSuccess) {
+            if (ObjectUtil.notEqual(req.getCode(), oldCode) || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)
+                || isSaveMenuSuccess || isSaveDeptSuccess) {
                 onlineUserService.cleanByRoleId(id);
             }
         }
@@ -136,12 +134,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof RoleDetailVO) {
-            RoleDetailVO detailVO = (RoleDetailVO)detailObj;
+        if (detailObj instanceof RoleDetailResp) {
+            RoleDetailResp detailVO = (RoleDetailResp)detailObj;
             Long roleId = detailVO.getId();
             if (SysConsts.ADMIN_ROLE_CODE.equals(detailVO.getCode())) {
-                List<MenuVO> list = menuService.list(null, null);
-                List<Long> menuIds = list.stream().map(MenuVO::getId).collect(Collectors.toList());
+                List<MenuResp> list = menuService.list(null, null);
+                List<Long> menuIds = list.stream().map(MenuResp::getId).collect(Collectors.toList());
                 detailVO.setMenuIds(menuIds);
             } else {
                 detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
@@ -151,11 +149,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleVO,
     }
 
     @Override
-    public List<LabelValueVO<Long>> buildDict(List<RoleVO> list) {
+    public List<LabelValueResp<Long>> buildDict(List<RoleResp> list) {
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>(0);
         }
-        return list.stream().map(r -> new LabelValueVO<>(r.getName(), r.getId())).collect(Collectors.toList());
+        return list.stream().map(r -> new LabelValueResp<>(r.getName(), r.getId())).collect(Collectors.toList());
     }
 
     @Override

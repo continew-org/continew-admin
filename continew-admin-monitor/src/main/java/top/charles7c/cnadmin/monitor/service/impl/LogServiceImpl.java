@@ -35,7 +35,7 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.ReflectUtils;
@@ -46,7 +46,7 @@ import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.*;
+import top.charles7c.cnadmin.monitor.model.resp.*;
 import top.charles7c.cnadmin.monitor.service.LogService;
 
 /**
@@ -70,93 +70,93 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public PageDataVO<OperationLogVO> page(OperationLogQuery query, PageQuery pageQuery) {
+    public PageDataResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogVO.class);
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataVO<OperationLogVO> pageDataVO = PageDataVO.build(page, OperationLogVO.class);
+        PageDataResp<OperationLogResp> pageDataResp = PageDataResp.build(page, OperationLogResp.class);
 
         // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
         if (null != query.getUid()) {
             String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
-            pageDataVO.getList().forEach(o -> o.setCreateUserString(nickname));
+            pageDataResp.getList().forEach(o -> o.setCreateUserString(nickname));
         } else {
-            pageDataVO.getList().forEach(this::fill);
+            pageDataResp.getList().forEach(this::fill);
         }
-        return pageDataVO;
+        return pageDataResp;
     }
 
     @Override
-    public PageDataVO<LoginLogVO> page(LoginLogQuery query, PageQuery pageQuery) {
+    public PageDataResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.eq("module", "登录");
 
         // 限定查询信息
-        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogVO.class);
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataVO<LoginLogVO> pageDataVO = PageDataVO.build(page, LoginLogVO.class);
+        PageDataResp<LoginLogResp> pageDataResp = PageDataResp.build(page, LoginLogResp.class);
 
         // 填充数据
-        pageDataVO.getList().forEach(this::fill);
-        return pageDataVO;
+        pageDataResp.getList().forEach(this::fill);
+        return pageDataResp;
     }
 
     @Override
-    public PageDataVO<SystemLogVO> page(SystemLogQuery query, PageQuery pageQuery) {
+    public PageDataResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
 
         // 限定查询信息
-        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogVO.class);
+        List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.VO_DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataVO<SystemLogVO> pageDataVO = PageDataVO.build(page, SystemLogVO.class);
+        PageDataResp<SystemLogResp> pageDataResp = PageDataResp.build(page, SystemLogResp.class);
 
         // 填充数据
-        pageDataVO.getList().forEach(this::fill);
-        return pageDataVO;
+        pageDataResp.getList().forEach(this::fill);
+        return pageDataResp;
     }
 
     @Override
-    public SystemLogDetailVO get(Long id) {
+    public SystemLogDetailResp get(Long id) {
         LogDO logDO = logMapper.selectById(id);
         CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
 
-        SystemLogDetailVO detailVO = BeanUtil.copyProperties(logDO, SystemLogDetailVO.class);
+        SystemLogDetailResp detailVO = BeanUtil.copyProperties(logDO, SystemLogDetailResp.class);
         this.fill(detailVO);
         return detailVO;
     }
 
     @Override
-    public DashboardTotalVO getDashboardTotal() {
+    public DashboardTotalResp getDashboardTotal() {
         return logMapper.selectDashboardTotal();
     }
 
     @Override
-    public List<DashboardAccessTrendVO> listDashboardAccessTrend(Integer days) {
+    public List<DashboardAccessTrendResp> listDashboardAccessTrend(Integer days) {
         return logMapper.selectListDashboardAccessTrend(days);
     }
 
     @Override
-    public List<DashboardPopularModuleVO> listDashboardPopularModule() {
+    public List<DashboardPopularModuleResp> listDashboardPopularModule() {
         return logMapper.selectListDashboardPopularModule();
     }
 
@@ -168,14 +168,14 @@ public class LogServiceImpl implements LogService {
     /**
      * 填充数据
      *
-     * @param logVO
+     * @param logResp
      *            日志信息
      */
-    private void fill(LogVO logVO) {
-        Long createUser = logVO.getCreateUser();
+    private void fill(LogResp logResp) {
+        Long createUser = logResp.getCreateUser();
         if (null == createUser) {
             return;
         }
-        logVO.setCreateUserString(ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(createUser)));
+        logResp.setCreateUserString(ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(createUser)));
     }
 }

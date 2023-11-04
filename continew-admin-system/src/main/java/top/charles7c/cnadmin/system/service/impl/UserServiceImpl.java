@@ -52,11 +52,11 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserMapper;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
-import top.charles7c.cnadmin.system.model.request.UserBasicInfoUpdateRequest;
-import top.charles7c.cnadmin.system.model.request.UserRequest;
-import top.charles7c.cnadmin.system.model.request.UserRoleUpdateRequest;
-import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
-import top.charles7c.cnadmin.system.model.vo.UserVO;
+import top.charles7c.cnadmin.system.model.req.UserBasicInfoUpdateReq;
+import top.charles7c.cnadmin.system.model.req.UserReq;
+import top.charles7c.cnadmin.system.model.req.UserRoleUpdateReq;
+import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
+import top.charles7c.cnadmin.system.model.resp.UserResp;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.RoleService;
 import top.charles7c.cnadmin.system.service.UserRoleService;
@@ -71,7 +71,7 @@ import top.charles7c.cnadmin.system.service.UserService;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConsts.USER_KEY_PREFIX)
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO, UserDetailVO, UserQuery, UserRequest>
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq>
     implements UserService, CommonUserService {
 
     private final UserRoleService userRoleService;
@@ -89,34 +89,34 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long add(UserRequest request) {
-        String username = request.getUsername();
+    public Long add(UserReq req) {
+        String username = req.getUsername();
         CheckUtils.throwIf(this.isNameExists(username, null), "新增失败，[{}] 已存在", username);
-        String email = request.getEmail();
+        String email = req.getEmail();
         CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), "新增失败，[{}] 已存在", email);
-        String phone = request.getPhone();
+        String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
         // 新增信息
-        request.setStatus(DisEnableStatusEnum.ENABLE);
-        Long userId = super.add(request);
+        req.setStatus(DisEnableStatusEnum.ENABLE);
+        Long userId = super.add(req);
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, SecureUtils.md5Salt(SysConsts.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
-        userRoleService.save(request.getRoleIds(), userId);
+        userRoleService.save(req.getRoleIds(), userId);
         return userId;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(UserRequest request, Long id) {
-        String username = request.getUsername();
+    public void update(UserReq req, Long id) {
+        String username = req.getUsername();
         CheckUtils.throwIf(this.isNameExists(username, id), "修改失败，[{}] 已存在", username);
-        String email = request.getEmail();
+        String email = req.getEmail();
         CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, id), "修改失败，[{}] 已存在", email);
-        String phone = request.getPhone();
+        String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
-        DisEnableStatusEnum newStatus = request.getStatus();
+        DisEnableStatusEnum newStatus = req.getStatus();
         CheckUtils.throwIf(
             DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper.getUserId()),
             "不允许禁用当前用户");
@@ -125,13 +125,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用",
                 oldUser.getNickname());
             Collection<Long> disjunctionRoleIds =
-                CollUtil.disjunction(request.getRoleIds(), userRoleService.listRoleIdByUserId(id));
+                CollUtil.disjunction(req.getRoleIds(), userRoleService.listRoleIdByUserId(id));
             CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更所属角色", oldUser.getNickname());
         }
         // 更新信息
-        super.update(request, id);
+        super.update(req, id);
         // 保存用户和角色关联
-        userRoleService.save(request.getRoleIds(), id);
+        userRoleService.save(req.getRoleIds(), id);
     }
 
     @Override
@@ -152,8 +152,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof UserDetailVO) {
-            UserDetailVO detailVO = (UserDetailVO)detailObj;
+        if (detailObj instanceof UserDetailResp) {
+            UserDetailResp detailVO = (UserDetailResp)detailObj;
             detailVO.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detailVO.getDeptId()).getName()));
             List<Long> roleIdList = userRoleService.listRoleIdByUserId(detailVO.getId());
             detailVO.setRoleIds(roleIdList);
@@ -189,10 +189,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateBasicInfo(UserBasicInfoUpdateRequest updateRequest, Long id) {
+    public void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id) {
         super.getById(id);
-        baseMapper.lambdaUpdate().set(UserDO::getNickname, updateRequest.getNickname())
-            .set(UserDO::getGender, updateRequest.getGender()).eq(UserDO::getId, id).update();
+        baseMapper.lambdaUpdate().set(UserDO::getNickname, updateReq.getNickname())
+            .set(UserDO::getGender, updateReq.getGender()).eq(UserDO::getId, id).update();
     }
 
     @Override
@@ -244,10 +244,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserVO,
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateRole(UserRoleUpdateRequest updateRequest, Long id) {
+    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
         super.getById(id);
         // 保存用户和角色关联
-        userRoleService.save(updateRequest.getRoleIds(), id);
+        userRoleService.save(updateReq.getRoleIds(), id);
     }
 
     @Override

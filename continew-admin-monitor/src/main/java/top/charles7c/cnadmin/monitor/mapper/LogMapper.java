@@ -23,9 +23,9 @@ import org.apache.ibatis.annotations.Param;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardAccessTrendVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardPopularModuleVO;
-import top.charles7c.cnadmin.monitor.model.vo.DashboardTotalVO;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardPopularModuleResp;
+import top.charles7c.cnadmin.monitor.model.resp.DashboardTotalResp;
 
 /**
  * 系统日志 Mapper
@@ -40,7 +40,7 @@ public interface LogMapper extends BaseMapper<LogDO> {
      *
      * @return 仪表盘总计信息
      */
-    DashboardTotalVO selectDashboardTotal();
+    DashboardTotalResp selectDashboardTotal();
 
     /**
      * 查询仪表盘访问趋势信息
@@ -50,14 +50,14 @@ public interface LogMapper extends BaseMapper<LogDO> {
      *
      * @return 仪表盘访问趋势信息
      */
-    List<DashboardAccessTrendVO> selectListDashboardAccessTrend(@Param("days") Integer days);
+    List<DashboardAccessTrendResp> selectListDashboardAccessTrend(@Param("days") Integer days);
 
     /**
      * 查询仪表盘热门模块列表
      *
      * @return 仪表盘热门模块列表
      */
-    List<DashboardPopularModuleVO> selectListDashboardPopularModule();
+    List<DashboardPopularModuleResp> selectListDashboardPopularModule();
 
     /**
      * 查询仪表盘访客地域分布信息

@@ -61,7 +61,7 @@ public class ServletUtils {
      * 获取浏览器及其版本信息
      *
      * @param request
-     *            请求信息
+     *            请求对象
      * @return 浏览器及其版本信息
      */
     public static String getBrowser(HttpServletRequest request) {

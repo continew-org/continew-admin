@@ -21,8 +21,8 @@ import java.util.Set;
 
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
-import top.charles7c.cnadmin.system.model.request.MenuRequest;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
+import top.charles7c.cnadmin.system.model.req.MenuReq;
+import top.charles7c.cnadmin.system.model.resp.MenuResp;
 
 /**
  * 菜单业务接口
@@ -30,7 +30,7 @@ import top.charles7c.cnadmin.system.model.vo.MenuVO;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, MenuRequest> {
+public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     /**
      * 根据用户 ID 查询
@@ -48,12 +48,12 @@ public interface MenuService extends BaseService<MenuVO, MenuVO, MenuQuery, Menu
      *            角色编码
      * @return 菜单列表
      */
-    List<MenuVO> listByRoleCode(String roleCode);
+    List<MenuResp> listByRoleCode(String roleCode);
 
     /**
      * 查询所有菜单
      *
      * @return 菜单列表
      */
-    List<MenuVO> list();
+    List<MenuResp> list();
 }

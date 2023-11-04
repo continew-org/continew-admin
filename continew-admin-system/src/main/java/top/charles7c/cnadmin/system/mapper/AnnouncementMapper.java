@@ -20,7 +20,7 @@ import java.util.List;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.AnnouncementDO;
-import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
+import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
 
 /**
  * 公告 Mapper
@@ -35,5 +35,5 @@ public interface AnnouncementMapper extends BaseMapper<AnnouncementDO> {
      *
      * @return 仪表盘公告列表
      */
-    List<DashboardAnnouncementVO> selectDashboardList();
+    List<DashboardAnnouncementResp> selectDashboardList();
 }

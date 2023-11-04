@@ -30,15 +30,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.SystemLogQuery;
-import top.charles7c.cnadmin.monitor.model.vo.LoginLogVO;
-import top.charles7c.cnadmin.monitor.model.vo.OperationLogVO;
-import top.charles7c.cnadmin.monitor.model.vo.SystemLogDetailVO;
-import top.charles7c.cnadmin.monitor.model.vo.SystemLogVO;
+import top.charles7c.cnadmin.monitor.model.resp.LoginLogResp;
+import top.charles7c.cnadmin.monitor.model.resp.OperationLogResp;
+import top.charles7c.cnadmin.monitor.model.resp.SystemLogDetailResp;
+import top.charles7c.cnadmin.monitor.model.resp.SystemLogResp;
 import top.charles7c.cnadmin.monitor.service.LogService;
 
 /**
@@ -58,21 +58,21 @@ public class LogController {
     @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
-    public PageDataVO<LoginLogVO> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
+    public PageDataResp<LoginLogResp> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
         return logService.page(query, pageQuery);
     }
 
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public PageDataVO<OperationLogVO> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
+    public PageDataResp<OperationLogResp> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
         return logService.page(query, pageQuery);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
-    public PageDataVO<SystemLogVO> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
+    public PageDataResp<SystemLogResp> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
         return logService.page(query, pageQuery);
     }
 
@@ -80,7 +80,7 @@ public class LogController {
     @Operation(summary = "查看系统日志详情", description = "查看系统日志详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/system/{id}")
-    public SystemLogDetailVO get(@PathVariable Long id) {
+    public SystemLogDetailResp get(@PathVariable Long id) {
         return logService.get(id);
     }
 }

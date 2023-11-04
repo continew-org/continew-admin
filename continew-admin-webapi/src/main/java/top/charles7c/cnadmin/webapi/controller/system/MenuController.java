@@ -31,12 +31,12 @@ import cn.hutool.core.util.ObjectUtil;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.URLUtils;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
-import top.charles7c.cnadmin.system.model.request.MenuRequest;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
+import top.charles7c.cnadmin.system.model.req.MenuReq;
+import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.MenuService;
 
 /**
@@ -48,32 +48,31 @@ import top.charles7c.cnadmin.system.service.MenuService;
 @Tag(name = "菜单管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/menu", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class MenuController extends BaseController<MenuService, MenuVO, MenuVO, MenuQuery, MenuRequest> {
+public class MenuController extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     @Override
     @SaCheckPermission("system:menu:add")
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuRequest request) {
-        this.checkPath(request);
-        return super.add(request);
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuReq req) {
+        this.checkPath(req);
+        return super.add(req);
     }
 
     @Override
     @SaCheckPermission("system:menu:update")
-    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuRequest request,
-        @PathVariable Long id) {
-        this.checkPath(request);
-        return super.update(request, id);
+    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
+        this.checkPath(req);
+        return super.update(req, id);
     }
 
     /**
      * 检查路由地址格式
      * 
-     * @param request
+     * @param req
      *            创建或修改信息
      */
-    private void checkPath(MenuRequest request) {
-        Boolean isExternal = ObjectUtil.defaultIfNull(request.getIsExternal(), false);
-        String path = request.getPath();
+    private void checkPath(MenuReq req) {
+        Boolean isExternal = ObjectUtil.defaultIfNull(req.getIsExternal(), false);
+        String path = req.getPath();
         ValidationUtils.throwIf(isExternal && !URLUtils.isHttpUrl(path), "路由地址格式错误，请以 http:// 或 https:// 开头");
         ValidationUtils.throwIf(!isExternal && URLUtils.isHttpUrl(path), "路由地址格式错误");
     }

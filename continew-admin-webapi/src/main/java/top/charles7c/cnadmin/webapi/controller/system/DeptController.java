@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
-import top.charles7c.cnadmin.system.model.request.DeptRequest;
-import top.charles7c.cnadmin.system.model.vo.DeptDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DeptVO;
+import top.charles7c.cnadmin.system.model.req.DeptReq;
+import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DeptResp;
 import top.charles7c.cnadmin.system.service.DeptService;
 
 /**
@@ -39,4 +39,4 @@ import top.charles7c.cnadmin.system.service.DeptService;
 @Tag(name = "部门管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class DeptController extends BaseController<DeptService, DeptVO, DeptDetailVO, DeptQuery, DeptRequest> {}
+public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}

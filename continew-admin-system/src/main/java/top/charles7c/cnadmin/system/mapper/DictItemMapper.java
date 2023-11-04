@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import top.charles7c.cnadmin.common.base.BaseMapper;
-import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
+import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
 
 /**
@@ -39,5 +39,5 @@ public interface DictItemMapper extends BaseMapper<DictItemDO> {
      *            字典编码
      * @return 字典项列表
      */
-    List<LabelValueVO> listByDictCode(@Param("dictCode") String dictCode);
+    List<LabelValueResp> listByDictCode(@Param("dictCode") String dictCode);
 }

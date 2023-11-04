@@ -32,12 +32,12 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 
-import top.charles7c.cnadmin.auth.model.request.AccountLoginRequest;
-import top.charles7c.cnadmin.auth.model.request.EmailLoginRequest;
-import top.charles7c.cnadmin.auth.model.request.PhoneLoginRequest;
-import top.charles7c.cnadmin.auth.model.vo.LoginVO;
-import top.charles7c.cnadmin.auth.model.vo.RouteVO;
-import top.charles7c.cnadmin.auth.model.vo.UserInfoVO;
+import top.charles7c.cnadmin.auth.model.req.AccountLoginReq;
+import top.charles7c.cnadmin.auth.model.req.EmailLoginReq;
+import top.charles7c.cnadmin.auth.model.req.PhoneLoginReq;
+import top.charles7c.cnadmin.auth.model.resp.LoginResp;
+import top.charles7c.cnadmin.auth.model.resp.RouteResp;
+import top.charles7c.cnadmin.auth.model.resp.UserInfoResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
-import top.charles7c.cnadmin.system.model.vo.UserDetailVO;
+import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
 import top.charles7c.cnadmin.system.service.UserService;
 
 /**
@@ -69,46 +69,45 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
-    public LoginVO accountLogin(@Validated @RequestBody AccountLoginRequest loginRequest) {
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginRequest.getUuid());
+    public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
+        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.deleteCacheObject(captchaKey);
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         // 用户登录
-        String rawPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginRequest.getPassword()));
+        String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
-        String token = loginService.accountLogin(loginRequest.getUsername(), rawPassword);
-        return LoginVO.builder().token(token).build();
+        String token = loginService.accountLogin(loginReq.getUsername(), rawPassword);
+        return LoginResp.builder().token(token).build();
     }
 
     @SaIgnore
     @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
     @PostMapping("/email")
-    public LoginVO emailLogin(@Validated @RequestBody EmailLoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
+    public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
+        String email = loginReq.getEmail();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, email);
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
         String token = loginService.emailLogin(email);
-        return LoginVO.builder().token(token).build();
+        return LoginResp.builder().token(token).build();
     }
 
     @SaIgnore
     @Operation(summary = "手机号登录", description = "根据手机号和验证码进行登录认证")
     @PostMapping("/phone")
-    public LoginVO phoneLogin(@Validated @RequestBody PhoneLoginRequest loginRequest) {
-        String phone = loginRequest.getPhone();
+    public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
+        String phone = loginReq.getPhone();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, phone);
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha, "验证码错误");
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
         String token = loginService.phoneLogin(phone);
-        return LoginVO.builder().token(token).build();
+        return LoginResp.builder().token(token).build();
     }
 
     @SaIgnore
@@ -123,19 +122,19 @@ public class AuthController {
     @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
-    public UserInfoVO getUserInfo() {
+    public UserInfoResp getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        UserDetailVO userDetailVO = userService.get(loginUser.getId());
-        UserInfoVO userInfoVO = BeanUtil.copyProperties(userDetailVO, UserInfoVO.class);
-        userInfoVO.setPermissions(loginUser.getPermissions());
-        userInfoVO.setRoles(loginUser.getRoleCodes());
-        return userInfoVO;
+        UserDetailResp userDetailResp = userService.get(loginUser.getId());
+        UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
+        userInfoResp.setPermissions(loginUser.getPermissions());
+        userInfoResp.setRoles(loginUser.getRoleCodes());
+        return userInfoResp;
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
-    public List<RouteVO> listRoute() {
+    public List<RouteResp> listRoute() {
         Long userId = LoginHelper.getUserId();
         return loginService.buildRouteTree(userId);
     }

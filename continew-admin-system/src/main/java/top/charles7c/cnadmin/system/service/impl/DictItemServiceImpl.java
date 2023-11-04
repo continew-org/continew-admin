@@ -28,14 +28,14 @@ import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.model.vo.LabelValueVO;
+import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictItemMapper;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
 import top.charles7c.cnadmin.system.model.query.DictItemQuery;
-import top.charles7c.cnadmin.system.model.request.DictItemRequest;
-import top.charles7c.cnadmin.system.model.vo.DictItemDetailVO;
-import top.charles7c.cnadmin.system.model.vo.DictItemVO;
+import top.charles7c.cnadmin.system.model.req.DictItemReq;
+import top.charles7c.cnadmin.system.model.resp.DictItemDetailResp;
+import top.charles7c.cnadmin.system.model.resp.DictItemResp;
 import top.charles7c.cnadmin.system.service.DictItemService;
 
 /**
@@ -48,40 +48,40 @@ import top.charles7c.cnadmin.system.service.DictItemService;
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConsts.DICT_KEY_PREFIX)
 public class DictItemServiceImpl
-    extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemVO, DictItemDetailVO, DictItemQuery, DictItemRequest>
+    extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq>
     implements DictItemService {
 
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public Long add(DictItemRequest request) {
-        String value = request.getValue();
-        CheckUtils.throwIf(this.isValueExists(value, null, request.getDictId()), "新增失败，字典值 [{}] 已存在", value);
-        return super.add(request);
+    public Long add(DictItemReq req) {
+        String value = req.getValue();
+        CheckUtils.throwIf(this.isValueExists(value, null, req.getDictId()), "新增失败，字典值 [{}] 已存在", value);
+        return super.add(req);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public void update(DictItemRequest request, Long id) {
-        String value = request.getValue();
-        CheckUtils.throwIf(this.isValueExists(value, id, request.getDictId()), "修改失败，字典值 [{}] 已存在", value);
-        super.update(request, id);
+    public void update(DictItemReq req, Long id) {
+        String value = req.getValue();
+        CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
+        super.update(req, id);
     }
 
     @Override
-    public List<DictItemDetailVO> listByDictId(Long dictId) {
+    public List<DictItemDetailResp> listByDictId(Long dictId) {
         DictItemQuery dictItemQuery = new DictItemQuery();
         dictItemQuery.setDictId(dictId);
         SortQuery sortQuery = new SortQuery();
         sortQuery.setSort(new String[] {"sort,asc"});
-        List<DictItemDetailVO> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailVO.class);
+        List<DictItemDetailResp> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailResp.class);
         detailList.forEach(super::fillDetail);
         return detailList;
     }
 
     @Override
-    public List<LabelValueVO> listByDictCode(String dictCode) {
+    public List<LabelValueResp> listByDictCode(String dictCode) {
         return baseMapper.listByDictCode(dictCode);
     }
 

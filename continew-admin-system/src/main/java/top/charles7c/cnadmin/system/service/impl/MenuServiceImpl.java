@@ -35,8 +35,8 @@ import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MenuMapper;
 import top.charles7c.cnadmin.system.model.entity.MenuDO;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
-import top.charles7c.cnadmin.system.model.request.MenuRequest;
-import top.charles7c.cnadmin.system.model.vo.MenuVO;
+import top.charles7c.cnadmin.system.model.req.MenuReq;
+import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.MenuService;
 
 /**
@@ -48,26 +48,26 @@ import top.charles7c.cnadmin.system.service.MenuService;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConsts.MENU_KEY_PREFIX)
-public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO, MenuVO, MenuQuery, MenuRequest>
+public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq>
     implements MenuService {
 
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public Long add(MenuRequest request) {
-        String title = request.getTitle();
-        CheckUtils.throwIf(this.isNameExists(title, request.getParentId(), null), "新增失败，[{}] 已存在", title);
-        request.setStatus(DisEnableStatusEnum.ENABLE);
-        return super.add(request);
+    public Long add(MenuReq req) {
+        String title = req.getTitle();
+        CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
+        req.setStatus(DisEnableStatusEnum.ENABLE);
+        return super.add(req);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Exception.class)
-    public void update(MenuRequest request, Long id) {
-        String title = request.getTitle();
-        CheckUtils.throwIf(this.isNameExists(title, request.getParentId(), id), "修改失败，[{}] 已存在", title);
-        super.update(request, id);
+    public void update(MenuReq req, Long id) {
+        String title = req.getTitle();
+        CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);
+        super.update(req, id);
     }
 
     @Override
@@ -85,16 +85,16 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuVO,
 
     @Override
     @Cacheable(key = "#roleCode")
-    public List<MenuVO> listByRoleCode(String roleCode) {
+    public List<MenuResp> listByRoleCode(String roleCode) {
         List<MenuDO> menuList = baseMapper.selectListByRoleCode(roleCode);
-        List<MenuVO> list = BeanUtil.copyToList(menuList, MenuVO.class);
+        List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
         list.forEach(this::fill);
         return list;
     }
 
     @Override
     @Cacheable(key = "'ALL'")
-    public List<MenuVO> list() {
+    public List<MenuResp> list() {
         MenuQuery menuQuery = new MenuQuery();
         menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());
         return super.list(menuQuery, null);

@@ -24,9 +24,9 @@ import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import ${packageName}.mapper.${classNamePrefix}Mapper;
 import ${packageName}.model.entity.${classNamePrefix}DO;
 import ${packageName}.model.query.${classNamePrefix}Query;
-import ${packageName}.model.request.${classNamePrefix}Request;
-import ${packageName}.model.vo.${classNamePrefix}DetailVO;
-import ${packageName}.model.vo.${classNamePrefix}VO;
+import ${packageName}.model.req.${classNamePrefix}Req;
+import ${packageName}.model.resp.${classNamePrefix}DetailResp;
+import ${packageName}.model.resp.${classNamePrefix}Resp;
 import ${packageName}.service.${classNamePrefix}Service;
 
 /**
@@ -37,4 +37,4 @@ import ${packageName}.service.${classNamePrefix}Service;
  */
 @Service
 @RequiredArgsConstructor
-public class ${className} extends BaseServiceImpl<${classNamePrefix}Mapper, ${classNamePrefix}DO, ${classNamePrefix}VO, ${classNamePrefix}DetailVO, ${classNamePrefix}Query, ${classNamePrefix}Request> implements ${classNamePrefix}Service {}
+public class ${className} extends BaseServiceImpl<${classNamePrefix}Mapper, ${classNamePrefix}DO, ${classNamePrefix}Resp, ${classNamePrefix}DetailResp, ${classNamePrefix}Query, ${classNamePrefix}Req> implements ${classNamePrefix}Service {}

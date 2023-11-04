@@ -30,11 +30,11 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.stp.StpUtil;
 
 import top.charles7c.cnadmin.auth.model.query.OnlineUserQuery;
-import top.charles7c.cnadmin.auth.model.vo.OnlineUserVO;
+import top.charles7c.cnadmin.auth.model.resp.OnlineUserResp;
 import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
-import top.charles7c.cnadmin.common.model.vo.R;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 
 /**
@@ -54,7 +54,7 @@ public class OnlineUserController {
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:online:user:list")
     @GetMapping
-    public PageDataVO<OnlineUserVO> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
+    public PageDataResp<OnlineUserResp> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
         return onlineUserService.page(query, pageQuery);
     }
 

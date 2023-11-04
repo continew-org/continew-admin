@@ -31,9 +31,9 @@ import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.system.mapper.OptionMapper;
 import top.charles7c.cnadmin.system.model.entity.OptionDO;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
-import top.charles7c.cnadmin.system.model.request.OptionRequest;
-import top.charles7c.cnadmin.system.model.request.OptionResetValueRequest;
-import top.charles7c.cnadmin.system.model.vo.OptionVO;
+import top.charles7c.cnadmin.system.model.req.OptionReq;
+import top.charles7c.cnadmin.system.model.req.OptionResetValueReq;
+import top.charles7c.cnadmin.system.model.resp.OptionResp;
 import top.charles7c.cnadmin.system.service.OptionService;
 
 /**
@@ -50,19 +50,19 @@ public class OptionServiceImpl implements OptionService {
     private final OptionMapper baseMapper;
 
     @Override
-    public List<OptionVO> list(OptionQuery query) {
-        return BeanUtil.copyToList(baseMapper.selectList(QueryHelper.build(query)), OptionVO.class);
+    public List<OptionResp> list(OptionQuery query) {
+        return BeanUtil.copyToList(baseMapper.selectList(QueryHelper.build(query)), OptionResp.class);
     }
 
     @Override
     @CacheEvict(allEntries = true)
-    public void update(List<OptionRequest> request) {
-        baseMapper.updateBatchById(BeanUtil.copyToList(request, OptionDO.class));
+    public void update(List<OptionReq> req) {
+        baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
     }
 
     @Override
     @CacheEvict(allEntries = true)
-    public void resetValue(OptionResetValueRequest request) {
-        baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, request.getCode()).update();
+    public void resetValue(OptionResetValueReq req) {
+        baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, req.getCode()).update();
     }
 }

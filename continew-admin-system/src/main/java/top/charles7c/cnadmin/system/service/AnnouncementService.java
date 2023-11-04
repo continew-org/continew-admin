@@ -20,10 +20,10 @@ import java.util.List;
 
 import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
-import top.charles7c.cnadmin.system.model.request.AnnouncementRequest;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementDetailVO;
-import top.charles7c.cnadmin.system.model.vo.AnnouncementVO;
-import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
+import top.charles7c.cnadmin.system.model.req.AnnouncementReq;
+import top.charles7c.cnadmin.system.model.resp.AnnouncementDetailResp;
+import top.charles7c.cnadmin.system.model.resp.AnnouncementResp;
+import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
 
 /**
  * 公告业务接口
@@ -32,12 +32,12 @@ import top.charles7c.cnadmin.system.model.vo.DashboardAnnouncementVO;
  * @since 2023/8/20 10:55
  */
 public interface AnnouncementService
-    extends BaseService<AnnouncementVO, AnnouncementDetailVO, AnnouncementQuery, AnnouncementRequest> {
+    extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 
     /**
      * 查询仪表盘公告列表
      *
      * @return 仪表盘公告列表
      */
-    List<DashboardAnnouncementVO> listDashboard();
+    List<DashboardAnnouncementResp> listDashboard();
 }

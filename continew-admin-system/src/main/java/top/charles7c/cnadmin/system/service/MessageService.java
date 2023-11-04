@@ -19,10 +19,10 @@ package top.charles7c.cnadmin.system.service;
 import java.util.List;
 
 import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.vo.PageDataVO;
+import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
-import top.charles7c.cnadmin.system.model.request.MessageRequest;
-import top.charles7c.cnadmin.system.model.vo.MessageVO;
+import top.charles7c.cnadmin.system.model.req.MessageReq;
+import top.charles7c.cnadmin.system.model.resp.MessageResp;
 
 /**
  * 消息业务接口
@@ -41,17 +41,17 @@ public interface MessageService {
      *            分页查询条件
      * @return 分页列表信息
      */
-    PageDataVO<MessageVO> page(MessageQuery query, PageQuery pageQuery);
+    PageDataResp<MessageResp> page(MessageQuery query, PageQuery pageQuery);
 
     /**
      * 新增
      *
-     * @param request
-     *            消息
+     * @param req
+     *            新增信息
      * @param userIdList
      *            接收人列表
      */
-    void add(MessageRequest request, List<Long> userIdList);
+    void add(MessageReq req, List<Long> userIdList);
 
     /**
      * 删除

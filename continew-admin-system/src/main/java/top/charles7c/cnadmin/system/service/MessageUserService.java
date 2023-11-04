@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.system.model.vo.MessageUnreadVO;
+import top.charles7c.cnadmin.system.model.resp.MessageUnreadResp;
 
 /**
  * 消息和用户关联业务接口
@@ -37,7 +37,7 @@ public interface MessageUserService {
      *            是否查询详情
      * @return 未读消息信息
      */
-    MessageUnreadVO countUnreadMessageByUserId(Long userId, Boolean isDetail);
+    MessageUnreadResp countUnreadMessageByUserId(Long userId, Boolean isDetail);
 
     /**
      * 新增

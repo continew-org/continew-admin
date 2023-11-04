@@ -18,9 +18,9 @@ package ${packageName}.${subPackageName};
 
 import top.charles7c.cnadmin.common.base.BaseService;
 import ${packageName}.model.query.${classNamePrefix}Query;
-import ${packageName}.model.request.${classNamePrefix}Request;
-import ${packageName}.model.vo.${classNamePrefix}DetailVO;
-import ${packageName}.model.vo.${classNamePrefix}VO;
+import ${packageName}.model.req.${classNamePrefix}Req;
+import ${packageName}.model.resp.${classNamePrefix}DetailResp;
+import ${packageName}.model.resp.${classNamePrefix}Resp;
 
 /**
  * ${businessName}业务接口
@@ -28,4 +28,4 @@ import ${packageName}.model.vo.${classNamePrefix}VO;
  * @author ${author}
  * @since ${date}
  */
-public interface ${className} extends BaseService<${classNamePrefix}VO, ${classNamePrefix}DetailVO, ${classNamePrefix}Query, ${classNamePrefix}Request> {}
+public interface ${className} extends BaseService<${classNamePrefix}Resp, ${classNamePrefix}DetailResp, ${classNamePrefix}Query, ${classNamePrefix}Req> {}
