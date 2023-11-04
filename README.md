@@ -60,7 +60,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 - 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API
 - 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
 - 一个注解解决一个条件查询，基于注解的通用查询方式，降低拼接 MyBatis Plus QueryWrapper 的烦恼
-- 提供一套 Base 基类（BaseDO、BaseVO、BaseController、BaseService、扩展版 BaseMapper 等），方便复用和扩展
+- 提供一套 Base 基类（BaseDO、BaseResp、BaseController、BaseService、扩展版 BaseMapper 等），方便复用和扩展
 - 编写或基于 Hutool 扩展部分工具类，提供校验工具和实践，提高开发效率（能 PR 到 Hutool 的已尽量 PR）
 - 支持 API 级别的功能权限与数据权限，可自定义操作
 - 前后端统一异常拦截处理，统一输出异常信息，避免繁琐的异常判断
@@ -90,73 +90,73 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 ## 系统截图
 
 > **Note**
-> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能 **2023年9月23日** 截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
+> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2023年11月4日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
 
 <table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
     <tbody>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ878.png" alt="登录页面" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJYtg.png" alt="仪表盘" width="1920" /></td>
+            <td><img src=".image/screenshot/000登录页面.png" alt="登录页面" width="1920" /></td>
+            <td><img src=".image/screenshot/001仪表盘.png" alt="仪表盘" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJUpj.png" alt="仪表盘-查看公告" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJa1s.png" alt="数据可视化-分析页" width="1920" /></td>
+            <td><img src=".image/screenshot/002仪表盘-查看公告.png" alt="仪表盘-查看公告" width="1920" /></td>
+            <td><img src=".image/screenshot/010个人中心-安全设置.png" alt="个人中心-安全设置" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJBn0.png" alt="数据可视化-多维数据分析页" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJyAU.png" alt="数据可视化-实时监控" width="1920" /></td>
+            <td><img src=".image/screenshot/011个人中心-安全设置-修改邮箱.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
+            <td><img src=".image/screenshot/012个人中心-修改邮箱-发送验证码.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ6NF.png" alt="系统管理-公告管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoJ29J.png" alt="系统管理-公告管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/013个人中心-修改邮箱-邮箱验证码.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
+            <td><img src=".image/screenshot/014个人中心-操作日志.png" alt="个人中心-操作日志" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoUxzQ.png" alt="系统工具-代码生成-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaSMj.png" alt="系统工具-代码生成-配置" width="1920" /></td>
+            <td><img src=".image/screenshot/015数据可视化-分析页.png" alt="数据可视化-分析页" width="1920" /></td>
+            <td><img src=".image/screenshot/016数据可视化-多维数据分析页.png" alt="数据可视化-多维数据分析页" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaFoV.png" alt="系统管理-角色管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaVWF.png" alt="系统管理-角色管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/020系统管理-用户管理-列表.png" alt="系统管理-用户管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/021系统管理-用户管理-新增.png" alt="系统管理-用户管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoa9Ln.png" alt="系统管理-用户管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaid0.png" alt="系统管理-用户管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/025系统管理-部门管理-列表.png" alt="系统管理-部门管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/026系统管理-部门管理-新增.png" alt="系统管理-部门管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoany9.png" alt="系统管理-部门管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPoaQdx.png" alt="系统管理-部门管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/030系统管理-角色管理-列表.png" alt="系统管理-角色管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/031系统管理-角色管理-新增.png" alt="系统管理-角色管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogKIJ.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogQi9.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/035系统管理-菜单管理-列表.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/036系统管理-菜单管理-新增.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPog1R1.png" alt="系统管理-字典管理-列表" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPog3xx.png" alt="系统管理-字典管理-新增" width="1920" /></td>
+            <td><img src=".image/screenshot/040系统管理-公告管理-列表.png" alt="系统管理-公告管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/041系统管理-公告管理-新增.png" alt="系统管理-公告管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/23/pPTJbWQ.png" alt="系统管理-系统配置" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/23/pPTJqzj.png" alt="系统管理-系统配置-恢复默认" width="1920" /></td>
+            <td><img src=".image/screenshot/045系统管理-消息管理-列表.png" alt="系统管理-消息管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/046站内信.png" alt="站内信" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogJsK.png" alt="个人中心-安全设置-修改密码" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogYqO.png" alt="个人中心-安全设置-修改邮箱" width="1920" /></td>
+            <td><img src=".image/screenshot/050系统管理-字典管理-列表.png" alt="系统管理-字典管理-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/051系统管理-字典管理-新增.png" alt="系统管理-字典管理-新增" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogNZD.png" alt="个人中心-修改邮箱-发送验证码" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPogUde.png" alt="个人中心-修改邮箱-邮箱验证码" width="1920" /></td>
+            <td><img src=".image/screenshot/055系统管理-系统配置.png" alt="系统管理-系统配置" width="1920" /></td>
+            <td><img src=".image/screenshot/056系统管理-系统配置-恢复默认.png" alt="系统管理-系统配置-恢复默认" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPob69f.png" alt="个人中心-操作日志" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPobc38.png" alt="系统监控-操作日志" width="1920" /></td>
+            <td><img src=".image/screenshot/100系统工具-代码生成-列表.png" alt="系统工具-代码生成-列表" width="1920" /></td>
+            <td><img src=".image/screenshot/101系统工具-代码生成-配置.png" alt="系统工具-代码生成-配置" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPob2jg.png" alt="系统监控-在线用户" width="1920" /></td>
-            <td><img src="https://s1.ax1x.com/2023/03/09/ppn5SG6.png" alt="系统监控-登录日志" width="1920" /></td>
+            <td><img src=".image/screenshot/200系统监控-在线用户.png" alt="系统监控-在线用户" width="1920" /></td>
+            <td><img src=".image/screenshot/201系统监控-操作日志.png" alt="系统监控-操作日志" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPobfBj.png" alt="系统监控-系统日志" width="1920" /></td>
-            <td><img src="https://z1.ax1x.com/2023/09/22/pPob5En.png" alt="系统监控-系统日志-详情" width="1920" /></td>
+            <td><img src=".image/screenshot/202系统监控-系统日志.png" alt="系统监控-系统日志" width="1920" /></td>
+            <td><img src=".image/screenshot/203系统监控-系统日志-详情.png" alt="系统监控-系统日志-详情" width="1920" /></td>
         </tr>
     </tbody>
 </table>
@@ -222,11 +222,11 @@ pnpm dev
 
 ## 核心技术栈
 
-| 名称                                                         | 版本           | 简介                                                         |
-| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+| 名称                                                         | 版本         | 简介                                                         |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
 | <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.52.0       | 字节跳动推出的前端 UI 框架，样式美观，组件丰富。             |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.52.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 2.7.16       | 简化新 Spring 应用的初始搭建以及开发过程。                   |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.2.26.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.36.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -299,7 +299,7 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          ├─ model         # 系统监控相关模型
   │      │          │  ├─ entity       # 系统监控相关实体对象
   │      │          │  ├─ query        # 系统监控相关查询条件
-  │      │          │  └─ vo           # 系统监控相关 VO（View Object）
+  │      │          │  └─ resp         # 系统监控相关响应对象（Response）
   │      │          └─ service       # 系统监控相关业务接口及实现类
   │      │             └─ impl         # 系统监控相关业务实现类
   │      └─ resources   # 工程配置目录
@@ -316,8 +316,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │        │  │  └─ satoken    # Sa-Token 配置
   │      │        │  ├─ model     # 系统认证相关模型
   │      │        │  │  ├─ query      # 系统认证相关查询条件
-  │      │        │  │  ├─ request    # 系统认证相关请求对象
-  │      │        │  │  └─ vo         # 系统认证相关 VO（View Object）
+  │      │        │  │  ├─ req        # 系统认证相关请求对象
+  │      │        │  │  └─ resp       # 系统认证相关响应对象
   │      │        │  └─ service   # 系统认证相关业务接口及实现类
   │      │        │     └─ impl       # 系统认证相关业务实现类
   │      │        └─ system   # 系统管理相关业务及配置
@@ -326,8 +326,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          ├─ model      # 系统管理相关模型
   │      │          │  ├─ entity      # 系统管理相关实体对象
   │      │          │  ├─ query       # 系统管理相关查询条件
-  │      │          │  ├─ request     # 系统管理相关请求对象
-  │      │          │  └─ vo          # 系统管理相关 VO（View Object）
+  │      │          │  ├─ req         # 系统管理相关请求对象
+  │      │          │  └─ resp        # 系统管理相关响应对象
   │      │          └─ service    # 系统管理相关业务接口及实现类
   │      │             └─ impl        # 系统管理相关业务实现类
   │      └─ resources   # 工程配置目录
@@ -347,8 +347,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      │          ├─ model         # 系统工具相关模型
   │      │          │  ├─ entity        # 系统工具相关实体对象
   │      │          │  ├─ query         # 系统工具相关查询条件
-  │      │          │  ├─ request       # 系统工具相关请求对象
-  │      │          │  └─ vo            # 系统工具相关 VO（View Object）
+  │      │          │  ├─ req           # 系统工具相关请求对象
+  │      │          │  └─ resp          # 系统工具相关响应对象
   │      │          ├─ service       # 系统工具相关业务接口及实现类
   │      │          │  └─ impl          # 系统工具相关业务实现类
   │      │          └─ util          # 系统工具相关工具类
@@ -379,8 +379,8 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                ├─ model         # 公共模型
   │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
   │                │  ├─ query        # 公共查询条件
-  │                │  ├─ request      # 公共请求对象
-  │                │  └─ vo           # 公共 VO（View Object）
+  │                │  ├─ req          # 公共请求对象
+  │                │  └─ resp         # 公共响应对象
   │                ├─ service       # 公共业务接口
   │                └─ util          # 公共工具类
   │                  ├─ helper        # 公共 Helper（助手）
