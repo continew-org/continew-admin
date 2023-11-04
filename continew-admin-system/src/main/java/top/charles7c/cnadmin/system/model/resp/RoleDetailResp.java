@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.util.List;
 
 import lombok.Data;
@@ -41,6 +42,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "角色详情信息")
 public class RoleDetailResp extends BaseDetailResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

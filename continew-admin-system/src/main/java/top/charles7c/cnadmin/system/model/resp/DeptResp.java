@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,6 +37,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "部门信息")
 public class DeptResp extends BaseResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 public class LogResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

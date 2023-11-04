@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.auth.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,7 @@ import cn.hutool.core.date.DatePattern;
 @Schema(description = "在线用户查询条件")
 public class OnlineUserQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

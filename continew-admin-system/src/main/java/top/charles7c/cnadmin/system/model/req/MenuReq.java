@@ -16,10 +16,12 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.io.Serial;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -42,6 +44,7 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 @Schema(description = "创建或修改菜单信息")
 public class MenuReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

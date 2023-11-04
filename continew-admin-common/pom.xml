@@ -80,7 +80,7 @@ limitations under the License.
         <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
         </dependency>
 
         <!-- Sa-Token 整合 JWT -->
@@ -146,7 +146,7 @@ limitations under the License.
         <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
+            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->

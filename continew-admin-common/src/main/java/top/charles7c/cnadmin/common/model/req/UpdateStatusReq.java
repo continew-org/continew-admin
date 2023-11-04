@@ -16,9 +16,10 @@
 
 package top.charles7c.cnadmin.common.model.req;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -36,6 +37,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "修改状态信息")
 public class UpdateStatusReq implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -1,8 +1,3 @@
---- ### 项目配置
-project:
-  # URL
-  url: http://localhost:5173
-
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）
@@ -56,7 +51,7 @@ spring.liquibase:
   change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 --- ### Redis 配置（单机版）
-spring:
+spring.data:
   redis:
     # 地址
     host: ${REDIS_HOST:127.0.0.1}

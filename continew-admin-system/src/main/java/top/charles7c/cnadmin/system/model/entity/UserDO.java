@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -36,6 +37,7 @@ import top.charles7c.cnadmin.common.enums.GenderEnum;
 @TableName("sys_user")
 public class UserDO extends BaseDO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import lombok.Data;
@@ -39,6 +40,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 @Schema(description = "用户信息")
 public class UserResp extends BaseResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -35,6 +36,7 @@ import top.charles7c.cnadmin.common.constant.SysConsts;
 @Data
 public class LoginUser implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -37,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Schema(description = "键值对信息")
 public class LabelValueResp<T> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,9 +16,10 @@
 
 package top.charles7c.cnadmin.auth.model.req;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "账号登录信息")
 public class AccountLoginReq implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

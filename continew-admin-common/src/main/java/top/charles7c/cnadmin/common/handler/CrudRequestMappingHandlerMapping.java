@@ -16,19 +16,18 @@
 
 package top.charles7c.cnadmin.common.handler;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
-import java.lang.reflect.Method;
-
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
-
+import org.springframework.web.util.pattern.PathPatternParser;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
+
+import java.lang.reflect.Method;
+
+import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 
 /**
  * CRUD 请求映射器处理器映射器
@@ -55,7 +54,14 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         // 拼接路径前缀（合并了 @RequestMapping 的部分能力）
         String pathPrefix = crudRequestMapping.value();
         if (StrUtil.isNotBlank(pathPrefix)) {
-            requestMappingInfo = RequestMappingInfo.paths(pathPrefix).build().combine(requestMappingInfo);
+            /*
+             * 问题：RequestMappingInfo.paths(pathPrefix) 返回的 RequestMappingInfo 对象里 pathPatternsCondition = null
+             * 导致 combine() 方法抛出断言异常！ 修复：创建 options 对象，并设置 PatternParser
+             */
+            RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
+            options.setPatternParser(PathPatternParser.defaultInstance);
+            requestMappingInfo =
+                RequestMappingInfo.paths(pathPrefix).options(options).build().combine(requestMappingInfo);
         }
 
         // 过滤 API

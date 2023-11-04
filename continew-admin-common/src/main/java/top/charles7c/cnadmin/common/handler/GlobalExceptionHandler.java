@@ -18,9 +18,9 @@ package top.charles7c.cnadmin.common.handler;
 
 import java.util.Objects;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -132,18 +132,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，认证失败，无法访问系统资源。", request.getRequestURI(), e);
-        String errorMsg;
-        switch (e.getType()) {
-            case NotLoginException.KICK_OUT:
-                errorMsg = "您已被踢下线。";
-                break;
-            case NotLoginException.BE_REPLACED_MESSAGE:
-                errorMsg = "您已被顶下线。";
-                break;
-            default:
-                errorMsg = "您的登录状态已过期，请重新登录。";
-                break;
-        }
+        String errorMsg = switch (e.getType()) {
+            case NotLoginException.KICK_OUT -> "您已被踢下线。";
+            case NotLoginException.BE_REPLACED_MESSAGE -> "您已被顶下线。";
+            default -> "您的登录状态已过期，请重新登录。";
+        };
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.UNAUTHORIZED.value(), errorMsg);
     }

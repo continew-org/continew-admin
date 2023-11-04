@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -156,7 +156,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
 
     /**
      * 设置排序
-     * 
+     *
      * @param queryWrapper
      *            查询 Wrapper
      * @param sortQuery
@@ -231,8 +231,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充列表信息
      */
     protected void fill(Object baseObj) {
-        if (baseObj instanceof BaseResp) {
-            BaseResp baseResp = (BaseResp)baseObj;
+        if (baseObj instanceof BaseResp baseResp) {
             Long createUser = baseResp.getCreateUser();
             if (null == createUser) {
                 return;
@@ -249,8 +248,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
      *            待填充详情信息
      */
     public void fillDetail(Object detailObj) {
-        if (detailObj instanceof BaseDetailResp) {
-            BaseDetailResp detail = (BaseDetailResp)detailObj;
+        if (detailObj instanceof BaseDetailResp detail) {
             this.fill(detail);
 
             Long updateUser = detail.getUpdateUser();

@@ -58,7 +58,7 @@ spring.liquibase:
   change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 --- ### Redis 配置（单机版）
-spring:
+spring.data:
   redis:
     # 地址
     host: ${REDIS_HOST:127.0.0.1}

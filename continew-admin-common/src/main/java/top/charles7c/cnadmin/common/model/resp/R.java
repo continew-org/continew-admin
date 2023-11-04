@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.AccessLevel;
@@ -39,6 +40,7 @@ import cn.hutool.core.date.DateUtil;
 @Schema(description = "响应信息")
 public class R<T> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /** 是否成功 */

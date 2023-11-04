@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -31,6 +32,7 @@ import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 @Data
 public class RoleDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import lombok.RequiredArgsConstructor;
 
@@ -127,8 +127,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     @Override
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
-        if (detailObj instanceof DeptDetailResp) {
-            DeptDetailResp detail = (DeptDetailResp)detailObj;
+        if (detailObj instanceof DeptDetailResp detail) {
             if (Objects.equals(SysConsts.SUPER_PARENT_ID, detail.getParentId())) {
                 return;
             }

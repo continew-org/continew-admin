@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.tool.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -32,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "表信息查询条件")
 public class TableQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

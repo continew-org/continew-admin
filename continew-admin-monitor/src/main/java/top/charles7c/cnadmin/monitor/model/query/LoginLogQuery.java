@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,7 @@ import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 @Schema(description = "登录日志查询条件")
 public class LoginLogQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

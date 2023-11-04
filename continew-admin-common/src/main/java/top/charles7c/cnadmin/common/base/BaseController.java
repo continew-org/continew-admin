@@ -20,7 +20,7 @@ import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.NoArgsConstructor;
 

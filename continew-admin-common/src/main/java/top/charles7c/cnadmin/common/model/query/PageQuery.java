@@ -16,7 +16,9 @@
 
 package top.charles7c.cnadmin.common.model.query;
 
-import javax.validation.constraints.Min;
+import java.io.Serial;
+
+import jakarta.validation.constraints.Min;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +26,7 @@ import lombok.NoArgsConstructor;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Range;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Sort;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -46,6 +48,7 @@ import cn.hutool.core.util.StrUtil;
 @Schema(description = "分页查询条件")
 public class PageQuery extends SortQuery {
 
+    @Serial
     private static final long serialVersionUID = 1L;
     /** 默认页码：1 */
     private static final int DEFAULT_PAGE = 1;

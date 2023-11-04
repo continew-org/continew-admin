@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.monitor.model.resp;
 
+import java.io.Serial;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +34,7 @@ import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 @Schema(description = "登录日志信息")
 public class LoginLogResp extends LogResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

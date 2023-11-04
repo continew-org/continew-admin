@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONArray;
@@ -217,7 +217,7 @@ public class LogInterceptor implements HandlerInterceptor {
             : request.getRequestURL().append(StringConsts.QUESTION_MARK).append(request.getQueryString()).toString());
         String method = request.getMethod();
         logDO.setRequestMethod(method);
-        logDO.setRequestHeaders(this.desensitize(ServletUtil.getHeaderMap(request)));
+        logDO.setRequestHeaders(this.desensitize(JakartaServletUtil.getHeaderMap(request)));
         String requestBody = this.getRequestBody(request);
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
         String requestURI = request.getRequestURI();
@@ -241,13 +241,13 @@ public class LogInterceptor implements HandlerInterceptor {
                 }
                 requestBody = JSONUtil.toJsonStr(requestBodyJsonObjList);
             } else {
-                requestBody = this.desensitize(ServletUtil.getParamMap(request));
+                requestBody = this.desensitize(JakartaServletUtil.getParamMap(request));
             }
             logDO.setRequestBody(requestBody);
         }
-        logDO.setClientIp(ServletUtil.getClientIP(request));
+        logDO.setClientIp(JakartaServletUtil.getClientIP(request));
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
-        logDO.setBrowser(ServletUtils.getBrowser(request));
+        logDO.setBrowser(JakartaServletUtil.getBrowser(request));
     }
 
     /**
@@ -262,7 +262,7 @@ public class LogInterceptor implements HandlerInterceptor {
         int status = response.getStatus();
         logDO.setStatusCode(status);
         logDO.setStatus(status >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : logDO.getStatus());
-        logDO.setResponseHeaders(this.desensitize(ServletUtil.getHeadersMap(response)));
+        logDO.setResponseHeaders(this.desensitize(JakartaServletUtil.getHeadersMap(response)));
         // 响应体（不记录非 JSON 响应数据）
         String responseBody = this.getResponseBody(response);
         if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
@@ -350,7 +350,7 @@ public class LogInterceptor implements HandlerInterceptor {
             return false;
         }
         // 2、检查是否需要记录内网 IP 操作
-        boolean isInnerIp = IpUtils.isInnerIp(ServletUtil.getClientIP(request));
+        boolean isInnerIp = IpUtils.isInnerIp(JakartaServletUtil.getClientIP(request));
         if (isInnerIp && Boolean.FALSE.equals(operationLogProperties.getIncludeInnerIp())) {
             return false;
         }

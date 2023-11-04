@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hutool.core.collection.CollUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +87,7 @@ public class QueryHelper {
      *            查询数据类型
      */
     private static <Q, R> void buildQuery(Q query, Field field, QueryWrapper<R> queryWrapper) {
-        boolean accessible = field.isAccessible();
+        boolean accessible = field.canAccess(null);
         try {
             field.setAccessible(true);
             // 没有 @Query，直接返回
@@ -149,54 +150,31 @@ public class QueryHelper {
         String columnName = StrUtil.toUnderlineCase(StrUtil.blankToDefault(property, fieldName));
         QueryTypeEnum queryType = queryAnnotation.type();
         switch (queryType) {
-            case EQUAL:
-                queryWrapper.eq(columnName, fieldValue);
-                break;
-            case NOT_EQUAL:
-                queryWrapper.ne(columnName, fieldValue);
-                break;
-            case GREATER_THAN:
-                queryWrapper.gt(columnName, fieldValue);
-                break;
-            case LESS_THAN:
-                queryWrapper.lt(columnName, fieldValue);
-                break;
-            case GREATER_THAN_OR_EQUAL:
-                queryWrapper.ge(columnName, fieldValue);
-                break;
-            case LESS_THAN_OR_EQUAL:
-                queryWrapper.le(columnName, fieldValue);
-                break;
-            case BETWEEN:
+            case EQUAL -> queryWrapper.eq(columnName, fieldValue);
+            case NOT_EQUAL -> queryWrapper.ne(columnName, fieldValue);
+            case GREATER_THAN -> queryWrapper.gt(columnName, fieldValue);
+            case LESS_THAN -> queryWrapper.lt(columnName, fieldValue);
+            case GREATER_THAN_OR_EQUAL -> queryWrapper.ge(columnName, fieldValue);
+            case LESS_THAN_OR_EQUAL -> queryWrapper.le(columnName, fieldValue);
+            case BETWEEN -> {
                 List<Object> between = new ArrayList<>((List<Object>)fieldValue);
                 ValidationUtils.throwIf(between.size() != 2, "[{}] 必须是一个范围", fieldName);
                 queryWrapper.between(columnName, between.get(0), between.get(1));
-                break;
-            case LEFT_LIKE:
-                queryWrapper.likeLeft(columnName, fieldValue);
-                break;
-            case INNER_LIKE:
-                queryWrapper.like(columnName, fieldValue);
-                break;
-            case RIGHT_LIKE:
-                queryWrapper.likeRight(columnName, fieldValue);
-                break;
-            case IN:
+            }
+            case LEFT_LIKE -> queryWrapper.likeLeft(columnName, fieldValue);
+            case INNER_LIKE -> queryWrapper.like(columnName, fieldValue);
+            case RIGHT_LIKE -> queryWrapper.likeRight(columnName, fieldValue);
+            case IN -> {
                 ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", fieldName);
                 queryWrapper.in(columnName, (List<Object>)fieldValue);
-                break;
-            case NOT_IN:
+            }
+            case NOT_IN -> {
                 ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", fieldName);
                 queryWrapper.notIn(columnName, (List<Object>)fieldValue);
-                break;
-            case IS_NULL:
-                queryWrapper.isNull(columnName);
-                break;
-            case IS_NOT_NULL:
-                queryWrapper.isNotNull(columnName);
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
+            }
+            case IS_NULL -> queryWrapper.isNull(columnName);
+            case IS_NOT_NULL -> queryWrapper.isNotNull(columnName);
+            default -> throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 @Schema(description = "用户详情信息")
 public class UserDetailResp extends BaseDetailResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

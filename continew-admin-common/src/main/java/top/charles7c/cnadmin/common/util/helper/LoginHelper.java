@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.common.util.helper;
 
 import java.time.LocalDateTime;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.extra.servlet.ServletUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConsts;
@@ -58,7 +58,7 @@ public class LoginHelper {
     public static String login(LoginUser loginUser) {
         // 记录登录信息
         HttpServletRequest request = ServletUtils.getRequest();
-        loginUser.setClientIp(ServletUtil.getClientIP(request));
+        loginUser.setClientIp(JakartaServletUtil.getClientIP(request));
         loginUser.setLocation(IpUtils.getCityInfo(loginUser.getClientIp()));
         loginUser.setBrowser(ServletUtils.getBrowser(request));
         LogContext logContext = LogContextHolder.get();

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.common.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import cn.hutool.core.collection.CollUtil;
 @Schema(description = "分页信息")
 public class PageDataResp<L> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

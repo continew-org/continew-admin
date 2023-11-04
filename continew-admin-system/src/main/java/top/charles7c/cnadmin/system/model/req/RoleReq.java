@@ -16,12 +16,13 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 @Schema(description = "创建或修改角色信息")
 public class RoleReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
