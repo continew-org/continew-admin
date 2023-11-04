@@ -1,3 +1,52 @@
+## [v1.3.0](https://github.com/Charles7c/continew-admin/compare/v1.2.0...v1.3.0) (2023-11-04)
+
+### ✨ 新特性
+
+* 消息管理：提供消息查看、标记已读、全部已读、删除等功能（适配对接导航栏站内信功能）
+* 新增头像上传前裁剪功能 ([Gitee#5](https://gitee.com/Charles7c/continew-admin/pulls/5)) ([cbc652d](https://gitee.com/Charles7c/continew-admin/commit/cbc652de77200d29bcd42bb399c86c2e7df29c4d)) ([28f4791](https://gitee.com/Charles7c/continew-admin/commit/28f4791833060469d132c4383665e81458f9c852))
+* 支持手机号登录（演示环境不开放） ([4d70bc8](https://github.com/Charles7c/continew-admin/commit/4d70bc84db47c36c13d8e41e3a33e5a589483de8))
+* 支持邮箱登录 ([17b169e](https://github.com/Charles7c/continew-admin/commit/17b169eb0ea2ded759b6bccb213c78bfb3425941))
+* 个人中心-安全设置，支持绑定、解绑三方账号 ([efe4557](https://github.com/Charles7c/continew-admin/commit/efe455736c158e73bf0c6514c31bec5d83fe843b))
+* 支持第三方账号登录 ([05cb609](https://github.com/Charles7c/continew-admin/commit/05cb60978017edbd14f1c7af83053f8a91800b5c))
+
+### 💎 功能优化
+
+- 新增接口文档菜单，演示环境开放接口文档 ([4a42336](https://github.com/Charles7c/continew-admin/commit/4a4233647f2ea212b007f591aafc50380b15c099))
+- 项目配置增加是否为生产环境配置项 ([38deb95](https://github.com/Charles7c/continew-admin/commit/38deb950ac7b2ed81f0e10816e943156aa076795))
+- 优化校验相关方法命名 ([f25de2d](https://github.com/Charles7c/continew-admin/commit/f25de2d7f835a3fa75d59d3de0a014c37b3b32e1))
+- 新增全局响应结果处理器 ([Gitee#3](https://gitee.com/Charles7c/continew-admin/pulls/3)) ([992a8fc](https://gitee.com/Charles7c/continew-admin/commit/992a8fca173ea76722b388aca462cff8a1128803)) ([Gitee#4](https://gitee.com/Charles7c/continew-admin/pulls/4)) ([a0b1afc](https://gitee.com/Charles7c/continew-admin/commit/a0b1afc546657766cb6031794b98ccc2b6e4cb2d))
+- 优化部分代码格式及注释 ([3a176ac](https://github.com/Charles7c/continew-admin/commit/3a176ac5efbda4aea1e883b29e68861bd352d642))
+- 重构登录页面 UI 以适配多维度认证、第三方登录等场景 ([d40d5b4](https://github.com/Charles7c/continew-admin/commit/d40d5b4ae61d858fbee3ffa0606ebebb4282d9a2)) ([a5a4cd4](https://github.com/Charles7c/continew-admin/commit/a5a4cd49646db3fa1108a8b917ef70c7757e81ad))
+- 升级前端依赖 ([698a725](https://github.com/Charles7c/continew-admin/commit/698a7251b742e6b679694f21bfc174904dca8990))
+  - Arco Design Vue 2.51.0 => 2.52.0
+  - vue-i18n 9.2.2 => 9.5.0
+  - dayjs 1.11.9 => 1.11.10
+
+- 升级后端依赖 ([698a725](https://github.com/Charles7c/continew-admin/commit/698a7251b742e6b679694f21bfc174904dca8990))
+  - Spring Boot 2.7.15 => 2.7.16
+  - Sa-Token 1.35.0.RC => 1.36.0
+  - Hutool 5.8.20 => 5.8.22
+
+
+### 🐛 问题修复
+
+- 开放前端项目IP访问 ([22a291d](https://github.com/Charles7c/continew-admin/commit/22a291d4cf48e33dc2415e44b5d991b46451e7eb))
+- 修复获取验证码倒计时显示 ([2f2905e](https://github.com/Charles7c/continew-admin/commit/2f2905efdc0baec2f2c38f686f72306394801ebf))
+- 用户邮箱信息增加脱敏处理 ([5bb35a1](https://github.com/Charles7c/continew-admin/commit/5bb35a13d6b5801317a295eacc67d88b2c3e1682))
+- 修复重载校验方法定义及使用错误 ([a1ccc42](https://github.com/Charles7c/continew-admin/commit/a1ccc421c440e5fef54e5d22b9bed26d2b16dda5))
+- 修复个人中心密码设置状态显示错误的问题 ([b04a228](https://github.com/Charles7c/continew-admin/commit/b04a228a1a5bc0a575dd9e29e515285708b8ca85))
+- 修复登录后访问首页却跳转到登录页面的问题 ([Fixes #23](https://github.com/Charles7c/continew-admin/issues/23)) ([7cf5e00](https://github.com/Charles7c/continew-admin/commit/7cf5e0018c87720303f731317b5eb3cb7d127327))
+- 修复字典名称表单校验 ([#22](https://github.com/Charles7c/continew-admin/pull/22)) ([c0ee2ea](https://github.com/Charles7c/continew-admin/commit/c0ee2eac026d2d5a950a41b6f0a475b95b71d47a))
+
+### 💥 破坏性变更
+
+- 调整后端请求、响应参数模型命名风格 ([87f9056](https://github.com/Charles7c/continew-admin/commit/87f90567dbd99f873aea1b85510c7b9939a2abb8))
+- 枚举接口 BaseEnum => IBaseEnum ([f5e8b09](https://github.com/Charles7c/continew-admin/commit/f5e8b0943c6076c476b7d78bb623707740fb452f))
+- 优化前端登录模块 API 路径 ([43590bf](https://github.com/Charles7c/continew-admin/commit/43590bf66e7e4873a85bdd416bd38b269f3af80e))
+- 优化后端部分参数模型命名 ([51f5528](https://github.com/Charles7c/continew-admin/commit/51f552892ccb11ed594bf908069a1fd426324b69))
+- 优化个人中心路由地址 ([36d52d3](https://github.com/Charles7c/continew-admin/commit/36d52d3e1522cd221cf3f03d76efd3e0eaf1b18f))
+- 还原前端 loginStore 命名，重命名为 userStore ([8d39493](https://github.com/Charles7c/continew-admin/commit/8d394937cfc8418799215bd3659d26bed1f834c5))
+
 ## [v1.2.0](https://github.com/Charles7c/continew-admin/compare/v1.1.2...v1.2.0) (2023-09-24)
 
 ### ✨ 新特性
