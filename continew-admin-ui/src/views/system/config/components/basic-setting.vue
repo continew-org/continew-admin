@@ -130,7 +130,7 @@
               v-permission="['system:config:reset']"
               @click="toResetValue"
             >
-              <template #icon><icon-redo /></template>恢复默认
+              <template #icon><icon-undo /></template>恢复默认
             </a-button>
             <a-button
               v-if="!isEdit"
@@ -160,7 +160,7 @@
               v-permission="['system:config:update']"
               @click="handleCancel"
             >
-              <template #icon><icon-redo /></template>取消
+              <template #icon><icon-undo /></template>取消
             </a-button>
           </a-space>
         </div>
