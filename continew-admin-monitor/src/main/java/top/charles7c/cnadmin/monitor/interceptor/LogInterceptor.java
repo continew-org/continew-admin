@@ -221,7 +221,7 @@ public class LogInterceptor implements HandlerInterceptor {
         String requestBody = this.getRequestBody(request);
         logDO.setCreateUser(ObjectUtil.defaultIfNull(logDO.getCreateUser(), LoginHelper.getUserId()));
         String requestURI = request.getRequestURI();
-        if (requestURI.startsWith("/auth") && !SysConsts.LOGOUT_URI.equals(requestURI)) {
+        if (requestURI.startsWith("/oauth")) {
             logDO.setCreateUser(null);
         }
         if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(requestURI)) {
