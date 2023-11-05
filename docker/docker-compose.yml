@@ -17,7 +17,7 @@ services:
       - /docker/mysql/conf:/etc/mysql
       - /docker/mysql/data:/var/lib/mysql
   redis:
-    image: redis:6.2.7
+    image: redis:7.2.3
     restart: always
     container_name: redis
     ports:
@@ -56,7 +56,7 @@ services:
       - redis
       - mariadb
   nginx:
-    image: nginx:1.22.1
+    image: nginx:1.25.3
     restart: always
     container_name: nginx
     ports:

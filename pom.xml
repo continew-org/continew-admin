@@ -39,31 +39,31 @@ limitations under the License.
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.5</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
-        <sa-token.version>1.36.0</sa-token.version>
+        <sa-token.version>1.37.0</sa-token.version>
 
         <!-- ### 持久层相关 ### -->
-        <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
-        <dynamic-ds.version>3.6.1</dynamic-ds.version>
+        <mybatis-plus.version>3.5.4</mybatis-plus.version>
+        <dynamic-ds.version>4.2.0</dynamic-ds.version>
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
         <sms4j.version>3.0.3</sms4j.version>
         <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
-        <ip2region.version>2.7.15</ip2region.version>
+        <ip2region.version>3.1.5.1</ip2region.version>
         <knife4j.version>4.3.0</knife4j.version>
-        <redisson.version>3.20.1</redisson.version>
+        <redisson.version>3.24.3</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.22</hutool.version>
 
         <!-- ### 基础环境相关 ### -->
         <revision>2.0.0-SNAPSHOT</revision>
-        <spotless.version>2.30.0</spotless.version>
+        <spotless.version>2.40.0</spotless.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -95,14 +95,14 @@ limitations under the License.
             <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
 
             <!-- Dynamic Datasource（基于 Spring Boot 的快速集成多数据源的启动器） -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
                 <version>${dynamic-ds.version}</version>
             </dependency>
 

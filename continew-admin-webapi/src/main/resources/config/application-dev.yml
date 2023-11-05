@@ -69,7 +69,8 @@ spring.data:
     # 连接超时时间
     timeout: 10s
     # 是否开启 SSL
-    ssl: false
+    ssl:
+      enabled: false
   ## Spring Cache 配置
   cache:
     redis:
