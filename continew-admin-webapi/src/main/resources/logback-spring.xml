@@ -6,6 +6,9 @@
 <!-- debug：当此属性设置为 true 时，将打印出 logback 内部日志信息，实时查看 logback 运行状态。默认值为 false。 -->
 <configuration debug="false" scan="true" scanPeriod="30 seconds">
 
+    <!-- 关闭 Logback 的状态监听器（通过更换默认状态监听器实现） -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
     <!-- 应用名 -->
     <springProperty name="APP_NAME" source="spring.application.name" scope="context" />
     <!-- 保存路径 -->
