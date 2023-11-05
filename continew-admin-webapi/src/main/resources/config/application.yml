@@ -58,7 +58,9 @@ springdoc:
       packages-to-scan: ${project.basePackage}.webapi.controller
     - group: 'auth'
       display-name: '系统认证'
-      paths-to-match: '/auth/**'
+      paths-to-match:
+        - '/auth/**'
+        - '/oauth/**'
       packages-to-scan: ${project.basePackage}.webapi.controller.auth
     - group: 'common'
       display-name: '通用接口'
