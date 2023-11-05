@@ -135,16 +135,16 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
         if (detailObj instanceof RoleDetailResp) {
-            RoleDetailResp detailVO = (RoleDetailResp)detailObj;
-            Long roleId = detailVO.getId();
-            if (SysConsts.ADMIN_ROLE_CODE.equals(detailVO.getCode())) {
+            RoleDetailResp detail = (RoleDetailResp)detailObj;
+            Long roleId = detail.getId();
+            if (SysConsts.ADMIN_ROLE_CODE.equals(detail.getCode())) {
                 List<MenuResp> list = menuService.list(null, null);
                 List<Long> menuIds = list.stream().map(MenuResp::getId).collect(Collectors.toList());
-                detailVO.setMenuIds(menuIds);
+                detail.setMenuIds(menuIds);
             } else {
-                detailVO.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
+                detail.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
             }
-            detailVO.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
+            detail.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
         }
     }
 
