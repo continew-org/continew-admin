@@ -40,17 +40,17 @@ import App from './App.vue';
 import '@/assets/style/global.less';
 import '@/utils/request';
 
-VueMarkdownEditor.use(createEmojiPlugin());
-VueMarkdownEditor.use(createCopyCodePlugin());
-VueMarkdownEditor.use(createTodoListPlugin());
-hljs.registerLanguage('json', json);
-hljs.registerLanguage('java', java);
 VueMarkdownEditor.use(githubTheme, {
   Hljs: hljs,
 });
 VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
+VueMarkdownEditor.use(createEmojiPlugin());
+VueMarkdownEditor.use(createCopyCodePlugin());
+VueMarkdownEditor.use(createTodoListPlugin());
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('java', java);
 
 const app = createApp(App);
 // 全局方法挂载
