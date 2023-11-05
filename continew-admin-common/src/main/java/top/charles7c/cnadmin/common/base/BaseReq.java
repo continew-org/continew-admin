@@ -19,8 +19,6 @@ package top.charles7c.cnadmin.common.base;
 import java.io.Serial;
 import java.io.Serializable;
 
-import jakarta.validation.groups.Default;
-
 import lombok.Data;
 
 /**

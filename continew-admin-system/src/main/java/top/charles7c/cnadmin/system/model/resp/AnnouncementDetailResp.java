@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -38,6 +39,7 @@ import top.charles7c.cnadmin.common.base.BaseDetailResp;
 @Schema(description = "公告详情信息")
 public class AnnouncementDetailResp extends BaseDetailResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

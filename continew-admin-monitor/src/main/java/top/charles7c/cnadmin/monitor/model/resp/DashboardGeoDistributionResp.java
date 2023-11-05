@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "仪表盘-访客地域分布信息")
 public class DashboardGeoDistributionResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

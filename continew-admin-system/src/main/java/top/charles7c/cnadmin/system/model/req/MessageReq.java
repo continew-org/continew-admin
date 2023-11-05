@@ -16,8 +16,10 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.io.Serial;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -38,6 +40,7 @@ import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 @Schema(description = "创建消息信息")
 public class MessageReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

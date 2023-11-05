@@ -16,6 +16,7 @@
 
 package ${packageName}.${subPackageName};
 
+import java.io.Serial;
 import java.io.Serializable;
 <#if hasLocalDateTime>
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 @Schema(description = "${businessName}查询条件")
 public class ${className} implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>

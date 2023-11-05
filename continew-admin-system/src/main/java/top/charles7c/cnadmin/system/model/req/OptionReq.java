@@ -16,7 +16,9 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
-import javax.validation.constraints.NotBlank;
+import java.io.Serial;
+
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 
@@ -36,6 +38,7 @@ import top.charles7c.cnadmin.common.base.BaseReq;
 @Schema(description = "修改参数信息")
 public class OptionReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

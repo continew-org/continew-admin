@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -37,6 +38,7 @@ import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 @Schema(description = "消息信息")
 public class MessageResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

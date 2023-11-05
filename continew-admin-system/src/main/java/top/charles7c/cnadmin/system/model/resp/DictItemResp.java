@@ -16,6 +16,8 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +34,7 @@ import top.charles7c.cnadmin.common.base.BaseResp;
 @Schema(description = "字典项信息")
 public class DictItemResp extends BaseResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

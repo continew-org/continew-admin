@@ -16,10 +16,11 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -39,6 +40,7 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 @Schema(description = "用户手机号修改信息")
 public class UserPhoneUpdateReq implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

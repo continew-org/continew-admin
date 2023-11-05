@@ -16,9 +16,10 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 import lombok.Data;
 
@@ -38,6 +39,7 @@ import top.charles7c.cnadmin.common.base.BaseReq;
 @Schema(description = "创建或修改公告信息")
 public class AnnouncementReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

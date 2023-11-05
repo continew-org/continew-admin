@@ -16,6 +16,7 @@
 
 package ${packageName}.${subPackageName};
 
+import java.io.Serial;
 <#if hasLocalDateTime>
 import java.time.LocalDateTime;
 </#if>
@@ -39,6 +40,7 @@ import top.charles7c.cnadmin.common.base.BaseDO;
 @TableName("${tableName}")
 public class ${className} extends BaseDO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>

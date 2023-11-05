@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -36,6 +37,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("sys_option")
 public class OptionDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,10 +16,11 @@
 
 package top.charles7c.cnadmin.system.model.query;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 import lombok.Data;
 
@@ -38,6 +39,7 @@ import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 @Schema(description = "参数查询条件")
 public class OptionQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

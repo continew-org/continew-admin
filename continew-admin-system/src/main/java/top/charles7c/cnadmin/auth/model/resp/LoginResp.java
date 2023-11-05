@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.auth.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Builder;
@@ -34,6 +35,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "令牌信息")
 public class LoginResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

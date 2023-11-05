@@ -16,12 +16,13 @@
 
 package top.charles7c.cnadmin.tool.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -51,6 +52,7 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 @Schema(description = "生成配置信息")
 public class GenConfigDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

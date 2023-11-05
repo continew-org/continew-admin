@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.hutool.core.collection.CollUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +64,6 @@ public class QueryHelper {
         if (null == query) {
             return queryWrapper;
         }
-
         // 获取查询条件中所有的字段
         List<Field> fieldList = ReflectUtils.getNonStaticFields(query.getClass());
         fieldList.forEach(field -> buildQuery(query, field, queryWrapper));
@@ -87,7 +85,7 @@ public class QueryHelper {
      *            查询数据类型
      */
     private static <Q, R> void buildQuery(Q query, Field field, QueryWrapper<R> queryWrapper) {
-        boolean accessible = field.canAccess(null);
+        boolean accessible = field.canAccess(query);
         try {
             field.setAccessible(true);
             // 没有 @Query，直接返回

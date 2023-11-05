@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.tool.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -33,6 +34,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "表信息")
 public class TableResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

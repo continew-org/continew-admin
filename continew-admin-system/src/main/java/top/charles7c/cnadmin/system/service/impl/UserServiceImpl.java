@@ -153,7 +153,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
         if (detailObj instanceof UserDetailResp detail) {
-            UserDetailResp detail = (UserDetailResp)detailObj;
             detail.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detail.getDeptId()).getName()));
             List<Long> roleIdList = userRoleService.listRoleIdByUserId(detail.getId());
             detail.setRoleIds(roleIdList);

@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@master
         with:
           distribution: 'adopt'
-          java-version: '8'
+          java-version: '17'
           cache: 'maven'
       # 3、打包
       - name: Build

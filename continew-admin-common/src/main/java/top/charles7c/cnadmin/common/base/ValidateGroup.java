@@ -16,7 +16,7 @@
 
 package top.charles7c.cnadmin.common.base;
 
-import javax.validation.groups.Default;
+import jakarta.validation.groups.Default;
 
 /**
  * 分组校验

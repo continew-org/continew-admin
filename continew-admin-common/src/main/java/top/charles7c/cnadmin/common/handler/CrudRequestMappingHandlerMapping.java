@@ -16,18 +16,20 @@
 
 package top.charles7c.cnadmin.common.handler;
 
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
+import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
+
+import java.lang.reflect.Method;
+
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
-
-import java.lang.reflect.Method;
-
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
 
 /**
  * CRUD 请求映射器处理器映射器

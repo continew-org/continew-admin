@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -36,6 +37,7 @@ import cn.hutool.core.util.StrUtil;
 @Schema(description = "参数信息")
 public class OptionResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

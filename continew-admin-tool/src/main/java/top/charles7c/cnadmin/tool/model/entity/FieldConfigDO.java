@@ -16,10 +16,11 @@
 
 package top.charles7c.cnadmin.tool.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,7 @@ import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
 @Schema(description = "字段配置信息")
 public class FieldConfigDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

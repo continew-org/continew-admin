@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -34,6 +35,7 @@ import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 @Schema(description = "各类型未读消息信息")
 public class MessageTypeUnreadResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

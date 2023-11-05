@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -38,6 +39,7 @@ import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 @TableName("sys_message")
 public class MessageDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

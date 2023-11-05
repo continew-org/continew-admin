@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.entity;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -34,6 +35,7 @@ import top.charles7c.cnadmin.common.base.BaseDO;
 @TableName("sys_announcement")
 public class AnnouncementDO extends BaseDO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

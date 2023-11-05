@@ -1,4 +1,4 @@
-FROM java:8
+FROM openjdk:17
 
 MAINTAINER Charles7c charles7c@126.com
 

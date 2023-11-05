@@ -16,12 +16,13 @@
 
 package top.charles7c.cnadmin.tool.model.req;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -40,6 +41,7 @@ import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 @Schema(description = "代码生成配置信息")
 public class GenConfigReq implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

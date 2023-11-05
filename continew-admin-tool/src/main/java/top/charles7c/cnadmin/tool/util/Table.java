@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.tool.util;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -32,6 +33,7 @@ import lombok.Setter;
 @Setter
 public class Table implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.Data;
@@ -32,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "第三方账号绑定信息")
 public class UserSocialBindResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

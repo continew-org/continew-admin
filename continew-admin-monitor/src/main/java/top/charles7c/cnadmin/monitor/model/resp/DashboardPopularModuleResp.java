@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.monitor.model.resp;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -35,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Schema(description = "仪表盘-热门模块信息")
 public class DashboardPopularModuleResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

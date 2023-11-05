@@ -16,7 +16,9 @@
 
 package top.charles7c.cnadmin.system.model.req;
 
-import javax.validation.constraints.*;
+import java.io.Serial;
+
+import jakarta.validation.constraints.*;
 
 import lombok.Data;
 
@@ -37,6 +39,7 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 @Schema(description = "创建或修改字典信息")
 public class DictReq extends BaseReq {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

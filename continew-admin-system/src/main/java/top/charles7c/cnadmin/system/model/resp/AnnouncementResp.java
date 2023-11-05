@@ -16,6 +16,7 @@
 
 package top.charles7c.cnadmin.system.model.resp;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -35,6 +36,7 @@ import top.charles7c.cnadmin.system.enums.AnnouncementStatusEnum;
 @Schema(description = "公告信息")
 public class AnnouncementResp extends BaseResp {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

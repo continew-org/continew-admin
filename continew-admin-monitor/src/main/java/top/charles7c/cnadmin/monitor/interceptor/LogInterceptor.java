@@ -247,7 +247,7 @@ public class LogInterceptor implements HandlerInterceptor {
         }
         logDO.setClientIp(JakartaServletUtil.getClientIP(request));
         logDO.setLocation(IpUtils.getCityInfo(logDO.getClientIp()));
-        logDO.setBrowser(JakartaServletUtil.getBrowser(request));
+        logDO.setBrowser(ServletUtils.getBrowser(request));
     }
 
     /**

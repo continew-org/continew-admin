@@ -250,7 +250,6 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseDO,
     public void fillDetail(Object detailObj) {
         if (detailObj instanceof BaseDetailResp detail) {
             this.fill(detail);
-
             Long updateUser = detail.getUpdateUser();
             if (null == updateUser) {
                 return;
