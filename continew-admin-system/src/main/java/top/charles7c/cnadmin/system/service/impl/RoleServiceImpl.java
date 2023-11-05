@@ -92,7 +92,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         RoleDO oldRole = super.getById(id);
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         String oldCode = oldRole.getCode();
-        if (oldRole.getIsSystem()) {
+        if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用",
                 oldRole.getName());
             CheckUtils.throwIfNotEqual(req.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
@@ -152,7 +152,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>(0);
         }
-        return list.stream().map(r -> new LabelValueResp<>(r.getName(), r.getId())).collect(Collectors.toList());
+        return list.stream().map(r -> new LabelValueResp<>(r.getName(), r.getId())).toList();
     }
 
     @Override

@@ -82,7 +82,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         String oldName = oldDept.getName();
         DisEnableStatusEnum newStatus = req.getStatus();
         Long oldParentId = oldDept.getParentId();
-        if (oldDept.getIsSystem()) {
+        if (Boolean.TRUE.equals(oldDept.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用", oldName);
             CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
         }

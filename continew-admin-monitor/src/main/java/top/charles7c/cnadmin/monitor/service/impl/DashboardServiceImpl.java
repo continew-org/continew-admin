@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.monitor.service.impl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -91,8 +90,7 @@ public class DashboardServiceImpl implements DashboardService {
         List<Map<String, Object>> locationIpStatistics = logService.listDashboardGeoDistribution();
         DashboardGeoDistributionResp geoDistribution = new DashboardGeoDistributionResp();
         geoDistribution.setLocationIpStatistics(locationIpStatistics);
-        geoDistribution.setLocations(
-            locationIpStatistics.stream().map(m -> Convert.toStr(m.get("name"))).collect(Collectors.toList()));
+        geoDistribution.setLocations(locationIpStatistics.stream().map(m -> Convert.toStr(m.get("name"))).toList());
         return geoDistribution;
     }
 
