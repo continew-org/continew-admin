@@ -1,3 +1,8 @@
+--- ### 项目配置
+project:
+  # URL
+  url: http://localhost:5173
+
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）
