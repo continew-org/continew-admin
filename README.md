@@ -23,7 +23,7 @@
 
 ## 简介
 
-ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续以最新流行技术栈构建，拥抱变化，迭代优化。在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。当前采用的技术栈：Vue3、Spring Boot3（JDK17）、TypeScript、Arco Design Vue、Undertow、Sa-Token、JWT、MariaDB、MyBatis Plus、Redis、Redisson、Easy Excel、Hutool 等。
+ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续以最新流行技术栈构建，拥抱变化，迭代优化。在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、Liquibase、JustAuth、Easy Excel、Hutool、TypeScript、Vite4 等。
 
 ## 项目源码
 
@@ -224,10 +224,11 @@ pnpm dev
 
 | 名称                                                         | 版本         | 简介                                                         |
 | :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.52.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.5        | 简化新 Spring 应用的初始搭建以及开发过程。                   |
+| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.7        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.53.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.2.2        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://cn.vitejs.dev/" target="_blank">Vite</a>    | 4.5.0        | 下一代的前端工具链，为开发提供极速响应。                     |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.5        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | <a href="https://mariadb.org/" target="_blank">MariaDB</a>   | 11.1.2       | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |

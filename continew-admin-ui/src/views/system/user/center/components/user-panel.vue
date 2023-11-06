@@ -177,7 +177,7 @@
    * 上传头像
    */
   const handleUpload = () => {
-    cropperRef.value.getCropBlob((data: string | Blob) => {
+    cropperRef.value.getCropBlob((data: any) => {
       const formData = new FormData();
       formData.append('avatarFile', data, fileRef.value?.name);
       uploadAvatar(formData).then((res) => {
