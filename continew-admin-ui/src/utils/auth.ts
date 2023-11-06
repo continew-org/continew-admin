@@ -22,8 +22,11 @@ const setTimer = (timer: number) => {
 };
 
 const clearTimer = () => {
-  clearInterval(Number(localStorage.getItem(TIMER_KEY)));
-  localStorage.removeItem(TIMER_KEY);
+  const timer = localStorage.getItem(TIMER_KEY);
+  if (timer) {
+    clearInterval(Number(timer));
+    localStorage.removeItem(TIMER_KEY);
+  }
 };
 
 export { isLogin, getToken, setToken, clearToken, setTimer, clearTimer };

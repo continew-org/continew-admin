@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { useUserStore } from '@/store';
-import { getToken } from '@/utils/auth';
+import { getToken, clearTimer } from '@/utils/auth';
 import modalErrorWrapper from '@/utils/modal-error-wrapper';
 import messageErrorWrapper from '@/utils/message-error-wrapper';
 
@@ -33,7 +33,7 @@ axios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // response interceptors
@@ -51,8 +51,7 @@ axios.interceptors.response.use(
       return res;
     }
     if ([401].includes(res.code) && response.config.url !== '/auth/user/info') {
-      const userStore = useUserStore();
-      userStore.logout();
+      clearTimer();
       modalErrorWrapper({
         title: '确认退出',
         content: res.msg,
@@ -60,6 +59,8 @@ axios.interceptors.response.use(
         escToClose: false,
         okText: '重新登录',
         async onOk() {
+          const userStore = useUserStore();
+          userStore.logout();
           window.location.reload();
         },
       });
@@ -77,5 +78,5 @@ axios.interceptors.response.use(
       duration: 5 * 1000,
     });
     return Promise.reject(error);
-  }
+  },
 );
