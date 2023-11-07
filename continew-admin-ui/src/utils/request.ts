@@ -60,7 +60,7 @@ axios.interceptors.response.use(
         okText: '重新登录',
         async onOk() {
           const userStore = useUserStore();
-          userStore.logout();
+          userStore.logoutCallBack();
           window.location.reload();
         },
       });
