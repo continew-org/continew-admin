@@ -60,7 +60,7 @@
   const { chartOption } = useChartOption((isDark) => {
     return {
       grid: {
-        left: '30',
+        left: '38',
         right: '0',
         top: '10',
         bottom: '50',
@@ -114,6 +114,9 @@
         axisLabel: {
           formatter(value: any, idx: number) {
             if (idx === 0) return value;
+            if (value >= 1000) {
+              return `${value / 1000}k`;
+            }
             return `${value}`;
           },
         },
