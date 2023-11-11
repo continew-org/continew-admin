@@ -28,7 +28,7 @@ services:
       - /docker/redis/conf/redis.conf:/usr/local/redis/config/redis.conf
       - /docker/redis/data:/data
       - /docker/redis/logs:/logs
-    command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 123456'
+    command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 你的 Redis 密码'
   continew-admin-server:
     build: ./continew-admin
     restart: always
@@ -67,5 +67,5 @@ services:
     volumes:
       - /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
       - /docker/nginx/cert:/etc/nginx/cert
-      - /docker/continew-admin/web:/usr/share/nginx/html
       - /docker/nginx/logs:/var/log/nginx
+      - /docker/continew-admin/web:/usr/share/nginx/html
