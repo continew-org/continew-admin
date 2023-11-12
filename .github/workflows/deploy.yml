@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           local: ./continew-admin-webapi/target/app
           remote: /docker/continew-admin
-      # 5、启动后端服务
+      # 5、启动
       - name: Start
         uses: appleboy/ssh-action@master
         with:
@@ -46,7 +46,7 @@ jobs:
           script: |
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
-            docker images  | grep none | awk '{print $3}' | xargs docker rmi
+            docker images | grep none | awk '{print $3}' | xargs docker rmi
 
   # 部署前端
   deploy-web:
@@ -85,7 +85,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           local: ./continew-admin-ui/dist
           remote: /docker/continew-admin/tmp
-      # 7、重启前端服务
+      # 7、重启 Nginx
       - name: Restart
         uses: appleboy/ssh-action@master
         with:
@@ -94,6 +94,6 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            rm -rf /docker/continew-admin/web/*
-            mv /docker/continew-admin/tmp/* /docker/continew-admin/web
+            rm -rf /docker/continew-admin/html/*
+            mv /docker/continew-admin/tmp/* /docker/continew-admin/html
             docker restart nginx

@@ -186,7 +186,7 @@ git clone https://github.com/Charles7c/continew-admin.git
 #   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
 #   5.1.2 执行 mvn package 进行项目打包，将 target/app 目录下的所有内容放到 /docker/continew-admin 目录下
 #   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   5.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
+#   5.1.4 修改 docker-compose.yml 中的 MySQL 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
 #   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
 # 5.2 其他方式部署
 ```
@@ -215,7 +215,7 @@ pnpm dev
 #   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
 #   6.1.2 执行 pnpm build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/web 目录下
 #   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   6.1.4 修改 docker-compose.yml 中的 MariaDB 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
+#   6.1.4 修改 docker-compose.yml 中的 MySQL 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
 #   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
 # 6.2 其他方式部署
 ```
@@ -231,15 +231,15 @@ pnpm dev
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.5        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://mariadb.org/" target="_blank">MariaDB</a>   | 11.1.2       | MySQL 的一个分支，主要由开源社区在维护，完全兼容 MySQL，包括 API 和命令行，能轻松成为 MySQL 的代替品。 |
 | <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.4        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.2.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
 | Hikari                                                       | 5.0.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
 | <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33       | MySQL Java 驱动。                                            |
 | <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.24.3       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
+| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.3        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.5       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |

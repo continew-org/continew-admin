@@ -1,9 +1,9 @@
 version: '3'
 services:
-  mariadb:
-    image: mariadb
+  mysql:
+    image: mysql:8.0.33
     restart: always
-    container_name: mariadb
+    container_name: mysql
     ports:
       - '3306:3306'
     environment:
@@ -14,8 +14,14 @@ services:
       #MYSQL_USER: 你的数据库用户名
       #MYSQL_PASSWORD: 你的数据库密码
     volumes:
-      - /docker/mysql/conf:/etc/mysql
-      - /docker/mysql/data:/var/lib/mysql
+      - /docker/mysql/conf/:/etc/mysql/conf.d/
+      - /docker/mysql/data/:/var/lib/mysql/
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
   redis:
     image: redis:7.2.3
     restart: always
@@ -26,9 +32,9 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - /docker/redis/conf/redis.conf:/usr/local/redis/config/redis.conf
-      - /docker/redis/data:/data
-      - /docker/redis/logs:/logs
-    command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 123456'
+      - /docker/redis/data/:/data/
+      - /docker/redis/logs/:/logs/
+    command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 你的 Redis 密码'
   continew-admin-server:
     build: ./continew-admin
     restart: always
@@ -47,14 +53,14 @@ services:
       REDIS_PWD: 你的 Redis 密码
       REDIS_DB: 你的 Redis 数据库索引
     volumes:
-      - /docker/continew-admin/config:/app/config
-      - /docker/continew-admin/data/file:/app/data/file
-      - /docker/continew-admin/data/avatar:/app/data/avatar
-      - /docker/continew-admin/logs:/app/logs
-      - /docker/continew-admin/lib:/app/lib
+      - /docker/continew-admin/config/:/app/config/
+      - /docker/continew-admin/data/file/:/app/data/file/
+      - /docker/continew-admin/data/avatar/:/app/data/avatar/
+      - /docker/continew-admin/logs/:/app/logs/
+      - /docker/continew-admin/lib/:/app/lib/
     depends_on:
       - redis
-      - mariadb
+      - mysql
   nginx:
     image: nginx:1.25.3
     restart: always
@@ -66,6 +72,7 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
-      - /docker/nginx/cert:/etc/nginx/cert
-      - /docker/continew-admin/web:/usr/share/nginx/html
-      - /docker/nginx/logs:/var/log/nginx
+      - /docker/nginx/cert/:/etc/nginx/cert/
+      - /docker/nginx/logs/:/var/log/nginx/
+      # 前端页面目录
+      - /docker/continew-admin/html/:/usr/share/nginx/html/
