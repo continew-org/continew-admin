@@ -734,7 +734,7 @@
             handleCancel();
             getList();
             proxy.$message.success(res.msg);
-          }
+          },
         );
       }
     });

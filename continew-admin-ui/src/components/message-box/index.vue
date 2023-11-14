@@ -87,9 +87,8 @@
    * @param type 消息类型
    */
   const formatUnreadCount = (type: number) => {
-    const count = unreadCount.value?.details.find(
-      (item) => item.type === type
-    )?.count;
+    const count = unreadCount.value?.details.find((item) => item.type === type)
+      ?.count;
     return count && count !== 0 ? `(${count})` : '';
   };
 

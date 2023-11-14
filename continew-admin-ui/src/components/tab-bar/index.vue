@@ -43,7 +43,7 @@
     () => appStore.navbar,
     () => {
       affixRef.value.updatePosition();
-    }
+    },
   );
   listenerRouteChange((route: RouteLocationNormalized) => {
     if (

@@ -44,19 +44,19 @@ export function getTotal() {
 
 export function listAccessTrend(days: number) {
   return axios.get<DashboardAccessTrendRecord[]>(
-    `${BASE_URL}/access/trend/${days}`
+    `${BASE_URL}/access/trend/${days}`,
   );
 }
 
 export function listPopularModule() {
   return axios.get<DashboardPopularModuleRecord[]>(
-    `${BASE_URL}/popular/module`
+    `${BASE_URL}/popular/module`,
   );
 }
 
 export function getGeoDistribution() {
   return axios.get<DashboardGeoDistributionRecord>(
-    `${BASE_URL}/geo/distribution`
+    `${BASE_URL}/geo/distribution`,
   );
 }
 

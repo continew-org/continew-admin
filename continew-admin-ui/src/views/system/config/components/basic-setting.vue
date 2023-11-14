@@ -228,16 +228,16 @@
     const res = await list(params);
     dataList.value = res.data;
     siteTitle.value = dataList.value.find(
-      (option) => option.code === 'site_title'
+      (option) => option.code === 'site_title',
     );
     siteCopyright.value = dataList.value.find(
-      (option) => option.code === 'site_copyright'
+      (option) => option.code === 'site_copyright',
     );
     siteLogo.value = dataList.value.find(
-      (option) => option.code === 'site_logo'
+      (option) => option.code === 'site_logo',
     );
     siteFavicon.value = dataList.value.find(
-      (option) => option.code === 'site_favicon'
+      (option) => option.code === 'site_favicon',
     );
     reset();
   };
@@ -262,7 +262,7 @@
               code: item[0],
               value: item[1],
             };
-          }
+          },
         );
         save(optionList).then((res) => {
           appStore.save(form.value);

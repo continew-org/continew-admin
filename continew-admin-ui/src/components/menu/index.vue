@@ -73,7 +73,7 @@
         const { requiresAuth, activeMenu, hideInMenu } = newRoute.meta;
         if (requiresAuth && (!hideInMenu || activeMenu)) {
           const menuOpenKeys = findMenuOpenKeys(
-            (activeMenu || newRoute.name) as string
+            (activeMenu || newRoute.name) as string,
           );
 
           const keySet = new Set([...menuOpenKeys, ...openKeys.value]);
@@ -97,7 +97,9 @@
               const icon = element?.meta?.icon
                 ? () =>
                     h(
-                      compile(`<svg-icon icon-class="${element?.meta?.icon}"/>`)
+                      compile(
+                        `<svg-icon icon-class="${element?.meta?.icon}"/>`,
+                      ),
                     )
                 : null;
               const node =

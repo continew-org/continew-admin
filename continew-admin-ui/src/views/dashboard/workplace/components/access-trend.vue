@@ -48,7 +48,7 @@
         <span class="tooltip-value">
         ${el.value}
         </span>
-      </div>`
+      </div>`,
       )
       .join('');
   };

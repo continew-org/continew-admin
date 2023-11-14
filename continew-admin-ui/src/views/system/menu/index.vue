@@ -539,7 +539,7 @@
       record.children.forEach((r) => {
         rowKeys.splice(
           rowKeys.findIndex((key: number | undefined) => key === r.id),
-          1
+          1,
         );
         proxy.$refs.tableRef.select(r.id, false);
         if (r.children) {

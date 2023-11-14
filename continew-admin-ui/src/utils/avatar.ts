@@ -4,7 +4,7 @@ import Female from '../assets/images/avatar/female.png';
 
 export default function getAvatar(
   avatar: string | undefined,
-  gender: number | undefined
+  gender: number | undefined,
 ) {
   if (avatar) {
     const baseUrl = import.meta.env.VITE_API_BASE_URL;

@@ -378,7 +378,7 @@
    */
   const handleSelectionChange = (rowKeys: Array<any>) => {
     const unReadMessageList = dataList.value.filter(
-      (item) => rowKeys.indexOf(item.id) !== -1 && !item.isRead
+      (item) => rowKeys.indexOf(item.id) !== -1 && !item.isRead,
     );
     readMultiple.value = !unReadMessageList.length;
     ids.value = rowKeys;

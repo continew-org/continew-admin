@@ -92,7 +92,7 @@
     (roleValue) => {
       if (roleValue && !permission.accessRouter(route))
         router.push({ name: 'notFound' });
-    }
+    },
   );
   const drawerVisible = ref(false);
   const drawerCancel = () => {

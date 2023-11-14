@@ -7,7 +7,9 @@
   >
     <a-carousel-item v-for="(src, idx) in imageSrc" :key="idx">
       <div style="padding: 10px 30px 15px">
-        <div style="margin-bottom: 5px; text-align: center">相互 (huá shuǐ) 交流 (mō yú)</div>
+        <div style="margin-bottom: 5px; text-align: center"
+          >相互 (huá shuǐ) 交流 (mō yú)</div
+        >
         <img :src="src" style="width: 100%" alt="QrCode" />
         <div style="text-align: center">扫码加VX，备注 cnadmin 进群</div>
       </div>

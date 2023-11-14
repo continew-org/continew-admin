@@ -439,7 +439,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { data_scope_enum, dis_enable_status_enum } = proxy.useDict(
     'data_scope_enum',
-    'dis_enable_status_enum'
+    'dis_enable_status_enum',
   );
 
   const dataList = ref<DataRecord[]>([]);
@@ -616,7 +616,7 @@
     // 获取半选中的菜单
     const halfCheckedNodes = proxy.$refs.menuRef.getHalfCheckedNodes();
     const halfCheckedKeys = halfCheckedNodes.map(
-      (item: TreeNodeData) => item.key
+      (item: TreeNodeData) => item.key,
     );
     // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
@@ -637,7 +637,7 @@
     // 获取半选中的部门
     const halfCheckedNodes = proxy.$refs.deptRef.getHalfCheckedNodes();
     const halfCheckedKeys = halfCheckedNodes.map(
-      (item: TreeNodeData) => item.key
+      (item: TreeNodeData) => item.key,
     );
     // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);

@@ -355,7 +355,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { announcement_type, announcement_status_enum } = proxy.useDict(
     'announcement_type',
-    'announcement_status_enum'
+    'announcement_status_enum',
   );
 
   const dataList = ref<DataRecord[]>([]);
@@ -552,7 +552,7 @@
       .download(
         '/system/announcement/export',
         { ...queryParams.value },
-        '公告数据'
+        '公告数据',
       )
       .finally(() => {
         exportLoading.value = false;

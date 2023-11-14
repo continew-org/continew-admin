@@ -92,7 +92,7 @@
 
   const { proxy } = getCurrentInstance() as any;
   const { success_failure_status_enum } = proxy.useDict(
-    'success_failure_status_enum'
+    'success_failure_status_enum',
   );
 
   const loginLogList = ref<LoginLogRecord[]>([]);

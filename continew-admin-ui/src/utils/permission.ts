@@ -27,6 +27,6 @@ export default function checkPermission(value: Array<string>) {
     return hasPermission || hasRole;
   }
   throw new Error(
-    `need roles! Like v-permission="['admin','system:user:add']"`
+    `need roles! Like v-permission="['admin','system:user:add']"`,
   );
 }

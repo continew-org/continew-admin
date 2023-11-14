@@ -69,7 +69,7 @@
             <template #cell="{ record }">
               <span :title="decodeURIComponent(record.requestUrl)">{{
                 record.requestUrl.match(
-                  /(\w+):\/\/([^/:]+)(:\d*)?([^#|\?|\n]*)(\?.*)?/
+                  /(\w+):\/\/([^/:]+)(:\d*)?([^#|\?|\n]*)(\?.*)?/,
                 )[4]
               }}</span>
             </template>

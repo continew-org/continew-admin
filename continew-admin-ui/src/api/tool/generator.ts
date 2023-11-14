@@ -48,7 +48,7 @@ export interface FieldConfigRecord {
 
 export function listFieldConfig(tableName: string, requireSync: boolean) {
   return axios.get<FieldConfigRecord[]>(
-    `${BASE_URL}/field/${tableName}?requireSync=${requireSync}`
+    `${BASE_URL}/field/${tableName}?requireSync=${requireSync}`,
   );
 }
 

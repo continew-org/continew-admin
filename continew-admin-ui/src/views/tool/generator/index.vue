@@ -279,7 +279,7 @@
   const { proxy } = getCurrentInstance() as any;
   const { form_type_enum, query_type_Enum } = proxy.useDict(
     'form_type_enum',
-    'query_type_Enum'
+    'query_type_Enum',
   );
 
   const tableList = ref<TableRecord[]>([]);
@@ -337,7 +337,7 @@
    */
   const toConfig = (tableName: string) => {
     let tableComment = tableList.value.filter(
-      (t) => t.tableName === tableName
+      (t) => t.tableName === tableName,
     )[0].comment;
     tableComment = tableComment ? `（${tableComment}）` : ' ';
     title.value = `${tableName}${tableComment}配置`;
