@@ -48,7 +48,7 @@ setupMock({
             { name: '视频类', value: 40, itemStyle: { color: '#00B2FF' } },
           ],
         });
-      }
+      },
     );
 
     Mock.mock(new RegExp('/api/content-period-analysis'), () => {

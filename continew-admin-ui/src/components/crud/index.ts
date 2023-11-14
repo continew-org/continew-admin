@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 export default function download(
   url: string,
   params: any,
-  fileName: string | undefined
+  fileName: string | undefined,
 ) {
   return axios
     .get(url, {

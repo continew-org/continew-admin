@@ -2,7 +2,7 @@ export function addEventListen(
   target: Window | HTMLElement,
   event: string,
   handler: EventListenerOrEventListenerObject,
-  capture = false
+  capture = false,
 ) {
   if (
     target.addEventListener &&
@@ -16,7 +16,7 @@ export function removeEventListen(
   target: Window | HTMLElement,
   event: string,
   handler: EventListenerOrEventListenerObject,
-  capture = false
+  capture = false,
 ) {
   if (
     target.removeEventListener &&

@@ -159,7 +159,7 @@ setupMock({
         qualityInspectionList.map((_, index) => ({
           ...qualityInspectionList[index % qualityInspectionList.length],
           id: Mock.Random.guid(),
-        }))
+        })),
       );
     });
 
@@ -169,7 +169,7 @@ setupMock({
         theServiceList.map((_, index) => ({
           ...theServiceList[index % theServiceList.length],
           id: Mock.Random.guid(),
-        }))
+        })),
       );
     });
 
@@ -179,7 +179,7 @@ setupMock({
         rulesPresetList.map((_, index) => ({
           ...rulesPresetList[index % rulesPresetList.length],
           id: Mock.Random.guid(),
-        }))
+        })),
       );
     });
   },
