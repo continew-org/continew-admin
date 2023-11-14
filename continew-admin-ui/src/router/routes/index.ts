@@ -19,9 +19,9 @@ function formatModules(_modules: any, result: RouteRecordNormalized[]) {
 export const appRoutes: RouteRecordNormalized[] = formatModules(appModules, []);
 export const fixedRoutes: RouteRecordNormalized[] = formatModules(
   fixedModules,
-  []
+  [],
 );
 export const demoRoutes: RouteRecordNormalized[] = formatModules(
   demoModules,
-  []
+  [],
 );

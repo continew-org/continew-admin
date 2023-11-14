@@ -3,12 +3,12 @@
     v-if="type === 'number'"
     :style="{ width: '80px' }"
     size="small"
-    :default-value="(defaultValue as number)"
+    :default-value="defaultValue as number"
     @change="handleChange"
   />
   <a-switch
     v-else
-    :default-checked="(defaultValue as boolean)"
+    :default-checked="defaultValue as boolean"
     size="small"
     @change="handleChange"
   />

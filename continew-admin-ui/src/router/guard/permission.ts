@@ -38,7 +38,7 @@ export default function setupPermissionGuard(router: Router) {
 
         if (element?.children) {
           serverMenuConfig.push(
-            ...(element.children as unknown as RouteRecordNormalized[])
+            ...(element.children as unknown as RouteRecordNormalized[]),
           );
         }
       }
@@ -52,7 +52,7 @@ export default function setupPermissionGuard(router: Router) {
         const destination =
           Permission.findFirstPermissionRoute(
             [...fixedRoutes, ...demoRoutes],
-            userStore.roles[0]
+            userStore.roles[0],
           ) || NOT_FOUND;
         next(destination);
       }

@@ -36,8 +36,8 @@
 
   const dictItem = computed(() =>
     props.dict.find(
-      (d) => d.value === String(props.value) || d.value === Number(props.value)
-    )
+      (d) => d.value === String(props.value) || d.value === Number(props.value),
+    ),
   );
 </script>
 

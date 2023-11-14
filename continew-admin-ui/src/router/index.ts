@@ -71,7 +71,7 @@ router.afterEach((to) => {
       if (item.path === to.path) {
         copyRecentlyVisitedList.splice(index, 1);
       }
-    }
+    },
   );
 
   // 最多存储 3 个
@@ -89,7 +89,7 @@ router.afterEach((to) => {
   }
   window.localStorage.setItem(
     'recently-visited',
-    JSON.stringify(copyRecentlyVisitedList)
+    JSON.stringify(copyRecentlyVisitedList),
   );
 });
 

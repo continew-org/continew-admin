@@ -15,7 +15,7 @@ import { AppState, Config } from './types';
 
 const recursionMenu = (
   appMenu: RouteRecordNormalized[],
-  list: Array<RouteRecordNormalized>
+  list: Array<RouteRecordNormalized>,
 ) => {
   appMenu.forEach((item) => {
     const childrenAppMenu = item.children as RouteRecordNormalized[];
@@ -43,7 +43,7 @@ const useAppStore = defineStore('app', {
       const menuList: RouteRecordNormalized[] = [];
       recursionMenu(
         state.serverMenu as unknown as RouteRecordNormalized[],
-        menuList
+        menuList,
       );
       return menuList;
     },
@@ -135,7 +135,7 @@ const useAppStore = defineStore('app', {
           ?.setAttribute(
             'href',
             getFile(resMap.get('site_favicon')) ||
-              'https://cnadmin.charles7c.top/favicon.ico'
+              'https://cnadmin.charles7c.top/favicon.ico',
           );
       });
     },
@@ -153,7 +153,7 @@ const useAppStore = defineStore('app', {
         ?.setAttribute(
           'href',
           getFile(config.site_favicon) ||
-            'https://cnadmin.charles7c.top/favicon.ico'
+            'https://cnadmin.charles7c.top/favicon.ico',
         );
     },
   },

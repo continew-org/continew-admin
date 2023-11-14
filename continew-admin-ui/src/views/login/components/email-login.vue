@@ -98,7 +98,7 @@
             captchaLoading.value = false;
             captchaDisable.value = true;
             captchaBtnNameKey.value = `${t(
-              'login.captcha.get'
+              'login.captcha.get',
             )}(${(captchaTime.value -= 1)}s)`;
             captchaTimer.value = window.setInterval(() => {
               captchaTime.value -= 1;
@@ -197,7 +197,9 @@
 
     .btn {
       border-radius: 4px;
-      box-shadow: 0 0 0 1px #05f, 0 2px 1px rgba(0, 0, 0, 0.15);
+      box-shadow:
+        0 0 0 1px #05f,
+        0 2px 1px rgba(0, 0, 0, 0.15);
       font-size: 14px;
       font-weight: 500;
       height: 40px;

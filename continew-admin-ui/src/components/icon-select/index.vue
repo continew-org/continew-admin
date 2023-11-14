@@ -37,7 +37,7 @@
     iconList.value = icons;
     if (iconName.value) {
       iconList.value = icons.filter(
-        (icon) => icon.indexOf(iconName.value) !== -1
+        (icon) => icon.indexOf(iconName.value) !== -1,
       );
     }
   };

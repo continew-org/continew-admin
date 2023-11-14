@@ -26,7 +26,7 @@ function checkPermission(el: HTMLElement, binding: DirectiveBinding) {
     }
   } else {
     throw new Error(
-      `need roles! Like v-permission="['admin','system:user:add']"`
+      `need roles! Like v-permission="['admin','system:user:add']"`,
     );
   }
 }
