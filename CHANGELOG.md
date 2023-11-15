@@ -1,3 +1,20 @@
+## [v1.3.1](https://github.com/Charles7c/continew-admin/compare/v1.3.0...v1.3.1) (2023-11-15)
+
+### 💎 功能优化
+
+- 完善 Redis 部署配置 ([39969eb](https://github.com/Charles7c/continew-admin/commit/39969ebf6173fc379dc3501e9204a344d1cf62cf))
+- 优化 401 状态处理逻辑 ([8820c1d](https://github.com/Charles7c/continew-admin/commit/8820c1dfc858b9ef9df470e90dfe9ba4b1166e29))
+- 优化超时登录处理逻辑 ([712eedb](https://github.com/Charles7c/continew-admin/commit/712eedba1be0ec371119745d4596cd35c2ce25d6))
+- 优化部分变量命名 ([f15494d](https://github.com/Charles7c/continew-admin/commit/f15494d34823ded87efc396d98e2eb0108f74a3d))
+
+### 🐛 问题修复
+
+- sms4j 3.0.3 => 3.0.4 ([3fcdb54](https://github.com/Charles7c/continew-admin/commit/3fcdb54442b380e76838478fa46e8dfb70a2759b))
+- 发送消息增加事务处理 ([5d159c6](https://github.com/Charles7c/continew-admin/commit/5d159c6ab337a9432419d84cf246cff506500567))
+- 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([47a5746](https://github.com/Charles7c/continew-admin/commit/47a5746794e552faf9c41fbcc21af091a878eb95))
+- 修复控制台报错 Please use theme before using plugins ([47a8160](https://github.com/Charles7c/continew-admin/commit/47a8160d70862a5ee7284c165004cece2714a10f))
+- 修复 Swagger 分组接口缺失 ([b63d7d7](https://github.com/Charles7c/continew-admin/commit/b63d7d725da5e9e9b2db9fd59bd140d64b50040c))
+
 ## [v1.3.0](https://github.com/Charles7c/continew-admin/compare/v1.2.0...v1.3.0) (2023-11-04)
 
 ### ✨ 新特性
