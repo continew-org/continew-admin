@@ -68,6 +68,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void add(MessageReq req, List<Long> userIdList) {
         CheckUtils.throwIf(() -> CollUtil.isEmpty(userIdList), "消息接收人不能为空");
         MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
