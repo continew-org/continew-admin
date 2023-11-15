@@ -52,7 +52,7 @@ limitations under the License.
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
-        <sms4j.version>3.0.3</sms4j.version>
+        <sms4j.version>3.0.4</sms4j.version>
         <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>2.7.15</ip2region.version>
