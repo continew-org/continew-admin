@@ -1,3 +1,78 @@
+## [v2.0.0](https://github.com/Charles7c/continew-admin/compare/v1.3.1...v2.0.0) (2023-11-15)
+
+### 💎 功能优化
+
+- 优化部分代码格式 ([e983430](https://github.com/Charles7c/continew-admin/commit/2f87310bc886af604a2667285a973ec6ae983430))
+- 优化 401 状态处理逻辑 ([457ef06](https://github.com/Charles7c/continew-admin/commit/c70e28a535c78214fe8d68a09824c786c457ef06))
+- 优化超时登录处理逻辑 ([7c1241c](https://github.com/Charles7c/continew-admin/commit/d5da1847e33e6cd7a0e5c3434335044167c1241c))
+
+### 🐛 问题修复
+
+- sms4j 3.0.3 => 3.0.4 ([23558d4](https://github.com/Charles7c/continew-admin/commit/23558d45620a48ed82b32a5bdd2f948a4a37263d))
+- 发送消息增加事务处理 ([Gitee#7](https://gitee.com/Charles7c/continew-admin/pulls/7)) ([3241ac4](https://github.com/Charles7c/continew-admin/commit/1ca6f6c7e5f8a7c78f74df547f14517293241ac4))
+- 修复前端控制台 eslint 告警 ([Gitee#6](https://gitee.com/Charles7c/continew-admin/pulls/6)) ([f350bba](https://github.com/Charles7c/continew-admin/commit/f4523d24817b4fee5c015eaba6b98fe99f350bba)) ([0d3b741](https://github.com/Charles7c/continew-admin/commit/2304f28a942fa8ea3e6d36fbebbe9346b0d3b741))
+- 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([b378d71](https://github.com/Charles7c/continew-admin/commit/fea602439a3c9589bee078bfa9ff1e7efb378d71))
+- 修复控制台报错 Please use theme before using plugins ([688b506](https://github.com/Charles7c/continew-admin/commit/98fbe0506c1cbe2f3c16347d9610ebfa5688b506))
+- 调整 Logback 配置，取消启动时打印 Logback 状态日志 ([02eb8c7](https://github.com/Charles7c/continew-admin/commit/1f7fef5b31212e94652777be37bea4d4e02eb8c7))
+
+### 💥 破坏性变更
+
+- 优化部署相关脚本，mariadb => mysql ([7d7af36](https://github.com/Charles7c/continew-admin/commit/5f4f0f1b21fe882dc51801d7c508c10b87d7af36))
+- 适配 Java 16 新特性 ([cf30443](https://github.com/Charles7c/continew-admin/commit/cf3044312c8631a8c2b306e466e3d4d663d8eb6d))
+- 适配 Java 14 新特性 ([38f52aa](https://github.com/Charles7c/continew-admin/commit/38f52aaafa22ebc958a22b7c38b084c655064fbc))
+- 适配 Java 11 新特性 ([5a5bd16](https://github.com/Charles7c/continew-admin/commit/5a5bd1681e076ac6814d552da5415a8f154b93af))
+- 升级前端依赖 ([e76ee2d](https://github.com/Charles7c/continew-admin/commit/79fa2c8abcf5f70f96ae7c6de35c47dbae76ee2d)) ([7aed9b3](https://github.com/Charles7c/continew-admin/commit/c44162d431cb87cae251067fff9a5ae707aed9b3))
+  - Arco Design Vue 2.52.0 => 2.53.0
+  - Vue 3.3.4 => 3.3.7
+  - Vite 3.2.7 => 4.5.0
+  - vue-router 4.2.4 => 4.2.5
+  - vue-i18n 9.5.0 => 9.6.5
+  - vue-tsc 1.2.0 => 1.8.22
+  - @vueuse/core 9.13.0 => 10.5.0
+  - pinia 2.1.6 => 2.1.7
+  - rollup 3.20.2 => 4.3.0
+  - vue-cropper 1.0.9 => 1.1.1
+  - crypto-js 4.1.1 => 4.2.0
+  - vite-svg-loader 3.6.0 => 4.0.0
+  - highlight.js 11.8.0 => 11.9.0
+  - mitt 3.0.0 => 3.0.1
+  - consola 2.15.3 => 3.2.3
+  - prettier 2.8.7 => 3.0.3
+  - less 4.1.3 => 4.2.0
+  - eslint 8.48.0 => 8.53.0
+  - stylelint 15.10.3 => 15.11.0
+  - lint-staged 13.2.0 => 3.0.3
+- 升级后端依赖  ([dea160a](https://github.com/Charles7c/continew-admin/commit/dea160a7b2d69e1b46edc936c9a697048bbb507a)) ([95c27ea](https://github.com/Charles7c/continew-admin/commit/95c27ea323e015c915d352618158df830b4d1c05)) ([05d2a7e](https://github.com/Charles7c/continew-admin/commit/fa232874aa88ab14fdc669e54a907e5ef05d2a7e)) ([61b2025](https://github.com/Charles7c/continew-admin/commit/8dbec9d1a3bcb0f6d7ef4bbfb9715effd61b2025)) ([de0dc9c](https://github.com/Charles7c/continew-admin/commit/3bd56d8a1ee274aac6d4ea57d61f6d470de0dc9c)) ([b566502](https://github.com/Charles7c/continew-admin/commit/7b741d5f8c42d154c5b325326d0cc954fb566502))
+  - Spring Boot 2.7.16 => 3.0.5 => 3.1.5
+    - javax.* => jakarta.*
+    - ServletUtil => JakartaServletUtil（Hutool）
+    - 其他配置变更
+  - JDK 8 => JDK 17
+  - Sa-Token 1.36.0 => 1.37.0（适配 Spring Boot 3.x）
+  - MyBatis Plus 3.5.3.2 => 3.5.4（适配 Spring Boot 3.x）
+  - Dynamic Datasource 3.6.1 => 4.2.0（适配 Spring Boot 3.x）
+  - Redisson 3.20.1 => 3.24.3（适配 Spring Boot 3.x）
+  - Knife4j 适配 Spring Boot 3.x
+  - ip2region 2.7.15 => 3.1.5.1（适配 Spring Boot 3.x）
+  - spotless 2.30.0 => 2.40.0
+
+## [v1.3.1](https://github.com/Charles7c/continew-admin/compare/v1.3.0...v1.3.1) (2023-11-15)
+
+### 💎 功能优化
+
+- 完善 Redis 部署配置 ([39969eb](https://github.com/Charles7c/continew-admin/commit/39969ebf6173fc379dc3501e9204a344d1cf62cf))
+- 优化 401 状态处理逻辑 ([8820c1d](https://github.com/Charles7c/continew-admin/commit/8820c1dfc858b9ef9df470e90dfe9ba4b1166e29))
+- 优化超时登录处理逻辑 ([712eedb](https://github.com/Charles7c/continew-admin/commit/712eedba1be0ec371119745d4596cd35c2ce25d6))
+- 优化部分变量命名 ([f15494d](https://github.com/Charles7c/continew-admin/commit/f15494d34823ded87efc396d98e2eb0108f74a3d))
+
+### 🐛 问题修复
+
+- sms4j 3.0.3 => 3.0.4 ([3fcdb54](https://github.com/Charles7c/continew-admin/commit/3fcdb54442b380e76838478fa46e8dfb70a2759b))
+- 发送消息增加事务处理 ([5d159c6](https://github.com/Charles7c/continew-admin/commit/5d159c6ab337a9432419d84cf246cff506500567))
+- 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([47a5746](https://github.com/Charles7c/continew-admin/commit/47a5746794e552faf9c41fbcc21af091a878eb95))
+- 修复控制台报错 Please use theme before using plugins ([47a8160](https://github.com/Charles7c/continew-admin/commit/47a8160d70862a5ee7284c165004cece2714a10f))
+- 修复 Swagger 分组接口缺失 ([b63d7d7](https://github.com/Charles7c/continew-admin/commit/b63d7d725da5e9e9b2db9fd59bd140d64b50040c))
+
 ## [v1.3.0](https://github.com/Charles7c/continew-admin/compare/v1.2.0...v1.3.0) (2023-11-04)
 
 ### ✨ 新特性

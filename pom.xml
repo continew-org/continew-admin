@@ -62,7 +62,7 @@ limitations under the License.
         <hutool.version>5.8.22</hutool.version>
 
         <!-- ### 基础环境相关 ### -->
-        <revision>2.0.0-SNAPSHOT</revision>
+        <revision>2.0.0</revision>
         <spotless.version>2.40.0</spotless.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
