@@ -145,13 +145,17 @@
                 ellipsis
                 tooltip
               />
-              <a-table-column
-                title="类型"
-                data-index="fieldType"
-                :width="95"
-                ellipsis
-                tooltip
-              />
+              <a-table-column title="类型" :width="95" ellipsis tooltip>
+                <template #cell="{ record }">
+                  <span v-if="record.fieldType">{{ record.fieldType }}</span>
+                  <a-tooltip v-else content="请检查 generator.properties 配置">
+                    <icon-exclamation-circle-fill
+                        size="large"
+                        style="color: #f53f3f"
+                    />
+                  </a-tooltip>
+                </template>
+              </a-table-column>
               <a-table-column title="描述" :width="170">
                 <template #cell="{ record }">
                   <a-input v-model="record.comment" />
