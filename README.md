@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v1.3.1-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v1.3.2-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -222,8 +222,8 @@ pnpm dev
 
 ## 核心技术栈
 
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
+| 名称                                                         | 版本           | 简介                                                         |
+| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
 | <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 4.9.5        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design Vue</a> | 2.52.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
@@ -239,7 +239,7 @@ pnpm dev
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.9.1        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | <a href="https://redis.io/" target="_blank">Redis</a>        | 6.2.7        | 高性能的 key-value 数据库。                                  |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.20.1       | 不仅仅是一个 Redis Java 客户端，同其他 Redis Java 客户端有着很大的区别，相比之下其他客户端提供的功能还仅仅停留在作为数据库驱动层面上，比如仅针对 Redis 提供连接方式，发送命令和处理返回结果等。而 Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，基于 Java 实用工具包中常用接口，为使用者提供了一系列具有分布式特性的常用工具类。使得原本作为协调单机多线程并发程序的工具包获得了协调分布式多机多线程并发系统的能力，大大降低了设计和研发大规模分布式系统的难度。同时结合各富特色的分布式服务，更进一步简化了分布式环境中程序相互之间的协作。 |
-| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.3        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
+| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.4        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.5       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
 | Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
