@@ -21,7 +21,6 @@ import java.io.Serial;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -30,7 +29,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseReq;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 
@@ -66,7 +64,7 @@ public class MenuReq extends BaseReq {
      */
     @Schema(description = "菜单标题", example = "用户管理")
     @NotBlank(message = "菜单标题不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "菜单标题长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Length(max = 30, message = "菜单标题长度不能超过 {max} 个字符")
     private String title;
 
     /**
