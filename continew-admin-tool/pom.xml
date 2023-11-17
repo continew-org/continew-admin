@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>top.charles7c</groupId>
+        <groupId>top.charles7c.continew</groupId>
         <artifactId>continew-admin</artifactId>
         <version>${revision}</version>
     </parent>
@@ -19,7 +19,7 @@
     <dependencies>
         <!-- 公共模块（存放公共工具类，公共配置等） -->
         <dependency>
-            <groupId>top.charles7c</groupId>
+            <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-common</artifactId>
         </dependency>
     </dependencies>

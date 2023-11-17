@@ -20,8 +20,8 @@ limitations under the License.
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
+        <groupId>top.charles7c.continew</groupId>
         <artifactId>continew-admin</artifactId>
-        <groupId>top.charles7c</groupId>
         <version>${revision}</version>
     </parent>
 
@@ -34,7 +34,7 @@ limitations under the License.
     <dependencies>
         <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
         <dependency>
-            <groupId>top.charles7c</groupId>
+            <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-system</artifactId>
         </dependency>
     </dependencies>

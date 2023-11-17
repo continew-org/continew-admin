@@ -19,7 +19,7 @@ limitations under the License.
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>top.charles7c</groupId>
+    <groupId>top.charles7c.continew</groupId>
     <artifactId>continew-admin</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -190,35 +190,35 @@ limitations under the License.
             <!-- ################ 本项目子模块相关 ################ -->
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
-                <groupId>top.charles7c</groupId>
+                <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-webapi</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等） -->
             <dependency>
-                <groupId>top.charles7c</groupId>
+                <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
-                <groupId>top.charles7c</groupId>
+                <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-system</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等） -->
             <dependency>
-                <groupId>top.charles7c</groupId>
+                <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-tool</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <!-- 公共模块（存放公共工具类，公共配置等） -->
             <dependency>
-                <groupId>top.charles7c</groupId>
+                <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
