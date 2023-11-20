@@ -6,6 +6,8 @@
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v1.3.2-%23ff3f59.svg" alt="Release" />
 </a>
+<img src="https://img.shields.io/badge/SpringBoot-2.7.16-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/Java-8-%236CB52D.svg" alt="Release" />
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
 </a>
