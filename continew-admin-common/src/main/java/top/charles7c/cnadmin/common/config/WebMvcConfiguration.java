@@ -22,20 +22,15 @@ import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import top.charles7c.cnadmin.common.config.properties.CorsProperties;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 
@@ -50,7 +45,6 @@ import top.charles7c.cnadmin.common.constant.StringConsts;
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final CorsProperties corsProperties;
     private final LocalStorageProperties localStorageProperties;
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
 
@@ -70,36 +64,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
             .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());
-    }
-
-    /**
-     * 跨域配置
-     */
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        // 设置跨域允许时间
-        config.setMaxAge(1800L);
-
-        // 配置允许跨域的域名
-        if (corsProperties.getAllowedOrigins().contains(StringConsts.ASTERISK)) {
-            config.addAllowedOriginPattern(StringConsts.ASTERISK);
-        } else {
-            // 配置为 true 后则必须配置允许跨域的域名，且不允许配置为 *
-            config.setAllowCredentials(true);
-            corsProperties.getAllowedOrigins().forEach(config::addAllowedOrigin);
-        }
-        // 配置允许跨域的请求方式
-        corsProperties.getAllowedMethods().forEach(config::addAllowedMethod);
-        // 配置允许跨域的请求头
-        corsProperties.getAllowedHeaders().forEach(config::addAllowedHeader);
-        // 配置允许跨域的响应头
-        corsProperties.getExposedHeaders().forEach(config::addExposedHeader);
-
-        // 添加映射路径，拦截一切请求
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     /**

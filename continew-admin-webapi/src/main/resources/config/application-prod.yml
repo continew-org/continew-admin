@@ -230,12 +230,13 @@ local-storage:
 
 --- ### 跨域配置
 cors:
+  enabled: true
   # 配置允许跨域的域名
-  allowedOrigins:
+  allowed-origins:
     - ${project.url}
   # 配置允许跨域的请求方式
-  allowedMethods: '*'
+  allowed-methods: '*'
   # 配置允许跨域的请求头
-  allowedHeaders: '*'
+  allowed-headers: '*'
   # 配置允许跨域的响应头
-  exposedHeaders: '*'
+  exposed-headers: '*'

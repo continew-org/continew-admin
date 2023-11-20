@@ -3,6 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.charles7c.continew</groupId>
+        <artifactId>continew-starter</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
 
     <groupId>top.charles7c.continew</groupId>
     <artifactId>continew-admin</artifactId>
@@ -21,14 +26,8 @@
         <module>continew-admin-common</module>
     </modules>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <properties>
+        <revision>2.1.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
 
         <!-- ### 持久层相关 ### -->
@@ -46,10 +45,8 @@
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.22</hutool.version>
 
-        <!-- ### 基础环境相关 ### -->
-        <revision>2.1.0-SNAPSHOT</revision>
+        <!-- Maven Plugin Versions  -->
         <spotless.version>2.40.0</spotless.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -211,18 +208,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Hutool（小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”） -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-
         <!-- Lombok（在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -273,6 +258,15 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+        </repository>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
