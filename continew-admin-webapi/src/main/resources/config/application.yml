@@ -216,12 +216,11 @@ management.health:
 
 --- ### 线程池配置
 thread-pool:
-  # 是否启用线程池
   enabled: true
   # 队列容量
-  queueCapacity: 128
-  # 活跃时间
-  keepAliveSeconds: 300
+  queue-capacity: 128
+  # 活跃时间（单位：秒）
+  keep-alive-seconds: 300
 
 --- ### 代码生成器配置
 generator:
