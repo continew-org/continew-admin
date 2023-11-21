@@ -27,7 +27,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
 
 import top.charles7c.cnadmin.common.base.IBaseEnum;
-import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * Easy Excel 枚举基类转换器

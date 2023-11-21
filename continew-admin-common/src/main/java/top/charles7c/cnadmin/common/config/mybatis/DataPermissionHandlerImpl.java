@@ -25,11 +25,11 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
 
 import top.charles7c.cnadmin.common.annotation.DataPermission;
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;

@@ -19,6 +19,8 @@ package top.charles7c.cnadmin.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import top.charles7c.continew.starter.core.constant.StringConsts;
+
 /**
  * 系统相关常量
  *

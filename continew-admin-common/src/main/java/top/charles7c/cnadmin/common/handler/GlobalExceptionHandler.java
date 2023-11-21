@@ -43,9 +43,9 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.exception.BadRequestException;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 import top.charles7c.cnadmin.common.model.resp.R;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.StreamUtils;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * 全局异常处理器

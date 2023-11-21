@@ -37,8 +37,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 邮件工具类

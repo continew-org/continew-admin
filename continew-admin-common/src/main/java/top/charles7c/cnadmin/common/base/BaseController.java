@@ -38,11 +38,11 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.model.resp.R;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 控制器基类

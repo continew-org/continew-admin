@@ -41,7 +41,6 @@ import top.charles7c.cnadmin.auth.model.resp.UserInfoResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -49,6 +48,7 @@ import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
 import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * 认证 API

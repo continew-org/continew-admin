@@ -33,7 +33,6 @@ import cn.hutool.extra.spring.SpringUtil;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.service.CommonUserService;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageMapper;
@@ -43,6 +42,7 @@ import top.charles7c.cnadmin.system.model.req.MessageReq;
 import top.charles7c.cnadmin.system.model.resp.MessageResp;
 import top.charles7c.cnadmin.system.service.MessageService;
 import top.charles7c.cnadmin.system.service.MessageUserService;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * 消息业务实现

@@ -42,7 +42,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.system.SystemUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.common.exception.ServiceException;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
@@ -61,6 +60,7 @@ import top.charles7c.cnadmin.tool.model.resp.TableResp;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
 import top.charles7c.cnadmin.tool.util.MetaUtils;
 import top.charles7c.cnadmin.tool.util.Table;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 代码生成业务实现

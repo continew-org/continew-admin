@@ -40,7 +40,6 @@ import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
 import top.charles7c.cnadmin.common.model.resp.R;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -54,6 +53,7 @@ import top.charles7c.cnadmin.system.model.resp.AvatarResp;
 import top.charles7c.cnadmin.system.model.resp.UserSocialBindResp;
 import top.charles7c.cnadmin.system.service.UserService;
 import top.charles7c.cnadmin.system.service.UserSocialService;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;

@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 排序查询条件

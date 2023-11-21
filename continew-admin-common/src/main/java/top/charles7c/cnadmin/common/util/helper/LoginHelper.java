@@ -33,10 +33,10 @@ import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.service.CommonUserService;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.IpUtils;
 import top.charles7c.cnadmin.common.util.ServletUtils;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * 登录助手

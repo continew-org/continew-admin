@@ -37,9 +37,9 @@ import cn.hutool.db.meta.Column;
 import cn.hutool.setting.dialect.Props;
 import cn.hutool.setting.dialect.PropsUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 字段配置实体

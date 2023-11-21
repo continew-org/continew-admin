@@ -34,7 +34,6 @@ import cn.hutool.core.util.ObjectUtil;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConsts;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.DeptDO;
@@ -45,6 +44,7 @@ import top.charles7c.cnadmin.system.model.resp.DeptResp;
 import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.RoleDeptService;
 import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * 部门业务实现

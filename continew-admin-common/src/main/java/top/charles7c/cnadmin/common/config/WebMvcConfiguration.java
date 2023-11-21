@@ -18,12 +18,10 @@ package top.charles7c.cnadmin.common.config;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.CacheControl;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
-import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * Web MVC 配置

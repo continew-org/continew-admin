@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 import cn.hutool.core.collection.CollUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * Stream 工具类

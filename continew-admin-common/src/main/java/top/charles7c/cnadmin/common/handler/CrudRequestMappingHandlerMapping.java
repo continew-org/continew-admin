@@ -29,7 +29,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.util.ExceptionUtils;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
  * CRUD 请求映射器处理器映射器

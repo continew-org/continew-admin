@@ -24,8 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.exception.ServiceException;
+import top.charles7c.continew.starter.core.constant.StringConsts;
 
 /**
  * 业务参数校验工具类（抛出 500 ServiceException）
