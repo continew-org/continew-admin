@@ -17,10 +17,16 @@
     <description>公共模块（存放公共工具类，公共配置等）</description>
 
     <dependencies>
-        <!-- ContiNew Starter 核心依赖 -->
+        <!-- ContiNew Starter API 文档依赖 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-core</artifactId>
+            <artifactId>continew-starter-api-doc</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter Jackson 依赖 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
 
         <!-- ################ Spring Boot 相关 ################ -->
@@ -106,12 +112,6 @@
         <dependency>
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-ip2region</artifactId>
-        </dependency>
-
-        <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->

@@ -40,7 +40,6 @@
         <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>3.1.5.1</ip2region.version>
-        <knife4j.version>4.3.0</knife4j.version>
         <redisson.version>3.24.3</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.22</hutool.version>
@@ -137,15 +136,6 @@
                 <groupId>net.dreamlu</groupId>
                 <artifactId>mica-ip2region</artifactId>
                 <version>${ip2region.version}</version>
-            </dependency>
-
-            <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-dependencies</artifactId>
-                <version>${knife4j.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
 
             <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->

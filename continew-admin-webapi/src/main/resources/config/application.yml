@@ -11,7 +11,7 @@ project:
   # 基本包
   basePackage: top.charles7c.cnadmin
   ## 作者信息配置
-  author:
+  contact:
     name: Charles7c
     email: charles7c@126.com
     url: https://blog.charles7c.top/about/me

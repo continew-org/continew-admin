@@ -54,30 +54,6 @@ import top.charles7c.cnadmin.common.base.IBaseEnum;
 public class JacksonConfiguration {
 
     /**
-     * 针对时间类型：LocalDateTime、LocalDate、LocalTime 的序列化和反序列化
-     */
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer customizer() {
-        return builder -> {
-            JavaTimeModule javaTimeModule = new JavaTimeModule();
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
-            javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
-            javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
-
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATE_PATTERN);
-            javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
-            javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormatter));
-
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_TIME_PATTERN);
-            javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
-            javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
-            builder.timeZone(TimeZone.getDefault());
-            builder.modules(javaTimeModule);
-            log.info(">>>初始化 Jackson 序列化配置<<<");
-        };
-    }
-
-    /**
      * 针对枚举基类 BaseEnum 的序列化和反序列化
      */
     @Bean

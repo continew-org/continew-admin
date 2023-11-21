@@ -60,10 +60,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
             .setCachePeriod(0);
         registry.addResourceHandler(localStorageProperties.getAvatarPattern()).addResourceLocations(avatarUtl)
             .setCachePeriod(0);
-        registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/");
-        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
-            .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());
     }
 
     /**

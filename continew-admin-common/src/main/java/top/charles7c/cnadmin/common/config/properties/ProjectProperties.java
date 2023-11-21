@@ -36,55 +36,7 @@ import cn.hutool.extra.spring.SpringUtil;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "project")
-public class ProjectProperties {
-
-    /**
-     * 名称
-     */
-    private String name;
-
-    /**
-     * 应用名称
-     */
-    private String appName;
-
-    /**
-     * 版本
-     */
-    private String version;
-
-    /**
-     * 描述
-     */
-    private String description;
-
-    /**
-     * URL
-     */
-    private String url;
-
-    /**
-     * 基本包
-     */
-    private String basePackage;
-
-    /**
-     * 作者信息
-     */
-    @NestedConfigurationProperty
-    private Contact author;
-
-    /**
-     * 许可协议信息
-     */
-    @NestedConfigurationProperty
-    private License license;
-
-    /**
-     * 是否为生产环境
-     */
-    private boolean production = false;
+public class ProjectProperties extends top.charles7c.continew.starter.core.autoconfigure.ProjectProperties {
 
     /**
      * 是否本地解析 IP 归属地
