@@ -24,7 +24,7 @@ import java.util.List;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.util.SaFoxUtil;
 
-import top.charles7c.cnadmin.common.util.RedisUtils;
+import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 
 /**
  * Sa-Token 持久层本地 Redis 适配（参考：Sa-Token/sa-token-plugin/sa-token-dao-redisx/SaTokenDaoOfRedis.java）
@@ -37,7 +37,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public String get(String key) {
-        return RedisUtils.getCacheObject(key);
+        return RedisUtils.get(key);
     }
 
     @Override
@@ -47,9 +47,9 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
         }
         // 判断是否为永不过期
         if (timeout == SaTokenDao.NEVER_EXPIRE) {
-            RedisUtils.setCacheObject(key, value);
+            RedisUtils.set(key, value);
         } else {
-            RedisUtils.setCacheObject(key, value, Duration.ofSeconds(timeout));
+            RedisUtils.set(key, value, Duration.ofSeconds(timeout));
         }
     }
 
@@ -65,7 +65,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public void delete(String key) {
-        RedisUtils.deleteCacheObject(key);
+        RedisUtils.delete(key);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public Object getObject(String key) {
-        return RedisUtils.getCacheObject(key);
+        return RedisUtils.get(key);
     }
 
     @Override
@@ -102,9 +102,9 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
         }
         // 判断是否为永不过期
         if (timeout == SaTokenDao.NEVER_EXPIRE) {
-            RedisUtils.setCacheObject(key, object);
+            RedisUtils.set(key, object);
         } else {
-            RedisUtils.setCacheObject(key, object, Duration.ofSeconds(timeout));
+            RedisUtils.set(key, object, Duration.ofSeconds(timeout));
         }
     }
 
@@ -120,7 +120,7 @@ public class SaTokenRedisDaoImpl implements SaTokenDao {
 
     @Override
     public void deleteObject(String key) {
-        RedisUtils.deleteCacheObject(key);
+        RedisUtils.delete(key);
     }
 
     @Override

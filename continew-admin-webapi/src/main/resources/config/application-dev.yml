@@ -71,6 +71,9 @@ spring.data:
     # 是否开启 SSL
     ssl:
       enabled: false
+  redisson:
+    enabled: true
+    mode: single
 
 --- ### Spring Cache 配置
 spring.cache:

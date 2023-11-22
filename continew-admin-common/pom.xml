@@ -23,7 +23,13 @@
             <artifactId>continew-starter-api-doc</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter Jackson 依赖 -->
+        <!-- ContiNew Starter Redisson 依赖（Redis 缓存） -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-cache-redisson</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter Jackson 依赖（JSON） -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-starter-json-jackson</artifactId>
@@ -112,12 +118,6 @@
         <dependency>
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-ip2region</artifactId>
-        </dependency>
-
-        <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->

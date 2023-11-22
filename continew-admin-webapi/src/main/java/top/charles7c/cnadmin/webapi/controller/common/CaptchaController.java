@@ -53,9 +53,9 @@ import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.model.resp.CaptchaResp;
 import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.MailUtils;
-import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.TemplateUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
+import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 
 /**
  * 验证码 API
@@ -83,8 +83,7 @@ public class CaptchaController {
         // 保存验证码
         String uuid = IdUtil.fastUUID();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
-        RedisUtils.setCacheObject(captchaKey, captcha.text(),
-            Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
+        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
         return CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build();
     }
 
@@ -108,8 +107,8 @@ public class CaptchaController {
         MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", projectProperties.getName()), content);
         // 保存验证码
         String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, email);
-        RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
-        RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
+        RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
+        RedisUtils.set(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
     }
 
@@ -136,8 +135,8 @@ public class CaptchaController {
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, phone);
-        RedisUtils.setCacheObject(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
-        RedisUtils.setCacheObject(limitCaptchaKey, captcha, Duration.ofSeconds(captchaSms.getLimitInSeconds()));
+        RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
+        RedisUtils.set(limitCaptchaKey, captcha, Duration.ofSeconds(captchaSms.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
     }
 }

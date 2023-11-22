@@ -40,7 +40,6 @@ import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.constant.RegexConsts;
 import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
 import top.charles7c.cnadmin.common.model.resp.R;
-import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
@@ -53,6 +52,7 @@ import top.charles7c.cnadmin.system.model.resp.AvatarResp;
 import top.charles7c.cnadmin.system.model.resp.UserSocialBindResp;
 import top.charles7c.cnadmin.system.service.UserService;
 import top.charles7c.cnadmin.system.service.UserSocialService;
+import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 import me.zhyd.oauth.model.AuthCallback;
@@ -114,10 +114,10 @@ public class UserCenterController {
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
-        String captcha = RedisUtils.getCacheObject(captchaKey);
+        String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
-        RedisUtils.deleteCacheObject(captchaKey);
+        RedisUtils.delete(captchaKey);
         userService.updatePhone(updateReq.getNewPhone(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
@@ -129,10 +129,10 @@ public class UserCenterController {
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
-        String captcha = RedisUtils.getCacheObject(captchaKey);
+        String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
-        RedisUtils.deleteCacheObject(captchaKey);
+        RedisUtils.delete(captchaKey);
         userService.updateEmail(updateReq.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }

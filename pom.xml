@@ -40,7 +40,6 @@
         <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>3.1.5.1</ip2region.version>
-        <redisson.version>3.24.3</redisson.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <hutool.version>5.8.22</hutool.version>
 
@@ -136,13 +135,6 @@
                 <groupId>net.dreamlu</groupId>
                 <artifactId>mica-ip2region</artifactId>
                 <version>${ip2region.version}</version>
-            </dependency>
-
-            <!-- Redisson（不仅仅是一个 Redis Java 客户端） -->
-            <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>${redisson.version}</version>
             </dependency>
 
             <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->

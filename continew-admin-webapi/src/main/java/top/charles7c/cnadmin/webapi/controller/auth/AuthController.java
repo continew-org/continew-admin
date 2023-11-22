@@ -41,13 +41,13 @@ import top.charles7c.cnadmin.auth.model.resp.UserInfoResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
 import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
@@ -71,9 +71,9 @@ public class AuthController {
     @PostMapping("/account")
     public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
-        String captcha = RedisUtils.getCacheObject(captchaKey);
+        String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
-        RedisUtils.deleteCacheObject(captchaKey);
+        RedisUtils.delete(captchaKey);
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         // 用户登录
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
@@ -88,10 +88,10 @@ public class AuthController {
     public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
         String email = loginReq.getEmail();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, email);
-        String captcha = RedisUtils.getCacheObject(captchaKey);
+        String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
-        RedisUtils.deleteCacheObject(captchaKey);
+        RedisUtils.delete(captchaKey);
         String token = loginService.emailLogin(email);
         return LoginResp.builder().token(token).build();
     }
@@ -102,10 +102,10 @@ public class AuthController {
     public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
         String phone = loginReq.getPhone();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, phone);
-        String captcha = RedisUtils.getCacheObject(captchaKey);
+        String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
-        RedisUtils.deleteCacheObject(captchaKey);
+        RedisUtils.delete(captchaKey);
         String token = loginService.phoneLogin(phone);
         return LoginResp.builder().token(token).build();
     }

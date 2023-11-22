@@ -21,8 +21,6 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.redisson.codec.JsonJacksonCodec;
-import org.redisson.spring.starter.RedissonAutoConfigurationCustomizer;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -41,7 +39,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 
 /**
- * Redis 配置
+ * Spring Cache 配置
  *
  * @author Charles7c
  * @since 2022/12/28 23:17
@@ -50,18 +48,9 @@ import cn.hutool.json.JSONUtil;
 @EnableCaching
 @Configuration
 @RequiredArgsConstructor
-public class RedisConfiguration extends CachingConfigurerSupport {
+public class SpringCacheConfiguration extends CachingConfigurerSupport {
 
     private final ObjectMapper objectMapper;
-
-    /**
-     * Redisson 自定义配置
-     */
-    @Bean
-    public RedissonAutoConfigurationCustomizer redissonCustomizer() {
-        // 解决序列化乱码问题
-        return config -> config.setCodec(new JsonJacksonCodec(objectMapper));
-    }
 
     /**
      * 解决 Spring Cache（@Cacheable）缓存乱码问题
