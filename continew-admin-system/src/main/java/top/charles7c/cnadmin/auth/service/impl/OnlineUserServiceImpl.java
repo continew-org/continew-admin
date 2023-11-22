@@ -38,7 +38,7 @@ import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 在线用户业务实现
@@ -63,9 +63,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     public List<LoginUser> list(OnlineUserQuery query) {
         List<LoginUser> loginUserList = new ArrayList<>();
         // 查询所有登录用户
-        List<String> tokenKeyList = StpUtil.searchTokenValue(StringConsts.EMPTY, 0, -1, false);
+        List<String> tokenKeyList = StpUtil.searchTokenValue(StringConstants.EMPTY, 0, -1, false);
         for (String tokenKey : tokenKeyList) {
-            String token = StrUtil.subAfter(tokenKey, StringConsts.COLON, true);
+            String token = StrUtil.subAfter(tokenKey, StringConstants.COLON, true);
             // 忽略已过期或失效 Token
             if (StpUtil.stpLogic.getTokenActiveTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
                 continue;

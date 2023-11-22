@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.IBaseEnum;
-import top.charles7c.cnadmin.common.constant.UIConsts;
+import top.charles7c.cnadmin.common.constant.UIConstants;
 
 /**
  * 消息类型枚举
@@ -33,7 +33,7 @@ import top.charles7c.cnadmin.common.constant.UIConsts;
 public enum MessageTypeEnum implements IBaseEnum<Integer> {
 
     /** 系统消息 */
-    SYSTEM(1, "系统消息", UIConsts.COLOR_PRIMARY),;
+    SYSTEM(1, "系统消息", UIConstants.COLOR_PRIMARY),;
 
     private final Integer value;
     private final String description;

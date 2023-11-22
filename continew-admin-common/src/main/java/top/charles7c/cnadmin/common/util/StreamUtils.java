@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 
 import cn.hutool.core.collection.CollUtil;
 
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * Stream 工具类
@@ -53,7 +53,7 @@ public class StreamUtils {
      */
     public static <E> String join(Collection<E> collection, Function<E, String> function, CharSequence delimiter) {
         if (CollUtil.isEmpty(collection)) {
-            return StringConsts.EMPTY;
+            return StringConstants.EMPTY;
         }
         return collection.stream().map(function).filter(Objects::nonNull).collect(Collectors.joining(delimiter));
     }

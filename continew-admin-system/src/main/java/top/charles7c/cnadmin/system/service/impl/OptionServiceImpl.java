@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.core.bean.BeanUtil;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.system.mapper.OptionMapper;
 import top.charles7c.cnadmin.system.model.entity.OptionDO;
@@ -44,7 +44,7 @@ import top.charles7c.cnadmin.system.service.OptionService;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
+@CacheConfig(cacheNames = CacheConstants.OPTION_KEY_PREFIX)
 public class OptionServiceImpl implements OptionService {
 
     private final OptionMapper baseMapper;

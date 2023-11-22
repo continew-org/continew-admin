@@ -38,7 +38,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 邮件工具类
@@ -233,10 +233,10 @@ public class MailUtils {
         }
 
         List<String> result;
-        if (StrUtil.contains(addresses, StringConsts.COMMA)) {
-            result = StrUtil.splitTrim(addresses, StringConsts.COMMA);
-        } else if (StrUtil.contains(addresses, StringConsts.SEMICOLON)) {
-            result = StrUtil.splitTrim(addresses, StringConsts.SEMICOLON);
+        if (StrUtil.contains(addresses, StringConstants.COMMA)) {
+            result = StrUtil.splitTrim(addresses, StringConstants.COMMA);
+        } else if (StrUtil.contains(addresses, StringConstants.SEMICOLON)) {
+            result = StrUtil.splitTrim(addresses, StringConstants.SEMICOLON);
         } else {
             result = CollUtil.newArrayList(addresses);
         }

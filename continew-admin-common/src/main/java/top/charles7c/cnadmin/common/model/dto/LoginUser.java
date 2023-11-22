@@ -25,7 +25,7 @@ import lombok.Data;
 
 import cn.hutool.core.collection.CollUtil;
 
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 
 /**
  * 登录用户信息
@@ -103,6 +103,6 @@ public class LoginUser implements Serializable {
         if (CollUtil.isEmpty(roleCodes)) {
             return false;
         }
-        return roleCodes.contains(SysConsts.ADMIN_ROLE_CODE);
+        return roleCodes.contains(SysConstants.ADMIN_ROLE_CODE);
     }
 }

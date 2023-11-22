@@ -60,7 +60,7 @@ import top.charles7c.cnadmin.tool.model.resp.TableResp;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
 import top.charles7c.cnadmin.tool.util.MetaUtils;
 import top.charles7c.cnadmin.tool.util.Table;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 代码生成业务实现
@@ -108,12 +108,12 @@ public class GeneratorServiceImpl implements GeneratorService {
             genConfig = new GenConfigDO(tableName);
             // 默认包名（当前包名）
             String packageName = ClassUtil.getPackage(GeneratorService.class);
-            genConfig.setPackageName(StrUtil.subBefore(packageName, StringConsts.DOT, true));
+            genConfig.setPackageName(StrUtil.subBefore(packageName, StringConstants.DOT, true));
             // 默认业务名（表注释）
             List<Table> tableList = MetaUtils.getTables(dataSource, tableName);
             if (CollUtil.isNotEmpty(tableList)) {
                 Table table = tableList.get(0);
-                genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConsts.EMPTY));
+                genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConstants.EMPTY));
             }
             // 默认作者名称（上次保存使用的作者名称）
             GenConfigDO lastGenConfig = genConfigMapper.selectOne(
@@ -122,7 +122,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
             // 默认表前缀（sys_user -> sys_）
-            int underLineIndex = StrUtil.indexOf(tableName, StringConsts.C_UNDERLINE);
+            int underLineIndex = StrUtil.indexOf(tableName, StringConstants.C_UNDERLINE);
             if (-1 != underLineIndex) {
                 genConfig.setTablePrefix(StrUtil.subPre(tableName, underLineIndex + 1));
             }
@@ -151,7 +151,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 FieldConfigDO fieldConfig = fieldConfigMap.get(column.getName());
                 if (null != fieldConfig) {
                     // 更新已有字段配置
-                    String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
+                    String columnType =
+                        StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
                     fieldConfig.setColumnType(columnType);
                     fieldConfig.setComment(column.getComment());
                 } else {
@@ -217,7 +218,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         genConfigMap.put("date", DateUtil.date().toString("yyyy/MM/dd HH:mm"));
         String packageName = genConfig.getPackageName();
         String apiModuleName =
-            StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConsts.DOT) + 1);
+            StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
         genConfigMap.put("apiModuleName", apiModuleName);
         genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
 
@@ -232,7 +233,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             File backendModuleFile = new File(projectPath, genConfig.getModuleName());
             // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/cnadmin/tool
             List<String> backendModuleChildPathList = CollUtil.newArrayList("src", "main", "java");
-            backendModuleChildPathList.addAll(StrUtil.split(genConfig.getPackageName(), StringConsts.DOT));
+            backendModuleChildPathList.addAll(StrUtil.split(genConfig.getPackageName(), StringConstants.DOT));
             File backendParentFile =
                 FileUtil.file(backendModuleFile, backendModuleChildPathList.toArray(new String[0]));
             // 2、生成代码
@@ -244,7 +245,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfigMap.put("className", className);
                 TemplateConfig templateConfig = templateConfigEntry.getValue();
                 File classParentFile = FileUtil.file(backendParentFile,
-                    StrUtil.splitToArray(templateConfig.getPackageName(), StringConsts.DOT));
+                    StrUtil.splitToArray(templateConfig.getPackageName(), StringConstants.DOT));
                 File classFile = new File(classParentFile, className + FileNameUtil.EXT_JAVA);
                 // 如果已经存在，且不允许覆盖，则跳过
                 if (classFile.exists() && !isOverride) {

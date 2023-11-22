@@ -42,7 +42,7 @@ import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.model.resp.R;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 控制器基类
@@ -212,7 +212,7 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
     private void checkPermission(Api api) {
         CrudRequestMapping crudRequestMapping = this.getClass().getDeclaredAnnotation(CrudRequestMapping.class);
         String path = crudRequestMapping.value();
-        String permissionPrefix = String.join(StringConsts.COLON, StrUtil.splitTrim(path, StringConsts.SLASH));
+        String permissionPrefix = String.join(StringConstants.COLON, StrUtil.splitTrim(path, StringConstants.SLASH));
         StpUtil.checkPermission(String.format("%s:%s", permissionPrefix, api.name().toLowerCase()));
     }
 }

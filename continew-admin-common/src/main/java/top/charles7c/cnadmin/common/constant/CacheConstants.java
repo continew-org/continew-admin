@@ -19,54 +19,57 @@ package top.charles7c.cnadmin.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import top.charles7c.continew.starter.core.constant.StringConsts;
-
 /**
- * 系统相关常量
+ * 缓存相关常量
  *
  * @author Charles7c
- * @since 2023/2/9 22:11
+ * @since 2022/12/22 19:30
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SysConsts {
+public class CacheConstants {
 
     /**
-     * 管理员角色编码
+     * 登录用户键
      */
-    public static final String ADMIN_ROLE_CODE = "admin";
+    public static final String LOGIN_USER_KEY = "LOGIN_USER";
 
     /**
-     * 顶级部门 ID
+     * 验证码键前缀
      */
-    public static final Long SUPER_DEPT_ID = 1L;
+    public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA";
 
     /**
-     * 顶级父 ID
+     * 限流键前缀
      */
-    public static final Long SUPER_PARENT_ID = 0L;
+    public static final String LIMIT_KEY_PREFIX = "LIMIT";
 
     /**
-     * 全部权限标识
+     * 用户缓存键前缀
      */
-    public static final String ALL_PERMISSION = StringConsts.ASTERISK;
+    public static final String USER_KEY_PREFIX = "USER";
 
     /**
-     * 默认密码
+     * 菜单缓存键前缀
      */
-    public static final String DEFAULT_PASSWORD = "123456";
+    public static final String MENU_KEY_PREFIX = "MENU";
 
     /**
-     * 登录 URI
+     * 字典缓存键前缀
      */
-    public static final String LOGIN_URI = "/auth/login";
+    public static final String DICT_KEY_PREFIX = "DICT";
 
     /**
-     * 退出 URI
+     * 参数缓存键前缀
      */
-    public static final String LOGOUT_URI = "/auth/logout";
+    public static final String OPTION_KEY_PREFIX = "OPTION";
 
     /**
-     * 描述类字段后缀
+     * 仪表盘缓存键前缀
      */
-    public static final String DESCRIPTION_FIELD_SUFFIX = "String";
+    public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD";
+
+    /**
+     * 三方账号认证状态键前缀
+     */
+    public static final String SOCIAL_AUTH_STATE_KEY_PREFIX = "SOCIAL_AUTH_STATE";
 }

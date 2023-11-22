@@ -29,7 +29,7 @@ import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -75,8 +75,8 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
     public Expression getSqlSegment(Expression where, String mappedStatementId) {
         try {
             Class<?> clazz =
-                Class.forName(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(StringConsts.DOT)));
-            String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringConsts.DOT) + 1);
+                Class.forName(mappedStatementId.substring(0, mappedStatementId.lastIndexOf(StringConstants.DOT)));
+            String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringConstants.DOT) + 1);
             Method[] methodArr = clazz.getMethods();
             for (Method method : methodArr) {
                 DataPermission dataPermission = method.getAnnotation(DataPermission.class);

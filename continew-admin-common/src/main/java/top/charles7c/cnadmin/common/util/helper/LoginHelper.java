@@ -29,7 +29,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.service.CommonUserService;
@@ -65,10 +65,10 @@ public class LoginHelper {
         loginUser.setLoginTime(null != logContext ? logContext.getCreateTime() : LocalDateTime.now());
         // 登录并缓存用户信息
         StpUtil.login(loginUser.getId());
-        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_KEY, loginUser);
         String tokenValue = StpUtil.getTokenValue();
         loginUser.setToken(tokenValue);
-        StpUtil.getTokenSession().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        StpUtil.getTokenSession().set(CacheConstants.LOGIN_USER_KEY, loginUser);
         return tokenValue;
     }
 
@@ -78,7 +78,7 @@ public class LoginHelper {
      * @return 登录用户信息（获取 TokenSession 时如未登录，会抛出异常）
      */
     public static LoginUser getLoginUser() {
-        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConsts.LOGIN_USER_KEY);
+        LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConstants.LOGIN_USER_KEY);
         if (null != loginUser) {
             return loginUser;
         }
@@ -86,8 +86,8 @@ public class LoginHelper {
         if (null == tokenSession) {
             return null;
         }
-        loginUser = (LoginUser)tokenSession.get(CacheConsts.LOGIN_USER_KEY);
-        SaHolder.getStorage().set(CacheConsts.LOGIN_USER_KEY, loginUser);
+        loginUser = (LoginUser)tokenSession.get(CacheConstants.LOGIN_USER_KEY);
+        SaHolder.getStorage().set(CacheConstants.LOGIN_USER_KEY, loginUser);
         return loginUser;
     }
 
@@ -103,7 +103,7 @@ public class LoginHelper {
         if (null == tokenSession) {
             return null;
         }
-        return (LoginUser)tokenSession.get(CacheConsts.LOGIN_USER_KEY);
+        return (LoginUser)tokenSession.get(CacheConstants.LOGIN_USER_KEY);
     }
 
     /**

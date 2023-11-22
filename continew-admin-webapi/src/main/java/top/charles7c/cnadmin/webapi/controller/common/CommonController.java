@@ -45,7 +45,7 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.common.model.resp.R;
@@ -117,7 +117,7 @@ public class CommonController {
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
-    @Cacheable(key = "#code", cacheNames = CacheConsts.DICT_KEY_PREFIX)
+    @Cacheable(key = "#code", cacheNames = CacheConstants.DICT_KEY_PREFIX)
     public List<LabelValueResp> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);
         return enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code));
@@ -126,7 +126,7 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
-    @Cacheable(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
+    @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX)
     public List<LabelValueResp> listOption(@Validated OptionQuery query) {
         return optionService.list(query).stream().map(option -> new LabelValueResp(option.getCode(),
             StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList());

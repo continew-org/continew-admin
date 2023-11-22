@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardGeoDistributionResp;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardPopularModuleResp;
@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConsts.DASHBOARD_KEY_PREFIX)
+@CacheConfig(cacheNames = CacheConstants.DASHBOARD_KEY_PREFIX)
 public class DashboardServiceImpl implements DashboardService {
 
     private final LogService logService;

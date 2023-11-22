@@ -48,8 +48,8 @@ import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.model.resp.CaptchaResp;
 import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.MailUtils;
@@ -82,7 +82,7 @@ public class CaptchaController {
         Captcha captcha = captchaImage.getCaptcha();
         // 保存验证码
         String uuid = IdUtil.fastUUID();
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, uuid);
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
         return CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build();
     }
@@ -90,10 +90,10 @@ public class CaptchaController {
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
     public R getMailCaptcha(
-        @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误") String email)
+        @NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexConstants.EMAIL, message = "邮箱格式错误") String email)
         throws MessagingException {
-        String limitKeyPrefix = CacheConsts.LIMIT_KEY_PREFIX;
-        String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;
+        String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
+        String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
         String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, email);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
         CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
@@ -115,9 +115,9 @@ public class CaptchaController {
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
     public R getSmsCaptcha(
-        @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConsts.MOBILE, message = "手机号格式错误") String phone) {
-        String limitKeyPrefix = CacheConsts.LIMIT_KEY_PREFIX;
-        String captchaKeyPrefix = CacheConsts.CAPTCHA_KEY_PREFIX;
+        @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误") String phone) {
+        String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
+        String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
         String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, phone);
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
         CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);

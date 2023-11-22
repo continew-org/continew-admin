@@ -18,7 +18,7 @@ package top.charles7c.cnadmin.common.config.justauth;
 
 import java.time.Duration;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 
 import me.zhyd.oauth.cache.AuthStateCache;
@@ -42,7 +42,7 @@ public class JustAuthRedisStateCache implements AuthStateCache {
     @Override
     public void cache(String key, String value) {
         // 参考：在 JustAuth 中，内置了一个基于 map 的 state 缓存器，默认缓存有效期为 3 分钟
-        RedisUtils.set(RedisUtils.formatKey(CacheConsts.SOCIAL_AUTH_STATE_KEY_PREFIX, key), value,
+        RedisUtils.set(RedisUtils.formatKey(CacheConstants.SOCIAL_AUTH_STATE_KEY_PREFIX, key), value,
             Duration.ofMinutes(3));
     }
 
@@ -58,7 +58,7 @@ public class JustAuthRedisStateCache implements AuthStateCache {
      */
     @Override
     public void cache(String key, String value, long timeout) {
-        RedisUtils.set(RedisUtils.formatKey(CacheConsts.SOCIAL_AUTH_STATE_KEY_PREFIX, key), value,
+        RedisUtils.set(RedisUtils.formatKey(CacheConstants.SOCIAL_AUTH_STATE_KEY_PREFIX, key), value,
             Duration.ofMillis(timeout));
     }
 
@@ -71,7 +71,7 @@ public class JustAuthRedisStateCache implements AuthStateCache {
      */
     @Override
     public String get(String key) {
-        return RedisUtils.get(RedisUtils.formatKey(CacheConsts.SOCIAL_AUTH_STATE_KEY_PREFIX, key));
+        return RedisUtils.get(RedisUtils.formatKey(CacheConstants.SOCIAL_AUTH_STATE_KEY_PREFIX, key));
     }
 
     /**
@@ -83,6 +83,6 @@ public class JustAuthRedisStateCache implements AuthStateCache {
      */
     @Override
     public boolean containsKey(String key) {
-        return RedisUtils.hasKey(RedisUtils.formatKey(CacheConsts.SOCIAL_AUTH_STATE_KEY_PREFIX, key));
+        return RedisUtils.hasKey(RedisUtils.formatKey(CacheConstants.SOCIAL_AUTH_STATE_KEY_PREFIX, key));
     }
 }

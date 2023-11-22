@@ -19,37 +19,54 @@ package top.charles7c.cnadmin.common.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import top.charles7c.continew.starter.core.constant.StringConstants;
+
 /**
- * UI 相关常量
+ * 系统相关常量
  *
  * @author Charles7c
- * @since 2023/9/17 14:12
+ * @since 2023/2/9 22:11
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UIConsts {
+public class SysConstants {
 
     /**
-     * 主色（极致蓝）
+     * 管理员角色编码
      */
-    public static final String COLOR_PRIMARY = "arcoblue";
+    public static final String ADMIN_ROLE_CODE = "admin";
 
     /**
-     * 成功色（仙野绿）
+     * 顶级部门 ID
      */
-    public static final String COLOR_SUCCESS = "green";
+    public static final Long SUPER_DEPT_ID = 1L;
 
     /**
-     * 警告色（活力橙）
+     * 顶级父 ID
      */
-    public static final String COLOR_WARNING = "orangered";
+    public static final Long SUPER_PARENT_ID = 0L;
 
     /**
-     * 错误色（浪漫红）
+     * 全部权限标识
      */
-    public static final String COLOR_ERROR = "red";
+    public static final String ALL_PERMISSION = StringConstants.ASTERISK;
 
     /**
-     * 默认色（中性灰）
+     * 默认密码
      */
-    public static final String COLOR_DEFAULT = "gray";
+    public static final String DEFAULT_PASSWORD = "123456";
+
+    /**
+     * 登录 URI
+     */
+    public static final String LOGIN_URI = "/auth/login";
+
+    /**
+     * 退出 URI
+     */
+    public static final String LOGOUT_URI = "/auth/logout";
+
+    /**
+     * 描述类字段后缀
+     */
+    public static final String DESCRIPTION_FIELD_SUFFIX = "String";
 }

@@ -27,7 +27,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
 
 import top.charles7c.cnadmin.common.base.IBaseEnum;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * Easy Excel 枚举基类转换器
@@ -63,7 +63,7 @@ public class ExcelBaseEnumConverter implements Converter<IBaseEnum<Integer>> {
     public WriteCellData<String> convertToExcelData(IBaseEnum<Integer> value, ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         if (null == value) {
-            return new WriteCellData<>(StringConsts.EMPTY);
+            return new WriteCellData<>(StringConstants.EMPTY);
         }
         return new WriteCellData<>(value.getDescription());
     }

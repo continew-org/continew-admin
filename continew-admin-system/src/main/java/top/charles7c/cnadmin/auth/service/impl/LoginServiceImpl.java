@@ -40,8 +40,8 @@ import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
@@ -119,10 +119,10 @@ public class LoginServiceImpl implements LoginService {
             String nickname = authUser.getNickname();
             UserDO existsUser = userService.getByUsername(username);
             String randomStr = RandomUtil.randomString(RandomUtil.BASE_CHAR, 5);
-            if (null != existsUser || !ReUtil.isMatch(RegexConsts.USERNAME, username)) {
+            if (null != existsUser || !ReUtil.isMatch(RegexConstants.USERNAME, username)) {
                 username = randomStr + IdUtil.fastSimpleUUID();
             }
-            if (!ReUtil.isMatch(RegexConsts.GENERAL_NAME, nickname)) {
+            if (!ReUtil.isMatch(RegexConstants.GENERAL_NAME, nickname)) {
                 nickname = source.toLowerCase() + randomStr;
             }
             user = new UserDO();
@@ -130,9 +130,9 @@ public class LoginServiceImpl implements LoginService {
             user.setNickname(nickname);
             user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
             user.setAvatar(authUser.getAvatar());
-            user.setDeptId(SysConsts.SUPER_DEPT_ID);
+            user.setDeptId(SysConstants.SUPER_DEPT_ID);
             Long userId = userService.save(user);
-            RoleDO role = roleService.getByCode(SysConsts.ADMIN_ROLE_CODE);
+            RoleDO role = roleService.getByCode(SysConstants.ADMIN_ROLE_CODE);
             userRoleService.save(Collections.singletonList(role.getId()), userId);
             userSocial = new UserSocialDO();
             userSocial.setUserId(userId);
@@ -157,7 +157,7 @@ public class LoginServiceImpl implements LoginService {
         }
         // 查询菜单列表
         Set<MenuResp> menuSet = new LinkedHashSet<>();
-        if (roleCodeSet.contains(SysConsts.ADMIN_ROLE_CODE)) {
+        if (roleCodeSet.contains(SysConstants.ADMIN_ROLE_CODE)) {
             menuSet.addAll(menuService.list());
         } else {
             roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));

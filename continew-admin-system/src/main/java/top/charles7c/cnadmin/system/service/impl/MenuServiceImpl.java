@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MenuMapper;
@@ -47,7 +47,7 @@ import top.charles7c.cnadmin.system.service.MenuService;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConsts.MENU_KEY_PREFIX)
+@CacheConfig(cacheNames = CacheConstants.MENU_KEY_PREFIX)
 public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq>
     implements MenuService {
 

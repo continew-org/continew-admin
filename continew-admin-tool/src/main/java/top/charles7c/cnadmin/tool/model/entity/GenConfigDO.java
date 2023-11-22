@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 
 /**
  * 生成配置实体
@@ -76,7 +76,7 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "包名称", example = "top.charles7c.cnadmin.system")
     @NotBlank(message = "包名称不能为空")
-    @Pattern(regexp = RegexConsts.PACKAGE_NAME, message = "包名称格式错误")
+    @Pattern(regexp = RegexConstants.PACKAGE_NAME, message = "包名称格式错误")
     @Length(max = 60, message = "包名称不能超过 {max} 个字符")
     private String packageName;
 

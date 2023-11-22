@@ -30,7 +30,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * Web MVC 配置
@@ -52,8 +52,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         LocalStorageProperties.LocalStoragePath path = localStorageProperties.getPath();
-        String avatarUtl = "file:" + path.getAvatar().replace(StringConsts.BACKSLASH, StringConsts.SLASH);
-        String fileUrl = "file:" + path.getFile().replace(StringConsts.BACKSLASH, StringConsts.SLASH);
+        String avatarUtl = "file:" + path.getAvatar().replace(StringConstants.BACKSLASH, StringConstants.SLASH);
+        String fileUrl = "file:" + path.getFile().replace(StringConstants.BACKSLASH, StringConstants.SLASH);
         registry.addResourceHandler(localStorageProperties.getFilePattern()).addResourceLocations(fileUrl)
             .setCachePeriod(0);
         registry.addResourceHandler(localStorageProperties.getAvatarPattern()).addResourceLocations(avatarUtl)

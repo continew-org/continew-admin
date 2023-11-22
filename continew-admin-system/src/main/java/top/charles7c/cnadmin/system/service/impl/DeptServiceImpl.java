@@ -32,7 +32,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
@@ -128,7 +128,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     public void fillDetail(Object detailObj) {
         super.fillDetail(detailObj);
         if (detailObj instanceof DeptDetailResp detail) {
-            if (Objects.equals(SysConsts.SUPER_PARENT_ID, detail.getParentId())) {
+            if (Objects.equals(SysConstants.SUPER_PARENT_ID, detail.getParentId())) {
                 return;
             }
             detail.setParentName(ExceptionUtils.exToNull(() -> this.get(detail.getParentId()).getName()));

@@ -31,8 +31,8 @@ import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.auth.service.OnlineUserService;
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
@@ -82,7 +82,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheConsts.MENU_KEY_PREFIX, key = "#req.code == 'admin' ? 'ALL' : #req.code")
+    @CacheEvict(cacheNames = CacheConstants.MENU_KEY_PREFIX, key = "#req.code == 'admin' ? 'ALL' : #req.code")
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleReq req, Long id) {
         String name = req.getName();
@@ -101,7 +101,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         // 更新信息
         super.update(req, id);
         // 更新关联信息
-        if (!SysConsts.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
+        if (!SysConstants.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
             // 保存角色和菜单关联
             boolean isSaveMenuSuccess = roleMenuService.save(req.getMenuIds(), id);
             // 保存角色和部门关联
@@ -136,7 +136,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         super.fillDetail(detailObj);
         if (detailObj instanceof RoleDetailResp detail) {
             Long roleId = detail.getId();
-            if (SysConsts.ADMIN_ROLE_CODE.equals(detail.getCode())) {
+            if (SysConstants.ADMIN_ROLE_CODE.equals(detail.getCode())) {
                 List<MenuResp> list = menuService.list(null, null);
                 List<Long> menuIds = list.stream().map(MenuResp::getId).collect(Collectors.toList());
                 detail.setMenuIds(menuIds);

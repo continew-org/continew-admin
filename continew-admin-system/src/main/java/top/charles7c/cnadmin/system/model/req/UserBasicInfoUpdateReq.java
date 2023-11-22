@@ -27,7 +27,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
 /**
@@ -48,7 +48,7 @@ public class UserBasicInfoUpdateReq implements Serializable {
      */
     @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**

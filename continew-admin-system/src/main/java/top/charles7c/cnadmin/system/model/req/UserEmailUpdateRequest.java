@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 
 /**
  * 用户邮箱修改信息
@@ -48,7 +48,7 @@ public class UserEmailUpdateRequest implements Serializable {
      */
     @Schema(description = "新邮箱", example = "123456789@qq.com")
     @NotBlank(message = "新邮箱不能为空")
-    @Pattern(regexp = RegexConsts.EMAIL, message = "邮箱格式错误")
+    @Pattern(regexp = RegexConstants.EMAIL, message = "邮箱格式错误")
     private String newEmail;
 
     /**

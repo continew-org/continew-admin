@@ -39,7 +39,7 @@ import top.charles7c.cnadmin.auth.model.resp.LoginResp;
 import top.charles7c.cnadmin.auth.model.resp.RouteResp;
 import top.charles7c.cnadmin.auth.model.resp.UserInfoResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.SecureUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
@@ -70,7 +70,7 @@ public class AuthController {
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
     public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.delete(captchaKey);
@@ -87,7 +87,7 @@ public class AuthController {
     @PostMapping("/email")
     public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
         String email = loginReq.getEmail();
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, email);
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, email);
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
@@ -101,7 +101,7 @@ public class AuthController {
     @PostMapping("/phone")
     public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
         String phone = loginReq.getPhone();
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, phone);
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, phone);
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");

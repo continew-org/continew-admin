@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseReq;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 
@@ -53,7 +53,7 @@ public class UserReq extends BaseReq {
      */
     @Schema(description = "用户名", example = "zhangsan")
     @NotBlank(message = "用户名不能为空")
-    @Pattern(regexp = RegexConsts.USERNAME, message = "用户名长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头")
+    @Pattern(regexp = RegexConstants.USERNAME, message = "用户名长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头")
     private String username;
 
     /**
@@ -61,14 +61,14 @@ public class UserReq extends BaseReq {
      */
     @Schema(description = "昵称", example = "张三")
     @NotBlank(message = "昵称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
 
     /**
      * 邮箱
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
-    @Pattern(regexp = "^$|" + RegexConsts.EMAIL, message = "邮箱格式错误")
+    @Pattern(regexp = "^$|" + RegexConstants.EMAIL, message = "邮箱格式错误")
     @Length(max = 255, message = "邮箱长度不能超过 {max} 个字符")
     private String email;
 
@@ -76,7 +76,7 @@ public class UserReq extends BaseReq {
      * 手机号码
      */
     @Schema(description = "手机号码", example = "13811111111")
-    @Pattern(regexp = "^$|" + RegexConsts.MOBILE, message = "手机号码格式错误")
+    @Pattern(regexp = "^$|" + RegexConstants.MOBILE, message = "手机号码格式错误")
     private String phone;
 
     /**

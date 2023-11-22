@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
  * @since 2023/1/2 21:19
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FileConsts {
+public class FileConstants {
 
     /**
      * 头像支持的图片类型

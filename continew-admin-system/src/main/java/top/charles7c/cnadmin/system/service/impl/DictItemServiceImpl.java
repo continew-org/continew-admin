@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
-import top.charles7c.cnadmin.common.constant.CacheConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
@@ -46,7 +46,7 @@ import top.charles7c.cnadmin.system.service.DictItemService;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConsts.DICT_KEY_PREFIX)
+@CacheConfig(cacheNames = CacheConstants.DICT_KEY_PREFIX)
 public class DictItemServiceImpl
     extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq>
     implements DictItemService {

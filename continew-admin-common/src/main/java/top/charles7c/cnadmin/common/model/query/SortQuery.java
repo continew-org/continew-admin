@@ -30,7 +30,7 @@ import org.springframework.data.domain.Sort;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 排序查询条件
@@ -62,10 +62,10 @@ public class SortQuery implements Serializable {
         }
 
         List<Sort.Order> orders = new ArrayList<>(sort.length);
-        if (StrUtil.contains(sort[0], StringConsts.COMMA)) {
+        if (StrUtil.contains(sort[0], StringConstants.COMMA)) {
             // e.g "sort=createTime,desc&sort=name,asc"
             for (String s : sort) {
-                List<String> sortList = StrUtil.splitTrim(s, StringConsts.COMMA);
+                List<String> sortList = StrUtil.splitTrim(s, StringConstants.COMMA);
                 Sort.Order order =
                     new Sort.Order(Sort.Direction.valueOf(sortList.get(1).toUpperCase()), sortList.get(0));
                 orders.add(order);

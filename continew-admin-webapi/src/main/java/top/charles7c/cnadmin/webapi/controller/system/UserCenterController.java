@@ -36,8 +36,8 @@ import com.xkcoding.justauth.AuthRequestFactory;
 
 import cn.hutool.core.util.ReUtil;
 
-import top.charles7c.cnadmin.common.constant.CacheConsts;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.CacheConstants;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
 import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.SecureUtils;
@@ -101,7 +101,7 @@ public class UserCenterController {
         String rawNewPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConsts.PASSWORD, rawNewPassword),
+        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConstants.PASSWORD, rawNewPassword),
             "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
@@ -113,7 +113,7 @@ public class UserCenterController {
         String rawCurrentPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
@@ -128,7 +128,7 @@ public class UserCenterController {
         String rawCurrentPassword =
             ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
+        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");

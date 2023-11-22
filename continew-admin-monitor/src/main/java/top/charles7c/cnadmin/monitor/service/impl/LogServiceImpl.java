@@ -33,7 +33,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.service.CommonUserService;
@@ -76,7 +76,7 @@ public class LogServiceImpl implements LogService {
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
@@ -102,7 +102,7 @@ public class LogServiceImpl implements LogService {
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 
@@ -122,7 +122,7 @@ public class LogServiceImpl implements LogService {
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogResp.class);
         List<String> columnNameList =
-            fieldNameList.stream().filter(n -> !n.endsWith(SysConsts.DESCRIPTION_FIELD_SUFFIX))
+            fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
 

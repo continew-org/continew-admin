@@ -39,7 +39,7 @@ import cn.hutool.setting.dialect.PropsUtil;
 
 import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
 import top.charles7c.cnadmin.tool.enums.FormTypeEnum;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 字段配置实体
@@ -142,7 +142,7 @@ public class FieldConfigDO implements Serializable {
     private LocalDateTime createTime;
 
     public FieldConfigDO(@NonNull Column column) {
-        String columnType = StrUtil.splitToArray(column.getTypeName(), StringConsts.SPACE)[0].toLowerCase();
+        String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
         boolean isRequired = !column.isPk() && !column.isNullable();
         this.tableName = column.getTableName();
         this.setColumnName(column.getName());

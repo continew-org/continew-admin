@@ -51,7 +51,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.auth.model.req.AccountLoginReq;
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.IpUtils;
@@ -63,7 +63,7 @@ import top.charles7c.cnadmin.monitor.config.properties.LogProperties;
 import top.charles7c.cnadmin.monitor.enums.LogStatusEnum;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 import top.charles7c.cnadmin.system.service.UserService;
-import top.charles7c.continew.starter.core.constant.StringConsts;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 
 /**
@@ -171,8 +171,8 @@ public class LogInterceptor implements HandlerInterceptor {
         // （本框架代码规范）例如：@Tag(name = "部门管理 API") -> 部门管理
         if (null != classTag) {
             String name = classTag.name();
-            logDO
-                .setModule(StrUtil.isNotBlank(name) ? name.replace("API", StringConsts.EMPTY).trim() : "请在该接口类上指定所属模块");
+            logDO.setModule(
+                StrUtil.isNotBlank(name) ? name.replace("API", StringConstants.EMPTY).trim() : "请在该接口类上指定所属模块");
         }
         // 例如：@Log(module = "部门管理") -> 部门管理
         if (null != classLog && StrUtil.isNotBlank(classLog.module())) {
@@ -213,8 +213,8 @@ public class LogInterceptor implements HandlerInterceptor {
      *            请求对象
      */
     private void logRequest(LogDO logDO, HttpServletRequest request) {
-        logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString()
-            : request.getRequestURL().append(StringConsts.QUESTION_MARK).append(request.getQueryString()).toString());
+        logDO.setRequestUrl(StrUtil.isBlank(request.getQueryString()) ? request.getRequestURL().toString() : request
+            .getRequestURL().append(StringConstants.QUESTION_MARK).append(request.getQueryString()).toString());
         String method = request.getMethod();
         logDO.setRequestMethod(method);
         logDO.setRequestHeaders(this.desensitize(JakartaServletUtil.getHeaderMap(request)));
@@ -224,7 +224,7 @@ public class LogInterceptor implements HandlerInterceptor {
         if (requestURI.startsWith("/oauth")) {
             logDO.setCreateUser(null);
         }
-        if (null == logDO.getCreateUser() && SysConsts.LOGIN_URI.equals(requestURI)) {
+        if (null == logDO.getCreateUser() && SysConstants.LOGIN_URI.equals(requestURI)) {
             AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
             logDO.setCreateUser(
                 ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername()).getId()));

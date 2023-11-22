@@ -31,7 +31,7 @@ import org.hibernate.validator.constraints.Length;
 
 import top.charles7c.cnadmin.common.base.BaseReq;
 import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 
 /**
@@ -59,7 +59,7 @@ public class DeptReq extends BaseReq {
      */
     @Schema(description = "部门名称", example = "测试部")
     @NotBlank(message = "部门名称不能为空")
-    @Pattern(regexp = RegexConsts.GENERAL_NAME, message = "部门名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "部门名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**

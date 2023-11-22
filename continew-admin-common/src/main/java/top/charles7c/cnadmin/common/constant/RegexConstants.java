@@ -28,7 +28,7 @@ import cn.hutool.core.lang.RegexPool;
  * @since 2023/1/10 20:06
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class RegexConsts implements RegexPool {
+public class RegexConstants implements RegexPool {
 
     /**
      * 用户名正则（长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头）

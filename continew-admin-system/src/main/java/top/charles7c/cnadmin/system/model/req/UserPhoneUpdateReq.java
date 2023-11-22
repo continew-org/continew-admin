@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.cnadmin.common.constant.RegexConsts;
+import top.charles7c.cnadmin.common.constant.RegexConstants;
 
 /**
  * 用户手机号修改信息
@@ -48,7 +48,7 @@ public class UserPhoneUpdateReq implements Serializable {
      */
     @Schema(description = "新手机号", example = "13811111111")
     @NotBlank(message = "新手机号不能为空")
-    @Pattern(regexp = RegexConsts.MOBILE, message = "手机号格式错误")
+    @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误")
     private String newPhone;
 
     /**

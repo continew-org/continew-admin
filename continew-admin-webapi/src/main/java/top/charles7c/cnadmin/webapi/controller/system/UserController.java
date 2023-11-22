@@ -32,7 +32,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
 import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.constant.SysConsts;
+import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
 import top.charles7c.cnadmin.system.model.req.UserReq;
@@ -57,7 +57,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     @SaCheckPermission("system:user:add")
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
         Long id = baseService.add(req);
-        return R.ok(String.format("新增成功，请牢记默认密码：%s", SysConsts.DEFAULT_PASSWORD), id);
+        return R.ok(String.format("新增成功，请牢记默认密码：%s", SysConstants.DEFAULT_PASSWORD), id);
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
@@ -66,7 +66,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     @PatchMapping("/{id}/password")
     public R resetPassword(@PathVariable Long id) {
         baseService.resetPassword(id);
-        return R.ok(String.format("重置密码成功，请牢记默认密码：%s", SysConsts.DEFAULT_PASSWORD));
+        return R.ok(String.format("重置密码成功，请牢记默认密码：%s", SysConstants.DEFAULT_PASSWORD));
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")

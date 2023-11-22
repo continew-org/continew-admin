@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.cnadmin.common.base.IBaseEnum;
-import top.charles7c.cnadmin.common.constant.UIConsts;
+import top.charles7c.cnadmin.common.constant.UIConstants;
 
 /**
  * 公告状态枚举
@@ -33,13 +33,13 @@ import top.charles7c.cnadmin.common.constant.UIConsts;
 public enum AnnouncementStatusEnum implements IBaseEnum<Integer> {
 
     /** 待发布 */
-    PENDING_RELEASE(1, "待发布", UIConsts.COLOR_PRIMARY),
+    PENDING_RELEASE(1, "待发布", UIConstants.COLOR_PRIMARY),
 
     /** 已发布 */
-    PUBLISHED(2, "已发布", UIConsts.COLOR_SUCCESS),
+    PUBLISHED(2, "已发布", UIConstants.COLOR_SUCCESS),
 
     /** 已过期 */
-    EXPIRED(3, "已过期", UIConsts.COLOR_ERROR),;
+    EXPIRED(3, "已过期", UIConstants.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;
