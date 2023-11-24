@@ -120,9 +120,6 @@ sa-token:
 
 --- ### MyBatis Plus 配置
 mybatis-plus:
-  # Mapper 接口扫描包配置（该配置为自定义配置，非 MP 配置，不支持多包，如有需要可通过注解配置或提升扫描包层级）
-  # 该配置目前的唯一使用场景为：@MapperScan("${mybatis-plus.mapper-package}")
-  mapper-package: ${project.basePackage}.**.mapper
   # Mapper XML 文件目录配置
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
@@ -154,6 +151,17 @@ mybatis-plus:
       logic-delete-value: 1
       # 逻辑未删除全局值（默认 0，表示未删除）
       logic-not-delete-value: 0
+  ## 扩展配置
+  extension:
+    enabled: true
+    # Mapper 接口扫描包配置
+    mapper-package: ${project.basePackage}.**.mapper
+    # 数据权限实现
+    data-permission-handler-impl: top.charles7c.cnadmin.common.config.mybatis.DataPermissionHandlerImpl
+    # 分页插件配置
+    pagination:
+      enabled: true
+      db-type: mysql
 
 --- ### 服务器配置
 server:

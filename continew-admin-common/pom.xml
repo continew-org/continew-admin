@@ -17,22 +17,28 @@
     <description>公共模块（存放公共工具类，公共配置等）</description>
 
     <dependencies>
-        <!-- ContiNew Starter API 文档依赖 -->
+        <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-api-doc</artifactId>
+            <artifactId>continew-starter-data-mybatis-plus</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter Redisson 依赖（Redis 缓存） -->
+        <!-- ContiNew Starter 缓存模块 - Redisson -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-starter-cache-redisson</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter Jackson 依赖（JSON） -->
+        <!-- ContiNew Starter JSON 模块 - Jackson -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-starter-json-jackson</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter API 文档模块 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-api-doc</artifactId>
         </dependency>
 
         <!-- ################ Spring Boot 相关 ################ -->
@@ -66,29 +72,10 @@
             <artifactId>sa-token-jwt</artifactId>
         </dependency>
 
-        <!-- ################ 持久层相关 ################ -->
-        <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-        </dependency>
-
-        <!-- Dynamic Datasource（基于 Spring Boot 的快速集成多数据源的启动器） -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
-        </dependency>
-
         <!-- MySQL Java 驱动 -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-
-        <!-- P6Spy（SQL 性能分析组件） -->
-        <dependency>
-            <groupId>p6spy</groupId>
-            <artifactId>p6spy</artifactId>
         </dependency>
 
         <!-- ################ 工具库相关 ################ -->

@@ -3,6 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--
+        下方 parent 为 ContiNew Starter（Continue New Starter），是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，它可以帮助开发人员快速集成常用的第三方库或工具到 Spring 应用程序中。ContiNew Starter 包含了一系列经过优化和配置的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，从而避免开发人员手动引入依赖的麻烦，为 Spring Boot 项目的灵活快速构建提供支持。
+    -->
     <parent>
         <groupId>top.charles7c.continew</groupId>
         <artifactId>continew-starter</artifactId>
@@ -29,11 +32,6 @@
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
-
-        <!-- ### 持久层相关 ### -->
-        <mybatis-plus.version>3.5.4</mybatis-plus.version>
-        <dynamic-ds.version>4.2.0</dynamic-ds.version>
-        <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ### 工具库相关 ### -->
         <sms4j.version>3.0.4</sms4j.version>
@@ -69,28 +67,6 @@
                         <artifactId>hutool-jwt</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <!-- ################ 持久层相关 ################ -->
-            <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-
-            <!-- Dynamic Datasource（基于 Spring Boot 的快速集成多数据源的启动器） -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
-                <version>${dynamic-ds.version}</version>
-            </dependency>
-
-            <!-- P6Spy（SQL 性能分析组件） -->
-            <dependency>
-                <groupId>p6spy</groupId>
-                <artifactId>p6spy</artifactId>
-                <version>${p6spy.version}</version>
             </dependency>
 
             <!-- ################ 工具库相关 ################ -->
