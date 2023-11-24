@@ -32,7 +32,7 @@
 
 ## 简介
 
-ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续以最新流行技术栈构建，拥抱变化，迭代优化。在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、Liquibase、JustAuth、Easy Excel、Hutool、TypeScript、Vite4 等。
+ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续以最新流行技术栈构建，拥抱变化，迭代优化。依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、Liquibase、JustAuth、Easy Excel、Hutool、TypeScript、Vite4 等。
 
 ## 项目源码
 
@@ -65,6 +65,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ## 主要特性
 
+- :fire: 下方特性配置，部分已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 模块，v2.1.0 正式 release 后将会发布到 Maven 中央仓库，为 Spring Boot Web 项目开发提供更灵活的助力
 - 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
 - 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API
 - 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
@@ -461,7 +462,7 @@ continew-admin
 
 ## 贡献代码
 
-ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，迭代优化。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 在社区贡献者的支持和参与下，持续发展并源源不断地为企业级项目开发提供助力。我们非常欢迎广大社区用户为 ContiNew Admin 贡献或优化代码。
+ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，迭代优化。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。我们非常欢迎广大社区用户为 ContiNew Admin 贡献或优化代码。
 
 ### 分支说明
 
