@@ -132,18 +132,15 @@ spring.mail:
 
 --- ### 验证码配置
 captcha:
-  ## 图片验证码配置
-  image:
+  ## 图形验证码配置
+  graphic:
+    enabled: true
     # 类型
     type: SPEC
     # 内容长度
     length: 4
     # 过期时间
     expirationInMinutes: 2
-    # 宽度
-    width: 111
-    # 高度
-    height: 36
   ## 邮箱验证码配置
   mail:
     # 内容长度

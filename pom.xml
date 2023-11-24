@@ -38,8 +38,6 @@
         <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>3.1.5.1</ip2region.version>
-        <easy-captcha.version>1.6.2</easy-captcha.version>
-        <hutool.version>5.8.22</hutool.version>
 
         <!-- Maven Plugin Versions  -->
         <spotless.version>2.40.0</spotless.version>
@@ -111,20 +109,6 @@
                 <groupId>net.dreamlu</groupId>
                 <artifactId>mica-ip2region</artifactId>
                 <version>${ip2region.version}</version>
-            </dependency>
-
-            <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>${easy-captcha.version}</version>
-            </dependency>
-
-            <!-- Hutool（小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”） -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
             </dependency>
 
             <!-- ################ 本项目子模块相关 ################ -->

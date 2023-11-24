@@ -29,16 +29,22 @@
             <artifactId>continew-starter-cache-redisson</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter JSON 模块 - Jackson -->
+        <!-- ContiNew Starter 验证码模块 - 图形验证码 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-json-jackson</artifactId>
+            <artifactId>continew-starter-captcha-graphic</artifactId>
         </dependency>
 
         <!-- ContiNew Starter API 文档模块 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-starter-api-doc</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter JSON 模块 - Jackson -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
 
         <!-- ################ Spring Boot 相关 ################ -->
@@ -105,12 +111,6 @@
         <dependency>
             <groupId>net.dreamlu</groupId>
             <artifactId>mica-ip2region</artifactId>
-        </dependency>
-
-        <!-- Easy Captcha（Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目） -->
-        <dependency>
-            <groupId>com.github.whvcse</groupId>
-            <artifactId>easy-captcha</artifactId>
         </dependency>
     </dependencies>
 </project>

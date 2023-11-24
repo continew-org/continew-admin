@@ -19,17 +19,12 @@ package top.charles7c.cnadmin.common.config.properties;
 import java.awt.*;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import com.wf.captcha.*;
-import com.wf.captcha.base.Captcha;
-
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * 验证码配置属性
@@ -43,9 +38,10 @@ import cn.hutool.core.util.StrUtil;
 public class CaptchaProperties {
 
     /**
-     * 图片验证码配置
+     * 过期时间
      */
-    private CaptchaImage image;
+    @Value("${captcha.graphic.expirationInMinutes}")
+    private long expirationInMinutes;
 
     /**
      * 邮箱验证码配置
@@ -56,61 +52,6 @@ public class CaptchaProperties {
      * 短信验证码配置
      */
     private CaptchaSms sms;
-
-    /**
-     * 图片验证码配置
-     */
-    @Data
-    public static class CaptchaImage {
-        /**
-         * 类型
-         */
-        private CaptchaImageTypeEnum type;
-
-        /**
-         * 内容长度
-         */
-        private int length;
-
-        /**
-         * 过期时间
-         */
-        private long expirationInMinutes;
-
-        /**
-         * 宽度
-         */
-        private int width = 111;
-
-        /**
-         * 高度
-         */
-        private int height = 36;
-
-        /**
-         * 字体
-         */
-        private String fontName;
-
-        /**
-         * 字体大小
-         */
-        private int fontSize = 25;
-
-        /**
-         * 获取图片验证码对象
-         *
-         * @return 验证码对象
-         */
-        public Captcha getCaptcha() {
-            Captcha captcha = ReflectUtil.newInstance(type.getClazz(), this.width, this.height);
-            captcha.setLen(length);
-            if (StrUtil.isNotBlank(this.fontName)) {
-                captcha.setFont(new Font(this.fontName, Font.PLAIN, this.fontSize));
-            }
-            return captcha;
-        }
-    }
 
     /**
      * 邮箱验证码配置
@@ -162,43 +103,5 @@ public class CaptchaProperties {
          * 模板 ID
          */
         private String templateId;
-    }
-
-    /**
-     * 图片验证码类型枚举
-     */
-    @Getter
-    @RequiredArgsConstructor
-    private enum CaptchaImageTypeEnum {
-
-        /**
-         * 算术
-         */
-        ARITHMETIC(ArithmeticCaptcha.class),
-
-        /**
-         * 中文
-         */
-        CHINESE(ChineseCaptcha.class),
-
-        /**
-         * 中文闪图
-         */
-        CHINESE_GIF(ChineseGifCaptcha.class),
-
-        /**
-         * 闪图
-         */
-        GIF(GifCaptcha.class),
-
-        /**
-         * 特殊类型
-         */
-        SPEC(SpecCaptcha.class),;
-
-        /**
-         * 验证码字节码类型
-         */
-        private final Class<? extends Captcha> clazz;
     }
 }

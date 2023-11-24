@@ -56,6 +56,7 @@ import top.charles7c.cnadmin.common.util.MailUtils;
 import top.charles7c.cnadmin.common.util.TemplateUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
+import top.charles7c.continew.starter.captcha.graphic.autoconfigure.GraphicCaptchaProperties;
 
 /**
  * 验证码 API
@@ -73,17 +74,15 @@ public class CaptchaController {
 
     private final CaptchaProperties captchaProperties;
     private final ProjectProperties projectProperties;
+    private final GraphicCaptchaProperties graphicCaptchaProperties;
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
     public CaptchaResp getImageCaptcha() {
-        // 生成验证码
-        CaptchaProperties.CaptchaImage captchaImage = captchaProperties.getImage();
-        Captcha captcha = captchaImage.getCaptcha();
-        // 保存验证码
+        Captcha captcha = graphicCaptchaProperties.getCaptcha();
         String uuid = IdUtil.fastUUID();
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, uuid);
-        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaImage.getExpirationInMinutes()));
+        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
         return CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build();
     }
 
