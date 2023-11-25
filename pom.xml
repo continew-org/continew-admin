@@ -37,7 +37,6 @@
 
         <!-- ### 工具库相关 ### -->
         <sms4j.version>3.0.4</sms4j.version>
-        <justauth.version>1.16.5</justauth.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>3.1.5.1</ip2region.version>
 
@@ -54,28 +53,6 @@
                 <groupId>org.dromara.sms4j</groupId>
                 <artifactId>sms4j-spring-boot-starter</artifactId>
                 <version>${sms4j.version}</version>
-            </dependency>
-
-            <!-- Just Auth（开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy!） -->
-            <dependency>
-                <groupId>com.xkcoding.justauth</groupId>
-                <artifactId>justauth-spring-boot-starter</artifactId>
-                <version>1.4.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cn.hutool</groupId>
-                        <artifactId>hutool-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>me.zhyd.oauth</groupId>
-                        <artifactId>JustAuth</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>me.zhyd.oauth</groupId>
-                <artifactId>JustAuth</artifactId>
-                <version>${justauth.version}</version>
             </dependency>
 
             <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->

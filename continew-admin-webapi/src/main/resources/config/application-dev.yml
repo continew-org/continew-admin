@@ -83,21 +83,6 @@ spring.cache:
     # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
     cache-null-values: true
 
---- ### Just Auth 配置
-justauth:
-  enabled: true
-  type:
-    GITEE:
-      client-id: 5d271b7f638941812aaf8bfc2e2f08f06d6235ef934e0e39537e2364eb8452c4
-      client-secret: 1f7d08**********5b7**********29e
-      redirect-uri: ${project.url}/social/callback?source=gitee
-    GITHUB:
-      client-id: 38080dad08cfbdfacca9
-      client-secret: 1f7d08**********5b7**********29e
-      redirect-uri: ${project.url}/social/callback?source=github
-  cache:
-    type: custom
-
 --- ### 短信配置
 sms:
   # 从 YAML 读取配置
@@ -176,6 +161,21 @@ logging:
 springdoc:
   swagger-ui:
     enabled: true
+
+--- ### Just Auth 配置
+justauth:
+  enabled: true
+  type:
+    GITEE:
+      client-id: 5d271b7f638941812aaf8bfc2e2f08f06d6235ef934e0e39537e2364eb8452c4
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${project.url}/social/callback?source=gitee
+    GITHUB:
+      client-id: 38080dad08cfbdfacca9
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${project.url}/social/callback?source=github
+  cache:
+    type: custom
 
 --- ### Sa-Token 扩展配置
 sa-token.extension:
