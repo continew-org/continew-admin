@@ -83,36 +83,6 @@ spring.cache:
     # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
     cache-null-values: true
 
---- ### 短信配置
-sms:
-  # 从 YAML 读取配置
-  config-type: yaml
-  is-print: false
-  blends:
-    cloopen:
-      # 短信厂商
-      supplier: cloopen
-      base-url: https://app.cloopen.com:8883/2013-12-26
-      access-key-id: 你的Access Key
-      access-key-secret: 你的Access Key Secret
-      sdk-app-id: 你的应用ID
-
---- ### 邮件配置
-spring.mail:
-  # 根据需要更换
-  host: smtp.126.com
-  port: 465
-  username: 你的邮箱
-  password: 你的邮箱授权码
-  default-encoding: utf-8
-  properties:
-    mail:
-      smtp:
-        auth: true
-        socketFactory:
-          class: javax.net.ssl.SSLSocketFactory
-          port: 465
-
 --- ### 验证码配置
 captcha:
   ## 图形验证码配置
@@ -144,6 +114,36 @@ captcha:
     limitInSeconds: 60
     # 模板 ID
     templateId: 1
+
+--- ### 短信配置
+sms:
+  # 从 YAML 读取配置
+  config-type: yaml
+  is-print: false
+  blends:
+    cloopen:
+      # 短信厂商
+      supplier: cloopen
+      base-url: https://app.cloopen.com:8883/2013-12-26
+      access-key-id: 你的Access Key
+      access-key-secret: 你的Access Key Secret
+      sdk-app-id: 你的应用ID
+
+--- ### 邮件配置
+spring.mail:
+  # 根据需要更换
+  host: smtp.126.com
+  port: 465
+  username: 你的邮箱
+  password: 你的邮箱授权码
+  default-encoding: utf-8
+  properties:
+    mail:
+      smtp:
+        auth: true
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+          port: 465
 
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:

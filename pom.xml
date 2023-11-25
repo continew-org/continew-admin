@@ -36,7 +36,6 @@
         <revision>2.1.0-SNAPSHOT</revision>
 
         <!-- ### 工具库相关 ### -->
-        <sms4j.version>3.0.4</sms4j.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <ip2region.version>3.1.5.1</ip2region.version>
 
@@ -48,13 +47,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- ################ 工具库相关 ################ -->
-            <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
-            <dependency>
-                <groupId>org.dromara.sms4j</groupId>
-                <artifactId>sms4j-spring-boot-starter</artifactId>
-                <version>${sms4j.version}</version>
-            </dependency>
-
             <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
             <dependency>
                 <groupId>com.alibaba</groupId>

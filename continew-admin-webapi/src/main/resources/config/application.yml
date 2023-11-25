@@ -44,14 +44,6 @@ springdoc:
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认为 false）
   # 如果不添加该全局配置，可以在需要如此处理的对象参数类上使用 @ParameterObject
   default-flat-param-object: true
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
-    show-extensions: true
-  api-docs:
-    enabled: ${springdoc.swagger-ui.enabled}
-    path: /v3/api-docs
   group-configs:
     - group: 'all'
       paths-to-match: '/**'
@@ -84,8 +76,6 @@ springdoc:
 knife4j:
   enable: true
   setting:
-    language: zh_cn
-    swagger-model-name: 实体类列表
     # 是否显示默认的 footer（默认 true 显示）
     enable-footer: false
     # 是否自定义 footer（默认 false 非自定义）
@@ -97,8 +87,6 @@ knife4j:
 sa-token:
   # token 名称（同时也是 cookie 名称）
   token-name: Authorization
-  # token 前缀（例如填写 Bearer 实际传参 Authorization: Bearer xxxx-xxxx-xxxx-xxxx）
-  token-prefix: Bearer
   # token 有效期（单位：秒，默认 30 天，-1 代表永不过期）
   timeout: 86400
   # token 最低活跃频率（单位：秒，默认 -1，代表不限制，永不冻结。如果 token 超过此时间没有访问系统就会被冻结）
@@ -109,10 +97,6 @@ sa-token:
   is-concurrent: true
   # 在多人登录同一账号时，是否共用一个 token（为 true 时所有登录共用一个 token，为 false 时每次登录新建一个 token）
   is-share: false
-  # 是否尝试从 header 里读取 Token
-  is-read-header: true
-  # 是否尝试从 cookie 里读取 Token（此值为 false 后，StpUtil.login(id) 登录时也不会再往前端注入 Cookie，适合前后端分离模式）
-  is-read-cookie: false
   # 是否输出操作日志
   is-log: false
   # JWT 秘钥
@@ -131,21 +115,10 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
   type-aliases-package: ${project.basePackage}.**.model
-  check-config-location: true
   configuration:
-    # 自动驼峰命名规则（camel case）映射
-    map-underscore-to-camel-case: true
     # MyBatis 自动映射策略
     # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
     auto-mapping-behavior: PARTIAL
-    # MyBatis 自动映射时未知列或未知属性处理策略
-    # NONE：不做处理 WARNING：打印相关警告 FAILING：抛出异常和详细信息
-    auto-mapping-unknown-column-behavior: NONE
-    # 日志配置
-    # 默认：org.apache.ibatis.logging.slf4j.Slf4jImpl
-    # 更详细（会有性能损耗）：org.apache.ibatis.logging.stdout.StdOutImpl
-    # 关闭（可单纯使用 p6spy 分析）：org.apache.ibatis.logging.nologging.NoLoggingImpl
-    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     banner: true
     db-config:
@@ -203,25 +176,6 @@ spring:
     allow-bean-definition-overriding: true
     # 允许循环依赖
     allow-circular-references: true
-  ## MVC 配置
-  mvc:
-    format:
-      # 日期格式化（针对 java.util.Date）
-      date-time: yyyy-MM-dd HH:mm:ss
-  ## JSON 配置
-  jackson:
-    # 时区配置
-    time-zone: GMT+8
-    # 日期格式化（针对 java.util.Date）
-    date-format: yyyy-MM-dd HH:mm:ss
-    # 序列化配置（Bean -> JSON）
-    serialization:
-      # 允许序列化无属性的 Bean
-      FAIL_ON_EMPTY_BEANS: false
-    # 反序列化配置（JSON -> Bean）
-    deserialization:
-      # 允许反序列化不存在的属性
-      FAIL_ON_UNKNOWN_PROPERTIES: false
 
 --- ### 健康检查配置
 management.health:
