@@ -38,7 +38,7 @@ import com.wf.captcha.*;
 public class CaptchaProperties {
 
     /**
-     * 过期时间
+     * 图形验证码过期时间
      */
     @Value("${captcha.graphic.expirationInMinutes}")
     private long expirationInMinutes;

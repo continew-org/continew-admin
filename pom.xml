@@ -4,7 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!--
-        下方 parent 为 ContiNew Starter（Continue New Starter），是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，它可以帮助开发人员快速集成常用的第三方库或工具到 Spring 应用程序中。ContiNew Starter 包含了一系列经过优化和配置的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，从而避免开发人员手动引入依赖的麻烦，为 Spring Boot 项目的灵活快速构建提供支持。
+        下方 parent 为 ContiNew Starter（Continue New Starter），
+        是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，它可以帮助开发人员快速集成常用的第三方库或工具到 Spring 应用程序中。
+        ContiNew Starter 包含了一系列经过优化和配置的依赖包（如 MyBatis-Plus、SaToken），
+        可轻松集成到应用中，从而避免开发人员手动引入依赖的麻烦，为 Spring Boot 项目的灵活快速构建提供支持。
     -->
     <parent>
         <groupId>top.charles7c.continew</groupId>
@@ -31,7 +34,6 @@
 
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
-        <sa-token.version>1.37.0</sa-token.version>
 
         <!-- ### 工具库相关 ### -->
         <sms4j.version>3.0.4</sms4j.version>
@@ -46,27 +48,6 @@
     <!-- 全局依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
-            <!-- ################ Sa-Token 相关 ################ -->
-            <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot3-starter</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-
-            <!-- Sa-Token 整合 JWT -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-jwt</artifactId>
-                <version>${sa-token.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>cn.hutool</groupId>
-                        <artifactId>hutool-jwt</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <!-- ################ 工具库相关 ################ -->
             <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
             <dependency>

@@ -160,26 +160,6 @@ captcha:
     # 模板 ID
     templateId: 1
 
---- ### 安全配置-排除路径配置
-security.excludes:
-  - /error
-  # 静态资源
-  - /*.html
-  - /**/*.html
-  - /**/*.css
-  - /**/*.js
-  - /webSocket/**
-  # 接口文档相关资源
-  - /favicon.ico
-  - /doc.html
-  - /webjars/**
-  - /swagger-ui/**
-  - /swagger-resources/**
-  - /*/api-docs/**
-  # 本地存储资源
-  - /avatar/**
-  - /file/**
-
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:
   # 私钥
@@ -196,6 +176,28 @@ logging:
 springdoc:
   swagger-ui:
     enabled: true
+
+--- ### Sa-Token 扩展配置
+sa-token.extension:
+  # 安全配置：排除（放行）路径配置
+  security.excludes:
+    - /error
+    # 静态资源
+    - /*.html
+    - /**/*.html
+    - /**/*.css
+    - /**/*.js
+    - /webSocket/**
+    # 接口文档相关资源
+    - /favicon.ico
+    - /doc.html
+    - /webjars/**
+    - /swagger-ui/**
+    - /swagger-resources/**
+    - /*/api-docs/**
+    # 本地存储资源
+    - /avatar/**
+    - /file/**
 
 --- ### 文件上传配置
 spring.servlet:

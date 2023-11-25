@@ -17,6 +17,12 @@
     <description>公共模块（存放公共工具类，公共配置等）</description>
 
     <dependencies>
+        <!-- ContiNew Starter 认证模块 - SaToken -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-auth-satoken</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
@@ -63,19 +69,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-
-        <!-- ################ Sa-Token 相关 ################ -->
-        <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot3-starter</artifactId>
-        </dependency>
-
-        <!-- Sa-Token 整合 JWT -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-jwt</artifactId>
         </dependency>
 
         <!-- MySQL Java 驱动 -->
