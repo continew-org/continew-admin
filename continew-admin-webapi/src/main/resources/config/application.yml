@@ -81,7 +81,7 @@ knife4j:
     # 是否自定义 footer（默认 false 非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
-    footer-custom-content: 'Copyright © 2022-present [${project.author.name}](${project.author.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
+    footer-custom-content: 'Copyright © 2022-present [${project.contact.name}](${project.contact.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
 
 --- ### Sa-Token 配置
 sa-token:
