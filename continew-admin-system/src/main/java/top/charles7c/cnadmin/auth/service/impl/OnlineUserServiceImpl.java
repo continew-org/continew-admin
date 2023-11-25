@@ -44,7 +44,7 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
  * 在线用户业务实现
  *
  * @author Charles7c
- * @author Lion Li（RuoYi-Vue-Plus）
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @since 2023/3/25 22:49
  */
 @Service

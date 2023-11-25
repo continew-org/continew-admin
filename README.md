@@ -508,7 +508,9 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 - 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
 - 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/easyexcel" target="_blank">Easy Excel</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
-- 感谢 <a href="https://github.com/elunez/eladmin" target="_blank">ELADMIN</a>、<a href="https://github.com/dromara/RuoYi-Vue-Plus" target="_blank">RuoYi-Vue-Plus</a>、<a href="https://github.com/yangzongzhuan/RuoYi-Vue3" target="_blank">RuoYi-Vue3</a> 提供的诸多成熟方案，致敬各位作者为开源脚手架领域作出的贡献
+- 感谢 <a href="https://github.com/yangzongzhuan/RuoYi-Vue3" target="_blank">RuoYi-Vue3</a>、<a href="https://github.com/dromara/RuoYi-Vue-Plus" target="_blank">RuoYi-Vue-Plus</a>，致敬各位作者为开源脚手架领域作出的贡献
+  - e.g. 参考 RuoYi-Vue3 前端项目的 Vue3 编码风格和规范
+  - e.g. 使用 RuoYi-Vue-Plus 项目封装的 SaToken 相关认证鉴权配置等
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License

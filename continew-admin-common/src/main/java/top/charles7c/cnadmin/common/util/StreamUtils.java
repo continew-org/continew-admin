@@ -31,7 +31,7 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
 /**
  * Stream 工具类
  *
- * @author Lion Li（RuoYi-Vue-Plus）
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @author Charles7c
  * @since 2022/12/22 19:51
  */

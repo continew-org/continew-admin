@@ -27,7 +27,7 @@ import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 /**
  * Sa-Token 权限认证适配
  *
- * @author Lion Li（RuoYi-Vue-Plus）
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @author Charles7c
  * @since 2023/3/1 22:28
  */

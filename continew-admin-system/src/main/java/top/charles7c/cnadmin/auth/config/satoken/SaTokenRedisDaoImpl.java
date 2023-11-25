@@ -29,7 +29,7 @@ import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 /**
  * Sa-Token 持久层本地 Redis 适配（参考：Sa-Token/sa-token-plugin/sa-token-dao-redisx/SaTokenDaoOfRedis.java）
  *
- * @author Lion Li（RuoYi-Vue-Plus）
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @author Charles7c
  * @since 2022/12/28 22:55
  */

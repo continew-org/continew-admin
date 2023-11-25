@@ -42,7 +42,7 @@ import top.charles7c.continew.starter.core.util.ExceptionUtils;
  * 登录助手
  *
  * @author Charles7c
- * @author Lion Li（RuoYi-Vue-Plus）
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @since 2022/12/24 12:58
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
