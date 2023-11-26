@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageDO;
 import top.charles7c.cnadmin.system.model.resp.MessageResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 消息 Mapper

@@ -25,11 +25,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
-import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictItemMapper;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
 import top.charles7c.cnadmin.system.model.query.DictItemQuery;
@@ -37,6 +34,9 @@ import top.charles7c.cnadmin.system.model.req.DictItemReq;
 import top.charles7c.cnadmin.system.model.resp.DictItemDetailResp;
 import top.charles7c.cnadmin.system.model.resp.DictItemResp;
 import top.charles7c.cnadmin.system.service.DictItemService;
+import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 字典项业务实现

@@ -26,8 +26,8 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
 
-import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
 
 /**
  * Easy Excel 枚举基类转换器

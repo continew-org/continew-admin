@@ -26,9 +26,9 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
 
-import top.charles7c.cnadmin.common.base.BaseDetailResp;
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 
 /**
  * 部门详情信息

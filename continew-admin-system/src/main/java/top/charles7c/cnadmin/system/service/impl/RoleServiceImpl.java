@@ -30,14 +30,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.cnadmin.auth.service.OnlineUserService;
-import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DataScopeEnum;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.RoleMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
@@ -46,6 +44,8 @@ import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.model.resp.RoleDetailResp;
 import top.charles7c.cnadmin.system.model.resp.RoleResp;
 import top.charles7c.cnadmin.system.service.*;
+import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 角色业务实现

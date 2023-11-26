@@ -16,11 +16,11 @@
 
 package top.charles7c.cnadmin.system.service;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
 import top.charles7c.cnadmin.system.model.req.DictReq;
 import top.charles7c.cnadmin.system.model.resp.DictDetailResp;
 import top.charles7c.cnadmin.system.model.resp.DictResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 字典业务接口

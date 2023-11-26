@@ -18,12 +18,12 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
 import top.charles7c.cnadmin.system.model.req.AnnouncementReq;
 import top.charles7c.cnadmin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.cnadmin.system.model.resp.AnnouncementResp;
 import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 公告业务接口

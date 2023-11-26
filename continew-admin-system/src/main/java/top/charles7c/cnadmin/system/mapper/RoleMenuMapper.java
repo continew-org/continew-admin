@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.system.mapper;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleMenuDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 角色和菜单 Mapper

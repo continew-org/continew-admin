@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 用户社会化关联 Mapper

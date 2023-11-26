@@ -72,7 +72,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // 否则 Spring Doc OpenAPI 的 /*/api-docs/**（例如：/v3/api-docs/default）接口响应内容会变为 Base64 编码后的内容，最终导致接口文档解析失败
         // 详情请参阅：https://github.com/springdoc/springdoc-openapi/issues/2143
         converters.add(new ByteArrayHttpMessageConverter());
-
         converters.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
         if (Objects.isNull(mappingJackson2HttpMessageConverter)) {
             converters.add(new MappingJackson2HttpMessageConverter());

@@ -24,7 +24,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 
 import top.charles7c.cnadmin.common.config.properties.RsaProperties;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
+import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 加密/解密工具类

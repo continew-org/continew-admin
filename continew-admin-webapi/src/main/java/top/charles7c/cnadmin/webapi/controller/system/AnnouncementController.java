@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,16 +25,16 @@ import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 
-import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.base.BaseController;
-import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.model.resp.R;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
 import top.charles7c.cnadmin.system.model.req.AnnouncementReq;
 import top.charles7c.cnadmin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.cnadmin.system.model.resp.AnnouncementResp;
 import top.charles7c.cnadmin.system.service.AnnouncementService;
+import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
+import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 公告管理 API
@@ -46,8 +44,7 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/announcement",
-    api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping("/system/announcement")
 public class AnnouncementController extends
     BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 

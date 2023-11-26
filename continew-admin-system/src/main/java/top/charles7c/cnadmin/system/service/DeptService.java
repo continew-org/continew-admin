@@ -16,11 +16,11 @@
 
 package top.charles7c.cnadmin.system.service;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.req.DeptReq;
 import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
 import top.charles7c.cnadmin.system.model.resp.DeptResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 部门业务接口

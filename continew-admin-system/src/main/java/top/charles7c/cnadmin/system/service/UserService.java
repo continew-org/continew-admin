@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
 import top.charles7c.cnadmin.system.model.req.UserBasicInfoUpdateReq;
@@ -28,6 +27,7 @@ import top.charles7c.cnadmin.system.model.req.UserReq;
 import top.charles7c.cnadmin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
 import top.charles7c.cnadmin.system.model.resp.UserResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 用户业务接口

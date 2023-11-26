@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.system.mapper.AnnouncementMapper;
 import top.charles7c.cnadmin.system.model.entity.AnnouncementDO;
 import top.charles7c.cnadmin.system.model.query.AnnouncementQuery;
@@ -31,6 +30,7 @@ import top.charles7c.cnadmin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.cnadmin.system.model.resp.AnnouncementResp;
 import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.cnadmin.system.service.AnnouncementService;
+import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
 /**
  * 公告业务实现

@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.system.model.entity.DictItemDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 字典项 Mapper

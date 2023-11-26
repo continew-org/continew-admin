@@ -16,7 +16,7 @@
 
 package ${packageName}.${subPackageName};
 
-import top.charles7c.cnadmin.common.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 import ${packageName}.model.query.${classNamePrefix}Query;
 import ${packageName}.model.req.${classNamePrefix}Req;
 import ${packageName}.model.resp.${classNamePrefix}DetailResp;

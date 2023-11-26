@@ -29,10 +29,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.cnadmin.common.base.BaseReq;
-import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.starter.extension.crud.base.BaseReq;
+import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
 
 /**
  * 创建或修改部门信息

@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.validation.annotation.Validated;
@@ -28,16 +26,17 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
 
-import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.base.BaseController;
-import top.charles7c.cnadmin.common.base.ValidateGroup;
-import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.URLUtils;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.req.MenuReq;
 import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.MenuService;
+import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
+import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
+import top.charles7c.continew.starter.extension.crud.enums.Api;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 菜单管理 API

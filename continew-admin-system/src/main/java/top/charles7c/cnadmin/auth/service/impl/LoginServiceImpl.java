@@ -38,7 +38,6 @@ import top.charles7c.cnadmin.auth.model.resp.MetaResp;
 import top.charles7c.cnadmin.auth.model.resp.RouteResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
-import top.charles7c.cnadmin.common.annotation.TreeField;
 import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
@@ -47,9 +46,7 @@ import top.charles7c.cnadmin.common.enums.MenuTypeEnum;
 import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
 import top.charles7c.cnadmin.common.util.SecureUtils;
-import top.charles7c.cnadmin.common.util.TreeUtils;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.enums.MessageTemplateEnum;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
 import top.charles7c.cnadmin.system.model.entity.UserDO;
@@ -59,6 +56,9 @@ import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
 import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
+import top.charles7c.continew.starter.extension.crud.util.TreeUtils;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 import me.zhyd.oauth.model.AuthUser;
 

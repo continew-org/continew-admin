@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import top.charles7c.cnadmin.common.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 
 /**
  * 字典项详情信息

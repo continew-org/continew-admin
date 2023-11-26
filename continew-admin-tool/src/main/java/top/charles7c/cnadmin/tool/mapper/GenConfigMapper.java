@@ -16,8 +16,8 @@
 
 package top.charles7c.cnadmin.tool.mapper;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 生成配置 Mapper

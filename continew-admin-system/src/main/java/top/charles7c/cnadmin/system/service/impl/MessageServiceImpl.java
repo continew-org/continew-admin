@@ -30,11 +30,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
-import top.charles7c.cnadmin.common.service.CommonUserService;
-import top.charles7c.cnadmin.common.util.helper.QueryHelper;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageDO;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
@@ -43,6 +38,11 @@ import top.charles7c.cnadmin.system.model.resp.MessageResp;
 import top.charles7c.cnadmin.system.service.MessageService;
 import top.charles7c.cnadmin.system.service.MessageUserService;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.util.QueryHelper;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 消息业务实现

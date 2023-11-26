@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 
 import top.charles7c.cnadmin.common.annotation.DataPermission;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 数据权限 Mapper 基类

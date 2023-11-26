@@ -25,7 +25,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import top.charles7c.cnadmin.common.base.IBaseEnum;
+import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
 
 /**
  * Jackson 配置

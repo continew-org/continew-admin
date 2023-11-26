@@ -29,17 +29,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 
-import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.base.BaseController;
-import top.charles7c.cnadmin.common.base.ValidateGroup;
 import top.charles7c.cnadmin.common.constant.SysConstants;
-import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.system.model.query.UserQuery;
 import top.charles7c.cnadmin.system.model.req.UserReq;
 import top.charles7c.cnadmin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.cnadmin.system.model.resp.UserDetailResp;
 import top.charles7c.cnadmin.system.model.resp.UserResp;
 import top.charles7c.cnadmin.system.service.UserService;
+import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
+import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 用户管理 API

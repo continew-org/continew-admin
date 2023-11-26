@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MenuDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 菜单 Mapper

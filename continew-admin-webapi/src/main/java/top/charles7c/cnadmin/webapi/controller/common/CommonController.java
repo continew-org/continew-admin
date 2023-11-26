@@ -42,15 +42,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
-import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
-import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.FileUtils;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
-import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
@@ -59,6 +54,11 @@ import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.resp.RoleResp;
 import top.charles7c.cnadmin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
+import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
+import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 公共 API

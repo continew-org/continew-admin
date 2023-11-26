@@ -28,12 +28,12 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.collection.CollUtil;
 
 import top.charles7c.cnadmin.common.enums.MessageTypeEnum;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.MessageUserMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageUserDO;
 import top.charles7c.cnadmin.system.model.resp.MessageTypeUnreadResp;
 import top.charles7c.cnadmin.system.model.resp.MessageUnreadResp;
 import top.charles7c.cnadmin.system.service.MessageUserService;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 消息和用户关联业务实现

@@ -18,11 +18,11 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
 import top.charles7c.cnadmin.system.model.req.MessageReq;
 import top.charles7c.cnadmin.system.model.resp.MessageResp;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 
 /**
  * 消息业务接口

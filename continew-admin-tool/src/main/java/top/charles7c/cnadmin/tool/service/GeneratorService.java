@@ -19,13 +19,13 @@ package top.charles7c.cnadmin.tool.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
 import top.charles7c.cnadmin.tool.model.entity.GenConfigDO;
 import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.req.GenConfigReq;
 import top.charles7c.cnadmin.tool.model.resp.TableResp;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 
 /**
  * 代码生成业务接口

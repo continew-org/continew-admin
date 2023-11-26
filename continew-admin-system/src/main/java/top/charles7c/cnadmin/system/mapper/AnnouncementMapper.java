@@ -18,9 +18,9 @@ package top.charles7c.cnadmin.system.mapper;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.AnnouncementDO;
 import top.charles7c.cnadmin.system.model.resp.DashboardAnnouncementResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 公告 Mapper

@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
-import top.charles7c.cnadmin.common.model.resp.R;
+import top.charles7c.continew.starter.extension.crud.annotation.NoResponseAdvice;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 全局响应结果处理器

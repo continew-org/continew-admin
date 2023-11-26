@@ -18,12 +18,12 @@ package top.charles7c.cnadmin.system.service;
 
 import java.util.List;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.system.model.query.DictItemQuery;
 import top.charles7c.cnadmin.system.model.req.DictItemReq;
 import top.charles7c.cnadmin.system.model.resp.DictItemDetailResp;
 import top.charles7c.cnadmin.system.model.resp.DictItemResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 字典项业务接口

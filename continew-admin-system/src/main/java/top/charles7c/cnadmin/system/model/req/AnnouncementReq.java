@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.cnadmin.common.base.BaseReq;
+import top.charles7c.continew.starter.extension.crud.base.BaseReq;
 
 /**
  * 创建或修改公告信息

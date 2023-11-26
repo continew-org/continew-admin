@@ -31,10 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 
-import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DeptMapper;
 import top.charles7c.cnadmin.system.model.entity.DeptDO;
 import top.charles7c.cnadmin.system.model.query.DeptQuery;
@@ -45,6 +43,8 @@ import top.charles7c.cnadmin.system.service.DeptService;
 import top.charles7c.cnadmin.system.service.RoleDeptService;
 import top.charles7c.cnadmin.system.service.UserService;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 部门业务实现

@@ -16,8 +16,8 @@
 
 package top.charles7c.cnadmin.system.mapper;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 角色 Mapper

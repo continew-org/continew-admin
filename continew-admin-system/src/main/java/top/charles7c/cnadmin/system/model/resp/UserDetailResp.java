@@ -28,11 +28,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import top.charles7c.cnadmin.common.base.BaseDetailResp;
 import top.charles7c.cnadmin.common.config.easyexcel.ExcelBaseEnumConverter;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 
 /**
  * 用户详情信息

@@ -21,11 +21,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.monitor.model.entity.LogDO;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardPopularModuleResp;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardTotalResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 系统日志 Mapper

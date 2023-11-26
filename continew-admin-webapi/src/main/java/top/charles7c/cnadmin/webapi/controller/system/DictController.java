@@ -16,19 +16,18 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.*;
 
-import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.base.BaseController;
 import top.charles7c.cnadmin.system.model.query.DictQuery;
 import top.charles7c.cnadmin.system.model.req.DictReq;
 import top.charles7c.cnadmin.system.model.resp.DictDetailResp;
 import top.charles7c.cnadmin.system.model.resp.DictResp;
 import top.charles7c.cnadmin.system.service.DictService;
+import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
+import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**
  * 字典管理 API

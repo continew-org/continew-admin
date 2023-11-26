@@ -29,8 +29,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import cn.hutool.core.date.DatePattern;
 
-import top.charles7c.cnadmin.common.annotation.Query;
-import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.extension.crud.annotation.Query;
+import top.charles7c.continew.starter.extension.crud.enums.QueryTypeEnum;
 
 /**
  * 登录日志查询条件

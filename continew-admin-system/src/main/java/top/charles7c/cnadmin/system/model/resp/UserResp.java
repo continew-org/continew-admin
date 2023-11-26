@@ -25,10 +25,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import cn.hutool.core.util.DesensitizedUtil;
 
-import top.charles7c.cnadmin.common.base.BaseResp;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
 import top.charles7c.cnadmin.common.enums.GenderEnum;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.continew.starter.extension.crud.base.BaseResp;
 
 /**
  * 用户信息

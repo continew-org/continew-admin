@@ -21,8 +21,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.tool.model.entity.FieldConfigDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 字段配置 Mapper

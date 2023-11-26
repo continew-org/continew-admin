@@ -32,11 +32,11 @@ import cn.hutool.extra.spring.SpringUtil;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.dto.LogContext;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.service.CommonUserService;
 import top.charles7c.cnadmin.common.util.ServletUtils;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.IpUtils;
+import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 
 /**
  * 登录助手

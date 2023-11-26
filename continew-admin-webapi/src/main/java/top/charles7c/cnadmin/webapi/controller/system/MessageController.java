@@ -28,9 +28,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
-import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.system.model.query.MessageQuery;
@@ -38,6 +35,9 @@ import top.charles7c.cnadmin.system.model.resp.MessageResp;
 import top.charles7c.cnadmin.system.model.resp.MessageUnreadResp;
 import top.charles7c.cnadmin.system.service.MessageService;
 import top.charles7c.cnadmin.system.service.MessageUserService;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 消息管理 API

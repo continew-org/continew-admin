@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.model.query.LoginLogQuery;
 import top.charles7c.cnadmin.monitor.model.query.OperationLogQuery;
@@ -40,6 +38,8 @@ import top.charles7c.cnadmin.monitor.model.resp.OperationLogResp;
 import top.charles7c.cnadmin.monitor.model.resp.SystemLogDetailResp;
 import top.charles7c.cnadmin.monitor.model.resp.SystemLogResp;
 import top.charles7c.cnadmin.monitor.service.LogService;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 
 /**
  * 日志管理 API

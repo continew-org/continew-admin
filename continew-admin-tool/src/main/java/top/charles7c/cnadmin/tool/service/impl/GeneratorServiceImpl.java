@@ -42,12 +42,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.system.SystemUtil;
 
-import top.charles7c.cnadmin.common.enums.QueryTypeEnum;
-import top.charles7c.cnadmin.common.exception.ServiceException;
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.util.TemplateUtils;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties;
 import top.charles7c.cnadmin.tool.config.properties.GeneratorProperties.TemplateConfig;
 import top.charles7c.cnadmin.tool.mapper.FieldConfigMapper;
@@ -61,6 +56,11 @@ import top.charles7c.cnadmin.tool.service.GeneratorService;
 import top.charles7c.cnadmin.tool.util.MetaUtils;
 import top.charles7c.cnadmin.tool.util.Table;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.extension.crud.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 代码生成业务实现
@@ -285,7 +285,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.writeString(indexContent, indexFile, StandardCharsets.UTF_8);
         } catch (Exception e) {
             log.error("Generate code occurred an error: {}. tableName: {}.", e.getMessage(), tableName, e);
-            throw new ServiceException("代码生成失败，请手动清理生成文件");
+            throw new BusinessException("代码生成失败，请手动清理生成文件");
         }
     }
 

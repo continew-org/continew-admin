@@ -19,10 +19,10 @@ package top.charles7c.cnadmin.system.service;
 import java.util.List;
 import java.util.Set;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.system.model.query.MenuQuery;
 import top.charles7c.cnadmin.system.model.req.MenuReq;
 import top.charles7c.cnadmin.system.model.resp.MenuResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 菜单业务接口

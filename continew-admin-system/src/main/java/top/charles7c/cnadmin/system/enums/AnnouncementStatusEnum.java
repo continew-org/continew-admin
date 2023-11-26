@@ -19,8 +19,8 @@ package top.charles7c.cnadmin.system.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.constant.UIConstants;
+import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
 
 /**
  * 公告状态枚举

@@ -23,7 +23,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.cnadmin.common.annotation.Query;
+import top.charles7c.continew.starter.extension.crud.annotation.Query;
 
 /**
  * 角色查询条件

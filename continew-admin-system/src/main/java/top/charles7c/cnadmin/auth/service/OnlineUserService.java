@@ -21,8 +21,8 @@ import java.util.List;
 import top.charles7c.cnadmin.auth.model.query.OnlineUserQuery;
 import top.charles7c.cnadmin.auth.model.resp.OnlineUserResp;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
-import top.charles7c.cnadmin.common.model.query.PageQuery;
-import top.charles7c.cnadmin.common.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 
 /**
  * 在线用户业务接口

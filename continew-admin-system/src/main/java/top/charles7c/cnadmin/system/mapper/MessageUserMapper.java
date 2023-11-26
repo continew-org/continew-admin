@@ -18,8 +18,8 @@ package top.charles7c.cnadmin.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
-import top.charles7c.cnadmin.common.base.BaseMapper;
 import top.charles7c.cnadmin.system.model.entity.MessageUserDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
 
 /**
  * 消息和用户 Mapper

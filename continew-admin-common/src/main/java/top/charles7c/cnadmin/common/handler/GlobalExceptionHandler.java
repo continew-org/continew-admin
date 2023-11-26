@@ -40,12 +40,12 @@ import cn.dev33.satoken.exception.NotRoleException;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.cnadmin.common.exception.BadRequestException;
-import top.charles7c.cnadmin.common.exception.ServiceException;
-import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.StreamUtils;
 import top.charles7c.cnadmin.common.util.holder.LogContextHolder;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.extension.crud.exception.BadRequestException;
+import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 全局异常处理器
@@ -172,8 +172,8 @@ public class GlobalExceptionHandler {
     /**
      * 拦截业务异常
      */
-    @ExceptionHandler(ServiceException.class)
-    public R handleServiceException(ServiceException e, HttpServletRequest request) {
+    @ExceptionHandler(BusinessException.class)
+    public R handleServiceException(BusinessException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
         LogContextHolder.setErrorMsg(e.getMessage());
         return R.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

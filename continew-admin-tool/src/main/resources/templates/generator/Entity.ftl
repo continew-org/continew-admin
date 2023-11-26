@@ -28,7 +28,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.cnadmin.common.base.BaseDO;
+import top.charles7c.continew.starter.extension.crud.base.BaseDO;
 
 /**
  * ${businessName}实体

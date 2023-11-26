@@ -19,7 +19,6 @@ package top.charles7c.cnadmin.system.service;
 import java.util.List;
 import java.util.Set;
 
-import top.charles7c.cnadmin.common.base.BaseService;
 import top.charles7c.cnadmin.common.model.dto.RoleDTO;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
 import top.charles7c.cnadmin.system.model.entity.RoleDO;
@@ -27,6 +26,7 @@ import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.req.RoleReq;
 import top.charles7c.cnadmin.system.model.resp.RoleDetailResp;
 import top.charles7c.cnadmin.system.model.resp.RoleResp;
+import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
 /**
  * 角色业务接口

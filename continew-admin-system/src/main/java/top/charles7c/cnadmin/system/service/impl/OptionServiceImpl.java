@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.bean.BeanUtil;
 
 import top.charles7c.cnadmin.common.constant.CacheConstants;
-import top.charles7c.cnadmin.common.util.helper.QueryHelper;
 import top.charles7c.cnadmin.system.mapper.OptionMapper;
 import top.charles7c.cnadmin.system.model.entity.OptionDO;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
@@ -35,6 +34,7 @@ import top.charles7c.cnadmin.system.model.req.OptionReq;
 import top.charles7c.cnadmin.system.model.req.OptionResetValueReq;
 import top.charles7c.cnadmin.system.model.resp.OptionResp;
 import top.charles7c.cnadmin.system.service.OptionService;
+import top.charles7c.continew.starter.extension.crud.util.QueryHelper;
 
 /**
  * 参数业务实现

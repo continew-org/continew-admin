@@ -24,9 +24,9 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import cn.hutool.core.util.ObjectUtil;
 
-import top.charles7c.cnadmin.common.base.BaseDO;
-import top.charles7c.cnadmin.common.exception.ServiceException;
 import top.charles7c.cnadmin.common.util.helper.LoginHelper;
+import top.charles7c.continew.starter.extension.crud.base.BaseDO;
+import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
 
 /**
  * MyBatis Plus 元对象处理器配置（插入或修改时自动填充）
@@ -70,7 +70,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
                 this.fillFieldValue(metaObject, CREATE_TIME, createTime, false);
             }
         } catch (Exception e) {
-            throw new ServiceException("插入数据时自动填充异常：" + e.getMessage());
+            throw new BusinessException("插入数据时自动填充异常：" + e.getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
                 this.fillFieldValue(metaObject, UPDATE_TIME, updateTime, true);
             }
         } catch (Exception e) {
-            throw new ServiceException("修改数据时自动填充异常：" + e.getMessage());
+            throw new BusinessException("修改数据时自动填充异常：" + e.getMessage());
         }
     }
 

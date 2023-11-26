@@ -29,10 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.json.JSONUtil;
 
 import top.charles7c.cnadmin.common.enums.SocialSourceEnum;
-import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.UserSocialMapper;
 import top.charles7c.cnadmin.system.model.entity.UserSocialDO;
 import top.charles7c.cnadmin.system.service.UserSocialService;
+import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 import me.zhyd.oauth.model.AuthUser;
 
