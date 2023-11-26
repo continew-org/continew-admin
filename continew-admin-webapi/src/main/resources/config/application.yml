@@ -104,10 +104,10 @@ sa-token:
   ## 扩展配置
   extension:
     enabled: true
-    # 自定义缓存实现
-    dao-impl: top.charles7c.cnadmin.auth.config.satoken.SaTokenRedisDaoImpl
     # 权限认证实现
     permission-impl: top.charles7c.cnadmin.auth.config.satoken.SaTokenPermissionImpl
+    # 持久层配置
+    dao.type: redis
 
 --- ### MyBatis Plus 配置
 mybatis-plus:
