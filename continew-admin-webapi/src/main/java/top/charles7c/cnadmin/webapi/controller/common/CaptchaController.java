@@ -47,7 +47,6 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
 import top.charles7c.cnadmin.common.config.properties.CaptchaProperties;
-import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.model.resp.CaptchaResp;
@@ -57,6 +56,7 @@ import top.charles7c.cnadmin.common.util.TemplateUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.captcha.graphic.autoconfigure.GraphicCaptchaProperties;
+import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 
 /**
  * 验证码 API

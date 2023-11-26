@@ -44,7 +44,6 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.base.IBaseEnum;
 import top.charles7c.cnadmin.common.config.properties.LocalStorageProperties;
-import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.CacheConstants;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
 import top.charles7c.cnadmin.common.model.resp.LabelValueResp;
@@ -59,6 +58,7 @@ import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.query.RoleQuery;
 import top.charles7c.cnadmin.system.model.resp.RoleResp;
 import top.charles7c.cnadmin.system.service.*;
+import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 
 /**
  * 公共 API

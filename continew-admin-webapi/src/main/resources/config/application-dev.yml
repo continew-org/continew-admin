@@ -220,8 +220,8 @@ local-storage:
   avatarMaxSizeInMb: 5
   ## Windows 系统本地存储配置
   windows:
-    file: C:\${project.appName}\data\file\
-    avatar: C:\${project.appName}\data\avatar\
+    file: C:\${project.app-name}\data\file\
+    avatar: C:\${project.app-name}\data\avatar\
   ## Linux 系统本地存储配置
   linux:
     file: ./data/file/

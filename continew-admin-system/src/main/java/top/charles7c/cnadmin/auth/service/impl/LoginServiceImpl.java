@@ -39,7 +39,6 @@ import top.charles7c.cnadmin.auth.model.resp.RouteResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.auth.service.PermissionService;
 import top.charles7c.cnadmin.common.annotation.TreeField;
-import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.constant.RegexConstants;
 import top.charles7c.cnadmin.common.constant.SysConstants;
 import top.charles7c.cnadmin.common.enums.DisEnableStatusEnum;
@@ -59,6 +58,7 @@ import top.charles7c.cnadmin.system.model.req.MessageReq;
 import top.charles7c.cnadmin.system.model.resp.DeptDetailResp;
 import top.charles7c.cnadmin.system.model.resp.MenuResp;
 import top.charles7c.cnadmin.system.service.*;
+import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 
 import me.zhyd.oauth.model.AuthUser;
 

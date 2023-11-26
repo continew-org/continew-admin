@@ -34,11 +34,7 @@
 
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
-
-        <!-- ### 工具库相关 ### -->
         <easyexcel.version>3.3.2</easyexcel.version>
-        <ip2region.version>3.1.5.1</ip2region.version>
-
         <!-- Maven Plugin Versions -->
         <spotless.version>2.40.0</spotless.version>
     </properties>
@@ -54,14 +50,6 @@
                 <version>${easyexcel.version}</version>
             </dependency>
 
-            <!-- 第三方封装 Ip2region（离线 IP 数据管理框架和定位库，支持亿级别的数据段，10 微秒级别的查询性能，提供了许多主流编程语言的 xdb 数据管理引擎的实现） -->
-            <dependency>
-                <groupId>net.dreamlu</groupId>
-                <artifactId>mica-ip2region</artifactId>
-                <version>${ip2region.version}</version>
-            </dependency>
-
-            <!-- ################ 本项目子模块相关 ################ -->
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>

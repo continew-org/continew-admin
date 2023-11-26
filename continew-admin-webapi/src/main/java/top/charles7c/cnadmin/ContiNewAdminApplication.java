@@ -38,7 +38,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
+import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 
 /**
  * 启动程序

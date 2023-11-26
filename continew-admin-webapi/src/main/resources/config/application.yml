@@ -3,13 +3,13 @@ project:
   # 名称
   name: ContiNew Admin
   # 应用名称
-  appName: continew-admin
+  app-name: continew-admin
   # 版本
   version: 2.1.0-SNAPSHOT
   # 描述
   description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
   # 基本包
-  basePackage: top.charles7c.cnadmin
+  base-package: top.charles7c.cnadmin
   ## 作者信息配置
   contact:
     name: Charles7c
@@ -19,8 +19,8 @@ project:
   license:
     name: Apache-2.0
     url: https://github.com/Charles7c/continew-admin/blob/dev/LICENSE
-  # 是否本地解析 IP 归属地
-  ipAddrLocalParseEnabled: true
+  # 是否启用本地解析 IP 归属地
+  ip-addr-local-parse-enabled: true
 
 --- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
@@ -47,31 +47,31 @@ springdoc:
   group-configs:
     - group: 'all'
       paths-to-match: '/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller
+      packages-to-scan: ${project.base-package}.webapi.controller
     - group: 'auth'
       display-name: '系统认证'
       paths-to-match:
         - '/auth/**'
         - '/oauth/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller.auth
+      packages-to-scan: ${project.base-package}.webapi.controller.auth
     - group: 'common'
       display-name: '通用接口'
       paths-to-match:
         - '/common/**'
         - '/dashboard/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller.common
+      packages-to-scan: ${project.base-package}.webapi.controller.common
     - group: 'system'
       display-name: '系统管理'
       paths-to-match: '/system/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller.system
+      packages-to-scan: ${project.base-package}.webapi.controller.system
     - group: 'tool'
       display-name: '系统工具'
       paths-to-match: '/tool/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller.tool
+      packages-to-scan: ${project.base-package}.webapi.controller.tool
     - group: 'monitor'
       display-name: '系统监控'
       paths-to-match: '/monitor/**'
-      packages-to-scan: ${project.basePackage}.webapi.controller.monitor
+      packages-to-scan: ${project.base-package}.webapi.controller.monitor
 ## 接口文档增强配置
 knife4j:
   enable: true
@@ -114,7 +114,7 @@ mybatis-plus:
   # Mapper XML 文件目录配置
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
-  type-aliases-package: ${project.basePackage}.**.model
+  type-aliases-package: ${project.base-package}.**.model
   configuration:
     # MyBatis 自动映射策略
     # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
@@ -135,7 +135,7 @@ mybatis-plus:
   extension:
     enabled: true
     # Mapper 接口扫描包配置
-    mapper-package: ${project.basePackage}.**.mapper
+    mapper-package: ${project.base-package}.**.mapper
     # 数据权限实现
     data-permission-handler-impl: top.charles7c.cnadmin.common.config.mybatis.DataPermissionHandlerImpl
     # 分页插件配置
@@ -166,7 +166,7 @@ server:
 --- ### Spring 配置
 spring:
   application:
-    name: ${project.appName}
+    name: ${project.app-name}
   ## 环境配置
   profiles:
     # 启用的环境

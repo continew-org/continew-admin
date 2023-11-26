@@ -34,12 +34,6 @@
             <artifactId>continew-starter-data-mybatis-plus</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter 缓存模块 - Redisson -->
-        <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-cache-redisson</artifactId>
-        </dependency>
-
         <!-- ContiNew Starter 验证码模块 - 图形验证码 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
@@ -92,12 +86,6 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-        </dependency>
-
-        <!-- 第三方封装 Ip2region（离线 IP 数据管理框架和定位库，支持亿级别的数据段，10 微秒级别的查询性能，提供了许多主流编程语言的 xdb 数据管理引擎的实现） -->
-        <dependency>
-            <groupId>net.dreamlu</groupId>
-            <artifactId>mica-ip2region</artifactId>
         </dependency>
     </dependencies>
 </project>

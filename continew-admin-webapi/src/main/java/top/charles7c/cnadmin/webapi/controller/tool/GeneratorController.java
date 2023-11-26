@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 
-import top.charles7c.cnadmin.common.config.properties.ProjectProperties;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.resp.PageDataResp;
 import top.charles7c.cnadmin.common.model.resp.R;
@@ -42,6 +41,7 @@ import top.charles7c.cnadmin.tool.model.query.TableQuery;
 import top.charles7c.cnadmin.tool.model.req.GenConfigReq;
 import top.charles7c.cnadmin.tool.model.resp.TableResp;
 import top.charles7c.cnadmin.tool.service.GeneratorService;
+import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 
 /**
  * 代码生成 API
