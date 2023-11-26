@@ -181,7 +181,7 @@ justauth:
       client-secret: 1f7d08**********5b7**********29e
       redirect-uri: ${project.url}/social/callback?source=github
   cache:
-    type: custom
+    type: redis
 
 --- ### Sa-Token 扩展配置
 sa-token.extension:
