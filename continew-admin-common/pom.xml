@@ -40,6 +40,12 @@
             <artifactId>continew-starter-captcha-graphic</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 文件处理模块 - Excel -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-file-excel</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter API 文档模块 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
@@ -75,17 +81,10 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- ################ 工具库相关 ################ -->
         <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
         <dependency>
             <groupId>org.dromara.sms4j</groupId>
             <artifactId>sms4j-spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
         </dependency>
     </dependencies>
 </project>

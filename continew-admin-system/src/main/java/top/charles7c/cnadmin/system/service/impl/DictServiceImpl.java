@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.cnadmin.common.base.BaseServiceImpl;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
-import top.charles7c.cnadmin.common.util.ExcelUtils;
 import top.charles7c.cnadmin.common.util.validate.CheckUtils;
 import top.charles7c.cnadmin.system.mapper.DictMapper;
 import top.charles7c.cnadmin.system.model.entity.DictDO;
@@ -38,6 +37,7 @@ import top.charles7c.cnadmin.system.model.req.DictReq;
 import top.charles7c.cnadmin.system.model.resp.*;
 import top.charles7c.cnadmin.system.service.DictItemService;
 import top.charles7c.cnadmin.system.service.DictService;
+import top.charles7c.continew.starter.file.excel.util.ExcelUtils;
 
 /**
  * 字典业务实现

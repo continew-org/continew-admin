@@ -34,7 +34,6 @@
 
     <properties>
         <revision>2.1.0-SNAPSHOT</revision>
-        <easyexcel.version>3.3.2</easyexcel.version>
         <!-- Maven Plugin Versions -->
         <spotless.version>2.40.0</spotless.version>
     </properties>
@@ -42,14 +41,6 @@
     <!-- 全局依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
-            <!-- ################ 工具库相关 ################ -->
-            <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-            </dependency>
-
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
