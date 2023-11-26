@@ -34,6 +34,12 @@
             <artifactId>continew-starter-data-mybatis-plus</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 消息模块 - 邮件 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-messaging-mail</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 验证码模块 - 图形验证码 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
@@ -58,21 +64,16 @@
             <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
 
-        <!-- Java 邮件支持 -->
+        <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
         </dependency>
+
         <!-- FreeMarker（模板引擎） -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
-        </dependency>
-
-        <!-- Hibernate Validator -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <!-- MySQL Java 驱动 -->
@@ -81,10 +82,10 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
+        <!-- Hibernate Validator -->
         <dependency>
-            <groupId>org.dromara.sms4j</groupId>
-            <artifactId>sms4j-spring-boot-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
     </dependencies>
 </project>

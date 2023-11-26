@@ -138,7 +138,6 @@ spring.mail:
   port: 465
   username: 你的邮箱
   password: 你的邮箱授权码
-  default-encoding: utf-8
   properties:
     mail:
       smtp:
