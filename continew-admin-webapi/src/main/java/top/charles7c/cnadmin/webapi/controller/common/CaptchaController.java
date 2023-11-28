@@ -78,12 +78,12 @@ public class CaptchaController {
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
-    public CaptchaResp getImageCaptcha() {
+    public R<CaptchaResp> getImageCaptcha() {
         Captcha captcha = graphicCaptchaProperties.getCaptcha();
         String uuid = IdUtil.fastUUID();
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, uuid);
         RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
-        return CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build();
+        return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build());
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")

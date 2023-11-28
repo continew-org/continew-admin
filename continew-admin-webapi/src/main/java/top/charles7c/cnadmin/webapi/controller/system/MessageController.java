@@ -56,9 +56,10 @@ public class MessageController {
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @GetMapping
-    public PageDataResp<MessageResp> page(MessageQuery query, @Validated PageQuery pageQuery) {
+    public R<PageDataResp<MessageResp>> page(MessageQuery query, @Validated PageQuery pageQuery) {
         query.setUserId(LoginHelper.getUserId());
-        return baseService.page(query, pageQuery);
+        PageDataResp<MessageResp> pageData = baseService.page(query, pageQuery);
+        return R.ok(pageData);
     }
 
     @Operation(summary = "删除数据", description = "删除数据")
@@ -72,15 +73,16 @@ public class MessageController {
     @Operation(summary = "标记已读", description = "将消息标记为已读状态")
     @Parameter(name = "ids", description = "消息ID列表", example = "1,2", in = ParameterIn.QUERY)
     @PatchMapping("/read")
-    public void readMessage(@RequestParam(required = false) List<Long> ids) {
+    public R readMessage(@RequestParam(required = false) List<Long> ids) {
         messageUserService.readMessage(ids);
+        return R.ok();
     }
 
     @Log(ignore = true)
     @Operation(summary = "查询未读消息数量", description = "查询当前用户的未读消息数量")
     @Parameter(name = "isDetail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
     @GetMapping("/unread")
-    public MessageUnreadResp countUnreadMessage(@RequestParam(required = false) Boolean detail) {
-        return messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail);
+    public R<MessageUnreadResp> countUnreadMessage(@RequestParam(required = false) Boolean detail) {
+        return R.ok(messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail));
     }
 }

@@ -40,6 +40,7 @@ import top.charles7c.cnadmin.monitor.model.resp.SystemLogResp;
 import top.charles7c.cnadmin.monitor.service.LogService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 日志管理 API
@@ -58,29 +59,33 @@ public class LogController {
     @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
-    public PageDataResp<LoginLogResp> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
-        return logService.page(query, pageQuery);
+    public R<PageDataResp<LoginLogResp>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataResp<LoginLogResp> pageData = logService.page(query, pageQuery);
+        return R.ok(pageData);
     }
 
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public PageDataResp<OperationLogResp> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
-        return logService.page(query, pageQuery);
+    public R<PageDataResp<OperationLogResp>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataResp<OperationLogResp> pageData = logService.page(query, pageQuery);
+        return R.ok(pageData);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
-    public PageDataResp<SystemLogResp> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
-        return logService.page(query, pageQuery);
+    public R<PageDataResp<SystemLogResp>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
+        PageDataResp<SystemLogResp> pageData = logService.page(query, pageQuery);
+        return R.ok(pageData);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "查看系统日志详情", description = "查看系统日志详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/system/{id}")
-    public SystemLogDetailResp get(@PathVariable Long id) {
-        return logService.get(id);
+    public R<SystemLogDetailResp> get(@PathVariable Long id) {
+        SystemLogDetailResp detail = logService.get(id);
+        return R.ok(detail);
     }
 }

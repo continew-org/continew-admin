@@ -71,7 +71,7 @@ public class SocialAuthController {
     @Operation(summary = "三方账号登录", description = "三方账号登录")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/{source}")
-    public LoginResp login(@PathVariable String source, @RequestBody AuthCallback callback) {
+    public R<LoginResp> login(@PathVariable String source, @RequestBody AuthCallback callback) {
         if (StpUtil.isLogin()) {
             StpUtil.logout();
         }
@@ -80,7 +80,7 @@ public class SocialAuthController {
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
         AuthUser authUser = response.getData();
         String token = loginService.socialLogin(authUser);
-        return LoginResp.builder().token(token).build();
+        return R.ok(LoginResp.builder().token(token).build());
     }
 
     private AuthRequest getAuthRequest(String source) {

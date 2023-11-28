@@ -33,6 +33,7 @@ import top.charles7c.cnadmin.system.model.req.OptionReq;
 import top.charles7c.cnadmin.system.model.req.OptionResetValueReq;
 import top.charles7c.cnadmin.system.model.resp.OptionResp;
 import top.charles7c.cnadmin.system.service.OptionService;
+import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
  * 参数管理 API
@@ -51,21 +52,23 @@ public class OptionController {
     @Operation(summary = "查询参数列表", description = "查询参数列表")
     @SaCheckPermission("system:config:list")
     @GetMapping
-    public List<OptionResp> list(@Validated OptionQuery query) {
-        return optionService.list(query);
+    public R<List<OptionResp>> list(@Validated OptionQuery query) {
+        return R.ok(optionService.list(query));
     }
 
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
-    public void update(@Validated @RequestBody List<OptionReq> req) {
+    public R update(@Validated @RequestBody List<OptionReq> req) {
         optionService.update(req);
+        return R.ok();
     }
 
     @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
-    public void resetValue(@Validated @RequestBody OptionResetValueReq req) {
+    public R resetValue(@Validated @RequestBody OptionResetValueReq req) {
         optionService.resetValue(req);
+        return R.ok();
     }
 }
