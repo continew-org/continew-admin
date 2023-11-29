@@ -97,14 +97,14 @@ public class CommonController {
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
-    public List<Tree<Long>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
-        return deptService.tree(query, sortQuery, true);
+    public R<List<Tree<Long>>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
+        return R.ok(deptService.tree(query, sortQuery, true));
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
-    public List<Tree<Long>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
-        return menuService.tree(query, sortQuery, true);
+    public R<List<Tree<Long>>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
+        return R.ok(menuService.tree(query, sortQuery, true));
     }
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
@@ -118,18 +118,18 @@ public class CommonController {
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
     @Cacheable(key = "#code", cacheNames = CacheConsts.DICT_KEY_PREFIX)
-    public List<LabelValueResp> listDict(@PathVariable String code) {
+    public R<List<LabelValueResp>> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);
-        return enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code));
+        return R.ok(enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
     }
 
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
     @Cacheable(cacheNames = CacheConsts.OPTION_KEY_PREFIX)
-    public List<LabelValueResp> listOption(@Validated OptionQuery query) {
-        return optionService.list(query).stream().map(option -> new LabelValueResp(option.getCode(),
-            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList());
+    public R listOption(@Validated OptionQuery query) {
+        return R.ok(optionService.list(query).stream().map(option -> new LabelValueResp(option.getCode(),
+            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList()));
     }
 
     /**

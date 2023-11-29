@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.validate.ValidationUtils;
 import top.charles7c.cnadmin.monitor.annotation.Log;
 import top.charles7c.cnadmin.monitor.model.resp.DashboardAccessTrendResp;
@@ -58,33 +59,33 @@ public class DashboardController {
 
     @Operation(summary = "查询总计信息", description = "查询总计信息")
     @GetMapping("/total")
-    public DashboardTotalResp getTotal() {
-        return dashboardService.getTotal();
+    public R<DashboardTotalResp> getTotal() {
+        return R.ok(dashboardService.getTotal());
     }
 
     @Operation(summary = "查询访问趋势信息", description = "查询访问趋势信息")
     @Parameter(name = "days", description = "日期数", example = "30", in = ParameterIn.PATH)
     @GetMapping("/access/trend/{days}")
-    public List<DashboardAccessTrendResp> listAccessTrend(@PathVariable Integer days) {
+    public R<List<DashboardAccessTrendResp>> listAccessTrend(@PathVariable Integer days) {
         ValidationUtils.throwIf(7 != days && 30 != days, "仅支持查询近 7/30 天访问趋势信息");
-        return dashboardService.listAccessTrend(days);
+        return R.ok(dashboardService.listAccessTrend(days));
     }
 
     @Operation(summary = "查询热门模块列表", description = "查询热门模块列表")
     @GetMapping("/popular/module")
-    public List<DashboardPopularModuleResp> listPopularModule() {
-        return dashboardService.listPopularModule();
+    public R<List<DashboardPopularModuleResp>> listPopularModule() {
+        return R.ok(dashboardService.listPopularModule());
     }
 
     @Operation(summary = "查询访客地域分布信息", description = "查询访客地域分布信息")
     @GetMapping("/geo/distribution")
-    public DashboardGeoDistributionResp getGeoDistribution() {
-        return dashboardService.getGeoDistribution();
+    public R<DashboardGeoDistributionResp> getGeoDistribution() {
+        return R.ok(dashboardService.getGeoDistribution());
     }
 
     @Operation(summary = "查询公告列表", description = "查询公告列表")
     @GetMapping("/announcement")
-    public List<DashboardAnnouncementResp> listAnnouncement() {
-        return dashboardService.listAnnouncement();
+    public R<List<DashboardAnnouncementResp>> listAnnouncement() {
+        return R.ok(dashboardService.listAnnouncement());
     }
 }

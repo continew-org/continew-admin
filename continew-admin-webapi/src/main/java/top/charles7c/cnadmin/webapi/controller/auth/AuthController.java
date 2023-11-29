@@ -41,6 +41,7 @@ import top.charles7c.cnadmin.auth.model.resp.UserInfoResp;
 import top.charles7c.cnadmin.auth.service.LoginService;
 import top.charles7c.cnadmin.common.constant.CacheConsts;
 import top.charles7c.cnadmin.common.model.dto.LoginUser;
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.common.util.ExceptionUtils;
 import top.charles7c.cnadmin.common.util.RedisUtils;
 import top.charles7c.cnadmin.common.util.SecureUtils;
@@ -69,7 +70,7 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
-    public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
+    public R<LoginResp> accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
         String captcha = RedisUtils.getCacheObject(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
@@ -79,13 +80,13 @@ public class AuthController {
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
         String token = loginService.accountLogin(loginReq.getUsername(), rawPassword);
-        return LoginResp.builder().token(token).build();
+        return R.ok(LoginResp.builder().token(token).build());
     }
 
     @SaIgnore
     @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
     @PostMapping("/email")
-    public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
+    public R<LoginResp> emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
         String email = loginReq.getEmail();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, email);
         String captcha = RedisUtils.getCacheObject(captchaKey);
@@ -93,13 +94,13 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
         String token = loginService.emailLogin(email);
-        return LoginResp.builder().token(token).build();
+        return R.ok(LoginResp.builder().token(token).build());
     }
 
     @SaIgnore
     @Operation(summary = "手机号登录", description = "根据手机号和验证码进行登录认证")
     @PostMapping("/phone")
-    public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
+    public R<LoginResp> phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
         String phone = loginReq.getPhone();
         String captchaKey = RedisUtils.formatKey(CacheConsts.CAPTCHA_KEY_PREFIX, phone);
         String captcha = RedisUtils.getCacheObject(captchaKey);
@@ -107,34 +108,35 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.deleteCacheObject(captchaKey);
         String token = loginService.phoneLogin(phone);
-        return LoginResp.builder().token(token).build();
+        return R.ok(LoginResp.builder().token(token).build());
     }
 
     @Operation(summary = "用户退出", description = "注销用户的当前登录")
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx",
         in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public void logout() {
+    public R logout() {
         StpUtil.logout();
+        return R.ok();
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
-    public UserInfoResp getUserInfo() {
+    public R<UserInfoResp> getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         UserDetailResp userDetailResp = userService.get(loginUser.getId());
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
         userInfoResp.setPermissions(loginUser.getPermissions());
         userInfoResp.setRoles(loginUser.getRoleCodes());
-        return userInfoResp;
+        return R.ok(userInfoResp);
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
-    public List<RouteResp> listRoute() {
+    public R<List<RouteResp>> listRoute() {
         Long userId = LoginHelper.getUserId();
-        return loginService.buildRouteTree(userId);
+        return R.ok(loginService.buildRouteTree(userId));
     }
 }
