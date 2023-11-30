@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +36,5 @@ import top.charles7c.cnadmin.system.service.DictService;
  */
 @Tag(name = "字典管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dict", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping("/system/dict")
 public class DictController extends BaseController<DictService, DictResp, DictDetailResp, DictQuery, DictReq> {}

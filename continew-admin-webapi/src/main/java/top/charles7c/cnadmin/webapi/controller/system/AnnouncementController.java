@@ -16,8 +16,6 @@
 
 package top.charles7c.cnadmin.webapi.controller.system;
 
-import static top.charles7c.cnadmin.common.annotation.CrudRequestMapping.Api;
-
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,8 +44,7 @@ import top.charles7c.cnadmin.system.service.AnnouncementService;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/announcement",
-    api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping("/system/announcement")
 public class AnnouncementController extends
     BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 
