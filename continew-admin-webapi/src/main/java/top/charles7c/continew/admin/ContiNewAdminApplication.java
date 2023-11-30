@@ -28,8 +28,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,8 +48,6 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 @RestController
 @SpringBootApplication
 @RequiredArgsConstructor
-@Import(cn.hutool.extra.spring.SpringUtil.class)
-@ComponentScan(basePackages = {"top.charles7c.cnadmin", "cn.hutool.extra.spring"})
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ProjectProperties projectProperties;
