@@ -37,7 +37,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.cnadmin.common.annotation.CrudRequestMapping;
-import top.charles7c.cnadmin.common.annotation.NoResponseAdvice;
 import top.charles7c.cnadmin.common.constant.StringConsts;
 import top.charles7c.cnadmin.common.model.query.PageQuery;
 import top.charles7c.cnadmin.common.model.query.SortQuery;
@@ -196,7 +195,6 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
      *            响应对象
      */
     @Operation(summary = "导出数据", description = "导出数据")
-    @NoResponseAdvice
     @GetMapping("/export")
     public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
         this.checkPermission(Api.EXPORT);
