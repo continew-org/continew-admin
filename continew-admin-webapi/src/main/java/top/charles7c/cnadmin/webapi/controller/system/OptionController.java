@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 
+import top.charles7c.cnadmin.common.model.resp.R;
 import top.charles7c.cnadmin.system.model.query.OptionQuery;
 import top.charles7c.cnadmin.system.model.req.OptionReq;
 import top.charles7c.cnadmin.system.model.req.OptionResetValueReq;
@@ -51,21 +52,23 @@ public class OptionController {
     @Operation(summary = "查询参数列表", description = "查询参数列表")
     @SaCheckPermission("system:config:list")
     @GetMapping
-    public List<OptionResp> list(@Validated OptionQuery query) {
-        return optionService.list(query);
+    public R<List<OptionResp>> list(@Validated OptionQuery query) {
+        return R.ok(optionService.list(query));
     }
 
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
-    public void update(@Validated @RequestBody List<OptionReq> req) {
+    public R update(@Validated @RequestBody List<OptionReq> req) {
         optionService.update(req);
+        return R.ok();
     }
 
     @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
-    public void resetValue(@Validated @RequestBody OptionResetValueReq req) {
+    public R resetValue(@Validated @RequestBody OptionResetValueReq req) {
         optionService.resetValue(req);
+        return R.ok();
     }
 }

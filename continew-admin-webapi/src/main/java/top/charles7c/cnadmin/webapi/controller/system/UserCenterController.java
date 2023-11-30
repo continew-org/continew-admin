@@ -139,15 +139,15 @@ public class UserCenterController {
 
     @Operation(summary = "查询绑定的三方账号", description = "查询绑定的三方账号")
     @GetMapping("/social")
-    public List<UserSocialBindResp> listSocialBind() {
+    public R<List<UserSocialBindResp>> listSocialBind() {
         List<UserSocialDO> userSocialList = userSocialService.listByUserId(LoginHelper.getUserId());
-        return userSocialList.stream().map(userSocial -> {
+        return R.ok(userSocialList.stream().map(userSocial -> {
             String source = userSocial.getSource();
             UserSocialBindResp userSocialBind = new UserSocialBindResp();
             userSocialBind.setSource(source);
             userSocialBind.setDescription(SocialSourceEnum.valueOf(source).getDescription());
             return userSocialBind;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList()));
     }
 
     @Operation(summary = "绑定三方账号", description = "绑定三方账号")

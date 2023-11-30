@@ -78,9 +78,9 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @ResponseBody
     @GetMapping
-    public PageDataResp<L> page(Q query, @Validated PageQuery pageQuery) {
+    public R<PageDataResp<L>> page(Q query, @Validated PageQuery pageQuery) {
         this.checkPermission(Api.LIST);
-        return baseService.page(query, pageQuery);
+        return R.ok(baseService.page(query, pageQuery));
     }
 
     /**
@@ -95,9 +95,9 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
     @Operation(summary = "查询树列表", description = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
-    public List<Tree<Long>> tree(Q query, SortQuery sortQuery) {
+    public R<List<Tree<Long>>> tree(Q query, SortQuery sortQuery) {
         this.checkPermission(Api.LIST);
-        return baseService.tree(query, sortQuery, false);
+        return R.ok(baseService.tree(query, sortQuery, false));
     }
 
     /**
@@ -112,9 +112,9 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
     @Operation(summary = "查询列表", description = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    public List<L> list(Q query, SortQuery sortQuery) {
+    public R<List<L>> list(Q query, SortQuery sortQuery) {
         this.checkPermission(Api.LIST);
-        return baseService.list(query, sortQuery);
+        return R.ok(baseService.list(query, sortQuery));
     }
 
     /**
@@ -128,9 +128,9 @@ public abstract class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q,
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @GetMapping("/{id}")
-    public D get(@PathVariable Long id) {
+    public R<D> get(@PathVariable Long id) {
         this.checkPermission(Api.LIST);
-        return baseService.get(id);
+        return R.ok(baseService.get(id));
     }
 
     /**
