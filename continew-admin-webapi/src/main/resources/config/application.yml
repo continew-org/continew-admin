@@ -9,7 +9,7 @@ project:
   # 描述
   description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
   # 基本包
-  base-package: top.charles7c.cnadmin
+  base-package: top.charles7c.continew.admin
   ## 作者信息配置
   contact:
     name: Charles7c
@@ -47,31 +47,31 @@ springdoc:
   group-configs:
     - group: 'all'
       paths-to-match: '/**'
-      packages-to-scan: ${project.base-package}.webapi.controller
+      packages-to-scan: ${project.base-package}.webapi
     - group: 'auth'
       display-name: '系统认证'
       paths-to-match:
         - '/auth/**'
         - '/oauth/**'
-      packages-to-scan: ${project.base-package}.webapi.controller.auth
+      packages-to-scan: ${project.base-package}.webapi.auth
     - group: 'common'
       display-name: '通用接口'
       paths-to-match:
         - '/common/**'
         - '/dashboard/**'
-      packages-to-scan: ${project.base-package}.webapi.controller.common
+      packages-to-scan: ${project.base-package}.webapi.common
     - group: 'system'
       display-name: '系统管理'
       paths-to-match: '/system/**'
-      packages-to-scan: ${project.base-package}.webapi.controller.system
+      packages-to-scan: ${project.base-package}.webapi.system
     - group: 'tool'
       display-name: '系统工具'
       paths-to-match: '/tool/**'
-      packages-to-scan: ${project.base-package}.webapi.controller.tool
+      packages-to-scan: ${project.base-package}.webapi.tool
     - group: 'monitor'
       display-name: '系统监控'
       paths-to-match: '/monitor/**'
-      packages-to-scan: ${project.base-package}.webapi.controller.monitor
+      packages-to-scan: ${project.base-package}.webapi.monitor
 ## 接口文档增强配置
 knife4j:
   enable: true
@@ -105,7 +105,7 @@ sa-token:
   extension:
     enabled: true
     # 权限认证实现
-    permission-impl: top.charles7c.cnadmin.auth.config.satoken.SaTokenPermissionImpl
+    permission-impl: top.charles7c.continew.admin.auth.config.satoken.SaTokenPermissionImpl
     # 持久层配置
     dao.type: redis
 
@@ -137,7 +137,7 @@ mybatis-plus:
     # Mapper 接口扫描包配置
     mapper-package: ${project.base-package}.**.mapper
     # 数据权限实现
-    data-permission-handler-impl: top.charles7c.cnadmin.common.config.mybatis.DataPermissionHandlerImpl
+    data-permission-handler-impl: top.charles7c.continew.admin.common.config.mybatis.DataPermissionHandlerImpl
     # 分页插件配置
     pagination:
       enabled: true

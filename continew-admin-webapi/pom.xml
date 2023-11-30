@@ -18,7 +18,7 @@
     <properties>
         <!-- ### 打包配置相关 ### -->
         <!-- 启动类 -->
-        <main-class>top.charles7c.cnadmin.ContiNewAdminApplication</main-class>
+        <main-class>top.charles7c.continew.admin.ContiNewAdminApplication</main-class>
         <!-- 程序 jar 输出目录 -->
         <bin-path>bin</bin-path>
         <!-- 配置文件输出目录 -->

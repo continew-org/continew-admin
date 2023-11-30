@@ -237,7 +237,7 @@
             <a-form-item label="模块包名" field="packageName">
               <a-input
                 v-model="form.packageName"
-                placeholder="项目模块包名，例如：top.charles7c.cnadmin.system"
+                placeholder="项目模块包名，例如：top.charles7c.continew.admin.system"
               />
             </a-form-item>
             <a-form-item label="前端路径" field="frontendPath">

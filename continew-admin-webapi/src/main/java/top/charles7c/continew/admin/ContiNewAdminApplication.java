@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.cnadmin;
+package top.charles7c.continew.admin;
 
 import java.net.InetAddress;
 
