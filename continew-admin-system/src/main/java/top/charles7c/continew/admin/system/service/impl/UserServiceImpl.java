@@ -41,7 +41,6 @@ import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.FileConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.admin.common.util.FileUtils;
 import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.mapper.UserMapper;
@@ -58,6 +57,7 @@ import top.charles7c.continew.admin.system.service.UserRoleService;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.core.util.FileUploadUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
@@ -172,7 +172,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         // 上传新头像
         UserDO user = super.getById(id);
         String avatarPath = localStorageProperties.getPath().getAvatar();
-        File newAvatarFile = FileUtils.upload(avatarFile, avatarPath, false);
+        File newAvatarFile = FileUploadUtils.upload(avatarFile, avatarPath, false);
         CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
         assert null != newAvatarFile;
         // 更新用户头像

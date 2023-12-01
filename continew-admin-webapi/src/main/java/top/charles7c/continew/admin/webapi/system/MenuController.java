@@ -26,11 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
 
-import top.charles7c.continew.admin.common.util.URLUtils;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.req.MenuReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.MenuService;
+import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.base.BaseController;
 import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;

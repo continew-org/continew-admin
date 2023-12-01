@@ -37,11 +37,12 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.admin.common.util.StreamUtils;
 import top.charles7c.continew.admin.common.util.holder.LogContextHolder;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.extension.crud.exception.BadRequestException;
 import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
@@ -74,7 +75,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationException(ConstraintViolationException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
-        String errorMsg = StreamUtils.join(e.getConstraintViolations(), ConstraintViolation::getMessage, "，");
+        String errorMsg =
+            CollUtil.join(e.getConstraintViolations(), StringConstants.CHINESE_COMMA, ConstraintViolation::getMessage);
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
@@ -85,7 +87,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public R handleBindException(BindException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
-        String errorMsg = StreamUtils.join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, "，");
+        String errorMsg = CollUtil.join(e.getAllErrors(), StringConstants.CHINESE_COMMA,
+            DefaultMessageSourceResolvable::getDefaultMessage);
         LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
