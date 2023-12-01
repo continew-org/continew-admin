@@ -58,19 +58,6 @@ import net.sf.jsqlparser.statement.select.SubSelect;
 @Slf4j
 public class DataPermissionHandlerImpl implements DataPermissionHandler {
 
-    /** ID */
-    private static final String ID = "id";
-    /** 部门 ID */
-    private static final String DEPT_ID = "dept_id";
-    /** 创建人 */
-    private static final String CREATE_USER = "create_user";
-    /** 部门表 */
-    private static final String DEPT_TABLE = "sys_dept";
-    /** 角色和部门关联表 */
-    private static final String ROLE_DEPT_TABLE = "sys_role_dept";
-    /** 角色和部门关联表：角色 ID */
-    private static final String ROLE_ID = "role_id";
-
     @Override
     public Expression getSqlSegment(Expression where, String mappedStatementId) {
         try {
@@ -84,7 +71,7 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                     && (method.getName().equals(methodName) || (method.getName() + "_COUNT").equals(methodName))) {
                     LoginUser loginUser = LoginHelper.getLoginUser();
                     if (null != loginUser && !loginUser.isAdmin()) {
-                        return buildDataScopeFilter(loginUser, dataPermission.value(), where);
+                        return buildDataScopeFilter(loginUser, dataPermission, where);
                     }
                 }
             }
@@ -99,14 +86,17 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
      *
      * @param user
      *            当前登录用户
-     * @param tableAlias
-     *            表别名
+     * @param dataPermission
+     *            数据权限
      * @param where
      *            当前查询条件
      * @return 构建后查询条件
      */
-    private Expression buildDataScopeFilter(LoginUser user, String tableAlias, Expression where) {
+    private Expression buildDataScopeFilter(LoginUser user, DataPermission dataPermission, Expression where) {
         Expression expression = null;
+        String tableAlias = dataPermission.tableAlias();
+        String id = dataPermission.id();
+        String deptId = dataPermission.deptId();
         for (RoleDTO role : user.getRoles()) {
             DataScopeEnum dataScope = role.getDataScope();
             if (DataScopeEnum.ALL.equals(dataScope)) {
@@ -118,10 +108,10 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 // 构建子查询
                 SubSelect subSelect = new SubSelect();
                 PlainSelect select = new PlainSelect();
-                select.setSelectItems(Collections.singletonList(new SelectExpressionItem(new Column(ID))));
-                select.setFromItem(new Table(DEPT_TABLE));
+                select.setSelectItems(Collections.singletonList(new SelectExpressionItem(new Column(id))));
+                select.setFromItem(new Table(dataPermission.deptTableAlias()));
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(new Column(ID));
+                equalsTo.setLeftExpression(new Column(id));
                 equalsTo.setRightExpression(new LongValue(user.getDeptId()));
                 Function function = new Function();
                 function.setName("find_in_set");
@@ -130,19 +120,19 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 subSelect.setSelectBody(select);
                 // 构建父查询
                 InExpression inExpression = new InExpression();
-                inExpression.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
+                inExpression.setLeftExpression(this.buildColumn(tableAlias, deptId));
                 inExpression.setRightExpression(subSelect);
                 expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             } else if (DataScopeEnum.DEPT.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`dept_id` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
+                equalsTo.setLeftExpression(this.buildColumn(tableAlias, deptId));
                 equalsTo.setRightExpression(new LongValue(user.getDeptId()));
                 expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.SELF.equals(dataScope)) {
                 // select t1.* from table as t1 where t1.`create_user` = xxx;
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(this.buildColumn(tableAlias, CREATE_USER));
+                equalsTo.setLeftExpression(this.buildColumn(tableAlias, dataPermission.userId()));
                 equalsTo.setRightExpression(new LongValue(user.getId()));
                 expression = null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
             } else if (DataScopeEnum.CUSTOM.equals(dataScope)) {
@@ -151,16 +141,16 @@ public class DataPermissionHandlerImpl implements DataPermissionHandler {
                 // 构建子查询
                 SubSelect subSelect = new SubSelect();
                 PlainSelect select = new PlainSelect();
-                select.setSelectItems(Collections.singletonList(new SelectExpressionItem(new Column(DEPT_ID))));
-                select.setFromItem(new Table(ROLE_DEPT_TABLE));
+                select.setSelectItems(Collections.singletonList(new SelectExpressionItem(new Column(deptId))));
+                select.setFromItem(new Table(dataPermission.roleDeptTableAlias()));
                 EqualsTo equalsTo = new EqualsTo();
-                equalsTo.setLeftExpression(new Column(ROLE_ID));
+                equalsTo.setLeftExpression(new Column(dataPermission.roleId()));
                 equalsTo.setRightExpression(new LongValue(role.getId()));
                 select.setWhere(equalsTo);
                 subSelect.setSelectBody(select);
                 // 构建父查询
                 InExpression inExpression = new InExpression();
-                inExpression.setLeftExpression(this.buildColumn(tableAlias, DEPT_ID));
+                inExpression.setLeftExpression(this.buildColumn(tableAlias, deptId));
                 inExpression.setRightExpression(subSelect);
                 expression = null != expression ? new OrExpression(expression, inExpression) : inExpression;
             }
