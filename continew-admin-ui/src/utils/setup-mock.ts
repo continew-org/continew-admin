@@ -3,8 +3,9 @@
 export default ({ mock, setup }: { mock?: boolean; setup: () => void }) => {
   // 仅在开发环境启用 mock
   // if (mock !== false && debug) setup();
+
   // 在生产环境也启用 mock
-  if (mock) setup();
+  if (mock !== false) setup();
 };
 
 export const successResponseWrap = (data: unknown) => {
