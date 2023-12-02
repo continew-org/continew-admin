@@ -6,8 +6,6 @@
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v1.3.2-%23ff3f59.svg" alt="Release" />
 </a>
-<img src="https://img.shields.io/badge/SpringBoot-2.7.16-%236CB52D.svg" alt="Release" />
-<img src="https://img.shields.io/badge/Java-8-%236CB52D.svg" alt="Release" />
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
 </a>
@@ -20,6 +18,8 @@
 <a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
+<img src="https://img.shields.io/badge/Spring Boot-2.7.16-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/Java-8-%236CB52D.svg" alt="Release" />
 
 📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require.html) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
@@ -34,30 +34,9 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 | GitHub        | https://github.com/Charles7c/continew-admin |
 | Gitee（码云） | https://gitee.com/Charles7c/continew-admin  |
 
-<img src="https://repobeats.axiom.co/api/embed/be43df158b86ce201cd2b7e0e6c8a85740149b7e.svg" alt="Alt" title="Repobeats github analytics image" />
-
-## 反馈交流
-
-💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
-
-加入交流群后，你将会：
-
-- 第一时间收到框架动态
-- 第一时间收到框架更新通知
-- 第一时间收到框架 Bug 通知
-- 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
-
-<div align="left">
-  <img src=".image/qrcode.jpg" alt="二维码" width="230px" />
-</div>
-
-<details>
-<summary>无加群意愿</summary>
-💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/discussions" target="_blank">Discussions</a> 中进行交流探讨~ 🍻
-</details>
-
 ## 主要特性
 
+- :fire: 在 2.x 及以上版本中，下方部分通用基础能力及配置，已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 项目，现已发布到 Maven 中央仓库，为 Spring Boot Web 项目开发提供更灵活的助力
 - 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
 - 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API
 - 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
@@ -483,11 +462,31 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 > 2. 在提交代码前，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit 的 message（建议在 IntelliJ IDEA 中下载并安装 Git Commit Template 插件，以便按照规范进行 commit）
 > 3. 提交代码之前，请关闭所有代码窗口，执行 mvn compile 命令（项目已配置代码格式化插件，编译通过的同时也会自动进行代码格式化），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
 
+## 反馈交流
+
+💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
+
+加入交流群后，你将会：
+
+- 第一时间收到框架动态
+- 第一时间收到框架更新通知
+- 第一时间收到框架 Bug 通知
+- 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
+
+<div align="left">
+  <img src=".image/qrcode.jpg" alt="二维码" width="230px" />
+</div>
+
+<details>
+<summary>无加群意愿</summary>
+💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
+</details>
+
 ## 鸣谢
 
 ### 鸣谢
 
-感谢参与贡献的每一位小伙伴！（以下排名不分先后）
+感谢参与贡献的每一位小伙伴🥰
 
 <a href="https://github.com/Charles7c/continew-admin/graphs/contributors">
   <img src="https://opencollective.com/continew-admin/contributors.svg?width=890&button=false" alt="contributors" />
@@ -498,7 +497,11 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 - 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
 - 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/easyexcel" target="_blank">Easy Excel</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
-- 感谢 <a href="https://github.com/elunez/eladmin" target="_blank">ELADMIN</a>、<a href="https://github.com/dromara/RuoYi-Vue-Plus" target="_blank">RuoYi-Vue-Plus</a>、<a href="https://github.com/yangzongzhuan/RuoYi-Vue3" target="_blank">RuoYi-Vue3</a> 提供的诸多成熟方案，致敬各位作者为开源脚手架领域作出的贡献
+- 感谢 <a href="https://github.com/elunez/eladmin" target="_blank">ELADMIN</a>、<a href="https://github.com/yangzongzhuan/RuoYi-Vue3" target="_blank">RuoYi-Vue3</a>、<a href="https://github.com/dromara/RuoYi-Vue-Plus" target="_blank">RuoYi-Vue-Plus</a>，致敬各位作者为开源脚手架领域作出的贡献
+  - e.g. 脱胎于 ELADMIN 项目开源的 QueryHelper 组件
+  - e.g. 参考 RuoYi-Vue3 前端项目的 Vue3 编码风格和规范
+  - e.g. 使用 RuoYi-Vue-Plus 项目封装的 SaToken 相关认证鉴权配置等
+
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License
