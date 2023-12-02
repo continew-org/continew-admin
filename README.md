@@ -6,15 +6,6 @@
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v2.1.0-%23ff3f59.svg" alt="Release" />
 </a>
-<a href="https://github.com/Charles7c/continew-starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNewStarter-v1.0.0-%236CB52D.svg" alt="Release" />
-</a>
-<a href="https://github.com/Charles7c/continew-starter" target="_blank">
-<img src="https://img.shields.io/badge/SpringBoot-3.1.5-%236CB52D.svg" alt="Release" />
-</a>
-<a href="https://github.com/Charles7c/continew-starter" target="_blank">
-<img src="https://img.shields.io/badge/Java-17-%236CB52D.svg" alt="Release" />
-</a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
 </a>
@@ -26,6 +17,15 @@
 </a>
 <a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
+</a>
+<a href="https://github.com/Charles7c/continew-starter" target="_blank">
+<img src="https://img.shields.io/badge/ContiNew Starter-1.0.0-%236CB52D.svg" alt="Release" />
+</a>
+<a href="https://github.com/Charles7c/continew-starter" target="_blank">
+<img src="https://img.shields.io/badge/Spring Boot-3.1.5-%236CB52D.svg" alt="Release" />
+</a>
+<a href="https://github.com/Charles7c/continew-starter" target="_blank">
+<img src="https://img.shields.io/badge/Java-17-%236CB52D.svg" alt="Release" />
 </a>
 
 📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require.html) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
@@ -41,31 +41,9 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 | GitHub        | https://github.com/Charles7c/continew-admin |
 | Gitee（码云） | https://gitee.com/Charles7c/continew-admin  |
 
-<img src="https://repobeats.axiom.co/api/embed/be43df158b86ce201cd2b7e0e6c8a85740149b7e.svg" alt="Alt" title="Repobeats github analytics image" />
-
-## 反馈交流
-
-💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
-
-加入交流群后，你将会：
-
-- 第一时间收到框架动态
-- 第一时间收到框架更新通知
-- 第一时间收到框架 Bug 通知
-- 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
-
-<div align="left">
-  <img src=".image/qrcode.jpg" alt="二维码" width="230px" />
-</div>
-
-<details>
-<summary>无加群意愿</summary>
-💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/discussions" target="_blank">Discussions</a> 中进行交流探讨~ 🍻
-</details>
-
 ## 主要特性
 
-- :fire: 下方特性配置，部分已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 模块，v2.1.0 正式 release 后将会发布到 Maven 中央仓库，为 Spring Boot Web 项目开发提供更灵活的助力
+- :fire: 下方部分通用基础能力及配置，已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 项目，现已发布到 Maven 中央仓库，为 Spring Boot Web 项目开发提供更灵活的助力
 - 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
 - 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API
 - 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
@@ -242,7 +220,7 @@ pnpm dev
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.5        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.4        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.4.1      | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.2.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
 | Hikari                                                       | 5.0.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
 | <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
@@ -256,7 +234,7 @@ pnpm dev
 | <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.2        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
 | Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
 | <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.3.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.22       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.23       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
 | <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 项目结构
@@ -276,15 +254,15 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      ├─ java        # 工程源文件代码目录
   │      │  └─ top
   │      │    └─ charles7c
-  │      │      └─ cnadmin
-  │      │        ├─ webapi
-  │      │        │  └─ controller  
-  │      │        │    ├─ auth     # 认证相关 API
-  │      │        │    ├─ common   # 公共相关 API（例如：验证码 API 等）
-  │      │        │    ├─ monitor  # 系统监控相关 API
-  │      │        │    ├─ system   # 系统管理相关 API
-  │      │        │    └─ tool     # 系统工具相关 API
-  │      │        └─ ContinewAdminApplication.java  # 启动入口
+  │      │      └─ continew
+  │      │        └─ admin
+  │      │          ├─ webapi
+  │      │          │  ├─ auth     # 认证相关 API
+  │      │          │  ├─ common   # 公共相关 API（例如：验证码 API 等）
+  │      │          │  ├─ monitor  # 系统监控相关 API
+  │      │          │  ├─ system   # 系统管理相关 API
+  │      │          │  └─ tool     # 系统工具相关 API
+  │      │          └─ ContinewAdminApplication.java  # 启动入口
   │      └─ resources   # 工程配置目录
   │        ├─ db.changelog   # 数据库脚本文件
   │        │  ├─ v1.0.0        # v1.0.0 版本数据库脚本文件
@@ -299,21 +277,22 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      ├─ java        # 工程源文件代码目录
   │      │  └─ top
   │      │    └─ charles7c
-  │      │      └─ cnadmin
-  │      │        └─ monitor
-  │      │          ├─ annotation    # 系统监控相关注解
-  │      │          ├─ config        # 系统监控相关配置
-  │      │          │  └─ properties   # 系统监控相关配置属性
-  │      │          ├─ enums         # 系统监控相关枚举
-  │      │          ├─ filter        # 系统监控相关过滤器
-  │      │          ├─ interceptor   # 系统监控相关拦截器
-  │      │          ├─ mapper        # 系统监控相关 Mapper
-  │      │          ├─ model         # 系统监控相关模型
-  │      │          │  ├─ entity       # 系统监控相关实体对象
-  │      │          │  ├─ query        # 系统监控相关查询条件
-  │      │          │  └─ resp         # 系统监控相关响应对象（Response）
-  │      │          └─ service       # 系统监控相关业务接口及实现类
-  │      │             └─ impl         # 系统监控相关业务实现类
+  │      │      └─ continew
+  │      │        └─ admin
+  │      │          └─ monitor
+  │      │            ├─ annotation    # 系统监控相关注解
+  │      │            ├─ config        # 系统监控相关配置
+  │      │            │  └─ properties   # 系统监控相关配置属性
+  │      │            ├─ enums         # 系统监控相关枚举
+  │      │            ├─ filter        # 系统监控相关过滤器
+  │      │            ├─ interceptor   # 系统监控相关拦截器
+  │      │            ├─ mapper        # 系统监控相关 Mapper
+  │      │            ├─ model         # 系统监控相关模型
+  │      │            │  ├─ entity       # 系统监控相关实体对象
+  │      │            │  ├─ query        # 系统监控相关查询条件
+  │      │            │  └─ resp         # 系统监控相关响应对象（Response）
+  │      │            └─ service       # 系统监控相关业务接口及实现类
+  │      │               └─ impl         # 系统监控相关业务实现类
   │      └─ resources   # 工程配置目录
   │         └─ mapper       # MyBatis Mapper XML 文件目录
   ├─ continew-admin-system   # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
@@ -322,26 +301,27 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      ├─ java        # 工程源文件代码目录
   │      │  └─ top
   │      │    └─ charles7c
-  │      │      └─ cnadmin
-  │      │        ├─ auth     # 系统认证相关业务及配置
-  │      │        │  ├─ config    # 系统认证相关配置
-  │      │        │  │  └─ satoken    # Sa-Token 配置
-  │      │        │  ├─ model     # 系统认证相关模型
-  │      │        │  │  ├─ query      # 系统认证相关查询条件
-  │      │        │  │  ├─ req        # 系统认证相关请求对象
-  │      │        │  │  └─ resp       # 系统认证相关响应对象
-  │      │        │  └─ service   # 系统认证相关业务接口及实现类
-  │      │        │     └─ impl       # 系统认证相关业务实现类
-  │      │        └─ system   # 系统管理相关业务及配置
-  │      │          ├─ enums      # 系统管理相关枚举
-  │      │          ├─ mapper     # 系统管理相关 Mapper
-  │      │          ├─ model      # 系统管理相关模型
-  │      │          │  ├─ entity      # 系统管理相关实体对象
-  │      │          │  ├─ query       # 系统管理相关查询条件
-  │      │          │  ├─ req         # 系统管理相关请求对象
-  │      │          │  └─ resp        # 系统管理相关响应对象
-  │      │          └─ service    # 系统管理相关业务接口及实现类
-  │      │             └─ impl        # 系统管理相关业务实现类
+  │      │      └─ continew
+  │      │        └─ admin
+  │      │          ├─ auth     # 系统认证相关业务及配置
+  │      │          │  ├─ config    # 系统认证相关配置
+  │      │          │  │  └─ satoken    # Sa-Token 配置
+  │      │          │  ├─ model     # 系统认证相关模型
+  │      │          │  │  ├─ query      # 系统认证相关查询条件
+  │      │          │  │  ├─ req        # 系统认证相关请求对象
+  │      │          │  │  └─ resp       # 系统认证相关响应对象
+  │      │          │  └─ service   # 系统认证相关业务接口及实现类
+  │      │          │     └─ impl       # 系统认证相关业务实现类
+  │      │          └─ system   # 系统管理相关业务及配置
+  │      │            ├─ enums      # 系统管理相关枚举
+  │      │            ├─ mapper     # 系统管理相关 Mapper
+  │      │            ├─ model      # 系统管理相关模型
+  │      │            │  ├─ entity      # 系统管理相关实体对象
+  │      │            │  ├─ query       # 系统管理相关查询条件
+  │      │            │  ├─ req         # 系统管理相关请求对象
+  │      │            │  └─ resp        # 系统管理相关响应对象
+  │      │            └─ service    # 系统管理相关业务接口及实现类
+  │      │               └─ impl        # 系统管理相关业务实现类
   │      └─ resources   # 工程配置目录
   │         └─ mapper        # MyBatis Mapper XML 文件目录
   ├─ continew-admin-tool  # 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等）
@@ -350,20 +330,20 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      ├─ java        # 工程源文件代码目录
   │      │  └─ top
   │      │    └─ charles7c
-  │      │      └─ cnadmin
-  │      │        └─ tool
-  │      │          ├─ config        # 系统工具相关配置
-  │      │          │  └─ properties    # 系统工具相关配置属性
-  │      │          ├─ enums         # 系统工具相关枚举
-  │      │          ├─ mapper        # 系统工具相关 Mapper
-  │      │          ├─ model         # 系统工具相关模型
-  │      │          │  ├─ entity        # 系统工具相关实体对象
-  │      │          │  ├─ query         # 系统工具相关查询条件
-  │      │          │  ├─ req           # 系统工具相关请求对象
-  │      │          │  └─ resp          # 系统工具相关响应对象
-  │      │          ├─ service       # 系统工具相关业务接口及实现类
-  │      │          │  └─ impl          # 系统工具相关业务实现类
-  │      │          └─ util          # 系统工具相关工具类
+  │      │      └─ continew
+  │      │        └─ admin
+  │      │          └─ tool
+  │      │            ├─ config        # 系统工具相关配置
+  │      │            │  └─ properties    # 系统工具相关配置属性
+  │      │            ├─ enums         # 系统工具相关枚举
+  │      │            ├─ mapper        # 系统工具相关 Mapper
+  │      │            ├─ model         # 系统工具相关模型
+  │      │            │  ├─ entity        # 系统工具相关实体对象
+  │      │            │  ├─ query         # 系统工具相关查询条件
+  │      │            │  ├─ req           # 系统工具相关请求对象
+  │      │            │  └─ resp          # 系统工具相关响应对象
+  │      │            └─ service       # 系统工具相关业务接口及实现类
+  │      │               └─ impl          # 系统工具相关业务实现类
   │      └─ resources   # 工程配置目录
   │        ├─ mapper        # MyBatis Mapper XML 文件目录
   │        └─ templates     # 模板文件
@@ -374,30 +354,27 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │      └─ java        # 工程源文件代码目录
   │        └─ top
   │          └─ charles7c
-  │            └─ cnadmin
-  │              └─ common
-  │                ├─ annotation    # 公共注解
-  │                ├─ base          # 公共基类
-  │                ├─ config        # 公共配置
-  │                │  ├─ easyexcel    # Easy Excel 配置
-  │                │  ├─ jackson      # Jackson 配置
-  │                │  ├─ mybatis      # MyBatis Plus 配置
-  │                │  ├─ threadpool   # 线程池配置
-  │                │  └─ properties   # 公共配置属性
-  │                ├─ constant      # 公共常量
-  │                ├─ enums         # 公共枚举
-  │                ├─ exception     # 公共异常
-  │                ├─ handler       # 公共处理器
-  │                ├─ model         # 公共模型
-  │                │  ├─ dto          # 公共 DTO（Data Transfer Object）
-  │                │  ├─ query        # 公共查询条件
-  │                │  ├─ req          # 公共请求对象
-  │                │  └─ resp         # 公共响应对象
-  │                ├─ service       # 公共业务接口
-  │                └─ util          # 公共工具类
-  │                  ├─ helper        # 公共 Helper（助手）
-  │                  ├─ holder        # 公共 Holder（持有者）
-  │                  └─ validate      # 公共校验器（参数校验，业务校验）
+  │            └─ continew
+  │              └─ admin
+  │                └─ common
+  │                  ├─ annotation    # 公共注解
+  │                  ├─ base          # 公共基类
+  │                  ├─ config        # 公共配置
+  │                  │  ├─ easyexcel    # Easy Excel 配置
+  │                  │  ├─ jackson      # Jackson 配置
+  │                  │  ├─ mybatis      # MyBatis Plus 配置
+  │                  │  └─ properties   # 公共配置属性
+  │                  ├─ constant      # 公共常量
+  │                  ├─ enums         # 公共枚举
+  │                  ├─ handler       # 公共处理器
+  │                  ├─ model         # 公共模型
+  │                  │  ├─ dto          # 公共 DTO（Data Transfer Object）
+  │                  │  ├─ req          # 公共请求对象
+  │                  │  └─ resp         # 公共响应对象
+  │                  ├─ service       # 公共业务接口
+  │                  └─ util          # 公共工具类
+  │                    ├─ helper        # 公共 Helper（助手）
+  │                    └─ holder        # 公共 Holder（持有者）
 ```
 
 ### 前端
@@ -430,7 +407,7 @@ continew-admin
     │  ├─ router            # 路由配置
     │  ├─ store             # 状态管理中心
     │  ├─ types             # TypeScript 类型
-    │  ├─ utils             # 工具库
+    │  ├─ utils             # 工具库（mock 全局开启/关闭）
     │  ├─ views             # 页面模板
     │  │  ├─ demo             # Arco Design 相关示例模块
     │  │  ├─ dashboard        # 仪表盘模块
@@ -493,6 +470,25 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 > 2. 在提交代码前，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit 的 message（建议在 IntelliJ IDEA 中下载并安装 Git Commit Template 插件，以便按照规范进行 commit）
 > 3. 提交代码之前，请关闭所有代码窗口，执行 mvn compile 命令（项目已配置代码格式化插件，编译通过的同时也会自动进行代码格式化），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
 
+## 反馈交流
+
+💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
+
+加入交流群后，你将会：
+
+- 第一时间收到框架动态
+- 第一时间收到框架更新通知
+- 第一时间收到框架 Bug 通知
+- 和众多大佬互相 (huá shuǐ) 交流 (mō yú)
+
+<div align="left">
+  <img src=".image/qrcode.jpg" alt="二维码" width="230px" />
+</div>
+<details>
+<summary>无加群意愿</summary>
+💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
+</details>
+
 ## 鸣谢
 
 ### 鸣谢
@@ -508,9 +504,6 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 - 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
 - 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/easyexcel" target="_blank">Easy Excel</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
-- 感谢 <a href="https://github.com/yangzongzhuan/RuoYi-Vue3" target="_blank">RuoYi-Vue3</a>、<a href="https://github.com/dromara/RuoYi-Vue-Plus" target="_blank">RuoYi-Vue-Plus</a>，致敬各位作者为开源脚手架领域作出的贡献
-  - e.g. 参考 RuoYi-Vue3 前端项目的 Vue3 编码风格和规范
-  - e.g. 使用 RuoYi-Vue-Plus 项目封装的 SaToken 相关认证鉴权配置等
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License
