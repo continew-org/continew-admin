@@ -1,3 +1,36 @@
+## [v2.1.0](https://github.com/Charles7c/continew-admin/compare/v2.0.0...v2.1.0) (2023-12-03)
+
+### 💎 功能优化
+
+- 优化数据权限注解 ([b14b14e](https://github.com/Charles7c/continew-admin/commit//bb59a78573bec521e8852f1c88ce6078fb14b14e))
+- 回退全局响应结果处理器 ([333feba](https://github.com/Charles7c/continew-admin/commit//c7a4e329945d8368a9b93a2488c059cf3333feba))
+- 优化字典 Controller CRUD 注解使用 ([efa2abb](https://github.com/Charles7c/continew-admin/commit//8c1c4b014463d073e848e2f2abc33e089efa2abb))
+- 优化常量命名风格，XxxConsts => XxxConstants ([f1b9c41](https://github.com/Charles7c/continew-admin/commit//ec28705b6ff6dd26ec3ef673fb3827259f1b9c41))
+- 移除 XML 文件头部的协议信息 ([8007238](https://github.com/Charles7c/continew-admin/commit//b47695603afb0c19679c4100c1e3c23bc8007238))
+- 优化菜单标题校验 ([218fb25](https://github.com/Charles7c/continew-admin/commit//3dd81a1192c4e340dad0b1bae5e29d1d7218fb25))
+
+### 🐛 问题修复
+
+- 修复 mock 被错误关闭的问题 ([e7b4e42](https://github.com/Charles7c/continew-admin/commit//a34070ffed3044ad2bea604701b074665e7b4e42))
+- 修复保存生成配置校验失效的问题，并优化部分提示效果 ([65289b4](https://github.com/Charles7c/continew-admin/commit//c34e934bb553d7f814d0fb5aa87eac0f565289b4))
+
+### 💥 破坏性变更
+
+- 项目包结构 top.charles7c.cnadmin => top.charles7c.continew.admin ([b9e75d1](https://github.com/Charles7c/continew-admin/commit//b86fe329d07317fed6a7d0b7015856de4b9e75d1))
+- 适配 ContiNew Starter 全局错误处理配置 ([5e016f7](https://github.com/Charles7c/continew-admin/commit//b62095d66e2318d35e4af07b128203b5a5e016f7))
+- 适配 ContiNew Starter CRUD（扩展模块） ([079ffc2](https://github.com/Charles7c/continew-admin/commit//ce5a2ec9319b86e69a6bda67a886e1c96079ffc2))
+- 适配 ContiNew Starter Mail（消息模块） ([e0abd4b](https://github.com/Charles7c/continew-admin/commit//ce785ddce28733eeefbf970ed08b01e36e0abd4b))
+- 适配 ContiNew Starter Excel（文件处理模块） ([1ff7958](https://github.com/Charles7c/continew-admin/commit//1311ae3603a26dc44dfffc5be86ea1ab81ff7958))
+- 适配 ContiNew Starter 认证模块-JustAuth ([3a7ff3a](https://github.com/Charles7c/continew-admin/commit//7ad8d1773a8e50e37a326b8f73f9ba38a3a7ff3a)) ([385b0ec](https://github.com/Charles7c/continew-admin/commit//f28fbd14fa83a82df49b07f16070e0ff3385b0ec))
+- 适配 ContiNew Starter 认证模块-SaToken ([05b297f](https://github.com/Charles7c/continew-admin/commit//86ca8f094ff6d1c00b52c1406985bc00105b297f))
+- 适配 ContiNew Starter 图形验证码 ([b50ee5c](https://github.com/Charles7c/continew-admin/commit//8a11a020e04e271da7b700b5d73cf8475b50ee5c))
+- 适配 ContiNew Starter MyBatis Plus 自动配置 ([b534a3f](https://github.com/Charles7c/continew-admin/commit//7306cd9d2f9492aa39e11b8f0dc8c7c11b534a3f))
+- 适配 ContiNew Starter Redisson 自动配置 ([41236a1](https://github.com/Charles7c/continew-admin/commit//a40e609ea14acda840d2771f05ca9690d41236a1))
+- 适配 ContiNew Starter Jackson、API 文档（Knife4j：Spring Doc）自动配置 ([1fd710f](https://github.com/Charles7c/continew-admin/commit//a86f3a5047eda2f67cc9ad7721006d2db1fd710f))
+- 适配 ContiNew Starter 线程池自动配置 ([1bdd5bb](https://github.com/Charles7c/continew-admin/commit//ec1daaf0456296dbc3704ae700b9577001bdd5bb))
+- 引入 ContiNew Starter，适配跨域自动配置 ([ea63c11](https://github.com/Charles7c/continew-admin/commit//2c4f5116c999b9316ab0bee4fa661338fea63c11))
+- 项目 group id top.charles7c => top.charles7c.continew ([906acf1](https://github.com/Charles7c/continew-admin/commit//3e23acb3e257d5813b858356aa926a96c906acf1))
+
 ## [v2.0.0](https://github.com/Charles7c/continew-admin/compare/v1.3.1...v2.0.0) (2023-11-15)
 
 ### 💎 功能优化
