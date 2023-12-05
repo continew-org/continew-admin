@@ -25,8 +25,8 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import cn.hutool.core.util.ObjectUtil;
 
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
+import top.charles7c.continew.starter.core.exception.BusinessException;
 import top.charles7c.continew.starter.extension.crud.base.BaseDO;
-import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
 
 /**
  * MyBatis Plus 元对象处理器配置（插入或修改时自动填充）

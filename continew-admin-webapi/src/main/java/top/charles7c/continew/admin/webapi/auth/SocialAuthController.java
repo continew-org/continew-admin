@@ -33,9 +33,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import top.charles7c.continew.admin.auth.model.resp.LoginResp;
 import top.charles7c.continew.admin.auth.service.LoginService;
 import top.charles7c.continew.admin.monitor.annotation.Log;
-import top.charles7c.continew.starter.extension.crud.exception.BadRequestException;
+import top.charles7c.continew.starter.core.exception.BadRequestException;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;

@@ -58,9 +58,9 @@ import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.FileUploadUtils;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 用户业务实现

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReflectUtil;
 
-import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 
 /**
  * 通用枚举基类 BaseEnum 反序列化器

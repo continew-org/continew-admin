@@ -48,8 +48,8 @@ import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 认证 API

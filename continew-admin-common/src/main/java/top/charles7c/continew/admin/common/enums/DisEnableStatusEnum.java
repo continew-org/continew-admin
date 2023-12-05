@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.continew.admin.common.constant.UIConstants;
-import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 
 /**
  * 启用/禁用状态枚举

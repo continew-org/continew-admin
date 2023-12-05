@@ -26,8 +26,8 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.continew.starter.extension.crud.annotation.Query;
-import top.charles7c.continew.starter.extension.crud.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
 
 /**
  * 参数查询条件

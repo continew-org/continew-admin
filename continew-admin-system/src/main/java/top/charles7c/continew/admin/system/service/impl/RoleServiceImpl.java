@@ -44,8 +44,8 @@ import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.model.resp.RoleDetailResp;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 角色业务实现

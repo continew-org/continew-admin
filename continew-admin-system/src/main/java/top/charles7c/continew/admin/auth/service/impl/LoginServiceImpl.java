@@ -56,9 +56,9 @@ import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
 import top.charles7c.continew.starter.extension.crud.util.TreeUtils;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 import me.zhyd.oauth.model.AuthUser;
 

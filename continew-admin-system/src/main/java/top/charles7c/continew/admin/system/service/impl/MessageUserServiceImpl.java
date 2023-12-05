@@ -33,7 +33,7 @@ import top.charles7c.continew.admin.system.model.entity.MessageUserDO;
 import top.charles7c.continew.admin.system.model.resp.MessageTypeUnreadResp;
 import top.charles7c.continew.admin.system.model.resp.MessageUnreadResp;
 import top.charles7c.continew.admin.system.service.MessageUserService;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 
 /**
  * 消息和用户关联业务实现

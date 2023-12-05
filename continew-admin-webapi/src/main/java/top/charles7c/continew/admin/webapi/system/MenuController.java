@@ -31,12 +31,12 @@ import top.charles7c.continew.admin.system.model.req.MenuReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.MenuService;
 import top.charles7c.continew.starter.core.util.URLUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.base.BaseController;
 import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
 import top.charles7c.continew.starter.extension.crud.enums.Api;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 菜单管理 API

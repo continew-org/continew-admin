@@ -54,11 +54,11 @@ import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.FileUploadUtils;
-import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 公共 API

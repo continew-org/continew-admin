@@ -32,10 +32,10 @@ import cn.dev33.satoken.stp.StpUtil;
 import top.charles7c.continew.admin.auth.model.query.OnlineUserQuery;
 import top.charles7c.continew.admin.auth.model.resp.OnlineUserResp;
 import top.charles7c.continew.admin.auth.service.OnlineUserService;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 在线用户 API

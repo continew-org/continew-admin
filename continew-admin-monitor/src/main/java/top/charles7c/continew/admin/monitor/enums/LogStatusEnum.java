@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.monitor.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.starter.extension.crud.base.IBaseEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 
 /**
  * 操作状态枚举

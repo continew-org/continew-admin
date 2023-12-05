@@ -53,14 +53,14 @@ import top.charles7c.continew.admin.tool.model.req.GenConfigReq;
 import top.charles7c.continew.admin.tool.model.resp.TableResp;
 import top.charles7c.continew.admin.tool.service.GeneratorService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.core.exception.BusinessException;
 import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.db.MetaUtils;
 import top.charles7c.continew.starter.core.util.db.Table;
-import top.charles7c.continew.starter.extension.crud.enums.QueryTypeEnum;
-import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 代码生成业务实现

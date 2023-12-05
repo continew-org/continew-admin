@@ -38,8 +38,8 @@ import top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleRes
 import top.charles7c.continew.admin.monitor.model.resp.DashboardTotalResp;
 import top.charles7c.continew.admin.monitor.service.DashboardService;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
-import top.charles7c.continew.starter.extension.crud.util.validate.ValidationUtils;
 
 /**
  * 仪表盘 API

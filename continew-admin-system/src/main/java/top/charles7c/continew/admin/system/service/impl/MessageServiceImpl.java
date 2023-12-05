@@ -38,11 +38,11 @@ import top.charles7c.continew.admin.system.model.resp.MessageResp;
 import top.charles7c.continew.admin.system.service.MessageService;
 import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.data.mybatis.plus.util.QueryHelper;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
-import top.charles7c.continew.starter.extension.crud.util.QueryHelper;
-import top.charles7c.continew.starter.extension.crud.util.validate.CheckUtils;
 
 /**
  * 消息业务实现

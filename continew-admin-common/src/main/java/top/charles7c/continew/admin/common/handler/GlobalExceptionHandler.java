@@ -43,9 +43,9 @@ import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.admin.common.util.holder.LogContextHolder;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.core.exception.BadRequestException;
+import top.charles7c.continew.starter.core.exception.BusinessException;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
-import top.charles7c.continew.starter.extension.crud.exception.BadRequestException;
-import top.charles7c.continew.starter.extension.crud.exception.BusinessException;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
