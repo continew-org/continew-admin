@@ -28,7 +28,7 @@
 <img src="https://img.shields.io/badge/Java-17-%236CB52D.svg" alt="Release" />
 </a>
 
-📚 [在线文档](https://doc.charles7c.top) | ✨ [提交需求](https://doc.charles7c.top/require.html) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
 
 ## 简介
 
@@ -152,7 +152,7 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 ## 快速开始
 
 > **Note**
-> 下方步骤有重叠部分，无需重复执行。
+> 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/guide/intro/quick-start.html)。
 
 ### 后端
 
@@ -201,7 +201,7 @@ pnpm dev
 # 6.部署
 # 6.1 Docker 部署
 #   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
-#   6.1.2 执行 pnpm build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/web 目录下
+#   6.1.2 执行 pnpm build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/html 目录下
 #   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
 #   6.1.4 修改 docker-compose.yml 中的 MySQL 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
 #   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
@@ -443,7 +443,7 @@ ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，�
 
 ### 分支说明
 
-ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://doc.charles7c.top/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
+ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://doc.charles7c.top/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
 
 | 分支  | 说明                                                         |
 | ----- | ------------------------------------------------------------ |
@@ -472,7 +472,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 ## 反馈交流
 
-💬 欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
+欢迎各位小伙伴儿扫描下方二维码加好友，备注 `cnadmin`，拉你进群，探讨技术、提提需求~   
 
 加入交流群后，你将会：
 
@@ -486,7 +486,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 </div>
 <details>
 <summary>无加群意愿</summary>
-💬 如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
+如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
 </details>
 
 ## 鸣谢

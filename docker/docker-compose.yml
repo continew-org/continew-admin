@@ -51,7 +51,7 @@ services:
       REDIS_HOST: 172.17.0.1
       REDIS_PORT: 6379
       REDIS_PWD: 你的 Redis 密码
-      REDIS_DB: 你的 Redis 数据库索引
+      REDIS_DB: 0
     volumes:
       - /docker/continew-admin/config/:/app/config/
       - /docker/continew-admin/data/file/:/app/data/file/
