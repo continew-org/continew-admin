@@ -44,6 +44,7 @@ springdoc:
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认为 false）
   # 如果不添加该全局配置，可以在需要如此处理的对象参数类上使用 @ParameterObject
   default-flat-param-object: true
+  # 分组配置
   group-configs:
     - group: 'all'
       paths-to-match: '/**'
@@ -72,6 +73,15 @@ springdoc:
       display-name: '系统监控'
       paths-to-match: '/monitor/**'
       packages-to-scan: ${project.base-package}.webapi.monitor
+  ## 组件配置
+  components:
+    # 鉴权配置
+    security-schemes:
+      Authorization:
+        type: HTTP
+        in: HEADER
+        name: ${sa-token.token-name}
+        scheme: ${sa-token.token-prefix}
 ## 接口文档增强配置
 knife4j:
   enable: true
