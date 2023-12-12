@@ -75,7 +75,7 @@ spring.data:
       enabled: false
   redisson:
     enabled: true
-    mode: single
+    mode: SINGLE
 
 --- ### Spring Cache 配置
 spring.cache:
@@ -120,7 +120,7 @@ captcha:
 --- ### 短信配置
 sms:
   # 从 YAML 读取配置
-  config-type: yaml
+  config-type: YAML
   is-print: false
   blends:
     cloopen:
@@ -180,7 +180,7 @@ justauth:
       client-secret: 1f7d08**********5b7**********29e
       redirect-uri: ${project.url}/social/callback?source=github
   cache:
-    type: redis
+    type: REDIS
 
 --- ### Sa-Token 扩展配置
 sa-token.extension:

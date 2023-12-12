@@ -117,7 +117,7 @@ sa-token:
     # 权限认证实现
     permission-impl: top.charles7c.continew.admin.auth.config.satoken.SaTokenPermissionImpl
     # 持久层配置
-    dao.type: redis
+    dao.type: REDIS
 
 --- ### MyBatis Plus 配置
 mybatis-plus:
@@ -151,7 +151,7 @@ mybatis-plus:
     # 分页插件配置
     pagination:
       enabled: true
-      db-type: mysql
+      db-type: MYSQL
 
 --- ### 服务器配置
 server:
