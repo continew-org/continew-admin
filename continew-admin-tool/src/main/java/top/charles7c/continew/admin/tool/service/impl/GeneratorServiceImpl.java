@@ -44,6 +44,7 @@ import cn.hutool.system.SystemUtil;
 
 import top.charles7c.continew.admin.tool.config.properties.GeneratorProperties;
 import top.charles7c.continew.admin.tool.config.properties.GeneratorProperties.TemplateConfig;
+import top.charles7c.continew.admin.tool.enums.QueryTypeEnum;
 import top.charles7c.continew.admin.tool.mapper.FieldConfigMapper;
 import top.charles7c.continew.admin.tool.mapper.GenConfigMapper;
 import top.charles7c.continew.admin.tool.model.entity.FieldConfigDO;
@@ -58,7 +59,6 @@ import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.db.MetaUtils;
 import top.charles7c.continew.starter.core.util.db.Table;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 

@@ -38,8 +38,8 @@ import cn.hutool.setting.dialect.Props;
 import cn.hutool.setting.dialect.PropsUtil;
 
 import top.charles7c.continew.admin.tool.enums.FormTypeEnum;
+import top.charles7c.continew.admin.tool.enums.QueryTypeEnum;
 import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
 
 /**
  * 字段配置实体

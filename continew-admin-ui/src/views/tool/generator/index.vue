@@ -202,7 +202,7 @@
                   <a-select
                     v-if="record.showInQuery"
                     v-model="record.queryType"
-                    :options="query_type_Enum"
+                    :options="query_type_enum"
                     placeholder="请选择查询方式"
                   />
                   <span v-else>无需设置</span>
@@ -281,9 +281,9 @@
   } from '@/api/tool/generator';
 
   const { proxy } = getCurrentInstance() as any;
-  const { form_type_enum, query_type_Enum } = proxy.useDict(
+  const { form_type_enum, query_type_enum } = proxy.useDict(
     'form_type_enum',
-    'query_type_Enum',
+    'query_type_enum',
   );
 
   const tableList = ref<TableRecord[]>([]);
