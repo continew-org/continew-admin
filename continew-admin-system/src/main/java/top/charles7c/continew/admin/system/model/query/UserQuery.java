@@ -30,7 +30,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import cn.hutool.core.date.DatePattern;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * 用户查询条件
@@ -63,7 +63,7 @@ public class UserQuery implements Serializable {
      * 创建时间
      */
     @Schema(description = "创建时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
-    @Query(type = QueryTypeEnum.BETWEEN)
+    @Query(type = QueryType.BETWEEN)
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;
 

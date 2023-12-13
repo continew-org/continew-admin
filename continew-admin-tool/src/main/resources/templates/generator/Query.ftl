@@ -33,7 +33,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * ${businessName}查询条件
@@ -55,7 +55,7 @@ public class ${className} implements Serializable {
      * ${fieldConfig.comment}
      */
     @Schema(description = "${fieldConfig.comment}")
-    @Query(type = QueryTypeEnum.${fieldConfig.queryType})
+    @Query(type = QueryType.${fieldConfig.queryType})
     <#if fieldConfig.queryType = 'IN' || fieldConfig.queryType = 'NOT_IN' || fieldConfig.queryType = 'BETWEEN'>
     private List<${fieldConfig.fieldType}> ${fieldConfig.fieldName};
     <#else>

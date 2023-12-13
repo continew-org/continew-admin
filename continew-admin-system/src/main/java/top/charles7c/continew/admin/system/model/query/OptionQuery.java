@@ -27,7 +27,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * 参数查询条件
@@ -47,6 +47,6 @@ public class OptionQuery implements Serializable {
      */
     @Schema(description = "参数键列表", example = "site_title,site_copyright")
     @NotEmpty(message = "参数键不能为空")
-    @Query(type = QueryTypeEnum.IN)
+    @Query(type = QueryType.IN)
     private List<String> code;
 }

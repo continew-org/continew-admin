@@ -23,7 +23,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * 消息查询条件
@@ -48,7 +48,7 @@ public class MessageQuery implements Serializable {
      * 标题
      */
     @Schema(description = "标题", example = "欢迎注册 xxx")
-    @Query(type = QueryTypeEnum.INNER_LIKE)
+    @Query(type = QueryType.INNER_LIKE)
     private String title;
 
     /**

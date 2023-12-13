@@ -24,7 +24,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * 菜单查询条件
@@ -43,7 +43,7 @@ public class MenuQuery implements Serializable {
      * 菜单标题
      */
     @Schema(description = "菜单标题", example = "用户管理")
-    @Query(type = QueryTypeEnum.INNER_LIKE)
+    @Query(type = QueryType.INNER_LIKE)
     private String title;
 
     /**

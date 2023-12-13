@@ -24,7 +24,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryTypeEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
 
 /**
  * 部门查询条件
@@ -43,7 +43,7 @@ public class DeptQuery implements Serializable {
      * 部门名称
      */
     @Schema(description = "部门名称", example = "测试部")
-    @Query(type = QueryTypeEnum.INNER_LIKE)
+    @Query(type = QueryType.INNER_LIKE)
     private String name;
 
     /**
