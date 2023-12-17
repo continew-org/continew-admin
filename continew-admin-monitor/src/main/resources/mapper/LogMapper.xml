@@ -4,7 +4,7 @@
     <select id="selectDashboardTotal" resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardTotalResp">
         SELECT
             (SELECT COUNT(*) FROM `sys_log`) AS pvCount,
-            (SELECT COUNT(DISTINCT `client_ip`) FROM `sys_log`) AS ipCount,
+            (SELECT COUNT(DISTINCT `ip`) FROM `sys_log`) AS ipCount,
             (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = CURDATE()) AS todayPvCount,
             (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
     </select>
@@ -14,7 +14,7 @@
         SELECT
             DATE(`create_time`) AS date,
             COUNT(*) AS pvCount,
-            COUNT(DISTINCT `client_ip`) AS ipCount
+            COUNT(DISTINCT `ip`) AS ipCount
         FROM `sys_log`
         GROUP BY DATE(`create_time`)
         HAVING `date` != CURDATE()
@@ -38,11 +38,11 @@
 
     <select id="selectListDashboardGeoDistribution" resultType="java.util.Map">
         SELECT
-            `location` AS name,
-            COUNT(DISTINCT `client_ip`) AS value
+            `address` AS name,
+            COUNT(DISTINCT `ip`) AS value
         FROM `sys_log`
-        GROUP BY `location`
-        ORDER BY COUNT(DISTINCT `client_ip`) DESC
+        GROUP BY `address`
+        ORDER BY COUNT(DISTINCT `ip`) DESC
         LIMIT 10
     </select>
 </mapper>
