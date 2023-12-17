@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import top.charles7c.continew.admin.monitor.annotation.Log;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardGeoDistributionResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp;
@@ -40,6 +39,7 @@ import top.charles7c.continew.admin.monitor.service.DashboardService;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.log.common.annotation.Log;
 
 /**
  * 仪表盘 API

@@ -74,21 +74,21 @@
               }}</span>
             </template>
           </a-table-column>
-          <a-table-column title="客户端 IP" data-index="clientIp" />
-          <a-table-column title="IP 归属地" data-index="location" />
+          <a-table-column title="IP" data-index="ip" />
+          <a-table-column title="地址" data-index="address" />
           <a-table-column title="浏览器" data-index="browser" />
-          <a-table-column title="请求耗时">
+          <a-table-column title="耗时">
             <template #cell="{ record }">
-              <a-tag v-if="record.elapsedTime > 500" color="red"
-                >{{ record.elapsedTime }} ms</a-tag
+              <a-tag v-if="record.timeTaken > 500" color="red"
+                >{{ record.timeTaken }} ms</a-tag
               >
-              <a-tag v-else-if="record.elapsedTime > 200" color="orange"
-                >{{ record.elapsedTime }} ms</a-tag
+              <a-tag v-else-if="record.timeTaken > 200" color="orange"
+                >{{ record.timeTaken }} ms</a-tag
               >
-              <a-tag v-else color="green">{{ record.elapsedTime }} ms</a-tag>
+              <a-tag v-else color="green">{{ record.timeTaken }} ms</a-tag>
             </template>
           </a-table-column>
-          <a-table-column title="创建时间" data-index="createTime" />
+          <a-table-column title="请求时间" data-index="createTime" />
           <a-table-column title="操作" align="center">
             <template #cell="{ record }">
               <a-button
@@ -98,15 +98,6 @@
                 @click="toDetail(record.id)"
               >
                 <template #icon><icon-eye /></template>详情
-              </a-button>
-              <a-button
-                v-if="record.exceptionDetail"
-                type="text"
-                size="small"
-                title="查看异常详情"
-                @click="toExceptionDetail(record)"
-              >
-                <template #icon><icon-bug /></template>异常
               </a-button>
             </template>
           </a-table-column>
@@ -125,11 +116,11 @@
       >
         <div style="margin: 10px 0 0 10px">
           <a-descriptions title="基础信息" :column="2" bordered>
-            <a-descriptions-item label="客户端 IP">
+            <a-descriptions-item label="IP">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
-              <span v-else>{{ systemLog.clientIp }}</span>
+              <span v-else>{{ systemLog.ip }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="浏览器">
               <a-skeleton v-if="loading" :animation="true">
@@ -137,33 +128,39 @@
               </a-skeleton>
               <span v-else>{{ systemLog.browser }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="IP 归属地">
+            <a-descriptions-item label="地址">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
-              <span v-else>{{ systemLog.location }}</span>
+              <span v-else>{{ systemLog.address }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="请求耗时">
+            <a-descriptions-item label="操作系统">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
-              <span v-else>
-                <a-tag v-if="systemLog.elapsedTime > 500" color="red">
-                  {{ systemLog.elapsedTime }} ms
-                </a-tag>
-                <a-tag v-else-if="systemLog.elapsedTime > 200" color="orange">
-                  {{ systemLog.elapsedTime }} ms
-                </a-tag>
-                <a-tag v-else color="green"
-                  >{{ systemLog.elapsedTime }} ms</a-tag
-                >
-              </span>
+              <span v-else>{{ systemLog.os }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="创建时间">
+            <a-descriptions-item label="请求时间">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
               <span v-else>{{ systemLog.createTime }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="耗时">
+              <a-skeleton v-if="loading" :animation="true">
+                <a-skeleton-line :widths="['200px']" :rows="1" />
+              </a-skeleton>
+              <span v-else>
+                <a-tag v-if="systemLog.timeTaken > 500" color="red">
+                  {{ systemLog.timeTaken }} ms
+                </a-tag>
+                <a-tag v-else-if="systemLog.timeTaken > 200" color="orange">
+                  {{ systemLog.timeTaken }} ms
+                </a-tag>
+                <a-tag v-else color="green"
+                  >{{ systemLog.timeTaken }} ms</a-tag
+                >
+              </span>
             </a-descriptions-item>
           </a-descriptions>
           <a-descriptions
@@ -256,20 +253,6 @@
           </a-descriptions>
         </div>
       </a-drawer>
-
-      <!-- 异常详情区域 -->
-      <a-modal
-        title="异常详情"
-        :visible="exceptionDetailVisible"
-        width="83%"
-        :footer="false"
-        top="30px"
-        unmount-on-close
-        render-to-body
-        @cancel="handleExceptionDetailCancel"
-      >
-        <pre>{{ exceptionDetail }}</pre>
-      </a-modal>
     </a-card>
   </div>
 </template>
@@ -297,17 +280,16 @@
     statusCode: 200,
     responseHeaders: '',
     responseBody: '',
-    elapsedTime: 0,
-    clientIp: '',
-    location: '',
+    timeTaken: 0,
+    ip: '',
+    address: '',
     browser: '',
+    os: '',
     createTime: '',
   });
   const total = ref(0);
-  const exceptionDetail = ref('');
   const loading = ref(false);
   const visible = ref(false);
-  const exceptionDetailVisible = ref(false);
 
   const data = reactive({
     // 查询参数
@@ -360,24 +342,6 @@
    */
   const handleCancel = () => {
     visible.value = false;
-  };
-
-  /**
-   * 查看异常详情
-   *
-   * @param record 记录信息
-   */
-  const toExceptionDetail = async (record: SystemLogRecord) => {
-    exceptionDetail.value = record.exceptionDetail || '';
-    exceptionDetailVisible.value = true;
-  };
-
-  /**
-   * 关闭异常详情
-   */
-  const handleExceptionDetailCancel = () => {
-    exceptionDetail.value = '';
-    exceptionDetailVisible.value = false;
   };
 
   /**

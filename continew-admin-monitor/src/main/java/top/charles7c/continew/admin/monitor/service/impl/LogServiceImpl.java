@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -63,27 +61,18 @@ public class LogServiceImpl implements LogService {
     private final LogMapper logMapper;
     private final CommonUserService commonUserService;
 
-    @Async
-    @EventListener
-    public void save(LogDO logDO) {
-        logMapper.insert(logDO);
-    }
-
     @Override
     public PageDataResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
-
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogResp.class);
         List<String> columnNameList =
             fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
-
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
         PageDataResp<OperationLogResp> pageDataResp = PageDataResp.build(page, OperationLogResp.class);
-
         // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
         if (null != query.getUid()) {
             String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
@@ -98,18 +87,15 @@ public class LogServiceImpl implements LogService {
     public PageDataResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.eq("module", "登录");
-
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogResp.class);
         List<String> columnNameList =
             fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
-
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
         PageDataResp<LoginLogResp> pageDataResp = PageDataResp.build(page, LoginLogResp.class);
-
         // 填充数据
         pageDataResp.getList().forEach(this::fill);
         return pageDataResp;
@@ -118,18 +104,15 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageDataResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
-
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogResp.class);
         List<String> columnNameList =
             fieldNameList.stream().filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
                 .map(StrUtil::toUnderlineCase).collect(Collectors.toList());
         queryWrapper.select(columnNameList);
-
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
         PageDataResp<SystemLogResp> pageDataResp = PageDataResp.build(page, SystemLogResp.class);
-
         // 填充数据
         pageDataResp.getList().forEach(this::fill);
         return pageDataResp;

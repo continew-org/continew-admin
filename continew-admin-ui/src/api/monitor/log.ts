@@ -5,9 +5,10 @@ const BASE_URL = '/monitor/log';
 
 export interface LogRecord {
   id?: number;
-  clientIp: string;
-  location: string;
+  ip: string;
+  address: string;
   browser: string;
+  os: string;
   createTime: string;
 }
 
@@ -22,7 +23,7 @@ export interface OperationLogRecord extends LogRecord {
   module: string;
   description: string;
   status: number;
-  errorMsg: string;
+  errorMsgString: string;
   createUserString: string;
 }
 
@@ -30,8 +31,7 @@ export interface SystemLogRecord extends LogRecord {
   statusCode: number;
   requestMethod: string;
   requestUrl: string;
-  elapsedTime: number;
-  exceptionDetail?: string;
+  timeTaken: number;
 }
 
 export interface SystemLogDetailRecord extends SystemLogRecord {

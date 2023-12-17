@@ -40,8 +40,8 @@
             </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column title="操作 IP" data-index="clientIp" />
-        <a-table-column title="操作地点" data-index="location" />
+        <a-table-column title="操作 IP" data-index="ip" />
+        <a-table-column title="操作地点" data-index="address" />
         <a-table-column title="浏览器" data-index="browser" />
       </template>
       <template #pagination-left>

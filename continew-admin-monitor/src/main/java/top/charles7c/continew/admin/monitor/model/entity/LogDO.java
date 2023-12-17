@@ -92,24 +92,19 @@ public class LogDO implements Serializable {
     private String responseBody;
 
     /**
-     * 请求耗时（ms）
+     * 耗时（ms）
      */
-    private Long elapsedTime;
+    private Long timeTaken;
 
     /**
-     * 操作状态
+     * IP
      */
-    private LogStatusEnum status;
+    private String ip;
 
     /**
-     * 客户端IP
+     * IP 归属地
      */
-    private String clientIp;
-
-    /**
-     * IP归属地
-     */
-    private String location;
+    private String address;
 
     /**
      * 浏览器
@@ -117,14 +112,19 @@ public class LogDO implements Serializable {
     private String browser;
 
     /**
+     * 操作系统
+     */
+    private String os;
+
+    /**
+     * 状态
+     */
+    private LogStatusEnum status;
+
+    /**
      * 错误信息
      */
     private String errorMsg;
-
-    /**
-     * 异常详情
-     */
-    private String exceptionDetail;
 
     /**
      * 创建人

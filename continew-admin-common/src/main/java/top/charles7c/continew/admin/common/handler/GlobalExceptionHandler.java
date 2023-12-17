@@ -41,7 +41,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.admin.common.util.holder.LogContextHolder;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.exception.BadRequestException;
 import top.charles7c.continew.starter.core.exception.BusinessException;
@@ -65,7 +64,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
         log.warn("请求地址 [{}]，自定义验证失败。", request.getRequestURI(), e);
-        LogContextHolder.setErrorMsg(e.getMessage());
         return R.fail(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
@@ -77,7 +75,6 @@ public class GlobalExceptionHandler {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
         String errorMsg =
             CollUtil.join(e.getConstraintViolations(), StringConstants.CHINESE_COMMA, ConstraintViolation::getMessage);
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
 
@@ -89,7 +86,6 @@ public class GlobalExceptionHandler {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
         String errorMsg = CollUtil.join(e.getAllErrors(), StringConstants.CHINESE_COMMA,
             DefaultMessageSourceResolvable::getDefaultMessage);
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
 
@@ -101,7 +97,6 @@ public class GlobalExceptionHandler {
         log.warn("请求地址 [{}]，参数验证失败。", request.getRequestURI(), e);
         String errorMsg = ExceptionUtils
             .exToNull(() -> Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
 
@@ -113,7 +108,6 @@ public class GlobalExceptionHandler {
         HttpServletRequest request) {
         String errorMsg = StrUtil.format("参数名：[{}]，期望参数类型：[{}]", e.getName(), e.getParameter().getParameterType());
         log.warn("请求地址 [{}]，参数转换失败，{}。", request.getRequestURI(), errorMsg, e);
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
 
@@ -125,7 +119,6 @@ public class GlobalExceptionHandler {
         log.warn("请求地址 [{}]，上传文件失败，文件大小超过限制。", request.getRequestURI(), e);
         String sizeLimit = StrUtil.subBetween(e.getMessage(), "The maximum size ", " for");
         String errorMsg = String.format("请上传小于 %sMB 的文件", NumberUtil.parseLong(sizeLimit) / 1024 / 1024);
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.BAD_REQUEST.value(), errorMsg);
     }
 
@@ -140,7 +133,6 @@ public class GlobalExceptionHandler {
             case NotLoginException.BE_REPLACED_MESSAGE -> "您已被顶下线。";
             default -> "您的登录状态已过期，请重新登录。";
         };
-        LogContextHolder.setErrorMsg(errorMsg);
         return R.fail(HttpStatus.UNAUTHORIZED.value(), errorMsg);
     }
 
@@ -167,7 +159,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-        LogContextHolder.setErrorMsg(e.getMessage());
         log.error("请求地址 [{}]，不支持 [{}] 请求。", request.getRequestURI(), e.getMethod());
         return R.fail(HttpStatus.METHOD_NOT_ALLOWED.value(), e.getMessage());
     }
@@ -178,7 +169,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public R handleServiceException(BusinessException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
-        LogContextHolder.setErrorMsg(e.getMessage());
         return R.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
@@ -188,7 +178,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public R handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生系统异常。", request.getRequestURI(), e);
-        LogContextHolder.setException(e);
         return R.fail(e.getMessage());
     }
 
@@ -198,7 +187,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public R handleException(Throwable e, HttpServletRequest request) {
         log.error("请求地址 [{}]，发生未知异常。", request.getRequestURI(), e);
-        LogContextHolder.setException(e);
         return R.fail(e.getMessage());
     }
 }

@@ -43,13 +43,13 @@ import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.admin.monitor.annotation.Log;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.log.common.annotation.Log;
 
 /**
  * 认证 API
@@ -115,9 +115,10 @@ public class AuthController {
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx",
         in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public R logout() {
+    public R<Object> logout() {
+        Object loginId = StpUtil.getLoginId(-1L);
         StpUtil.logout();
-        return R.ok();
+        return R.ok(loginId);
     }
 
     @Log(ignore = true)

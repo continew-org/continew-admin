@@ -63,9 +63,10 @@
               {{ record.nickname }}（{{ record.username }}）
             </template>
           </a-table-column>
-          <a-table-column title="登录 IP" data-index="clientIp" />
-          <a-table-column title="登录地点" data-index="location" />
+          <a-table-column title="登录 IP" data-index="ip" />
+          <a-table-column title="登录地点" data-index="address" />
           <a-table-column title="浏览器" data-index="browser" />
+          <a-table-column title="终端系统" data-index="os" />
           <a-table-column title="登录时间" data-index="loginTime" />
           <a-table-column
             v-if="checkPermission(['monitor:online:user:delete'])"

@@ -75,19 +75,24 @@ public class LoginUser implements Serializable {
     private String token;
 
     /**
-     * 登录 IP
+     * IP
      */
-    private String clientIp;
+    private String ip;
 
     /**
-     * 登录地点
+     * IP 归属地
      */
-    private String location;
+    private String address;
 
     /**
      * 浏览器
      */
     private String browser;
+
+    /**
+     * 操作系统
+     */
+    private String os;
 
     /**
      * 登录时间

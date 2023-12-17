@@ -7,9 +7,10 @@ export interface DataRecord {
   token: string;
   username: string;
   nickname: string;
-  clientIp: string;
-  location: string;
+  ip: string;
+  address: string;
   browser: string;
+  os: string;
   loginTime: string;
 }
 

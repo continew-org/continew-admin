@@ -26,13 +26,12 @@ import lombok.NoArgsConstructor;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
 import top.charles7c.continew.admin.common.constant.CacheConstants;
-import top.charles7c.continew.admin.common.model.dto.LogContext;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
-import top.charles7c.continew.admin.common.util.holder.LogContextHolder;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.IpUtils;
 import top.charles7c.continew.starter.core.util.ServletUtils;
@@ -58,11 +57,11 @@ public class LoginHelper {
     public static String login(LoginUser loginUser) {
         // 记录登录信息
         HttpServletRequest request = ServletUtils.getRequest();
-        loginUser.setClientIp(JakartaServletUtil.getClientIP(request));
-        loginUser.setLocation(IpUtils.getCityInfo(loginUser.getClientIp()));
+        loginUser.setIp(JakartaServletUtil.getClientIP(request));
+        loginUser.setAddress(IpUtils.getAddress(loginUser.getIp()));
         loginUser.setBrowser(ServletUtils.getBrowser(request));
-        LogContext logContext = LogContextHolder.get();
-        loginUser.setLoginTime(null != logContext ? logContext.getCreateTime() : LocalDateTime.now());
+        loginUser.setLoginTime(LocalDateTime.now());
+        loginUser.setOs(StrUtil.subBefore(ServletUtils.getOs(request), " or", false));
         // 登录并缓存用户信息
         StpUtil.login(loginUser.getId());
         SaHolder.getStorage().set(CacheConstants.LOGIN_USER_KEY, loginUser);

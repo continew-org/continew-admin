@@ -53,19 +53,25 @@ public class LoginLogResp extends LogResp {
      * 登录 IP
      */
     @Schema(description = "登录 IP", example = "192.168.0.1")
-    private String clientIp;
+    private String ip;
 
     /**
      * 登录地点
      */
     @Schema(description = "登录地点", example = "中国北京北京市")
-    private String location;
+    private String address;
 
     /**
      * 浏览器
      */
     @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
+
+    /**
+     * 操作系统
+     */
+    @Schema(description = "操作系统", example = "Windows 10")
+    private String os;
 
     /**
      * 错误信息

@@ -16,30 +16,29 @@
 
 package top.charles7c.continew.admin.monitor.config;
 
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import top.charles7c.continew.admin.monitor.interceptor.LogInterceptor;
+import top.charles7c.continew.admin.monitor.mapper.LogMapper;
+import top.charles7c.continew.admin.system.service.UserService;
+import top.charles7c.continew.starter.log.common.dao.LogDao;
+import top.charles7c.continew.starter.log.httptracepro.autoconfigure.ConditionalOnEnabledLog;
 
 /**
- * 监控模块 Web MVC 配置
+ * 日志配置
  *
  * @author Charles7c
  * @since 2022/12/24 23:15
  */
-@EnableWebMvc
 @Configuration
-@RequiredArgsConstructor
-public class WebMvcMonitorConfiguration implements WebMvcConfigurer {
+@ConditionalOnEnabledLog
+public class LogConfiguration {
 
-    private final LogInterceptor logInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(logInterceptor);
+    /**
+     * 日志持久层接口本地实现类
+     */
+    @Bean
+    public LogDao logDao(UserService userService, LogMapper logMapper) {
+        return new LogDaoLocalImpl(userService, logMapper);
     }
 }

@@ -45,7 +45,6 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.continew.admin.common.config.properties.LocalStorageProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
-import top.charles7c.continew.admin.monitor.annotation.Log;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.query.OptionQuery;
@@ -59,6 +58,7 @@ import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.log.common.annotation.Log;
 
 /**
  * 公共 API

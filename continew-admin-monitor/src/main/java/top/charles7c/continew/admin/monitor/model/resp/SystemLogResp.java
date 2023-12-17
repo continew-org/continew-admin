@@ -54,16 +54,16 @@ public class SystemLogResp extends LogResp {
     private String requestUrl;
 
     /**
-     * 客户端IP
+     * IP
      */
-    @Schema(description = "客户端IP", example = "192.168.0.1")
-    private String clientIp;
+    @Schema(description = "IP", example = "192.168.0.1")
+    private String ip;
 
     /**
-     * IP归属地
+     * 地址
      */
-    @Schema(description = "IP归属地", example = "中国北京北京市")
-    private String location;
+    @Schema(description = "地址", example = "中国北京北京市")
+    private String address;
 
     /**
      * 浏览器
@@ -72,20 +72,8 @@ public class SystemLogResp extends LogResp {
     private String browser;
 
     /**
-     * 请求耗时（ms）
+     * 耗时（ms）
      */
-    @Schema(description = "请求耗时（ms）", example = "58")
-    private Long elapsedTime;
-
-    /**
-     * 错误信息
-     */
-    @Schema(description = "错误信息")
-    private String errorMsg;
-
-    /**
-     * 异常详情
-     */
-    @Schema(description = "异常详情")
-    private String exceptionDetail;
+    @Schema(description = "耗时（ms）", example = "58")
+    private Long timeTaken;
 }

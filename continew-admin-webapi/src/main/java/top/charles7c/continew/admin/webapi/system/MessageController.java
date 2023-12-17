@@ -29,7 +29,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.admin.monitor.annotation.Log;
 import top.charles7c.continew.admin.system.model.query.MessageQuery;
 import top.charles7c.continew.admin.system.model.resp.MessageResp;
 import top.charles7c.continew.admin.system.model.resp.MessageUnreadResp;
@@ -38,6 +37,7 @@ import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.log.common.annotation.Log;
 
 /**
  * 消息管理 API

@@ -56,9 +56,9 @@ public class SysConstants {
     public static final String DEFAULT_PASSWORD = "123456";
 
     /**
-     * 登录 URI
+     * 账号登录 URI
      */
-    public static final String LOGIN_URI = "/auth/login";
+    public static final String LOGIN_URI = "/auth/account";
 
     /**
      * 退出 URI

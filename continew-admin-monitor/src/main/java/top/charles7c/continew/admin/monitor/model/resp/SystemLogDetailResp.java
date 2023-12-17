@@ -56,7 +56,7 @@ public class SystemLogDetailResp extends LogResp {
     /**
      * 请求头
      */
-    @Schema(description = "请求头", example = "{\"Origin\": \"https://cnadmin.charles7c.top\",...}")
+    @Schema(description = "请求头", example = "{\"Origin\": [\"https://cnadmin.charles7c.top\"],...}")
     private String requestHeaders;
 
     /**
@@ -78,16 +78,16 @@ public class SystemLogDetailResp extends LogResp {
     private String responseBody;
 
     /**
-     * 客户端IP
+     * IP
      */
-    @Schema(description = "客户端IP", example = "192.168.0.1")
-    private String clientIp;
+    @Schema(description = "IP", example = "192.168.0.1")
+    private String ip;
 
     /**
-     * IP归属地
+     * 地址
      */
-    @Schema(description = "IP归属地", example = "中国北京北京市")
-    private String location;
+    @Schema(description = "地址", example = "中国北京北京市")
+    private String address;
 
     /**
      * 浏览器
@@ -96,8 +96,14 @@ public class SystemLogDetailResp extends LogResp {
     private String browser;
 
     /**
-     * 请求耗时（ms）
+     * 操作系统
      */
-    @Schema(description = "请求耗时（ms）", example = "58")
-    private Long elapsedTime;
+    @Schema(description = "操作系统", example = "Windows 10")
+    private String os;
+
+    /**
+     * 耗时（ms）
+     */
+    @Schema(description = "耗时（ms）", example = "58")
+    private Long timeTaken;
 }

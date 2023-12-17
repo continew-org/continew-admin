@@ -25,19 +25,21 @@ project:
 --- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
   config: classpath:logback-spring.xml
-  ## 系统日志配置
-  system:
-    # 是否启用系统日志
+## 日志配置
+continew-starter:
+  log:
     enabled: true
-    # 是否记录内网 IP 操作
-    includeInnerIp: true
-    # 排除请求方式
-    #excludeMethods:
-    #  - GET
-    # 脱敏字段
-    desensitizeFields:
-      - password
-      - Authorization
+    include:
+      - DESCRIPTION
+      - MODULE
+      - REQUEST_HEADERS
+      - REQUEST_BODY
+      - IP_ADDRESS
+      - BROWSER
+      - OS
+      - RESPONSE_HEADERS
+      - RESPONSE_BODY
+      - TIME_TAKEN
 
 --- ### 接口文档配置
 springdoc:
