@@ -26,20 +26,19 @@ project:
 logging:
   config: classpath:logback-spring.xml
 ## 日志配置
-continew-starter:
-  log:
-    enabled: true
-    include:
-      - DESCRIPTION
-      - MODULE
-      - REQUEST_HEADERS
-      - REQUEST_BODY
-      - IP_ADDRESS
-      - BROWSER
-      - OS
-      - RESPONSE_HEADERS
-      - RESPONSE_BODY
-      - TIME_TAKEN
+continew-starter.log:
+  enabled: true
+  include:
+    - DESCRIPTION
+    - MODULE
+    - REQUEST_HEADERS
+    - REQUEST_BODY
+    - IP_ADDRESS
+    - BROWSER
+    - OS
+    - RESPONSE_HEADERS
+    - RESPONSE_BODY
+    - TIME_TAKEN
 
 --- ### 接口文档配置
 springdoc:

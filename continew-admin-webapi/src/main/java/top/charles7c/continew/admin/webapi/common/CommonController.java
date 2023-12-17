@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +43,6 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.admin.common.config.properties.LocalStorageProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
@@ -59,6 +59,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStorageProperties;
 
 /**
  * 公共 API
@@ -86,9 +87,10 @@ public class CommonController {
     @PostMapping("/file")
     public R<String> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
-        Long maxSizeInMb = localStorageProperties.getMaxSizeInMb();
-        CheckUtils.throwIf(file.getSize() > maxSizeInMb * 1024 * 1024, "请上传小于 {}MB 的文件", maxSizeInMb);
-        String filePath = localStorageProperties.getPath().getFile();
+        LocalStorageProperties.LocalStorageMapping storageMapping = localStorageProperties.getMapping().get("FILE");
+        DataSize maxFileSize = storageMapping.getMaxFileSize();
+        CheckUtils.throwIf(file.getSize() > maxFileSize.toBytes(), "请上传小于 {}MB 的文件", maxFileSize.toMegabytes());
+        String filePath = storageMapping.getLocation();
         File newFile = FileUploadUtils.upload(file, filePath, false);
         CheckUtils.throwIfNull(newFile, "上传文件失败");
         assert null != newFile;

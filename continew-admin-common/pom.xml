@@ -58,6 +58,12 @@
             <artifactId>continew-starter-file-excel</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 存储模块 - 本地存储 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-storage-local</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter API 文档模块 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>

@@ -28,6 +28,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.collection.CollUtil;
@@ -36,7 +37,6 @@ import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.admin.common.config.properties.LocalStorageProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.FileConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
@@ -61,6 +61,7 @@ import top.charles7c.continew.starter.core.util.FileUploadUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
+import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStorageProperties;
 
 /**
  * 用户业务实现
@@ -163,15 +164,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
-        Long avatarMaxSizeInMb = localStorageProperties.getAvatarMaxSizeInMb();
-        CheckUtils.throwIf(avatarFile.getSize() > avatarMaxSizeInMb * 1024 * 1024, "请上传小于 {}MB 的图片", avatarMaxSizeInMb);
+        LocalStorageProperties.LocalStorageMapping storageMapping = localStorageProperties.getMapping().get("AVATAR");
+        DataSize maxFileSize = storageMapping.getMaxFileSize();
+        CheckUtils.throwIf(avatarFile.getSize() > maxFileSize.toBytes(), "请上传小于 {}MB 的图片", maxFileSize.toMegabytes());
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
             String.join(StringConstants.CHINESE_COMMA, avatarSupportImgTypes));
         // 上传新头像
         UserDO user = super.getById(id);
-        String avatarPath = localStorageProperties.getPath().getAvatar();
+        String avatarPath = storageMapping.getLocation();
         File newAvatarFile = FileUploadUtils.upload(avatarFile, avatarPath, false);
         CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
         assert null != newAvatarFile;

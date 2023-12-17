@@ -26,11 +26,7 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import top.charles7c.continew.admin.common.config.properties.LocalStorageProperties;
-import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * Web MVC 配置
@@ -43,22 +39,7 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-    private final LocalStorageProperties localStorageProperties;
     private final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
-
-    /**
-     * 静态资源处理器配置
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        LocalStorageProperties.LocalStoragePath path = localStorageProperties.getPath();
-        String avatarUtl = "file:" + path.getAvatar().replace(StringConstants.BACKSLASH, StringConstants.SLASH);
-        String fileUrl = "file:" + path.getFile().replace(StringConstants.BACKSLASH, StringConstants.SLASH);
-        registry.addResourceHandler(localStorageProperties.getFilePattern()).addResourceLocations(fileUrl)
-            .setCachePeriod(0);
-        registry.addResourceHandler(localStorageProperties.getAvatarPattern()).addResourceLocations(avatarUtl)
-            .setCachePeriod(0);
-    }
 
     /**
      * 解决 Jackson2ObjectMapperBuilderCustomizer 配置不生效的问题

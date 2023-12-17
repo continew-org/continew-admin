@@ -207,27 +207,18 @@ spring.servlet:
     max-request-size: 20MB
 
 --- ### 本地存储配置
-local-storage:
-  # 文件模式
-  filePattern: /file/**
-  # 头像模式
-  avatarPattern: /avatar/**
-  # 文件上传大小限制
-  maxSizeInMb: 10
-  # 头像上传大小限制
-  avatarMaxSizeInMb: 5
-  ## Windows 系统本地存储配置
-  windows:
-    file: C:\${project.app-name}\data\file\
-    avatar: C:\${project.app-name}\data\avatar\
-  ## Linux 系统本地存储配置
-  linux:
-    file: ../data/file/
-    avatar: ../data/avatar/
-  ## Mac 系统本地存储配置
-  mac:
-    file: ~/data/file/
-    avatar: ~/data/avatar/
+continew-starter.storage:
+  local:
+    enabled: true
+    mapping:
+      FILE:
+        path-pattern: /file/**
+        location: ../data/file/
+        max-file-size: 10MB
+      AVATAR:
+        path-pattern: /avatar/**
+        location: ../data/avatar/
+        max-file-size: 5MB
 
 --- ### 跨域配置
 cors:
