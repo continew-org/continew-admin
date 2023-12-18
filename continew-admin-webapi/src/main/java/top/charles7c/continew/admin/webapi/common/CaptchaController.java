@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -33,6 +34,7 @@ import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.core.factory.SmsFactory;
+import org.redisson.api.RateType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +47,7 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
 
 import top.charles7c.continew.admin.common.config.properties.CaptchaProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
@@ -114,14 +117,31 @@ public class CaptchaController {
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
     public R getSmsCaptcha(
-        @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误") String phone) {
+        @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误") String phone,
+        HttpServletRequest request) {
+        CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
+        String templateId = captchaSms.getTemplateId();
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
-        String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, phone);
-        long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
-        CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
+        String limitTemplateKeyPrefix = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix);
+        // 限制短信发送频率
+        // 1.同一号码同一短信模板，1分钟2条，1小时8条，24小时20条，e.g. LIMIT:CAPTCHA:XXX:188xxxxx:1
+        CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils.formatKey(limitTemplateKeyPrefix, "MIN", phone, templateId),
+            RateType.OVERALL, 2, 60), "验证码发送过于频繁，请稍后后再试");
+        CheckUtils
+            .throwIf(!RedisUtils.rateLimit(RedisUtils.formatKey(limitTemplateKeyPrefix, "HOUR", phone, templateId),
+                RateType.OVERALL, 8, 60 * 60), "验证码发送过于频繁，请稍后后再试");
+        CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils.formatKey(limitTemplateKeyPrefix, "DAY", phone, templateId),
+            RateType.OVERALL, 20, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
+        // 2.同一号码所有短信模板 24 小时 100 条，e.g. LIMIT:CAPTCHA:188xxxxx
+        String limitPhoneKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, phone);
+        CheckUtils.throwIf(!RedisUtils.rateLimit(limitPhoneKey, RateType.OVERALL, 100, 60 * 60 * 24),
+            "验证码发送过于频繁，请稍后后再试");
+        // 3.同一 IP 每分钟限制发送 30 条，e.g. LIMIT:CAPTCHA:PHONE:1xx.1xx.1xx.1xx
+        String limitIpKey =
+            RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, "PHONE", JakartaServletUtil.getClientIP(request));
+        CheckUtils.throwIf(!RedisUtils.rateLimit(limitIpKey, RateType.OVERALL, 30, 60), "验证码发送过于频繁，请稍后后再试");
         // 生成验证码
-        CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
         String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
         // 发送验证码
         Long expirationInMinutes = captchaSms.getExpirationInMinutes();
@@ -135,7 +155,6 @@ public class CaptchaController {
         // 保存验证码
         String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, phone);
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
-        RedisUtils.set(limitCaptchaKey, captcha, Duration.ofSeconds(captchaSms.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
     }
 }

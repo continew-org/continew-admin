@@ -95,11 +95,6 @@ public class CaptchaProperties {
         private long expirationInMinutes;
 
         /**
-         * 限制时间
-         */
-        private long limitInSeconds;
-
-        /**
          * 模板 ID
          */
         private String templateId;

@@ -114,8 +114,6 @@ captcha:
     length: 4
     # 过期时间
     expirationInMinutes: 5
-    # 限制时间
-    limitInSeconds: 60
     # 模板 ID
     templateId: 1
 
