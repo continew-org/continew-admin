@@ -13,7 +13,7 @@ spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
   ## 动态数据源配置（可配多主多从：m1、s1...、纯粹多库：mysql、oracle...、混合配置：m1、s1、oracle...）
   dynamic:
-    # 是否启用 P6Spy（SQL 性能分析组件，默认 false，该插件有性能损耗，不建议生产环境使用）
+    # 是否启用 P6Spy（SQL 性能分析组件，该插件有性能损耗，不建议生产环境使用）
     p6spy: true
     # 设置默认的数据源或者数据源组（默认 master）
     primary: master
@@ -83,8 +83,8 @@ spring.cache:
     # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
     cache-null-values: true
 
---- ### 验证码配置
-captcha:
+--- ### 图形验证码配置
+continew-starter.captcha:
   ## 图形验证码配置
   graphic:
     enabled: true
@@ -94,6 +94,8 @@ captcha:
     length: 4
     # 过期时间
     expirationInMinutes: 2
+## 验证码配置
+captcha:
   ## 邮箱验证码配置
   mail:
     # 内容长度

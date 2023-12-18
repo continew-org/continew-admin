@@ -4,7 +4,7 @@ import { useUserStore } from '@/store';
  * 权限判断
  *
  * @param value 权限码列表
- * @return true 有权限，false 没有权限
+ * @return true：有权限；false：没有权限
  */
 export default function checkPermission(value: Array<string>) {
   const userStore = useUserStore();

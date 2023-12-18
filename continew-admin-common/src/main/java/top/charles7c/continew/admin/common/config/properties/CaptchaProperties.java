@@ -40,7 +40,7 @@ public class CaptchaProperties {
     /**
      * 图形验证码过期时间
      */
-    @Value("${captcha.graphic.expirationInMinutes}")
+    @Value("${continew-starter.captcha.graphic.expirationInMinutes}")
     private long expirationInMinutes;
 
     /**
