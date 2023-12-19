@@ -23,6 +23,7 @@ import top.charles7c.continew.admin.tool.model.entity.FieldConfigDO;
 import top.charles7c.continew.admin.tool.model.entity.GenConfigDO;
 import top.charles7c.continew.admin.tool.model.query.TableQuery;
 import top.charles7c.continew.admin.tool.model.req.GenConfigReq;
+import top.charles7c.continew.admin.tool.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.tool.model.resp.TableResp;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
@@ -79,6 +80,15 @@ public interface GeneratorService {
      *            表名称
      */
     void saveConfig(GenConfigReq req, String tableName);
+
+    /**
+     * 生成预览
+     *
+     * @param tableName
+     *            表名称
+     * @return 预览信息
+     */
+    List<GeneratePreviewResp> preview(String tableName);
 
     /**
      * 生成代码

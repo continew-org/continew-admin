@@ -78,6 +78,15 @@ export function saveConfig(tableName: string, req: GeneratorConfigRecord) {
   return axios.post(`${BASE_URL}/config/${tableName}`, req);
 }
 
+export interface GeneratePreviewRecord {
+  fileName: string;
+  content: string;
+}
+
+export function preview(tableName: string) {
+  return axios.get<GeneratePreviewRecord[]>(`${BASE_URL}/preview/${tableName}`);
+}
+
 export function generate(tableName: string) {
   return axios.post(`${BASE_URL}/${tableName}`);
 }

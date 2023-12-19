@@ -35,6 +35,7 @@ import top.charles7c.continew.admin.tool.model.entity.FieldConfigDO;
 import top.charles7c.continew.admin.tool.model.entity.GenConfigDO;
 import top.charles7c.continew.admin.tool.model.query.TableQuery;
 import top.charles7c.continew.admin.tool.model.req.GenConfigReq;
+import top.charles7c.continew.admin.tool.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.tool.model.resp.TableResp;
 import top.charles7c.continew.admin.tool.service.GeneratorService;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -91,6 +92,14 @@ public class GeneratorController {
     public R saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
         generatorService.saveConfig(req, tableName);
         return R.ok("保存成功");
+    }
+
+    @Operation(summary = "生成预览", description = "预览生成代码")
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("tool:generator:list")
+    @GetMapping("/preview/{tableName}")
+    public R<List<GeneratePreviewResp>> preview(@PathVariable String tableName) {
+        return R.ok(generatorService.preview(tableName));
     }
 
     @Operation(summary = "生成代码", description = "生成代码")

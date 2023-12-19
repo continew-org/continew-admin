@@ -73,6 +73,15 @@
               <a-button
                 type="text"
                 size="small"
+                :title="record.isConfiged ? '生成预览' : '请先进行生成配置'"
+                :disabled="!record.isConfiged"
+                @click="handlePreview(record.tableName)"
+              >
+                <template #icon><icon-eye /></template>预览
+              </a-button>
+              <a-button
+                type="text"
+                size="small"
                 :title="record.isConfiged ? '生成' : '请先进行生成配置'"
                 :disabled="!record.isConfiged"
                 @click="handleGenerate(record.tableName)"
@@ -263,10 +272,44 @@
       </a-drawer>
     </a-card>
   </div>
+
+  <!-- 生成预览区域 -->
+  <a-modal
+    :body-style="{
+      paddingTop: 0,
+    }"
+    title="生成预览"
+    :visible="previewVisible"
+    width="70%"
+    :footer="false"
+    unmount-on-close
+    render-to-body
+    @cancel="handlePreviewCancel"
+  >
+    <a-scrollbar style="height: 700px; overflow: auto">
+      <a-tabs type="card" size="large">
+        <a-tab-pane
+          v-for="item in generatePreviewList"
+          :key="item.fileName"
+          :title="item.fileName"
+        >
+          <codemirror
+            v-model="item.content"
+            :autofocus="true"
+            :extensions="extensions"
+          />
+        </a-tab-pane>
+      </a-tabs>
+    </a-scrollbar>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { Codemirror } from 'vue-codemirror';
+  import { java } from '@codemirror/lang-java';
+  import { javascript } from '@codemirror/lang-javascript';
+
   import {
     TableRecord,
     TableParam,
@@ -277,6 +320,8 @@
     getGenConfig,
     GeneratorConfigRecord,
     saveConfig,
+    GeneratePreviewRecord,
+    preview,
     generate,
   } from '@/api/tool/generator';
 
@@ -286,6 +331,7 @@
     'query_type_enum',
   );
 
+  const extensions = [java(), javascript()];
   const tableList = ref<TableRecord[]>([]);
   const fieldConfigList = ref<FieldConfigRecord[]>([]);
   const total = ref(0);
@@ -294,6 +340,8 @@
   const loading = ref(false);
   const visible = ref(false);
   const fieldConfigLoading = ref(false);
+  const generatePreviewList = ref<GeneratePreviewRecord[]>([]);
+  const previewVisible = ref(false);
 
   const data = reactive({
     // 查询参数
@@ -408,6 +456,26 @@
   };
 
   /**
+   * 生成预览
+   *
+   * @param tableName 表名称
+   */
+  const handlePreview = (tableName: string) => {
+    preview(tableName).then((res) => {
+      generatePreviewList.value = res.data;
+      previewVisible.value = true;
+    });
+  };
+
+  /**
+   * 关闭预览
+   */
+  const handlePreviewCancel = () => {
+    generatePreviewList.value = [];
+    previewVisible.value = false;
+  };
+
+  /**
    * 生成代码
    *
    * @param tableName 表名称
@@ -461,6 +529,10 @@
 </script>
 
 <style scoped lang="less">
+  :deep(.arco-tabs-content) {
+    padding-top: 0;
+  }
+
   .field-config :deep(.arco-card-body) {
     padding: 0;
   }
