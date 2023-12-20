@@ -48,6 +48,7 @@
     "pinia": "^2.1.7",
     "query-string": "^8.1.0",
     "sortablejs": "^1.15.0",
+    "v-viewer": "^1.6.4",
     "vue": "^3.3.7",
     "vue-codemirror": "^6.1.1",
     "vue-cropper": "^1.1.1",
@@ -55,7 +56,8 @@
     "vue-i18n": "^9.6.5",
     "vue-json-pretty": "^2.2.4",
     "vue-router": "^4.2.5",
-    "vue3-colorpicker": "^2.2.2"
+    "vue3-colorpicker": "^2.2.2",
+    "xgplayer": "^3.0.11"
   },
   "devDependencies": {
     "@arco-plugins/vite-vue": "^1.4.5",
@@ -87,6 +89,7 @@
     "prettier": "^3.0.3",
     "rollup": "^4.3.0",
     "rollup-plugin-visualizer": "^5.9.2",
+    "sass": "^1.69.5",
     "stylelint": "^15.11.0",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-rational-order": "^0.1.2",

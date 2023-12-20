@@ -8,6 +8,7 @@ import localeAnnouncement from '@/views/system/announcement/locale/en-US';
 import localeMessage from '@/views/system/message/locale/en-US';
 import localeDict from '@/views/system/dict/locale/en-US';
 import localeConfig from '@/views/system/config/locale/en-US';
+import localeFile from '@/views/system/file/locale/en-US';
 
 import localeGenerator from '@/views/tool/generator/locale/en-US';
 
@@ -66,6 +67,7 @@ export default {
   ...localeMessage,
   ...localeDict,
   ...localeConfig,
+  ...localeFile,
 
   ...localeGenerator,
 

@@ -84,6 +84,15 @@ const System: AppRouteRecordRaw = {
         requiresAuth: true,
       },
     },
+    {
+      name: 'File',
+      path: '/system/file',
+      component: () => import('@/views/system/file/index.vue'),
+      meta: {
+        locale: 'menu.system.file.list',
+        requiresAuth: true,
+      },
+    },
   ],
 };
 

@@ -8,6 +8,7 @@ import localeAnnouncement from '@/views/system/announcement/locale/zh-CN';
 import localeMessage from '@/views/system/message/locale/zh-CN';
 import localeDict from '@/views/system/dict/locale/zh-CN';
 import localeConfig from '@/views/system/config/locale/zh-CN';
+import localeFile from '@/views/system/file/locale/zh-CN';
 
 import localeGenerator from '@/views/tool/generator/locale/zh-CN';
 
@@ -66,6 +67,7 @@ export default {
   ...localeMessage,
   ...localeDict,
   ...localeConfig,
+  ...localeFile,
 
   ...localeGenerator,
 
