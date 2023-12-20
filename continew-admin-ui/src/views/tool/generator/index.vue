@@ -286,26 +286,38 @@
     render-to-body
     @cancel="handlePreviewCancel"
   >
-    <a-scrollbar style="height: 700px; overflow: auto">
-      <a-tabs type="card" size="large">
-        <a-tab-pane
-          v-for="item in generatePreviewList"
-          :key="item.fileName"
-          :title="item.fileName"
+    <div>
+      <a-scrollbar style="height: 700px; overflow: auto">
+        <a-link
+          style="position: absolute; right: 20px; top: 50px; z-index: 999"
+          @click="handleCopy"
         >
-          <codemirror
-            v-model="item.content"
-            :autofocus="true"
-            :extensions="extensions"
-          />
-        </a-tab-pane>
-      </a-tabs>
-    </a-scrollbar>
+          <template #icon>
+            <icon-copy size="large" />
+          </template>
+          复制
+        </a-link>
+        <a-tabs size="large" @tab-click="handleTabClick">
+          <a-tab-pane
+            v-for="item in generatePreviewList"
+            :key="item.fileName"
+            :title="item.fileName"
+          >
+            <codemirror
+              v-model="item.content"
+              :autofocus="true"
+              :extensions="extensions"
+            />
+          </a-tab-pane>
+        </a-tabs>
+      </a-scrollbar>
+    </div>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
+  import { useClipboard } from '@vueuse/core';
   import { Codemirror } from 'vue-codemirror';
   import { java } from '@codemirror/lang-java';
   import { javascript } from '@codemirror/lang-javascript';
@@ -331,6 +343,7 @@
     'query_type_enum',
   );
 
+  const { copy, copied } = useClipboard();
   const extensions = [java(), javascript()];
   const tableList = ref<TableRecord[]>([]);
   const fieldConfigList = ref<FieldConfigRecord[]>([]);
@@ -340,6 +353,7 @@
   const loading = ref(false);
   const visible = ref(false);
   const fieldConfigLoading = ref(false);
+  const copyCodeContent = ref();
   const generatePreviewList = ref<GeneratePreviewRecord[]>([]);
   const previewVisible = ref(false);
 
@@ -463,6 +477,7 @@
   const handlePreview = (tableName: string) => {
     preview(tableName).then((res) => {
       generatePreviewList.value = res.data;
+      copyCodeContent.value = generatePreviewList.value[0].content;
       previewVisible.value = true;
     });
   };
@@ -472,8 +487,33 @@
    */
   const handlePreviewCancel = () => {
     generatePreviewList.value = [];
+    copyCodeContent.value = '';
     previewVisible.value = false;
   };
+
+  /**
+   * 点击 Tab
+   *
+   * @param key Tab 键
+   */
+  const handleTabClick = (key: any) => {
+    copyCodeContent.value = generatePreviewList.value.filter(
+      (p) => p.fileName === key,
+    )[0].content;
+  };
+
+  /**
+   * 复制代码
+   *
+   */
+  const handleCopy = () => {
+    copy(copyCodeContent.value);
+  };
+  watch(copied, () => {
+    if (copied.value) {
+      proxy.$message.success('复制成功');
+    }
+  });
 
   /**
    * 生成代码
