@@ -22,7 +22,7 @@ import org.apache.ibatis.annotations.Param;
 
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.entity.DictItemDO;
-import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
+import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 字典项 Mapper

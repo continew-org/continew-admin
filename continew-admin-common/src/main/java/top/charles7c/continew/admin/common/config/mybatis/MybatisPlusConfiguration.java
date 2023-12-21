@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
+import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
+
 /**
  * MyBatis Plus 配置
  *
@@ -36,5 +38,13 @@ public class MybatisPlusConfiguration {
     @Bean
     public MetaObjectHandler metaObjectHandler() {
         return new MyBatisPlusMetaObjectHandler();
+    }
+
+    /**
+     * 数据权限过滤器
+     */
+    @Bean
+    public DataPermissionFilter dataPermissionFilter() {
+        return new DataPermissionFilterImpl();
     }
 }

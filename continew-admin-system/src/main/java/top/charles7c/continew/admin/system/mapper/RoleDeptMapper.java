@@ -22,7 +22,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import top.charles7c.continew.admin.system.model.entity.RoleDeptDO;
-import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
+import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 角色和部门 Mapper

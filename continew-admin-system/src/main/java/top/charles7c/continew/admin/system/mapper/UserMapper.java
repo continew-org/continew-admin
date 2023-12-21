@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.system.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import top.charles7c.continew.admin.common.base.DataPermissionMapper;
+import top.charles7c.continew.admin.common.config.mybatis.DataPermissionMapper;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
 
 /**

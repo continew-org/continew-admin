@@ -29,8 +29,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import cn.hutool.core.date.DatePattern;
 
-import top.charles7c.continew.starter.data.mybatis.plus.annotation.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.QueryType;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
  * 登录日志查询条件

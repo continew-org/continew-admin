@@ -1,6 +1,6 @@
 package ${packageName}.${subPackageName};
 
-import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
+import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 import ${packageName}.model.entity.${classNamePrefix}DO;
 
 /**

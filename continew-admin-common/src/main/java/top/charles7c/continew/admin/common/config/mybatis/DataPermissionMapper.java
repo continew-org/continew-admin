@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.common.base;
+package top.charles7c.continew.admin.common.config.mybatis;
 
 import java.util.List;
 
@@ -24,8 +24,8 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 
-import top.charles7c.continew.admin.common.annotation.DataPermission;
-import top.charles7c.continew.starter.extension.crud.base.BaseMapper;
+import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermission;
 
 /**
  * 数据权限 Mapper 基类

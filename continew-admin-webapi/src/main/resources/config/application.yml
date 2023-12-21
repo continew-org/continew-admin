@@ -147,8 +147,9 @@ mybatis-plus:
     enabled: true
     # Mapper 接口扫描包配置
     mapper-package: ${project.base-package}.**.mapper
-    # 数据权限实现
-    data-permission-handler-impl: top.charles7c.continew.admin.common.config.mybatis.DataPermissionHandlerImpl
+    # 数据权限配置
+    data-permission:
+      enabled: true
     # 分页插件配置
     pagination:
       enabled: true

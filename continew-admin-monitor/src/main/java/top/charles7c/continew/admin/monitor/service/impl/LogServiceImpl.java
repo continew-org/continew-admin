@@ -42,7 +42,7 @@ import top.charles7c.continew.admin.monitor.service.LogService;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.ReflectUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.data.mybatis.plus.util.QueryHelper;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;

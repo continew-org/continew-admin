@@ -34,7 +34,7 @@ import top.charles7c.continew.admin.system.model.req.OptionReq;
 import top.charles7c.continew.admin.system.model.req.OptionResetValueReq;
 import top.charles7c.continew.admin.system.model.resp.OptionResp;
 import top.charles7c.continew.admin.system.service.OptionService;
-import top.charles7c.continew.starter.data.mybatis.plus.util.QueryHelper;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
 
 /**
  * 参数业务实现
