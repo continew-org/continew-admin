@@ -113,7 +113,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
      * @param fillFieldValue
      *            要填充的字段值
      * @param isOverride
-     *            如果字段值不为空，是否覆盖（true 覆盖、false 不覆盖）
+     *            如果字段值不为空，是否覆盖（true：覆盖；false：不覆盖）
      */
     private void fillFieldValue(MetaObject metaObject, String fieldName, Object fillFieldValue, boolean isOverride) {
         if (metaObject.hasSetter(fieldName)) {

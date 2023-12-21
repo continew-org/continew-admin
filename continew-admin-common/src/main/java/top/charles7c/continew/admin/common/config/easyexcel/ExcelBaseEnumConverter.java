@@ -30,8 +30,9 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 
 /**
- * Easy Excel 枚举基类转换器
+ * Easy Excel 枚举接口转换器
  *
+ * @see IBaseEnum
  * @author Charles7c
  * @since 2023/2/5 19:29
  */

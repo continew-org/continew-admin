@@ -42,7 +42,7 @@ continew-starter.log:
 
 --- ### 接口文档配置
 springdoc:
-  # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认为 false）
+  # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认 false）
   # 如果不添加该全局配置，可以在需要如此处理的对象参数类上使用 @ParameterObject
   default-flat-param-object: true
   # 分组配置
@@ -87,9 +87,9 @@ springdoc:
 knife4j:
   enable: true
   setting:
-    # 是否显示默认的 footer（默认 true 显示）
+    # 是否显示默认的 footer（默认 true，显示）
     enable-footer: false
-    # 是否自定义 footer（默认 false 非自定义）
+    # 是否自定义 footer（默认 false，非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
     footer-custom-content: 'Copyright © 2022-present [${project.contact.name}](${project.contact.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
@@ -133,7 +133,7 @@ mybatis-plus:
   global-config:
     banner: true
     db-config:
-      # 主键类型（默认 assign_id 表示自行赋值）
+      # 主键类型（默认 assign_id，表示自行赋值）
       # auto 代表使用数据库自增策略（需要在表中设置好自增约束）
       id-type: AUTO
       # 逻辑删除字段
@@ -161,7 +161,7 @@ server:
     context-path: /
   ## Undertow 服务器配置
   undertow:
-    # HTTP POST 请求内容的大小上限（默认 -1 不限制）
+    # HTTP POST 请求内容的大小上限（默认 -1，不限制）
     max-http-post-size: -1
     # 以下的配置会影响 buffer，这些 buffer 会用于服务器连接的 IO 操作，有点类似 Netty 的池化内存管理
     # 每块 buffer的空间大小（越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可）

@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.type.ClassKey;
  * 重写增强后：<br>
  * 1. 同默认 1；<br>
  * 2. 同默认 2；<br>
- * 3. 如果也找不到 Enum 类型（所有枚举父类）的反序列化器，开始查找指定枚举类型的接口的反序列化器（例如：GenderEnum 枚举类型，则是找它的接口 BaseEnum 的反序列化器）；<br>
+ * 3. 如果也找不到 Enum 类型（所有枚举父类）的反序列化器，开始查找指定枚举类型的接口的反序列化器（例如：GenderEnum 枚举类型，则是找它的接口 IBaseEnum 的反序列化器）；<br>
  * 4. 同默认 3。
  * </p>
  *

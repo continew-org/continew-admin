@@ -30,6 +30,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 /**
  * Jackson 配置
  *
+ * @see IBaseEnum
  * @author Charles7c
  * @since 2022/12/11 13:23
  */
@@ -38,7 +39,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 public class JacksonConfiguration {
 
     /**
-     * 针对枚举基类 BaseEnum 的序列化和反序列化
+     * 针对枚举接口 IBaseEnum 的序列化和反序列化
      */
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {

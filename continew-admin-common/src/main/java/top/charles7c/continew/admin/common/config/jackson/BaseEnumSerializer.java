@@ -26,8 +26,9 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
 
 /**
- * 通用枚举接口 BaseEnum 序列化器
+ * 通用枚举接口 IBaseEnum 序列化器
  *
+ * @see IBaseEnum
  * @author Charles7c
  * @since 2023/1/8 13:56
  */

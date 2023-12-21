@@ -3,7 +3,7 @@
 <!-- scan：当此属性设置为 true 时，配置文档如果发生改变，将会被重新加载，默认值为 true -->
 <!-- scanPeriod：设置监测配置文档是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
        当 scan 为 true 时，此属性生效。默认的时间间隔为 1 分钟。 -->
-<!-- debug：当此属性设置为 true 时，将打印出 logback 内部日志信息，实时查看 logback 运行状态。默认值为 false。 -->
+<!-- debug：当此属性设置为 true 时，将打印出 logback 内部日志信息，实时查看 logback 运行状态。默认 false。 -->
 <configuration debug="false" scan="true" scanPeriod="30 seconds">
 
     <!-- 关闭 Logback 的状态监听器（通过更换默认状态监听器实现） -->

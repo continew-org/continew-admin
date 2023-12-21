@@ -19,7 +19,7 @@ spring.datasource:
     p6spy: false
     # 设置默认的数据源或者数据源组（默认 master）
     primary: master
-    # 严格匹配数据源（true 未匹配到指定数据源时抛异常；false 使用默认数据源；默认 false）
+    # 严格匹配数据源（true：未匹配到指定数据源时抛异常；false：使用默认数据源；默认 false）
     strict: false
     datasource:
       # 主库配置（可配多个，构成多主）
