@@ -16,6 +16,7 @@
 
 package top.charles7c.continew.admin.monitor.config;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -73,7 +74,11 @@ public class LogDaoLocalImpl implements LogDao {
         // 请求信息
         LogRequest logRequest = logRecord.getRequest();
         logDO.setRequestMethod(logRequest.getMethod());
-        String requestUrl = logRequest.getUri().toString();
+        // 仅记录：/xxx?xx=xx&xx=xx
+        URI requestUri = logRequest.getUri();
+        String requestQuery = requestUri.getQuery();
+        String requestUrl = StrUtil.isNotBlank(requestQuery)
+            ? requestUri.getPath() + StringConstants.QUESTION_MARK + requestQuery : requestUri.getPath();
         logDO.setRequestUrl(requestUrl);
         Map<String, List<String>> requestHeaders = logRequest.getHeaders();
         logDO.setRequestHeaders(JSONUtil.toJsonStr(requestHeaders));
@@ -99,17 +104,17 @@ public class LogDaoLocalImpl implements LogDao {
                 logDO.setErrorMsg(result.getMsg());
             }
             // 操作人
-            if (StrUtil.contains(requestUrl, SysConstants.LOGOUT_URI)) {
+            if (requestUrl.startsWith(SysConstants.LOGOUT_URI)) {
                 Long loginId = Convert.toLong(result.getData(), -1L);
                 logDO.setCreateUser(-1 != loginId ? loginId : null);
+            } else if (result.isSuccess() && requestUrl.startsWith(SysConstants.LOGIN_URI)) {
+                AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
+                logDO.setCreateUser(
+                    ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername()).getId()));
             }
         }
         // 操作人
-        if (StrUtil.contains(requestUrl, SysConstants.LOGIN_URI)) {
-            AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-            logDO.setCreateUser(
-                ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername()).getId()));
-        } else if (!StrUtil.contains(requestUrl, SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaders)
+        if (!requestUrl.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaders)
             && requestHeaders.containsKey(HttpHeaders.AUTHORIZATION)) {
             String authorization = requestHeaders.get(HttpHeaders.AUTHORIZATION).get(0);
             String token = authorization.replace(SaManager.getConfig().getTokenPrefix() + StringConstants.SPACE,
