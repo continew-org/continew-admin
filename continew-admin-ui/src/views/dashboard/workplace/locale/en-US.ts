@@ -14,7 +14,7 @@ export default {
   'workplace.docs.userGuide': 'User Guide',
   'workplace.docs.faq': 'FAQ',
   'workplace.docs.changelog': 'Change Log',
-  'workplace.docs.require': 'Require',
+  'workplace.docs.continewStarter': 'Starter',
   'workplace.docs.authorSite': 'Author Site',
   'workplace.announcement': 'Announcement',
   'workplace.recently.visited': 'Recently Visited',

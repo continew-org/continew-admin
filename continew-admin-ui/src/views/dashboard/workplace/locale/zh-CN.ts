@@ -14,7 +14,7 @@ export default {
   'workplace.docs.userGuide': '使用指南',
   'workplace.docs.faq': '常见问题',
   'workplace.docs.changelog': '更新日志',
-  'workplace.docs.require': '需求墙',
+  'workplace.docs.continewStarter': 'Starter组件',
   'workplace.docs.authorSite': '作者主页',
   'workplace.announcement': '公告',
   'workplace.recently.visited': '最近访问',
