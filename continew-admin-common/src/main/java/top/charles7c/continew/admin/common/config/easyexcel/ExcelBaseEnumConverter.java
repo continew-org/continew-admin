@@ -27,7 +27,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ClassUtil;
 
 import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
  * Easy Excel 枚举接口转换器

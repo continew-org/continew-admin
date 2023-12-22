@@ -55,7 +55,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 import top.charles7c.continew.starter.core.util.FileUploadUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.data.mybatis.plus.enums.IBaseEnum;
+import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
