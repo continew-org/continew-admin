@@ -38,10 +38,10 @@
 
     <select id="selectListDashboardGeoDistribution" resultType="java.util.Map">
         SELECT
-            `address` AS name,
+            SUBSTRING_INDEX(`address`, ' ', 1) AS name,
             COUNT(DISTINCT `ip`) AS value
         FROM `sys_log`
-        GROUP BY `address`
+        GROUP BY `name`
         ORDER BY COUNT(DISTINCT `ip`) DESC
         LIMIT 10
     </select>
