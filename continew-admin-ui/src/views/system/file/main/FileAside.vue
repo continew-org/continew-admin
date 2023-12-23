@@ -14,6 +14,7 @@
           <a-menu-item
             v-for="item in fileTypeList"
             :key="item.value.toString()"
+            @click="onClickItem(item)"
           >
             <template #icon>
               <svg-icon
@@ -43,8 +44,8 @@
   watch(
     () => route.query,
     () => {
-      if (route.query.fileType) {
-        selectedKey.value = route.query.fileType as string;
+      if (route.query.type) {
+        selectedKey.value = route.query.type as string;
       }
     },
     {
@@ -54,7 +55,7 @@
 
   // 点击事件
   const onClickItem = (item: fileTypeListItem) => {
-    router.push({ path: '/file', query: { fileType: item.value } });
+    router.push({ name: 'File', query: { type: item.value } });
   };
 </script>
 

@@ -29,7 +29,7 @@
       // eslint-disable-next-line no-new
       new Player({
         id: 'videoId',
-        url: props.fileInfo?.src || '',
+        url: props.fileInfo?.url || '',
         lang: 'zh-cn',
         autoplay: true,
         closeVideoClick: true,

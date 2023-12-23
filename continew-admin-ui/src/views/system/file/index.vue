@@ -1,30 +1,33 @@
 <template>
-  <a-row align="stretch" :gutter="14" class="file-manage">
-    <a-col
-      :xs="0"
-      :sm="8"
-      :md="7"
-      :lg="6"
-      :xl="5"
-      :xxl="4"
-      flex="220px"
-      class="h-full ov-hidden"
-    >
-      <FileAside></FileAside>
-    </a-col>
-    <a-col
-      :xs="24"
-      :sm="16"
-      :md="17"
-      :lg="18"
-      :xl="19"
-      :xxl="20"
-      flex="1"
-      class="h-full ov-hidden"
-    >
-      <FileMain></FileMain>
-    </a-col>
-  </a-row>
+  <div>
+    <Breadcrumb :items="['menu.system', 'menu.system.file.list']" />
+    <a-row align="stretch" :gutter="14" class="file-manage">
+      <a-col
+        :xs="0"
+        :sm="8"
+        :md="7"
+        :lg="6"
+        :xl="5"
+        :xxl="4"
+        flex="220px"
+        class="h-full ov-hidden"
+      >
+        <FileAside></FileAside>
+      </a-col>
+      <a-col
+        :xs="24"
+        :sm="16"
+        :md="17"
+        :lg="18"
+        :xl="19"
+        :xxl="20"
+        flex="1"
+        class="h-full ov-hidden"
+      >
+        <FileMain></FileMain>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -35,9 +38,13 @@
 </script>
 
 <style lang="less" scoped>
+  .container-breadcrumb {
+    margin-left: 16px;
+  }
+
   .file-manage {
     flex: 1;
-    padding: 16px;
+    padding: 0 16px 16px 16px;
     overflow: hidden;
   }
 </style>

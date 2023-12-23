@@ -11,7 +11,7 @@
           <div class="name">
             <icon-music :size="16" spin />
             <span
-              >{{ props.fileInfo?.name }}.{{ props.fileInfo?.extendName }}</span
+              >{{ props.fileInfo?.name }}.{{ props.fileInfo?.extension }}</span
             >
           </div>
           <div class="close-icon" @click="close">
@@ -42,7 +42,7 @@
   const audioHeadRef = ref<HTMLElement | null>(null);
 
   const audioSrc = computed(() => {
-    return props.fileInfo?.src || '';
+    return props.fileInfo?.url || '';
   });
 
   onMounted(() => {

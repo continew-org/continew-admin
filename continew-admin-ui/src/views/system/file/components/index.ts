@@ -4,7 +4,6 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import ArcoVue from '@arco-design/web-vue';
 import { FileItem } from '@/api/system/file';
 
-import FileMoveModal from './FileMoveModal/index.vue';
 import FileRenameModal from './FileRenameModal/index.vue';
 import PreviewVideoModal from './PreviewVideoModal/index.vue';
 import PreviewAudioModal from './PreviewAudioModal/index.vue';
@@ -36,11 +35,6 @@ function createModal<T extends { callback?: () => void }>(
 }
 
 type TFileOptions = { fileInfo: FileItem; callback?: () => void };
-
-/** 打开 文件移动 弹窗 */
-export function openFileMoveModal(fileItem: FileItem) {
-  return createModal<TFileOptions>(FileMoveModal, { fileInfo: fileItem });
-}
 
 /** 打开 文件重命名 弹窗 */
 export function openFileRenameModal(fileItem: FileItem) {

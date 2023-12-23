@@ -1,6 +1,6 @@
 <template>
-  <img v-if="isImage" class="img" :src="props.data.src || ''" />
-  <GiSvgIcon v-else size="100%" :name="getFileImg"></GiSvgIcon>
+  <img v-if="isImage" class="img" :src="props.data.url || ''" alt="" />
+  <svg-icon v-else size="100%" :icon-class="getFileImg" />
 </template>
 
 <script setup lang="ts">
@@ -16,25 +16,25 @@
 
   // 是否是图片类型文件
   const isImage = computed(() => {
-    return imageTypeList.includes(props.data.extendName.toLowerCase());
+    return imageTypeList.includes(props.data.extension.toLowerCase());
   });
 
   // 获取文件图标，如果是图片这显示图片
   const getFileImg = computed<string>(() => {
-    if (props.data?.isDir) {
-      return fileExtendNameIconMap.dir || '';
-    }
-    if (imageTypeList.includes(props.data.extendName.toLowerCase())) {
-      return props.data.src || '';
+    // if (props.data?.isDir) {
+    //   return fileExtendNameIconMap.dir || '';
+    // }
+    if (imageTypeList.includes(props.data.extension.toLowerCase())) {
+      return props.data.url || '';
     }
     if (
       !Object.keys(fileExtendNameIconMap).includes(
-        props.data.extendName.toLowerCase(),
+        props.data.extension.toLowerCase(),
       )
     ) {
       return fileExtendNameIconMap.other || '';
     }
-    return fileExtendNameIconMap[props.data.extendName.toLowerCase()] || '';
+    return fileExtendNameIconMap[props.data.extension.toLowerCase()] || '';
   });
 </script>
 

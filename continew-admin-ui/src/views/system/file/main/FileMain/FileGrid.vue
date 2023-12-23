@@ -71,7 +71,7 @@
 
   // 文件名称带后缀
   const getFileName = (item: FileItem) => {
-    return `${item.name}${item.extendName ? `.${item.extendName}` : ''}`;
+    return `${item.name}${item.extension ? `.${item.extension}` : ''}`;
   };
 
   // 点击事件

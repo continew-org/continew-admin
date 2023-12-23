@@ -57,11 +57,10 @@
   // 模拟接口
   const saveApi = (): Promise<boolean> => {
     return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 2000)
-      }
-    );
+      setTimeout(() => {
+        resolve(true);
+      }, 2000);
+    });
   };
 
   const FormRef = ref<FormInstance | null>(null);

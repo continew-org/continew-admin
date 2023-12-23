@@ -3,21 +3,32 @@
     <a-row justify="space-between" class="row-operate">
       <!-- 左侧区域 -->
       <a-space wrap>
-        <a-button type="primary" shape="round">
-          <template #icon><icon-upload /></template>
-          <template #default>上传</template>
-        </a-button>
-        <a-input-group>
-          <a-space>
-            <a-input placeholder="输入文件名称搜索" allow-clear> </a-input>
-            <a-button type="primary">
-              <template #icon><icon-search /></template>查询
+        <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form-item hide-label>
+            <a-button type="primary" shape="round">
+              <template #icon><icon-upload /></template>
+              <template #default>上传</template>
             </a-button>
-            <a-button>
-              <template #icon><icon-refresh /></template>重置
-            </a-button>
-          </a-space>
-        </a-input-group>
+          </a-form-item>
+          <a-form-item field="name" hide-label>
+            <a-input
+              v-model="queryParams.name"
+              placeholder="输入文件名称搜索"
+              allow-clear
+              @press-enter="handleQuery"
+            />
+          </a-form-item>
+          <a-form-item hide-label>
+            <a-space>
+              <a-button type="primary" @click="handleQuery">
+                <template #icon><icon-search /></template>查询
+              </a-button>
+              <a-button @click="resetQuery">
+                <template #icon><icon-refresh /></template>重置
+              </a-button>
+            </a-space>
+          </a-form-item>
+        </a-form>
       </a-space>
 
       <!-- 右侧区域 -->
@@ -78,64 +89,71 @@
 <script setup lang="ts">
   import { Message, Modal } from '@arco-design/web-vue';
   import { api as viewerApi } from 'v-viewer';
-  import { fileTypeList, imageTypeList } from '@/constant/file';
+  import { imageTypeList } from '@/constant/file';
   import { useFileStore } from '@/store/modules/file';
-  import type { FileItem } from '@/api/system/file';
-  import { getFileList } from '@/api/system/file';
+  import type { ListParam, FileItem } from '@/api/system/file';
+  import { list } from '@/api/system/file';
   import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-  import { onMounted, ref } from 'vue';
+  import { getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
   import FileGrid from './FileGrid.vue';
   import FileList from './FileList.vue';
   import {
-    openFileMoveModal,
     openFileRenameModal,
     previewFileVideoModal,
     previewFileAudioModal,
   } from '../../components/index';
 
+  const { proxy } = getCurrentInstance() as any;
   const route = useRoute();
   const router = useRouter();
-
   const fileStore = useFileStore();
-
   const loading = ref(false);
   // 文件列表数据
   const fileList = ref<FileItem[]>([]);
-  const fileType = ref('0');
   // 批量操作
   const isBatchMode = ref(false);
-  fileType.value = route.query.fileType?.toString() || '0';
 
-  const getListData = async () => {
+  const data = reactive({
+    // 查询参数
+    queryParams: {
+      name: undefined,
+      type: route.query.type?.toString() || undefined,
+      sort: ['updateTime,desc'],
+    },
+  });
+  const { queryParams } = toRefs(data);
+
+  const getList = async (params: ListParam = { ...queryParams.value }) => {
     try {
       loading.value = true;
       isBatchMode.value = false;
-      // const res = await getFileList({ fileType: fileType.value });
-      // fileList.value = res.data;
+      params.type = params.type === '0' ? undefined : params.type;
+      const res = await list(params);
+      fileList.value = res.data.list;
     } finally {
       loading.value = false;
     }
   };
 
   onMounted(() => {
-    getListData();
+    getList();
   });
 
   onBeforeRouteUpdate((to) => {
-    if (!to.query.fileType) return;
-    fileType.value = to.query.fileType?.toString();
-    getListData();
+    if (!to.query.type) return;
+    queryParams.value.type = to.query.type?.toString();
+    getList();
   });
 
   // 点击文件
   const handleClickFile = (item: FileItem) => {
     Message.success(`点击了文件-${item.name}`);
-    if (imageTypeList.includes(item.extendName)) {
-      if (item.src) {
+    if (imageTypeList.includes(item.extension)) {
+      if (item.url) {
         const imgList: string[] = fileList.value
-          .filter((i) => imageTypeList.includes(i.extendName))
-          .map((a) => a.src || '');
-        const index = imgList.findIndex((i) => i === item.src);
+          .filter((i) => imageTypeList.includes(i.extension))
+          .map((a) => a.url || '');
+        const index = imgList.findIndex((i) => i === item.url);
         if (imgList.length) {
           viewerApi({
             options: {
@@ -146,10 +164,10 @@
         }
       }
     }
-    if (item.extendName === 'mp4') {
+    if (item.extension === 'mp4') {
       previewFileVideoModal(item);
     }
-    if (item.extendName === 'mp3') {
+    if (item.extension === 'mp3') {
       previewFileAudioModal(item);
     }
   };
@@ -171,11 +189,8 @@
     if (mode === 'rename') {
       openFileRenameModal(fileInfo);
     }
-    if (mode === 'move') {
-      openFileMoveModal(fileInfo);
-    }
     if (mode === 'detail') {
-      router.push({ path: '/file/detail' });
+      // TODO
     }
   };
 
@@ -186,6 +201,21 @@
       content: '是否确认删除？',
       hideCancel: false,
     });
+  };
+
+  /**
+   * 查询
+   */
+  const handleQuery = () => {
+    getList();
+  };
+
+  /**
+   * 重置
+   */
+  const resetQuery = () => {
+    proxy.$refs.queryRef.resetFields();
+    handleQuery();
   };
 </script>
 
@@ -199,7 +229,7 @@
     overflow: hidden;
     .row-operate {
       border-bottom: 1px dashed var(--color-border-3);
-      margin: 20px 16px;
+      margin: 20px 16px 0;
     }
     .file-wrap {
       flex: 1;
@@ -209,5 +239,9 @@
       display: flex;
       flex-direction: column;
     }
+  }
+
+  :deep(.arco-form-item-layout-inline) {
+    margin-right: 8px;
   }
 </style>

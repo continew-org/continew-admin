@@ -1,46 +1,42 @@
 <template>
   <GiOption :class="{ option: showClassStyle }">
     <GiOptionItem @click="onClickItem('rename')">
-      <template #icon><GiSvgIcon name="menu-edit"></GiSvgIcon> </template>
+      <template #icon><svg-icon icon-class="menu-edit" /></template>
       <span>重命名</span>
     </GiOptionItem>
-    <GiOptionItem @click="onClickItem('move')">
-      <template #icon><GiSvgIcon name="menu-move"></GiSvgIcon> </template>
-      <span>移动到</span>
-    </GiOptionItem>
     <GiOptionItem @click="onClickItem('download')">
-      <template #icon><GiSvgIcon name="menu-download"></GiSvgIcon> </template>
+      <template #icon><svg-icon icon-class="menu-download" /></template>
       <span>下载</span>
     </GiOptionItem>
     <a-popover
-      v-if="props.fileInfo.extendName === 'zip'"
+      v-if="props.fileInfo.extension === 'zip'"
       position="right"
       :content-style="{ padding: 0, overflow: 'hidden', width: '150px' }"
       :arrow-style="{ display: 'none' }"
     >
       <GiOptionItem more>
-        <template #icon><GiSvgIcon name="menu-zip"></GiSvgIcon> </template>
+        <template #icon><svg-icon icon-class="menu-zip" /></template>
         <span>解压</span>
       </GiOptionItem>
       <template #content>
         <GiOption>
           <GiOptionItem @click="onClickItem('zip1')">
-            <template #icon><GiSvgIcon name="file-rar"></GiSvgIcon> </template>
+            <template #icon><svg-icon icon-class="file-rar" /></template>
             <span>解压到当前目录</span>
           </GiOptionItem>
           <GiOptionItem @click="onClickItem('zip2')">
-            <template #icon><GiSvgIcon name="file-rar"></GiSvgIcon> </template>
+            <template #icon><svg-icon icon-class="file-rar" /></template>
             <span>解压到其他目录</span>
           </GiOptionItem>
         </GiOption>
       </template>
     </a-popover>
     <GiOptionItem @click="onClickItem('detail')">
-      <template #icon><GiSvgIcon name="menu-detail"></GiSvgIcon> </template>
+      <template #icon><svg-icon icon-class="menu-detail" /></template>
       <span>详情</span>
     </GiOptionItem>
     <GiOptionItem @click="onClickItem('delete')">
-      <template #icon><GiSvgIcon name="menu-delete"></GiSvgIcon> </template>
+      <template #icon><svg-icon icon-class="menu-delete" /></template>
       <span>删除</span>
     </GiOptionItem>
   </GiOption>
@@ -48,8 +44,8 @@
 
 <script setup lang="ts">
   import type { FileItem } from '@/api/system/file';
-  // import GiOption from '@/components/GiOption/index.vue';
-  // import GiOptionItem from '@/components/GiOptionItem/index.vue';
+  import GiOption from '@/components/gi-option/index.vue';
+  import GiOptionItem from '@/components/gi-option-item/index.vue';
 
   interface Props {
     fileInfo?: FileItem;
@@ -59,13 +55,12 @@
   const props = withDefaults(defineProps<Props>(), {
     fileInfo: () => ({
       id: '',
-      type: '',
       name: '',
-      extendName: '',
-      src: '',
+      size: 0,
+      url: '',
+      extension: '',
+      type: '',
       updateTime: '',
-      isDir: false,
-      filePath: '',
     }), // 文件数据
     showClassStyle: true,
   });
