@@ -57,9 +57,9 @@ public class LogDO implements Serializable {
     private String module;
 
     /**
-     * 请求URL
+     * 请求 URI
      */
-    private String requestUrl;
+    private String requestUri;
 
     /**
      * 请求方式

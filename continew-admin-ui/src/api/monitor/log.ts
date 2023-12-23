@@ -30,7 +30,7 @@ export interface OperationLogRecord extends LogRecord {
 export interface SystemLogRecord extends LogRecord {
   statusCode: number;
   requestMethod: string;
-  requestUrl: string;
+  requestUri: string;
   timeTaken: number;
 }
 

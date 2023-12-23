@@ -3,6 +3,11 @@ project:
   # URL
   url: http://localhost:5173
 
+--- ### 日志配置
+continew-starter.log:
+  # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
+  is-print: true
+
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）

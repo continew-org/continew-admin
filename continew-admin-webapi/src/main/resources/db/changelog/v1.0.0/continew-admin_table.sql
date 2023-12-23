@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `id`               bigint(20)   AUTO_INCREMENT              COMMENT 'ID',
     `description`      varchar(255) NOT NULL                    COMMENT '日志描述',
     `module`           varchar(50)  NOT NULL                    COMMENT '所属模块',
-    `request_url`      varchar(512) NOT NULL                    COMMENT '请求URL',
+    `request_uri`      varchar(512) NOT NULL                    COMMENT '请求URI',
     `request_method`   varchar(10)  NOT NULL                    COMMENT '请求方式',
     `request_headers`  text         DEFAULT NULL                COMMENT '请求头',
     `request_body`     text         DEFAULT NULL                COMMENT '请求体',

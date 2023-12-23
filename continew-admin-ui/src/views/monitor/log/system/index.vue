@@ -67,8 +67,8 @@
           />
           <a-table-column title="请求 URI">
             <template #cell="{ record }">
-              <span :title="decodeURIComponent(record.requestUrl)">{{
-                record.requestUrl.match(/([^#|\?|\n]*)(\?.*)?/)[1]
+              <span :title="decodeURIComponent(record.requestUri)">{{
+                record.requestUri.match(/([^#|\?|\n]*)(\?.*)?/)[1]
               }}</span>
             </template>
           </a-table-column>
@@ -187,11 +187,11 @@
               </a-skeleton>
               <span v-else>{{ systemLog.requestMethod }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="请求 URL" :span="2">
+            <a-descriptions-item label="请求 URI" :span="2">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
-              <span v-else>{{ systemLog.requestUrl }}</span>
+              <span v-else>{{ systemLog.requestUri }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="响应体" :span="2">
               <a-skeleton v-if="loading" :animation="true">
@@ -271,7 +271,7 @@
 
   const systemLogList = ref<SystemLogRecord[]>([]);
   const systemLog = ref<SystemLogDetailRecord>({
-    requestUrl: '',
+    requestUri: '',
     requestMethod: '',
     requestHeaders: '',
     requestBody: '',

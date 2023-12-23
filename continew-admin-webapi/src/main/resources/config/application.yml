@@ -28,6 +28,7 @@ logging:
 ## 日志配置
 continew-starter.log:
   enabled: true
+  # 包含信息
   include:
     - DESCRIPTION
     - MODULE
@@ -38,7 +39,6 @@ continew-starter.log:
     - OS
     - RESPONSE_HEADERS
     - RESPONSE_BODY
-    - TIME_TAKEN
 
 --- ### 接口文档配置
 springdoc:
