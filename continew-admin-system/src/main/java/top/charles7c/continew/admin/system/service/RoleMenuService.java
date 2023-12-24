@@ -27,7 +27,7 @@ import java.util.List;
 public interface RoleMenuService {
 
     /**
-     * 保存
+     * 新增
      *
      * @param menuIds
      *            菜单 ID 列表
@@ -35,7 +35,7 @@ public interface RoleMenuService {
      *            角色 ID
      * @return true：成功；false：无变更/失败
      */
-    boolean save(List<Long> menuIds, Long roleId);
+    boolean add(List<Long> menuIds, Long roleId);
 
     /**
      * 根据角色 ID 删除

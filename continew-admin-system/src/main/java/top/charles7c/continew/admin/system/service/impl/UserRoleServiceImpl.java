@@ -44,7 +44,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean save(List<Long> roleIds, Long userId) {
+    public boolean add(List<Long> roleIds, Long userId) {
         // 检查是否有变更
         List<Long> oldRoleIdList = userRoleMapper.lambdaQuery().select(UserRoleDO::getRoleId)
             .eq(UserRoleDO::getUserId, userId).list().stream().map(UserRoleDO::getRoleId).collect(Collectors.toList());

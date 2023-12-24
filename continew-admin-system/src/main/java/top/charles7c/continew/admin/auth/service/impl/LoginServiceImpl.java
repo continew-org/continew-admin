@@ -131,9 +131,9 @@ public class LoginServiceImpl implements LoginService {
             user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
             user.setAvatar(authUser.getAvatar());
             user.setDeptId(SysConstants.SUPER_DEPT_ID);
-            Long userId = userService.save(user);
+            Long userId = userService.add(user);
             RoleDO role = roleService.getByCode(SysConstants.ADMIN_ROLE_CODE);
-            userRoleService.save(Collections.singletonList(role.getId()), userId);
+            userRoleService.add(Collections.singletonList(role.getId()), userId);
             userSocial = new UserSocialDO();
             userSocial.setUserId(userId);
             userSocial.setSource(source);

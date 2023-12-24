@@ -27,7 +27,7 @@ import java.util.List;
 public interface UserRoleService {
 
     /**
-     * 保存
+     * 新增
      *
      * @param roleIds
      *            角色 ID 列表
@@ -35,7 +35,7 @@ public interface UserRoleService {
      *            用户 ID
      * @return true：成功；false：无变更/失败
      */
-    boolean save(List<Long> roleIds, Long userId);
+    boolean add(List<Long> roleIds, Long userId);
 
     /**
      * 根据用户 ID 删除

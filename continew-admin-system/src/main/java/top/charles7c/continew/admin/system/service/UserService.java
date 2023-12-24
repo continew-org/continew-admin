@@ -38,13 +38,13 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
 public interface UserService extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq> {
 
     /**
-     * 保存用户信息
+     * 新增
      * 
      * @param user
      *            用户信息
      * @return ID
      */
-    Long save(UserDO user);
+    Long add(UserDO user);
 
     /**
      * 上传头像

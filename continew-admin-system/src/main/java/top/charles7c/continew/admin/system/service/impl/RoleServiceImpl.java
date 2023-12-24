@@ -75,9 +75,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         req.setStatus(DisEnableStatusEnum.ENABLE);
         Long roleId = super.add(req);
         // 保存角色和菜单关联
-        roleMenuService.save(req.getMenuIds(), roleId);
+        roleMenuService.add(req.getMenuIds(), roleId);
         // 保存角色和部门关联
-        roleDeptService.save(req.getDeptIds(), roleId);
+        roleDeptService.add(req.getDeptIds(), roleId);
         return roleId;
     }
 
@@ -103,9 +103,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         // 更新关联信息
         if (!SysConstants.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
             // 保存角色和菜单关联
-            boolean isSaveMenuSuccess = roleMenuService.save(req.getMenuIds(), id);
+            boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
             // 保存角色和部门关联
-            boolean isSaveDeptSuccess = roleDeptService.save(req.getDeptIds(), id);
+            boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
             // 如果角色编码、功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
             if (ObjectUtil.notEqual(req.getCode(), oldCode) || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)
                 || isSaveMenuSuccess || isSaveDeptSuccess) {

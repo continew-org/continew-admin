@@ -45,7 +45,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean save(List<Long> menuIds, Long roleId) {
+    public boolean add(List<Long> menuIds, Long roleId) {
         // 检查是否有变更
         List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery().select(RoleMenuDO::getMenuId)
             .eq(RoleMenuDO::getRoleId, roleId).list().stream().map(RoleMenuDO::getMenuId).collect(Collectors.toList());

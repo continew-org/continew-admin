@@ -27,7 +27,7 @@ import java.util.List;
 public interface RoleDeptService {
 
     /**
-     * 保存
+     * 新增
      *
      * @param deptIds
      *            部门 ID 列表
@@ -35,7 +35,7 @@ public interface RoleDeptService {
      *            角色 ID
      * @return true：成功；false：无变更/失败
      */
-    boolean save(List<Long> deptIds, Long roleId);
+    boolean add(List<Long> deptIds, Long roleId);
 
     /**
      * 根据角色 ID 删除

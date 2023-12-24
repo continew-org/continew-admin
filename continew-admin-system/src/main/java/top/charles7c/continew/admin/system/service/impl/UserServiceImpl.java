@@ -82,7 +82,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private DeptService deptService;
 
     @Override
-    public Long save(UserDO user) {
+    public Long add(UserDO user) {
         user.setStatus(DisEnableStatusEnum.ENABLE);
         baseMapper.insert(user);
         return user.getId();
@@ -104,7 +104,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .set(UserDO::getPassword, SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
-        userRoleService.save(req.getRoleIds(), userId);
+        userRoleService.add(req.getRoleIds(), userId);
         return userId;
     }
 
@@ -132,7 +132,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         // 更新信息
         super.update(req, id);
         // 保存用户和角色关联
-        userRoleService.save(req.getRoleIds(), id);
+        userRoleService.add(req.getRoleIds(), id);
     }
 
     @Override
@@ -248,7 +248,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void updateRole(UserRoleUpdateReq updateReq, Long id) {
         super.getById(id);
         // 保存用户和角色关联
-        userRoleService.save(updateReq.getRoleIds(), id);
+        userRoleService.add(updateReq.getRoleIds(), id);
     }
 
     @Override

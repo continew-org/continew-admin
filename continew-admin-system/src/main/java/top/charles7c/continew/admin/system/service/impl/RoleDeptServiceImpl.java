@@ -44,7 +44,7 @@ public class RoleDeptServiceImpl implements RoleDeptService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean save(List<Long> deptIds, Long roleId) {
+    public boolean add(List<Long> deptIds, Long roleId) {
         // 检查是否有变更
         List<Long> oldDeptIdList = roleDeptMapper.lambdaQuery().select(RoleDeptDO::getDeptId)
             .eq(RoleDeptDO::getRoleId, roleId).list().stream().map(RoleDeptDO::getDeptId).collect(Collectors.toList());
