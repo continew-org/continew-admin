@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaIgnore;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
@@ -78,8 +77,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         log.info("----------------------------------------------");
         log.info("{} service started successfully.", projectProperties.getName());
         log.info("API 地址：{}", baseUrl);
-        Boolean docEnabled = Convert.toBool(SpringUtil.getProperty("springdoc.swagger-ui.enabled"));
-        if (Boolean.TRUE.equals(docEnabled)) {
+        if (SpringUtil.getProperty("springdoc.swagger-ui.enabled", boolean.class, false)) {
             log.info("API 文档：{}/doc.html", baseUrl);
         }
         log.info("----------------------------------------------");
