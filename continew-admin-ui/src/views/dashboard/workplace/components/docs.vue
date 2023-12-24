@@ -50,20 +50,20 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/starter/intro/what-is.html"
+          href="https://doc.charles7c.top/other/require.html"
           target="_blank"
           rel="noopener"
         >
-          {{ $t('workplace.docs.continewStarter') }}📦
+          {{ $t('workplace.docs.require') }}📫
         </a-link>
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://blog.charles7c.top"
+          href="https://doc.charles7c.top/other/sponsor.html"
           target="_blank"
           rel="noopener"
         >
-          {{ $t('workplace.docs.authorSite') }}👋
+          {{ $t('workplace.docs.sponsor') }}💖
         </a-link>
       </a-col>
     </a-row>
