@@ -50,7 +50,7 @@ public class SystemLogResp extends LogResp {
     /**
      * 请求 URL
      */
-    @Schema(description = "请求 URL", example = "https://api.charles7c.top/system/dept")
+    @Schema(description = "请求 URL", example = "http://api.charles7c.top/system/dept")
     private String requestUrl;
 
     /**

@@ -199,7 +199,7 @@
             style="margin-top: 10px; position: relative"
           >
             <a-descriptions-item :span="2">
-              <a-tabs type="card-gutter">
+              <a-tabs type="card">
                 <a-tab-pane key="1" title="响应头">
                   <a-skeleton v-if="loading" :animation="true">
                     <a-skeleton-line :rows="3" />
@@ -237,7 +237,7 @@
             style="margin-top: 10px; position: relative"
           >
             <a-descriptions-item :span="2">
-              <a-tabs type="card-gutter">
+              <a-tabs type="card">
                 <a-tab-pane key="1" title="请求头">
                   <a-skeleton v-if="loading" :animation="true">
                     <a-skeleton-line :rows="3" />
