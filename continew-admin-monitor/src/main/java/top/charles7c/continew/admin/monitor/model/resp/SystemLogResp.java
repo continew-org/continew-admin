@@ -48,10 +48,10 @@ public class SystemLogResp extends LogResp {
     private String requestMethod;
 
     /**
-     * 请求 URI
+     * 请求 URL
      */
-    @Schema(description = "请求 URI", example = "/system/dept")
-    private String requestUri;
+    @Schema(description = "请求 URL", example = "https://api.charles7c.top/system/dept")
+    private String requestUrl;
 
     /**
      * IP

@@ -16,9 +16,9 @@
 
 package top.charles7c.continew.admin.monitor.config;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
@@ -73,10 +73,11 @@ public class LogDaoLocalImpl implements LogDao {
         // 请求信息
         LogRequest logRequest = logRecord.getRequest();
         logDO.setRequestMethod(logRequest.getMethod());
-        String requestUri = logRequest.getUri().toString();
-        logDO.setRequestUri(requestUri);
-        Map<String, List<String>> requestHeaders = logRequest.getHeaders();
-        logDO.setRequestHeaders(JSONUtil.toJsonStr(requestHeaders));
+        URI requestUrl = logRequest.getUrl();
+        String requestUri = requestUrl.getPath();
+        logDO.setRequestUrl(requestUrl.toString());
+        Map<String, String> requestHeaderMap = logRequest.getHeaders();
+        logDO.setRequestHeaders(JSONUtil.toJsonStr(requestHeaderMap));
         String requestBody = logRequest.getBody();
         logDO.setRequestBody(requestBody);
         logDO.setIp(logRequest.getIp());
@@ -109,9 +110,9 @@ public class LogDaoLocalImpl implements LogDao {
             }
         }
         // 操作人
-        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaders)
-            && requestHeaders.containsKey(HttpHeaders.AUTHORIZATION)) {
-            String authorization = requestHeaders.get(HttpHeaders.AUTHORIZATION).get(0);
+        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap)
+            && requestHeaderMap.containsKey(HttpHeaders.AUTHORIZATION)) {
+            String authorization = requestHeaderMap.get(HttpHeaders.AUTHORIZATION);
             String token = authorization.replace(SaManager.getConfig().getTokenPrefix() + StringConstants.SPACE,
                 StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
