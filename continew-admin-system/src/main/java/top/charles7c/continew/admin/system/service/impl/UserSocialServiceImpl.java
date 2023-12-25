@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import cn.hutool.json.JSONUtil;
 
@@ -54,7 +53,6 @@ public class UserSocialServiceImpl implements UserSocialService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdate(UserSocialDO userSocial) {
         if (null == userSocial.getCreateTime()) {
             baseMapper.insert(userSocial);

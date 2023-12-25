@@ -55,7 +55,6 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     private final DictItemService dictItemService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Long add(DictReq req) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
@@ -65,7 +64,6 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void update(DictReq req, Long id) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);

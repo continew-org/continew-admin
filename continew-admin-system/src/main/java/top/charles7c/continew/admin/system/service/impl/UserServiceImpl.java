@@ -189,7 +189,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id) {
         super.getById(id);
         baseMapper.lambdaUpdate().set(UserDO::getNickname, updateReq.getNickname())
@@ -197,7 +196,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
@@ -223,7 +221,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
         CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), user.getPassword(), "当前密码错误");
@@ -235,7 +232,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void resetPassword(Long id) {
         UserDO user = super.getById(id);
         user.setPassword(SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, id.toString()));

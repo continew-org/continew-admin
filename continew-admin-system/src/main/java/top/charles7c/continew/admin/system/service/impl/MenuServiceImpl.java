@@ -53,7 +53,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
 
     @Override
     @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Exception.class)
     public Long add(MenuReq req) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
@@ -63,7 +62,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
 
     @Override
     @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Exception.class)
     public void update(MenuReq req, Long id) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);

@@ -62,7 +62,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     private UserService userService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public Long add(DeptReq req) {
         String name = req.getName();
         boolean isExists = this.isNameExists(name, req.getParentId(), null);

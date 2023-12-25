@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
@@ -53,7 +52,6 @@ public class DictItemServiceImpl
 
     @Override
     @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Exception.class)
     public Long add(DictItemReq req) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, null, req.getDictId()), "新增失败，字典值 [{}] 已存在", value);
@@ -62,7 +60,6 @@ public class DictItemServiceImpl
 
     @Override
     @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Exception.class)
     public void update(DictItemReq req, Long id) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
