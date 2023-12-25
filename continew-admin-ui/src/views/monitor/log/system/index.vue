@@ -115,24 +115,44 @@
         @cancel="handleCancel"
       >
         <div style="margin: 10px 0 0 10px">
-          <a-descriptions title="基础信息" :column="2" bordered>
+          <a-descriptions :column="2" bordered>
+            <a-descriptions-item label="状态码">
+              <a-skeleton v-if="loading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>
+                <a-tag v-if="systemLog.statusCode >= 400" color="red">{{
+                  systemLog.statusCode
+                }}</a-tag>
+                <a-tag v-else-if="systemLog.statusCode === 200" color="green">{{
+                  systemLog.statusCode
+                }}</a-tag>
+                <a-tag v-else color="orange">{{ systemLog.statusCode }}</a-tag>
+              </span>
+            </a-descriptions-item>
+            <a-descriptions-item label="请求方式">
+              <a-skeleton v-if="loading" :animation="true">
+                <a-skeleton-line :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ systemLog.requestMethod }}</span>
+            </a-descriptions-item>
             <a-descriptions-item label="IP">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
               <span v-else>{{ systemLog.ip }}</span>
             </a-descriptions-item>
-            <a-descriptions-item label="浏览器">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :widths="['200px']" :rows="1" />
-              </a-skeleton>
-              <span v-else>{{ systemLog.browser }}</span>
-            </a-descriptions-item>
             <a-descriptions-item label="地址">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :widths="['200px']" :rows="1" />
               </a-skeleton>
               <span v-else>{{ systemLog.address }}</span>
+            </a-descriptions-item>
+            <a-descriptions-item label="浏览器">
+              <a-skeleton v-if="loading" :animation="true">
+                <a-skeleton-line :widths="['200px']" :rows="1" />
+              </a-skeleton>
+              <span v-else>{{ systemLog.browser }}</span>
             </a-descriptions-item>
             <a-descriptions-item label="操作系统">
               <a-skeleton v-if="loading" :animation="true">
@@ -157,98 +177,95 @@
                 <a-tag v-else-if="systemLog.timeTaken > 200" color="orange">
                   {{ systemLog.timeTaken }} ms
                 </a-tag>
-                <a-tag v-else color="green"
-                  >{{ systemLog.timeTaken }} ms</a-tag
-                >
+                <a-tag v-else color="green">{{ systemLog.timeTaken }} ms</a-tag>
               </span>
             </a-descriptions-item>
-          </a-descriptions>
-          <a-descriptions
-            title="协议信息"
-            :column="2"
-            bordered
-            style="margin-top: 25px"
-          >
-            <a-descriptions-item label="状态码">
+            <a-descriptions-item label="请求 URI" :span="2">
               <a-skeleton v-if="loading" :animation="true">
                 <a-skeleton-line :rows="1" />
               </a-skeleton>
               <span v-else>
-                <a-tag v-if="systemLog.statusCode >= 400" color="red">{{
-                  systemLog.statusCode
-                }}</a-tag>
-                <a-tag v-else-if="systemLog.statusCode === 200" color="green">{{
-                  systemLog.statusCode
-                }}</a-tag>
-                <a-tag v-else color="orange">{{ systemLog.statusCode }}</a-tag>
+                {{ systemLog.requestUrl }}
+                <icon-copy
+                  class="copy-btn"
+                  @click="handleCopy(systemLog.requestUrl)"
+                />
               </span>
             </a-descriptions-item>
-            <a-descriptions-item label="请求方式">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="1" />
-              </a-skeleton>
-              <span v-else>{{ systemLog.requestMethod }}</span>
+          </a-descriptions>
+          <a-descriptions
+            layout="inline-vertical"
+            :column="2"
+            style="margin-top: 10px; position: relative"
+          >
+            <a-descriptions-item :span="2">
+              <a-tabs type="card-gutter">
+                <a-tab-pane key="1" title="响应头">
+                  <a-skeleton v-if="loading" :animation="true">
+                    <a-skeleton-line :rows="3" />
+                  </a-skeleton>
+                  <a-space v-else>
+                    <VueJsonPretty
+                      v-if="systemLog.responseHeaders"
+                      :path="'res'"
+                      :data="JSON.parse(systemLog.responseHeaders)"
+                      :show-length="true"
+                    />
+                    <span v-else>无</span>
+                  </a-space>
+                </a-tab-pane>
+                <a-tab-pane key="2" title="响应体">
+                  <a-skeleton v-if="loading" :animation="true">
+                    <a-skeleton-line :rows="3" />
+                  </a-skeleton>
+                  <a-space v-else>
+                    <VueJsonPretty
+                      v-if="systemLog.responseBody"
+                      :path="'res'"
+                      :data="JSON.parse(systemLog.responseBody)"
+                      :show-length="true"
+                    />
+                    <span v-else>无</span>
+                  </a-space>
+                </a-tab-pane>
+              </a-tabs>
             </a-descriptions-item>
-            <a-descriptions-item label="请求 URL" :span="2">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="1" />
-              </a-skeleton>
-              <span v-else>{{ systemLog.requestUrl }}</span>
-            </a-descriptions-item>
-            <a-descriptions-item label="响应体" :span="2">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="3" />
-              </a-skeleton>
-              <a-space v-else>
-                <VueJsonPretty
-                  v-if="systemLog.responseBody"
-                  :path="'res'"
-                  :data="JSON.parse(systemLog.responseBody)"
-                  :show-length="true"
-                />
-                <span v-else>无</span>
-              </a-space>
-            </a-descriptions-item>
-            <a-descriptions-item label="响应头" :span="2">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="3" />
-              </a-skeleton>
-              <a-space v-else>
-                <VueJsonPretty
-                  v-if="systemLog.responseHeaders"
-                  :path="'res'"
-                  :data="JSON.parse(systemLog.responseHeaders)"
-                  :show-length="true"
-                />
-                <span v-else>无</span>
-              </a-space>
-            </a-descriptions-item>
-            <a-descriptions-item label="请求体" :span="2">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="3" />
-              </a-skeleton>
-              <a-space v-else>
-                <VueJsonPretty
-                  v-if="systemLog.requestBody"
-                  :path="'res'"
-                  :data="JSON.parse(systemLog.requestBody)"
-                  :show-length="true"
-                />
-                <span v-else>无</span>
-              </a-space>
-            </a-descriptions-item>
-            <a-descriptions-item label="请求头" :span="2">
-              <a-skeleton v-if="loading" :animation="true">
-                <a-skeleton-line :rows="3" />
-              </a-skeleton>
-              <a-space v-else>
-                <VueJsonPretty
-                  v-if="systemLog.requestHeaders"
-                  :data="JSON.parse(systemLog.requestHeaders)"
-                  :show-length="true"
-                />
-                <span v-else>无</span>
-              </a-space>
+          </a-descriptions>
+          <a-descriptions
+            layout="inline-vertical"
+            :column="2"
+            style="margin-top: 10px; position: relative"
+          >
+            <a-descriptions-item :span="2">
+              <a-tabs type="card-gutter">
+                <a-tab-pane key="1" title="请求头">
+                  <a-skeleton v-if="loading" :animation="true">
+                    <a-skeleton-line :rows="3" />
+                  </a-skeleton>
+                  <a-space v-else>
+                    <VueJsonPretty
+                      v-if="systemLog.requestHeaders"
+                      :data="JSON.parse(systemLog.requestHeaders)"
+                      :show-length="true"
+                    />
+                    <span v-else>无</span>
+                  </a-space>
+                </a-tab-pane>
+                <a-tab-pane key="2" title="请求体">
+                  <a-skeleton v-if="loading" :animation="true">
+                    <a-skeleton-line :rows="3" />
+                  </a-skeleton>
+                  <a-space v-else>
+                    <VueJsonPretty
+                      v-if="systemLog.requestBody"
+                      :path="'res'"
+                      :data="JSON.parse(systemLog.requestBody)"
+                      :show-length="true"
+                    />
+                    <span v-else>无</span>
+                  </a-space>
+                </a-tab-pane>
+              </a-tabs>
             </a-descriptions-item>
           </a-descriptions>
         </div>
@@ -258,7 +275,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
+  import { getCurrentInstance, ref, toRefs, reactive, watch } from 'vue';
+  import { useClipboard } from '@vueuse/core';
   import {
     SystemLogParam,
     SystemLogRecord,
@@ -270,7 +288,7 @@
   import 'vue-json-pretty/lib/styles.css';
 
   const { proxy } = getCurrentInstance() as any;
-
+  const { copy, copied } = useClipboard();
   const systemLogList = ref<SystemLogRecord[]>([]);
   const systemLog = ref<SystemLogDetailRecord>({
     requestUrl: '',
@@ -345,6 +363,20 @@
   };
 
   /**
+   * 复制内容
+   *
+   * @param content 内容
+   */
+  const handleCopy = (content: string) => {
+    copy(content);
+  };
+  watch(copied, () => {
+    if (copied.value) {
+      proxy.$message.success('复制成功');
+    }
+  });
+
+  /**
    * 查询
    */
   const handleQuery = () => {
@@ -386,4 +418,18 @@
   };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  .copy-btn {
+    color: gray;
+    cursor: pointer;
+  }
+
+  .copy-btn:hover {
+    color: rgb(var(--arcoblue-6));
+  }
+
+  :deep(.arco-tabs-content) {
+    padding-top: 5px;
+    padding-left: 15px;
+  }
+</style>
