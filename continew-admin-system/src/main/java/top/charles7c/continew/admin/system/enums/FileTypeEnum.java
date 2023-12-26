@@ -16,11 +16,14 @@
 
 package top.charles7c.continew.admin.system.enums;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
@@ -62,4 +65,17 @@ public enum FileTypeEnum implements IBaseEnum<Integer> {
     private final Integer value;
     private final String description;
     private final List<String> extensions;
+
+    /**
+     * 根据扩展名查询
+     *
+     * @param extension
+     *            扩展名
+     * @return 文件类型
+     */
+    public static FileTypeEnum getByExtension(String extension) {
+        return Arrays.stream(FileTypeEnum.values())
+            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase())).findFirst()
+            .orElse(FileTypeEnum.UNKNOWN);
+    }
 }

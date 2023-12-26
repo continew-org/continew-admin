@@ -20,26 +20,22 @@ import java.io.Serial;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.continew.admin.system.enums.FileTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDO;
 
 /**
- * 文件实体
+ * 存储库实体
  *
  * @author Charles7c
- * @since 2023/12/23 10:38
+ * @since 2023/12/26 22:09
  */
 @Data
-@TableName("sys_file")
-public class FileDO extends BaseDO {
+@TableName("sys_storage")
+public class StorageDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
 
     /**
      * 名称
@@ -47,27 +43,52 @@ public class FileDO extends BaseDO {
     private String name;
 
     /**
-     * 大小（字节）
+     * 编码
      */
-    private Long size;
+    private String code;
 
     /**
-     * URL
+     * Access Key
      */
-    private String url;
+    private String accessKey;
 
     /**
-     * 扩展名
+     * Secret Key
      */
-    private String extension;
+    private String secretKey;
 
     /**
-     * 类型
+     * Endpoint
      */
-    private FileTypeEnum type;
+    private String endpoint;
 
     /**
-     * 存储库 ID
+     * 桶名称
      */
-    private Long storageId;
+    private String bucketName;
+
+    /**
+     * 自定义域名
+     */
+    private String domain;
+
+    /**
+     * 描述
+     */
+    private String description;
+
+    /**
+     * 是否为默认存储
+     */
+    private Boolean isDefault;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
+
+    /**
+     * 状态
+     */
+    private Integer status;
 }

@@ -16,6 +16,10 @@
 
 package top.charles7c.continew.admin.system.service;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
 import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
@@ -28,4 +32,24 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
-public interface FileService extends BaseService<FileResp, FileDetailResp, FileQuery, FileReq> {}
+public interface FileService extends BaseService<FileResp, FileDetailResp, FileQuery, FileReq> {
+
+    /**
+     * 上传
+     *
+     * @param file
+     *            文件信息
+     * @param storageCode
+     *            存储库编码
+     */
+    void upload(MultipartFile file, String storageCode);
+
+    /**
+     * 根据存储库 ID 列表查询
+     *
+     * @param storageIds
+     *            存储库 ID 列表
+     * @return 文件数量
+     */
+    Long countByStorageIds(List<Long> storageIds);
+}

@@ -82,6 +82,12 @@
             <artifactId>sms4j-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- X File Storage（一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台） -->
+        <dependency>
+            <groupId>org.dromara.x-file-storage</groupId>
+            <artifactId>x-file-storage-spring</artifactId>
+        </dependency>
+
         <!-- FreeMarker（模板引擎） -->
         <dependency>
             <groupId>org.freemarker</groupId>

@@ -16,17 +16,29 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
+import jakarta.annotation.Resource;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.dromara.x.file.storage.core.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
+import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
 import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
 import top.charles7c.continew.admin.system.service.FileService;
+import top.charles7c.continew.admin.system.service.StorageService;
+import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
 /**
@@ -35,7 +47,45 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileDetailResp, FileQuery, FileReq>
-    implements FileService {}
+    implements FileService {
+
+    @Resource
+    private StorageService storageService;
+    private final FileStorageService fileStorageService;
+
+    @Override
+    public void upload(MultipartFile file, String storageCode) {
+        if (StrUtil.isBlank(storageCode)) {
+            StorageDO storage = storageService.getDefaultStorage();
+            CheckUtils.throwIfNull(storage, "请先指定默认存储库");
+            storageCode = storage.getCode();
+        }
+        UploadPretreatment uploadPretreatment = fileStorageService.of(file).setPlatform(storageCode);
+        uploadPretreatment.setProgressMonitor(new ProgressListener() {
+            @Override
+            public void start() {
+                log.info("开始上传");
+            }
+
+            @Override
+            public void progress(long progressSize, long allSize) {
+                log.info("已上传 [{}]，总大小 [{}]", progressSize, allSize);
+            }
+
+            @Override
+            public void finish() {
+                log.info("上传结束");
+            }
+        });
+        uploadPretreatment.upload();
+    }
+
+    @Override
+    public Long countByStorageIds(List<Long> storageIds) {
+        return baseMapper.lambdaQuery().in(FileDO::getStorageId, storageIds).count();
+    }
+}

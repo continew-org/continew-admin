@@ -14,60 +14,42 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.system.model.entity;
+package top.charles7c.continew.admin.system.model.query;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.continew.admin.system.enums.FileTypeEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseDO;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
- * 文件实体
+ * 存储库查询条件
  *
  * @author Charles7c
- * @since 2023/12/23 10:38
+ * @since 2023/12/26 22:09
  */
 @Data
-@TableName("sys_file")
-public class FileDO extends BaseDO {
+@Schema(description = "存储库查询条件")
+public class StorageQuery implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
-
     /**
      * 名称
      */
+    @Schema(description = "名称")
+    @Query(type = QueryType.INNER_LIKE)
     private String name;
 
     /**
-     * 大小（字节）
+     * 状态
      */
-    private Long size;
-
-    /**
-     * URL
-     */
-    private String url;
-
-    /**
-     * 扩展名
-     */
-    private String extension;
-
-    /**
-     * 类型
-     */
-    private FileTypeEnum type;
-
-    /**
-     * 存储库 ID
-     */
-    private Long storageId;
+    @Schema(description = "状态")
+    @Query(type = QueryType.EQUAL)
+    private Integer status;
 }

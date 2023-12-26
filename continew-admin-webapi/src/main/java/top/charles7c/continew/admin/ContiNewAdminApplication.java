@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import io.swagger.v3.oas.annotations.Hidden;
 
+import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -44,6 +45,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
  * @since 2022/12/8 23:15
  */
 @Slf4j
+@EnableFileStorage
 @RestController
 @SpringBootApplication
 @RequiredArgsConstructor
