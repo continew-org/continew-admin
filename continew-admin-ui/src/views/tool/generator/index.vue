@@ -271,48 +271,47 @@
         </a-card>
       </a-drawer>
     </a-card>
-  </div>
-
-  <!-- 生成预览区域 -->
-  <a-modal
-    :body-style="{
+    <!-- 生成预览区域 -->
+    <a-modal
+      :body-style="{
       paddingTop: 0,
     }"
-    title="生成预览"
-    :visible="previewVisible"
-    width="70%"
-    :footer="false"
-    unmount-on-close
-    render-to-body
-    @cancel="handlePreviewCancel"
-  >
-    <div>
-      <a-scrollbar style="height: 700px; overflow: auto">
-        <a-link
-          style="position: absolute; right: 20px; top: 50px; z-index: 999"
-          @click="handleCopy"
-        >
-          <template #icon>
-            <icon-copy size="large" />
-          </template>
-          复制
-        </a-link>
-        <a-tabs size="large" @tab-click="handleTabClick">
-          <a-tab-pane
-            v-for="item in generatePreviewList"
-            :key="item.fileName"
-            :title="item.fileName"
+      title="生成预览"
+      :visible="previewVisible"
+      width="70%"
+      :footer="false"
+      unmount-on-close
+      render-to-body
+      @cancel="handlePreviewCancel"
+    >
+      <div>
+        <a-scrollbar style="height: 700px; overflow: auto">
+          <a-link
+            style="position: absolute; right: 20px; top: 50px; z-index: 999"
+            @click="handleCopy"
           >
-            <codemirror
-              v-model="item.content"
-              :autofocus="true"
-              :extensions="extensions"
-            />
-          </a-tab-pane>
-        </a-tabs>
-      </a-scrollbar>
-    </div>
-  </a-modal>
+            <template #icon>
+              <icon-copy size="large" />
+            </template>
+            复制
+          </a-link>
+          <a-tabs size="large" @tab-click="handleTabClick">
+            <a-tab-pane
+              v-for="item in generatePreviewList"
+              :key="item.fileName"
+              :title="item.fileName"
+            >
+              <codemirror
+                v-model="item.content"
+                :autofocus="true"
+                :extensions="extensions"
+              />
+            </a-tab-pane>
+          </a-tabs>
+        </a-scrollbar>
+      </div>
+    </a-modal>
+  </div>
 </template>
 
 <script lang="ts" setup>
