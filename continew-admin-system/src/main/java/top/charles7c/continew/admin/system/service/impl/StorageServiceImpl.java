@@ -42,6 +42,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.admin.system.mapper.StorageMapper;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.StorageQuery;
@@ -51,6 +52,7 @@ import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
 /**
@@ -65,17 +67,17 @@ public class StorageServiceImpl
     extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageDetailResp, StorageQuery, StorageReq>
     implements StorageService {
 
+    @Resource
+    private FileService fileService;
     private final ApplicationContext applicationContext;
     private final FileStorageService fileStorageService;
-    @Resource
-    private final FileService fileService;
 
     @Override
     public Long add(StorageReq req) {
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         req.setStatus(DisEnableStatusEnum.ENABLE);
-        this.loadFileStorage(req);
+        this.load(req);
         return super.add(req);
     }
 
@@ -87,7 +89,8 @@ public class StorageServiceImpl
         CheckUtils.throwIf(
             Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE.equals(req.getStatus()),
             "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
-        this.loadFileStorage(req);
+        this.unload(oldStorage.getCode());
+        this.load(req);
         super.update(req, id);
     }
 
@@ -95,7 +98,7 @@ public class StorageServiceImpl
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储库存在文件关联，请删除文件后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(s -> this.removeFileStorage(s.getCode()));
+        storageList.forEach(s -> this.unload(s.getCode()));
         super.delete(ids);
     }
 
@@ -109,29 +112,44 @@ public class StorageServiceImpl
         return baseMapper.lambdaQuery().eq(StorageDO::getCode, code).one();
     }
 
-    /**
-     * 加载存储配置
-     *
-     * @param req
-     *            存储配置信息
-     */
-    private void loadFileStorage(StorageReq req) {
+    @Override
+    public void load(StorageReq req) {
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
-        FileStorageProperties.LocalPlusConfig localPlusConfig = new FileStorageProperties.LocalPlusConfig();
-        localPlusConfig.setPlatform(req.getCode());
-        localPlusConfig.setStoragePath(req.getBucketName());
-        localPlusConfig.setDomain(req.getDomain());
-        fileStorageList
-            .addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections.singletonList(localPlusConfig)));
+        String bucketName = req.getBucketName();
+        StorageTypeEnum type = req.getType();
+        switch (type) {
+            case LOCAL -> {
+                ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
+                FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
+                config.setPlatform(req.getCode());
+                config.setStoragePath(bucketName);
+                config.setDomain(req.getDomain());
+                fileStorageList
+                    .addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections.singletonList(config)));
+            }
+            case S3 -> {
+                String accessKey = req.getAccessKey();
+                String secretKey = req.getSecretKey();
+                String endpoint = req.getEndpoint();
+                ValidationUtils.throwIfBlank(accessKey, "Access Key不能为空");
+                ValidationUtils.throwIfBlank(secretKey, "Secret Key不能为空");
+                ValidationUtils.throwIfBlank(endpoint, "Endpoint不能为空");
+                ValidationUtils.throwIfBlank(bucketName, "桶名称不能为空");
+                FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
+                config.setPlatform(req.getCode());
+                config.setAccessKey(accessKey);
+                config.setSecretKey(secretKey);
+                config.setEndPoint(endpoint);
+                config.setBucketName(bucketName);
+                config.setDomain(req.getDomain());
+                fileStorageList.addAll(
+                    FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections.singletonList(config), null));
+            }
+        }
     }
 
-    /**
-     * 移除存储配置
-     *
-     * @param code
-     *            存储配置编码
-     */
-    private void removeFileStorage(String code) {
+    @Override
+    public void unload(String code) {
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
         FileStorage fileStorage = fileStorageService.getFileStorage(code);
         fileStorageList.remove(fileStorage);

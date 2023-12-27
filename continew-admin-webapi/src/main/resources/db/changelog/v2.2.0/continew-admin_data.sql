@@ -15,3 +15,9 @@ VALUES
 (1102, '存储修改', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:update', 2, 1, 1, NOW(), NULL, NULL),
 (1103, '存储删除', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:delete', 3, 1, 1, NOW(), NULL, NULL),
 (1104, '存储导出', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:export', 4, 1, 1, NOW(), NULL, NULL);
+
+-- 初始化默认存储库
+INSERT IGNORE INTO `sys_storage`
+(`id`, `name`, `code`, `type`, `access_key`, `secret_key`, `endpoint`, `bucket_name`, `domain`, `description`, `is_default`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
+VALUES
+(1, '本地存储', 'local', 2, NULL, NULL, NULL, '/data/file/', '', '本地存储', b'1', 1, 1, 1, NOW(), NULL, NULL);

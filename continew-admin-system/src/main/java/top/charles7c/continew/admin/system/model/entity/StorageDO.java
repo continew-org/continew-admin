@@ -22,6 +22,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDO;
 
 /**
@@ -46,6 +47,11 @@ public class StorageDO extends BaseDO {
      * 编码
      */
     private String code;
+
+    /**
+     * 类型
+     */
+    private StorageTypeEnum type;
 
     /**
      * Access Key

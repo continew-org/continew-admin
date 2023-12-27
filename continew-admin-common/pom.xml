@@ -87,6 +87,11 @@
             <groupId>org.dromara.x-file-storage</groupId>
             <artifactId>x-file-storage-spring</artifactId>
         </dependency>
+        <!-- Amazon Simple Storage Service（亚马逊简单存储服务，通用存储协议 S3，兼容主流云厂商对象存储） -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+        </dependency>
 
         <!-- FreeMarker（模板引擎） -->
         <dependency>

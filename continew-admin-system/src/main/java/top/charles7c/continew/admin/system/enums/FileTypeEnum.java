@@ -28,7 +28,7 @@ import cn.hutool.core.util.StrUtil;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
- * 文件分类枚举
+ * 文件类型枚举
  *
  * @author Charles7c
  * @since 2023/12/23 13:38

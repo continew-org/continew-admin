@@ -25,6 +25,7 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseReq;
 
 /**
@@ -53,6 +54,13 @@ public class StorageReq extends BaseReq {
     @Schema(description = "编码")
     @NotBlank(message = "编码不能为空")
     private String code;
+
+    /**
+     * 类型
+     */
+    @Schema(description = "类型")
+    @NotNull(message = "类型非法")
+    private StorageTypeEnum type;
 
     /**
      * Access Key

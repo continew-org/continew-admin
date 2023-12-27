@@ -39,6 +39,16 @@ public interface FileService extends BaseService<FileResp, FileDetailResp, FileQ
      *
      * @param file
      *            文件信息
+     */
+    default void upload(MultipartFile file) {
+        upload(file, null);
+    }
+
+    /**
+     * 上传
+     *
+     * @param file
+     *            文件信息
      * @param storageCode
      *            存储库编码
      */

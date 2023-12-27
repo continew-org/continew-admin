@@ -22,6 +22,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseResp;
 
 /**
@@ -48,6 +49,12 @@ public class StorageResp extends BaseResp {
      */
     @Schema(description = "编码")
     private String code;
+
+    /**
+     * 类型
+     */
+    @Schema(description = "类型")
+    private StorageTypeEnum type;
 
     /**
      * Access Key

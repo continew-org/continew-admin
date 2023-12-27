@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 
 /**
@@ -54,6 +55,12 @@ public class StorageDetailResp extends BaseDetailResp {
     @Schema(description = "编码")
     @ExcelProperty(value = "编码")
     private String code;
+
+    /**
+     * 类型
+     */
+    @Schema(description = "类型")
+    private StorageTypeEnum type;
 
     /**
      * Access Key
