@@ -38,7 +38,7 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 /**
  * 消息和用户关联业务实现
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Service

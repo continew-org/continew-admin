@@ -24,7 +24,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 /**
  * 消息和用户 Mapper
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 20:25
  */
 public interface MessageUserMapper extends BaseMapper<MessageUserDO> {

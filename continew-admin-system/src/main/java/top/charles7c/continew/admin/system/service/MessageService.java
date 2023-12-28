@@ -27,7 +27,7 @@ import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 /**
  * 消息业务接口
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 public interface MessageService {

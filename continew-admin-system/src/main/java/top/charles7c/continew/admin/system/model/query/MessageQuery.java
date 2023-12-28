@@ -28,7 +28,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 /**
  * 消息查询条件
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Data

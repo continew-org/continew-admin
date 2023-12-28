@@ -13,7 +13,8 @@
       "@/*": ["src/*"]
     },
     "lib": ["es2020", "dom"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   },
   "include": ["src/**/*", "src/**/*.vue"],
   "exclude": ["node_modules"]

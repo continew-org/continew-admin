@@ -17,6 +17,7 @@ import RightToolbar from './right-toolbar/index.vue';
 import SvgIcon from './svg-icon/index.vue';
 import IconSelect from './icon-select/index.vue';
 import download from './crud';
+import Verify from './verifition/Verify.vue';
 
 // Manually introduce ECharts modules to reduce packing size
 
@@ -46,5 +47,6 @@ export default {
     Vue.component('RightToolbar', RightToolbar);
     Vue.component('SvgIcon', SvgIcon);
     Vue.component('IconSelect', IconSelect);
+    Vue.component('Verify', Verify);
   },
 };

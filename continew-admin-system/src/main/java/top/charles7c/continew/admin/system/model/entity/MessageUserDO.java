@@ -26,7 +26,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 /**
  * 消息和用户关联实体
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 20:25
  */
 @Data
