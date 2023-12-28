@@ -52,6 +52,12 @@
             <artifactId>continew-starter-captcha-graphic</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 验证码模块 - 行为验证码 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-captcha-behavior</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 文件处理模块 - Excel -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>

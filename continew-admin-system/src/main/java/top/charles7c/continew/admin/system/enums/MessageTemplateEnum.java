@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * 消息模板枚举
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:51
  */
 @Getter

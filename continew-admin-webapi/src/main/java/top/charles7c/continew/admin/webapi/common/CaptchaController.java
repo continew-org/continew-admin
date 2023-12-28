@@ -35,11 +35,14 @@ import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.redisson.api.RateType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.anji.captcha.model.common.RepCodeEnum;
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.model.vo.CaptchaVO;
+import com.anji.captcha.service.CaptchaService;
 import com.wf.captcha.base.Captcha;
 
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -58,6 +61,7 @@ import top.charles7c.continew.starter.captcha.graphic.autoconfigure.GraphicCaptc
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
 
@@ -72,12 +76,26 @@ import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/common/captcha")
+@RequestMapping("/captcha")
 public class CaptchaController {
 
+    private final CaptchaService captchaService;
     private final CaptchaProperties captchaProperties;
     private final ProjectProperties projectProperties;
     private final GraphicCaptchaProperties graphicCaptchaProperties;
+
+    @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
+    @GetMapping("/behavior")
+    public R<Object> getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
+        captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
+        return R.ok(captchaService.get(captchaReq).getRepData());
+    }
+
+    @Operation(summary = "校验行为验证码", description = "校验行为验证码")
+    @PostMapping("/behavior")
+    public R<Object> checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq) {
+        return R.ok(captchaService.check(captchaReq));
+    }
 
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
@@ -118,7 +136,11 @@ public class CaptchaController {
     @GetMapping("/sms")
     public R getSmsCaptcha(
         @NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误") String phone,
-        HttpServletRequest request) {
+        CaptchaVO captchaReq, HttpServletRequest request) {
+        // 行为验证码校验
+        ResponseModel verificationRes = captchaService.verification(captchaReq);
+        ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
+            verificationRes.getRepMsg());
         CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
         String templateId = captchaSms.getTemplateId();
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;

@@ -29,7 +29,7 @@
         class="captcha-btn"
         :loading="captchaLoading"
         :disabled="captchaDisable"
-        @click="handleSendCaptcha"
+        @click="handleOpenBehaviorCaptcha"
       >
         {{ captchaBtnName }}
       </a-button>
@@ -43,6 +43,13 @@
       >{{ $t('login.button') }}（演示不开放）
     </a-button>
   </a-form>
+  <Verify
+    ref="verifyRef"
+    :mode="captchaMode"
+    :captcha-type="captchaType"
+    :img-size="{ width: '330px', height: '155px' }"
+    @success="handleSendCaptcha"
+  ></Verify>
 </template>
 
 <script lang="ts" setup>
@@ -52,7 +59,7 @@
   import { ValidatedError } from '@arco-design/web-vue';
   import { useUserStore } from '@/store';
   import { PhoneLoginReq } from '@/api/auth';
-  import { getSmsCaptcha } from '@/api/common/captcha';
+  import { BehaviorCaptchaReq, getSmsCaptcha } from '@/api/common/captcha';
 
   const { proxy } = getCurrentInstance() as any;
   const { t } = useI18n();
@@ -63,6 +70,8 @@
   const captchaDisable = ref(true);
   const captchaTime = ref(60);
   const captchaTimer = ref();
+  const captchaType = ref('blockPuzzle');
+  const captchaMode = ref('pop');
   const captchaBtnNameKey = ref('login.captcha.get');
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
   const data = reactive({
@@ -86,6 +95,18 @@
   const { form, rules } = toRefs(data);
 
   /**
+   * 弹出行为验证码
+   */
+  const handleOpenBehaviorCaptcha = () => {
+    if (captchaLoading.value) return;
+    proxy.$refs.formRef.validateField('phone', (valid: any) => {
+      if (!valid) {
+        proxy.$refs.verifyRef.show();
+      }
+    });
+  };
+
+  /**
    * 重置验证码
    */
   const resetCaptcha = () => {
@@ -98,13 +119,13 @@
   /**
    * 发送验证码
    */
-  const handleSendCaptcha = () => {
+  const handleSendCaptcha = (captchaParam: BehaviorCaptchaReq) => {
     if (captchaLoading.value) return;
     proxy.$refs.formRef.validateField('phone', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'login.captcha.ing';
-        getSmsCaptcha(form.value.phone)
+        getSmsCaptcha(form.value.phone, captchaParam)
           .then((res) => {
             captchaLoading.value = false;
             captchaDisable.value = true;

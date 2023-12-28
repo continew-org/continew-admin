@@ -47,7 +47,7 @@
           v-model="form.newPhone"
           :placeholder="
             $t(
-              'userCenter.securitySettings.updatePhone.form.placeholder.newPhone'
+              'userCenter.securitySettings.updatePhone.form.placeholder.newPhone',
             )
           "
           allow-clear
@@ -73,7 +73,7 @@
           type="primary"
           :disabled="captchaDisable"
           class="captcha-btn"
-          @click="handleSendCaptcha"
+          @click="handleOpenBehaviorCaptcha"
         >
           {{ captchaBtnName }}
         </a-button>
@@ -81,7 +81,7 @@
       <a-form-item
         :label="
           $t(
-            'userCenter.securitySettings.updatePhone.form.label.currentPassword'
+            'userCenter.securitySettings.updatePhone.form.label.currentPassword',
           )
         "
         field="currentPassword"
@@ -90,7 +90,7 @@
           v-model="form.currentPassword"
           :placeholder="
             $t(
-              'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword'
+              'userCenter.securitySettings.updatePhone.form.placeholder.currentPassword',
             )
           "
           :max-length="32"
@@ -98,13 +98,20 @@
         />
       </a-form-item>
     </a-form>
+    <Verify
+      ref="verifyRef"
+      :mode="captchaMode"
+      :captcha-type="captchaType"
+      :img-size="{ width: '330px', height: '155px' }"
+      @success="handleSendCaptcha"
+    ></Verify>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
   import { getCurrentInstance, ref, reactive, computed } from 'vue';
   import { FieldRule } from '@arco-design/web-vue';
-  import { getSmsCaptcha } from '@/api/common/captcha';
+  import { BehaviorCaptchaReq, getSmsCaptcha } from '@/api/common/captcha';
   import { UserPhoneUpdateReq, updatePhone } from '@/api/system/user-center';
   import { useI18n } from 'vue-i18n';
   import { useUserStore } from '@/store';
@@ -117,6 +124,8 @@
   const captchaTimer = ref();
   const captchaLoading = ref(false);
   const captchaDisable = ref(true);
+  const captchaType = ref('blockPuzzle');
+  const captchaMode = ref('pop');
   const visible = ref(false);
   const captchaBtnNameKey = ref('userCenter.securitySettings.captcha.get');
   const captchaBtnName = computed(() => t(captchaBtnNameKey.value));
@@ -134,13 +143,13 @@
         {
           required: true,
           message: t(
-            'userCenter.securitySettings.updatePhone.form.error.required.newPhone'
+            'userCenter.securitySettings.updatePhone.form.error.required.newPhone',
           ),
         },
         {
           match: /^1[3-9]\d{9}$/,
           message: t(
-            'userCenter.securitySettings.updatePhone.form.error.match.newPhone'
+            'userCenter.securitySettings.updatePhone.form.error.match.newPhone',
           ),
         },
       ],
@@ -154,7 +163,7 @@
         {
           required: true,
           message: t(
-            'userCenter.securitySettings.updatePhone.form.error.required.currentPassword'
+            'userCenter.securitySettings.updatePhone.form.error.required.currentPassword',
           ),
         },
       ],
@@ -172,25 +181,37 @@
   };
 
   /**
+   * 弹出行为验证码
+   */
+  const handleOpenBehaviorCaptcha = () => {
+    if (captchaLoading.value) return;
+    proxy.$refs.formRef.validateField('newPhone', (valid: any) => {
+      if (!valid) {
+        proxy.$refs.verifyRef.show();
+      }
+    });
+  };
+
+  /**
    * 发送验证码
    */
-  const handleSendCaptcha = () => {
+  const handleSendCaptcha = (captchaParam: BehaviorCaptchaReq) => {
     if (captchaLoading.value) return;
     proxy.$refs.formRef.validateField('newPhone', (valid: any) => {
       if (!valid) {
         captchaLoading.value = true;
         captchaBtnNameKey.value = 'userCenter.securitySettings.captcha.ing';
-        getSmsCaptcha(form.newPhone)
+        getSmsCaptcha(form.newPhone, captchaParam)
           .then((res) => {
             captchaLoading.value = false;
             captchaDisable.value = true;
             captchaBtnNameKey.value = `${t(
-              'userCenter.securitySettings.captcha.get'
+              'userCenter.securitySettings.captcha.get',
             )}(${(captchaTime.value -= 1)}s)`;
             captchaTimer.value = window.setInterval(() => {
               captchaTime.value -= 1;
               captchaBtnNameKey.value = `${t(
-                'userCenter.securitySettings.captcha.get'
+                'userCenter.securitySettings.captcha.get',
               )}(${captchaTime.value}s)`;
               if (captchaTime.value <= 0) {
                 resetCaptcha();

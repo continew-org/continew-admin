@@ -42,7 +42,7 @@ import top.charles7c.continew.starter.log.common.annotation.Log;
 /**
  * 消息管理 API
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Tag(name = "消息管理 API")

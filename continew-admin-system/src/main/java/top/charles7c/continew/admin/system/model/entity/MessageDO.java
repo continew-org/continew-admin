@@ -32,7 +32,7 @@ import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
 /**
  * 消息实体
  *
- * @author BULL_BCLS
+ * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Data

@@ -88,8 +88,13 @@ spring.cache:
     # 是否允许缓存空值（默认 true，表示允许，可以解决缓存穿透问题）
     cache-null-values: true
 
---- ### 图形验证码配置
+--- ### 验证码配置
 continew-starter.captcha:
+  ## 行为验证码配置
+  behavior:
+    enabled: true
+    cache-type: REDIS
+    water-mark: ${project.app-name}
   ## 图形验证码配置
   graphic:
     enabled: true
