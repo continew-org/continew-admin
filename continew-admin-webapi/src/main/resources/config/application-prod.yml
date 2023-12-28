@@ -5,11 +5,6 @@ project:
   # 是否为生产环境
   production: true
 
---- ### 日志配置
-continew-starter.log:
-  # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
-  is-print: false
-
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）
@@ -91,22 +86,6 @@ spring.cache:
     cache-null-values: true
 
 --- ### 验证码配置
-continew-starter.captcha:
-  ## 行为验证码配置
-  behavior:
-    enabled: true
-    cache-type: REDIS
-    water-mark: ${project.app-name}
-  ## 图形验证码配置
-  graphic:
-    enabled: true
-    # 类型
-    type: SPEC
-    # 内容长度
-    length: 4
-    # 过期时间
-    expirationInMinutes: 2
-## 验证码配置
 captcha:
   ## 邮箱验证码配置
   mail:
@@ -126,6 +105,42 @@ captcha:
     expirationInMinutes: 5
     # 模板 ID
     templateId: 1
+
+--- ### ContiNew Starter 组件配置
+continew-starter:
+  ## 验证码配置
+  captcha:
+    # 行为验证码配置
+    behavior:
+      enabled: true
+      cache-type: REDIS
+      water-mark: ${project.app-name}
+    # 图形验证码配置
+    graphic:
+      enabled: true
+      # 类型
+      type: SPEC
+      # 内容长度
+      length: 4
+      # 过期时间
+      expirationInMinutes: 2
+  ## 日志配置
+  log:
+    # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
+    is-print: false
+  ## 本地存储配置
+  storage:
+    local:
+      enabled: true
+      mapping:
+        FILE:
+          path-pattern: /file/**
+          location: ../data/file/
+          max-file-size: 10MB
+        AVATAR:
+          path-pattern: /avatar/**
+          location: ../data/avatar/
+          max-file-size: 5MB
 
 --- ### 短信配置
 sms:
@@ -215,20 +230,6 @@ spring.servlet:
     max-file-size: 10MB
     # 单次总上传文件大小限制
     max-request-size: 20MB
-
---- ### 本地存储配置
-continew-starter.storage:
-  local:
-    enabled: true
-    mapping:
-      FILE:
-        path-pattern: /file/**
-        location: ../data/file/
-        max-file-size: 10MB
-      AVATAR:
-        path-pattern: /avatar/**
-        location: ../data/avatar/
-        max-file-size: 5MB
 
 --- ### 跨域配置
 cors:
