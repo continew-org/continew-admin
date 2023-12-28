@@ -38,8 +38,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
@@ -51,6 +54,7 @@ import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
@@ -89,7 +93,7 @@ public class StorageServiceImpl
         CheckUtils.throwIf(
             Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE.equals(req.getStatus()),
             "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
-        this.unload(oldStorage.getCode());
+        this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
         this.load(req);
         super.update(req, id);
     }
@@ -98,7 +102,7 @@ public class StorageServiceImpl
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储库存在文件关联，请删除文件后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(s -> this.unload(s.getCode()));
+        storageList.forEach(s -> this.unload(BeanUtil.copyProperties(s, StorageReq.class)));
         super.delete(ids);
     }
 
@@ -123,9 +127,9 @@ public class StorageServiceImpl
                 FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
                 config.setPlatform(req.getCode());
                 config.setStoragePath(bucketName);
-                config.setDomain(req.getDomain());
                 fileStorageList
                     .addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections.singletonList(config)));
+                this.registerResource(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName), false);
             }
             case S3 -> {
                 String accessKey = req.getAccessKey();
@@ -149,11 +153,12 @@ public class StorageServiceImpl
     }
 
     @Override
-    public void unload(String code) {
+    public void unload(StorageReq req) {
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
-        FileStorage fileStorage = fileStorageService.getFileStorage(code);
+        FileStorage fileStorage = fileStorageService.getFileStorage(req.getCode());
         fileStorageList.remove(fileStorage);
         fileStorage.close();
+        this.registerResource(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req.getBucketName()), true);
     }
 
     /**
@@ -174,8 +179,10 @@ public class StorageServiceImpl
      *
      * @param registerMapping
      *            静态资源映射列表
+     * @param isCancelRegister
+     *            是否取消注册映射
      */
-    private void registerResource(Map<String, String> registerMapping) {
+    private void registerResource(Map<String, String> registerMapping, boolean isCancelRegister) {
         final UrlPathHelper urlPathHelper = applicationContext.getBean("mvcUrlPathHelper", UrlPathHelper.class);
         final ContentNegotiationManager contentNegotiationManager =
             applicationContext.getBean("mvcContentNegotiationManager", ContentNegotiationManager.class);
@@ -187,17 +194,22 @@ public class StorageServiceImpl
             (Map<String, Object>)ReflectUtil.getFieldValue(resourceHandlerMapping, "handlerMap");
         final ResourceHandlerRegistry resourceHandlerRegistry =
             new ResourceHandlerRegistry(applicationContext, servletContext, contentNegotiationManager, urlPathHelper);
-        // 重新注册静态资源映射
+        // 重新注册相同 Pattern 的静态资源映射
         for (Map.Entry<String, String> entry : registerMapping.entrySet()) {
             String pathPattern = StrUtil.appendIfMissing(entry.getKey(), "/**");
-            String resourceLocations = StrUtil.appendIfMissing(entry.getValue(), "/");
-            // 移除之前注册过的
+            String resourceLocations = StrUtil.appendIfMissing(entry.getValue(), StringConstants.SLASH);
+            // 移除之前注册过的相同 Pattern 映射
             handlerMap.remove(pathPattern);
-            // 重新注册
-            resourceHandlerRegistry.addResourceHandler(pathPattern).addResourceLocations("file:" + resourceLocations);
+            if (!isCancelRegister) {
+                // 重新注册映射
+                resourceHandlerRegistry.addResourceHandler(pathPattern)
+                    .addResourceLocations("file:" + resourceLocations);
+            }
         }
-        final Map<String, ?> additionalUrlMap =
-            ReflectUtil.<SimpleUrlHandlerMapping>invoke(resourceHandlerRegistry, "getHandlerMapping").getUrlMap();
-        ReflectUtil.<Void>invoke(resourceHandlerMapping, "registerHandlers", additionalUrlMap);
+        if (!isCancelRegister) {
+            final Map<String, ?> additionalUrlMap =
+                ReflectUtil.<SimpleUrlHandlerMapping>invoke(resourceHandlerRegistry, "getHandlerMapping").getUrlMap();
+            ReflectUtil.<Void>invoke(resourceHandlerMapping, "registerHandlers", additionalUrlMap);
+        }
     }
 }

@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.system.model.query.StorageQuery;
 import top.charles7c.continew.admin.system.model.req.StorageReq;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.StorageService;
@@ -39,7 +41,7 @@ import top.charles7c.continew.admin.system.service.StorageService;
  * @since 2023/12/24 22:31
  */
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class FileStorageConfigLoader implements ApplicationRunner {
 
@@ -47,7 +49,9 @@ public class FileStorageConfigLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        List<StorageResp> storageList = storageService.list(null, null);
+        StorageQuery query = new StorageQuery();
+        query.setStatus(DisEnableStatusEnum.ENABLE.getValue());
+        List<StorageResp> storageList = storageService.list(query, null);
         if (CollUtil.isEmpty(storageList)) {
             return;
         }

@@ -58,8 +58,8 @@ public interface StorageService extends BaseService<StorageResp, StorageDetailRe
     /**
      * 卸载存储库
      *
-     * @param code
-     *            编码
+     * @param req
+     *            存储库信息
      */
-    void unload(String code);
+    void unload(StorageReq req);
 }

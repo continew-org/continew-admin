@@ -35,7 +35,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
 public interface FileService extends BaseService<FileResp, FileDetailResp, FileQuery, FileReq> {
 
     /**
-     * 上传
+     * 上传到默认存储库
      *
      * @param file
      *            文件信息
@@ -45,7 +45,7 @@ public interface FileService extends BaseService<FileResp, FileDetailResp, FileQ
     }
 
     /**
-     * 上传
+     * 上传到指定存储库
      *
      * @param file
      *            文件信息

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 
 import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
@@ -36,8 +37,11 @@ import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
 import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
+import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
+import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
@@ -87,5 +91,14 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     @Override
     public Long countByStorageIds(List<Long> storageIds) {
         return baseMapper.lambdaQuery().in(FileDO::getStorageId, storageIds).count();
+    }
+
+    @Override
+    protected void fill(Object baseObj) {
+        if (baseObj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
+            StorageDetailResp storage = storageService.get(fileResp.getStorageId());
+            fileResp.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl()));
+        }
+        super.fill(baseObj);
     }
 }

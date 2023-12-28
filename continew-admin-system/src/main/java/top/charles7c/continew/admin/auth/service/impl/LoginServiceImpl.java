@@ -140,7 +140,7 @@ public class LoginServiceImpl implements LoginService {
             userSocial.setOpenId(openId);
             this.sendSystemMsg(user);
         } else {
-            user = BeanUtil.toBean(userService.get(userSocial.getUserId()), UserDO.class);
+            user = BeanUtil.copyProperties(userService.get(userSocial.getUserId()), UserDO.class);
         }
         this.checkUserStatus(user);
         userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
