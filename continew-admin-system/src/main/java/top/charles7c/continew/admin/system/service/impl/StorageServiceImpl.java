@@ -196,7 +196,7 @@ public class StorageServiceImpl
             new ResourceHandlerRegistry(applicationContext, servletContext, contentNegotiationManager, urlPathHelper);
         // 重新注册相同 Pattern 的静态资源映射
         for (Map.Entry<String, String> entry : registerMapping.entrySet()) {
-            String pathPattern = StrUtil.appendIfMissing(entry.getKey(), "/**");
+            String pathPattern = StrUtil.appendIfMissing(entry.getKey(), StringConstants.PATH_PATTERN);
             String resourceLocations = StrUtil.appendIfMissing(entry.getValue(), StringConstants.SLASH);
             // 移除之前注册过的相同 Pattern 映射
             handlerMap.remove(pathPattern);

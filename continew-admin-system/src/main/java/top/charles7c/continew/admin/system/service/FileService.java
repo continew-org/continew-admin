@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.system.service;
 
 import java.util.List;
 
+import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import top.charles7c.continew.admin.system.model.query.FileQuery;
@@ -39,9 +40,10 @@ public interface FileService extends BaseService<FileResp, FileDetailResp, FileQ
      *
      * @param file
      *            文件信息
+     * @return 文件信息
      */
-    default void upload(MultipartFile file) {
-        upload(file, null);
+    default FileInfo upload(MultipartFile file) {
+        return upload(file, null);
     }
 
     /**
@@ -51,8 +53,9 @@ public interface FileService extends BaseService<FileResp, FileDetailResp, FileQ
      *            文件信息
      * @param storageCode
      *            存储库编码
+     * @return 文件信息
      */
-    void upload(MultipartFile file, String storageCode);
+    FileInfo upload(MultipartFile file, String storageCode);
 
     /**
      * 根据存储库 ID 列表查询

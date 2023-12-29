@@ -33,7 +33,7 @@
                     v-if="faviconFile && faviconFile.url"
                     class="arco-upload-list-picture custom-upload-avatar favicon"
                   >
-                    <img :src="getFile(faviconFile.url)" />
+                    <img :src="faviconFile.url" alt="favicon" />
                     <div
                       v-if="isEdit"
                       class="arco-upload-list-picture-mask favicon"
@@ -77,7 +77,7 @@
                     v-if="logoFile && logoFile.url"
                     class="arco-upload-list-picture custom-upload-avatar logo"
                   >
-                    <img :src="getFile(logoFile.url)" />
+                    <img :src="logoFile.url" alt="Logo" />
                     <div
                       v-if="isEdit"
                       class="arco-upload-list-picture-mask logo"
@@ -181,7 +181,6 @@
     resetValue,
   } from '@/api/system/config';
   import { upload } from '@/api/common';
-  import getFile from '@/utils/file';
   import { useAppStore } from '@/store';
 
   const { proxy } = getCurrentInstance() as any;

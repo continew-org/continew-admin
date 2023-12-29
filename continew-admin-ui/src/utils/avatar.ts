@@ -7,14 +7,6 @@ export default function getAvatar(
   gender: number | undefined,
 ) {
   if (avatar) {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL;
-    if (
-      !avatar.startsWith('http://') &&
-      !avatar.startsWith('https://') &&
-      !avatar.startsWith('blob:')
-    ) {
-      return `${baseUrl}/avatar/${avatar}`;
-    }
     return avatar;
   }
 

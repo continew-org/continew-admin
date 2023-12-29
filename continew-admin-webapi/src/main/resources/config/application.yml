@@ -22,10 +22,7 @@ project:
   # 是否启用本地解析 IP 归属地
   ip-addr-local-parse-enabled: true
 
---- ### 日志配置（重叠部分，优先级高于 logback-spring.xml 中的配置）
-logging:
-  config: classpath:logback-spring.xml
-## 日志配置
+--- ### 日志配置
 continew-starter.log:
   enabled: true
   # 包含信息
@@ -39,6 +36,17 @@ continew-starter.log:
     - OS
     - RESPONSE_HEADERS
     - RESPONSE_BODY
+## 项目日志配置
+logging:
+  config: classpath:logback-spring.xml
+
+--- ### 线程池配置
+continew-starter.thread-pool:
+  enabled: true
+  # 队列容量
+  queue-capacity: 128
+  # 活跃时间（单位：秒）
+  keep-alive-seconds: 300
 
 --- ### 接口文档配置
 springdoc:
@@ -194,14 +202,6 @@ management.health:
   mail:
     # 关闭邮箱健康检查（邮箱配置错误或邮箱服务器不可用时，健康检查会报错）
     enabled: false
-
---- ### 线程池配置
-thread-pool:
-  enabled: true
-  # 队列容量
-  queue-capacity: 128
-  # 活跃时间（单位：秒）
-  keep-alive-seconds: 300
 
 --- ### 代码生成器配置
 generator:

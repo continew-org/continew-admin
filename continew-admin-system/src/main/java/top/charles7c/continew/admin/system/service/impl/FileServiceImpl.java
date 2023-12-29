@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 
+import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
@@ -62,13 +63,16 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     private final FileStorageService fileStorageService;
 
     @Override
-    public void upload(MultipartFile file, String storageCode) {
+    public FileInfo upload(MultipartFile file, String storageCode) {
+        StorageDO storage;
         if (StrUtil.isBlank(storageCode)) {
-            StorageDO storage = storageService.getDefaultStorage();
+            storage = storageService.getDefaultStorage();
             CheckUtils.throwIfNull(storage, "请先指定默认存储库");
-            storageCode = storage.getCode();
+        } else {
+            storage = storageService.getByCode(storageCode);
+            CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
-        UploadPretreatment uploadPretreatment = fileStorageService.of(file).setPlatform(storageCode);
+        UploadPretreatment uploadPretreatment = fileStorageService.of(file).setPlatform(storage.getCode());
         uploadPretreatment.setProgressMonitor(new ProgressListener() {
             @Override
             public void start() {
@@ -85,7 +89,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
                 log.info("上传结束");
             }
         });
-        uploadPretreatment.upload();
+        // 处理本地存储文件 URL
+        FileInfo fileInfo = uploadPretreatment.upload();
+        fileInfo.setUrl(StorageTypeEnum.LOCAL.equals(storage.getType())
+            ? URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getUrl()) : fileInfo.getUrl());
+        return fileInfo;
     }
 
     @Override

@@ -41,7 +41,7 @@ import top.charles7c.continew.admin.system.service.StorageService;
  * @since 2023/12/24 22:31
  */
 @Slf4j
-//@Component
+@Component
 @RequiredArgsConstructor
 public class FileStorageConfigLoader implements ApplicationRunner {
 

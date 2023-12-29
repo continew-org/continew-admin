@@ -86,6 +86,22 @@ spring.cache:
     cache-null-values: true
 
 --- ### 验证码配置
+continew-starter.captcha:
+  # 行为验证码
+  behavior:
+    enabled: true
+    cache-type: REDIS
+    water-mark: ${project.app-name}
+  # 图形验证码
+  graphic:
+    enabled: true
+    # 类型
+    type: SPEC
+    # 内容长度
+    length: 4
+    # 过期时间
+    expirationInMinutes: 2
+## 其他验证码配置
 captcha:
   ## 邮箱验证码配置
   mail:
@@ -106,41 +122,38 @@ captcha:
     # 模板 ID
     templateId: 1
 
---- ### ContiNew Starter 组件配置
-continew-starter:
-  ## 验证码配置
-  captcha:
-    # 行为验证码配置
-    behavior:
-      enabled: true
-      cache-type: REDIS
-      water-mark: ${project.app-name}
-    # 图形验证码配置
-    graphic:
-      enabled: true
-      # 类型
-      type: SPEC
-      # 内容长度
-      length: 4
-      # 过期时间
-      expirationInMinutes: 2
-  ## 日志配置
-  log:
-    # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
-    is-print: false
-  ## 本地存储配置
-  storage:
-    local:
-      enabled: true
-      mapping:
-        FILE:
-          path-pattern: /file/**
-          location: ../data/file/
-          max-file-size: 10MB
-        AVATAR:
-          path-pattern: /avatar/**
-          location: ../data/avatar/
-          max-file-size: 5MB
+--- ### 日志配置
+continew-starter.log:
+  # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
+  is-print: false
+## 项目日志配置（配置重叠部分，优先级高于 logback-spring.xml 中的配置）
+logging:
+  level:
+    top.charles7c: INFO
+  file:
+    path: ../logs
+
+--- ### 跨域配置
+continew-starter.cors:
+  enabled: true
+  # 配置允许跨域的域名
+  allowed-origins:
+    - ${project.url}
+  # 配置允许跨域的请求方式
+  allowed-methods: '*'
+  # 配置允许跨域的请求头
+  allowed-headers: '*'
+  # 配置允许跨域的响应头
+  exposed-headers: '*'
+
+--- ### 接口文档配置
+springdoc:
+  swagger-ui:
+    enabled: false
+## 接口文档增强配置
+knife4j:
+  # 开启生产环境屏蔽
+  production: true
 
 --- ### 短信配置
 sms:
@@ -171,27 +184,6 @@ spring.mail:
           class: javax.net.ssl.SSLSocketFactory
           port: 465
 
---- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
-rsa:
-  # 私钥
-  privateKey: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV
-
---- ### 日志配置
-logging:
-  level:
-    top.charles7c: INFO
-  file:
-    path: ../logs
-
---- ### 接口文档配置
-springdoc:
-  swagger-ui:
-    enabled: false
-## 接口文档增强配置
-knife4j:
-  # 开启生产环境屏蔽
-  production: true
-
 --- ### Just Auth 配置
 justauth:
   enabled: true
@@ -219,7 +211,6 @@ sa-token.extension:
     - /**/*.js
     - /webSocket/**
     # 本地存储资源
-    - /avatar/**
     - /file/**
 
 --- ### 文件上传配置
@@ -231,15 +222,7 @@ spring.servlet:
     # 单次总上传文件大小限制
     max-request-size: 20MB
 
---- ### 跨域配置
-cors:
-  enabled: true
-  # 配置允许跨域的域名
-  allowed-origins:
-    - ${project.url}
-  # 配置允许跨域的请求方式
-  allowed-methods: '*'
-  # 配置允许跨域的请求头
-  allowed-headers: '*'
-  # 配置允许跨域的响应头
-  exposed-headers: '*'
+--- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
+rsa:
+  # 私钥
+  privateKey: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV

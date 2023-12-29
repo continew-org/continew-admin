@@ -2,8 +2,8 @@
   <div class="root">
     <div class="header">
       <img
-        :src="getFile(appStore.getLogo) ?? './logo.svg'"
-        alt="logo"
+        :src="appStore.getLogo ?? './logo.svg'"
+        alt="Logo"
         height="33"
       />
       <div class="logo-text">{{ appStore.getTitle }}</div>
@@ -78,7 +78,6 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { useAppStore } from '@/store';
-  import getFile from '@/utils/file';
   import useResponsive from '@/hooks/responsive';
   import { socialAuth } from '@/api/auth';
   import AccountLogin from './components/account-login.vue';

@@ -16,7 +16,6 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -24,15 +23,15 @@ import jakarta.annotation.Resource;
 
 import lombok.RequiredArgsConstructor;
 
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -51,17 +50,12 @@ import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
-import top.charles7c.continew.admin.system.service.DeptService;
-import top.charles7c.continew.admin.system.service.RoleService;
-import top.charles7c.continew.admin.system.service.UserRoleService;
-import top.charles7c.continew.admin.system.service.UserService;
+import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
-import top.charles7c.continew.starter.core.util.FileUploadUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
-import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStorageProperties;
 
 /**
  * 用户业务实现
@@ -75,11 +69,12 @@ import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStoragePr
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq>
     implements UserService, CommonUserService {
 
-    private final UserRoleService userRoleService;
-    private final RoleService roleService;
-    private final LocalStorageProperties localStorageProperties;
     @Resource
     private DeptService deptService;
+    private final RoleService roleService;
+    private final UserRoleService userRoleService;
+    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     @Override
     public Long add(UserDO user) {
@@ -164,26 +159,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
-        LocalStorageProperties.LocalStorageMapping storageMapping = localStorageProperties.getMapping().get("AVATAR");
-        DataSize maxFileSize = storageMapping.getMaxFileSize();
-        CheckUtils.throwIf(avatarFile.getSize() > maxFileSize.toBytes(), "请上传小于 {}MB 的图片", maxFileSize.toMegabytes());
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
             String.join(StringConstants.CHINESE_COMMA, avatarSupportImgTypes));
         // 上传新头像
         UserDO user = super.getById(id);
-        String avatarPath = storageMapping.getLocation();
-        File newAvatarFile = FileUploadUtils.upload(avatarFile, avatarPath, false);
-        CheckUtils.throwIfNull(newAvatarFile, "上传头像失败");
-        assert null != newAvatarFile;
+        FileInfo fileInfo = fileService.upload(avatarFile);
         // 更新用户头像
-        String newAvatar = newAvatarFile.getName();
+        String newAvatar = fileInfo.getUrl();
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
         // 删除原头像
         String oldAvatar = user.getAvatar();
         if (StrUtil.isNotBlank(oldAvatar)) {
-            FileUtil.del(avatarPath + oldAvatar);
+            fileStorageService.delete(oldAvatar);
         }
         return newAvatar;
     }

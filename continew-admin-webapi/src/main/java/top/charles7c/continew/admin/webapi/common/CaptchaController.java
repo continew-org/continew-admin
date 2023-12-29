@@ -63,6 +63,7 @@ import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.log.common.annotation.Log;
 import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
 
 /**
@@ -84,6 +85,7 @@ public class CaptchaController {
     private final ProjectProperties projectProperties;
     private final GraphicCaptchaProperties graphicCaptchaProperties;
 
+    @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
     @GetMapping("/behavior")
     public R<Object> getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
@@ -91,12 +93,14 @@ public class CaptchaController {
         return R.ok(captchaService.get(captchaReq).getRepData());
     }
 
+    @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
     public R<Object> checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq) {
         return R.ok(captchaService.check(captchaReq));
     }
 
+    @Log(ignore = true)
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
     public R<CaptchaResp> getImageCaptcha() {

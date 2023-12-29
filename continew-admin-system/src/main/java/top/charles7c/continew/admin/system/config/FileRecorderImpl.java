@@ -16,6 +16,8 @@
 
 package top.charles7c.continew.admin.system.config;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EscapeUtil;
+import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.enums.FileTypeEnum;
@@ -32,6 +35,7 @@ import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.mapper.StorageMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 文件记录实现类
@@ -50,7 +54,9 @@ public class FileRecorderImpl implements FileRecorder {
     @Override
     public boolean save(FileInfo fileInfo) {
         FileDO file = new FileDO();
-        file.setName(EscapeUtil.unescape(fileInfo.getOriginalFilename()));
+        String originalFilename = EscapeUtil.unescape(fileInfo.getOriginalFilename());
+        file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
+            ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true) : originalFilename);
         file.setSize(fileInfo.getSize());
         file.setUrl(fileInfo.getUrl());
         file.setExtension(fileInfo.getExt());
@@ -66,17 +72,40 @@ public class FileRecorderImpl implements FileRecorder {
 
     @Override
     public FileInfo getByUrl(String url) {
-        FileDO file = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).one();
+        FileDO file = this.getFileByUrl(url);
+        if (null == file) {
+            return null;
+        }
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setOriginalFilename(file.getName());
+        String extension = file.getExtension();
+        fileInfo.setOriginalFilename(
+            StrUtil.isNotBlank(extension) ? file.getName() + StringConstants.DOT + extension : file.getName());
         fileInfo.setSize(file.getSize());
         fileInfo.setUrl(file.getUrl());
-        fileInfo.setExt(file.getExtension());
+        fileInfo.setExt(extension);
+        fileInfo.setBasePath(StringConstants.EMPTY);
+        fileInfo.setPath(StringConstants.EMPTY);
+        fileInfo.setFilename(StrUtil.subAfter(url, StringConstants.SLASH, true));
+        fileInfo.setPlatform(storageMapper.lambdaQuery().eq(StorageDO::getId, file.getStorageId()).one().getCode());
         return fileInfo;
     }
 
     @Override
     public boolean delete(String url) {
-        return fileMapper.lambdaUpdate().eq(FileDO::getUrl, url).remove();
+        FileDO file = this.getFileByUrl(url);
+        return fileMapper.lambdaUpdate().eq(FileDO::getUrl, file.getUrl()).remove();
+    }
+
+    /**
+     * 根据 URL 查询文件
+     *
+     * @param url
+     *            URL
+     * @return 文件信息
+     */
+    private FileDO getFileByUrl(String url) {
+        Optional<FileDO> fileOptional = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).oneOpt();
+        return fileOptional.orElseGet(() -> fileMapper.lambdaQuery()
+            .eq(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true)).oneOpt().orElse(null));
     }
 }

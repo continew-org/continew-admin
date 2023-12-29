@@ -16,7 +16,6 @@
 
 package top.charles7c.continew.admin.webapi.common;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +31,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,14 +51,11 @@ import top.charles7c.continew.admin.system.model.query.RoleQuery;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
-import top.charles7c.continew.starter.core.util.FileUploadUtils;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
-import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStorageProperties;
 
 /**
  * 公共 API
@@ -75,26 +71,20 @@ import top.charles7c.continew.starter.storage.local.autoconfigure.LocalStoragePr
 @RequestMapping("/common")
 public class CommonController {
 
+    private final ProjectProperties projectProperties;
+    private final FileService fileService;
     private final DeptService deptService;
     private final MenuService menuService;
     private final RoleService roleService;
     private final DictItemService dictItemService;
-    private final ProjectProperties projectProperties;
-    private final LocalStorageProperties localStorageProperties;
     private final OptionService optionService;
 
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
     public R<String> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
-        LocalStorageProperties.LocalStorageMapping storageMapping = localStorageProperties.getMapping().get("FILE");
-        DataSize maxFileSize = storageMapping.getMaxFileSize();
-        CheckUtils.throwIf(file.getSize() > maxFileSize.toBytes(), "请上传小于 {}MB 的文件", maxFileSize.toMegabytes());
-        String filePath = storageMapping.getLocation();
-        File newFile = FileUploadUtils.upload(file, filePath, false);
-        CheckUtils.throwIfNull(newFile, "上传文件失败");
-        assert null != newFile;
-        return R.ok("上传成功", newFile.getName());
+        FileInfo fileInfo = fileService.upload(file);
+        return R.ok("上传成功", fileInfo.getUrl());
     }
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")

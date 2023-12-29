@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="left-side">
       <a-space>
-        <img alt="logo" :src="getFile(appStore.getLogo)" height="33" />
+        <img alt="logo" :src="appStore.getLogo" height="33" />
         <a-typography-title
           :style="{ margin: 0, fontSize: '18px' }"
           :heading="5"
@@ -199,7 +199,6 @@
   import useUser from '@/hooks/user';
   import Menu from '@/components/menu/index.vue';
   import getAvatar from '@/utils/avatar';
-  import getFile from '@/utils/file';
   import { setTimer } from '@/utils/auth';
   import MessageBox from '../message-box/index.vue';
 
