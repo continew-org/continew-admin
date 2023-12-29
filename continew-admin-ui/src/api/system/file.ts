@@ -47,7 +47,11 @@ export function get(id: string) {
   return axios.get<FileItem>(`${BASE_URL}/${id}`);
 }
 
-export function update(req: FileItem, id: string) {
+export interface FileItemUpdate {
+  name: string;
+}
+
+export function update(req: FileItemUpdate, id: string) {
   return axios.put(`${BASE_URL}/${id}`, req);
 }
 

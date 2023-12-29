@@ -5,10 +5,14 @@
       <a-space wrap>
         <a-form ref="queryRef" :model="queryParams" layout="inline">
           <a-form-item hide-label>
-            <a-button type="primary" shape="round">
-              <template #icon><icon-upload /></template>
-              <template #default>上传</template>
-            </a-button>
+            <a-upload :show-file-list="false" :custom-request="handleUpload">
+              <template #upload-button>
+                <a-button type="primary" shape="round">
+                  <template #icon><icon-upload /></template>
+                  <template #default>上传</template>
+                </a-button>
+              </template>
+            </a-upload>
           </a-form-item>
           <a-form-item field="name" hide-label>
             <a-input
@@ -87,12 +91,13 @@
 </template>
 
 <script setup lang="ts">
-  import { Message, Modal } from '@arco-design/web-vue';
+  import { Message, Modal, RequestOption } from '@arco-design/web-vue';
   import { api as viewerApi } from 'v-viewer';
   import { imageTypeList } from '@/constant/file';
   import { useFileStore } from '@/store/modules/file';
   import type { ListParam, FileItem } from '@/api/system/file';
-  import { list } from '@/api/system/file';
+  import { list, del } from '@/api/system/file';
+  import { upload } from '@/api/common';
   import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
   import { getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
   import FileGrid from './FileGrid.vue';
@@ -178,12 +183,17 @@
   };
   // 鼠标右键
   const handleRightMenuClick = (mode: string, fileInfo: FileItem) => {
-    Message.success(`点击了${mode}`);
     if (mode === 'delete') {
       Modal.warning({
         title: '提示',
-        content: '是否删除该文件？',
+        content: `是否确定删除文件 [${fileInfo.name}]？`,
         hideCancel: false,
+        onOk: () => {
+          del(fileInfo.id).then((res) => {
+            proxy.$message.success(res.msg);
+            getList();
+          });
+        },
       });
     }
     if (mode === 'rename') {
@@ -198,9 +208,50 @@
   const handleMulDelete = () => {
     Modal.warning({
       title: '提示',
-      content: '是否确认删除？',
+      content: `是否确定删除所选的${fileStore.selectedFileIds.length}个文件？`,
       hideCancel: false,
+      onOk: () => {
+        del(fileStore.selectedFileIds).then((res) => {
+          proxy.$message.success(res.msg);
+          getList();
+        });
+      },
     });
+  };
+
+  /**
+   * 上传
+   *
+   * @param options /
+   */
+  const handleUpload = (options: RequestOption) => {
+    const controller = new AbortController();
+    (async function requestWrap() {
+      const {
+        onProgress,
+        onError,
+        onSuccess,
+        fileItem,
+        name = 'file',
+      } = options;
+      onProgress(20);
+      const formData = new FormData();
+      formData.append(name as string, fileItem.file as Blob);
+      upload(formData)
+        .then((res) => {
+          onSuccess(res);
+          getList();
+          proxy.$message.success(res.msg);
+        })
+        .catch((error) => {
+          onError(error);
+        });
+    })();
+    return {
+      abort() {
+        controller.abort();
+      },
+    };
   };
 
   /**

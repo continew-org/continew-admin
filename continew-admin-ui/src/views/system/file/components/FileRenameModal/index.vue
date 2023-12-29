@@ -20,7 +20,7 @@
           label="文件名称"
           :rules="[{ required: true, message: '请输入文件名称' }]"
         >
-          <a-input v-model="form.name" placeholder="请输入" allow-clear />
+          <a-input v-model="form.name" placeholder="请输入文件名称" allow-clear />
         </a-form-item>
       </a-form>
     </a-row>
@@ -28,16 +28,16 @@
 </template>
 
 <script setup lang="ts">
+  import { getCurrentInstance, onMounted, reactive, ref } from 'vue';
   import type { FormInstance, Modal } from '@arco-design/web-vue';
-  import type { FileItem } from '@/api/system/file';
-  import { onMounted, reactive, ref } from 'vue';
+  import { FileItem, update } from '@/api/system/file';
 
   interface Props {
     fileInfo: FileItem;
     onClose: () => void;
   }
   const props = withDefaults(defineProps<Props>(), {});
-
+  const { proxy } = getCurrentInstance() as any;
   const visible = ref(false);
   type Form = { name: string };
   const form: Form = reactive({
@@ -54,20 +54,15 @@
     props.onClose();
   };
 
-  // 模拟接口
-  const saveApi = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 2000);
-    });
-  };
-
   const FormRef = ref<FormInstance | null>(null);
   const save: InstanceType<typeof Modal>['onBeforeOk'] = async () => {
     const flag = await FormRef.value?.validate();
     if (flag) return false;
-    return saveApi();
+    const res = await update({ name: form.name }, props.fileInfo.id);
+    // eslint-disable-next-line vue/no-mutating-props
+    props.fileInfo.name = form.name;
+    proxy.$message.success(res.msg);
+    return true;
   };
 </script>
 

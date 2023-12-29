@@ -10,7 +10,6 @@ import type { RouteRecordNormalized } from 'vue-router';
 import defaultSettings from '@/config/settings.json';
 import { listRoute } from '@/api/auth';
 import { listOption } from '@/api/common';
-import getFile from '@/utils/file';
 import { AppState, Config } from './types';
 
 const recursionMenu = (
@@ -134,7 +133,7 @@ const useAppStore = defineStore('app', {
           .querySelector('link[rel="shortcut icon"]')
           ?.setAttribute(
             'href',
-            getFile(resMap.get('site_favicon')) ||
+            resMap.get('site_favicon') ||
               'https://cnadmin.charles7c.top/favicon.ico',
           );
       });
@@ -152,8 +151,7 @@ const useAppStore = defineStore('app', {
         .querySelector('link[rel="shortcut icon"]')
         ?.setAttribute(
           'href',
-          getFile(config.site_favicon) ||
-            'https://cnadmin.charles7c.top/favicon.ico',
+          config.site_favicon || 'https://cnadmin.charles7c.top/favicon.ico',
         );
     },
   },

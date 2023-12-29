@@ -18,22 +18,34 @@ package top.charles7c.continew.admin.system.model.req;
 
 import java.io.Serial;
 
+import jakarta.validation.constraints.NotBlank;
+
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.hibernate.validator.constraints.Length;
+
 import top.charles7c.continew.starter.extension.crud.base.BaseReq;
 
 /**
- * 创建或修改文件信息
+ * 修改文件信息
  *
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
 @Data
-@Schema(description = "创建或修改文件信息")
+@Schema(description = "修改文件信息")
 public class FileReq extends BaseReq {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 名称
+     */
+    @Schema(description = "名称", example = "test123")
+    @NotBlank(message = "文件名称不能为空")
+    @Length(max = 255, message = "文件名称长度不能超过 {max} 个字符")
+    private String name;
 }

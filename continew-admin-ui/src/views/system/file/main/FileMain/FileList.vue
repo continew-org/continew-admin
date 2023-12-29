@@ -37,11 +37,11 @@
         </a-table-column>
         <a-table-column
           title="扩展名"
-          data-index="extendName"
+          data-index="extension"
           :width="100"
         ></a-table-column>
         <a-table-column
-          title="更改时间"
+          title="修改时间"
           data-index="updateTime"
           :width="200"
         ></a-table-column>

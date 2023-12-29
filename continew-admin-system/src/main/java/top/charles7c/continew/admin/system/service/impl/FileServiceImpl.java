@@ -17,6 +17,8 @@
 package top.charles7c.continew.admin.system.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
 
@@ -61,6 +63,20 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     @Resource
     private StorageService storageService;
     private final FileStorageService fileStorageService;
+
+    @Override
+    public void delete(List<Long> ids) {
+        List<FileDO> fileList = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
+        Map<Long, List<FileDO>> fileListGroup = fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
+            StorageDetailResp storage = storageService.get(entry.getKey());
+            for (FileDO file : entry.getValue()) {
+                FileInfo fileInfo = file.toFileInfo(storage.getCode());
+                fileStorageService.delete(fileInfo);
+            }
+        }
+        super.delete(ids);
+    }
 
     @Override
     public FileInfo upload(MultipartFile file, String storageCode) {

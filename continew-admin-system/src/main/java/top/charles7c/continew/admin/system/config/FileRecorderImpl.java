@@ -76,18 +76,7 @@ public class FileRecorderImpl implements FileRecorder {
         if (null == file) {
             return null;
         }
-        FileInfo fileInfo = new FileInfo();
-        String extension = file.getExtension();
-        fileInfo.setOriginalFilename(
-            StrUtil.isNotBlank(extension) ? file.getName() + StringConstants.DOT + extension : file.getName());
-        fileInfo.setSize(file.getSize());
-        fileInfo.setUrl(file.getUrl());
-        fileInfo.setExt(extension);
-        fileInfo.setBasePath(StringConstants.EMPTY);
-        fileInfo.setPath(StringConstants.EMPTY);
-        fileInfo.setFilename(StrUtil.subAfter(url, StringConstants.SLASH, true));
-        fileInfo.setPlatform(storageMapper.lambdaQuery().eq(StorageDO::getId, file.getStorageId()).one().getCode());
-        return fileInfo;
+        return file.toFileInfo(storageMapper.lambdaQuery().eq(StorageDO::getId, file.getStorageId()).one().getCode());
     }
 
     @Override

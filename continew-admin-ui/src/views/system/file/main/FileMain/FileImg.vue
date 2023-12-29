@@ -1,6 +1,6 @@
 <template>
   <img v-if="isImage" class="img" :src="props.data.url || ''" alt="" />
-  <svg-icon v-else size="100%" :icon-class="getFileImg" />
+  <svg-icon v-else :icon-class="getFileImg" style="height: 100%; width: 100%" />
 </template>
 
 <script setup lang="ts">
