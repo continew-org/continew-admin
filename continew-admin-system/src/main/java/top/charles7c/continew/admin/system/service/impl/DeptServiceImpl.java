@@ -57,9 +57,9 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq>
     implements DeptService {
 
-    private final RoleDeptService roleDeptService;
     @Resource
     private UserService userService;
+    private final RoleDeptService roleDeptService;
 
     @Override
     public Long add(DeptReq req) {

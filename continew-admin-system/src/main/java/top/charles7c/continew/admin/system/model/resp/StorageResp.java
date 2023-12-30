@@ -56,26 +56,26 @@ public class StorageResp extends BaseResp {
     /**
      * 类型
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2"}, example = "2")
+    @Schema(description = "类型（1：兼容S3协议存储；2：本地存储）", type = "Integer", allowableValues = {"1", "2"}, example = "2")
     private StorageTypeEnum type;
 
     /**
-     * Access Key
+     * 访问密钥
      */
-    @Schema(description = "Access Key", example = "")
+    @Schema(description = "访问密钥", example = "")
     private String accessKey;
 
     /**
-     * Secret Key
+     * 私有密钥
      */
-    @Schema(description = "Secret Key", example = "")
+    @Schema(description = "私有密钥", example = "")
     @JsonIgnore
     private String secretKey;
 
     /**
-     * Endpoint
+     * 终端节点
      */
-    @Schema(description = "Endpoint", example = "")
+    @Schema(description = "终端节点", example = "")
     private String endpoint;
 
     /**

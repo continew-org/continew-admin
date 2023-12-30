@@ -68,7 +68,8 @@ public class FileResp extends BaseDetailResp {
     /**
      * 类型
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3", "4", "5"}, example = "2")
+    @Schema(description = "类型（1：其他；2：图片；3：文档；4：视频；5：音频）", type = "Integer", allowableValues = {"1", "2", "3", "4", "5"},
+        example = "2")
     private FileTypeEnum type;
 
     /**

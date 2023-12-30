@@ -57,8 +57,8 @@ import top.charles7c.continew.starter.extension.crud.model.resp.R;
 @RequestMapping("/tool/generator")
 public class GeneratorController {
 
-    private final GeneratorService generatorService;
     private final ProjectProperties projectProperties;
+    private final GeneratorService generatorService;
 
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")

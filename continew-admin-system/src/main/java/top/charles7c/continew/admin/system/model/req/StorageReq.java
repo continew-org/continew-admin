@@ -68,24 +68,24 @@ public class StorageReq extends BaseReq {
     private StorageTypeEnum type;
 
     /**
-     * Access Key
+     * 访问密钥
      */
-    @Schema(description = "Access Key", example = "")
-    @Length(max = 255, message = "Access Key长度不能超过 {max} 个字符")
+    @Schema(description = "访问密钥", example = "")
+    @Length(max = 255, message = "访问密钥长度不能超过 {max} 个字符")
     private String accessKey;
 
     /**
-     * Secret Key
+     * 私有密钥
      */
-    @Schema(description = "Secret Key", example = "")
-    @Length(max = 255, message = "Secret Key长度不能超过 {max} 个字符")
+    @Schema(description = "私有密钥", example = "")
+    @Length(max = 255, message = "私有密钥长度不能超过 {max} 个字符")
     private String secretKey;
 
     /**
-     * Endpoint
+     * 终端节点
      */
-    @Schema(description = "Endpoint", example = "")
-    @Length(max = 255, message = "Endpoint长度不能超过 {max} 个字符")
+    @Schema(description = "终端节点", example = "")
+    @Length(max = 255, message = "终端节点长度不能超过 {max} 个字符")
     private String endpoint;
 
     /**

@@ -61,29 +61,29 @@ public class StorageDetailResp extends BaseDetailResp {
     /**
      * 类型
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2"}, example = "2")
+    @Schema(description = "类型（1：兼容S3协议存储；2：本地存储）", type = "Integer", allowableValues = {"1", "2"}, example = "2")
     @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private StorageTypeEnum type;
 
     /**
-     * Access Key
+     * 访问密钥
      */
-    @Schema(description = "Access Key", example = "")
-    @ExcelProperty(value = "Access Key")
+    @Schema(description = "访问密钥", example = "")
+    @ExcelProperty(value = "访问密钥")
     private String accessKey;
 
     /**
-     * Secret Key
+     * 私有密钥
      */
-    @Schema(description = "Secret Key", example = "")
-    @ExcelProperty(value = "Secret Key")
+    @Schema(description = "私有密钥", example = "")
+    @ExcelProperty(value = "私有密钥")
     private String secretKey;
 
     /**
-     * Endpoint
+     * 终端节点
      */
-    @Schema(description = "Endpoint", example = "")
-    @ExcelProperty(value = "Endpoint")
+    @Schema(description = "终端节点", example = "")
+    @ExcelProperty(value = "终端节点")
     private String endpoint;
 
     /**

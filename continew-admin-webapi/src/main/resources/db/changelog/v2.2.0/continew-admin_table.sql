@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
     `code`        varchar(30)  NOT NULL                    COMMENT '编码',
     `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：兼容S3协议存储；2：本地存储）',
     `access_key`  varchar(255) DEFAULT NULL                COMMENT 'Access Key（访问密钥）',
-    `secret_key`  varchar(255) DEFAULT NULL                COMMENT 'Secret Key（私有访问密钥）',
+    `secret_key`  varchar(255) DEFAULT NULL                COMMENT 'Secret Key（私有密钥）',
     `endpoint`    varchar(255) DEFAULT NULL                COMMENT 'Endpoint（终端节点）',
     `bucket_name` varchar(255) DEFAULT NULL                COMMENT '桶名称',
     `domain`      varchar(255) NOT NULL DEFAULT ''         COMMENT '自定义域名',

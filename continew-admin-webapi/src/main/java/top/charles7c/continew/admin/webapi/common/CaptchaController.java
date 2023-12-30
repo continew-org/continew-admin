@@ -81,8 +81,8 @@ import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
 public class CaptchaController {
 
     private final CaptchaService captchaService;
-    private final CaptchaProperties captchaProperties;
     private final ProjectProperties projectProperties;
+    private final CaptchaProperties captchaProperties;
     private final GraphicCaptchaProperties graphicCaptchaProperties;
 
     @Log(ignore = true)

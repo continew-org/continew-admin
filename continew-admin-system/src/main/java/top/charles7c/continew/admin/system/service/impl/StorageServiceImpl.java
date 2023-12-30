@@ -55,6 +55,7 @@ import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
@@ -130,10 +131,16 @@ public class StorageServiceImpl
     public void load(StorageReq req) {
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
         String bucketName = req.getBucketName();
+        String domain = req.getDomain();
         StorageTypeEnum type = req.getType();
         switch (type) {
             case LOCAL -> {
                 ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
+                ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
+                ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
+                req.setDomain(StrUtil.appendIfMissing(domain, StringConstants.SLASH));
+                req.setBucketName(StrUtil.appendIfMissing(
+                    bucketName.replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
                 FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
                 config.setPlatform(req.getCode());
                 config.setStoragePath(bucketName);
@@ -145,9 +152,9 @@ public class StorageServiceImpl
                 String accessKey = req.getAccessKey();
                 String secretKey = req.getSecretKey();
                 String endpoint = req.getEndpoint();
-                ValidationUtils.throwIfBlank(accessKey, "Access Key不能为空");
-                ValidationUtils.throwIfBlank(secretKey, "Secret Key不能为空");
-                ValidationUtils.throwIfBlank(endpoint, "Endpoint不能为空");
+                ValidationUtils.throwIfBlank(accessKey, "访问密钥不能为空");
+                ValidationUtils.throwIfBlank(secretKey, "私有密钥不能为空");
+                ValidationUtils.throwIfBlank(endpoint, "终端节点不能为空");
                 ValidationUtils.throwIfBlank(bucketName, "桶名称不能为空");
                 FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
                 config.setPlatform(req.getCode());
@@ -155,7 +162,7 @@ public class StorageServiceImpl
                 config.setSecretKey(secretKey);
                 config.setEndPoint(endpoint);
                 config.setBucketName(bucketName);
-                config.setDomain(req.getDomain());
+                config.setDomain(domain);
                 fileStorageList.addAll(
                     FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections.singletonList(config), null));
             }
