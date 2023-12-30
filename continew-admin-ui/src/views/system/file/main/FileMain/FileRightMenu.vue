@@ -1,18 +1,18 @@
 <template>
   <GiOption :class="{ option: showClassStyle }">
-    <GiOptionItem @click="onClickItem('rename')">
+    <GiOptionItem v-permission="['system:file:update']" @click="onClickItem('rename')">
       <template #icon><svg-icon icon-class="menu-edit" /></template>
       <span>重命名</span>
     </GiOptionItem>
-    <GiOptionItem @click="onClickItem('download')">
+    <GiOptionItem v-permission="['system:file:download']" @click="onClickItem('download')">
       <template #icon><svg-icon icon-class="menu-download" /></template>
       <span>下载</span>
     </GiOptionItem>
-    <GiOptionItem @click="onClickItem('detail')">
+    <GiOptionItem v-permission="['system:file:list']" @click="onClickItem('detail')">
       <template #icon><svg-icon icon-class="menu-detail" /></template>
       <span>详情</span>
     </GiOptionItem>
-    <GiOptionItem @click="onClickItem('delete')">
+    <GiOptionItem v-permission="['system:file:delete']" @click="onClickItem('delete')">
       <template #icon><svg-icon icon-class="menu-delete" /></template>
       <span>删除</span>
     </GiOptionItem>

@@ -23,7 +23,6 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.charles7c.continew.admin.system.enums.FileTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
@@ -46,48 +45,35 @@ public class FileResp extends BaseDetailResp {
      * 名称
      */
     @Schema(description = "名称", example = "example")
-    @ExcelProperty(value = "名称")
     private String name;
 
     /**
      * 大小（字节）
      */
     @Schema(description = "大小（字节）", example = "4096")
-    @ExcelProperty(value = "大小（字节）")
     private Long size;
 
     /**
      * URL
      */
     @Schema(description = "URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg")
-    @ExcelProperty(value = "URL")
     private String url;
 
     /**
      * 扩展名
      */
     @Schema(description = "扩展名", example = "jpg")
-    @ExcelProperty(value = "扩展名")
     private String extension;
-
-    /**
-     * MIME类型
-     */
-    @Schema(description = "MIME类型")
-    @ExcelProperty(value = "MIME类型")
-    private String mimeType;
 
     /**
      * 类型
      */
     @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2", "3", "4", "5"}, example = "2")
-    @ExcelProperty(value = "类型")
     private FileTypeEnum type;
 
     /**
      * 存储库 ID
      */
     @Schema(description = "存储库ID", example = "1")
-    @ExcelProperty(value = "存储库ID")
     private Long storageId;
 }

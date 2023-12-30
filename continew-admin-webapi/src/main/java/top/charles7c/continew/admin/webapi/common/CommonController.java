@@ -82,6 +82,7 @@ public class CommonController {
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
     public R<String> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
+        ValidationUtils.throwIf(projectProperties.isProduction(), "演示环境不支持上传文件");
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file);
         return R.ok("上传成功", fileInfo.getUrl());

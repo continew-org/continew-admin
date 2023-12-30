@@ -22,6 +22,9 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseResp;
 
@@ -41,72 +44,78 @@ public class StorageResp extends BaseResp {
     /**
      * 名称
      */
-    @Schema(description = "名称")
+    @Schema(description = "名称", example = "存储库1")
     private String name;
 
     /**
      * 编码
      */
-    @Schema(description = "编码")
+    @Schema(description = "编码", example = "local")
     private String code;
 
     /**
      * 类型
      */
-    @Schema(description = "类型")
+    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2"}, example = "2")
     private StorageTypeEnum type;
 
     /**
      * Access Key
      */
-    @Schema(description = "Access Key")
+    @Schema(description = "Access Key", example = "")
     private String accessKey;
 
     /**
      * Secret Key
      */
-    @Schema(description = "Secret Key")
+    @Schema(description = "Secret Key", example = "")
+    @JsonIgnore
     private String secretKey;
 
     /**
      * Endpoint
      */
-    @Schema(description = "Endpoint")
+    @Schema(description = "Endpoint", example = "")
     private String endpoint;
 
     /**
      * 桶名称
      */
-    @Schema(description = "桶名称")
+    @Schema(description = "桶名称", example = "C:/continew-admin/data/file/")
     private String bucketName;
 
     /**
      * 自定义域名
      */
-    @Schema(description = "自定义域名")
+    @Schema(description = "自定义域名", example = "http://localhost:8000/file")
     private String domain;
 
     /**
      * 描述
      */
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "存储库描述")
     private String description;
 
     /**
      * 是否为默认存储
      */
-    @Schema(description = "是否为默认存储")
+    @Schema(description = "是否为默认存储", example = "true")
     private Boolean isDefault;
 
     /**
      * 排序
      */
-    @Schema(description = "排序")
+    @Schema(description = "排序", example = "1")
     private Integer sort;
 
     /**
      * 状态
      */
-    @Schema(description = "状态")
-    private Integer status;
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    private DisEnableStatusEnum status;
+
+    @Override
+    public Boolean getDisabled() {
+        return this.getIsDefault();
+    }
 }

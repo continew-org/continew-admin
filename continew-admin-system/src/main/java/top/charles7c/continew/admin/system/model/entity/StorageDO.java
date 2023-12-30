@@ -22,6 +22,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDO;
 
@@ -96,5 +97,5 @@ public class StorageDO extends BaseDO {
     /**
      * 状态
      */
-    private Integer status;
+    private DisEnableStatusEnum status;
 }

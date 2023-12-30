@@ -78,6 +78,7 @@ public class StorageServiceImpl
 
     @Override
     public Long add(StorageReq req) {
+        CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储库");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         req.setStatus(DisEnableStatusEnum.ENABLE);
@@ -87,14 +88,20 @@ public class StorageServiceImpl
 
     @Override
     public void update(StorageReq req, Long id) {
+        CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(id), "请先取消原有默认存储库");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         StorageDO oldStorage = super.getById(id);
         CheckUtils.throwIf(
             Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE.equals(req.getStatus()),
             "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
-        this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
-        this.load(req);
+        if (DisEnableStatusEnum.ENABLE.equals(oldStorage.getStatus())
+            || DisEnableStatusEnum.DISABLE.equals(req.getStatus())) {
+            this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
+        }
+        if (DisEnableStatusEnum.ENABLE.equals(req.getStatus())) {
+            this.load(req);
+        }
         super.update(req, id);
     }
 
@@ -102,7 +109,10 @@ public class StorageServiceImpl
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储库存在文件关联，请删除文件后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(s -> this.unload(BeanUtil.copyProperties(s, StorageReq.class)));
+        storageList.forEach(s -> {
+            CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储库，不允许禁用", s.getName());
+            this.unload(BeanUtil.copyProperties(s, StorageReq.class));
+        });
         super.delete(ids);
     }
 
@@ -159,6 +169,18 @@ public class StorageServiceImpl
         fileStorageList.remove(fileStorage);
         fileStorage.close();
         this.registerResource(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req.getBucketName()), true);
+    }
+
+    /**
+     * 默认存储库是否存在
+     *
+     * @param id
+     *            ID
+     * @return 是否存在
+     */
+    private boolean isDefaultExists(Long id) {
+        return baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, Boolean.TRUE).ne(null != id, StorageDO::getId, id)
+            .exists();
     }
 
     /**

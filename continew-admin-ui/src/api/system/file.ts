@@ -9,7 +9,6 @@ export interface FileItem {
   size: number;
   url: string;
   extension: string;
-  mimeType?: string;
   type?: string;
   storageId?: string;
   createUser?: string;
