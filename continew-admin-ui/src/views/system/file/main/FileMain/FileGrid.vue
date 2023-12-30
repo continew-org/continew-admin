@@ -167,6 +167,9 @@
         padding: 0 5px;
         text-align: center;
         box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }

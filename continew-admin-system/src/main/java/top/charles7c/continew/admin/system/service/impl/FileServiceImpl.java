@@ -38,7 +38,6 @@ import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
-import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
 import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.service.FileService;
@@ -57,7 +56,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileDetailResp, FileQuery, FileReq>
+public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq>
     implements FileService {
 
     @Resource

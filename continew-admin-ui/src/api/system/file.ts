@@ -43,10 +43,6 @@ export function list(params: ListParam) {
   });
 }
 
-export function get(id: string) {
-  return axios.get<FileItem>(`${BASE_URL}/${id}`);
-}
-
 export interface FileItemUpdate {
   name: string;
 }

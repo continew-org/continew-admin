@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
-import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
 
@@ -33,7 +32,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
-public interface FileService extends BaseService<FileResp, FileDetailResp, FileQuery, FileReq> {
+public interface FileService extends BaseService<FileResp, FileResp, FileQuery, FileReq> {
 
     /**
      * 上传到默认存储库

@@ -73,7 +73,7 @@
         :selected-file-ids="fileStore.selectedFileIds"
         @click="handleClickFile"
         @check="handleCheckFile"
-        @rightMenuClick="handleRightMenuClick"
+        @right-menu-click="handleRightMenuClick"
       ></FileGrid>
 
       <!-- 文件列表-列表模式 -->
@@ -82,7 +82,7 @@
         :data="fileList"
         :is-batch-mode="isBatchMode"
         @click="handleClickFile"
-        @rightMenuClick="handleRightMenuClick"
+        @right-menu-click="handleRightMenuClick"
       ></FileList>
 
       <a-empty v-show="!fileList.length"></a-empty>
@@ -91,26 +91,27 @@
 </template>
 
 <script setup lang="ts">
-  import { Message, Modal, RequestOption } from '@arco-design/web-vue';
+  import { Modal, RequestOption } from '@arco-design/web-vue';
   import { api as viewerApi } from 'v-viewer';
   import { imageTypeList } from '@/constant/file';
   import { useFileStore } from '@/store/modules/file';
   import type { ListParam, FileItem } from '@/api/system/file';
   import { list, del } from '@/api/system/file';
   import { upload } from '@/api/common';
-  import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
+  import { onBeforeRouteUpdate, useRoute } from 'vue-router';
   import { getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
   import FileGrid from './FileGrid.vue';
   import FileList from './FileList.vue';
   import {
     openFileRenameModal,
+    openFileDetailModal,
     previewFileVideoModal,
     previewFileAudioModal,
   } from '../../components/index';
+  import 'viewerjs/dist/viewer.css';
 
   const { proxy } = getCurrentInstance() as any;
   const route = useRoute();
-  const router = useRouter();
   const fileStore = useFileStore();
   const loading = ref(false);
   // 文件列表数据
@@ -152,7 +153,6 @@
 
   // 点击文件
   const handleClickFile = (item: FileItem) => {
-    Message.success(`点击了文件-${item.name}`);
     if (imageTypeList.includes(item.extension)) {
       if (item.url) {
         const imgList: string[] = fileList.value
@@ -196,11 +196,19 @@
         },
       });
     }
+    if (mode === 'download') {
+      const link = document.createElement('a');
+      link.href = fileInfo.url;
+      link.download = fileInfo.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
     if (mode === 'rename') {
       openFileRenameModal(fileInfo);
     }
     if (mode === 'detail') {
-      // TODO
+      openFileDetailModal(fileInfo);
     }
   };
 

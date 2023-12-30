@@ -68,9 +68,9 @@
           <a-table-column title="请求 URI">
             <template #cell="{ record }">
               <span :title="decodeURIComponent(record.requestUrl)">{{
-                  record.requestUrl.match(
-                      /(\w+):\/\/([^/:]+)(:\d*)?([^#|\?|\n]*)(\?.*)?/,
-                  )[4]
+                record.requestUrl.match(
+                  /(\w+):\/\/([^/:]+)(:\d*)?([^#|\?|\n]*)(\?.*)?/,
+                )[4]
               }}</span>
             </template>
           </a-table-column>

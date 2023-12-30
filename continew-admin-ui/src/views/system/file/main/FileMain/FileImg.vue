@@ -1,12 +1,13 @@
 <template>
   <img v-if="isImage" class="img" :src="props.data.url || ''" alt="" />
-  <svg-icon v-else :icon-class="getFileImg" style="height: 100%; width: 100%" />
+  <SvgIcon v-else :icon-class="getFileImg" style="height: 100%; width: 100%" />
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue';
   import { fileExtendNameIconMap, imageTypeList } from '@/constant/file';
   import type { FileItem } from '@/api/system/file';
-  import { computed } from 'vue';
+  import SvgIcon from '@/components/svg-icon/index.vue';
 
   interface Props {
     data: FileItem;
@@ -21,9 +22,6 @@
 
   // 获取文件图标，如果是图片这显示图片
   const getFileImg = computed<string>(() => {
-    // if (props.data?.isDir) {
-    //   return fileExtendNameIconMap.dir || '';
-    // }
     if (imageTypeList.includes(props.data.extension.toLowerCase())) {
       return props.data.url || '';
     }

@@ -5,6 +5,7 @@ import ArcoVue from '@arco-design/web-vue';
 import { FileItem } from '@/api/system/file';
 
 import FileRenameModal from './FileRenameModal/index.vue';
+import FileDetailModal from './FileDetailModal/index.vue';
 import PreviewVideoModal from './PreviewVideoModal/index.vue';
 import PreviewAudioModal from './PreviewAudioModal/index.vue';
 
@@ -41,15 +42,22 @@ export function openFileRenameModal(fileItem: FileItem) {
   return createModal<TFileOptions>(FileRenameModal, { fileInfo: fileItem });
 }
 
+/** 打开 详情 弹窗 */
+export function openFileDetailModal(fileItem: FileItem) {
+  return createModal<TFileOptions>(FileDetailModal, { fileInfo: fileItem });
+}
+
 /** 预览 视频文件 弹窗 */
 export function previewFileVideoModal(fileItem: FileItem) {
   return createModal<TFileOptions>(PreviewVideoModal, { fileInfo: fileItem });
 }
 
 /** 预览 音频文件 弹窗 */
-let fileAudioId = '';
+let fileAudioId: string = '';
 export function previewFileAudioModal(fileItem: FileItem) {
-  if (fileAudioId) return; // 防止重复打开
+  if (fileAudioId) {
+    fileAudioId = '';
+  }
   fileAudioId = fileItem.id;
   // eslint-disable-next-line consistent-return
   return createModal<TFileOptions>(PreviewAudioModal, {

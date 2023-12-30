@@ -1,8 +1,9 @@
 <template>
   <a-modal
     v-model:visible="visible"
-    title="视频播放"
+    :title="title"
     width="auto"
+    :footer="false"
     draggable
     @close="close"
   >
@@ -22,8 +23,10 @@
   const props = withDefaults(defineProps<Props>(), {});
 
   const visible = ref(false);
+  const title = ref();
 
   onMounted(() => {
+    title.value = `${props.fileInfo.name}.${props.fileInfo.extension}`;
     visible.value = true;
     nextTick(() => {
       // eslint-disable-next-line no-new
@@ -34,6 +37,7 @@
         autoplay: true,
         closeVideoClick: true,
         videoInit: true,
+        fitVideoSize: 'auto',
       });
     });
   });

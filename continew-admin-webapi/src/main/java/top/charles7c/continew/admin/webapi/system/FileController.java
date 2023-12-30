@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
-import top.charles7c.continew.admin.system.model.resp.FileDetailResp;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
@@ -37,5 +36,5 @@ import top.charles7c.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "文件管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.GET, Api.UPDATE, Api.DELETE})
-public class FileController extends BaseController<FileService, FileResp, FileDetailResp, FileQuery, FileReq> {}
+@CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.DELETE})
+public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {}

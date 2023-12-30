@@ -48,7 +48,8 @@
     "pinia": "^2.1.7",
     "query-string": "^8.1.0",
     "sortablejs": "^1.15.1",
-    "v-viewer": "^1.6.4",
+    "v-viewer": "^3.0.10",
+    "viewerjs": "^1.11.6",
     "vue": "3.3.7",
     "vue-codemirror": "^6.1.1",
     "vue-cropper": "^1.1.1",
@@ -57,7 +58,7 @@
     "vue-json-pretty": "^2.3.0",
     "vue-router": "^4.2.5",
     "vue3-colorpicker": "^2.2.3",
-    "xgplayer": "^3.0.11"
+    "xgplayer": "^2.31.6"
   },
   "devDependencies": {
     "@arco-plugins/vite-vue": "^1.4.5",
