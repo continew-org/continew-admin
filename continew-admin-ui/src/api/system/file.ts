@@ -22,19 +22,11 @@ export interface FileItem {
 export interface ListParam {
   name?: string;
   type?: string;
-  updateTime?: string;
-  page?: number;
-  size?: number;
   sort?: Array<string>;
 }
 
-export interface PageRes<T> {
-  total: number;
-  list: T;
-}
-
 export function list(params: ListParam) {
-  return axios.get<PageRes<FileItem[]>>(`${BASE_URL}`, {
+  return axios.get<FileItem[]>(`${BASE_URL}/list`, {
     params,
     paramsSerializer: (obj) => {
       return qs.stringify(obj);

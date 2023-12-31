@@ -464,7 +464,7 @@
       isBatchMode.value = false;
       params.type = params.type === '0' ? undefined : params.type;
       const res = await list(params);
-      fileList.value = res.data.list;
+      fileList.value = res.data;
     } finally {
       loading.value = false;
     }

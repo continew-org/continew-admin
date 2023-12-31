@@ -1,11 +1,7 @@
 <template>
   <div class="root">
     <div class="header">
-      <img
-        :src="appStore.getLogo ?? './logo.svg'"
-        alt="Logo"
-        height="33"
-      />
+      <img :src="appStore.getLogo ?? './logo.svg'" alt="Logo" height="33" />
       <div class="logo-text">{{ appStore.getTitle }}</div>
     </div>
     <div class="container">

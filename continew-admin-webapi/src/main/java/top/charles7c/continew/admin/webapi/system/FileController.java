@@ -36,5 +36,5 @@ import top.charles7c.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "文件管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/file", api = {Api.LIST, Api.UPDATE, Api.DELETE})
 public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {}
