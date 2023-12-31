@@ -42,6 +42,7 @@ import top.charles7c.continew.admin.system.model.resp.FileResp;
 import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
@@ -106,7 +107,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         // 处理本地存储文件 URL
         FileInfo fileInfo = uploadPretreatment.upload();
         fileInfo.setUrl(StorageTypeEnum.LOCAL.equals(storage.getType())
-            ? URLUtil.normalize(storage.getDomain() + fileInfo.getUrl()) : fileInfo.getUrl());
+            ? URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getUrl()) : fileInfo.getUrl());
         return fileInfo;
     }
 
@@ -119,7 +120,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     protected void fill(Object baseObj) {
         if (baseObj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
             StorageDetailResp storage = storageService.get(fileResp.getStorageId());
-            fileResp.setUrl(URLUtil.normalize(storage.getDomain() + fileResp.getUrl()));
+            fileResp.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl()));
         }
         super.fill(baseObj);
     }

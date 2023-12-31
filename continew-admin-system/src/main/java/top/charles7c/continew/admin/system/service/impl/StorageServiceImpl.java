@@ -138,7 +138,6 @@ public class StorageServiceImpl
                 ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
                 ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
                 ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
-                req.setDomain(StrUtil.appendIfMissing(domain, StringConstants.SLASH));
                 req.setBucketName(StrUtil.appendIfMissing(
                     bucketName.replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
                 FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
