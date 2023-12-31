@@ -14,7 +14,7 @@
     <a-row>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/guide/intro/what-is.html"
+          href="https://doc.charles7c.top/admin/intro/what-is.html"
           target="_blank"
           rel="noopener"
         >
@@ -23,7 +23,7 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/guide/intro/quick-start.html"
+          href="https://doc.charles7c.top/admin/intro/quick-start.html"
           target="_blank"
           rel="noopener"
         >
@@ -32,7 +32,7 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/faq.html"
+          href="https://doc.charles7c.top/admin/other/faq.html"
           target="_blank"
           rel="noopener"
         >
@@ -41,7 +41,7 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/changelog.html"
+          href="https://doc.charles7c.top/admin/other/changelog.html"
           target="_blank"
           rel="noopener"
         >
@@ -50,7 +50,7 @@
       </a-col>
       <a-col :span="12">
         <a-link
-          href="https://doc.charles7c.top/other/require.html"
+          href="https://doc.charles7c.top/admin/intro/require.html"
           target="_blank"
           rel="noopener"
         >

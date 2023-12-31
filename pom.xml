@@ -33,7 +33,7 @@
     </modules>
 
     <properties>
-        <revision>2.2.0-SNAPSHOT</revision>
+        <revision>2.2.0</revision>
         <!-- Maven Plugin Versions -->
         <spotless.version>2.40.0</spotless.version>
     </properties>
