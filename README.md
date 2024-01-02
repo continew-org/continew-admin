@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v2.2.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v2.3.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -36,10 +36,10 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ## 项目源码
 
-| 开源平台      | 后端源码地址                                | 前端源码地址                                   |
-| ------------- | ------------------------------------------- | ---------------------------------------------- |
-| GitHub        | https://github.com/Charles7c/continew-admin | https://github.com/Charles7c/continew-admin-ui |
-| Gitee（码云） | https://gitee.com/Charles7c/continew-admin  | https://gitee.com/Charles7c/continew-admin-ui  |
+|        | 后端源码                                | 前端源码                                   |
+|--------| ----------------------------------------- | -------------------------------------------- |
+| GitHub | https://github.com/Charles7c/continew-admin | https://github.com/Charles7c/continew-admin-ui |
+| Gitee  | https://gitee.com/Charles7c/continew-admin | https://gitee.com/Charles7c/continew-admin-ui |
 
 ## 主要特性
 

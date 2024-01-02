@@ -12,7 +12,7 @@
     <parent>
         <groupId>top.charles7c.continew</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1-SNAPSHOT</version>
     </parent>
 
     <groupId>top.charles7c.continew</groupId>
@@ -33,7 +33,7 @@
     </modules>
 
     <properties>
-        <revision>2.2.0</revision>
+        <revision>2.3.0-SNAPSHOT</revision>
         <!-- Maven Plugin Versions -->
         <spotless.version>2.40.0</spotless.version>
     </properties>
@@ -146,6 +146,15 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+        </repository>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
