@@ -36,10 +36,10 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 
 ## 项目源码
 
-| 开源平台      | 源码地址                                    |
-| ------------- | ------------------------------------------- |
-| GitHub        | https://github.com/Charles7c/continew-admin |
-| Gitee（码云） | https://gitee.com/Charles7c/continew-admin  |
+| 开源平台      | 后端源码地址                                | 前端源码地址                                   |
+| ------------- | ------------------------------------------- | ---------------------------------------------- |
+| GitHub        | https://github.com/Charles7c/continew-admin | https://github.com/Charles7c/continew-admin-ui |
+| Gitee（码云） | https://gitee.com/Charles7c/continew-admin  | https://gitee.com/Charles7c/continew-admin-ui  |
 
 ## 主要特性
 
@@ -156,8 +156,6 @@ ContiNew Admin （Continue New Admin）中后台管理框架/脚手架，持续�
 > **Note**
 > 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/admin/intro/quick-start.html)。
 
-### 后端
-
 ```bash
 # 1.克隆本项目
 git clone https://github.com/Charles7c/continew-admin.git
@@ -181,43 +179,10 @@ git clone https://github.com/Charles7c/continew-admin.git
 # 5.2 其他方式部署
 ```
 
-### 前端
-
-```bash
-# 1.克隆本项目
-git clone https://github.com/Charles7c/continew-admin.git
-
-# 2.在 IDE（Visual Studio Code/WebStorm）中打开前端项目 continew-admin-ui
-
-# 3.安装 pnpm，配置淘宝源
-npm install -g pnpm
-pnpm config set registry https://registry.npm.taobao.org
-
-# 4.安装依赖
-pnpm i
-
-# 5.启动程序
-# 5.1 启动成功：访问 http://localhost:5173/
-pnpm dev
-
-# 6.部署
-# 6.1 Docker 部署
-#   6.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
-#   6.1.2 执行 pnpm build 进行项目打包，将 dist 目录下的所有文件放到 /docker/continew-admin/html 目录下
-#   6.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   6.1.4 修改 docker-compose.yml 中的 MySQL 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
-#   6.1.5 执行 docker-compose up -d 创建并后台运行所有容器
-# 6.2 其他方式部署
-```
-
 ## 核心技术栈
 
 | 名称                                                         | 版本         | 简介                                                         |
 | :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.3.7        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.53.3       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.3.3        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://cn.vitejs.dev/" target="_blank">Vite</a>    | 4.5.1        | 下一代的前端工具链，为开发提供极速响应。                     |
 | [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.1.0        | ContiNew Starter（Continue New Starter）是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，基于“约定优于配置”的理念，再次精简常规配置，提供一个更为完整的配置解决方案，帮助开发人员更加快速的集成常用第三方库或工具到 Spring Boot Web 应用程序中。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.7        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
@@ -231,17 +196,17 @@ pnpm dev
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.25.2       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
 | <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
+| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.0.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.4        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.3        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
+| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
 | Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
 | <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.4.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
 | <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.24       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
 | <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 项目结构
-
-### 后端
 
 采用按功能拆分模块的开发方式，项目目录结构如下：
 
@@ -379,66 +344,6 @@ continew-admin  # 全局通用项目配置及依赖版本管理
   │                    └─ holder        # 公共 Holder（持有者）
 ```
 
-### 前端
-
-```bash
-continew-admin
-  └─ continew-admin-ui      # 前端项目
-    ├─ config               # 全局 Vite 配置
-    ├─ public               # 公共静态资源（favicon.ico、logo.svg）
-    ├─ src
-    │  ├─ api               # 请求接口
-    │  │  ├─ demo             # 示例模块
-    │  │  ├─ auth             # 认证模块
-    │  │  ├─ common           # 公共模块
-    │  │  ├─ monitor          # 系统监控模块
-    │  │  ├─ system           # 系统管理模块
-    │  │  └─ tool             # 系统工具模块
-    │  ├─ assets            # 静态资源
-    │  │  ├─ icons            # 图标资源
-    │  │  ├─ images           # 图片资源
-    │  │  └─ style            # 样式资源
-    │  ├─ components        # 通用业务组件
-    │  ├─ config            # 全局配置（包含 echarts 主题）
-    │  │  └─ settings.json    # 配置文件
-    │  ├─ directives        # 指令集（如需，可自行补充）
-    │  ├─ hooks             # 全局 hooks
-    │  ├─ layout            # 布局
-    │  ├─ locale            # 国际化语言包
-    │  ├─ mock              # 模拟数据
-    │  ├─ router            # 路由配置
-    │  ├─ store             # 状态管理中心
-    │  ├─ types             # TypeScript 类型
-    │  ├─ utils             # 工具库（mock 全局开启/关闭）
-    │  ├─ views             # 页面模板
-    │  │  ├─ demo             # Arco Design 相关示例模块
-    │  │  ├─ dashboard        # 仪表盘模块
-    │  │  ├─ login            # 登录模块
-    │  │  ├─ monitor          # 系统监控模块
-    │  │  │  ├─ log              # 日志管理
-    │  │  │  │  ├─ login            # 登录日志
-    │  │  │  │  ├─ operation        # 操作日志
-    │  │  │  │  └─ system           # 系统日志
-    │  │  │  └─ online           # 在线用户
-    │  │  └─ system           # 系统管理模块
-    │  │    ├─ announcement     # 公告管理
-    │  │    ├─ config           # 系统配置
-    │  │    ├─ dept             # 部门管理
-    │  │    ├─ dict             # 字典管理
-    │  │    ├─ menu             # 菜单管理
-    │  │    ├─ message          # 消息管理
-    │  │    ├─ role             # 角色管理
-    │  │    └─ user             # 用户模块
-    │  │      └─ center           # 个人中心
-    │  ├─ App.vue
-    │  └─ main.ts           # 入口文件
-    ├─ .env.development
-    ├─ .env.production
-    ├─ index.html
-    ├─ package.json
-    └─ tsconfig.json
-```
-
 ## 贡献指南
 
 ContiNew Admin 致力于持续以最新流行技术栈构建，拥抱变化，迭代优化。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
@@ -506,7 +411,6 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 ### 特别鸣谢
 
 - 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
-- 感谢 <a href="http://pro.arco.design/" target="_blank">Arco Design Pro</a> 开箱即用的中后台前端解决方案
 - 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/easyexcel" target="_blank">Easy Excel</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 

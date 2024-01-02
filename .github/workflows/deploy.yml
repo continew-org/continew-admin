@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 部署后端服务
   deploy-server:
     runs-on: ubuntu-latest
     steps:
@@ -47,53 +46,3 @@ jobs:
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
             docker images | grep none | awk '{print $3}' | xargs docker rmi
-
-  # 部署前端
-  deploy-web:
-    runs-on: ubuntu-latest
-    steps:
-      # 1、检出源码
-      - name: Checkout
-        uses: actions/checkout@master
-      # 2、安装 PNPM
-      - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-      # 3、安装 Node 环境
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: pnpm
-          cache-dependency-path: ./continew-admin-ui/pnpm-lock.yaml
-      # 4、安装依赖
-      - name: Install Dependencies
-        run: pnpm i --frozen-lockfile
-        working-directory: ./continew-admin-ui
-      # 5、打包
-      - name: Build
-        run: pnpm build
-        working-directory: ./continew-admin-ui
-      # 6、拷贝到服务器
-      - name: Copy
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          local: ./continew-admin-ui/dist
-          remote: /docker/continew-admin/tmp
-      # 7、重启 Nginx
-      - name: Restart
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            rm -rf /docker/continew-admin/html/*
-            mv /docker/continew-admin/tmp/* /docker/continew-admin/html
-            docker restart nginx
