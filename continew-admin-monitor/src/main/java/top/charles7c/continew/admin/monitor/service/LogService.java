@@ -24,7 +24,7 @@ import top.charles7c.continew.admin.monitor.model.query.OperationLogQuery;
 import top.charles7c.continew.admin.monitor.model.query.SystemLogQuery;
 import top.charles7c.continew.admin.monitor.model.resp.*;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 系统日志业务接口
@@ -43,7 +43,7 @@ public interface LogService {
      *            分页查询条件
      * @return 操作日志分页信息
      */
-    PageDataResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery);
+    PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询登录日志列表
@@ -54,7 +54,7 @@ public interface LogService {
      *            分页查询条件
      * @return 登录日志分页信息
      */
-    PageDataResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery);
+    PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery);
 
     /**
      * 分页查询系统日志列表
@@ -65,7 +65,7 @@ public interface LogService {
      *            分页查询条件
      * @return 系统日志分页信息
      */
-    PageDataResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery);
+    PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery);
 
     /**
      * 查看系统日志详情

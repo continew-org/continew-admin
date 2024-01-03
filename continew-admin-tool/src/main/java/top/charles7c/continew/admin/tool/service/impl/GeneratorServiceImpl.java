@@ -61,7 +61,7 @@ import top.charles7c.continew.starter.core.util.db.MetaUtils;
 import top.charles7c.continew.starter.core.util.db.Table;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 代码生成业务实现
@@ -80,7 +80,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     private final GenConfigMapper genConfigMapper;
 
     @Override
-    public PageDataResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
+    public PageResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException {
         List<Table> tableList = MetaUtils.getTables(dataSource);
         String tableName = query.getTableName();
         if (StrUtil.isNotBlank(tableName)) {
@@ -93,14 +93,13 @@ public class GeneratorServiceImpl implements GeneratorService {
                 .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
                 .reversed());
         List<TableResp> tableRespList = BeanUtil.copyToList(tableList, TableResp.class);
-        PageDataResp<TableResp> pageDataResp =
-            PageDataResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
-        for (TableResp tableResp : pageDataResp.getList()) {
+        PageResp<TableResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
+        for (TableResp tableResp : pageResp.getList()) {
             long count = genConfigMapper.selectCount(
                 Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableResp.getTableName()));
             tableResp.setIsConfiged(count > 0);
         }
-        return pageDataResp;
+        return pageResp;
     }
 
     @Override

@@ -34,7 +34,7 @@ import top.charles7c.continew.admin.auth.model.resp.OnlineUserResp;
 import top.charles7c.continew.admin.auth.service.OnlineUserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
@@ -54,8 +54,8 @@ public class OnlineUserController {
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:online:user:list")
     @GetMapping
-    public R<PageDataResp<OnlineUserResp>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
-        PageDataResp<OnlineUserResp> pageData = onlineUserService.page(query, pageQuery);
+    public R<PageResp<OnlineUserResp>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
+        PageResp<OnlineUserResp> pageData = onlineUserService.page(query, pageQuery);
         return R.ok(pageData);
     }
 

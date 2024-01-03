@@ -35,7 +35,7 @@ import top.charles7c.continew.admin.system.model.resp.MessageUnreadResp;
 import top.charles7c.continew.admin.system.service.MessageService;
 import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 
@@ -56,9 +56,9 @@ public class MessageController {
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @GetMapping
-    public R<PageDataResp<MessageResp>> page(MessageQuery query, @Validated PageQuery pageQuery) {
+    public R<PageResp<MessageResp>> page(MessageQuery query, @Validated PageQuery pageQuery) {
         query.setUserId(LoginHelper.getUserId());
-        PageDataResp<MessageResp> pageData = baseService.page(query, pageQuery);
+        PageResp<MessageResp> pageData = baseService.page(query, pageQuery);
         return R.ok(pageData);
     }
 

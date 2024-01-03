@@ -45,7 +45,7 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 系统日志业务实现
@@ -62,7 +62,7 @@ public class LogServiceImpl implements LogService {
     private final CommonUserService commonUserService;
 
     @Override
-    public PageDataResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
+    public PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogResp.class);
@@ -72,19 +72,19 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataResp<OperationLogResp> pageDataResp = PageDataResp.build(page, OperationLogResp.class);
+        PageResp<OperationLogResp> pageResp = PageResp.build(page, OperationLogResp.class);
         // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
         if (null != query.getUid()) {
             String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
-            pageDataResp.getList().forEach(o -> o.setCreateUserString(nickname));
+            pageResp.getList().forEach(o -> o.setCreateUserString(nickname));
         } else {
-            pageDataResp.getList().forEach(this::fill);
+            pageResp.getList().forEach(this::fill);
         }
-        return pageDataResp;
+        return pageResp;
     }
 
     @Override
-    public PageDataResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
+    public PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.eq("module", "登录");
         // 限定查询信息
@@ -95,14 +95,14 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataResp<LoginLogResp> pageDataResp = PageDataResp.build(page, LoginLogResp.class);
+        PageResp<LoginLogResp> pageResp = PageResp.build(page, LoginLogResp.class);
         // 填充数据
-        pageDataResp.getList().forEach(this::fill);
-        return pageDataResp;
+        pageResp.getList().forEach(this::fill);
+        return pageResp;
     }
 
     @Override
-    public PageDataResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
+    public PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogResp.class);
@@ -112,10 +112,10 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageDataResp<SystemLogResp> pageDataResp = PageDataResp.build(page, SystemLogResp.class);
+        PageResp<SystemLogResp> pageResp = PageResp.build(page, SystemLogResp.class);
         // 填充数据
-        pageDataResp.getList().forEach(this::fill);
-        return pageDataResp;
+        pageResp.getList().forEach(this::fill);
+        return pageResp;
     }
 
     @Override

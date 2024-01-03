@@ -22,7 +22,7 @@ import top.charles7c.continew.admin.auth.model.query.OnlineUserQuery;
 import top.charles7c.continew.admin.auth.model.resp.OnlineUserResp;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 在线用户业务接口
@@ -41,7 +41,7 @@ public interface OnlineUserService {
      *            分页查询条件
      * @return 分页列表信息
      */
-    PageDataResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery);
+    PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery);
 
     /**
      * 查询列表

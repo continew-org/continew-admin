@@ -38,7 +38,7 @@ import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 在线用户业务实现
@@ -51,12 +51,12 @@ import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
 public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
-    public PageDataResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
+    public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
         List<LoginUser> loginUserList = this.list(query);
         List<OnlineUserResp> list = BeanUtil.copyToList(loginUserList, OnlineUserResp.class);
-        PageDataResp<OnlineUserResp> pageDataResp = PageDataResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
-        pageDataResp.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
-        return pageDataResp;
+        PageResp<OnlineUserResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        pageResp.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
+        return pageResp;
     }
 
     @Override

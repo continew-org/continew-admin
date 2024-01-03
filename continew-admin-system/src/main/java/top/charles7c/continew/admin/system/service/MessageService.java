@@ -22,7 +22,7 @@ import top.charles7c.continew.admin.system.model.query.MessageQuery;
 import top.charles7c.continew.admin.system.model.req.MessageReq;
 import top.charles7c.continew.admin.system.model.resp.MessageResp;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 消息业务接口
@@ -41,7 +41,7 @@ public interface MessageService {
      *            分页查询条件
      * @return 分页列表信息
      */
-    PageDataResp<MessageResp> page(MessageQuery query, PageQuery pageQuery);
+    PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery);
 
     /**
      * 新增

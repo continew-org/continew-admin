@@ -38,7 +38,7 @@ import top.charles7c.continew.admin.monitor.model.resp.SystemLogDetailResp;
 import top.charles7c.continew.admin.monitor.model.resp.SystemLogResp;
 import top.charles7c.continew.admin.monitor.service.LogService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 
@@ -59,24 +59,24 @@ public class LogController {
     @Log(module = "登录日志")
     @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
-    public R<PageDataResp<LoginLogResp>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataResp<LoginLogResp> pageData = logService.page(query, pageQuery);
+    public R<PageResp<LoginLogResp>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
+        PageResp<LoginLogResp> pageData = logService.page(query, pageQuery);
         return R.ok(pageData);
     }
 
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
-    public R<PageDataResp<OperationLogResp>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataResp<OperationLogResp> pageData = logService.page(query, pageQuery);
+    public R<PageResp<OperationLogResp>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
+        PageResp<OperationLogResp> pageData = logService.page(query, pageQuery);
         return R.ok(pageData);
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
-    public R<PageDataResp<SystemLogResp>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
-        PageDataResp<SystemLogResp> pageData = logService.page(query, pageQuery);
+    public R<PageResp<SystemLogResp>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
+        PageResp<SystemLogResp> pageData = logService.page(query, pageQuery);
         return R.ok(pageData);
     }
 

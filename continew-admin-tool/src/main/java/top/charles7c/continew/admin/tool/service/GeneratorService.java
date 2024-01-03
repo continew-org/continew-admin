@@ -26,7 +26,7 @@ import top.charles7c.continew.admin.tool.model.req.GenConfigReq;
 import top.charles7c.continew.admin.tool.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.tool.model.resp.TableResp;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 代码生成业务接口
@@ -47,7 +47,7 @@ public interface GeneratorService {
      * @throws SQLException
      *             /
      */
-    PageDataResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
+    PageResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
 
     /**
      * 查询生成配置信息

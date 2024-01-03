@@ -42,7 +42,7 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 /**
  * 消息业务实现
@@ -58,13 +58,13 @@ public class MessageServiceImpl implements MessageService {
     private final MessageUserService messageUserService;
 
     @Override
-    public PageDataResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
+    public PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
             .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
         IPage<MessageResp> page = baseMapper.selectPageByUserId(pageQuery.toPage(), queryWrapper);
         page.getRecords().forEach(this::fill);
-        return PageDataResp.build(page);
+        return PageResp.build(page);
     }
 
     @Override

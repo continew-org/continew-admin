@@ -41,7 +41,7 @@ import top.charles7c.continew.admin.tool.service.GeneratorService;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageDataResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
 /**
@@ -63,7 +63,7 @@ public class GeneratorController {
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/table")
-    public R<PageDataResp<TableResp>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
+    public R<PageResp<TableResp>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
         return R.ok(generatorService.pageTable(query, pageQuery));
     }
 
