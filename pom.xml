@@ -137,16 +137,19 @@
         </plugins>
     </build>
 
-    <!-- 远程仓库配置：阿里云 Maven 中央仓库（公共代理仓库，Central 仓和 JCenter 仓的聚合仓，帮助研发人员提高研发生产效率，使用阿里云 Maven 中央仓库作为下载源，速度更快更稳定） -->
+    <!-- 远程仓库配置：华为云、阿里云 Maven 镜像源仓库 -->
     <repositories>
         <repository>
-            <id>public</id>
-            <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>huawei-mirror</id>
+            <name>HuaweiCloud Mirror</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
         </repository>
+        <repository>
+            <id>ali-mirror</id>
+            <name>AliYun Mirror</name>
+            <url>https://maven.aliyun.com/repository/public/</url>
+        </repository>
+        <!-- 快照仓库（仅在 ContiNew Admin 开发版使用，稳定版发布时会移除） -->
         <repository>
             <id>sonatype-nexus-snapshots</id>
             <name>Sonatype Nexus Snapshots</name>
@@ -157,18 +160,4 @@
             </snapshots>
         </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>public</id>
-            <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/repository/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 </project>
