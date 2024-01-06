@@ -78,6 +78,12 @@ public class FieldConfigDO implements Serializable {
     private String columnType;
 
     /**
+     * 列大小
+     */
+    @Schema(description = "列大小", example = "255")
+    private Long columnSize;
+
+    /**
      * 字段名称
      */
     @Schema(description = "字段名称", example = "nickname")
@@ -147,6 +153,7 @@ public class FieldConfigDO implements Serializable {
         this.tableName = column.getTableName();
         this.setColumnName(column.getName());
         this.setColumnType(columnType);
+        this.setColumnSize(column.getSize());
         this.setComment(column.getComment());
         this.setIsRequired(isRequired);
         this.setShowInList(true);

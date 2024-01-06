@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `gen_field_config` (
     `table_name`    varchar(64)  NOT NULL              COMMENT '表名称',
     `column_name`   varchar(64)  NOT NULL              COMMENT '列名称',
     `column_type`   varchar(25)  NOT NULL              COMMENT '列类型',
+    `column_size`   bigint(20)   DEFAULT NULL          COMMENT '列大小',
     `field_name`    varchar(64)  NOT NULL              COMMENT '字段名称',
     `field_type`    varchar(25)  NOT NULL              COMMENT '字段类型',
     `comment`       varchar(512) DEFAULT NULL          COMMENT '注释',

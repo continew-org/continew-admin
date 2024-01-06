@@ -16,6 +16,8 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.hibernate.validator.constraints.Length;
+
 import top.charles7c.continew.starter.extension.crud.base.BaseReq;
 
 /**
@@ -44,6 +46,9 @@ public class ${className} extends BaseReq {
     <#else>
     @NotNull(message = "${fieldConfig.comment}不能为空")
     </#if>
+    </#if>
+    <#if fieldConfig.fieldType = 'String' && fieldConfig.columnSize??>
+    @Length(max = ${fieldConfig.columnSize}, message = "${fieldConfig.comment}长度不能超过 {max} 个字符")
     </#if>
     private ${fieldConfig.fieldType} ${fieldConfig.fieldName};
     </#if>

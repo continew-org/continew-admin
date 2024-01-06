@@ -138,7 +138,6 @@ public class GeneratorServiceImpl implements GeneratorService {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
             return columnList.stream().map(FieldConfigDO::new).collect(Collectors.toList());
         }
-
         // 同步最新数据表列信息
         if (requireSync) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
@@ -155,6 +154,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                     String columnType =
                         StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
                     fieldConfig.setColumnType(columnType);
+                    fieldConfig.setColumnSize(column.getSize());
                     fieldConfig.setComment(column.getComment());
                 } else {
                     // 新增字段配置
@@ -193,7 +193,6 @@ public class GeneratorServiceImpl implements GeneratorService {
             fieldConfig.setTableName(tableName);
         }
         fieldConfigMapper.insertBatch(fieldConfigList);
-
         // 保存或更新生成配置信息
         GenConfigDO newGenConfig = req.getGenConfig();
         String frontendPath = newGenConfig.getFrontendPath();
