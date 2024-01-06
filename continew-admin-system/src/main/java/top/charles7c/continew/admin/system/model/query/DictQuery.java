@@ -39,9 +39,9 @@ public class DictQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典名称
+     * 名称
      */
-    @Schema(description = "字典名称")
+    @Schema(description = "名称")
     @Query(blurry = {"code", "name", "description"})
     private String name;
 

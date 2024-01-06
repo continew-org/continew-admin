@@ -40,12 +40,12 @@ public class RoleDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色名称
+     * 名称
      */
     private String name;
 
     /**
-     * 角色编码
+     * 编码
      */
     private String code;
 
@@ -60,7 +60,7 @@ public class RoleDO extends BaseDO {
     private String description;
 
     /**
-     * 角色排序
+     * 排序
      */
     private Integer sort;
 

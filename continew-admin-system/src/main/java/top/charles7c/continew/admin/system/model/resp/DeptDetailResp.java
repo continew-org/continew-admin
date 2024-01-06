@@ -45,10 +45,10 @@ public class DeptDetailResp extends BaseDetailResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门名称
+     * 名称
      */
-    @Schema(description = "部门名称", example = "测试部")
-    @ExcelProperty(value = "部门名称")
+    @Schema(description = "名称", example = "测试部")
+    @ExcelProperty(value = "名称")
     private String name;
 
     /**
@@ -66,9 +66,9 @@ public class DeptDetailResp extends BaseDetailResp {
     private String parentName;
 
     /**
-     * 部门排序
+     * 排序
      */
-    @Schema(description = "部门排序", example = "1")
+    @Schema(description = "排序", example = "1")
     private Integer sort;
 
     /**

@@ -39,7 +39,7 @@ public class DeptDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门名称
+     * 名称
      */
     private String name;
 
@@ -59,7 +59,7 @@ public class DeptDO extends BaseDO {
     private String description;
 
     /**
-     * 部门排序
+     * 排序
      */
     private Integer sort;
 

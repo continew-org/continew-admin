@@ -39,9 +39,9 @@ public class RoleQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色名称
+     * 名称
      */
-    @Schema(description = "角色名称", example = "测试人员")
+    @Schema(description = "名称", example = "测试人员")
     @Query(blurry = {"name", "code"})
     private String name;
 

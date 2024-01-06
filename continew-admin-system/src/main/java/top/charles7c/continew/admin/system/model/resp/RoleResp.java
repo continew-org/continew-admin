@@ -40,15 +40,15 @@ public class RoleResp extends BaseResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色名称
+     * 名称
      */
-    @Schema(description = "角色名称", example = "测试人员")
+    @Schema(description = "名称", example = "测试人员")
     private String name;
 
     /**
-     * 角色编码
+     * 编码
      */
-    @Schema(description = "角色编码", example = "test")
+    @Schema(description = "编码", example = "test")
     private String code;
 
     /**
@@ -59,9 +59,9 @@ public class RoleResp extends BaseResp {
     private DataScopeEnum dataScope;
 
     /**
-     * 角色排序
+     * 排序
      */
-    @Schema(description = "角色排序", example = "1")
+    @Schema(description = "排序", example = "1")
     private Integer sort;
 
     /**

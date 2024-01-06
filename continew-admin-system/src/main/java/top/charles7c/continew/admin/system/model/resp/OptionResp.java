@@ -41,25 +41,25 @@ public class OptionResp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 参数名称
+     * 名称
      */
-    @Schema(description = "参数名称", example = "系统标题")
+    @Schema(description = "名称", example = "系统标题")
     private String name;
 
     /**
-     * 参数键
+     * 键
      */
-    @Schema(description = "参数键", example = "site_title")
+    @Schema(description = "键", example = "site_title")
     private String code;
 
     /**
-     * 参数值
+     * 值
      */
-    @Schema(description = "参数值", example = "ContiNew Admin")
+    @Schema(description = "值", example = "ContiNew Admin")
     private String value;
 
     /**
-     * 参数默认值
+     * 默认值
      */
     @JsonIgnore
     private String defaultValue;

@@ -43,10 +43,10 @@ public class OptionQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 参数键列表
+     * 键列表
      */
-    @Schema(description = "参数键列表", example = "site_title,site_copyright")
-    @NotEmpty(message = "参数键不能为空")
+    @Schema(description = "键列表", example = "site_title,site_copyright")
+    @NotEmpty(message = "键不能为空")
     @Query(type = QueryType.IN)
     private List<String> code;
 }

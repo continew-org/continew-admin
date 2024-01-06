@@ -38,17 +38,17 @@ public class DictItemDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典标签
+     * 标签
      */
     private String label;
 
     /**
-     * 字典值
+     * 值
      */
     private String value;
 
     /**
-     * 背景颜色
+     * 标签颜色
      */
     private String color;
 

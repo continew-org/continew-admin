@@ -47,24 +47,24 @@ public class MenuResp extends BaseResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单标题
+     * 标题
      */
-    @Schema(description = "菜单标题", example = "用户管理")
-    @ExcelProperty(value = "菜单标题")
+    @Schema(description = "标题", example = "用户管理")
+    @ExcelProperty(value = "标题")
     private String title;
 
     /**
-     * 菜单图标
+     * 图标
      */
-    @Schema(description = "菜单图标", example = "user")
-    @ExcelProperty(value = "菜单图标")
+    @Schema(description = "图标", example = "user")
+    @ExcelProperty(value = "图标")
     private String icon;
 
     /**
-     * 菜单排序
+     * 排序
      */
-    @Schema(description = "菜单排序", example = "1")
-    @ExcelProperty(value = "菜单排序")
+    @Schema(description = "排序", example = "1")
+    @ExcelProperty(value = "排序")
     private Integer sort;
 
     /**
@@ -124,10 +124,10 @@ public class MenuResp extends BaseResp {
     private String name;
 
     /**
-     * 菜单类型
+     * 类型
      */
-    @Schema(description = "菜单类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
-    @ExcelProperty(value = "菜单类型", converter = ExcelBaseEnumConverter.class)
+    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private MenuTypeEnum type;
 
     /**

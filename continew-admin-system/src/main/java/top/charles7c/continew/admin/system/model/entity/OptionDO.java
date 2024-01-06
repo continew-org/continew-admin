@@ -41,23 +41,23 @@ public class OptionDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 参数名称
+     * 名称
      */
     private String name;
 
     /**
-     * 参数键
+     * 键
      */
     @TableId
     private String code;
 
     /**
-     * 参数值
+     * 值
      */
     private String value;
 
     /**
-     * 参数默认值
+     * 默认值
      */
     private String defaultValue;
 

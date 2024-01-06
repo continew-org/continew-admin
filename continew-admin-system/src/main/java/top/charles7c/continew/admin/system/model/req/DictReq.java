@@ -43,19 +43,19 @@ public class DictReq extends BaseReq {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典名称
+     * 名称
      */
-    @Schema(description = "字典名称", example = "公告类型")
-    @NotBlank(message = "字典名称不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "字典名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Schema(description = "名称", example = "公告类型")
+    @NotBlank(message = "名称不能为空")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
-     * 字典编码
+     * 编码
      */
-    @Schema(description = "字典编码", example = "announcement_type")
-    @NotBlank(message = "字典编码不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "字典编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
+    @Schema(description = "编码", example = "announcement_type")
+    @NotBlank(message = "编码不能为空")
+    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
     private String code;
 
     /**

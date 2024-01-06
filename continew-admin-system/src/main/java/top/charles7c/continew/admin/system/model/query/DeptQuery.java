@@ -40,9 +40,9 @@ public class DeptQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门名称
+     * 名称
      */
-    @Schema(description = "部门名称", example = "测试部")
+    @Schema(description = "名称", example = "测试部")
     @Query(type = QueryType.INNER_LIKE)
     private String name;
 

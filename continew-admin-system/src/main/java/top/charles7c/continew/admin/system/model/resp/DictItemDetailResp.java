@@ -42,24 +42,24 @@ public class DictItemDetailResp extends BaseDetailResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典标签
+     * 标签
      */
-    @Schema(description = "字典标签", example = "通知")
-    @ExcelProperty(value = "字典标签", order = 2)
+    @Schema(description = "标签", example = "通知")
+    @ExcelProperty(value = "标签", order = 2)
     private String label;
 
     /**
-     * 字典值
+     * 值
      */
-    @Schema(description = "字典值", example = "1")
-    @ExcelProperty(value = "字典值", order = 3)
+    @Schema(description = "值", example = "1")
+    @ExcelProperty(value = "值", order = 3)
     private String value;
 
     /**
-     * 背景颜色
+     * 标签颜色
      */
-    @Schema(description = "背景颜色", example = "blue")
-    @ExcelProperty(value = "背景颜色", order = 4)
+    @Schema(description = "标签颜色", example = "blue")
+    @ExcelProperty(value = "标签颜色", order = 4)
     private String color;
 
     /**

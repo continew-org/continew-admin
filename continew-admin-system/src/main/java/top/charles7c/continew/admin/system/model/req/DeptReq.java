@@ -55,18 +55,18 @@ public class DeptReq extends BaseReq {
     private Long parentId;
 
     /**
-     * 部门名称
+     * 名称
      */
-    @Schema(description = "部门名称", example = "测试部")
-    @NotBlank(message = "部门名称不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "部门名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Schema(description = "名称", example = "测试部")
+    @NotBlank(message = "名称不能为空")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
-     * 部门排序
+     * 排序
      */
-    @Schema(description = "部门排序", example = "1")
-    @Min(value = 1, message = "部门排序最小值为 {value}")
+    @Schema(description = "排序", example = "1")
+    @Min(value = 1, message = "排序最小值为 {value}")
     private Integer sort;
 
     /**

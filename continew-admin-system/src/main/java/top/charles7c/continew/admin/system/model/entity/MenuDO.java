@@ -40,7 +40,7 @@ public class MenuDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单标题
+     * 标题
      */
     private String title;
 
@@ -50,7 +50,7 @@ public class MenuDO extends BaseDO {
     private Long parentId;
 
     /**
-     * 菜单类型
+     * 类型
      */
     private MenuTypeEnum type;
 
@@ -70,7 +70,7 @@ public class MenuDO extends BaseDO {
     private String component;
 
     /**
-     * 菜单图标
+     * 图标
      */
     private String icon;
 
@@ -95,7 +95,7 @@ public class MenuDO extends BaseDO {
     private String permission;
 
     /**
-     * 菜单排序
+     * 排序
      */
     private Integer sort;
 

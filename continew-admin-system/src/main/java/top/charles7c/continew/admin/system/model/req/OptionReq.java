@@ -42,17 +42,17 @@ public class OptionReq extends BaseReq {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 参数键
+     * 键
      */
-    @Schema(description = "参数键", example = "site_title")
-    @NotBlank(message = "参数键不能为空")
-    @Length(max = 100, message = "参数键长度不能超过 {max} 个字符")
+    @Schema(description = "键", example = "site_title")
+    @NotBlank(message = "键不能为空")
+    @Length(max = 100, message = "键长度不能超过 {max} 个字符")
     private String code;
 
     /**
-     * 参数值
+     * 值
      */
-    @Schema(description = "参数值", example = "ContiNew Admin")
-    @NotBlank(message = "参数值不能为空")
+    @Schema(description = "值", example = "ContiNew Admin")
+    @NotBlank(message = "值不能为空")
     private String value;
 }

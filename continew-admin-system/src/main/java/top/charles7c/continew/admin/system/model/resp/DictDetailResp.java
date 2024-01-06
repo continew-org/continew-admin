@@ -38,15 +38,15 @@ public class DictDetailResp extends BaseDetailResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典名称
+     * 名称
      */
-    @Schema(description = "字典名称", example = "公告类型")
+    @Schema(description = "名称", example = "公告类型")
     private String name;
 
     /**
-     * 字典编码
+     * 编码
      */
-    @Schema(description = "字典编码", example = "announcement_type")
+    @Schema(description = "编码", example = "announcement_type")
     private String code;
 
     /**

@@ -40,9 +40,9 @@ public class MenuQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单标题
+     * 标题
      */
-    @Schema(description = "菜单标题", example = "用户管理")
+    @Schema(description = "标题", example = "用户管理")
     @Query(type = QueryType.INNER_LIKE)
     private String title;
 

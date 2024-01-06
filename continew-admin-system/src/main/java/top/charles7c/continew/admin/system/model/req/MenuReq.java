@@ -46,33 +46,33 @@ public class MenuReq extends BaseReq {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 菜单类型
+     * 类型
      */
-    @Schema(description = "菜单类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
-    @NotNull(message = "菜单类型非法")
+    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @NotNull(message = "类型非法")
     private MenuTypeEnum type;
 
     /**
-     * 菜单图标
+     * 图标
      */
-    @Schema(description = "菜单图标", example = "user")
-    @Length(max = 50, message = "菜单图标长度不能超过 {max} 个字符")
+    @Schema(description = "图标", example = "user")
+    @Length(max = 50, message = "图标长度不能超过 {max} 个字符")
     private String icon;
 
     /**
-     * 菜单标题
+     * 标题
      */
-    @Schema(description = "菜单标题", example = "用户管理")
-    @NotBlank(message = "菜单标题不能为空")
-    @Length(max = 30, message = "菜单标题长度不能超过 {max} 个字符")
+    @Schema(description = "标题", example = "用户管理")
+    @NotBlank(message = "标题不能为空")
+    @Length(max = 30, message = "标题长度不能超过 {max} 个字符")
     private String title;
 
     /**
-     * 菜单排序
+     * 排序
      */
-    @Schema(description = "菜单排序", example = "1")
-    @NotNull(message = "菜单排序不能为空")
-    @Min(value = 1, message = "菜单排序最小值为 {value}")
+    @Schema(description = "排序", example = "1")
+    @NotNull(message = "排序不能为空")
+    @Min(value = 1, message = "排序最小值为 {value}")
     private Integer sort;
 
     /**

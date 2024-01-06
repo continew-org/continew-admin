@@ -38,21 +38,21 @@ public class DictItemResp extends BaseResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典标签
+     * 标签
      */
-    @Schema(description = "字典标签", example = "通知")
+    @Schema(description = "标签", example = "通知")
     private String label;
 
     /**
-     * 字典值
+     * 值
      */
-    @Schema(description = "字典值", example = "1")
+    @Schema(description = "值", example = "1")
     private String value;
 
     /**
-     * 背景颜色
+     * 标签颜色
      */
-    @Schema(description = "背景颜色", example = "blue")
+    @Schema(description = "标签颜色", example = "blue")
     private String color;
 
     /**

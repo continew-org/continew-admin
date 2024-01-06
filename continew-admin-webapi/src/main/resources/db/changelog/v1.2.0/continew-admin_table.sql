@@ -3,8 +3,8 @@
 -- changeset Charles7c:1
 CREATE TABLE IF NOT EXISTS `sys_dict` (
     `id`          bigint(20)   AUTO_INCREMENT        COMMENT 'ID',
-    `name`        varchar(30)  NOT NULL              COMMENT '字典名称',
-    `code`        varchar(30)  NOT NULL              COMMENT '字典编码',
+    `name`        varchar(30)  NOT NULL              COMMENT '名称',
+    `code`        varchar(30)  NOT NULL              COMMENT '编码',
     `description` varchar(200) DEFAULT NULL          COMMENT '描述',
     `is_system`   bit(1)       NOT NULL DEFAULT b'0' COMMENT '是否为系统内置数据',
     `create_user` bigint(20)   NOT NULL              COMMENT '创建人',
@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS `sys_dict` (
 
 CREATE TABLE IF NOT EXISTS `sys_dict_item` (
     `id`          bigint(20)   AUTO_INCREMENT       COMMENT 'ID',
-    `label`       varchar(30)  NOT NULL             COMMENT '字典标签',
-    `value`       varchar(30)  NOT NULL             COMMENT '字典值',
-    `color`       varchar(30)  DEFAULT NULL         COMMENT '背景颜色',
-    `sort`        int          NOT NULL DEFAULT 999 COMMENT '字典项排序',
+    `label`       varchar(30)  NOT NULL             COMMENT '标签',
+    `value`       varchar(30)  NOT NULL             COMMENT '值',
+    `color`       varchar(30)  DEFAULT NULL         COMMENT '标签颜色',
+    `sort`        int          NOT NULL DEFAULT 999 COMMENT '排序',
     `description` varchar(200) DEFAULT NULL         COMMENT '描述',
     `dict_id`     bigint(20)   NOT NULL             COMMENT '字典ID',
     `create_user` bigint(20)   NOT NULL             COMMENT '创建人',
@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS `sys_dict_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
 
 CREATE TABLE IF NOT EXISTS `sys_option` (
-    `name`          varchar(50)  NOT NULL     COMMENT '参数名称',
-    `code`          varchar(100) NOT NULL     COMMENT '参数键',
-    `value`         text         DEFAULT NULL COMMENT '参数值',
-    `default_value` text         DEFAULT NULL COMMENT '参数默认值',
+    `name`          varchar(50)  NOT NULL     COMMENT '名称',
+    `code`          varchar(100) NOT NULL     COMMENT '键',
+    `value`         text         DEFAULT NULL COMMENT '值',
+    `default_value` text         DEFAULT NULL COMMENT '默认值',
     `description`   varchar(200) DEFAULT NULL COMMENT '描述',
     `update_user`   bigint(20)   DEFAULT NULL COMMENT '修改人',
     `update_time`   datetime     DEFAULT NULL COMMENT '修改时间',

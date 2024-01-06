@@ -49,26 +49,26 @@ public class RoleReq extends BaseReq {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色名称
+     * 名称
      */
-    @Schema(description = "角色名称", example = "测试人员")
-    @NotBlank(message = "角色名称不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "角色名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Schema(description = "名称", example = "测试人员")
+    @NotBlank(message = "名称不能为空")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String name;
 
     /**
-     * 角色编码
+     * 编码
      */
-    @Schema(description = "角色编码", example = "test")
-    @NotBlank(message = "角色编码不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "角色编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
+    @Schema(description = "编码", example = "test")
+    @NotBlank(message = "编码不能为空")
+    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
     private String code;
 
     /**
-     * 角色排序
+     * 排序
      */
-    @Schema(description = "角色排序", example = "1")
-    @Min(value = 1, message = "角色排序最小值为 {value}")
+    @Schema(description = "排序", example = "1")
+    @Min(value = 1, message = "排序最小值为 {value}")
     private Integer sort;
 
     /**

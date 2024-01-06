@@ -41,9 +41,9 @@ public class DeptResp extends BaseResp {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 部门名称
+     * 名称
      */
-    @Schema(description = "部门名称", example = "测试部")
+    @Schema(description = "名称", example = "测试部")
     private String name;
 
     /**
@@ -53,9 +53,9 @@ public class DeptResp extends BaseResp {
     private Long parentId;
 
     /**
-     * 部门排序
+     * 排序
      */
-    @Schema(description = "部门排序", example = "3")
+    @Schema(description = "排序", example = "3")
     private Integer sort;
 
     /**

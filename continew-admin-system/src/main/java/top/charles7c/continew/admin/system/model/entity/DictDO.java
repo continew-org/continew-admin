@@ -38,12 +38,12 @@ public class DictDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字典名称
+     * 名称
      */
     private String name;
 
     /**
-     * 字典编码
+     * 编码
      */
     private String code;
 
