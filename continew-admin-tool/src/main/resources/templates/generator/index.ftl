@@ -1,254 +1,4 @@
-<template>
-  <div class="app-container">
-    <Breadcrumb :items="['menu.${apiModuleName}', 'menu.${apiModuleName}.${apiName}.list']" />
-    <a-card class="general-card" :title="$t('menu.${apiModuleName}.${apiName}.list')">
-      <!-- 头部区域 -->
-      <div class="header">
-        <!-- 搜索栏 -->
-        <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
-            <#list fieldConfigs as fieldConfig>
-            <#if fieldConfig.showInQuery>
-            <a-form-item field="${fieldConfig.fieldName}" hide-label>
-              <a-input
-                v-model="queryParams.${fieldConfig.fieldName}"
-                placeholder="输入${fieldConfig.comment}搜索"
-                allow-clear
-                style="width: 150px"
-                @press-enter="handleQuery"
-              />
-            </a-form-item>
-            </#if>
-            </#list>
-            <a-form-item hide-label>
-              <a-space>
-                <a-button type="primary" @click="handleQuery">
-                  <template #icon><icon-search /></template>查询
-                </a-button>
-                <a-button @click="resetQuery">
-                  <template #icon><icon-refresh /></template>重置
-                </a-button>
-              </a-space>
-            </a-form-item>
-          </a-form>
-        </div>
-        <!-- 操作栏 -->
-        <div class="header-operation">
-          <a-row>
-            <a-col :span="12">
-              <a-space>
-                <a-button
-                  v-permission="['${apiModuleName}:${apiName}:add']"
-                  type="primary"
-                  @click="toAdd"
-                >
-                  <template #icon><icon-plus /></template>新增
-                </a-button>
-                <a-button
-                  v-permission="['${apiModuleName}:${apiName}:update']"
-                  type="primary"
-                  status="success"
-                  :disabled="single"
-                  :title="single ? '请选择一条要修改的数据' : ''"
-                  @click="toUpdate(ids[0])"
-                >
-                  <template #icon><icon-edit /></template>修改
-                </a-button>
-                <a-button
-                  v-permission="['${apiModuleName}:${apiName}:delete']"
-                  type="primary"
-                  status="danger"
-                  :disabled="multiple"
-                  :title="multiple ? '请选择要删除的数据' : ''"
-                  @click="handleBatchDelete"
-                >
-                  <template #icon><icon-delete /></template>删除
-                </a-button>
-                <a-button
-                  v-permission="['${apiModuleName}:${apiName}:export']"
-                  :loading="exportLoading"
-                  type="primary"
-                  status="warning"
-                  @click="handleExport"
-                >
-                  <template #icon><icon-download /></template>导出
-                </a-button>
-              </a-space>
-            </a-col>
-            <a-col :span="12">
-              <right-toolbar
-                v-model:show-query="showQuery"
-                @refresh="getList"
-              />
-            </a-col>
-          </a-row>
-        </div>
-      </div>
-
-      <!-- 列表区域 -->
-      <a-table
-        ref="tableRef"
-        row-key="id"
-        :data="dataList"
-        :loading="loading"
-        :row-selection="{
-          type: 'checkbox',
-          showCheckedAll: true,
-          onlyCurrent: false,
-        }"
-        :pagination="{
-          showTotal: true,
-          showPageSize: true,
-          total: total,
-          current: queryParams.page,
-        }"
-        :bordered="false"
-        column-resizable
-        stripe
-        size="large"
-        @page-change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-        @selection-change="handleSelectionChange"
-      >
-        <template #columns>
-          <#list fieldConfigs as fieldConfig>
-          <#if fieldConfig_index = 0>
-          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}">
-            <template #cell="{ record }">
-              <a-link @click="toDetail(record.id)">{{ record.${fieldConfig.fieldName} }}</a-link>
-            </template>
-          </a-table-column>
-          <#else>
-          <#if fieldConfig.showInList>
-          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}" />
-          </#if>
-          </#if>
-          </#list>
-          <a-table-column
-            v-if="checkPermission(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])"
-            title="操作"
-            align="center"
-          >
-            <template #cell="{ record }">
-              <a-button
-                v-permission="['${apiModuleName}:${apiName}:update']"
-                type="text"
-                size="small"
-                title="修改"
-                @click="toUpdate(record.id)"
-              >
-                <template #icon><icon-edit /></template>修改
-              </a-button>
-              <a-popconfirm
-                content="是否确定删除该数据？"
-                type="warning"
-                @ok="handleDelete([record.id])"
-              >
-                <a-button
-                  v-permission="['${apiModuleName}:${apiName}:delete']"
-                  type="text"
-                  size="small"
-                  title="删除"
-                  :disabled="record.disabled"
-                >
-                  <template #icon><icon-delete /></template>删除
-                </a-button>
-              </a-popconfirm>
-            </template>
-          </a-table-column>
-        </template>
-      </a-table>
-
-      <!-- 表单区域 -->
-      <a-modal
-        :title="title"
-        :visible="visible"
-        :mask-closable="false"
-        :esc-to-close="false"
-        unmount-on-close
-        render-to-body
-        @ok="handleOk"
-        @cancel="handleCancel"
-      >
-        <a-form ref="formRef" :model="form" :rules="rules" size="large">
-          <#list fieldConfigs as fieldConfig>
-          <#if fieldConfig.showInForm>
-          <a-form-item label="${fieldConfig.comment}" field="${fieldConfig.fieldName}">
-            <#if fieldConfig.formType = 'TEXT'>
-            <a-input v-model="form.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" />
-            <#elseif fieldConfig.formType = 'TEXT_AREA'>
-            <a-textarea
-              v-model="form.${fieldConfig.fieldName}"
-              :max-length="200"
-              placeholder="请输入${fieldConfig.comment}"
-              :auto-size="{
-                minRows: 3,
-              }"
-              show-word-limit
-            />
-            <#elseif fieldConfig.formType = 'SELECT'>
-              <#--<a-select
-                v-model="form.${fieldConfig.fieldName}"
-                :options="${apiName}Options"
-                placeholder="请选择${fieldConfig.comment}"
-                :loading="${apiName}Loading"
-                multiple
-                allow-clear
-                :allow-search="{ retainInputValue: true }"
-                style="width: 416px"
-              />-->
-            <#elseif fieldConfig.formType = 'RADIO'>
-            <#--<a-radio-group v-model="form.${fieldConfig.fieldName}" type="button">
-            </a-radio-group>-->
-            <#elseif fieldConfig.formType = 'DATE'>
-            <a-date-picker v-model="form.${fieldConfig.fieldName}" placeholder="请选择${fieldConfig.comment}"/>
-            <#elseif fieldConfig.formType = 'DATE_TIME'>
-            <a-date-picker
-              v-model="form.${fieldConfig.fieldName}"
-              placeholder="请选择${fieldConfig.comment}"
-              show-time
-              format="YYYY-MM-DD HH:mm:ss"
-            />
-            </#if>
-          </a-form-item>
-          </#if>
-          </#list>
-        </a-form>
-      </a-modal>
-
-      <!-- 详情区域 -->
-      <a-drawer
-        title="${businessName}详情"
-        :visible="detailVisible"
-        :width="580"
-        :footer="false"
-        unmount-on-close
-        render-to-body
-        @cancel="handleDetailCancel"
-      >
-        <a-descriptions :column="2" bordered size="large">
-          <#list fieldConfigs as fieldConfig>
-          <a-descriptions-item label="${fieldConfig.comment}">
-            <a-skeleton v-if="detailLoading" :animation="true">
-              <a-skeleton-line :rows="1" />
-            </a-skeleton>
-            <#if fieldConfig.fieldName = 'createUser'>
-            <span v-else>{{ dataDetail.createUserString }}</span>
-            <#elseif fieldConfig.fieldName = 'updateUser'>
-            <span v-else>{{ dataDetail.updateUserString }}</span>
-            <#else>
-            <span v-else>{{ dataDetail.${fieldConfig.fieldName} }}</span>
-            </#if>
-          </a-descriptions-item>
-          </#list>
-        </a-descriptions>
-      </a-drawer>
-    </a-card>
-  </div>
-</template>
-
 <script lang="ts" setup>
-  import { getCurrentInstance, ref, toRefs, reactive } from 'vue';
   import {
     DataRecord,
     ListParam,
@@ -507,5 +257,254 @@
     name: '${classNamePrefix}',
   };
 </script>
+
+<template>
+  <div class="app-container">
+    <Breadcrumb :items="['menu.${apiModuleName}', 'menu.${apiModuleName}.${apiName}.list']" />
+    <a-card class="general-card" :title="$t('menu.${apiModuleName}.${apiName}.list')">
+      <!-- 头部区域 -->
+      <div class="header">
+        <!-- 搜索栏 -->
+        <div v-if="showQuery" class="header-query">
+          <a-form ref="queryRef" :model="queryParams" layout="inline">
+            <#list fieldConfigs as fieldConfig>
+            <#if fieldConfig.showInQuery>
+            <a-form-item field="${fieldConfig.fieldName}" hide-label>
+              <a-input
+                v-model="queryParams.${fieldConfig.fieldName}"
+                placeholder="输入${fieldConfig.comment}搜索"
+                allow-clear
+                style="width: 150px"
+                @press-enter="handleQuery"
+              />
+            </a-form-item>
+            </#if>
+            </#list>
+            <a-form-item hide-label>
+              <a-space>
+                <a-button type="primary" @click="handleQuery">
+                  <template #icon><icon-search /></template>查询
+                </a-button>
+                <a-button @click="resetQuery">
+                  <template #icon><icon-refresh /></template>重置
+                </a-button>
+              </a-space>
+            </a-form-item>
+          </a-form>
+        </div>
+        <!-- 操作栏 -->
+        <div class="header-operation">
+          <a-row>
+            <a-col :span="12">
+              <a-space>
+                <a-button
+                  v-permission="['${apiModuleName}:${apiName}:add']"
+                  type="primary"
+                  @click="toAdd"
+                >
+                  <template #icon><icon-plus /></template>新增
+                </a-button>
+                <a-button
+                  v-permission="['${apiModuleName}:${apiName}:update']"
+                  type="primary"
+                  status="success"
+                  :disabled="single"
+                  :title="single ? '请选择一条要修改的数据' : ''"
+                  @click="toUpdate(ids[0])"
+                >
+                  <template #icon><icon-edit /></template>修改
+                </a-button>
+                <a-button
+                  v-permission="['${apiModuleName}:${apiName}:delete']"
+                  type="primary"
+                  status="danger"
+                  :disabled="multiple"
+                  :title="multiple ? '请选择要删除的数据' : ''"
+                  @click="handleBatchDelete"
+                >
+                  <template #icon><icon-delete /></template>删除
+                </a-button>
+                <a-button
+                  v-permission="['${apiModuleName}:${apiName}:export']"
+                  :loading="exportLoading"
+                  type="primary"
+                  status="warning"
+                  @click="handleExport"
+                >
+                  <template #icon><icon-download /></template>导出
+                </a-button>
+              </a-space>
+            </a-col>
+            <a-col :span="12">
+              <right-toolbar
+                v-model:show-query="showQuery"
+                @refresh="getList"
+              />
+            </a-col>
+          </a-row>
+        </div>
+      </div>
+
+      <!-- 列表区域 -->
+      <a-table
+        ref="tableRef"
+        row-key="id"
+        :data="dataList"
+        :loading="loading"
+        :row-selection="{
+          type: 'checkbox',
+          showCheckedAll: true,
+          onlyCurrent: false,
+        }"
+        :pagination="{
+          showTotal: true,
+          showPageSize: true,
+          total: total,
+          current: queryParams.page,
+        }"
+        :bordered="false"
+        column-resizable
+        stripe
+        size="large"
+        @page-change="handlePageChange"
+        @page-size-change="handlePageSizeChange"
+        @selection-change="handleSelectionChange"
+      >
+        <template #columns>
+          <#list fieldConfigs as fieldConfig>
+          <#if fieldConfig_index = 0>
+          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}">
+            <template #cell="{ record }">
+              <a-link @click="toDetail(record.id)">{{ record.${fieldConfig.fieldName} }}</a-link>
+            </template>
+          </a-table-column>
+          <#else>
+          <#if fieldConfig.showInList>
+          <a-table-column title="${fieldConfig.comment}" data-index="${fieldConfig.fieldName}" />
+          </#if>
+          </#if>
+          </#list>
+          <a-table-column
+            v-if="checkPermission(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])"
+            title="操作"
+            align="center"
+          >
+            <template #cell="{ record }">
+              <a-button
+                v-permission="['${apiModuleName}:${apiName}:update']"
+                type="text"
+                size="small"
+                title="修改"
+                @click="toUpdate(record.id)"
+              >
+                <template #icon><icon-edit /></template>修改
+              </a-button>
+              <a-popconfirm
+                content="是否确定删除该数据？"
+                type="warning"
+                @ok="handleDelete([record.id])"
+              >
+                <a-button
+                  v-permission="['${apiModuleName}:${apiName}:delete']"
+                  type="text"
+                  size="small"
+                  title="删除"
+                  :disabled="record.disabled"
+                >
+                  <template #icon><icon-delete /></template>删除
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-table-column>
+        </template>
+      </a-table>
+
+      <!-- 表单区域 -->
+      <a-modal
+        :title="title"
+        :visible="visible"
+        :mask-closable="false"
+        :esc-to-close="false"
+        unmount-on-close
+        render-to-body
+        @ok="handleOk"
+        @cancel="handleCancel"
+      >
+        <a-form ref="formRef" :model="form" :rules="rules" size="large">
+          <#list fieldConfigs as fieldConfig>
+          <#if fieldConfig.showInForm>
+          <a-form-item label="${fieldConfig.comment}" field="${fieldConfig.fieldName}">
+            <#if fieldConfig.formType = 'TEXT'>
+            <a-input v-model="form.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" />
+            <#elseif fieldConfig.formType = 'TEXT_AREA'>
+            <a-textarea
+              v-model="form.${fieldConfig.fieldName}"
+              :max-length="200"
+              placeholder="请输入${fieldConfig.comment}"
+              :auto-size="{
+                minRows: 3,
+              }"
+              show-word-limit
+            />
+            <#elseif fieldConfig.formType = 'SELECT'>
+              <#--<a-select
+                v-model="form.${fieldConfig.fieldName}"
+                :options="${apiName}Options"
+                placeholder="请选择${fieldConfig.comment}"
+                :loading="${apiName}Loading"
+                multiple
+                allow-clear
+                :allow-search="{ retainInputValue: true }"
+                style="width: 416px"
+              />-->
+            <#elseif fieldConfig.formType = 'RADIO'>
+            <#--<a-radio-group v-model="form.${fieldConfig.fieldName}" type="button">
+            </a-radio-group>-->
+            <#elseif fieldConfig.formType = 'DATE'>
+            <a-date-picker v-model="form.${fieldConfig.fieldName}" placeholder="请选择${fieldConfig.comment}"/>
+            <#elseif fieldConfig.formType = 'DATE_TIME'>
+            <a-date-picker
+              v-model="form.${fieldConfig.fieldName}"
+              placeholder="请选择${fieldConfig.comment}"
+              show-time
+              format="YYYY-MM-DD HH:mm:ss"
+            />
+            </#if>
+          </a-form-item>
+          </#if>
+          </#list>
+        </a-form>
+      </a-modal>
+
+      <!-- 详情区域 -->
+      <a-drawer
+        title="${businessName}详情"
+        :visible="detailVisible"
+        :width="580"
+        :footer="false"
+        unmount-on-close
+        render-to-body
+        @cancel="handleDetailCancel"
+      >
+        <a-descriptions :column="2" bordered size="large">
+          <#list fieldConfigs as fieldConfig>
+          <a-descriptions-item label="${fieldConfig.comment}">
+            <a-skeleton v-if="detailLoading" :animation="true">
+              <a-skeleton-line :rows="1" />
+            </a-skeleton>
+            <#if fieldConfig.fieldName = 'createUser'>
+            <span v-else>{{ dataDetail.createUserString }}</span>
+            <#elseif fieldConfig.fieldName = 'updateUser'>
+            <span v-else>{{ dataDetail.updateUserString }}</span>
+            <#else>
+            <span v-else>{{ dataDetail.${fieldConfig.fieldName} }}</span>
+            </#if>
+          </a-descriptions-item>
+          </#list>
+        </a-descriptions>
+      </a-drawer>
+    </a-card>
+  </div>
+</template>
 
 <style scoped lang="less"></style>
