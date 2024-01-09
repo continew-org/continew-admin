@@ -7,7 +7,7 @@ project:
   # 版本
   version: 2.3.0-SNAPSHOT
   # 描述
-  description: ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。
+  description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 基本包
   base-package: top.charles7c.continew.admin
   ## 作者信息配置

@@ -21,7 +21,7 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Admin 中后台管理框架/脚手架，Continue New Admin，持续以最新流行技术栈构建，拥抱变化，迭代优化。</description>
+    <description>ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。</description>
     <url>https://github.com/Charles7c/continew-admin</url>
 
     <modules>
