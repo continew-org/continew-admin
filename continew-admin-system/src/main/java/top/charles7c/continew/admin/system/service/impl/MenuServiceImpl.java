@@ -48,8 +48,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConstants.MENU_KEY_PREFIX)
-public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq>
-    implements MenuService {
+public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq> implements MenuService {
 
     @Override
     @CacheEvict(allEntries = true)
@@ -101,16 +100,16 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     /**
      * 名称是否存在
      *
-     * @param name
-     *            名称
-     * @param parentId
-     *            上级 ID
-     * @param id
-     *            ID
+     * @param name     名称
+     * @param parentId 上级 ID
+     * @param id       ID
      * @return 是否存在
      */
     private boolean isNameExists(String name, Long parentId, Long id) {
-        return baseMapper.lambdaQuery().eq(MenuDO::getTitle, name).eq(MenuDO::getParentId, parentId)
-            .ne(null != id, MenuDO::getId, id).exists();
+        return baseMapper.lambdaQuery()
+            .eq(MenuDO::getTitle, name)
+            .eq(MenuDO::getParentId, parentId)
+            .ne(null != id, MenuDO::getId, id)
+            .exists();
     }
 }

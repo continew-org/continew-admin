@@ -36,8 +36,7 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemDetai
     /**
      * 根据字典 ID 查询
      *
-     * @param dictId
-     *            字典 ID
+     * @param dictId 字典 ID
      * @return 字典项列表
      */
     List<DictItemDetailResp> listByDictId(Long dictId);
@@ -45,8 +44,7 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemDetai
     /**
      * 根据字典编码查询
      * 
-     * @param dictCode
-     *            字典编码
+     * @param dictCode 字典编码
      * @return 字典项列表
      */
     List<LabelValueResp> listByDictCode(String dictCode);
@@ -54,8 +52,7 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemDetai
     /**
      * 根据字典 ID 列表删除
      *
-     * @param dictIds
-     *            字典 ID 列表
+     * @param dictIds 字典 ID 列表
      */
     void deleteByDictIds(List<Long> dictIds);
 }

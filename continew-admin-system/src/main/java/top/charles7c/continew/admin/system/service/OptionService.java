@@ -34,8 +34,7 @@ public interface OptionService {
     /**
      * 查询列表
      *
-     * @param query
-     *            查询条件
+     * @param query 查询条件
      * @return 列表信息
      */
     List<OptionResp> list(OptionQuery query);

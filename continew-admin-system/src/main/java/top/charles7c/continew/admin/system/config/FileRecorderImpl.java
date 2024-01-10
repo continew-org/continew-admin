@@ -56,7 +56,8 @@ public class FileRecorderImpl implements FileRecorder {
         FileDO file = new FileDO();
         String originalFilename = EscapeUtil.unescape(fileInfo.getOriginalFilename());
         file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
-            ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true) : originalFilename);
+            ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
+            : originalFilename);
         file.setSize(fileInfo.getSize());
         file.setUrl(fileInfo.getUrl());
         file.setExtension(fileInfo.getExt());
@@ -95,6 +96,8 @@ public class FileRecorderImpl implements FileRecorder {
     private FileDO getFileByUrl(String url) {
         Optional<FileDO> fileOptional = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).oneOpt();
         return fileOptional.orElseGet(() -> fileMapper.lambdaQuery()
-            .eq(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true)).oneOpt().orElse(null));
+            .eq(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true))
+            .oneOpt()
+            .orElse(null));
     }
 }

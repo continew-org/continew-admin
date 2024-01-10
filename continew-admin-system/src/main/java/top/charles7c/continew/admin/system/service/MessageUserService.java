@@ -31,10 +31,8 @@ public interface MessageUserService {
     /**
      * 根据用户 ID 查询未读消息数量
      * 
-     * @param userId
-     *            用户 ID
-     * @param isDetail
-     *            是否查询详情
+     * @param userId   用户 ID
+     * @param isDetail 是否查询详情
      * @return 未读消息信息
      */
     MessageUnreadResp countUnreadMessageByUserId(Long userId, Boolean isDetail);
@@ -42,10 +40,8 @@ public interface MessageUserService {
     /**
      * 新增
      *
-     * @param messageId
-     *            消息 ID
-     * @param userIdList
-     *            用户 ID 列表
+     * @param messageId  消息 ID
+     * @param userIdList 用户 ID 列表
      */
     void add(Long messageId, List<Long> userIdList);
 
@@ -60,8 +56,7 @@ public interface MessageUserService {
     /**
      * 根据消息 ID 删除
      *
-     * @param messageIds
-     *            消息 ID 列表
+     * @param messageIds 消息 ID 列表
      */
     void deleteByMessageIds(List<Long> messageIds);
 }

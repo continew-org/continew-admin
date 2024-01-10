@@ -46,9 +46,7 @@ import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConstants.DICT_KEY_PREFIX)
-public class DictItemServiceImpl
-    extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq>
-    implements DictItemService {
+public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> implements DictItemService {
 
     @Override
     @CacheEvict(allEntries = true)
@@ -91,16 +89,16 @@ public class DictItemServiceImpl
     /**
      * 字典值是否存在
      *
-     * @param value
-     *            字典值
-     * @param id
-     *            ID
-     * @param dictId
-     *            字典 ID
+     * @param value  字典值
+     * @param id     ID
+     * @param dictId 字典 ID
      * @return 是否存在
      */
     private boolean isValueExists(String value, Long id, Long dictId) {
-        return baseMapper.lambdaQuery().eq(DictItemDO::getValue, value).eq(DictItemDO::getDictId, dictId)
-            .ne(null != id, DictItemDO::getId, id).exists();
+        return baseMapper.lambdaQuery()
+            .eq(DictItemDO::getValue, value)
+            .eq(DictItemDO::getDictId, dictId)
+            .ne(null != id, DictItemDO::getId, id)
+            .exists();
     }
 }

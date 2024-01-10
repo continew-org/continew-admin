@@ -32,8 +32,7 @@ public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
     /**
      * 根据角色 ID 列表查询
      *
-     * @param roleIds
-     *            角色 ID 列表
+     * @param roleIds 角色 ID 列表
      * @return 菜单 ID 列表
      */
     List<Long> selectMenuIdByRoleIds(List<Long> roleIds);

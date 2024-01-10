@@ -35,10 +35,8 @@ public interface MessageService {
     /**
      * 分页查询列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 分页列表信息
      */
     PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery);
@@ -46,10 +44,8 @@ public interface MessageService {
     /**
      * 新增
      *
-     * @param req
-     *            新增信息
-     * @param userIdList
-     *            接收人列表
+     * @param req        新增信息
+     * @param userIdList 接收人列表
      */
     void add(MessageReq req, List<Long> userIdList);
 

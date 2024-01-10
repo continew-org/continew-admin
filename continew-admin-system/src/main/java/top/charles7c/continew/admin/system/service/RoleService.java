@@ -39,8 +39,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
     /**
      * 构建字典
      *
-     * @param list
-     *            原始列表数据
+     * @param list 原始列表数据
      * @return 字典列表
      */
     List<LabelValueResp<Long>> buildDict(List<RoleResp> list);
@@ -57,8 +56,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
     /**
      * 根据用户 ID 查询角色编码
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 角色编码集合
      */
     Set<String> listCodeByUserId(Long userId);
@@ -66,8 +64,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
     /**
      * 根据用户 ID 查询角色
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 角色集合
      */
     Set<RoleDTO> listByUserId(Long userId);
@@ -75,8 +72,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
     /**
      * 根据角色编码查询
      * 
-     * @param code
-     *            角色编码
+     * @param code 角色编码
      * @return 角色信息
      */
     RoleDO getByCode(String code);

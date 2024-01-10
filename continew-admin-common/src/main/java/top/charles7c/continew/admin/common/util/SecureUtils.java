@@ -38,10 +38,8 @@ public class SecureUtils {
     /**
      * 公钥加密
      *
-     * @param data
-     *            要加密的内容
-     * @param publicKey
-     *            公钥
+     * @param data      要加密的内容
+     * @param publicKey 公钥
      * @return 公钥加密并 Base64 加密后的内容
      */
     public static String encryptByRsaPublicKey(String data, String publicKey) {
@@ -51,8 +49,7 @@ public class SecureUtils {
     /**
      * 私钥解密
      *
-     * @param data
-     *            要解密的内容（Base64 加密过）
+     * @param data 要解密的内容（Base64 加密过）
      * @return 解密后的内容
      */
     public static String decryptByRsaPrivateKey(String data) {
@@ -64,10 +61,8 @@ public class SecureUtils {
     /**
      * 私钥解密
      *
-     * @param data
-     *            要解密的内容（Base64 加密过）
-     * @param privateKey
-     *            私钥
+     * @param data       要解密的内容（Base64 加密过）
+     * @param privateKey 私钥
      * @return 解密后的内容
      */
     public static String decryptByRsaPrivateKey(String data, String privateKey) {
@@ -77,10 +72,8 @@ public class SecureUtils {
     /**
      * MD5 加密
      *
-     * @param data
-     *            要加密的内容
-     * @param salt
-     *            盐
+     * @param data 要加密的内容
+     * @param salt 盐
      * @return 加密后的内容
      */
     public static String md5Salt(String data, String salt) {

@@ -54,8 +54,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq>
-    implements DeptService {
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq> implements DeptService {
 
     @Resource
     private UserService userService;
@@ -88,13 +87,14 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         // 启用/禁用部门
         if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
             List<DeptDO> children = this.listChildren(id);
-            long enabledChildrenCount =
-                children.stream().filter(d -> DisEnableStatusEnum.ENABLE.equals(d.getStatus())).count();
-            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && enabledChildrenCount > 0,
-                "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
+            long enabledChildrenCount = children.stream()
+                .filter(d -> DisEnableStatusEnum.ENABLE.equals(d.getStatus()))
+                .count();
+            CheckUtils.throwIf(DisEnableStatusEnum.DISABLE
+                .equals(newStatus) && enabledChildrenCount > 0, "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
             DeptDO oldParentDept = this.getByParentId(oldParentId);
-            CheckUtils.throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus)
-                && DisEnableStatusEnum.DISABLE.equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
+            CheckUtils.throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus) && DisEnableStatusEnum.DISABLE
+                .equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
         // 变更上级部门
         if (ObjectUtil.notEqual(req.getParentId(), oldParentId)) {
@@ -110,11 +110,13 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        List<DeptDO> list =
-            baseMapper.lambdaQuery().select(DeptDO::getName, DeptDO::getIsSystem).in(DeptDO::getId, ids).list();
+        List<DeptDO> list = baseMapper.lambdaQuery()
+            .select(DeptDO::getName, DeptDO::getIsSystem)
+            .in(DeptDO::getId, ids)
+            .list();
         Optional<DeptDO> isSystemData = list.stream().filter(DeptDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
-            isSystemData.orElseGet(DeptDO::new).getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除", isSystemData.orElseGet(DeptDO::new)
+            .getName());
         CheckUtils.throwIf(this.countChildren(ids) > 0, "所选部门存在下级部门，不允许删除");
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         // 删除角色和部门关联
@@ -137,24 +139,23 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     /**
      * 名称是否存在
      *
-     * @param name
-     *            名称
-     * @param parentId
-     *            上级 ID
-     * @param id
-     *            ID
+     * @param name     名称
+     * @param parentId 上级 ID
+     * @param id       ID
      * @return 是否存在
      */
     private boolean isNameExists(String name, Long parentId, Long id) {
-        return baseMapper.lambdaQuery().eq(DeptDO::getName, name).eq(DeptDO::getParentId, parentId)
-            .ne(null != id, DeptDO::getId, id).exists();
+        return baseMapper.lambdaQuery()
+            .eq(DeptDO::getName, name)
+            .eq(DeptDO::getParentId, parentId)
+            .ne(null != id, DeptDO::getId, id)
+            .exists();
     }
 
     /**
      * 获取祖级列表
      *
-     * @param parentId
-     *            上级部门
+     * @param parentId 上级部门
      * @return 祖级列表
      */
     private String getAncestors(Long parentId) {
@@ -165,8 +166,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     /**
      * 根据上级部门 ID 查询
      *
-     * @param parentId
-     *            上级部门 ID
+     * @param parentId 上级部门 ID
      * @return 上级部门信息
      */
     private DeptDO getByParentId(Long parentId) {
@@ -178,8 +178,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     /**
      * 查询子部门列表
      *
-     * @param id
-     *            ID
+     * @param id ID
      * @return 子部门列表
      */
     private List<DeptDO> listChildren(Long id) {
@@ -205,12 +204,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     /**
      * 更新子部门祖级列表
      *
-     * @param newAncestors
-     *            新祖级列表
-     * @param oldAncestors
-     *            原祖级列表
-     * @param id
-     *            ID
+     * @param newAncestors 新祖级列表
+     * @param oldAncestors 原祖级列表
+     * @param id           ID
      */
     private void updateChildrenAncestors(String newAncestors, String oldAncestors, Long id) {
         List<DeptDO> children = this.listChildren(id);

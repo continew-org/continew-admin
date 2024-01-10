@@ -45,8 +45,7 @@ public interface LogMapper extends BaseMapper<LogDO> {
     /**
      * 查询仪表盘访问趋势信息
      *
-     * @param days
-     *            日期数
+     * @param days 日期数
      *
      * @return 仪表盘访问趋势信息
      */

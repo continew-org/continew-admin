@@ -95,14 +95,14 @@ public class UserCenterController {
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
     public R updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
-        String rawOldPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getOldPassword()));
+        String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getOldPassword()));
         ValidationUtils.throwIfNull(rawOldPassword, "当前密码解密失败");
-        String rawNewPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getNewPassword()));
+        String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConstants.PASSWORD, rawNewPassword),
-            "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
+        ValidationUtils.throwIf(!ReUtil
+            .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
@@ -110,8 +110,8 @@ public class UserCenterController {
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
     public R updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
-        String rawCurrentPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
+        String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
         String captcha = RedisUtils.get(captchaKey);
@@ -125,8 +125,8 @@ public class UserCenterController {
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
     public R updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
-        String rawCurrentPassword =
-            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq.getCurrentPassword()));
+        String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
         String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
         String captcha = RedisUtils.get(captchaKey);

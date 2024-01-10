@@ -69,13 +69,13 @@ public enum FileTypeEnum implements IBaseEnum<Integer> {
     /**
      * 根据扩展名查询
      *
-     * @param extension
-     *            扩展名
+     * @param extension 扩展名
      * @return 文件类型
      */
     public static FileTypeEnum getByExtension(String extension) {
         return Arrays.stream(FileTypeEnum.values())
-            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase())).findFirst()
+            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase()))
+            .findFirst()
             .orElse(FileTypeEnum.UNKNOWN);
     }
 }

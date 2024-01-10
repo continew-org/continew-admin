@@ -33,10 +33,8 @@ public interface LoginService {
     /**
      * 账号登录
      *
-     * @param username
-     *            用户名
-     * @param password
-     *            密码
+     * @param username 用户名
+     * @param password 密码
      * @return 令牌
      */
     String accountLogin(String username, String password);
@@ -44,8 +42,7 @@ public interface LoginService {
     /**
      * 手机号登录
      *
-     * @param phone
-     *            手机号
+     * @param phone 手机号
      * @return 令牌
      */
     String phoneLogin(String phone);
@@ -53,8 +50,7 @@ public interface LoginService {
     /**
      * 邮箱登录
      *
-     * @param email
-     *            邮箱
+     * @param email 邮箱
      * @return 令牌
      */
     String emailLogin(String email);
@@ -62,8 +58,7 @@ public interface LoginService {
     /**
      * 三方账号登录
      *
-     * @param authUser
-     *            三方账号信息
+     * @param authUser 三方账号信息
      * @return 令牌
      */
     String socialLogin(AuthUser authUser);
@@ -71,8 +66,7 @@ public interface LoginService {
     /**
      * 构建路由树
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 路由树
      */
     List<RouteResp> buildRouteTree(Long userId);

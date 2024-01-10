@@ -58,8 +58,8 @@ public class SpringCacheConfiguration extends CachingConfigurerSupport {
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
         ObjectMapper objectMapperCopy = objectMapper.copy();
-        objectMapperCopy.activateDefaultTyping(objectMapperCopy.getPolymorphicTypeValidator(),
-            ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
+        objectMapperCopy.activateDefaultTyping(objectMapperCopy
+            .getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
             .serializeValuesWith(RedisSerializationContext.SerializationPair

@@ -23,5 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ContiNewAdminApplicationTests {
 
     @Test
-    void contextLoads() {}
+    void contextLoads() {
+    }
 }

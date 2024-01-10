@@ -40,8 +40,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-public class AnnouncementServiceImpl extends BaseServiceImpl<AnnouncementMapper, AnnouncementDO, AnnouncementResp,
-    AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> implements AnnouncementService {
+public class AnnouncementServiceImpl extends BaseServiceImpl<AnnouncementMapper, AnnouncementDO, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> implements AnnouncementService {
 
     @Override
     public List<DashboardAnnouncementResp> listDashboard() {

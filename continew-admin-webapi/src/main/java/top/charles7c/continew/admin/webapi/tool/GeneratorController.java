@@ -73,7 +73,7 @@ public class GeneratorController {
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
-        @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
+                                                  @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
         return R.ok(generatorService.listFieldConfig(tableName, requireSync));
     }
 

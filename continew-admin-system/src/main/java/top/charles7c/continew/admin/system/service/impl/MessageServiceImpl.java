@@ -86,8 +86,7 @@ public class MessageServiceImpl implements MessageService {
     /**
      * 填充数据
      *
-     * @param message
-     *            待填充信息
+     * @param message 待填充信息
      */
     private void fill(MessageResp message) {
         Long createUser = message.getCreateUser();

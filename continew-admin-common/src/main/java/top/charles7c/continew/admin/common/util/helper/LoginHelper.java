@@ -50,8 +50,7 @@ public class LoginHelper {
     /**
      * 用户登录并缓存用户信息
      *
-     * @param loginUser
-     *            登录用户信息
+     * @param loginUser 登录用户信息
      * @return 令牌
      */
     public static String login(LoginUser loginUser) {
@@ -93,8 +92,7 @@ public class LoginHelper {
     /**
      * 根据 Token 获取登录用户信息
      *
-     * @param token
-     *            用户 Token
+     * @param token 用户 Token
      * @return 登录用户信息
      */
     public static LoginUser getLoginUser(String token) {
@@ -135,8 +133,7 @@ public class LoginHelper {
     /**
      * 获取登录用户昵称
      *
-     * @param userId
-     *            登录用户 ID
+     * @param userId 登录用户 ID
      * @return 登录用户昵称
      */
     public static String getNickname(Long userId) {

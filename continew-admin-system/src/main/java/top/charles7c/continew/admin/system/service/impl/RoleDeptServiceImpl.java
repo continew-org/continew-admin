@@ -46,16 +46,22 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> deptIds, Long roleId) {
         // 检查是否有变更
-        List<Long> oldDeptIdList = roleDeptMapper.lambdaQuery().select(RoleDeptDO::getDeptId)
-            .eq(RoleDeptDO::getRoleId, roleId).list().stream().map(RoleDeptDO::getDeptId).collect(Collectors.toList());
+        List<Long> oldDeptIdList = roleDeptMapper.lambdaQuery()
+            .select(RoleDeptDO::getDeptId)
+            .eq(RoleDeptDO::getRoleId, roleId)
+            .list()
+            .stream()
+            .map(RoleDeptDO::getDeptId)
+            .collect(Collectors.toList());
         if (CollUtil.isEmpty(CollUtil.disjunction(deptIds, oldDeptIdList))) {
             return false;
         }
         // 删除原有关联
         roleDeptMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleDeptDO> roleDeptList =
-            deptIds.stream().map(deptId -> new RoleDeptDO(roleId, deptId)).collect(Collectors.toList());
+        List<RoleDeptDO> roleDeptList = deptIds.stream()
+            .map(deptId -> new RoleDeptDO(roleId, deptId))
+            .collect(Collectors.toList());
         return roleDeptMapper.insertBatch(roleDeptList);
     }
 

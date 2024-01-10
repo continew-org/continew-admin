@@ -40,8 +40,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 新增
      * 
-     * @param user
-     *            用户信息
+     * @param user 用户信息
      * @return ID
      */
     Long add(UserDO user);
@@ -49,10 +48,8 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 上传头像
      *
-     * @param avatar
-     *            头像文件
-     * @param id
-     *            ID
+     * @param avatar 头像文件
+     * @param id     ID
      * @return 新头像路径
      */
     String uploadAvatar(MultipartFile avatar, Long id);
@@ -60,72 +57,57 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 修改基础信息
      *
-     * @param updateReq
-     *            修改信息
-     * @param id
-     *            ID
+     * @param updateReq 修改信息
+     * @param id        ID
      */
     void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id);
 
     /**
      * 修改密码
      *
-     * @param oldPassword
-     *            当前密码
-     * @param newPassword
-     *            新密码
-     * @param id
-     *            ID
+     * @param oldPassword 当前密码
+     * @param newPassword 新密码
+     * @param id          ID
      */
     void updatePassword(String oldPassword, String newPassword, Long id);
 
     /**
      * 修改手机号
      *
-     * @param newPhone
-     *            新手机号
-     * @param currentPassword
-     *            当前密码
-     * @param id
-     *            ID
+     * @param newPhone        新手机号
+     * @param currentPassword 当前密码
+     * @param id              ID
      */
     void updatePhone(String newPhone, String currentPassword, Long id);
 
     /**
      * 修改邮箱
      *
-     * @param newEmail
-     *            新邮箱
-     * @param currentPassword
-     *            当前密码
-     * @param id
-     *            ID
+     * @param newEmail        新邮箱
+     * @param currentPassword 当前密码
+     * @param id              ID
      */
     void updateEmail(String newEmail, String currentPassword, Long id);
 
     /**
      * 重置密码
      *
-     * @param id
-     *            ID
+     * @param id ID
      */
     void resetPassword(Long id);
 
     /**
      * 修改角色
      *
-     * @param updateReq
-     *            修改信息
-     * @param id
-     *            ID
+     * @param updateReq 修改信息
+     * @param id        ID
      */
     void updateRole(UserRoleUpdateReq updateReq, Long id);
 
     /**
      * 根据用户名查询
      *
-     * @param username
-     *            用户名
+     * @param username 用户名
      * @return 用户信息
      */
     UserDO getByUsername(String username);
@@ -133,8 +115,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 根据手机号查询
      *
-     * @param phone
-     *            手机号
+     * @param phone 手机号
      * @return 用户信息
      */
     UserDO getByPhone(String phone);
@@ -142,8 +123,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 根据邮箱查询
      *
-     * @param email
-     *            邮箱
+     * @param email 邮箱
      * @return 用户信息
      */
     UserDO getByEmail(String email);
@@ -151,8 +131,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 根据部门 ID 列表查询
      *
-     * @param deptIds
-     *            部门 ID 列表
+     * @param deptIds 部门 ID 列表
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);

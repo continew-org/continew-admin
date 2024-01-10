@@ -144,7 +144,8 @@ public class GenConfigDO implements Serializable {
 
     public String getClassNamePrefix() {
         String rawClassName = StrUtil.isNotBlank(this.tablePrefix)
-            ? StrUtil.removePrefix(this.tableName, this.tablePrefix) : this.tableName;
+            ? StrUtil.removePrefix(this.tableName, this.tablePrefix)
+            : this.tableName;
         return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }

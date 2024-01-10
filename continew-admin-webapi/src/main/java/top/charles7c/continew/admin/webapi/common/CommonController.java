@@ -124,30 +124,31 @@ public class CommonController {
     @GetMapping("/option")
     @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX)
     public R<List<LabelValueResp>> listOption(@Validated OptionQuery query) {
-        return R.ok(optionService.list(query).stream().map(option -> new LabelValueResp(option.getCode(),
-            StrUtil.nullToDefault(option.getValue(), option.getDefaultValue()))).collect(Collectors.toList()));
+        return R.ok(optionService.list(query)
+            .stream()
+            .map(option -> new LabelValueResp(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
+                .getDefaultValue())))
+            .collect(Collectors.toList()));
     }
 
     /**
      * 根据枚举类名查询
      *
-     * @param enumClassName
-     *            枚举类名
+     * @param enumClassName 枚举类名
      * @return 枚举类型
      */
     private Optional<Class<?>> getEnumClassByName(String enumClassName) {
         Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), IBaseEnum.class);
         return classSet.stream()
-            .filter(
-                c -> StrUtil.equalsAnyIgnoreCase(c.getSimpleName(), enumClassName, StrUtil.toCamelCase(enumClassName)))
+            .filter(c -> StrUtil.equalsAnyIgnoreCase(c.getSimpleName(), enumClassName, StrUtil
+                .toCamelCase(enumClassName)))
             .findFirst();
     }
 
     /**
      * 查询枚举字典
      *
-     * @param enumClass
-     *            枚举类型
+     * @param enumClass 枚举类型
      * @return 枚举字典
      */
     private List<LabelValueResp> listEnumDict(Class<?> enumClass) {

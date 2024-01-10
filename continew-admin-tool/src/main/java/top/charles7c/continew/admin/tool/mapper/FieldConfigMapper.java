@@ -35,8 +35,7 @@ public interface FieldConfigMapper extends BaseMapper<FieldConfigDO> {
     /**
      * 根据表名称查询
      * 
-     * @param tableName
-     *            表名称
+     * @param tableName 表名称
      * @return 字段配置信息
      */
     @Select("SELECT * FROM `gen_field_config` WHERE `table_name` = #{tableName}")

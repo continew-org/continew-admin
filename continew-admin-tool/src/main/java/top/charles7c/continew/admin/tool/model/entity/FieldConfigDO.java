@@ -136,8 +136,8 @@ public class FieldConfigDO implements Serializable {
     /**
      * 查询方式
      */
-    @Schema(description = "查询方式", type = "Integer",
-        allowableValues = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"}, example = "1")
+    @Schema(description = "查询方式", type = "Integer", allowableValues = {"1", "2", "3", "4", "5", "6", "7", "8", "9",
+        "10", "11", "12", "13", "14"}, example = "1")
     private QueryTypeEnum queryType;
 
     /**

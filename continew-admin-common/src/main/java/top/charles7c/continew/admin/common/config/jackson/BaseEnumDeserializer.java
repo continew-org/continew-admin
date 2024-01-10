@@ -43,8 +43,8 @@ public class BaseEnumDeserializer extends JsonDeserializer<IBaseEnum> {
     public static final BaseEnumDeserializer SERIALIZER_INSTANCE = new BaseEnumDeserializer();
 
     @Override
-    public IBaseEnum deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-        throws IOException {
+    public IBaseEnum deserialize(JsonParser jsonParser,
+                                 DeserializationContext deserializationContext) throws IOException {
         Class<?> targetClass = jsonParser.getCurrentValue().getClass();
         String fieldName = jsonParser.getCurrentName();
         String value = jsonParser.getText();
@@ -54,12 +54,9 @@ public class BaseEnumDeserializer extends JsonDeserializer<IBaseEnum> {
     /**
      * 通过某字段对应值获取枚举实例，获取不到时为 {@code null}
      *
-     * @param targetClass
-     *            目标类型
-     * @param value
-     *            字段值
-     * @param fieldName
-     *            字段名
+     * @param targetClass 目标类型
+     * @param value       字段值
+     * @param fieldName   字段名
      * @return 对应枚举实例 ，获取不到时为 {@code null}
      */
     private IBaseEnum getEnum(Class<?> targetClass, String value, String fieldName) {

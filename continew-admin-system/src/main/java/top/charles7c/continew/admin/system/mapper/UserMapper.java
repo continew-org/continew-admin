@@ -33,8 +33,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     /**
      * 根据用户名查询
      *
-     * @param username
-     *            用户名
+     * @param username 用户名
      * @return 用户信息
      */
     @Select("SELECT * FROM `sys_user` WHERE `username` = #{username}")
@@ -43,8 +42,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     /**
      * 根据手机号查询
      *
-     * @param phone
-     *            手机号
+     * @param phone 手机号
      * @return 用户信息
      */
     @Select("SELECT * FROM `sys_user` WHERE `phone` = #{phone}")
@@ -53,8 +51,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     /**
      * 根据邮箱查询
      *
-     * @param email
-     *            邮箱
+     * @param email 邮箱
      * @return 用户信息
      */
     @Select("SELECT * FROM `sys_user` WHERE `email` = #{email}")
@@ -63,8 +60,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
     /**
      * 根据 ID 查询昵称
      *
-     * @param id
-     *            ID
+     * @param id ID
      * @return 昵称
      */
     @Select("SELECT `nickname` FROM `sys_user` WHERE `id` = #{id}")

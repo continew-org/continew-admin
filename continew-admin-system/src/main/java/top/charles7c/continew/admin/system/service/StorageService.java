@@ -41,8 +41,7 @@ public interface StorageService extends BaseService<StorageResp, StorageDetailRe
     /**
      * 根据编码查询
      *
-     * @param code
-     *            编码
+     * @param code 编码
      * @return 存储库信息
      */
     StorageDO getByCode(String code);

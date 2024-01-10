@@ -33,10 +33,8 @@ public interface UserSocialService {
     /**
      * 根据来源和开放 ID 查询
      * 
-     * @param source
-     *            来源
-     * @param openId
-     *            开放 ID
+     * @param source 来源
+     * @param openId 开放 ID
      * @return 用户社会化关联信息
      */
     UserSocialDO getBySourceAndOpenId(String source, String openId);
@@ -44,16 +42,14 @@ public interface UserSocialService {
     /**
      * 保存
      *
-     * @param userSocial
-     *            用户社会化关联信息
+     * @param userSocial 用户社会化关联信息
      */
     void saveOrUpdate(UserSocialDO userSocial);
 
     /**
      * 根据用户 ID 查询
      * 
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 用户社会化关联信息
      */
     List<UserSocialDO> listByUserId(Long userId);
@@ -61,20 +57,16 @@ public interface UserSocialService {
     /**
      * 绑定
      * 
-     * @param authUser
-     *            三方账号信息
-     * @param userId
-     *            用户 ID
+     * @param authUser 三方账号信息
+     * @param userId   用户 ID
      */
     void bind(AuthUser authUser, Long userId);
 
     /**
      * 根据来源和用户 ID 删除
      * 
-     * @param source
-     *            来源
-     * @param userId
-     *            用户 ID
+     * @param source 来源
+     * @param userId 用户 ID
      */
     void deleteBySourceAndUserId(String source, Long userId);
 }

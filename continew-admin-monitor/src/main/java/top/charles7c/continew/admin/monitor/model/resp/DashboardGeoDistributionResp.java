@@ -47,7 +47,6 @@ public class DashboardGeoDistributionResp implements Serializable {
     /**
      * 地点 IP 统计信息
      */
-    @Schema(description = "地点 IP 统计信息",
-        example = "[{\"name\":\"中国北京北京市\",\"value\":1000},{\"name\":\"中国广东省深圳市\",\"value\": 500}]")
+    @Schema(description = "地点 IP 统计信息", example = "[{\"name\":\"中国北京北京市\",\"value\":1000},{\"name\":\"中国广东省深圳市\",\"value\": 500}]")
     private List<Map<String, Object>> locationIpStatistics;
 }

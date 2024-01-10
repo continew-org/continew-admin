@@ -52,8 +52,9 @@ public class ExcelBaseEnumConverter implements Converter<IBaseEnum<Integer>> {
      * 转换为 Java 数据（读取 Excel）
      */
     @Override
-    public IBaseEnum convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
+    public IBaseEnum convertToJavaData(ReadCellData<?> cellData,
+                                       ExcelContentProperty contentProperty,
+                                       GlobalConfiguration globalConfiguration) {
         return this.getEnum(IBaseEnum.class, Convert.toStr(cellData.getData()));
     }
 
@@ -61,8 +62,9 @@ public class ExcelBaseEnumConverter implements Converter<IBaseEnum<Integer>> {
      * 转换为 Excel 数据（写入 Excel）
      */
     @Override
-    public WriteCellData<String> convertToExcelData(IBaseEnum<Integer> value, ExcelContentProperty contentProperty,
-        GlobalConfiguration globalConfiguration) {
+    public WriteCellData<String> convertToExcelData(IBaseEnum<Integer> value,
+                                                    ExcelContentProperty contentProperty,
+                                                    GlobalConfiguration globalConfiguration) {
         if (null == value) {
             return new WriteCellData<>(StringConstants.EMPTY);
         }
@@ -72,10 +74,8 @@ public class ExcelBaseEnumConverter implements Converter<IBaseEnum<Integer>> {
     /**
      * 通过 value 获取枚举对象，获取不到时为 {@code null}
      *
-     * @param enumType
-     *            枚举类型
-     * @param description
-     *            描述
+     * @param enumType    枚举类型
+     * @param description 描述
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
     private IBaseEnum<Integer> getEnum(Class<?> enumType, String description) {

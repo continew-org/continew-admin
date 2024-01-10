@@ -84,9 +84,12 @@ public class MessageUserServiceImpl implements MessageUserService {
 
     @Override
     public void readMessage(List<Long> ids) {
-        baseMapper.lambdaUpdate().set(MessageUserDO::getIsRead, true)
-            .set(MessageUserDO::getReadTime, LocalDateTime.now()).eq(MessageUserDO::getIsRead, false)
-            .in(CollUtil.isNotEmpty(ids), MessageUserDO::getMessageId, ids).update();
+        baseMapper.lambdaUpdate()
+            .set(MessageUserDO::getIsRead, true)
+            .set(MessageUserDO::getReadTime, LocalDateTime.now())
+            .eq(MessageUserDO::getIsRead, false)
+            .in(CollUtil.isNotEmpty(ids), MessageUserDO::getMessageId, ids)
+            .update();
     }
 
     @Override

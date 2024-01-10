@@ -59,7 +59,8 @@ public class DashboardServiceImpl implements DashboardService {
         Long todayPvCount = totalResp.getTodayPvCount();
         Long yesterdayPvCount = totalResp.getYesterdayPvCount();
         BigDecimal newPvCountFromYesterday = NumberUtil.sub(todayPvCount, yesterdayPvCount);
-        BigDecimal newPvFromYesterday = (0 == yesterdayPvCount) ? BigDecimal.valueOf(100)
+        BigDecimal newPvFromYesterday = (0 == yesterdayPvCount)
+            ? BigDecimal.valueOf(100)
             : NumberUtil.round(NumberUtil.mul(NumberUtil.div(newPvCountFromYesterday, yesterdayPvCount), 100), 1);
         totalResp.setNewPvFromYesterday(newPvFromYesterday);
         return totalResp;
@@ -78,7 +79,8 @@ public class DashboardServiceImpl implements DashboardService {
             Long todayPvCount = popularModule.getTodayPvCount();
             Long yesterdayPvCount = popularModule.getYesterdayPvCount();
             BigDecimal newPvCountFromYesterday = NumberUtil.sub(todayPvCount, yesterdayPvCount);
-            BigDecimal newPvFromYesterday = (0 == yesterdayPvCount) ? BigDecimal.valueOf(100)
+            BigDecimal newPvFromYesterday = (0 == yesterdayPvCount)
+                ? BigDecimal.valueOf(100)
                 : NumberUtil.round(NumberUtil.mul(NumberUtil.div(newPvCountFromYesterday, yesterdayPvCount), 100), 1);
             popularModule.setNewPvFromYesterday(newPvFromYesterday);
         }

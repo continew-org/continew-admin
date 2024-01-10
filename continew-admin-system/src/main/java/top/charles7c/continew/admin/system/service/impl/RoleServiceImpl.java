@@ -55,8 +55,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq>
-    implements RoleService {
+public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq> implements RoleService {
 
     private final MenuService menuService;
     private final OnlineUserService onlineUserService;
@@ -93,8 +92,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         String oldCode = oldRole.getCode();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用",
-                oldRole.getName());
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用", oldRole
+                .getName());
             CheckUtils.throwIfNotEqual(req.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
             CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限", oldRole.getName());
         }
@@ -107,8 +106,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             // 保存角色和部门关联
             boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
             // 如果角色编码、功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
-            if (ObjectUtil.notEqual(req.getCode(), oldCode) || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)
-                || isSaveMenuSuccess || isSaveDeptSuccess) {
+            if (ObjectUtil.notEqual(req.getCode(), oldCode) || ObjectUtil.notEqual(req
+                .getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
                 onlineUserService.cleanByRoleId(id);
             }
         }
@@ -117,11 +116,13 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        List<RoleDO> list =
-            baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getIsSystem).in(RoleDO::getId, ids).list();
+        List<RoleDO> list = baseMapper.lambdaQuery()
+            .select(RoleDO::getName, RoleDO::getIsSystem)
+            .in(RoleDO::getId, ids)
+            .list();
         Optional<RoleDO> isSystemData = list.stream().filter(RoleDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
-            isSystemData.orElseGet(RoleDO::new).getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除", isSystemData.orElseGet(RoleDO::new)
+            .getName());
         CheckUtils.throwIf(userRoleService.countByRoleIds(ids) > 0, "所选角色存在用户关联，请解除关联后重试");
         // 删除角色和菜单关联
         roleMenuService.deleteByRoleIds(ids);
@@ -183,10 +184,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     /**
      * 名称是否存在
      *
-     * @param name
-     *            名称
-     * @param id
-     *            ID
+     * @param name 名称
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isNameExists(String name, Long id) {
@@ -196,10 +195,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     /**
      * 编码是否存在
      *
-     * @param code
-     *            编码
-     * @param id
-     *            ID
+     * @param code 编码
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isCodeExists(String code, Long id) {

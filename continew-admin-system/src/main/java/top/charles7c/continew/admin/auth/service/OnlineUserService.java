@@ -35,10 +35,8 @@ public interface OnlineUserService {
     /**
      * 分页查询列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 分页列表信息
      */
     PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery);
@@ -46,8 +44,7 @@ public interface OnlineUserService {
     /**
      * 查询列表
      *
-     * @param query
-     *            查询条件
+     * @param query 查询条件
      * @return 列表信息
      */
     List<LoginUser> list(OnlineUserQuery query);
@@ -55,8 +52,7 @@ public interface OnlineUserService {
     /**
      * 根据角色 ID 清除
      *
-     * @param roleId
-     *            角色 ID
+     * @param roleId 角色 ID
      */
     void cleanByRoleId(Long roleId);
 }

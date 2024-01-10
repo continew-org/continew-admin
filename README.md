@@ -74,7 +74,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 - 前后端统一异常拦截处理，统一输出异常信息，避免繁琐的异常判断
 - 自动初始化数据：通过 Liquibase 管理数据库脚本版本记录，并在系统第一次启动时自动进行数据初始化，无须额外配置导入
 - 提供多项实用基础配置，例如：Jackson 针对日期、通用枚举的序列化、反序列化配置，统一线程池配置等
-- 良好的代码、配置文件结构和命名，完善的代码注释甚至包括 Git Commit 信息、接口文档参数示例，遵循阿里巴巴 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 的代码规范，保证代码质量和可维护性
+- 良好的代码、配置文件结构和命名，完善的代码注释甚至包括 Git Commit 信息、接口文档参数示例，遵循阿里巴巴 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 的代码规范，保证代码质量和可维护性
 - 更多细节及实践，敬请探索与关注
 
 ##  系统功能
@@ -395,7 +395,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 > **IMPORTANT**
 > 欢迎大家为 ContiNew Admin 贡献代码，我们非常感谢您的支持！为了更好地管理项目，维护者有一些要求：
 >
-> 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/code-style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
+> 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
 > 2. 在提交代码前，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit 的 message（建议在 IntelliJ IDEA 中下载并安装 Git Commit Template 插件，以便按照规范进行 commit）
 > 3. 提交代码之前，请关闭所有代码窗口，执行 mvn compile 命令（项目已配置代码格式化插件，编译通过的同时也会自动进行代码格式化），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
 

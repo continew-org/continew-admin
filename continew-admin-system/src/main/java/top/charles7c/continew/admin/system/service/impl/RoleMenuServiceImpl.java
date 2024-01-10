@@ -47,16 +47,22 @@ public class RoleMenuServiceImpl implements RoleMenuService {
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> menuIds, Long roleId) {
         // 检查是否有变更
-        List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery().select(RoleMenuDO::getMenuId)
-            .eq(RoleMenuDO::getRoleId, roleId).list().stream().map(RoleMenuDO::getMenuId).collect(Collectors.toList());
+        List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery()
+            .select(RoleMenuDO::getMenuId)
+            .eq(RoleMenuDO::getRoleId, roleId)
+            .list()
+            .stream()
+            .map(RoleMenuDO::getMenuId)
+            .collect(Collectors.toList());
         if (CollUtil.isEmpty(CollUtil.disjunction(menuIds, oldMenuIdList))) {
             return false;
         }
         // 删除原有关联
         roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleMenuDO> roleMenuList =
-            menuIds.stream().map(menuId -> new RoleMenuDO(roleId, menuId)).collect(Collectors.toList());
+        List<RoleMenuDO> roleMenuList = menuIds.stream()
+            .map(menuId -> new RoleMenuDO(roleId, menuId))
+            .collect(Collectors.toList());
         return roleMenuMapper.insertBatch(roleMenuList);
     }
 

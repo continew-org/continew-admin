@@ -86,17 +86,16 @@ public class GeneratorServiceImpl implements GeneratorService {
         if (StrUtil.isNotBlank(tableName)) {
             tableList.removeIf(table -> !StrUtil.containsAny(table.getTableName(), tableName));
         }
-        tableList.removeIf(
-            table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties.getExcludeTables()));
-        CollUtil.sort(tableList,
-            Comparator.comparing(Table::getCreateTime)
-                .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
-                .reversed());
+        tableList.removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
+            .getExcludeTables()));
+        CollUtil.sort(tableList, Comparator.comparing(Table::getCreateTime)
+            .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
+            .reversed());
         List<TableResp> tableRespList = BeanUtil.copyToList(tableList, TableResp.class);
         PageResp<TableResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
         for (TableResp tableResp : pageResp.getList()) {
-            long count = genConfigMapper.selectCount(
-                Wrappers.lambdaQuery(GenConfigDO.class).eq(GenConfigDO::getTableName, tableResp.getTableName()));
+            long count = genConfigMapper.selectCount(Wrappers.lambdaQuery(GenConfigDO.class)
+                .eq(GenConfigDO::getTableName, tableResp.getTableName()));
             tableResp.setIsConfiged(count > 0);
         }
         return pageResp;
@@ -117,8 +116,9 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConstants.EMPTY));
             }
             // 默认作者名称（上次保存使用的作者名称）
-            GenConfigDO lastGenConfig = genConfigMapper.selectOne(
-                Wrappers.lambdaQuery(GenConfigDO.class).orderByDesc(GenConfigDO::getCreateTime).last("LIMIT 1"));
+            GenConfigDO lastGenConfig = genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class)
+                .orderByDesc(GenConfigDO::getCreateTime)
+                .last("LIMIT 1"));
             if (null != lastGenConfig) {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
@@ -151,8 +151,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 FieldConfigDO fieldConfig = fieldConfigMap.get(column.getName());
                 if (null != fieldConfig) {
                     // 更新已有字段配置
-                    String columnType =
-                        StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
+                    String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0]
+                        .toLowerCase();
                     fieldConfig.setColumnType(columnType);
                     fieldConfig.setColumnSize(column.getSize());
                     fieldConfig.setComment(column.getComment());
@@ -219,8 +219,8 @@ public class GeneratorServiceImpl implements GeneratorService {
         Map<String, Object> genConfigMap = BeanUtil.beanToMap(genConfig);
         genConfigMap.put("date", DateUtil.date().toString("yyyy/MM/dd HH:mm"));
         String packageName = genConfig.getPackageName();
-        String apiModuleName =
-            StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+        String apiModuleName = StrUtil.subSuf(packageName, StrUtil
+            .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
         genConfigMap.put("apiModuleName", apiModuleName);
         genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
         // 渲染后端代码
@@ -274,19 +274,20 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/continew/admin/tool
             List<String> backendModuleChildPathList = CollUtil.newArrayList("src", "main", "java");
             backendModuleChildPathList.addAll(StrUtil.split(packageName, StringConstants.DOT));
-            File backendParentFile =
-                FileUtil.file(backendModuleFile, backendModuleChildPathList.toArray(new String[0]));
+            File backendParentFile = FileUtil.file(backendModuleFile, backendModuleChildPathList
+                .toArray(new String[0]));
             // 2.生成代码
-            List<GeneratePreviewResp> backendCodePreviewList =
-                generatePreviewList.stream().filter(GeneratePreviewResp::isBackend).collect(Collectors.toList());
+            List<GeneratePreviewResp> backendCodePreviewList = generatePreviewList.stream()
+                .filter(GeneratePreviewResp::isBackend)
+                .collect(Collectors.toList());
             Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
             for (GeneratePreviewResp codePreview : backendCodePreviewList) {
                 // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/continew/admin/tool/service/impl/XxxServiceImpl.java
-                TemplateConfig templateConfig =
-                    templateConfigMap.get(codePreview.getFileName().replace(classNamePrefix, StringConstants.EMPTY)
-                        .replace(FileNameUtil.EXT_JAVA, StringConstants.EMPTY));
-                File classParentFile = FileUtil.file(backendParentFile,
-                    StrUtil.splitToArray(templateConfig.getPackageName(), StringConstants.DOT));
+                TemplateConfig templateConfig = templateConfigMap.get(codePreview.getFileName()
+                    .replace(classNamePrefix, StringConstants.EMPTY)
+                    .replace(FileNameUtil.EXT_JAVA, StringConstants.EMPTY));
+                File classParentFile = FileUtil.file(backendParentFile, StrUtil.splitToArray(templateConfig
+                    .getPackageName(), StringConstants.DOT));
                 File classFile = new File(classParentFile, codePreview.getFileName());
                 // 如果已经存在，且不允许覆盖，则跳过
                 if (classFile.exists() && !isOverride) {
@@ -299,11 +300,12 @@ public class GeneratorServiceImpl implements GeneratorService {
             if (StrUtil.isBlank(frontendPath)) {
                 return;
             }
-            List<GeneratePreviewResp> frontendCodePreviewList =
-                generatePreviewList.stream().filter(p -> !p.isBackend()).collect(Collectors.toList());
+            List<GeneratePreviewResp> frontendCodePreviewList = generatePreviewList.stream()
+                .filter(p -> !p.isBackend())
+                .collect(Collectors.toList());
             // 1.生成 api 代码
-            String apiModuleName =
-                StrUtil.subSuf(packageName, StrUtil.lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+            String apiModuleName = StrUtil.subSuf(packageName, StrUtil
+                .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
             GeneratePreviewResp apiCodePreview = frontendCodePreviewList.get(0);
             // 例如：D:/continew-admin-ui
             List<String> frontendSubPathList = StrUtil.split(frontendPath, "src");
@@ -318,8 +320,8 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 2.生成 view 代码
             GeneratePreviewResp viewCodePreview = frontendCodePreviewList.get(1);
             // 例如：D:/continew-admin-ui/src/views/tool/xxx/index.vue
-            File indexFile =
-                FileUtil.file(frontendPath, apiModuleName, StrUtil.lowerFirst(classNamePrefix), "index.vue");
+            File indexFile = FileUtil.file(frontendPath, apiModuleName, StrUtil
+                .lowerFirst(classNamePrefix), "index.vue");
             if (indexFile.exists() && !isOverride) {
                 return;
             }
@@ -333,15 +335,13 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 预处理生成配置
      *
-     * @param genConfigMap
-     *            生成配置
-     * @param originFieldConfigList
-     *            原始字段配置列表
-     * @param templateConfigEntry
-     *            模板配置
+     * @param genConfigMap          生成配置
+     * @param originFieldConfigList 原始字段配置列表
+     * @param templateConfigEntry   模板配置
      */
-    private void pretreatment(Map<String, Object> genConfigMap, List<FieldConfigDO> originFieldConfigList,
-        Map.Entry<String, TemplateConfig> templateConfigEntry) {
+    private void pretreatment(Map<String, Object> genConfigMap,
+                              List<FieldConfigDO> originFieldConfigList,
+                              Map.Entry<String, TemplateConfig> templateConfigEntry) {
         TemplateConfig templateConfig = templateConfigEntry.getValue();
         // 移除需要忽略的字段
         List<FieldConfigDO> fieldConfigList = originFieldConfigList.stream()
@@ -365,8 +365,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 genConfigMap.put("hasRequiredField", true);
             }
             QueryTypeEnum queryType = fieldConfig.getQueryType();
-            if (null != queryType && StrUtil.equalsAny(queryType.name(), QueryTypeEnum.IN.name(),
-                QueryTypeEnum.NOT_IN.name(), QueryTypeEnum.BETWEEN.name())) {
+            if (null != queryType && StrUtil.equalsAny(queryType.name(), QueryTypeEnum.IN.name(), QueryTypeEnum.NOT_IN
+                .name(), QueryTypeEnum.BETWEEN.name())) {
                 genConfigMap.put("hasListQueryField", true);
             }
         }

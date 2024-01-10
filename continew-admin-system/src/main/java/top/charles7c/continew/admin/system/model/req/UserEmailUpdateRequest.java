@@ -62,8 +62,7 @@ public class UserEmailUpdateRequest implements Serializable {
     /**
      * 当前密码（加密后）
      */
-    @Schema(description = "当前密码（加密后）",
-        example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
+    @Schema(description = "当前密码（加密后）", example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
     @NotBlank(message = "当前密码不能为空")
     private String currentPassword;
 }

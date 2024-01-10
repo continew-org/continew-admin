@@ -35,8 +35,7 @@ public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
     /**
      * 根据角色 ID 查询
      *
-     * @param roleId
-     *            角色 ID
+     * @param roleId 角色 ID
      * @return 部门 ID 列表
      */
     @Select("SELECT `dept_id` FROM `sys_role_dept` WHERE `role_id` = #{roleId}")

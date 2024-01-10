@@ -42,8 +42,7 @@ public interface DashboardService {
     /**
      * 查询访问趋势信息
      *
-     * @param days
-     *            日期数
+     * @param days 日期数
      * @return 访问趋势信息
      */
     List<DashboardAccessTrendResp> listAccessTrend(Integer days);

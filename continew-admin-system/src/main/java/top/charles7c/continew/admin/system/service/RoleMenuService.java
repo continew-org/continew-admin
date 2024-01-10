@@ -29,10 +29,8 @@ public interface RoleMenuService {
     /**
      * 新增
      *
-     * @param menuIds
-     *            菜单 ID 列表
-     * @param roleId
-     *            角色 ID
+     * @param menuIds 菜单 ID 列表
+     * @param roleId  角色 ID
      * @return true：成功；false：无变更/失败
      */
     boolean add(List<Long> menuIds, Long roleId);
@@ -40,16 +38,14 @@ public interface RoleMenuService {
     /**
      * 根据角色 ID 删除
      *
-     * @param roleIds
-     *            角色 ID 列表
+     * @param roleIds 角色 ID 列表
      */
     void deleteByRoleIds(List<Long> roleIds);
 
     /**
      * 根据角色 ID 查询
      *
-     * @param roleIds
-     *            角色 ID 列表
+     * @param roleIds 角色 ID 列表
      * @return 菜单 ID 列表
      */
     List<Long> listMenuIdByRoleIds(List<Long> roleIds);

@@ -112,8 +112,7 @@ public class AuthController {
     }
 
     @Operation(summary = "用户退出", description = "注销用户的当前登录")
-    @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx",
-        in = ParameterIn.HEADER)
+    @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
     public R<Object> logout() {
         Object loginId = StpUtil.getLoginId(-1L);

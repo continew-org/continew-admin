@@ -66,8 +66,9 @@ public class LogDaoLocalImpl implements LogDao {
         LogDO logDO = new LogDO();
         logDO.setDescription(logRecord.getDescription());
         String module = logRecord.getModule();
-        logDO.setModule(
-            StrUtil.isNotBlank(module) ? logRecord.getModule().replace("API", StringConstants.EMPTY).trim() : null);
+        logDO.setModule(StrUtil.isNotBlank(module)
+            ? logRecord.getModule().replace("API", StringConstants.EMPTY).trim()
+            : null);
         logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
         logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
         // 请求信息
@@ -105,16 +106,16 @@ public class LogDaoLocalImpl implements LogDao {
                 logDO.setCreateUser(-1 != loginId ? loginId : null);
             } else if (result.isSuccess() && requestUri.startsWith(SysConstants.LOGIN_URI)) {
                 AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-                logDO.setCreateUser(
-                    ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername()).getId()));
+                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername())
+                    .getId()));
             }
         }
         // 操作人
-        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap)
-            && requestHeaderMap.containsKey(HttpHeaders.AUTHORIZATION)) {
+        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap) && requestHeaderMap
+            .containsKey(HttpHeaders.AUTHORIZATION)) {
             String authorization = requestHeaderMap.get(HttpHeaders.AUTHORIZATION);
-            String token = authorization.replace(SaManager.getConfig().getTokenPrefix() + StringConstants.SPACE,
-                StringConstants.EMPTY);
+            String token = authorization.replace(SaManager.getConfig()
+                .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
         }
         logMapper.insert(logDO);

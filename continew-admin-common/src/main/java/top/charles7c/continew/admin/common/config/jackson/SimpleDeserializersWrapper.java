@@ -49,8 +49,9 @@ import com.fasterxml.jackson.databind.type.ClassKey;
 public class SimpleDeserializersWrapper extends SimpleDeserializers {
 
     @Override
-    public JsonDeserializer<?> findEnumDeserializer(Class<?> type, DeserializationConfig config,
-        BeanDescription beanDesc) throws JsonMappingException {
+    public JsonDeserializer<?> findEnumDeserializer(Class<?> type,
+                                                    DeserializationConfig config,
+                                                    BeanDescription beanDesc) throws JsonMappingException {
         JsonDeserializer<?> deser = super.findEnumDeserializer(type, config, beanDesc);
         if (null != deser) {
             return deser;

@@ -97,25 +97,23 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     /**
      * 是否符合查询条件
      *
-     * @param query
-     *            查询条件
-     * @param loginUser
-     *            登录用户信息
+     * @param query     查询条件
+     * @param loginUser 登录用户信息
      * @return 是否符合查询条件
      */
     private boolean isMatchQuery(OnlineUserQuery query, LoginUser loginUser) {
         boolean flag1 = true;
         String nickname = query.getNickname();
         if (StrUtil.isNotBlank(nickname)) {
-            flag1 = StrUtil.contains(loginUser.getUsername(), nickname)
-                || StrUtil.contains(LoginHelper.getNickname(loginUser.getId()), nickname);
+            flag1 = StrUtil.contains(loginUser.getUsername(), nickname) || StrUtil.contains(LoginHelper
+                .getNickname(loginUser.getId()), nickname);
         }
 
         boolean flag2 = true;
         List<Date> loginTime = query.getLoginTime();
         if (CollUtil.isNotEmpty(loginTime)) {
-            flag2 =
-                DateUtil.isIn(DateUtil.date(loginUser.getLoginTime()).toJdkDate(), loginTime.get(0), loginTime.get(1));
+            flag2 = DateUtil.isIn(DateUtil.date(loginUser.getLoginTime()).toJdkDate(), loginTime.get(0), loginTime
+                .get(1));
         }
         return flag1 && flag2;
     }

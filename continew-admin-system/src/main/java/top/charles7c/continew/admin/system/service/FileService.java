@@ -37,8 +37,7 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
     /**
      * 上传到默认存储库
      *
-     * @param file
-     *            文件信息
+     * @param file 文件信息
      * @return 文件信息
      */
     default FileInfo upload(MultipartFile file) {
@@ -48,10 +47,8 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
     /**
      * 上传到指定存储库
      *
-     * @param file
-     *            文件信息
-     * @param storageCode
-     *            存储库编码
+     * @param file        文件信息
+     * @param storageCode 存储库编码
      * @return 文件信息
      */
     FileInfo upload(MultipartFile file, String storageCode);
@@ -59,8 +56,7 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
     /**
      * 根据存储库 ID 列表查询
      *
-     * @param storageIds
-     *            存储库 ID 列表
+     * @param storageIds 存储库 ID 列表
      * @return 文件数量
      */
     Long countByStorageIds(List<Long> storageIds);

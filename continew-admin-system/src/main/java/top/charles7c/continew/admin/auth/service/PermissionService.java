@@ -29,8 +29,7 @@ public interface PermissionService {
     /**
      * 根据用户 ID 查询权限码
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 权限码集合
      */
     Set<String> listPermissionByUserId(Long userId);
@@ -38,8 +37,7 @@ public interface PermissionService {
     /**
      * 根据用户 ID 查询角色编码
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 角色编码集合
      */
     Set<String> listRoleCodeByUserId(Long userId);

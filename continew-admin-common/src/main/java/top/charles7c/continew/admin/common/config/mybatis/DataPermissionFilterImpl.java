@@ -49,9 +49,11 @@ public class DataPermissionFilterImpl implements DataPermissionFilter {
         DataPermissionCurrentUser currentUser = new DataPermissionCurrentUser();
         currentUser.setUserId(Convert.toStr(loginUser.getId()));
         currentUser.setDeptId(Convert.toStr(loginUser.getDeptId()));
-        currentUser.setRoles(loginUser.getRoles().stream()
-            .map(r -> new DataPermissionCurrentUser.CurrentUserRole(Convert.toStr(r.getId()),
-                DataScope.valueOf(r.getDataScope().name())))
+        currentUser.setRoles(loginUser.getRoles()
+            .stream()
+            .map(r -> new DataPermissionCurrentUser.CurrentUserRole(Convert.toStr(r.getId()), DataScope.valueOf(r
+                .getDataScope()
+                .name())))
             .collect(Collectors.toSet()));
         return currentUser;
     }

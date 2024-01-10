@@ -38,5 +38,4 @@ import top.charles7c.continew.starter.extension.crud.enums.Api;
 @Tag(name = "字典项管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dict/item", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
-public class DictItemController
-    extends BaseController<DictItemService, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> {}
+public class DictItemController extends BaseController<DictItemService, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> {}

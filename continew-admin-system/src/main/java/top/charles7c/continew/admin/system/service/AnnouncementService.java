@@ -31,8 +31,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-public interface AnnouncementService
-    extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
+public interface AnnouncementService extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 
     /**
      * 查询仪表盘公告列表

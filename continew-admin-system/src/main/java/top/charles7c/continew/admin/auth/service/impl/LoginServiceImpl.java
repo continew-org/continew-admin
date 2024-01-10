@@ -162,8 +162,9 @@ public class LoginServiceImpl implements LoginService {
         } else {
             roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));
         }
-        List<MenuResp> menuList =
-            menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).collect(Collectors.toList());
+        List<MenuResp> menuList = menuSet.stream()
+            .filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType()))
+            .collect(Collectors.toList());
         // 构建路由树
         TreeField treeField = MenuResp.class.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
@@ -189,8 +190,7 @@ public class LoginServiceImpl implements LoginService {
     /**
      * 登录并缓存用户信息
      *
-     * @param user
-     *            用户信息
+     * @param user 用户信息
      * @return 令牌
      */
     private String login(UserDO user) {
@@ -205,8 +205,7 @@ public class LoginServiceImpl implements LoginService {
     /**
      * 检查用户状态
      *
-     * @param user
-     *            用户信息
+     * @param user 用户信息
      */
     private void checkUserStatus(UserDO user) {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
@@ -217,8 +216,7 @@ public class LoginServiceImpl implements LoginService {
     /**
      * 发送系统消息
      * 
-     * @param user
-     *            用户信息
+     * @param user 用户信息
      */
     private void sendSystemMsg(UserDO user) {
         MessageReq req = new MessageReq();

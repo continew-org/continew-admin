@@ -56,8 +56,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq>
-    implements FileService {
+public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq> implements FileService {
 
     @Resource
     private StorageService storageService;
@@ -107,7 +106,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         // 处理本地存储文件 URL
         FileInfo fileInfo = uploadPretreatment.upload();
         fileInfo.setUrl(StorageTypeEnum.LOCAL.equals(storage.getType())
-            ? URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getUrl()) : fileInfo.getUrl());
+            ? URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getUrl())
+            : fileInfo.getUrl());
         return fileInfo;
     }
 

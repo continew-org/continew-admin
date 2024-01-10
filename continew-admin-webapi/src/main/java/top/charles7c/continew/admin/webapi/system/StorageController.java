@@ -37,5 +37,4 @@ import top.charles7c.continew.starter.extension.crud.base.BaseController;
 @Tag(name = "存储库管理 API")
 @RestController
 @CrudRequestMapping("/system/storage")
-public class StorageController
-    extends BaseController<StorageService, StorageResp, StorageDetailResp, StorageQuery, StorageReq> {}
+public class StorageController extends BaseController<StorageService, StorageResp, StorageDetailResp, StorageQuery, StorageReq> {}

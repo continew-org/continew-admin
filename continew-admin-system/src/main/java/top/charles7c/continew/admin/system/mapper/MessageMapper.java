@@ -37,12 +37,10 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
     /**
      * 分页查询列表
      *
-     * @param page
-     *            分页查询条件
-     * @param queryWrapper
-     *            查询条件
+     * @param page         分页查询条件
+     * @param queryWrapper 查询条件
      * @return 分页信息
      */
     IPage<MessageResp> selectPageByUserId(@Param("page") IPage<Object> page,
-        @Param(Constants.WRAPPER) QueryWrapper<MessageDO> queryWrapper);
+                                          @Param(Constants.WRAPPER) QueryWrapper<MessageDO> queryWrapper);
 }

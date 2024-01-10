@@ -48,8 +48,7 @@ public class AccountLoginReq implements Serializable {
     /**
      * 密码（加密）
      */
-    @Schema(description = "密码（加密）",
-        example = "HHwZoiBwCfh0xLdWOAd0bHOkEZlIMMOQKJyeFUw9T3ArrhL57od2i42s1o0sSXKkeHPJXvQsninhPFH2lArDDQ==")
+    @Schema(description = "密码（加密）", example = "HHwZoiBwCfh0xLdWOAd0bHOkEZlIMMOQKJyeFUw9T3ArrhL57od2i42s1o0sSXKkeHPJXvQsninhPFH2lArDDQ==")
     @NotBlank(message = "密码不能为空")
     private String password;
 

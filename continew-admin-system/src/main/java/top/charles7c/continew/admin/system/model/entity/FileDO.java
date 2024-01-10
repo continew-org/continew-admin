@@ -80,21 +80,22 @@ public class FileDO extends BaseDO {
     /**
      * 转换为 X-File-Storage 文件信息对象
      *
-     * @param storageCode
-     *            存储库编码
+     * @param storageCode 存储库编码
      * @return X-File-Storage 文件信息对象
      */
     public FileInfo toFileInfo(String storageCode) {
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setOriginalFilename(
-            StrUtil.isNotBlank(this.extension) ? this.name + StringConstants.DOT + this.extension : this.name);
+        fileInfo.setOriginalFilename(StrUtil.isNotBlank(this.extension)
+            ? this.name + StringConstants.DOT + this.extension
+            : this.name);
         fileInfo.setSize(this.size);
         fileInfo.setUrl(this.url);
         fileInfo.setExt(this.extension);
         fileInfo.setBasePath(StringConstants.EMPTY);
         fileInfo.setPath(StringConstants.EMPTY);
-        fileInfo.setFilename(
-            URLUtils.isHttpUrl(this.url) ? StrUtil.subAfter(this.url, StringConstants.SLASH, true) : this.url);
+        fileInfo.setFilename(URLUtils.isHttpUrl(this.url)
+            ? StrUtil.subAfter(this.url, StringConstants.SLASH, true)
+            : this.url);
         fileInfo.setPlatform(storageCode);
         return fileInfo;
     }

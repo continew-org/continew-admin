@@ -35,8 +35,7 @@ public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
     /**
      * 根据用户 ID 查询
      *
-     * @param userId
-     *            用户 ID
+     * @param userId 用户 ID
      * @return 角色 ID 列表
      */
     @Select("SELECT `role_id` FROM `sys_user_role` WHERE `user_id` = #{userId}")

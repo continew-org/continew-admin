@@ -66,8 +66,7 @@ import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = CacheConstants.USER_KEY_PREFIX)
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq>
-    implements UserService, CommonUserService {
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
     @Resource
     private DeptService deptService;
@@ -97,7 +96,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         Long userId = super.add(req);
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, userId.toString()))
-            .set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
+            .set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .eq(UserDO::getId, userId)
+            .update();
         // 保存用户和角色关联
         userRoleService.add(req.getRoleIds(), userId);
         return userId;
@@ -113,15 +114,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
         DisEnableStatusEnum newStatus = req.getStatus();
-        CheckUtils.throwIf(
-            DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper.getUserId()),
-            "不允许禁用当前用户");
+        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper
+            .getUserId()), "不允许禁用当前用户");
         UserDO oldUser = super.getById(id);
         if (oldUser.getIsSystem()) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用",
-                oldUser.getNickname());
-            Collection<Long> disjunctionRoleIds =
-                CollUtil.disjunction(req.getRoleIds(), userRoleService.listRoleIdByUserId(id));
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用", oldUser
+                .getNickname());
+            Collection<Long> disjunctionRoleIds = CollUtil.disjunction(req.getRoleIds(), userRoleService
+                .listRoleIdByUserId(id));
             CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更所属角色", oldUser.getNickname());
         }
         // 更新信息
@@ -134,11 +134,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(CollUtil.contains(ids, LoginHelper.getUserId()), "不允许删除当前用户");
-        List<UserDO> list =
-            baseMapper.lambdaQuery().select(UserDO::getNickname, UserDO::getIsSystem).in(UserDO::getId, ids).list();
+        List<UserDO> list = baseMapper.lambdaQuery()
+            .select(UserDO::getNickname, UserDO::getIsSystem)
+            .in(UserDO::getId, ids)
+            .list();
         Optional<UserDO> isSystemData = list.stream().filter(UserDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
-            isSystemData.orElseGet(UserDO::new).getNickname());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除", isSystemData.orElseGet(UserDO::new)
+            .getNickname());
         // 删除用户和角色关联
         userRoleService.deleteByUserIds(ids);
         // 删除用户
@@ -161,8 +163,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
-        CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片",
-            String.join(StringConstants.CHINESE_COMMA, avatarSupportImgTypes));
+        CheckUtils.throwIf(!StrUtil
+            .equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片", String
+                .join(StringConstants.CHINESE_COMMA, avatarSupportImgTypes));
         // 上传新头像
         UserDO user = super.getById(id);
         FileInfo fileInfo = fileService.upload(avatarFile);
@@ -180,8 +183,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id) {
         super.getById(id);
-        baseMapper.lambdaUpdate().set(UserDO::getNickname, updateReq.getNickname())
-            .set(UserDO::getGender, updateReq.getGender()).eq(UserDO::getId, id).update();
+        baseMapper.lambdaUpdate()
+            .set(UserDO::getNickname, updateReq.getNickname())
+            .set(UserDO::getGender, updateReq.getGender())
+            .eq(UserDO::getId, id)
+            .update();
     }
 
     @Override
@@ -194,8 +200,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         }
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
-        baseMapper.lambdaUpdate().set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
-            .set(UserDO::getPwdResetTime, now).eq(UserDO::getId, id).update();
+        baseMapper.lambdaUpdate()
+            .set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
+            .set(UserDO::getPwdResetTime, now)
+            .eq(UserDO::getId, id)
+            .update();
     }
 
     @Override
@@ -265,10 +274,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     /**
      * 名称是否存在
      *
-     * @param name
-     *            名称
-     * @param id
-     *            ID
+     * @param name 名称
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isNameExists(String name, Long id) {
@@ -278,10 +285,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     /**
      * 邮箱是否存在
      *
-     * @param email
-     *            邮箱
-     * @param id
-     *            ID
+     * @param email 邮箱
+     * @param id    ID
      * @return 是否存在
      */
     private boolean isEmailExists(String email, Long id) {
@@ -291,10 +296,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     /**
      * 手机号码是否存在
      *
-     * @param phone
-     *            手机号码
-     * @param id
-     *            ID
+     * @param phone 手机号码
+     * @param id    ID
      * @return 是否存在
      */
     private boolean isPhoneExists(String phone, Long id) {

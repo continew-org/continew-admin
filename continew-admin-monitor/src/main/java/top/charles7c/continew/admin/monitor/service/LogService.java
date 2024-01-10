@@ -37,10 +37,8 @@ public interface LogService {
     /**
      * 分页查询操作日志列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 操作日志分页信息
      */
     PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery);
@@ -48,10 +46,8 @@ public interface LogService {
     /**
      * 分页查询登录日志列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 登录日志分页信息
      */
     PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery);
@@ -59,10 +55,8 @@ public interface LogService {
     /**
      * 分页查询系统日志列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 系统日志分页信息
      */
     PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery);
@@ -70,8 +64,7 @@ public interface LogService {
     /**
      * 查看系统日志详情
      *
-     * @param logId
-     *            日志 ID
+     * @param logId 日志 ID
      * @return 系统日志详情
      */
     SystemLogDetailResp get(Long logId);

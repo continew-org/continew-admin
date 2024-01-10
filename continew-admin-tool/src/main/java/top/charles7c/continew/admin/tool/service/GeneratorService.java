@@ -39,34 +39,27 @@ public interface GeneratorService {
     /**
      * 分页查询表信息列表
      *
-     * @param query
-     *            查询条件
-     * @param pageQuery
-     *            分页查询条件
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
      * @return 表信息分页列表
-     * @throws SQLException
-     *             /
+     * @throws SQLException /
      */
     PageResp<TableResp> pageTable(TableQuery query, PageQuery pageQuery) throws SQLException;
 
     /**
      * 查询生成配置信息
      *
-     * @param tableName
-     *            表名称
+     * @param tableName 表名称
      * @return 生成配置信息
-     * @throws SQLException
-     *             /
+     * @throws SQLException /
      */
     GenConfigDO getGenConfig(String tableName) throws SQLException;
 
     /**
      * 查询字段配置列表
      *
-     * @param tableName
-     *            表名称
-     * @param requireSync
-     *            是否需要同步
+     * @param tableName   表名称
+     * @param requireSync 是否需要同步
      * @return 字段配置列表
      */
     List<FieldConfigDO> listFieldConfig(String tableName, Boolean requireSync);
@@ -74,18 +67,15 @@ public interface GeneratorService {
     /**
      * 保存代码生成配置信息
      *
-     * @param req
-     *            代码生成配置信息
-     * @param tableName
-     *            表名称
+     * @param req       代码生成配置信息
+     * @param tableName 表名称
      */
     void saveConfig(GenConfigReq req, String tableName);
 
     /**
      * 生成预览
      *
-     * @param tableName
-     *            表名称
+     * @param tableName 表名称
      * @return 预览信息
      */
     List<GeneratePreviewResp> preview(String tableName);
@@ -93,8 +83,7 @@ public interface GeneratorService {
     /**
      * 生成代码
      *
-     * @param tableName
-     *            表名称
+     * @param tableName 表名称
      */
     void generate(String tableName);
 }

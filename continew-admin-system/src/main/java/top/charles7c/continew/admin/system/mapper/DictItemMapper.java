@@ -35,8 +35,7 @@ public interface DictItemMapper extends BaseMapper<DictItemDO> {
     /**
      * 根据字典编码查询
      * 
-     * @param dictCode
-     *            字典编码
+     * @param dictCode 字典编码
      * @return 字典项列表
      */
     List<LabelValueResp> listByDictCode(@Param("dictCode") String dictCode);

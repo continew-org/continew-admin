@@ -60,9 +60,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-public class StorageServiceImpl
-    extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageDetailResp, StorageQuery, StorageReq>
-    implements StorageService {
+public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageDetailResp, StorageQuery, StorageReq> implements StorageService {
 
     @Resource
     private FileService fileService;
@@ -84,9 +82,8 @@ public class StorageServiceImpl
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DisEnableStatusEnum newStatus = req.getStatus();
         StorageDO oldStorage = super.getById(id);
-        CheckUtils.throwIf(
-            Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE.equals(newStatus),
-            "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
+        CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
+            .equals(newStatus), "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
         DisEnableStatusEnum oldStatus = oldStorage.getStatus();
         if (DisEnableStatusEnum.ENABLE.equals(oldStatus) || DisEnableStatusEnum.DISABLE.equals(newStatus)) {
             this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
@@ -133,13 +130,13 @@ public class StorageServiceImpl
                 ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
                 ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
                 ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
-                req.setBucketName(StrUtil.appendIfMissing(
-                    bucketName.replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
+                req.setBucketName(StrUtil.appendIfMissing(bucketName
+                    .replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
                 FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
                 config.setPlatform(req.getCode());
                 config.setStoragePath(bucketName);
-                fileStorageList
-                    .addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections.singletonList(config)));
+                fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
+                    .singletonList(config)));
                 SpringUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
             }
             case S3 -> {
@@ -157,8 +154,8 @@ public class StorageServiceImpl
                 config.setEndPoint(endpoint);
                 config.setBucketName(bucketName);
                 config.setDomain(domain);
-                fileStorageList.addAll(
-                    FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections.singletonList(config), null));
+                fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
+                    .singletonList(config), null));
             }
         }
     }
@@ -175,22 +172,21 @@ public class StorageServiceImpl
     /**
      * 默认存储库是否存在
      *
-     * @param id
-     *            ID
+     * @param id ID
      * @return 是否存在
      */
     private boolean isDefaultExists(Long id) {
-        return baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, Boolean.TRUE).ne(null != id, StorageDO::getId, id)
+        return baseMapper.lambdaQuery()
+            .eq(StorageDO::getIsDefault, Boolean.TRUE)
+            .ne(null != id, StorageDO::getId, id)
             .exists();
     }
 
     /**
      * 编码是否存在
      *
-     * @param code
-     *            编码
-     * @param id
-     *            ID
+     * @param code 编码
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isCodeExists(String code, Long id) {

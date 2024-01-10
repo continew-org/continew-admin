@@ -57,9 +57,11 @@ public class UserSocialServiceImpl implements UserSocialService {
         if (null == userSocial.getCreateTime()) {
             baseMapper.insert(userSocial);
         } else {
-            baseMapper.lambdaUpdate().set(UserSocialDO::getMetaJson, userSocial.getMetaJson())
+            baseMapper.lambdaUpdate()
+                .set(UserSocialDO::getMetaJson, userSocial.getMetaJson())
                 .set(UserSocialDO::getLastLoginTime, userSocial.getLastLoginTime())
-                .eq(UserSocialDO::getSource, userSocial.getSource()).eq(UserSocialDO::getOpenId, userSocial.getOpenId())
+                .eq(UserSocialDO::getSource, userSocial.getSource())
+                .eq(UserSocialDO::getOpenId, userSocial.getOpenId())
                 .update();
         }
     }

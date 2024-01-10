@@ -32,10 +32,8 @@ public interface MessageUserMapper extends BaseMapper<MessageUserDO> {
     /**
      * 根据用户 ID 和消息类型查询未读消息数量
      * 
-     * @param userId
-     *            用户 ID
-     * @param type
-     *            消息类型
+     * @param userId 用户 ID
+     * @param type   消息类型
      * @return 未读消息信息
      */
     Long selectUnreadCountByUserIdAndType(@Param("userId") Long userId, @Param("type") Integer type);

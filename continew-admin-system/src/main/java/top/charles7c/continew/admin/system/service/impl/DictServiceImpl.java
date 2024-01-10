@@ -49,8 +49,7 @@ import top.charles7c.continew.starter.file.excel.util.ExcelUtils;
  */
 @Service
 @RequiredArgsConstructor
-public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictDetailResp, DictQuery, DictReq>
-    implements DictService {
+public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictDetailResp, DictQuery, DictReq> implements DictService {
 
     private final DictItemService dictItemService;
 
@@ -79,11 +78,13 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        List<DictDO> list =
-            baseMapper.lambdaQuery().select(DictDO::getName, DictDO::getIsSystem).in(DictDO::getId, ids).list();
+        List<DictDO> list = baseMapper.lambdaQuery()
+            .select(DictDO::getName, DictDO::getIsSystem)
+            .in(DictDO::getId, ids)
+            .list();
         Optional<DictDO> isSystemData = list.stream().filter(DictDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除",
-            isSystemData.orElseGet(DictDO::new).getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除", isSystemData.orElseGet(DictDO::new)
+            .getName());
         dictItemService.deleteByDictIds(ids);
         super.delete(ids);
     }
@@ -106,10 +107,8 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     /**
      * 名称是否存在
      *
-     * @param name
-     *            名称
-     * @param id
-     *            ID
+     * @param name 名称
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isNameExists(String name, Long id) {
@@ -119,10 +118,8 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     /**
      * 编码是否存在
      *
-     * @param code
-     *            编码
-     * @param id
-     *            ID
+     * @param code 编码
+     * @param id   ID
      * @return 是否存在
      */
     private boolean isCodeExists(String code, Long id) {

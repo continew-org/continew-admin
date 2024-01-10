@@ -121,15 +121,12 @@
                 </executions>
                 <configuration>
                     <java>
-                        <importOrder>
-                            <order>java,jakarta,lombok,io,org,com,cn,top.charles7c,</order>
-                        </importOrder>
                         <removeUnusedImports/>
                         <eclipse>
-                            <file>code-style/code-formatter.xml</file>
+                            <file>.style/p3c-codestyle.xml</file>
                         </eclipse>
                         <licenseHeader>
-                            <file>code-style/license-header</file>
+                            <file>.style/license-header</file>
                         </licenseHeader>
                     </java>
                 </configuration>

@@ -45,8 +45,7 @@ import top.charles7c.continew.starter.extension.crud.model.resp.R;
 @Tag(name = "公告管理 API")
 @RestController
 @CrudRequestMapping("/system/announcement")
-public class AnnouncementController extends
-    BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
+public class AnnouncementController extends BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
 
     @Override
     @SaCheckPermission("system:announcement:add")
@@ -58,7 +57,7 @@ public class AnnouncementController extends
     @Override
     @SaCheckPermission("system:announcement:update")
     public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementReq req,
-        @PathVariable Long id) {
+                    @PathVariable Long id) {
         this.checkTime(req);
         return super.update(req, id);
     }
