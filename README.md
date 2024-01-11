@@ -19,7 +19,7 @@
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 <a href="https://github.com/Charles7c/continew-starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-1.1.0-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/ContiNew Starter-1.2.0-%236CB52D.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-starter" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-3.1.7-%236CB52D.svg" alt="Release" />
@@ -203,7 +203,7 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 | 名称                                                         | 版本             | 简介                                                         |
 | :----------------------------------------------------------- |:---------------| :----------------------------------------------------------- |
-| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.1.1-SNAPSHOT | ContiNew Starter（Continue New Starter）是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，基于“约定优于配置”的理念，再次精简常规配置，提供一个更为完整的配置解决方案，帮助开发人员更加快速的集成常用第三方库或工具到 Spring Boot Web 应用程序中。 |
+| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.2.0-SNAPSHOT | ContiNew Starter（Continue New Starter）是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，基于“约定优于配置”的理念，再次精简常规配置，提供一个更为完整的配置解决方案，帮助开发人员更加快速的集成常用第三方库或工具到 Spring Boot Web 应用程序中。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.7          | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final   | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0         | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -397,7 +397,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 >
 > 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
 > 2. 在提交代码前，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit 的 message（建议在 IntelliJ IDEA 中下载并安装 Git Commit Template 插件，以便按照规范进行 commit）
-> 3. 提交代码之前，请关闭所有代码窗口，执行 mvn compile 命令（项目已配置代码格式化插件，编译通过的同时也会自动进行代码格式化），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
+> 3. 提交代码之前，请关闭所有代码窗口，执行 `mvn compile` 命令（代码格式化插件会在项目编译时对全局代码进行格式修正），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
 
 ## 反馈交流
 
