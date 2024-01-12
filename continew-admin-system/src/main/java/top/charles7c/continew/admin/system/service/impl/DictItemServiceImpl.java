@@ -16,14 +16,10 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.mapper.DictItemMapper;
@@ -36,6 +32,8 @@ import top.charles7c.continew.admin.system.service.DictItemService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
+
+import java.util.List;
 
 /**
  * 字典项业务实现
@@ -71,7 +69,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
         SortQuery sortQuery = new SortQuery();
         sortQuery.setSort(new String[] {"sort,asc"});
         List<DictItemDetailResp> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailResp.class);
-        detailList.forEach(super::fillDetail);
+        detailList.forEach(super::fill);
         return detailList;
     }
 

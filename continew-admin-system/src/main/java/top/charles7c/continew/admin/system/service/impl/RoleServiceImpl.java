@@ -16,19 +16,13 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.auth.service.OnlineUserService;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
@@ -46,6 +40,9 @@ import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 角色业务实现
@@ -133,9 +130,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    public void fillDetail(Object detailObj) {
-        super.fillDetail(detailObj);
-        if (detailObj instanceof RoleDetailResp detail) {
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof RoleDetailResp detail) {
             Long roleId = detail.getId();
             if (SysConstants.ADMIN_ROLE_CODE.equals(detail.getCode())) {
                 List<MenuResp> list = menuService.list(null, null);

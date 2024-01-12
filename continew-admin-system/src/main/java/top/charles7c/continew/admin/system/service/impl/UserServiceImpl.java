@@ -16,13 +16,12 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
-
 import lombok.RequiredArgsConstructor;
-
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.cache.annotation.CacheConfig;
@@ -30,12 +29,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
-
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.FileConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
@@ -56,6 +49,11 @@ import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 用户业务实现
@@ -148,9 +146,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public void fillDetail(Object detailObj) {
-        super.fillDetail(detailObj);
-        if (detailObj instanceof UserDetailResp detail) {
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof UserDetailResp detail) {
             detail.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detail.getDeptId()).getName()));
             List<Long> roleIdList = userRoleService.listRoleIdByUserId(detail.getId());
             detail.setRoleIds(roleIdList);

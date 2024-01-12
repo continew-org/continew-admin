@@ -16,15 +16,15 @@
 
 package top.charles7c.continew.admin.monitor.model.resp;
 
+import cn.crane4j.annotation.Assemble;
+import cn.crane4j.annotation.Mapping;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 基础日志信息
@@ -48,6 +48,7 @@ public class LogResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
+    @Assemble(container = "userNickname", props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**

@@ -16,22 +16,17 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import jakarta.annotation.Resource;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.dromara.x.file.storage.core.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
+import org.dromara.x.file.storage.core.ProgressListener;
+import org.dromara.x.file.storage.core.UploadPretreatment;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
@@ -46,6 +41,10 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 文件业务实现
@@ -117,11 +116,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
-    protected void fill(Object baseObj) {
-        if (baseObj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
             StorageDetailResp storage = storageService.get(fileResp.getStorageId());
             fileResp.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl()));
         }
-        super.fill(baseObj);
     }
 }

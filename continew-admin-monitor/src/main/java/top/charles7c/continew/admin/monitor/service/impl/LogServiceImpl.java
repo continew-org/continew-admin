@@ -16,21 +16,14 @@
 
 package top.charles7c.continew.admin.monitor.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
+import cn.crane4j.annotation.AutoOperate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.monitor.mapper.LogMapper;
 import top.charles7c.continew.admin.monitor.model.entity.LogDO;
@@ -39,13 +32,15 @@ import top.charles7c.continew.admin.monitor.model.query.OperationLogQuery;
 import top.charles7c.continew.admin.monitor.model.query.SystemLogQuery;
 import top.charles7c.continew.admin.monitor.model.resp.*;
 import top.charles7c.continew.admin.monitor.service.LogService;
-import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.ReflectUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
-import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 系统日志业务实现
@@ -59,9 +54,9 @@ import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 public class LogServiceImpl implements LogService {
 
     private final LogMapper logMapper;
-    private final CommonUserService commonUserService;
 
     @Override
+    @AutoOperate(type = OperationLogResp.class, on = "list")
     public PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         // 限定查询信息
@@ -73,18 +68,11 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageResp<OperationLogResp> pageResp = PageResp.build(page, OperationLogResp.class);
-        // 填充数据（如果是查询个人操作日志，只查询一次用户信息即可）
-        if (null != query.getUid()) {
-            String nickname = ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(query.getUid()));
-            pageResp.getList().forEach(o -> o.setCreateUserString(nickname));
-        } else {
-            pageResp.getList().forEach(this::fill);
-        }
-        return pageResp;
+        return PageResp.build(page, OperationLogResp.class);
     }
 
     @Override
+    @AutoOperate(type = LoginLogResp.class, on = "list")
     public PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.eq("module", "登录");
@@ -97,13 +85,11 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageResp<LoginLogResp> pageResp = PageResp.build(page, LoginLogResp.class);
-        // 填充数据
-        pageResp.getList().forEach(this::fill);
-        return pageResp;
+        return PageResp.build(page, LoginLogResp.class);
     }
 
     @Override
+    @AutoOperate(type = SystemLogResp.class, on = "list")
     public PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
         // 限定查询信息
@@ -115,19 +101,15 @@ public class LogServiceImpl implements LogService {
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
-        PageResp<SystemLogResp> pageResp = PageResp.build(page, SystemLogResp.class);
-        // 填充数据
-        pageResp.getList().forEach(this::fill);
-        return pageResp;
+        return PageResp.build(page, SystemLogResp.class);
     }
 
     @Override
+    @AutoOperate(type = SystemLogDetailResp.class)
     public SystemLogDetailResp get(Long id) {
         LogDO logDO = logMapper.selectById(id);
         CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
-        SystemLogDetailResp detail = BeanUtil.copyProperties(logDO, SystemLogDetailResp.class);
-        this.fill(detail);
-        return detail;
+        return BeanUtil.copyProperties(logDO, SystemLogDetailResp.class);
     }
 
     @Override
@@ -148,18 +130,5 @@ public class LogServiceImpl implements LogService {
     @Override
     public List<Map<String, Object>> listDashboardGeoDistribution() {
         return logMapper.selectListDashboardGeoDistribution();
-    }
-
-    /**
-     * 填充数据
-     *
-     * @param logResp 日志信息
-     */
-    private void fill(LogResp logResp) {
-        Long createUser = logResp.getCreateUser();
-        if (null == createUser) {
-            return;
-        }
-        logResp.setCreateUserString(ExceptionUtils.exToNull(() -> commonUserService.getNicknameById(createUser)));
     }
 }
