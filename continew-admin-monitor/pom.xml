@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）</description>
+    <description>系统监控模块（存放系统监控相关业务功能，例如：在线用户、日志管理等）</description>
 
     <dependencies>
         <!-- ContiNew Starter 日志模块 - HttpTracePro（Spring Boot Actuator HttpTrace 定制增强版） -->

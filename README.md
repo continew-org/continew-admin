@@ -50,9 +50,9 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 2. 对于初始使用似乎过度设计，上手困难？或是功能不全，全在专业版（收费）？更甚者，代码阅读性差，文档还要收费
 3. 好不容易找到一些相较合适的，没过“多久”，部分作者可能谈恋爱了，没法对外发“电”了
 4. 提 PR 可能又和原作者理念不一致，对部分框架进行二开，但又会囿于原始设计
-5. 在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，想要依靠工作来完善一个脚手架，也并不美妙
+5. 在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，想要依靠工作来完善一个脚手架，既不现实也不甚美妙
 
-最终，我选择自己从头写一个试试，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。我希望它不仅仅能吸收我的需求，而是依托开源协作模式，接受更多的可能性，沉淀更优秀的思考，设计。另外，开源出来，如果能为更广泛的小伙伴提供舒适的开发体验那就更好了。
+最终，我选择自己在业余时间从头写一个试试，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。我希望它不仅仅能吸收我的需求，而是依托开源协作模式，接受更多的可能性，沉淀更优秀的思考，设计。另外，开源出来，如果能为更广泛的小伙伴提供舒适的开发体验那就更好了。
 
 ## 项目源码
 
@@ -63,7 +63,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 主要特性
 
-- :fire: 下方部分通用基础能力及配置，已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 项目，现已发布到 Maven 中央仓库，为 Spring Boot Web 项目开发提供更灵活的助力
+- :fire: 下方部分通用基础能力及配置，已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 项目，现 [已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter)，为 Spring Boot Web 项目开发提供更灵活的助力
 - 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
 - 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API
 - 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
@@ -79,7 +79,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ##  系统功能
 
-> **Note**
+> [!TIP]
 > 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://doc.charles7c.top/admin/intro/require.html#任务清单) 和 [更新日志](https://doc.charles7c.top/admin/other/changelog.html)。
 
 - 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
@@ -99,7 +99,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 系统截图
 
-> **Note**
+> [!TIP]
 > 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2023年11月4日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
 
 <table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
@@ -173,7 +173,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 快速开始
 
-> **Note**
+> [!TIP]
 > 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/admin/intro/quick-start.html)。
 
 ```bash
@@ -201,167 +201,147 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 ## 核心技术栈
 
-| 名称                                                         | 版本             | 简介                                                         |
-| :----------------------------------------------------------- |:---------------| :----------------------------------------------------------- |
-| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.2.0-SNAPSHOT | ContiNew Starter（Continue New Starter）是一种特殊类型的 Spring Boot Starter，其作用与常规的 Starter 类似，基于“约定优于配置”的理念，再次精简常规配置，提供一个更为完整的配置解决方案，帮助开发人员更加快速的集成常用第三方库或工具到 Spring Boot Web 应用程序中。 |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.7          | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
-| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final   | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
-| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0         | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.4.1        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
-| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.2.0          | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                       | 5.0.1          | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33         | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
-| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33         | MySQL Java 驱动。                                            |
-| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1          | SQL 性能分析组件。                                           |
-| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0         | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.25.2         | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
-| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3          | 高性能的 key-value 数据库。                                  |
-| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.0.0          | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
-| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.4          | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
-| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6         | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
-| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.3          | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0          | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
-| Easy Captcha                                                 | 1.6.2          | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.4.0          | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.24         | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30        | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+| 名称                                                         | 版本             | 简介                                                                                                                         |
+| :----------------------------------------------------------- |:---------------|:---------------------------------------------------------------------------------------------------------------------------|
+| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.2.0-SNAPSHOT | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.7          | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本）                              |
+| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final   | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。                                                                            |
+| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0         | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。                                                                                                |
+| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.4.1        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。                                                                            |
+| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.2.0          | 基于 Spring Boot 的快速集成多数据源的启动器。                                                                                              |
+| Hikari                                                       | 5.0.1          | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。                                                            |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33         | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。                                                                                         |
+| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33         | MySQL Java 驱动。                                                                                                             |
+| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1          | SQL 性能分析组件。                                                                                                                |
+| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0         | 用于管理数据库版本，跟踪、管理和应用数据库变化。                                                                                                   |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.25.2         | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。                                |
+| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3          | 高性能的 key-value 数据库。                                                                                                        |
+| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.0.0          | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。                                                           |
+| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.0.4          | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。                                                                                      |
+| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6         | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！                                                                            |
+| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.3          | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。                                                                                   |
+| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0          | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。                                                                                  |
+| Easy Captcha                                                 | 1.6.2          | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。                                                                        |
+| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.4.0          | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。                                                                 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.24         | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。                                        |
+| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30        | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。                                                                 |
 
 ## 项目结构
 
 采用按功能拆分模块的开发方式，项目目录结构如下：
 
-> **Note**
+> [!TIP]
 > 下方项目目录结构是按照模块的层次顺序进行介绍的，实际 IDE 中 `continew-admin-common` 模块会因为字母排序原因排在上方。
 
-```bash
-continew-admin  # 全局通用项目配置及依赖版本管理
-  ├─ continew-admin-webapi   # API 模块（存放 Controller 层代码，打包部署的模块）
-  │  └─ src
-  │    └─ main
-  │      ├─ java        # 工程源文件代码目录
-  │      │  └─ top
-  │      │    └─ charles7c
-  │      │      └─ continew
-  │      │        └─ admin
-  │      │          ├─ webapi
-  │      │          │  ├─ auth     # 认证相关 API
-  │      │          │  ├─ common   # 公共相关 API（例如：验证码 API 等）
-  │      │          │  ├─ monitor  # 系统监控相关 API
-  │      │          │  ├─ system   # 系统管理相关 API
-  │      │          │  └─ tool     # 系统工具相关 API
-  │      │          └─ ContinewAdminApplication.java  # 启动入口
-  │      └─ resources   # 工程配置目录
-  │        ├─ db.changelog   # 数据库脚本文件
-  │        │  ├─ v1.0.0        # v1.0.0 版本数据库脚本文件
-  │        │  ├─ v1.1.0        # v1.1.0 版本数据库脚本文件
-  │        │  ├─ v1.2.0        # v1.2.0 版本数据库脚本文件
-  │        │  └─ v1.3.0        # v1.3.0 版本数据库脚本文件
-  │        └─ templates      # 模板文件
-  │          └─ mail           # 邮件模板
-  ├─ continew-admin-monitor  # 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等）
-  │  └─ src
-  │    └─ main
-  │      ├─ java        # 工程源文件代码目录
-  │      │  └─ top
-  │      │    └─ charles7c
-  │      │      └─ continew
-  │      │        └─ admin
-  │      │          └─ monitor
-  │      │            ├─ annotation    # 系统监控相关注解
-  │      │            ├─ config        # 系统监控相关配置
-  │      │            │  └─ properties   # 系统监控相关配置属性
-  │      │            ├─ enums         # 系统监控相关枚举
-  │      │            ├─ filter        # 系统监控相关过滤器
-  │      │            ├─ interceptor   # 系统监控相关拦截器
-  │      │            ├─ mapper        # 系统监控相关 Mapper
-  │      │            ├─ model         # 系统监控相关模型
-  │      │            │  ├─ entity       # 系统监控相关实体对象
-  │      │            │  ├─ query        # 系统监控相关查询条件
-  │      │            │  └─ resp         # 系统监控相关响应对象（Response）
-  │      │            └─ service       # 系统监控相关业务接口及实现类
-  │      │               └─ impl         # 系统监控相关业务实现类
-  │      └─ resources   # 工程配置目录
-  │         └─ mapper       # MyBatis Mapper XML 文件目录
-  ├─ continew-admin-system   # 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）
-  │  └─ src
-  │    └─ main
-  │      ├─ java        # 工程源文件代码目录
-  │      │  └─ top
-  │      │    └─ charles7c
-  │      │      └─ continew
-  │      │        └─ admin
-  │      │          ├─ auth     # 系统认证相关业务及配置
-  │      │          │  ├─ config    # 系统认证相关配置
-  │      │          │  │  └─ satoken    # Sa-Token 配置
-  │      │          │  ├─ model     # 系统认证相关模型
-  │      │          │  │  ├─ query      # 系统认证相关查询条件
-  │      │          │  │  ├─ req        # 系统认证相关请求对象
-  │      │          │  │  └─ resp       # 系统认证相关响应对象
-  │      │          │  └─ service   # 系统认证相关业务接口及实现类
-  │      │          │     └─ impl       # 系统认证相关业务实现类
-  │      │          └─ system   # 系统管理相关业务及配置
-  │      │            ├─ enums      # 系统管理相关枚举
-  │      │            ├─ mapper     # 系统管理相关 Mapper
-  │      │            ├─ model      # 系统管理相关模型
-  │      │            │  ├─ entity      # 系统管理相关实体对象
-  │      │            │  ├─ query       # 系统管理相关查询条件
-  │      │            │  ├─ req         # 系统管理相关请求对象
-  │      │            │  └─ resp        # 系统管理相关响应对象
-  │      │            └─ service    # 系统管理相关业务接口及实现类
-  │      │               └─ impl        # 系统管理相关业务实现类
-  │      └─ resources   # 工程配置目录
-  │         └─ mapper        # MyBatis Mapper XML 文件目录
-  ├─ continew-admin-tool  # 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等）
-  │  └─ src
-  │    └─ main
-  │      ├─ java        # 工程源文件代码目录
-  │      │  └─ top
-  │      │    └─ charles7c
-  │      │      └─ continew
-  │      │        └─ admin
-  │      │          └─ tool
-  │      │            ├─ config        # 系统工具相关配置
-  │      │            │  └─ properties    # 系统工具相关配置属性
-  │      │            ├─ enums         # 系统工具相关枚举
-  │      │            ├─ mapper        # 系统工具相关 Mapper
-  │      │            ├─ model         # 系统工具相关模型
-  │      │            │  ├─ entity        # 系统工具相关实体对象
-  │      │            │  ├─ query         # 系统工具相关查询条件
-  │      │            │  ├─ req           # 系统工具相关请求对象
-  │      │            │  └─ resp          # 系统工具相关响应对象
-  │      │            └─ service       # 系统工具相关业务接口及实现类
-  │      │               └─ impl          # 系统工具相关业务实现类
-  │      └─ resources   # 工程配置目录
-  │        ├─ mapper        # MyBatis Mapper XML 文件目录
-  │        └─ templates     # 模板文件
-  │          └─ generator       # 代码生成器模板
-  ├─ continew-admin-common   # 公共模块（存放公共工具类，公共配置等）
-  │  └─ src
-  │    └─ main
-  │      └─ java        # 工程源文件代码目录
-  │        └─ top
-  │          └─ charles7c
-  │            └─ continew
-  │              └─ admin
-  │                └─ common
-  │                  ├─ annotation    # 公共注解
-  │                  ├─ base          # 公共基类
-  │                  ├─ config        # 公共配置
-  │                  │  ├─ easyexcel    # Easy Excel 配置
-  │                  │  ├─ jackson      # Jackson 配置
-  │                  │  ├─ mybatis      # MyBatis Plus 配置
-  │                  │  └─ properties   # 公共配置属性
-  │                  ├─ constant      # 公共常量
-  │                  ├─ enums         # 公共枚举
-  │                  ├─ handler       # 公共处理器
-  │                  ├─ model         # 公共模型
-  │                  │  ├─ dto          # 公共 DTO（Data Transfer Object）
-  │                  │  ├─ req          # 公共请求对象
-  │                  │  └─ resp         # 公共响应对象
-  │                  ├─ service       # 公共业务接口
-  │                  └─ util          # 公共工具类
-  │                    ├─ helper        # 公共 Helper（助手）
-  │                    └─ holder        # 公共 Holder（持有者）
+```
+continew-admin
+├─ continew-admin-webapi（API 及打包部署模块）
+│  ├─ src
+│  │  ├─ main
+│  │  │  ├─ java/top/charles7c/continew/admin
+│  │  │  │  ├─ webapi
+│  │  │  │  │  ├─ auth（系统认证相关 API）
+│  │  │  │  │  ├─ common（通用相关 API）
+│  │  │  │  │  ├─ monitor（系统监控相关 API）
+│  │  │  │  │  ├─ system（系统管理相关 API）
+│  │  │  │  │  └─ tool（系统工具相关 API）
+│  │  │  │  └─ ContiNewAdminApplication.java（Spring Boot 启动程序）
+│  │  │  └─ resources
+│  │  │     ├─ config（核心配置目录）
+│  │  │     │  ├─ application-dev.yml（开发环境配置文件）
+│  │  │     │  ├─ application-prod.yml（生产环境配置文件）
+│  │  │     │  └─ application.yml（通用配置文件）
+│  │  │     ├─ db/changelog（Liquibase 数据脚本配置目录）
+│  │  │     ├─ templates（模板配置目录，例如：邮件模板）
+│  │  │     ├─ banner.txt（Banner 配置文件）
+│  │  │     └─ logback-spring.xml（日志配置文件）
+│  │  └─ test（测试相关代码目录）
+│  └─ pom.xml（包含打包相关配置）
+├─ continew-admin-monitor（系统监控模块，存放系统监控相关业务功能，例如：在线用户、日志管理等）
+│  ├─ src
+│  │  ├─ main
+│  │  │  ├─ java/top/charles7c/continew/admin/monitor
+│  │  │  │  ├─ config（系统监控相关配置）
+│  │  │  │  ├─ enums（系统监控相关枚举）
+│  │  │  │  ├─ mapper（系统监控相关 Mapper）
+│  │  │  │  ├─ model（系统监控相关模型）
+│  │  │  │  │  ├─ entity（系统监控相关实体对象）
+│  │  │  │  │  ├─ query（系统监控相关查询条件）
+│  │  │  │  │  └─ resp（系统监控相关响应对象（Response））
+│  │  │  │  └─ service（系统监控相关业务接口及实现类）
+│  │  │  └─ resources
+│  │  │     └─ mapper（系统监控相关 Mapper XML 文件目录）
+│  │  └─ test（测试相关代码目录）
+│  └─ pom.xml
+├─ continew-admin-system（系统管理模块，存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）
+│  ├─ src
+│  │  ├─ main
+│  │  │  ├─ java/top/charles7c/continew/admin
+│  │  │  │  ├─ auth（系统认证相关业务）
+│  │  │  │  │  ├─ config（系统认证相关配置）
+│  │  │  │  │  ├─ model（系统认证相关模型）
+│  │  │  │  │  │  ├─ query（系统认证相关查询条件）
+│  │  │  │  │  │  ├─ req（系统认证相关请求对象（Request））
+│  │  │  │  │  │  └─ resp（系统认证相关响应对象（Response））
+│  │  │  │  │  └─ service（系统认证相关业务接口及实现类）
+│  │  │  │  └─ system（系统管理相关业务）
+│  │  │  │     ├─ config（系统管理相关配置）
+│  │  │  │     ├─ enums（系统管理相关枚举）
+│  │  │  │     ├─ mapper（系统管理相关 Mapper）
+│  │  │  │     ├─ model（系统管理相关模型）
+│  │  │  │     │  ├─ entity（系统管理相关实体对象）
+│  │  │  │     │  ├─ query（系统管理相关查询条件）
+│  │  │  │     │  ├─ req（系统管理相关请求对象（Request））
+│  │  │  │     │  └─ resp（系统管理相关响应对象（Response））
+│  │  │  │     └─ service（系统管理相关业务接口及实现类）
+│  │  │  └─ resources
+│  │  │     └─ mapper（系统管理相关 Mapper XML 文件目录）
+│  │  └─ test（测试相关代码目录）
+│  └─ pom.xml
+├─ continew-admin-tool（系统工具模块，存放系统工具相关业务功能，例如：代码生成等）
+│  ├─ src
+│  │  ├─ main
+│  │  │  ├─ java/top/charles7c/continew/admin/tool
+│  │  │  │  ├─ config（系统工具相关配置）
+│  │  │  │  ├─ enums（系统工具相关枚举）
+│  │  │  │  ├─ mapper（系统工具相关 Mapper）
+│  │  │  │  ├─ model（系统工具相关模型）
+│  │  │  │  │  ├─ entity（系统工具相关实体对象）
+│  │  │  │  │  ├─ query（系统工具相关查询条件）
+│  │  │  │  │  ├─ req（系统工具相关请求对象（Request））
+│  │  │  │  │  └─ resp（系统工具相关响应对象（Response））
+│  │  │  │  └─ service（系统工具相关业务接口及实现类）
+│  │  │  └─ resources
+│  │  │     ├─ templates/generator（代码生成相关模板目录）
+│  │  │     └─ generator.properties（代码生成类型映射配置文件）
+│  │  └─ test（测试相关代码目录）
+│  └─ pom.xml
+├─ continew-admin-common（公共模块，存放公共工具类，公共配置等）
+│  ├─ src
+│  │  ├─ main/java/top/charles7c/continew/admin/common
+│  │  │  ├─ config（公共配置）
+│  │  │  ├─ constant（公共常量）
+│  │  │  ├─ enums（公共枚举）
+│  │  │  ├─ model（公共模型）
+│  │  │  │  ├─ dto（公共 DTO（Data Transfer Object））
+│  │  │  │  ├─ req（公共请求对象（Request））
+│  │  │  │  └─ resp（公共响应对象（Response））
+│  │  │  └─ util（公共工具类）
+│  │  └─ test（测试相关代码目录）
+│  └─ pom.xml
+├─ .gitee（Gitee 相关配置目录，实际开发时直接删除）
+├─ .github（GitHub 相关配置目录，实际开发时直接删除）
+├─ .idea
+│  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
+├─ .image（截图目录，实际开发时直接删除）
+├─ .style（代码格式相关配置目录，实际开发时根据需要取舍，删除时注意删除 spotless 插件配置）
+├─ .gitignore（Git 忽略文件相关配置文件）
+├─ docker（项目部署相关配置目录，实际开发时可备份后直接删除）
+├─ LICENSE（开源协议文件）
+├─ CHANGELOG.md（更新日志文件，实际开发时直接删除）
+├─ README.md（项目 README 文件，实际开发时替换为真实内容）
+├─ lombok.config（Lombok 全局配置文件）
+└─ pom.xml（包含版本锁定及全局插件相关配置）
 ```
 
 ## 贡献指南
@@ -392,7 +372,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 请记住，如果您有任何疑问或需要帮助，我们将随时提供支持。
 
-> **IMPORTANT**
+> [!IMPORTANT]
 > 欢迎大家为 ContiNew Admin 贡献代码，我们非常感谢您的支持！为了更好地管理项目，维护者有一些要求：
 >
 > 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性

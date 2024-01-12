@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等）</description>
+    <description>系统工具模块（存放系统工具相关业务功能，例如：代码生成等）</description>
 
     <dependencies>
         <!-- 公共模块（存放公共工具类，公共配置等） -->

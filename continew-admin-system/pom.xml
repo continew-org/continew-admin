@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等）</description>
+    <description>系统管理模块（存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）</description>
 
     <dependencies>
         <!-- 公共模块（存放公共工具类，公共配置等） -->
