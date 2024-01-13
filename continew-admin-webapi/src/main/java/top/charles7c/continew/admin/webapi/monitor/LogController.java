@@ -60,24 +60,21 @@ public class LogController {
     @Operation(summary = "分页查询登录日志列表", description = "分页查询登录日志列表")
     @GetMapping("/login")
     public R<PageResp<LoginLogResp>> page(LoginLogQuery query, @Validated PageQuery pageQuery) {
-        PageResp<LoginLogResp> pageData = logService.page(query, pageQuery);
-        return R.ok(pageData);
+        return R.ok(logService.page(query, pageQuery));
     }
 
     @Log(module = "操作日志")
     @Operation(summary = "分页查询操作日志列表", description = "分页查询操作日志列表")
     @GetMapping("/operation")
     public R<PageResp<OperationLogResp>> page(OperationLogQuery query, @Validated PageQuery pageQuery) {
-        PageResp<OperationLogResp> pageData = logService.page(query, pageQuery);
-        return R.ok(pageData);
+        return R.ok(logService.page(query, pageQuery));
     }
 
     @Log(module = "系统日志")
     @Operation(summary = "分页查询系统日志列表", description = "分页查询系统日志列表")
     @GetMapping("/system")
     public R<PageResp<SystemLogResp>> page(SystemLogQuery query, @Validated PageQuery pageQuery) {
-        PageResp<SystemLogResp> pageData = logService.page(query, pageQuery);
-        return R.ok(pageData);
+        return R.ok(logService.page(query, pageQuery));
     }
 
     @Log(module = "系统日志")
@@ -85,7 +82,6 @@ public class LogController {
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/system/{id}")
     public R<SystemLogDetailResp> get(@PathVariable Long id) {
-        SystemLogDetailResp detail = logService.get(id);
-        return R.ok(detail);
+        return R.ok(logService.get(id));
     }
 }

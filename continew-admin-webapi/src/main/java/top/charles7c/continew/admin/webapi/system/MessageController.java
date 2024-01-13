@@ -16,18 +16,13 @@
 
 package top.charles7c.continew.admin.webapi.system;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.model.query.MessageQuery;
 import top.charles7c.continew.admin.system.model.resp.MessageResp;
@@ -38,6 +33,8 @@ import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+
+import java.util.List;
 
 /**
  * 消息管理 API
@@ -58,8 +55,7 @@ public class MessageController {
     @GetMapping
     public R<PageResp<MessageResp>> page(MessageQuery query, @Validated PageQuery pageQuery) {
         query.setUserId(LoginHelper.getUserId());
-        PageResp<MessageResp> pageData = baseService.page(query, pageQuery);
-        return R.ok(pageData);
+        return R.ok(baseService.page(query, pageQuery));
     }
 
     @Operation(summary = "删除数据", description = "删除数据")

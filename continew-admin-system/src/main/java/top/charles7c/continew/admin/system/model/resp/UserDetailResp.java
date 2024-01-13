@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import top.charles7c.continew.admin.common.config.easyexcel.ExcelBaseEnumConverter;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;

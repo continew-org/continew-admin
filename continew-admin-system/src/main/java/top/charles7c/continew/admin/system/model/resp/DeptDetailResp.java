@@ -16,19 +16,16 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.TableField;
-
-import top.charles7c.continew.admin.common.config.easyexcel.ExcelBaseEnumConverter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+
+import java.io.Serial;
 
 /**
  * 部门详情信息

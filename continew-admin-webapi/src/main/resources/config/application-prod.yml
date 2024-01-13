@@ -87,12 +87,12 @@ spring.cache:
 
 --- ### 验证码配置
 continew-starter.captcha:
-  # 行为验证码
+  ## 行为验证码
   behavior:
     enabled: true
     cache-type: REDIS
     water-mark: ${project.app-name}
-  # 图形验证码
+  ## 图形验证码
   graphic:
     enabled: true
     # 类型

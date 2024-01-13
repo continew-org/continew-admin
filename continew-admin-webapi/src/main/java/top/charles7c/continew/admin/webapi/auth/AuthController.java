@@ -16,22 +16,16 @@
 
 package top.charles7c.continew.admin.webapi.auth;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import cn.dev33.satoken.annotation.SaIgnore;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-
 import top.charles7c.continew.admin.auth.model.req.AccountLoginReq;
 import top.charles7c.continew.admin.auth.model.req.EmailLoginReq;
 import top.charles7c.continew.admin.auth.model.req.PhoneLoginReq;
@@ -50,6 +44,8 @@ import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+
+import java.util.List;
 
 /**
  * 认证 API
@@ -136,8 +132,6 @@ public class AuthController {
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
     public R<List<RouteResp>> listRoute() {
-        Long userId = LoginHelper.getUserId();
-        List<RouteResp> routeTree = loginService.buildRouteTree(userId);
-        return R.ok(routeTree);
+        return R.ok(loginService.buildRouteTree(LoginHelper.getUserId()));
     }
 }

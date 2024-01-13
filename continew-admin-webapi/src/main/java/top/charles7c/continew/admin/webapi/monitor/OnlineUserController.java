@@ -55,8 +55,7 @@ public class OnlineUserController {
     @SaCheckPermission("monitor:online:user:list")
     @GetMapping
     public R<PageResp<OnlineUserResp>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
-        PageResp<OnlineUserResp> pageData = onlineUserService.page(query, pageQuery);
-        return R.ok(pageData);
+        return R.ok(onlineUserService.page(query, pageQuery));
     }
 
     @Operation(summary = "强退在线用户", description = "强退在线用户")

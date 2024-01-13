@@ -16,39 +16,27 @@
 
 package top.charles7c.continew.admin.webapi.common;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import jakarta.validation.constraints.NotNull;
-
-import lombok.RequiredArgsConstructor;
-
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import cn.dev33.satoken.annotation.SaIgnore;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.StrUtil;
-
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.query.OptionQuery;
 import top.charles7c.continew.admin.system.model.query.RoleQuery;
-import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
@@ -56,6 +44,12 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 公共 API
@@ -91,23 +85,19 @@ public class CommonController {
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
     public R<List<Tree<Long>>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
-        List<Tree<Long>> treeList = deptService.tree(query, sortQuery, true);
-        return R.ok(treeList);
+        return R.ok(deptService.tree(query, sortQuery, true));
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
     public R<List<Tree<Long>>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
-        List<Tree<Long>> treeList = menuService.tree(query, sortQuery, true);
-        return R.ok(treeList);
+        return R.ok(menuService.tree(query, sortQuery, true));
     }
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
     public R<List<LabelValueResp<Long>>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
-        List<RoleResp> list = roleService.list(query, sortQuery);
-        List<LabelValueResp<Long>> labelValueList = roleService.buildDict(list);
-        return R.ok(labelValueList);
+        return R.ok(roleService.buildDict(roleService.list(query, sortQuery)));
     }
 
     @Operation(summary = "查询字典", description = "查询字典列表")
