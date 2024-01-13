@@ -81,6 +81,12 @@
             <artifactId>continew-starter-data-mybatis-plus</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 缓存模块 - Spring Cache -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-cache-springcache</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 消息模块 - 邮件 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>

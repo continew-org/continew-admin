@@ -16,27 +16,24 @@
 
 package top.charles7c.continew.admin;
 
-import java.net.InetAddress;
-
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import io.swagger.v3.oas.annotations.Hidden;
-
 import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import cn.dev33.satoken.annotation.SaIgnore;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.extra.spring.SpringUtil;
-
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
+
+import java.net.InetAddress;
 
 /**
  * 启动程序
@@ -45,6 +42,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
  * @since 2022/12/8 23:15
  */
 @Slf4j
+@EnableCaching
 @EnableFileStorage
 @RestController
 @SpringBootApplication
