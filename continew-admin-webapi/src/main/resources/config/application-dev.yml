@@ -78,6 +78,8 @@ spring.data:
     mode: SINGLE
 ## JetCache 配置
 jetcache:
+  # 统计间隔（默认 0，表示不统计）
+  statIntervalMinutes: 15
   ## 本地/进程级/一级缓存配置
   local:
     default:
