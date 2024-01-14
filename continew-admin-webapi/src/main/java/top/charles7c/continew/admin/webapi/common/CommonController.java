@@ -20,6 +20,8 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CachePenetrationProtect;
+import com.alicp.jetcache.anno.CacheRefresh;
 import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -103,6 +105,8 @@ public class CommonController {
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
+    @CachePenetrationProtect
+    @CacheRefresh(refresh = 3600, stopRefreshAfterLastAccess = 7200)
     @Cached(key = "#code", name = CacheConstants.DICT_KEY_PREFIX)
     public R<List<LabelValueResp>> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);

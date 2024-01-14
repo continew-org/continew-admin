@@ -16,21 +16,21 @@
 
 package top.charles7c.continew.admin.webapi.common;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
+import com.alicp.jetcache.anno.CachePenetrationProtect;
+import com.alicp.jetcache.anno.CacheRefresh;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardGeoDistributionResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp;
@@ -40,6 +40,8 @@ import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+
+import java.util.List;
 
 /**
  * 仪表盘 API
@@ -66,6 +68,9 @@ public class DashboardController {
     @Operation(summary = "查询访问趋势信息", description = "查询访问趋势信息")
     @Parameter(name = "days", description = "日期数", example = "30", in = ParameterIn.PATH)
     @GetMapping("/access/trend/{days}")
+    @CachePenetrationProtect
+    @CacheRefresh(refresh = 7200)
+    @Cached(key = "#days", cacheType = CacheType.BOTH, name = CacheConstants.DASHBOARD_KEY_PREFIX, syncLocal = true)
     public R<List<DashboardAccessTrendResp>> listAccessTrend(@PathVariable Integer days) {
         ValidationUtils.throwIf(7 != days && 30 != days, "仅支持查询近 7/30 天访问趋势信息");
         return R.ok(dashboardService.listAccessTrend(days));

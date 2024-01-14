@@ -16,10 +16,7 @@
 
 package top.charles7c.continew.admin.system.service;
 
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
-
 import top.charles7c.continew.admin.system.model.entity.UserDO;
 import top.charles7c.continew.admin.system.model.query.UserQuery;
 import top.charles7c.continew.admin.system.model.req.UserBasicInfoUpdateReq;
@@ -28,6 +25,8 @@ import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+
+import java.util.List;
 
 /**
  * 用户业务接口
@@ -57,10 +56,10 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 修改基础信息
      *
-     * @param updateReq 修改信息
-     * @param id        ID
+     * @param req 修改信息
+     * @param id  ID
      */
-    void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id);
+    void updateBasicInfo(UserBasicInfoUpdateReq req, Long id);
 
     /**
      * 修改密码

@@ -16,26 +16,21 @@
 
 package top.charles7c.continew.admin.webapi.system;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import jakarta.validation.constraints.NotNull;
-
-import lombok.RequiredArgsConstructor;
-
+import cn.hutool.core.util.ReUtil;
+import com.xkcoding.justauth.AuthRequestFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
+import me.zhyd.oauth.request.AuthRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.xkcoding.justauth.AuthRequestFactory;
-
-import cn.hutool.core.util.ReUtil;
-
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.SocialSourceEnum;
@@ -55,10 +50,8 @@ import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 
-import me.zhyd.oauth.model.AuthCallback;
-import me.zhyd.oauth.model.AuthResponse;
-import me.zhyd.oauth.model.AuthUser;
-import me.zhyd.oauth.request.AuthRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 个人中心 API
@@ -87,8 +80,8 @@ public class UserCenterController {
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq updateReq) {
-        userService.updateBasicInfo(updateReq, LoginHelper.getUserId());
+    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq req) {
+        userService.updateBasicInfo(req, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 

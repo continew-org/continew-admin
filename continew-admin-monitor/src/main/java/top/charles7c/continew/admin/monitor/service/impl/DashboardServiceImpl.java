@@ -18,13 +18,8 @@ package top.charles7c.continew.admin.monitor.service.impl;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
-import com.alicp.jetcache.anno.CachePenetrationProtect;
-import com.alicp.jetcache.anno.CacheRefresh;
-import com.alicp.jetcache.anno.CacheType;
-import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardGeoDistributionResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp;
@@ -65,9 +60,6 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @CachePenetrationProtect
-    @CacheRefresh(refresh = 7200)
-    @Cached(key = "#days", cacheType = CacheType.BOTH, name = CacheConstants.DASHBOARD_KEY_PREFIX)
     public List<DashboardAccessTrendResp> listAccessTrend(Integer days) {
         return logService.listDashboardAccessTrend(days);
     }

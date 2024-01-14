@@ -78,8 +78,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @CacheInvalidate(key = "#req.code == 'admin' ? 'ALL' : #req.code", name = CacheConstants.MENU_KEY_PREFIX)
     @Transactional(rollbackFor = Exception.class)
+    @CacheInvalidate(key = "#req.code == 'admin' ? 'ALL' : #req.code", name = CacheConstants.MENU_KEY_PREFIX)
     public void update(RoleReq req, Long id) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);

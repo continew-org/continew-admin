@@ -20,7 +20,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.CacheUpdate;
 import com.alicp.jetcache.anno.Cached;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -103,6 +105,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
     public void update(UserReq req, Long id) {
         String username = req.getUsername();
         CheckUtils.throwIf(this.isNameExists(username, id), "修改失败，[{}] 已存在", username);
@@ -129,6 +132,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheInvalidate(key = "#ids", name = CacheConstants.USER_KEY_PREFIX, multi = true)
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(CollUtil.contains(ids, LoginHelper.getUserId()), "不允许删除当前用户");
         List<UserDO> list = baseMapper.lambdaQuery()
@@ -178,11 +182,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public void updateBasicInfo(UserBasicInfoUpdateReq updateReq, Long id) {
+    @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
+    public void updateBasicInfo(UserBasicInfoUpdateReq req, Long id) {
         super.getById(id);
         baseMapper.lambdaUpdate()
-            .set(UserDO::getNickname, updateReq.getNickname())
-            .set(UserDO::getGender, updateReq.getGender())
+            .set(UserDO::getNickname, req.getNickname())
+            .set(UserDO::getGender, req.getGender())
             .eq(UserDO::getId, id)
             .update();
     }
@@ -263,7 +268,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX)
+    @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX, syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

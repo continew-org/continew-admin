@@ -56,7 +56,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @CacheInvalidate(key = "#id", name = CacheConstants.MENU_KEY_PREFIX)
+    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public void update(MenuReq req, Long id) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);
@@ -64,8 +64,8 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @CacheInvalidate(key = "#ids", name = CacheConstants.MENU_KEY_PREFIX, multi = true)
     @Transactional(rollbackFor = Exception.class)
+    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public void delete(List<Long> ids) {
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
         super.delete(ids);

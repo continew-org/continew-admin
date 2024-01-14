@@ -50,7 +50,6 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    //    @CacheInvalidate(key = "#id", name = CacheConstants.DICT_KEY_PREFIX)
     public void update(DictItemReq req, Long id) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
@@ -74,7 +73,6 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    //    @CacheInvalidate(key = "#dictIds", name = CacheConstants.DICT_KEY_PREFIX, multi = true)
     public void deleteByDictIds(List<Long> dictIds) {
         baseMapper.lambdaUpdate().in(DictItemDO::getDictId, dictIds).remove();
     }

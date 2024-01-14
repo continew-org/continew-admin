@@ -50,7 +50,6 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    //    @CacheInvalidate(key = "#req.code", name = CacheConstants.OPTION_KEY_PREFIX, multi = true)
     public void update(List<OptionReq> req) {
         baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
     }
