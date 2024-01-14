@@ -16,12 +16,15 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.Mapping;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 
@@ -52,13 +55,13 @@ public class DeptDetailResp extends BaseDetailResp {
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID", example = "2")
+    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptDetailResp.class), props = @Mapping(src = "name", ref = "parentName"))
     private Long parentId;
 
     /**
      * 上级部门
      */
     @Schema(description = "上级部门", example = "天津总部")
-    @TableField(exist = false)
     @ExcelProperty(value = "上级部门")
     private String parentName;
 

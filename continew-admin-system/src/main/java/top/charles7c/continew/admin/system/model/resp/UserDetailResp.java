@@ -16,23 +16,24 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.Mapping;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.common.enums.GenderEnum;
+import top.charles7c.continew.admin.common.util.helper.LoginHelper;
+import top.charles7c.continew.admin.system.service.DeptService;
+import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-
-import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
-import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.admin.common.enums.GenderEnum;
-import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 
 /**
  * 用户详情信息
@@ -121,6 +122,7 @@ public class UserDetailResp extends BaseDetailResp {
      * 部门 ID
      */
     @Schema(description = "部门 ID", example = "5")
+    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptDetailResp.class), props = @Mapping(src = "name", ref = "deptName"))
     private Long deptId;
 
     /**

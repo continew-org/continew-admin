@@ -24,7 +24,6 @@ import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.CacheUpdate;
 import com.alicp.jetcache.anno.Cached;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
@@ -45,9 +44,11 @@ import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
-import top.charles7c.continew.admin.system.service.*;
+import top.charles7c.continew.admin.system.service.FileService;
+import top.charles7c.continew.admin.system.service.RoleService;
+import top.charles7c.continew.admin.system.service.UserRoleService;
+import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
@@ -67,8 +68,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
-    @Resource
-    private DeptService deptService;
     private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final FileService fileService;
@@ -152,7 +151,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     protected void fill(Object obj) {
         super.fill(obj);
         if (obj instanceof UserDetailResp detail) {
-            detail.setDeptName(ExceptionUtils.exToNull(() -> deptService.get(detail.getDeptId()).getName()));
             List<Long> roleIdList = userRoleService.listRoleIdByUserId(detail.getId());
             detail.setRoleIds(roleIdList);
             detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));

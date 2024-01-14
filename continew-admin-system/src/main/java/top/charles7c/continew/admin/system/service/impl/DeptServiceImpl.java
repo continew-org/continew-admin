@@ -22,7 +22,6 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.mapper.DeptMapper;
 import top.charles7c.continew.admin.system.model.entity.DeptDO;
@@ -33,13 +32,11 @@ import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
 import top.charles7c.continew.admin.system.service.UserService;
-import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -119,17 +116,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         roleDeptService.deleteByDeptIds(ids);
         // 删除部门
         super.delete(ids);
-    }
-
-    @Override
-    protected void fill(Object obj) {
-        super.fill(obj);
-        if (obj instanceof DeptDetailResp detail) {
-            if (Objects.equals(SysConstants.SUPER_PARENT_ID, detail.getParentId())) {
-                return;
-            }
-            detail.setParentName(ExceptionUtils.exToNull(() -> this.get(detail.getParentId()).getName()));
-        }
     }
 
     /**

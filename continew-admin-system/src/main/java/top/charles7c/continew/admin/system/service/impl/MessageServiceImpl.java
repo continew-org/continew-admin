@@ -16,20 +16,14 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-
+import cn.crane4j.annotation.AutoOperate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.extra.spring.SpringUtil;
-
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.system.mapper.MessageMapper;
 import top.charles7c.continew.admin.system.model.entity.MessageDO;
 import top.charles7c.continew.admin.system.model.query.MessageQuery;
@@ -37,12 +31,12 @@ import top.charles7c.continew.admin.system.model.req.MessageReq;
 import top.charles7c.continew.admin.system.model.resp.MessageResp;
 import top.charles7c.continew.admin.system.service.MessageService;
 import top.charles7c.continew.admin.system.service.MessageUserService;
-import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
-import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+
+import java.util.List;
 
 /**
  * 消息业务实现
@@ -58,12 +52,12 @@ public class MessageServiceImpl implements MessageService {
     private final MessageUserService messageUserService;
 
     @Override
+    @AutoOperate(type = MessageResp.class, on = "list")
     public PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
         QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
         queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
             .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
         IPage<MessageResp> page = baseMapper.selectPageByUserId(pageQuery.toPage(), queryWrapper);
-        page.getRecords().forEach(this::fill);
         return PageResp.build(page);
     }
 
@@ -81,19 +75,5 @@ public class MessageServiceImpl implements MessageService {
     public void delete(List<Long> ids) {
         baseMapper.deleteBatchIds(ids);
         messageUserService.deleteByMessageIds(ids);
-    }
-
-    /**
-     * 填充数据
-     *
-     * @param message 待填充信息
-     */
-    private void fill(MessageResp message) {
-        Long createUser = message.getCreateUser();
-        if (null == createUser) {
-            return;
-        }
-        CommonUserService userService = SpringUtil.getBean(CommonUserService.class);
-        message.setCreateUserString(ExceptionUtils.exToNull(() -> userService.getNicknameById(createUser)));
     }
 }

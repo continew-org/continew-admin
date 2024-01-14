@@ -16,17 +16,16 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.Assemble;
+import cn.crane4j.annotation.Mapping;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
 
 /**
  * 消息信息
@@ -81,6 +80,7 @@ public class MessageResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
+    @Assemble(container = "userNickname", props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**
