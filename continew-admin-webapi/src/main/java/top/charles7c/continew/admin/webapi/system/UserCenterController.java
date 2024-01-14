@@ -113,7 +113,7 @@ public class UserCenterController {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewPhone());
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewPhone();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
@@ -128,7 +128,7 @@ public class UserCenterController {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, updateReq.getNewEmail());
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewEmail();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");

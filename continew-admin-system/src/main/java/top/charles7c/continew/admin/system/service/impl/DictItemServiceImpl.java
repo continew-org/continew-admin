@@ -17,10 +17,7 @@
 package top.charles7c.continew.admin.system.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
-import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.mapper.DictItemMapper;
 import top.charles7c.continew.admin.system.model.entity.DictItemDO;
@@ -43,11 +40,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.DICT_KEY_PREFIX)
 public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> implements DictItemService {
 
     @Override
-    @CacheEvict(allEntries = true)
     public Long add(DictItemReq req) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, null, req.getDictId()), "新增失败，字典值 [{}] 已存在", value);
@@ -55,7 +50,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    //    @CacheInvalidate(key = "#id", name = CacheConstants.DICT_KEY_PREFIX)
     public void update(DictItemReq req, Long id) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
@@ -79,7 +74,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    //    @CacheInvalidate(key = "#dictIds", name = CacheConstants.DICT_KEY_PREFIX, multi = true)
     public void deleteByDictIds(List<Long> dictIds) {
         baseMapper.lambdaUpdate().in(DictItemDO::getDictId, dictIds).remove();
     }

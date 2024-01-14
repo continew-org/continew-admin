@@ -56,30 +56,54 @@ spring.liquibase:
   change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 --- ### 缓存配置
-spring:
-  ## Spring Cache 配置
-  cache:
-    type: REDIS
-  data:
-    ## Redis 配置（单机版）
-    redis:
-      # 地址
-      host: ${REDIS_HOST:127.0.0.1}
-      # 端口（默认 6379）
-      port: ${REDIS_PORT:6379}
-      # 密码（未设置密码时可为空或注释掉）
-      password: ${REDIS_PWD:123456}
-      # 数据库索引
-      database: ${REDIS_DB:0}
-      # 连接超时时间
-      timeout: 10s
-      # 是否开启 SSL
-      ssl:
-        enabled: false
-    # Redisson 配置
-    redisson:
-      enabled: true
-      mode: SINGLE
+spring.data:
+  ## Redis 配置（单机模式）
+  redis:
+    # 地址
+    host: ${REDIS_HOST:127.0.0.1}
+    # 端口（默认 6379）
+    port: ${REDIS_PORT:6379}
+    # 密码（未设置密码时可为空或注释掉）
+    password: ${REDIS_PWD:123456}
+    # 数据库索引
+    database: ${REDIS_DB:0}
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启 SSL
+    ssl:
+      enabled: false
+  ## Redisson 配置
+  redisson:
+    enabled: true
+    mode: SINGLE
+## JetCache 配置
+jetcache:
+  ## 本地/进程级/一级缓存配置
+  local:
+    default:
+      # 缓存类型
+      type: caffeine
+      # key 转换器的全局配置
+      keyConvertor: jackson
+      # 以毫秒为单位指定超时时间的全局配置
+      expireAfterWriteInMillis: 7200000
+      # 每个缓存实例的最大元素的全局配置，仅 local 类型的缓存需要指定
+      limit: 1000
+  ## 远程/分布式/二级缓存配置
+  remote:
+    default:
+      # 缓存类型
+      type: redisson
+      # key 转换器的全局配置（用于将复杂的 KEY 类型转换为缓存实现可以接受的类型）
+      keyConvertor: jackson
+      # 以毫秒为单位指定超时时间的全局配置
+      expireAfterWriteInMillis: 7200000
+      # 2.7+ 支持两级缓存更新以后失效其他 JVM 中的 local cache，但多个服务共用 Redis 同一个 channel 可能会造成广播风暴，需要在这里指定channel。
+      # 你可以决定多个不同的服务是否共用同一个 channel，如果没有指定则不开启。
+      broadcastChannel: ${spring.application.name}
+      # 序列化器的全局配置，仅 remote 类型的缓存需要指定
+      valueEncoder: java
+      valueDecoder: java
 
 --- ### 验证码配置
 continew-starter.captcha:

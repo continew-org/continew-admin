@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.common.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
  * 缓存相关常量
@@ -29,6 +30,11 @@ import lombok.NoArgsConstructor;
 public class CacheConstants {
 
     /**
+     * 分隔符
+     */
+    public static final String DELIMITER = StringConstants.COLON;
+
+    /**
      * 登录用户键
      */
     public static final String LOGIN_USER_KEY = "LOGIN_USER";
@@ -36,35 +42,35 @@ public class CacheConstants {
     /**
      * 验证码键前缀
      */
-    public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA";
+    public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA" + DELIMITER;
 
     /**
      * 限流键前缀
      */
-    public static final String LIMIT_KEY_PREFIX = "LIMIT";
+    public static final String LIMIT_KEY_PREFIX = "LIMIT" + DELIMITER;
 
     /**
      * 用户缓存键前缀
      */
-    public static final String USER_KEY_PREFIX = "USER";
+    public static final String USER_KEY_PREFIX = "USER" + DELIMITER;
 
     /**
      * 菜单缓存键前缀
      */
-    public static final String MENU_KEY_PREFIX = "MENU";
+    public static final String MENU_KEY_PREFIX = "MENU" + DELIMITER;
 
     /**
      * 字典缓存键前缀
      */
-    public static final String DICT_KEY_PREFIX = "DICT";
+    public static final String DICT_KEY_PREFIX = "DICT" + DELIMITER;
 
     /**
      * 参数缓存键前缀
      */
-    public static final String OPTION_KEY_PREFIX = "OPTION";
+    public static final String OPTION_KEY_PREFIX = "OPTION" + DELIMITER;
 
     /**
      * 仪表盘缓存键前缀
      */
-    public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD";
+    public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD" + DELIMITER;
 }

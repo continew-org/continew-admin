@@ -20,6 +20,7 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -27,7 +28,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,7 +103,7 @@ public class CommonController {
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "announcement_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
-    @Cacheable(key = "#code", cacheNames = CacheConstants.DICT_KEY_PREFIX)
+    @Cached(key = "#code", name = CacheConstants.DICT_KEY_PREFIX)
     public R<List<LabelValueResp>> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClass = this.getEnumClassByName(code);
         return R.ok(enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
@@ -112,7 +112,7 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
-    @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX)
+    @Cached(name = CacheConstants.OPTION_KEY_PREFIX)
     public R<List<LabelValueResp>> listOption(@Validated OptionQuery query) {
         return R.ok(optionService.list(query)
             .stream()

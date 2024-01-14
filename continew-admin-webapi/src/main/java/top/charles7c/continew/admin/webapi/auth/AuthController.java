@@ -67,7 +67,7 @@ public class AuthController {
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
     public R<LoginResp> accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, loginReq.getUuid());
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + loginReq.getUuid();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         RedisUtils.delete(captchaKey);
@@ -84,7 +84,7 @@ public class AuthController {
     @PostMapping("/email")
     public R<LoginResp> emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
         String email = loginReq.getEmail();
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, email);
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");
@@ -98,7 +98,7 @@ public class AuthController {
     @PostMapping("/phone")
     public R<LoginResp> phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
         String phone = loginReq.getPhone();
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, phone);
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, "验证码已失效");
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, "验证码错误");

@@ -19,6 +19,7 @@ package top.charles7c.continew.admin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.alicp.jetcache.anno.config.EnableMethodCache;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -42,11 +42,11 @@ import java.net.InetAddress;
  * @since 2022/12/8 23:15
  */
 @Slf4j
-@EnableCaching
-@EnableFileStorage
 @RestController
+@EnableFileStorage
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableMethodCache(basePackages = "top.charles7c.continew.admin")
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ProjectProperties projectProperties;

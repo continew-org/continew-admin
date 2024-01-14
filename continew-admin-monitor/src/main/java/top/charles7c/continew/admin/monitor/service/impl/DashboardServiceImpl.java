@@ -16,19 +16,14 @@
 
 package top.charles7c.continew.admin.monitor.service.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
-
+import com.alicp.jetcache.anno.CachePenetrationProtect;
+import com.alicp.jetcache.anno.CacheRefresh;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp;
 import top.charles7c.continew.admin.monitor.model.resp.DashboardGeoDistributionResp;
@@ -39,6 +34,10 @@ import top.charles7c.continew.admin.monitor.service.LogService;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.continew.admin.system.service.AnnouncementService;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 仪表盘业务实现
  *
@@ -47,7 +46,6 @@ import top.charles7c.continew.admin.system.service.AnnouncementService;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.DASHBOARD_KEY_PREFIX)
 public class DashboardServiceImpl implements DashboardService {
 
     private final LogService logService;
@@ -67,7 +65,9 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @Cacheable(key = "#days")
+    @CachePenetrationProtect
+    @CacheRefresh(refresh = 7200)
+    @Cached(key = "#days", cacheType = CacheType.BOTH, name = CacheConstants.DASHBOARD_KEY_PREFIX)
     public List<DashboardAccessTrendResp> listAccessTrend(Integer days) {
         return logService.listDashboardAccessTrend(days);
     }

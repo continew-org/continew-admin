@@ -19,8 +19,8 @@ package top.charles7c.continew.admin.system.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.auth.service.OnlineUserService;
@@ -78,7 +78,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheConstants.MENU_KEY_PREFIX, key = "#req.code == 'admin' ? 'ALL' : #req.code")
+    @CacheInvalidate(key = "#req.code == 'admin' ? 'ALL' : #req.code", name = CacheConstants.MENU_KEY_PREFIX)
     @Transactional(rollbackFor = Exception.class)
     public void update(RoleReq req, Long id) {
         String name = req.getName();

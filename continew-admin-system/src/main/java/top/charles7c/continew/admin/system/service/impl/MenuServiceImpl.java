@@ -16,18 +16,12 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.*;
-
+import cn.hutool.core.bean.BeanUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cn.hutool.core.bean.BeanUtil;
-
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.mapper.MenuMapper;
@@ -39,6 +33,9 @@ import top.charles7c.continew.admin.system.service.MenuService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * 菜单业务实现
  *
@@ -47,11 +44,10 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.MENU_KEY_PREFIX)
 public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq> implements MenuService {
 
     @Override
-    @CacheEvict(allEntries = true)
+    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public Long add(MenuReq req) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
@@ -60,7 +56,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    @CacheInvalidate(key = "#id", name = CacheConstants.MENU_KEY_PREFIX)
     public void update(MenuReq req, Long id) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);
@@ -68,7 +64,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    @CacheInvalidate(key = "#ids", name = CacheConstants.MENU_KEY_PREFIX, multi = true)
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
@@ -81,7 +77,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @Cacheable(key = "#roleCode")
+    @Cached(key = "#roleCode", name = CacheConstants.MENU_KEY_PREFIX)
     public List<MenuResp> listByRoleCode(String roleCode) {
         List<MenuDO> menuList = baseMapper.selectListByRoleCode(roleCode);
         List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
@@ -90,7 +86,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @Cacheable(key = "'ALL'")
+    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public List<MenuResp> list() {
         MenuQuery menuQuery = new MenuQuery();
         menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());

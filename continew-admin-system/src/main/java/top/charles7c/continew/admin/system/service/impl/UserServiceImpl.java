@@ -20,12 +20,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,7 +63,6 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.USER_KEY_PREFIX)
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
     @Resource
@@ -264,7 +263,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Cacheable(key = "#id")
+    @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

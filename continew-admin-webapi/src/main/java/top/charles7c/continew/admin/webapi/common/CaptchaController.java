@@ -16,20 +16,24 @@
 
 package top.charles7c.continew.admin.webapi.common;
 
-import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.servlet.JakartaServletUtil;
+import com.anji.captcha.model.common.RepCodeEnum;
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.model.vo.CaptchaVO;
+import com.anji.captcha.service.CaptchaService;
+import com.wf.captcha.base.Captcha;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.RequiredArgsConstructor;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.comm.constant.SupplierConstant;
@@ -38,20 +42,6 @@ import org.redisson.api.RateType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import com.anji.captcha.model.common.RepCodeEnum;
-import com.anji.captcha.model.common.ResponseModel;
-import com.anji.captcha.model.vo.CaptchaVO;
-import com.anji.captcha.service.CaptchaService;
-import com.wf.captcha.base.Captcha;
-
-import cn.dev33.satoken.annotation.SaIgnore;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.servlet.JakartaServletUtil;
-
 import top.charles7c.continew.admin.common.config.properties.CaptchaProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.RegexConstants;
@@ -65,6 +55,10 @@ import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.resp.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
+
+import java.time.Duration;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 验证码 API
@@ -106,7 +100,7 @@ public class CaptchaController {
     public R<CaptchaResp> getImageCaptcha() {
         Captcha captcha = graphicCaptchaProperties.getCaptcha();
         String uuid = IdUtil.fastUUID();
-        String captchaKey = RedisUtils.formatKey(CacheConstants.CAPTCHA_KEY_PREFIX, uuid);
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
         RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
         return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build());
     }
@@ -116,7 +110,7 @@ public class CaptchaController {
     public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexConstants.EMAIL, message = "邮箱格式错误") String email) throws MessagingException {
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
-        String limitCaptchaKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, email);
+        String limitCaptchaKey = limitKeyPrefix + captchaKeyPrefix + email;
         long limitTimeInMillisecond = RedisUtils.getTimeToLive(limitCaptchaKey);
         CheckUtils.throwIf(limitTimeInMillisecond > 0, "发送验证码过于频繁，请您 {}s 后再试", limitTimeInMillisecond / 1000);
         // 生成验证码
@@ -129,7 +123,7 @@ public class CaptchaController {
             .set("expiration", expirationInMinutes));
         MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", projectProperties.getName()), content);
         // 保存验证码
-        String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, email);
+        String captchaKey = captchaKeyPrefix + email;
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         RedisUtils.set(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
@@ -148,21 +142,21 @@ public class CaptchaController {
         String templateId = captchaSms.getTemplateId();
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
-        String limitTemplateKeyPrefix = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix);
+        String limitTemplateKeyPrefix = limitKeyPrefix + captchaKeyPrefix;
         // 限制短信发送频率
         // 1.同一号码同一短信模板，1分钟2条，1小时8条，24小时20条，e.g. LIMIT:CAPTCHA:XXX:188xxxxx:1
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix, "MIN", phone, templateId), RateType.OVERALL, 2, 60), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "MIN", phone, templateId), RateType.OVERALL, 2, 60), "验证码发送过于频繁，请稍后后再试");
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix, "HOUR", phone, templateId), RateType.OVERALL, 8, 60 * 60), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "HOUR", phone, templateId), RateType.OVERALL, 8, 60 * 60), "验证码发送过于频繁，请稍后后再试");
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix, "DAY", phone, templateId), RateType.OVERALL, 20, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "DAY", phone, templateId), RateType.OVERALL, 20, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
         // 2.同一号码所有短信模板 24 小时 100 条，e.g. LIMIT:CAPTCHA:188xxxxx
-        String limitPhoneKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, phone);
+        String limitPhoneKey = limitKeyPrefix + captchaKeyPrefix + phone;
         CheckUtils.throwIf(!RedisUtils
             .rateLimit(limitPhoneKey, RateType.OVERALL, 100, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
         // 3.同一 IP 每分钟限制发送 30 条，e.g. LIMIT:CAPTCHA:PHONE:1xx.1xx.1xx.1xx
-        String limitIpKey = RedisUtils.formatKey(limitKeyPrefix, captchaKeyPrefix, "PHONE", JakartaServletUtil
+        String limitIpKey = RedisUtils.formatKey(limitKeyPrefix + captchaKeyPrefix + "PHONE", JakartaServletUtil
             .getClientIP(request));
         CheckUtils.throwIf(!RedisUtils.rateLimit(limitIpKey, RateType.OVERALL, 30, 60), "验证码发送过于频繁，请稍后后再试");
         // 生成验证码
@@ -177,7 +171,7 @@ public class CaptchaController {
             .getTemplateId(), (LinkedHashMap<String, String>)messageMap);
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
-        String captchaKey = RedisUtils.formatKey(captchaKeyPrefix, phone);
+        String captchaKey = captchaKeyPrefix + phone;
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
     }

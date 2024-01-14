@@ -16,16 +16,10 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.stereotype.Service;
-
 import cn.hutool.core.bean.BeanUtil;
-
+import com.alicp.jetcache.anno.CacheInvalidate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.system.mapper.OptionMapper;
 import top.charles7c.continew.admin.system.model.entity.OptionDO;
@@ -36,6 +30,8 @@ import top.charles7c.continew.admin.system.model.resp.OptionResp;
 import top.charles7c.continew.admin.system.service.OptionService;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
 
+import java.util.List;
+
 /**
  * 参数业务实现
  *
@@ -44,7 +40,6 @@ import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
  */
 @Service
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = CacheConstants.OPTION_KEY_PREFIX)
 public class OptionServiceImpl implements OptionService {
 
     private final OptionMapper baseMapper;
@@ -55,13 +50,13 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    //    @CacheInvalidate(key = "#req.code", name = CacheConstants.OPTION_KEY_PREFIX, multi = true)
     public void update(List<OptionReq> req) {
         baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
     }
 
     @Override
-    @CacheEvict(allEntries = true)
+    @CacheInvalidate(key = "#req.code", name = CacheConstants.OPTION_KEY_PREFIX, multi = true)
     public void resetValue(OptionResetValueReq req) {
         baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, req.getCode()).update();
     }
