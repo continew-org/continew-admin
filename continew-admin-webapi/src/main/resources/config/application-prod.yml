@@ -49,8 +49,7 @@ spring.datasource:
       keepaliveTime: 30000
       # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
       max-lifetime: 1800000
-
---- ### Liquibase 配置
+## Liquibase 配置
 spring.liquibase:
   # 是否启用
   enabled: true
