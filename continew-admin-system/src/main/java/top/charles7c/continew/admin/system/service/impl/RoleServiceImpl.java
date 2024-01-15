@@ -111,8 +111,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
+    protected void beforeDelete(List<Long> ids) {
         List<RoleDO> list = baseMapper.lambdaQuery()
             .select(RoleDO::getName, RoleDO::getIsSystem)
             .in(RoleDO::getId, ids)
@@ -125,8 +124,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         roleMenuService.deleteByRoleIds(ids);
         // 删除角色和部门关联
         roleDeptService.deleteByRoleIds(ids);
-        // 删除角色
-        super.delete(ids);
     }
 
     @Override

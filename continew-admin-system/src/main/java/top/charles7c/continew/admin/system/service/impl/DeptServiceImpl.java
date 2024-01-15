@@ -18,10 +18,8 @@ package top.charles7c.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.mapper.DeptMapper;
 import top.charles7c.continew.admin.system.model.entity.DeptDO;
@@ -49,23 +47,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq> implements DeptService {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
     private final RoleDeptService roleDeptService;
 
     @Override
-    public Long add(DeptReq req) {
+    protected void beforeAdd(DeptReq req) {
         String name = req.getName();
         boolean isExists = this.isNameExists(name, req.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
         req.setAncestors(this.getAncestors(req.getParentId()));
         req.setStatus(DisEnableStatusEnum.DISABLE);
-        return super.add(req);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void update(DeptReq req, Long id) {
+    protected void beforeUpdate(DeptReq req, Long id) {
         String name = req.getName();
         boolean isExists = this.isNameExists(name, req.getParentId(), id);
         CheckUtils.throwIf(isExists, "修改失败，[{}] 已存在", name);
@@ -97,12 +92,10 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
             // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
-        super.update(req, id);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
+    protected void beforeDelete(List<Long> ids) {
         List<DeptDO> list = baseMapper.lambdaQuery()
             .select(DeptDO::getName, DeptDO::getIsSystem)
             .in(DeptDO::getId, ids)
@@ -114,8 +107,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         // 删除角色和部门关联
         roleDeptService.deleteByDeptIds(ids);
-        // 删除部门
-        super.delete(ids);
     }
 
     /**

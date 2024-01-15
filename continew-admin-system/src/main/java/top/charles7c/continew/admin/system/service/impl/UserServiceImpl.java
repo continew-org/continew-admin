@@ -81,17 +81,19 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long add(UserReq req) {
+    protected void beforeAdd(UserReq req) {
         String username = req.getUsername();
         CheckUtils.throwIf(this.isNameExists(username, null), "新增失败，[{}] 已存在", username);
         String email = req.getEmail();
         CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), "新增失败，[{}] 已存在", email);
         String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
-        // 新增信息
         req.setStatus(DisEnableStatusEnum.ENABLE);
-        Long userId = super.add(req);
+    }
+
+    @Override
+    protected void afterAdd(UserReq req, UserDO user) {
+        Long userId = user.getId();
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, userId.toString()))
             .set(UserDO::getPwdResetTime, LocalDateTime.now())
@@ -99,7 +101,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .update();
         // 保存用户和角色关联
         userRoleService.add(req.getRoleIds(), userId);
-        return userId;
     }
 
     @Override

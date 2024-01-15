@@ -62,7 +62,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     private final FileStorageService fileStorageService;
 
     @Override
-    public void delete(List<Long> ids) {
+    protected void beforeDelete(List<Long> ids) {
         List<FileDO> fileList = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
         Map<Long, List<FileDO>> fileListGroup = fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
         for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
@@ -72,7 +72,6 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
                 fileStorageService.delete(fileInfo);
             }
         }
-        super.delete(ids);
     }
 
     @Override

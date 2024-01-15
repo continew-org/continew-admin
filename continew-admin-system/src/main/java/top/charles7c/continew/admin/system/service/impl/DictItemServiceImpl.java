@@ -43,17 +43,15 @@ import java.util.List;
 public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> implements DictItemService {
 
     @Override
-    public Long add(DictItemReq req) {
+    protected void beforeAdd(DictItemReq req) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, null, req.getDictId()), "新增失败，字典值 [{}] 已存在", value);
-        return super.add(req);
     }
 
     @Override
-    public void update(DictItemReq req, Long id) {
+    protected void beforeUpdate(DictItemReq req, Long id) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
-        super.update(req, id);
     }
 
     @Override

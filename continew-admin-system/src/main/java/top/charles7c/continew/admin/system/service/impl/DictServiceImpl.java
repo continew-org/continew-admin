@@ -16,17 +16,9 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import jakarta.servlet.http.HttpServletResponse;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import top.charles7c.continew.admin.system.mapper.DictMapper;
 import top.charles7c.continew.admin.system.model.entity.DictDO;
 import top.charles7c.continew.admin.system.model.query.DictQuery;
@@ -41,6 +33,10 @@ import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.file.excel.util.ExcelUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
  * 字典业务实现
  *
@@ -54,16 +50,15 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     private final DictItemService dictItemService;
 
     @Override
-    public Long add(DictReq req) {
+    protected void beforeAdd(DictReq req) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
-        return super.add(req);
     }
 
     @Override
-    public void update(DictReq req, Long id) {
+    protected void beforeUpdate(DictReq req, Long id) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
         String code = req.getCode();
@@ -72,12 +67,10 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
         if (oldDict.getIsSystem()) {
             CheckUtils.throwIfNotEqual(req.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码", oldDict.getName());
         }
-        super.update(req, id);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
+    protected void beforeDelete(List<Long> ids) {
         List<DictDO> list = baseMapper.lambdaQuery()
             .select(DictDO::getName, DictDO::getIsSystem)
             .in(DictDO::getId, ids)
@@ -86,7 +79,6 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
         CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除", isSystemData.orElseGet(DictDO::new)
             .getName());
         dictItemService.deleteByDictIds(ids);
-        super.delete(ids);
     }
 
     @Override

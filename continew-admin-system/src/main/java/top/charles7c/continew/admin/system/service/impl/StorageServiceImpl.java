@@ -16,25 +16,17 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import jakarta.annotation.Resource;
-
 import lombok.RequiredArgsConstructor;
-
 import org.dromara.x.file.storage.core.FileStorageProperties;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
 import org.dromara.x.file.storage.core.platform.FileStorage;
 import org.springframework.stereotype.Service;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
-
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.admin.system.mapper.StorageMapper;
@@ -52,6 +44,10 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * 存储库业务实现
  *
@@ -67,17 +63,16 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     private final FileStorageService fileStorageService;
 
     @Override
-    public Long add(StorageReq req) {
+    protected void beforeAdd(StorageReq req) {
         CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储库");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         req.setStatus(DisEnableStatusEnum.ENABLE);
         this.load(req);
-        return super.add(req);
     }
 
     @Override
-    public void update(StorageReq req, Long id) {
+    protected void beforeUpdate(StorageReq req, Long id) {
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DisEnableStatusEnum newStatus = req.getStatus();
@@ -95,18 +90,16 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储库");
             CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储库");
         }
-        super.update(req, id);
     }
 
     @Override
-    public void delete(List<Long> ids) {
+    protected void beforeDelete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储库存在文件关联，请删除文件后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
         storageList.forEach(s -> {
             CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储库，不允许禁用", s.getName());
             this.unload(BeanUtil.copyProperties(s, StorageReq.class));
         });
-        super.delete(ids);
     }
 
     @Override
