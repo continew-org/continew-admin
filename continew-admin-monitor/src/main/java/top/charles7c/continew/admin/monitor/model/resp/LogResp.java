@@ -21,6 +21,7 @@ import cn.crane4j.annotation.Mapping;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.charles7c.continew.starter.extension.crud.constant.ContainerConstants;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -48,7 +49,7 @@ public class LogResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
-    @Assemble(container = "userNickname", props = @Mapping(ref = "createUserString"))
+    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**
