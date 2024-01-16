@@ -34,7 +34,7 @@
 
 ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，持续提供舒适的开发体验，依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design、Sa-Token、MyBatis Plus、Redisson、JetCache、JustAuth、Crane4j、Easy Excel、Hutool、Liquibase、TypeScript、Vite4 等。
+当前采用的技术栈：Spring Boot3（Java17）、Vue3 & TS & Vite & Arco Design、Sa-Token、MyBatisPlus、Redisson、JetCache、JustAuth、Crane4j、EasyExcel、Liquibase、Hutool 等。
 
 ## 项目起源
 
@@ -52,7 +52,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 4. 提 PR 可能又和原作者理念不一致，对部分框架进行二开，但又会囿于原始设计
 5. 在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，想要依靠工作来完善一个脚手架，既不现实也不甚美妙
 
-最终，我选择自己在业余时间从头写一个试试，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。我希望它不仅仅能吸收我的需求，而是依托开源协作模式，接受更多的可能性，沉淀更优秀的思考，设计。另外，开源出来，如果能为更广泛的小伙伴提供舒适的开发体验那就更好了。
+“种一棵树最好的时间是十年前，其次是现在”。最终，我选择自己在业余时间从头写一个试试，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。我希望它不仅仅能吸收我的需求，而是依托开源协作模式，接受更多的可能性，沉淀更优秀的思考，设计。另外，开源出来，如果能为更广泛的小伙伴提供舒适的开发体验那就更好了。
 
 ## 项目源码
 
@@ -411,7 +411,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 ### 特别鸣谢
 
 - 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
-- 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/easyexcel" target="_blank">Easy Excel</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
+- 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/jetcache" target="_blank">JetCache</a>、<a href="https://github.com/opengoofy/crane4j" target="_blank">Crane4j</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等国产开源组件作者为国内开源世界作出的贡献
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License
