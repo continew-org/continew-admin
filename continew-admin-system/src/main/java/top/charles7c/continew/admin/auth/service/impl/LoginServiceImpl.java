@@ -16,14 +16,6 @@
 
 package top.charles7c.continew.admin.auth.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -33,7 +25,9 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-
+import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.model.AuthUser;
+import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.auth.model.resp.MetaResp;
 import top.charles7c.continew.admin.auth.model.resp.RouteResp;
 import top.charles7c.continew.admin.auth.service.LoginService;
@@ -48,11 +42,11 @@ import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.enums.MessageTemplateEnum;
+import top.charles7c.continew.admin.system.model.entity.DeptDO;
 import top.charles7c.continew.admin.system.model.entity.RoleDO;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
 import top.charles7c.continew.admin.system.model.entity.UserSocialDO;
 import top.charles7c.continew.admin.system.model.req.MessageReq;
-import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -60,7 +54,9 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
 import top.charles7c.continew.starter.extension.crud.util.TreeUtils;
 
-import me.zhyd.oauth.model.AuthUser;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 登录业务实现
@@ -140,7 +136,7 @@ public class LoginServiceImpl implements LoginService {
             userSocial.setOpenId(openId);
             this.sendSystemMsg(user);
         } else {
-            user = BeanUtil.copyProperties(userService.get(userSocial.getUserId()), UserDO.class);
+            user = BeanUtil.copyProperties(userService.getById(userSocial.getUserId()), UserDO.class);
         }
         this.checkUserStatus(user);
         userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
@@ -209,8 +205,8 @@ public class LoginServiceImpl implements LoginService {
      */
     private void checkUserStatus(UserDO user) {
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
-        DeptDetailResp deptDetailResp = deptService.get(user.getDeptId());
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, deptDetailResp.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
+        DeptDO dept = deptService.getById(user.getDeptId());
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, dept.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
     }
 
     /**

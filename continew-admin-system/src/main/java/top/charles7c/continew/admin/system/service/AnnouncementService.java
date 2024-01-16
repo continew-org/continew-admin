@@ -16,14 +16,16 @@
 
 package top.charles7c.continew.admin.system.service;
 
-import java.util.List;
-
+import top.charles7c.continew.admin.system.model.entity.AnnouncementDO;
 import top.charles7c.continew.admin.system.model.query.AnnouncementQuery;
 import top.charles7c.continew.admin.system.model.req.AnnouncementReq;
 import top.charles7c.continew.admin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.continew.admin.system.model.resp.AnnouncementResp;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
+
+import java.util.List;
 
 /**
  * 公告业务接口
@@ -31,7 +33,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-public interface AnnouncementService extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
+public interface AnnouncementService extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq>, IService<AnnouncementDO> {
 
     /**
      * 查询仪表盘公告列表

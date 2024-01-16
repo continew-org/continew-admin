@@ -16,9 +16,6 @@
 
 package top.charles7c.continew.admin.system.service;
 
-import java.util.List;
-import java.util.Set;
-
 import top.charles7c.continew.admin.common.model.dto.RoleDTO;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.entity.RoleDO;
@@ -27,6 +24,10 @@ import top.charles7c.continew.admin.system.model.req.RoleReq;
 import top.charles7c.continew.admin.system.model.resp.RoleDetailResp;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 角色业务接口
@@ -34,7 +35,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/2/8 23:15
  */
-public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
+public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
 
     /**
      * 构建字典

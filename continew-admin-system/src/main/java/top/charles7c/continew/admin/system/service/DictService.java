@@ -16,11 +16,13 @@
 
 package top.charles7c.continew.admin.system.service;
 
+import top.charles7c.continew.admin.system.model.entity.DictDO;
 import top.charles7c.continew.admin.system.model.query.DictQuery;
 import top.charles7c.continew.admin.system.model.req.DictReq;
 import top.charles7c.continew.admin.system.model.resp.DictDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
 
 /**
  * 字典业务接口
@@ -28,4 +30,4 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictService extends BaseService<DictResp, DictDetailResp, DictQuery, DictReq> {}
+public interface DictService extends BaseService<DictResp, DictDetailResp, DictQuery, DictReq>, IService<DictDO> {}

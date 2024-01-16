@@ -16,13 +16,15 @@
 
 package top.charles7c.continew.admin.system.service;
 
-import java.util.List;
-import java.util.Set;
-
+import top.charles7c.continew.admin.system.model.entity.MenuDO;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.req.MenuReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单业务接口
@@ -30,7 +32,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq> {
+public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {
 
     /**
      * 根据用户 ID 查询

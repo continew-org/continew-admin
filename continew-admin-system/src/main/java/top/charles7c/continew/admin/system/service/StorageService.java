@@ -22,6 +22,7 @@ import top.charles7c.continew.admin.system.model.req.StorageReq;
 import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
 
 /**
  * 存储库业务接口
@@ -29,7 +30,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
-public interface StorageService extends BaseService<StorageResp, StorageDetailResp, StorageQuery, StorageReq> {
+public interface StorageService extends BaseService<StorageResp, StorageDetailResp, StorageQuery, StorageReq>, IService<StorageDO> {
 
     /**
      * 查询默认存储库

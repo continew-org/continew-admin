@@ -16,11 +16,13 @@
 
 package top.charles7c.continew.admin.system.service;
 
+import top.charles7c.continew.admin.system.model.entity.DeptDO;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.req.DeptReq;
 import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
 
 /**
  * 部门业务接口
@@ -28,4 +30,4 @@ import top.charles7c.continew.starter.extension.crud.base.BaseService;
  * @author Charles7c
  * @since 2023/1/22 17:54
  */
-public interface DeptService extends BaseService<DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
+public interface DeptService extends BaseService<DeptResp, DeptDetailResp, DeptQuery, DeptReq>, IService<DeptDO> {}

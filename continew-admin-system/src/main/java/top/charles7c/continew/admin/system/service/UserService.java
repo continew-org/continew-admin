@@ -25,6 +25,7 @@ import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
 import top.charles7c.continew.starter.extension.crud.base.BaseService;
+import top.charles7c.continew.starter.extension.crud.base.IService;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2022/12/21 21:48
  */
-public interface UserService extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq> {
+public interface UserService extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq>, IService<UserDO> {
 
     /**
      * 新增

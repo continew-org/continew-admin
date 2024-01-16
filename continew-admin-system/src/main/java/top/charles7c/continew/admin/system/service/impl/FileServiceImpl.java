@@ -34,7 +34,6 @@ import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
-import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
@@ -66,7 +65,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         List<FileDO> fileList = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
         Map<Long, List<FileDO>> fileListGroup = fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
         for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-            StorageDetailResp storage = storageService.get(entry.getKey());
+            StorageDO storage = storageService.getById(entry.getKey());
             for (FileDO file : entry.getValue()) {
                 FileInfo fileInfo = file.toFileInfo(storage.getCode());
                 fileStorageService.delete(fileInfo);
@@ -118,7 +117,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     protected void fill(Object obj) {
         super.fill(obj);
         if (obj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
-            StorageDetailResp storage = storageService.get(fileResp.getStorageId());
+            StorageDO storage = storageService.getById(fileResp.getStorageId());
             fileResp.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl()));
         }
     }
