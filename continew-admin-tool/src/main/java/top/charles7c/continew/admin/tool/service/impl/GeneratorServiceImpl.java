@@ -16,22 +16,6 @@
 
 package top.charles7c.continew.admin.tool.service.impl;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.sql.DataSource;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -41,7 +25,11 @@ import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.system.SystemUtil;
-
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.tool.config.properties.GeneratorProperties;
 import top.charles7c.continew.admin.tool.config.properties.GeneratorProperties.TemplateConfig;
 import top.charles7c.continew.admin.tool.enums.QueryTypeEnum;
@@ -62,6 +50,13 @@ import top.charles7c.continew.starter.core.util.db.Table;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+
+import javax.sql.DataSource;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 代码生成业务实现
@@ -197,6 +192,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         GenConfigDO newGenConfig = req.getGenConfig();
         String frontendPath = newGenConfig.getFrontendPath();
         if (StrUtil.isNotBlank(frontendPath)) {
+            CheckUtils.throwIf(!FileUtil.exist(frontendPath), "前端路径不存在");
             CheckUtils.throwIf(!StrUtil.containsAll(frontendPath, "src", "views"), "前端路径配置错误");
         }
         GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);
@@ -293,7 +289,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 if (classFile.exists() && !isOverride) {
                     continue;
                 }
-                FileUtil.writeString(codePreview.getContent(), classFile, StandardCharsets.UTF_8);
+                FileUtil.writeUtf8String(codePreview.getContent(), classFile);
             }
             // 生成前端代码
             String frontendPath = genConfig.getFrontendPath();
@@ -316,7 +312,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             if (apiFile.exists() && !isOverride) {
                 return;
             }
-            FileUtil.writeString(apiCodePreview.getContent(), apiFile, StandardCharsets.UTF_8);
+            FileUtil.writeUtf8String(apiCodePreview.getContent(), apiFile);
             // 2.生成 view 代码
             GeneratePreviewResp viewCodePreview = frontendCodePreviewList.get(1);
             // 例如：D:/continew-admin-ui/src/views/tool/xxx/index.vue
@@ -325,7 +321,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             if (indexFile.exists() && !isOverride) {
                 return;
             }
-            FileUtil.writeString(viewCodePreview.getContent(), indexFile, StandardCharsets.UTF_8);
+            FileUtil.writeUtf8String(viewCodePreview.getContent(), indexFile);
         } catch (Exception e) {
             log.error("Generate code occurred an error: {}. tableName: {}.", e.getMessage(), tableName, e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");
