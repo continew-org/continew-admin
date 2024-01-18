@@ -33,9 +33,8 @@
     </modules>
 
     <properties>
+        <!-- 项目版本 -->
         <revision>2.3.0-SNAPSHOT</revision>
-        <!-- Maven Plugin Versions -->
-        <spotless.version>2.40.0</spotless.version>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -45,35 +44,35 @@
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-webapi</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!-- 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-monitor</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-system</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!-- 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-tool</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
 
             <!-- 公共模块（存放公共工具类，公共配置等） -->
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-common</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -110,7 +109,6 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless.version}</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -130,6 +128,31 @@
                         </licenseHeader>
                     </java>
                 </configuration>
+            </plugin>
+            <!-- 统一版本号插件 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

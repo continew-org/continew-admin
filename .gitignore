@@ -33,6 +33,9 @@ build/
 ### VS Code ###
 .vscode/
 
+# Maven ignore
+.flattened-pom.xml
+
 ### Temp ###
 *.log
 *.logs
