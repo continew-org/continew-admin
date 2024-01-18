@@ -10,9 +10,6 @@
     </parent>
 
     <artifactId>continew-admin-common</artifactId>
-    <packaging>jar</packaging>
-
-    <name>${project.artifactId}</name>
     <description>公共模块（存放公共工具类，公共配置等）</description>
 
     <dependencies>

@@ -10,9 +10,6 @@
     </parent>
 
     <artifactId>continew-admin-webapi</artifactId>
-    <packaging>jar</packaging>
-
-    <name>${project.artifactId}</name>
     <description>API 及打包部署模块</description>
 
     <properties>

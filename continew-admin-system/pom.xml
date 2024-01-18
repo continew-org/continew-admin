@@ -10,9 +10,6 @@
     </parent>
 
     <artifactId>continew-admin-system</artifactId>
-    <packaging>jar</packaging>
-
-    <name>${project.artifactId}</name>
     <description>系统管理模块（存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）</description>
 
     <dependencies>

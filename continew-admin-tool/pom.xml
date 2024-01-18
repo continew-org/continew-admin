@@ -10,9 +10,6 @@
     </parent>
 
     <artifactId>continew-admin-tool</artifactId>
-    <packaging>jar</packaging>
-
-    <name>${project.artifactId}</name>
     <description>系统工具模块（存放系统工具相关业务功能，例如：代码生成等）</description>
 
     <dependencies>
