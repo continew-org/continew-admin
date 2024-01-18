@@ -39,7 +39,7 @@ import top.charles7c.continew.admin.monitor.model.resp.SystemLogResp;
 import top.charles7c.continew.admin.monitor.service.LogService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
-import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.core.model.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 
 /**

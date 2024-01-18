@@ -34,7 +34,7 @@ import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.base.BaseController;
 import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
-import top.charles7c.continew.starter.extension.crud.model.resp.R;
+import top.charles7c.continew.starter.core.model.R;
 
 /**
  * 公告管理 API
