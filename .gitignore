@@ -38,6 +38,7 @@ build/
 
 ### Temp ###
 *.log
+*.log.gz
 *.logs
 *.cache
 *.diff
