@@ -31,7 +31,7 @@ import top.charles7c.continew.admin.system.service.MessageService;
 import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 
 import java.util.List;

@@ -35,7 +35,7 @@ import top.charles7c.continew.admin.auth.service.OnlineUserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 
 /**
  * 在线用户 API

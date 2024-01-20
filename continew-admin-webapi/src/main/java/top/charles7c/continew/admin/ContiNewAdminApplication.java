@@ -31,9 +31,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.charles7c.continew.starter.core.annotation.EnableGlobalExceptionHandler;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.extension.crud.annotation.EnableCrudRestController;
+import top.charles7c.continew.starter.web.annotation.EnableGlobalExceptionHandler;
 
 import java.net.InetAddress;
 

@@ -48,7 +48,7 @@ import top.charles7c.continew.admin.system.service.UserSocialService;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 
 import java.util.List;
 import java.util.stream.Collectors;

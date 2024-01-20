@@ -36,7 +36,7 @@ import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMappi
 import top.charles7c.continew.starter.extension.crud.base.BaseController;
 import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
 import top.charles7c.continew.starter.extension.crud.enums.Api;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 
 /**
  * 菜单管理 API

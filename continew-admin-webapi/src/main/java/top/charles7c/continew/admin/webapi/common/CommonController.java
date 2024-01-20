@@ -44,7 +44,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 
 import java.util.Arrays;

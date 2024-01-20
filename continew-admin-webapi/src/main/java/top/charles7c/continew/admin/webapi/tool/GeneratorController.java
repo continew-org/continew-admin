@@ -42,7 +42,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 
 /**
  * 代码生成 API

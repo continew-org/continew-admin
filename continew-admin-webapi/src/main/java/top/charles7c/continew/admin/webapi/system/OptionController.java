@@ -33,7 +33,7 @@ import top.charles7c.continew.admin.system.model.req.OptionReq;
 import top.charles7c.continew.admin.system.model.req.OptionResetValueReq;
 import top.charles7c.continew.admin.system.model.resp.OptionResp;
 import top.charles7c.continew.admin.system.service.OptionService;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 
 /**
  * 参数管理 API

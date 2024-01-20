@@ -33,7 +33,7 @@ import top.charles7c.continew.admin.monitor.mapper.LogMapper;
 import top.charles7c.continew.admin.monitor.model.entity.LogDO;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.core.model.R;
+import top.charles7c.continew.starter.web.model.R;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.log.common.dao.LogDao;
 import top.charles7c.continew.starter.log.common.model.LogRecord;

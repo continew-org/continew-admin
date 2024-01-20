@@ -38,11 +38,11 @@ import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.core.util.SpringUtils;
 import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.web.util.SpringWebUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -130,7 +130,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
                 config.setStoragePath(bucketName);
                 fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
                     .singletonList(config)));
-                SpringUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
+                SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
             }
             case S3 -> {
                 String accessKey = req.getAccessKey();
@@ -159,7 +159,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         FileStorage fileStorage = fileStorageService.getFileStorage(req.getCode());
         fileStorageList.remove(fileStorage);
         fileStorage.close();
-        SpringUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req.getBucketName()));
+        SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req.getBucketName()));
     }
 
     /**

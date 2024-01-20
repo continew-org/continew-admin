@@ -31,7 +31,7 @@
     </modules>
 
     <properties>
-        <!-- 项目版本 -->
+        <!-- 项目版本号 -->
         <revision>2.3.0-SNAPSHOT</revision>
     </properties>
 
@@ -76,6 +76,12 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Hutool（小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”） -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
         <!-- Lombok（在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
