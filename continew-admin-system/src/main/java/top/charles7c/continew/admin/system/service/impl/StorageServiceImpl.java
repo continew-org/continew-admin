@@ -159,7 +159,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         FileStorage fileStorage = fileStorageService.getFileStorage(req.getCode());
         fileStorageList.remove(fileStorage);
         fileStorage.close();
-        SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req.getBucketName()));
+        SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req
+            .getBucketName()));
     }
 
     /**

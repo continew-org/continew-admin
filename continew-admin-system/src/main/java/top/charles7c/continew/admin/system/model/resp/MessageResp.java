@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
-import top.charles7c.continew.starter.extension.crud.constant.ContainerConstants;
+import top.charles7c.continew.admin.common.constant.ContainerConstants;
 
 import java.io.Serial;
 import java.io.Serializable;
