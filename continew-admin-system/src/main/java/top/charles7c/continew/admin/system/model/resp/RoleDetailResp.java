@@ -16,20 +16,20 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-import java.util.List;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
+import cn.crane4j.annotation.Assemble;
+import cn.crane4j.annotation.Mapping;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-
-import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.common.enums.DataScopeEnum;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+
+import java.io.Serial;
+import java.util.List;
 
 /**
  * 角色详情信息
@@ -40,6 +40,7 @@ import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "角色详情信息")
+@Assemble(container = ContainerConstants.ROLE_DEPT_ID_LIST, key = "id", props = @Mapping(ref = "deptIds"))
 public class RoleDetailResp extends BaseDetailResp {
 
     @Serial

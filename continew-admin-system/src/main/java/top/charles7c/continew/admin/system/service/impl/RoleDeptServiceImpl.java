@@ -16,19 +16,19 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.MappingType;
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cn.hutool.core.collection.CollUtil;
-
+import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.system.mapper.RoleDeptMapper;
 import top.charles7c.continew.admin.system.model.entity.RoleDeptDO;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色和部门业务实现
@@ -78,6 +78,7 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     }
 
     @Override
+    @ContainerMethod(namespace = ContainerConstants.ROLE_DEPT_ID_LIST, type = MappingType.NONE)
     public List<Long> listDeptIdByRoleId(Long roleId) {
         return roleDeptMapper.selectDeptIdByRoleId(roleId);
     }

@@ -16,19 +16,19 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.MappingType;
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cn.hutool.core.collection.CollUtil;
-
+import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.system.mapper.UserRoleMapper;
 import top.charles7c.continew.admin.system.model.entity.UserRoleDO;
 import top.charles7c.continew.admin.system.service.UserRoleService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户和角色业务实现
@@ -72,6 +72,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.NONE)
     public List<Long> listRoleIdByUserId(Long userId) {
         return userRoleMapper.selectRoleIdByUserId(userId);
     }

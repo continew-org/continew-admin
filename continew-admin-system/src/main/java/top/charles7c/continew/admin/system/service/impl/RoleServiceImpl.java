@@ -138,7 +138,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             } else {
                 detail.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
             }
-            detail.setDeptIds(roleDeptService.listDeptIdByRoleId(roleId));
         }
     }
 

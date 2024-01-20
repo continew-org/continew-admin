@@ -16,6 +16,7 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.Assemble;
 import cn.crane4j.annotation.AssembleMethod;
 import cn.crane4j.annotation.ContainerMethod;
 import cn.crane4j.annotation.Mapping;
@@ -23,6 +24,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
@@ -44,6 +46,7 @@ import java.util.Objects;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "用户详情信息")
+@Assemble(container = ContainerConstants.USER_ROLE_ID_LIST, key = "id", props = @Mapping(ref = "roleIds"))
 public class UserDetailResp extends BaseDetailResp {
 
     @Serial

@@ -30,7 +30,7 @@ public interface ContainerConstants extends top.charles7c.continew.starter.exten
     String USER_ROLE_ID_LIST = "UserRoleIdList";
 
     /**
-     * 用户角色名称列表
+     * 角色部门列表
      */
-    String USER_ROLE_NAME_LIST = "UserRoleNameList";
+    String ROLE_DEPT_ID_LIST = "RoleDeptIdList";
 }
