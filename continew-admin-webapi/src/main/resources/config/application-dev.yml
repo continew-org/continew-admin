@@ -155,7 +155,7 @@ logging:
     path: ./logs
 
 --- ### 跨域配置
-continew-starter.cors:
+continew-starter.web.cors:
   enabled: true
   # 配置允许跨域的域名
   allowed-origins: '*'
