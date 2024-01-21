@@ -1,110 +1,147 @@
+## [v2.3.0](https://github.com/Charles7c/continew-admin/compare/v2.2.0...v2.3.0) (2024-01-21)
+
+### ✨ 新特性
+
+* 代码生成 Request 实体时，针对字符串类型增加数据长度校验注解 ([ee82558](https://github.com/Charles7c/continew-admin/commit/ee8255876f618137f811e14ee305509e4e6466d0))
+* 适配 Crane4j 数据填充组件，优化部分数据填充处理 ([d598408](https://github.com/Charles7c/continew-admin/commit/d5984087a306de31690e9a81d951bd831434a0c9)) ([a2411f7](https://github.com/Charles7c/continew-admin/commit/a2411f728a811910a0918668c0811e7df0345640)) ([7a3ccc2](https://github.com/Charles7c/continew-admin/commit/7a3ccc2dee8f7b938a91df52fd4903ce09e662e5))
+* 移除 Spring Cache，适配 JetCache ([d4bb39d](https://github.com/Charles7c/continew-admin/commit/d4bb39d9b4483b7d7fed76b5f2b997538d86d719)) ([1b7aa9d](https://github.com/Charles7c/continew-admin/commit/1b7aa9db0c56af733f63f602988dba9e225fe445)) ([8596e47](https://github.com/Charles7c/continew-admin/commit/8596e47ed62e19083d6007448c5369d72fa4f2b6))
+
+### 💎 功能优化
+
+- 优化本地存储库注册 ([918e897](https://github.com/Charles7c/continew-admin/commit/918e897838628b24a160c3a8f3b3dea1eefd1883))
+- 增加华为云镜像源仓库配置 ([16ee2b4](https://github.com/Charles7c/continew-admin/commit/16ee2b4b6fe2a663830972ed99d4e80ddf5a3593))
+- 优化部分字段名称 ([e3e958b](https://github.com/Charles7c/continew-admin/commit/e3e958b419e1ea23fe146b255fce749050302f63))
+- 调整代码生成前端 Vue 页面模板 ([7c34574](https://github.com/Charles7c/continew-admin/commit/7c345745aadc6272e5f1db674c757ff0f9cea604))
+- 更新格式配置，优化全局代码格式 ([35e3123](https://github.com/Charles7c/continew-admin/commit/35e31233c531b68b761c73fc0daf7444843b4059))
+- 优化配置文件格式 ([a8a4cad](https://github.com/Charles7c/continew-admin/commit/a8a4cad840b6d32fbb8d3df24b193f9e7c826d22))
+- 使用钩子方法优化部分增、删、改处理 ([61c5724](https://github.com/Charles7c/continew-admin/commit/61c57242fa481d2668b1d1ac4ff4802c47fd07bc))
+- 完善 flatten Maven 插件配置，以覆盖更多使用情况 ([657accd](https://github.com/Charles7c/continew-admin/commit/657accd8a595ab0c2e9ff4d00e49c569eae03123))
+- 移除部分无用 Maven 配置 ([5db1f66](https://github.com/Charles7c/continew-admin/commit/5db1f669e0bc5022bcd2164757a0f82dfe8d6c30))
+- 优化日志配置，滚动策略调整为基于日志文件大小和时间滚动 ([2fa8c25](https://github.com/Charles7c/continew-admin/commit/2fa8c254fc53cda3d33c56931569822e645dd902))
+
+### 🐛 问题修复
+
+- 完善代码生成前端路径配置校验 ([bee04d5](https://github.com/Charles7c/continew-admin/commit/bee04d5f363b6de88df5249b0fba85607978b303))
+
+### 💥 破坏性变更
+
+- 根据发展需要，拆分前端项目 continew-admin-ui 到独立仓库 ([4067eb9](https://github.com/Charles7c/continew-admin/commit/4067eb97bf344dec6ae718433b57bdb7d0b8d6cd))
+- PageDataResp => PageResp ([d8c946e](https://github.com/Charles7c/continew-admin/commit/d8c946e8014d205c4fd3f38d1f04b3225faede7a))
+- 适配 ContiNew Starter IService 接口，CRUD 查询详情方法不再检查是否存在 ([47a133a](https://github.com/Charles7c/continew-admin/commit/47a133a065b5c858b588bf77ad51bb9fc38d1222))
+- 适配 ContiNew Starter CRUD 模块注解 ([7fa70e7](https://github.com/Charles7c/continew-admin/commit/7fa70e74070c7c0f487baa5098f85d7dfb808106))
+- 调整部分类的所在包 ([8dc42c7](https://github.com/Charles7c/continew-admin/commit/8dc42c7a21e7422399b49690b28899df299e20c7)) ([6efe1ad](https://github.com/Charles7c/continew-admin/commit/6efe1ad6f416c52130b2380a699129e7dae29499))
+
+### 📦 依赖升级
+
+- ContiNew Starter 1.1.0 => 1.2.0 (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v2.2.0](https://github.com/Charles7c/continew-admin/compare/v2.1.0...v2.2.0) (2023-12-31)
 
 ### ✨ 新特性
 
-* 发送短信验证码新增限流处理 ([c71a89a](https://github.com/Charles7c/continew-admin/commit/e719d207fb76c82b584f2e1ac7210061dc71a89a))
-* 代码生成新增生成预览功能 ([ee1c5ba](https://github.com/Charles7c/continew-admin/commit/401702972f30c4e556a2cf8d048f78fa9ee1c5ba)) ([ea74673](https://github.com/Charles7c/continew-admin/commit/505ba49a5304fb3e2ba655dea901cd5e3ea74673))
+* 发送短信验证码新增限流处理 ([e719d20](https://github.com/Charles7c/continew-admin/commit/e719d207fb76c82b584f2e1ac7210061dc71a89a))
+* 代码生成新增生成预览功能 ([4017029](https://github.com/Charles7c/continew-admin/commit/401702972f30c4e556a2cf8d048f78fa9ee1c5ba)) ([505ba49](https://github.com/Charles7c/continew-admin/commit/505ba49a5304fb3e2ba655dea901cd5e3ea74673))
 * 适配 ContiNew Starter 行为验证码，系统内所有短信发送新增前置行为验证码验证 ([Gitee PR#9](https://gitee.com/Charles7c/continew-admin/pulls/9))
 * 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
 * 存储库管理：提供文件存储库新增、编辑、删除、导出等功能
 
 ### 💎 功能优化
 
-- 优化 API 文档配置 ([2a8be71](https://github.com/Charles7c/continew-admin/commit/108f1c4ae7b855ac0bab2d3fe028270472a8be71))
-- 调整枚举配置值为大写 ([51ba28f](https://github.com/Charles7c/continew-admin/commit/3ece42b94e071ece87e6b4616f7817bf851ba28f))
-- 优化由于 Mock 引起的导出报错提示 ([0b868a8](https://github.com/Charles7c/continew-admin/commit/349899b4fc9572450ca31d9a5e19268ce0b868a8))
-- 优化查询访客地域分布信息接口 SQL ([c902052](https://github.com/Charles7c/continew-admin/commit/4df887d82678ced0d30aa0c7a6f92edcac902052))
-- 调整后端部分方法名 save => add ([a485b27](https://github.com/Charles7c/continew-admin/commit/45bd3e10b6ac6aecde41ff9484668e557a485b27))
-- 优化系统日志详情 ([c761224](https://github.com/Charles7c/continew-admin/commit/55effa36580a57ddedb688e2ce30bec45c761224)) ([c77a9c5](https://github.com/Charles7c/continew-admin/commit/99997c160eefc152a6f4e74bcd9c5ef6fc77a9c5))
-- 移除部分方法中仅有单个非读操作的事务处理 ([569fdbd](https://github.com/Charles7c/continew-admin/commit/b85d69298de1a6c48d15300bb9ff1b3ea569fdbd))
-- 优化编译配置 ([1511268](https://github.com/Charles7c/continew-admin/commit/ed8bb57fe24dfbe8f45b8f53370ebb79f1511268))
-- 优化配置文件格式 ([e6dd80b](https://github.com/Charles7c/continew-admin/commit/3399bc8dde0c8c8ac6d3e583ffbe299f7e6dd80b))
+- 优化 API 文档配置 ([108f1c4](https://github.com/Charles7c/continew-admin/commit/108f1c4ae7b855ac0bab2d3fe028270472a8be71))
+- 调整枚举配置值为大写 ([3ece42b](https://github.com/Charles7c/continew-admin/commit/3ece42b94e071ece87e6b4616f7817bf851ba28f))
+- 优化由于 Mock 引起的导出报错提示 ([349899b](https://github.com/Charles7c/continew-admin/commit/349899b4fc9572450ca31d9a5e19268ce0b868a8))
+- 优化查询访客地域分布信息接口 SQL ([4df887d](https://github.com/Charles7c/continew-admin/commit/4df887d82678ced0d30aa0c7a6f92edcac902052))
+- 调整后端部分方法名 save => add ([45bd3e1](https://github.com/Charles7c/continew-admin/commit/45bd3e10b6ac6aecde41ff9484668e557a485b27))
+- 优化系统日志详情 ([55effa3](https://github.com/Charles7c/continew-admin/commit/55effa36580a57ddedb688e2ce30bec45c761224)) ([99997c1](https://github.com/Charles7c/continew-admin/commit/99997c160eefc152a6f4e74bcd9c5ef6fc77a9c5))
+- 移除部分方法中仅有单个非读操作的事务处理 ([b85d692](https://github.com/Charles7c/continew-admin/commit/b85d69298de1a6c48d15300bb9ff1b3ea569fdbd))
+- 优化编译配置 ([ed8bb57](https://github.com/Charles7c/continew-admin/commit/ed8bb57fe24dfbe8f45b8f53370ebb79f1511268))
+- 优化配置文件格式 ([3399bc8](https://github.com/Charles7c/continew-admin/commit/3399bc8dde0c8c8ac6d3e583ffbe299f7e6dd80b))
 
 ### 🐛 问题修复
 
-- 修复代码生成相关错误 ([41c42d7](https://github.com/Charles7c/continew-admin/commit/3fdc50d78ec50a878cec2b35c7d5028e741c42d7))
-- 更新仪表盘帮助文档部分过期链接 ([91651b8](https://github.com/Charles7c/continew-admin/commit/ac4283679a847ed372db28aae1ea05fd791651b8))
+- 修复代码生成相关错误 ([3fdc50d](https://github.com/Charles7c/continew-admin/commit/3fdc50d78ec50a878cec2b35c7d5028e741c42d7))
+- 更新仪表盘帮助文档部分过期链接 ([ac42836](https://github.com/Charles7c/continew-admin/commit/ac4283679a847ed372db28aae1ea05fd791651b8))
 
 ### 💥 破坏性变更
 
-- 适配 ContiNew Starter QueryTypeEnum 命名变更 ([d49cc1b](https://github.com/Charles7c/continew-admin/commit/97c273f99ecb038e041e3d39dbfacf326d49cc1b))
-- 适配 ContiNew Starter Log HttpTracePro（日志模块） ([b3a98c3](https://github.com/Charles7c/continew-admin/commit/9bf015059b96f41c29f05ecbf7612d611b3a98c3))
-- 适配 ContiNew Starter 全局异常处理器 ([978691b](https://github.com/Charles7c/continew-admin/commit/4ed4ddd4f055cefe1f85482bd6b9ef760978691b))
-- 适配 ContiNew Starter 数据权限解决方案（数据访问模块-MyBatis Plus） ([9a5b16e](https://github.com/Charles7c/continew-admin/commit/084942630ab0e1846c1836b8dc4bf5b2c9a5b16e))
-- 调整 IBaseEnum 所属包 ([efac7d9](https://github.com/Charles7c/continew-admin/commit/e6c6e1cb0e326c5f531ca5cb2e17a1e26efac7d9))
-- 重构原有文件上传接口并优化配置文件配置格式 ([92ad7e6](https://github.com/Charles7c/continew-admin/commit/5e370254dd00deaab62438c5feb4de14192ad7e6))
+- 适配 ContiNew Starter QueryTypeEnum 命名变更 ([97c273f](https://github.com/Charles7c/continew-admin/commit/97c273f99ecb038e041e3d39dbfacf326d49cc1b))
+- 适配 ContiNew Starter Log HttpTracePro（日志模块） ([9bf0150](https://github.com/Charles7c/continew-admin/commit/9bf015059b96f41c29f05ecbf7612d611b3a98c3))
+- 适配 ContiNew Starter 全局异常处理器 ([4ed4ddd](https://github.com/Charles7c/continew-admin/commit/4ed4ddd4f055cefe1f85482bd6b9ef760978691b))
+- 适配 ContiNew Starter 数据权限解决方案（数据访问模块-MyBatis Plus） ([0849426](https://github.com/Charles7c/continew-admin/commit/084942630ab0e1846c1836b8dc4bf5b2c9a5b16e))
+- 调整 IBaseEnum 所属包 ([e6c6e1c](https://github.com/Charles7c/continew-admin/commit/e6c6e1cb0e326c5f531ca5cb2e17a1e26efac7d9))
+- 重构原有文件上传接口并优化配置文件配置格式 ([5e37025](https://github.com/Charles7c/continew-admin/commit/5e370254dd00deaab62438c5feb4de14192ad7e6))
 
 ### 📦 依赖升级
 
-- ContiNew Starter 1.0.0 => 1.1.0 ([7bc2c6b](https://github.com/Charles7c/continew-admin/commit/fc80921c047862b424ca625317f4657667bc2c6b)) (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
-- Arco Design Vue 2.53.0 => 2.53.3 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- Vite 4.5.0 => 4.5.1 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- TypeScript 5.2.2 => 5.3.3 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- unplugin-vue-components 0.25.2 => 0.26.0 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- @kangc/v-md-editor 2.3.17 => 2.3.18 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- eslint 8.53.0 => 8.56.0 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- @vueuse/core 10.5.0 => 10.7.0 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- vue-i18n 9.6.5 => 9.8.0 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
-- vue-json-pretty 2.2.4 => 2.3.0 ([7e660cb](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- ContiNew Starter 1.0.0 => 1.1.0 ([fc80921](https://github.com/Charles7c/continew-admin/commit/fc80921c047862b424ca625317f4657667bc2c6b)) (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+- Arco Design Vue 2.53.0 => 2.53.3 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- Vite 4.5.0 => 4.5.1 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- TypeScript 5.2.2 => 5.3.3 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- unplugin-vue-components 0.25.2 => 0.26.0 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- @kangc/v-md-editor 2.3.17 => 2.3.18 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- eslint 8.53.0 => 8.56.0 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- @vueuse/core 10.5.0 => 10.7.0 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- vue-i18n 9.6.5 => 9.8.0 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
+- vue-json-pretty 2.2.4 => 2.3.0 ([2720275](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb))
 - 由于篇幅限制，仅列出部分前端依赖升级情况，更多请查看 [提交记录](https://github.com/Charles7c/continew-admin/commit/2720275b97334545dde71d548173bfcda7e660cb)
 
 ## [v2.1.0](https://github.com/Charles7c/continew-admin/compare/v2.0.0...v2.1.0) (2023-12-03)
 
 ### 💎 功能优化
 
-- 优化数据权限注解 ([b14b14e](https://github.com/Charles7c/continew-admin/commit/bb59a78573bec521e8852f1c88ce6078fb14b14e))
-- 回退全局响应结果处理器 ([333feba](https://github.com/Charles7c/continew-admin/commit/c7a4e329945d8368a9b93a2488c059cf3333feba))
-- 优化字典 Controller CRUD 注解使用 ([efa2abb](https://github.com/Charles7c/continew-admin/commit/8c1c4b014463d073e848e2f2abc33e089efa2abb))
-- 优化常量命名风格，XxxConsts => XxxConstants ([f1b9c41](https://github.com/Charles7c/continew-admin/commit/ec28705b6ff6dd26ec3ef673fb3827259f1b9c41))
-- 移除 XML 文件头部的协议信息 ([8007238](https://github.com/Charles7c/continew-admin/commit/b47695603afb0c19679c4100c1e3c23bc8007238))
-- 优化菜单标题校验 ([218fb25](https://github.com/Charles7c/continew-admin/commit/3dd81a1192c4e340dad0b1bae5e29d1d7218fb25))
+- 优化数据权限注解 ([bb59a78](https://github.com/Charles7c/continew-admin/commit/bb59a78573bec521e8852f1c88ce6078fb14b14e))
+- 回退全局响应结果处理器 ([c7a4e32](https://github.com/Charles7c/continew-admin/commit/c7a4e329945d8368a9b93a2488c059cf3333feba))
+- 优化字典 Controller CRUD 注解使用 ([8c1c4b0](https://github.com/Charles7c/continew-admin/commit/8c1c4b014463d073e848e2f2abc33e089efa2abb))
+- 优化常量命名风格，XxxConsts => XxxConstants ([ec28705](https://github.com/Charles7c/continew-admin/commit/ec28705b6ff6dd26ec3ef673fb3827259f1b9c41))
+- 移除 XML 文件头部的协议信息 ([b476956](https://github.com/Charles7c/continew-admin/commit/b47695603afb0c19679c4100c1e3c23bc8007238))
+- 优化菜单标题校验 ([3dd81a1](https://github.com/Charles7c/continew-admin/commit/3dd81a1192c4e340dad0b1bae5e29d1d7218fb25))
 
 ### 🐛 问题修复
 
-- 修复 mock 被错误关闭的问题 ([e7b4e42](https://github.com/Charles7c/continew-admin/commit/a34070ffed3044ad2bea604701b074665e7b4e42))
-- 修复保存生成配置校验失效的问题，并优化部分提示效果 ([65289b4](https://github.com/Charles7c/continew-admin/commit/c34e934bb553d7f814d0fb5aa87eac0f565289b4))
+- 修复 mock 被错误关闭的问题 ([a34070f](https://github.com/Charles7c/continew-admin/commit/a34070ffed3044ad2bea604701b074665e7b4e42))
+- 修复保存生成配置校验失效的问题，并优化部分提示效果 ([c34e934](https://github.com/Charles7c/continew-admin/commit/c34e934bb553d7f814d0fb5aa87eac0f565289b4))
 
 ### 💥 破坏性变更
 
-- 项目包结构 top.charles7c.cnadmin => top.charles7c.continew.admin ([b9e75d1](https://github.com/Charles7c/continew-admin/commit/b86fe329d07317fed6a7d0b7015856de4b9e75d1))
-- 适配 ContiNew Starter 全局错误处理配置 ([5e016f7](https://github.com/Charles7c/continew-admin/commit/b62095d66e2318d35e4af07b128203b5a5e016f7))
-- 适配 ContiNew Starter CRUD（扩展模块） ([079ffc2](https://github.com/Charles7c/continew-admin/commit/ce5a2ec9319b86e69a6bda67a886e1c96079ffc2))
-- 适配 ContiNew Starter Mail（消息模块） ([e0abd4b](https://github.com/Charles7c/continew-admin/commit/ce785ddce28733eeefbf970ed08b01e36e0abd4b))
-- 适配 ContiNew Starter Excel（文件处理模块） ([1ff7958](https://github.com/Charles7c/continew-admin/commit/1311ae3603a26dc44dfffc5be86ea1ab81ff7958))
-- 适配 ContiNew Starter 认证模块-JustAuth ([3a7ff3a](https://github.com/Charles7c/continew-admin/commit/7ad8d1773a8e50e37a326b8f73f9ba38a3a7ff3a)) ([385b0ec](https://github.com/Charles7c/continew-admin/commit/f28fbd14fa83a82df49b07f16070e0ff3385b0ec))
-- 适配 ContiNew Starter 认证模块-SaToken ([05b297f](https://github.com/Charles7c/continew-admin/commit/86ca8f094ff6d1c00b52c1406985bc00105b297f))
-- 适配 ContiNew Starter 图形验证码 ([b50ee5c](https://github.com/Charles7c/continew-admin/commit/8a11a020e04e271da7b700b5d73cf8475b50ee5c))
-- 适配 ContiNew Starter MyBatis Plus 自动配置 ([b534a3f](https://github.com/Charles7c/continew-admin/commit/7306cd9d2f9492aa39e11b8f0dc8c7c11b534a3f))
-- 适配 ContiNew Starter Redisson 自动配置 ([41236a1](https://github.com/Charles7c/continew-admin/commit/a40e609ea14acda840d2771f05ca9690d41236a1))
-- 适配 ContiNew Starter Jackson、API 文档（Knife4j：Spring Doc）自动配置 ([1fd710f](https://github.com/Charles7c/continew-admin/commit/a86f3a5047eda2f67cc9ad7721006d2db1fd710f))
-- 适配 ContiNew Starter 线程池自动配置 ([1bdd5bb](https://github.com/Charles7c/continew-admin/commit/ec1daaf0456296dbc3704ae700b9577001bdd5bb))
-- 引入 ContiNew Starter，适配跨域自动配置 ([ea63c11](https://github.com/Charles7c/continew-admin/commit/2c4f5116c999b9316ab0bee4fa661338fea63c11))
-- 项目 group id top.charles7c => top.charles7c.continew ([906acf1](https://github.com/Charles7c/continew-admin/commit/3e23acb3e257d5813b858356aa926a96c906acf1))
+- 项目包结构 top.charles7c.cnadmin => top.charles7c.continew.admin ([b86fe32](https://github.com/Charles7c/continew-admin/commit/b86fe329d07317fed6a7d0b7015856de4b9e75d1))
+- 适配 ContiNew Starter 全局错误处理配置 ([b62095d](https://github.com/Charles7c/continew-admin/commit/b62095d66e2318d35e4af07b128203b5a5e016f7))
+- 适配 ContiNew Starter CRUD（扩展模块） ([ce5a2ec](https://github.com/Charles7c/continew-admin/commit/ce5a2ec9319b86e69a6bda67a886e1c96079ffc2))
+- 适配 ContiNew Starter Mail（消息模块） ([ce785dd](https://github.com/Charles7c/continew-admin/commit/ce785ddce28733eeefbf970ed08b01e36e0abd4b))
+- 适配 ContiNew Starter Excel（文件处理模块） ([1311ae3](https://github.com/Charles7c/continew-admin/commit/1311ae3603a26dc44dfffc5be86ea1ab81ff7958))
+- 适配 ContiNew Starter 认证模块-JustAuth ([7ad8d17](https://github.com/Charles7c/continew-admin/commit/7ad8d1773a8e50e37a326b8f73f9ba38a3a7ff3a)) ([f28fbd1](https://github.com/Charles7c/continew-admin/commit/f28fbd14fa83a82df49b07f16070e0ff3385b0ec))
+- 适配 ContiNew Starter 认证模块-SaToken ([86ca8f0](https://github.com/Charles7c/continew-admin/commit/86ca8f094ff6d1c00b52c1406985bc00105b297f))
+- 适配 ContiNew Starter 图形验证码 ([8a11a02](https://github.com/Charles7c/continew-admin/commit/8a11a020e04e271da7b700b5d73cf8475b50ee5c))
+- 适配 ContiNew Starter MyBatis Plus 自动配置 ([7306cd9](https://github.com/Charles7c/continew-admin/commit/7306cd9d2f9492aa39e11b8f0dc8c7c11b534a3f))
+- 适配 ContiNew Starter Redisson 自动配置 ([a40e609](https://github.com/Charles7c/continew-admin/commit/a40e609ea14acda840d2771f05ca9690d41236a1))
+- 适配 ContiNew Starter Jackson、API 文档（Knife4j：Spring Doc）自动配置 ([a86f3a5](https://github.com/Charles7c/continew-admin/commit/a86f3a5047eda2f67cc9ad7721006d2db1fd710f))
+- 适配 ContiNew Starter 线程池自动配置 ([ec1daaf](https://github.com/Charles7c/continew-admin/commit/ec1daaf0456296dbc3704ae700b9577001bdd5bb))
+- 引入 ContiNew Starter，适配跨域自动配置 ([2c4f511](https://github.com/Charles7c/continew-admin/commit/2c4f5116c999b9316ab0bee4fa661338fea63c11))
+- 项目 group id top.charles7c => top.charles7c.continew ([3e23acb](https://github.com/Charles7c/continew-admin/commit/3e23acb3e257d5813b858356aa926a96c906acf1))
 
 ## [v2.0.0](https://github.com/Charles7c/continew-admin/compare/v1.3.1...v2.0.0) (2023-11-15)
 
 ### 💎 功能优化
 
-- 优化部分代码格式 ([e983430](https://github.com/Charles7c/continew-admin/commit/2f87310bc886af604a2667285a973ec6ae983430))
-- 优化 401 状态处理逻辑 ([457ef06](https://github.com/Charles7c/continew-admin/commit/c70e28a535c78214fe8d68a09824c786c457ef06))
-- 优化超时登录处理逻辑 ([7c1241c](https://github.com/Charles7c/continew-admin/commit/d5da1847e33e6cd7a0e5c3434335044167c1241c))
+- 优化部分代码格式 ([2f87310](https://github.com/Charles7c/continew-admin/commit/2f87310bc886af604a2667285a973ec6ae983430))
+- 优化 401 状态处理逻辑 ([c70e28a](https://github.com/Charles7c/continew-admin/commit/c70e28a535c78214fe8d68a09824c786c457ef06))
+- 优化超时登录处理逻辑 ([d5da184](https://github.com/Charles7c/continew-admin/commit/d5da1847e33e6cd7a0e5c3434335044167c1241c))
 
 ### 🐛 问题修复
 
 - sms4j 3.0.3 => 3.0.4 ([23558d4](https://github.com/Charles7c/continew-admin/commit/23558d45620a48ed82b32a5bdd2f948a4a37263d))
-- 发送消息增加事务处理 ([Gitee#7](https://gitee.com/Charles7c/continew-admin/pulls/7)) ([3241ac4](https://github.com/Charles7c/continew-admin/commit/1ca6f6c7e5f8a7c78f74df547f14517293241ac4))
-- 修复前端控制台 eslint 告警 ([Gitee#6](https://gitee.com/Charles7c/continew-admin/pulls/6)) ([f350bba](https://github.com/Charles7c/continew-admin/commit/f4523d24817b4fee5c015eaba6b98fe99f350bba)) ([0d3b741](https://github.com/Charles7c/continew-admin/commit/2304f28a942fa8ea3e6d36fbebbe9346b0d3b741))
-- 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([b378d71](https://github.com/Charles7c/continew-admin/commit/fea602439a3c9589bee078bfa9ff1e7efb378d71))
-- 修复控制台报错 Please use theme before using plugins ([688b506](https://github.com/Charles7c/continew-admin/commit/98fbe0506c1cbe2f3c16347d9610ebfa5688b506))
-- 调整 Logback 配置，取消启动时打印 Logback 状态日志 ([02eb8c7](https://github.com/Charles7c/continew-admin/commit/1f7fef5b31212e94652777be37bea4d4e02eb8c7))
+- 发送消息增加事务处理 ([Gitee#7](https://gitee.com/Charles7c/continew-admin/pulls/7)) ([1ca6f6c](https://github.com/Charles7c/continew-admin/commit/1ca6f6c7e5f8a7c78f74df547f14517293241ac4))
+- 修复前端控制台 eslint 告警 ([Gitee#6](https://gitee.com/Charles7c/continew-admin/pulls/6)) ([f4523d2](https://github.com/Charles7c/continew-admin/commit/f4523d24817b4fee5c015eaba6b98fe99f350bba)) ([2304f28](https://github.com/Charles7c/continew-admin/commit/2304f28a942fa8ea3e6d36fbebbe9346b0d3b741))
+- 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([fea6024](https://github.com/Charles7c/continew-admin/commit/fea602439a3c9589bee078bfa9ff1e7efb378d71))
+- 修复控制台报错 Please use theme before using plugins ([98fbe05](https://github.com/Charles7c/continew-admin/commit/98fbe0506c1cbe2f3c16347d9610ebfa5688b506))
+- 调整 Logback 配置，取消启动时打印 Logback 状态日志 ([1f7fef5](https://github.com/Charles7c/continew-admin/commit/1f7fef5b31212e94652777be37bea4d4e02eb8c7))
 
 ### 💥 破坏性变更
 
-- 优化部署相关脚本，mariadb => mysql ([7d7af36](https://github.com/Charles7c/continew-admin/commit/5f4f0f1b21fe882dc51801d7c508c10b87d7af36))
+- 优化部署相关脚本，mariadb => mysql ([5f4f0f1](https://github.com/Charles7c/continew-admin/commit/5f4f0f1b21fe882dc51801d7c508c10b87d7af36))
 - 适配 Java 16 新特性 ([cf30443](https://github.com/Charles7c/continew-admin/commit/cf3044312c8631a8c2b306e466e3d4d663d8eb6d))
 - 适配 Java 14 新特性 ([38f52aa](https://github.com/Charles7c/continew-admin/commit/38f52aaafa22ebc958a22b7c38b084c655064fbc))
 - 适配 Java 11 新特性 ([5a5bd16](https://github.com/Charles7c/continew-admin/commit/5a5bd1681e076ac6814d552da5415a8f154b93af))
-- 升级前端依赖 ([e76ee2d](https://github.com/Charles7c/continew-admin/commit/79fa2c8abcf5f70f96ae7c6de35c47dbae76ee2d)) ([7aed9b3](https://github.com/Charles7c/continew-admin/commit/c44162d431cb87cae251067fff9a5ae707aed9b3))
+- 升级前端依赖 ([79fa2c8](https://github.com/Charles7c/continew-admin/commit/79fa2c8abcf5f70f96ae7c6de35c47dbae76ee2d)) ([c44162d](https://github.com/Charles7c/continew-admin/commit/c44162d431cb87cae251067fff9a5ae707aed9b3))
   - Arco Design Vue 2.52.0 => 2.53.0
   - Vue 3.3.4 => 3.3.7
   - Vite 3.2.7 => 4.5.0
@@ -125,7 +162,7 @@
   - eslint 8.48.0 => 8.53.0
   - stylelint 15.10.3 => 15.11.0
   - lint-staged 13.2.0 => 3.0.3
-- 升级后端依赖  ([dea160a](https://github.com/Charles7c/continew-admin/commit/dea160a7b2d69e1b46edc936c9a697048bbb507a)) ([95c27ea](https://github.com/Charles7c/continew-admin/commit/95c27ea323e015c915d352618158df830b4d1c05)) ([05d2a7e](https://github.com/Charles7c/continew-admin/commit/fa232874aa88ab14fdc669e54a907e5ef05d2a7e)) ([61b2025](https://github.com/Charles7c/continew-admin/commit/8dbec9d1a3bcb0f6d7ef4bbfb9715effd61b2025)) ([de0dc9c](https://github.com/Charles7c/continew-admin/commit/3bd56d8a1ee274aac6d4ea57d61f6d470de0dc9c)) ([b566502](https://github.com/Charles7c/continew-admin/commit/7b741d5f8c42d154c5b325326d0cc954fb566502))
+- 升级后端依赖  ([dea160a](https://github.com/Charles7c/continew-admin/commit/dea160a7b2d69e1b46edc936c9a697048bbb507a)) ([95c27ea](https://github.com/Charles7c/continew-admin/commit/95c27ea323e015c915d352618158df830b4d1c05)) ([fa23287](https://github.com/Charles7c/continew-admin/commit/fa232874aa88ab14fdc669e54a907e5ef05d2a7e)) ([8dbec9d](https://github.com/Charles7c/continew-admin/commit/8dbec9d1a3bcb0f6d7ef4bbfb9715effd61b2025)) ([3bd56d8](https://github.com/Charles7c/continew-admin/commit/3bd56d8a1ee274aac6d4ea57d61f6d470de0dc9c)) ([7b741d5](https://github.com/Charles7c/continew-admin/commit/7b741d5f8c42d154c5b325326d0cc954fb566502))
   - Spring Boot 2.7.16 => 3.0.5 => 3.1.5
     - javax.* => jakarta.*
     - ServletUtil => JakartaServletUtil（Hutool）
