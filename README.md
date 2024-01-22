@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v2.3.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v2.4.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
@@ -19,7 +19,7 @@
 <img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 <a href="https://github.com/Charles7c/continew-starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-1.2.0-%236CB52D.svg" alt="Release" />
+<img src="https://img.shields.io/badge/ContiNew Starter-1.2.1-%236CB52D.svg" alt="Release" />
 </a>
 <a href="https://github.com/Charles7c/continew-starter" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-3.1.7-%236CB52D.svg" alt="Release" />
@@ -222,9 +222,9 @@ git clone https://github.com/Charles7c/continew-admin.git
 
 ## 核心技术栈
 
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
-| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.2.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| 名称                                                         | 版本           | 简介                                                         |
+| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 1.2.1-SNAPSHOT       | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.7        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
