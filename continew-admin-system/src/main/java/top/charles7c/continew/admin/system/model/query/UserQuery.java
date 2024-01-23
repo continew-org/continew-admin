@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.system.model.query;
 
+import cn.hutool.core.date.DatePattern;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import cn.hutool.core.date.DatePattern;
-
-import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
  * 用户查询条件
@@ -49,7 +45,7 @@ public class UserQuery implements Serializable {
      * 用户名
      */
     @Schema(description = "用户名", example = "zhangsan")
-    @Query(blurry = {"username", "nickname", "email", "phone"})
+    @Query(columns = {"username", "nickname", "email", "phone"}, type = QueryType.LIKE)
     private String username;
 
     /**

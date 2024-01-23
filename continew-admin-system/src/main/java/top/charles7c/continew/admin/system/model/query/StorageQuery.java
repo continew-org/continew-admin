@@ -43,13 +43,13 @@ public class StorageQuery implements Serializable {
      * 名称
      */
     @Schema(description = "名称")
-    @Query(type = QueryType.INNER_LIKE)
+    @Query(type = QueryType.LIKE)
     private String name;
 
     /**
      * 状态
      */
     @Schema(description = "状态")
-    @Query(type = QueryType.EQUAL)
+    @Query
     private Integer status;
 }

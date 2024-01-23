@@ -43,13 +43,13 @@ public class AnnouncementQuery implements Serializable {
      * 标题
      */
     @Schema(description = "标题", example = "这是公告标题")
-    @Query(type = QueryType.INNER_LIKE)
+    @Query(type = QueryType.LIKE)
     private String title;
 
     /**
      * 类型
      */
     @Schema(description = "类型", example = "1")
-    @Query(type = QueryType.EQUAL)
+    @Query
     private String type;
 }

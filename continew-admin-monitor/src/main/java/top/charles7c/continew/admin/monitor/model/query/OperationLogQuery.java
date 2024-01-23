@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.monitor.model.query;
 
+import cn.hutool.core.date.DatePattern;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import cn.hutool.core.date.DatePattern;
-
-import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
  * 操作日志查询条件
@@ -49,7 +45,7 @@ public class OperationLogQuery implements Serializable {
      * 操作内容
      */
     @Schema(description = "操作内容", example = "新增数据")
-    @Query(type = QueryType.INNER_LIKE)
+    @Query(type = QueryType.LIKE)
     private String description;
 
     /**
@@ -71,6 +67,6 @@ public class OperationLogQuery implements Serializable {
      * 操作人
      */
     @Schema(description = "操作人", example = "张三")
-    @Query(property = "createUser")
+    @Query(columns = "create_user")
     private Long uid;
 }

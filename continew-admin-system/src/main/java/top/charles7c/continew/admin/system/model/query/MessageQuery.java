@@ -48,7 +48,7 @@ public class MessageQuery implements Serializable {
      * 标题
      */
     @Schema(description = "标题", example = "欢迎注册 xxx")
-    @Query(type = QueryType.INNER_LIKE)
+    @Query(type = QueryType.LIKE)
     private String title;
 
     /**

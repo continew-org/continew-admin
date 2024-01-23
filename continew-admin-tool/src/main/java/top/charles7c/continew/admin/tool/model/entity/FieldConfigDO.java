@@ -16,30 +16,25 @@
 
 package top.charles7c.continew.admin.tool.model.entity;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.NotBlank;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.setting.dialect.Props;
 import cn.hutool.setting.dialect.PropsUtil;
-
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import top.charles7c.continew.admin.tool.enums.FormTypeEnum;
 import top.charles7c.continew.admin.tool.enums.QueryTypeEnum;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 字段配置实体
@@ -160,7 +155,7 @@ public class FieldConfigDO implements Serializable {
         this.setShowInForm(isRequired);
         this.setShowInQuery(isRequired);
         this.setFormType(FormTypeEnum.TEXT);
-        this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.INNER_LIKE : QueryTypeEnum.EQUAL);
+        this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.LIKE : QueryTypeEnum.EQ);
     }
 
     public void setColumnName(String columnName) {

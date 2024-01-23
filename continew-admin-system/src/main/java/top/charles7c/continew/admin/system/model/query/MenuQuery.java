@@ -43,7 +43,7 @@ public class MenuQuery implements Serializable {
      * 标题
      */
     @Schema(description = "标题", example = "用户管理")
-    @Query(type = QueryType.INNER_LIKE)
+    @Query(type = QueryType.LIKE)
     private String title;
 
     /**
