@@ -58,27 +58,18 @@ springdoc:
       packages-to-scan: ${project.base-package}.webapi
     - group: 'auth'
       display-name: '系统认证'
-      paths-to-match:
-        - '/auth/**'
-        - '/oauth/**'
       packages-to-scan: ${project.base-package}.webapi.auth
     - group: 'common'
       display-name: '通用接口'
-      paths-to-match:
-        - '/common/**'
-        - '/dashboard/**'
       packages-to-scan: ${project.base-package}.webapi.common
     - group: 'system'
       display-name: '系统管理'
-      paths-to-match: '/system/**'
       packages-to-scan: ${project.base-package}.webapi.system
     - group: 'tool'
       display-name: '系统工具'
-      paths-to-match: '/tool/**'
       packages-to-scan: ${project.base-package}.webapi.tool
     - group: 'monitor'
       display-name: '系统监控'
-      paths-to-match: '/monitor/**'
       packages-to-scan: ${project.base-package}.webapi.monitor
   ## 组件配置
   components:
