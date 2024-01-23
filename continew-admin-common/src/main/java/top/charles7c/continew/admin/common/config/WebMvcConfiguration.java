@@ -16,17 +16,16 @@
 
 package top.charles7c.continew.admin.common.config;
 
-import java.util.List;
-import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Web MVC 配置
@@ -49,15 +48,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
+        if (Objects.isNull(mappingJackson2HttpMessageConverter)) {
+            converters.add(0, new MappingJackson2HttpMessageConverter());
+        } else {
+            converters.add(0, mappingJackson2HttpMessageConverter);
+        }
         // 自定义 converters 时，需要手动在最前面添加 ByteArrayHttpMessageConverter
         // 否则 Spring Doc OpenAPI 的 /*/api-docs/**（例如：/v3/api-docs/default）接口响应内容会变为 Base64 编码后的内容，最终导致接口文档解析失败
         // 详情请参阅：https://github.com/springdoc/springdoc-openapi/issues/2143
-        converters.add(new ByteArrayHttpMessageConverter());
-        converters.removeIf(MappingJackson2HttpMessageConverter.class::isInstance);
-        if (Objects.isNull(mappingJackson2HttpMessageConverter)) {
-            converters.add(new MappingJackson2HttpMessageConverter());
-        } else {
-            converters.add(mappingJackson2HttpMessageConverter);
-        }
+        converters.add(0, new ByteArrayHttpMessageConverter());
     }
 }
