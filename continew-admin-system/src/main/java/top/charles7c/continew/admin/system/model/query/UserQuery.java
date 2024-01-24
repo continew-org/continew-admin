@@ -52,7 +52,6 @@ public class UserQuery implements Serializable {
      * 状态
      */
     @Schema(description = "状态（1：启用；2：禁用）", example = "1")
-    @Query
     private Integer status;
 
     /**
@@ -67,6 +66,5 @@ public class UserQuery implements Serializable {
      * 部门 ID
      */
     @Schema(description = "部门 ID", example = "1")
-    @Query
     private Long deptId;
 }

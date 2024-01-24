@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.auth.model.resp;
 
+import cn.hutool.core.util.DesensitizedUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.admin.common.enums.GenderEnum;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import cn.hutool.core.util.DesensitizedUtil;
-
-import top.charles7c.continew.admin.common.enums.GenderEnum;
 
 /**
  * 用户信息

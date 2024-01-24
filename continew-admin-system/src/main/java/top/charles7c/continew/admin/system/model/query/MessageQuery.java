@@ -16,14 +16,13 @@
 
 package top.charles7c.continew.admin.system.model.query;
 
-import java.io.Serializable;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import lombok.Data;
 import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryIgnore;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
+import java.io.Serializable;
 
 /**
  * 消息查询条件
@@ -41,7 +40,6 @@ public class MessageQuery implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
-    @Query
     private Long id;
 
     /**
@@ -55,18 +53,19 @@ public class MessageQuery implements Serializable {
      * 类型
      */
     @Schema(description = "类型（1：系统消息）", example = "1")
-    @Query
     private Integer type;
 
     /**
      * 是否已读
      */
     @Schema(description = "是否已读", example = "true")
+    @QueryIgnore
     private Boolean isRead;
 
     /**
      * 用户 ID
      */
     @Schema(hidden = true)
+    @QueryIgnore
     private Long userId;
 }

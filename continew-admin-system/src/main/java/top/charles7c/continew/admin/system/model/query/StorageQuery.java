@@ -16,15 +16,13 @@
 
 package top.charles7c.continew.admin.system.model.query;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import lombok.Data;
 import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 存储库查询条件
@@ -50,6 +48,5 @@ public class StorageQuery implements Serializable {
      * 状态
      */
     @Schema(description = "状态")
-    @Query
     private Integer status;
 }

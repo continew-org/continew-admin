@@ -28,7 +28,7 @@ import top.charles7c.continew.admin.system.model.req.OptionReq;
 import top.charles7c.continew.admin.system.model.req.OptionResetValueReq;
 import top.charles7c.continew.admin.system.model.resp.OptionResp;
 import top.charles7c.continew.admin.system.service.OptionService;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public List<OptionResp> list(OptionQuery query) {
-        return BeanUtil.copyToList(baseMapper.selectList(QueryHelper.build(query)), OptionResp.class);
+        return BeanUtil.copyToList(baseMapper.selectList(QueryWrapperHelper.build(query)), OptionResp.class);
     }
 
     @Override

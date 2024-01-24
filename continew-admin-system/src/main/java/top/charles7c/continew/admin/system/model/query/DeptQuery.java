@@ -16,15 +16,13 @@
 
 package top.charles7c.continew.admin.system.model.query;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import lombok.Data;
 import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 部门查询条件
@@ -50,6 +48,5 @@ public class DeptQuery implements Serializable {
      * 状态
      */
     @Schema(description = "状态（1：启用；2：禁用）", example = "1")
-    @Query
     private Integer status;
 }

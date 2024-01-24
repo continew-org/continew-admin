@@ -16,14 +16,11 @@
 
 package top.charles7c.continew.admin.system.model.query;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 字典项查询条件
@@ -42,6 +39,5 @@ public class DictItemQuery implements Serializable {
      * 字典 ID
      */
     @Schema(description = "字典 ID")
-    @Query
     private Long dictId;
 }

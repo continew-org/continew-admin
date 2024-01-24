@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.monitor.model.query;
 
+import cn.hutool.core.date.DatePattern;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import cn.hutool.core.date.DatePattern;
-
-import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
  * 登录日志查询条件
@@ -49,7 +45,6 @@ public class LoginLogQuery implements Serializable {
      * 登录状态
      */
     @Schema(description = "登录状态（1：成功；2：失败）", example = "1")
-    @Query
     private Integer status;
 
     /**

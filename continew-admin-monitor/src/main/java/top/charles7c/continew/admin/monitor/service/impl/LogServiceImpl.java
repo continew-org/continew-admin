@@ -34,7 +34,7 @@ import top.charles7c.continew.admin.monitor.model.resp.*;
 import top.charles7c.continew.admin.monitor.service.LogService;
 import top.charles7c.continew.starter.core.util.ReflectUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -58,7 +58,7 @@ public class LogServiceImpl implements LogService {
     @Override
     @AutoOperate(type = OperationLogResp.class, on = "list")
     public PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery) {
-        QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
+        QueryWrapper<LogDO> queryWrapper = QueryWrapperHelper.build(query);
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(OperationLogResp.class);
         List<String> columnNameList = fieldNameList.stream()
@@ -74,7 +74,7 @@ public class LogServiceImpl implements LogService {
     @Override
     @AutoOperate(type = LoginLogResp.class, on = "list")
     public PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery) {
-        QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
+        QueryWrapper<LogDO> queryWrapper = QueryWrapperHelper.build(query);
         queryWrapper.eq("module", "登录");
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(LoginLogResp.class);
@@ -91,7 +91,7 @@ public class LogServiceImpl implements LogService {
     @Override
     @AutoOperate(type = SystemLogResp.class, on = "list")
     public PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery) {
-        QueryWrapper<LogDO> queryWrapper = QueryHelper.build(query);
+        QueryWrapper<LogDO> queryWrapper = QueryWrapperHelper.build(query);
         // 限定查询信息
         List<String> fieldNameList = ReflectUtils.getNonStaticFieldsName(SystemLogResp.class);
         List<String> columnNameList = fieldNameList.stream()

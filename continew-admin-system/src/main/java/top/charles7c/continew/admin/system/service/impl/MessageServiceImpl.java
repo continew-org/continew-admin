@@ -32,7 +32,7 @@ import top.charles7c.continew.admin.system.model.resp.MessageResp;
 import top.charles7c.continew.admin.system.service.MessageService;
 import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryHelper;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -54,7 +54,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @AutoOperate(type = MessageResp.class, on = "list")
     public PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
-        QueryWrapper<MessageDO> queryWrapper = QueryHelper.build(query);
+        QueryWrapper<MessageDO> queryWrapper = QueryWrapperHelper.build(query);
         queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
             .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
         IPage<MessageResp> page = baseMapper.selectPageByUserId(pageQuery.toPage(), queryWrapper);
