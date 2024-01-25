@@ -61,42 +61,43 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 | GitHub | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin) | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
 | Gitee  | [gitee.com/Charles7c/continew-admin](https://gitee.com/Charles7c/continew-admin) | [gitee.com/Charles7c/continew-admin-ui](https://gitee.com/Charles7c/continew-admin-ui) |
 
-## 主要特性
+## 为什么选我们？
 
-- :fire: 下方通用基础能力及配置，在 v2.1.0 版本已抽取到 [ContiNew Starter](https://github.com/Charles7c/continew-starter) 项目，现 [已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter)，为 Spring Boot Web 项目开发提供更灵活的助力
+> [!TIP]
+> 更为完整的描述请查阅[《在线文档》](https://doc.charles7c.top/admin/intro/why.html)。
 
-- 精选技术栈：使用综合考虑成熟度、流行性、发展潜力较佳的技术栈，包括 Spring Boot、MyBatis Plus、Sa-Token、Hutool 等
+1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Element Plus、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
 
-- 高效率开发：后端提供了 CRUD 组件，在 Controller 中只需添加一个注解，即可自动生成增、删、改、查、分页、列表、树列表等 API，且支持配置启用不同 API。
+2.**Starter 组件：** 从 v2.1.0 版本开始，抽取并封装后端基础组件及各框架集成配置到 ContiNew Starter 项目，且 **[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter)**，可在你的任意项目中直接引入所需依赖使用。即使你不用脚手架项目，难道能让你搭项目框架更快、更爽、更省力的 Starter 也要 Say No 吗？
 
-  ```java
-  @Tag(name = "部门管理 API")
-  @RestController
-  @CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-  public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
-  ```
+3.**CRUD 套件：** 封装通用增删改查套件，适配后端各分层，几分钟即可提供一套 CRUD API，包括新增、修改、批量删除、查询详情、分页列表查询、全部列表查询、树型列表查询、导出到 Excel，且 API 支持按实际所需开放或扩展。
+```java
+@Tag(name = "部门管理 API")
+@RestController
+@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+public class DeptController extends BaseController<DeptService, DeptResponse, DeptDetailResponse, DeptQuery, DeptRequest> {}
+```
 
-- 提供代码生成功能，根据用户提供的项目信息和配置，自动生成前后端项目结构、代码文件和部分逻辑代码，提高开发效率
+4.**代码生成器：** 提供代码生成器，已配套前、后端代码生成模板，数据表设计完之后，简单配置一下即可生成前、后端 80% 的代码，包含 CRUD API、权限控制、参数校验、接口文档等内容。如果业务不复杂，也可能就是 99% 的代码。
 
-- 一个注解解决一个条件查询，基于注解的通用查询方式，降低拼接 MyBatis Plus QueryWrapper 的烦恼
+5.**改善开发体验：** 持续适配、优化能改善开发体验的组件。
+- 适配 Crane4j 数据填充组件，减少因为一个用户名而产生的联表回填；
+- 适配 P6Spy SQL 性能分析组件，开发期间方便监控 SQL 执行；
+- 适配 TLog 链路追踪组件，方便在杂乱的日志文件中追踪你某次请求的日志记录；
+- 适配 JetCache 缓存框架（比 Spring Cache 更强大易用），通过注解声明即可快速实现方法级缓存，极大改善编码式缓存体验，且支持灵活的二级缓存配置、分布式自动刷新等能力；
+- 适配 ContiNew Starter 组件，针对多数框架进行了深度封装的 starter，改善你在开发每个 Spring Boot Web 项目的体验。
 
-- 提供一套 Base 基类（BaseDO、BaseResp、BaseController、BaseService、扩展版 BaseMapper 等），方便复用和扩展
+6.**Almost最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%，代码分层使用体验佳，变量、方法命名清晰统一，前端代码也使用严格的 ESLint、StyleLint 等检查。良好的设计，代码复用率极高！写代码时，让你有一种无需多写，理应如此的感觉。代码洁癖者的福音，不看莫吱声。
 
-- 基于 Crane4j 实现灵活的数据填充功能，根除因为查询一个用户名而编写大量的填充代码
+7.**卓越工程：** 后端采用模块化工程结构，并适配了统一项目版本号、编译项目自动代码格式化、代码混淆等插件，提供了自定义打包部署结构配置（配置文件、三方依赖和主程序分离），提供全套环境及应用的 Docker Compose 部署脚本。为了减少您开发新项目时的改造耗时，项目品牌配置持续进行深度聚合，简单的配置和结构修改即可快速开始独属于你的新项目。
 
-- 编写或基于 Hutool 扩展部分工具类，提供校验工具和实践，提高开发效率（能 PR 到 Hutool 的已尽量 PR）
+8.**业务脚手架：** 有颜有料，不止是说说而已。基于成熟的前端脚手架 [Fantastic Admin](https://fantastic-admin.gitee.io/) 开发的前端项目，持续打磨 UI 设计与色彩主题。提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（提供行为验证码+生产级限流的防“轰炸”方案），用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、公告等，设计用心，逻辑合理闭环。
+> 一个好的脚手架项目，不仅仅是提供一系列组件集成与配置，也不仅仅是封装一堆好用的工具，还更应该提供一系列通用基础业务解决方案及设计，为初创团队项目减负。
 
-- 支持 API 级别的功能权限与数据权限，可自定义操作
+9.**质量与安全：** 我们对项目质量与安全抱有极高的重视，通过多种代码质量分析工具：Sonarqube、Qodana 等，识别和解决潜在的问题。
 
-- 前后端统一异常拦截处理，统一输出异常信息，避免繁琐的异常判断
-
-- 自动初始化数据：通过 Liquibase 管理数据库脚本版本记录，并在系统第一次启动时自动进行数据初始化，无须额外配置导入
-
-- 提供多项实用基础配置，例如：统一线程池配置、Jackson 针对日期、通用枚举的序列化、反序列化配置等
-
-- 良好的代码、配置文件结构和命名，完善的代码注释甚至包括 Git Commit 信息、接口文档参数示例，遵循阿里巴巴 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 的代码规范，保证代码质量和可维护性
-
-- 更多细节及实践，敬请探索与关注
+由于篇幅有限，且项目正处于高速发展期，更多功能正在陆续上线（敬请关注仓库或群内动态）。另外像最基本的统一异常、错误处理，基础线程池等配置就不在此赘述，细节优化详情请 clone 代码查看。
+> Talk is cheap, show me the code.
 
 ##  系统功能
 
@@ -431,7 +432,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 ### 特别鸣谢
 
-- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://www.jetbrains.com/shop/eform/opensource" target="_blank">非商业开源软件开发授权</a> 
+- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://jb.gg/OpenSourceSupport" target="_blank">非商业开源软件开发授权</a> 
 - 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a> 、<a href="https://github.com/alibaba/jetcache" target="_blank">JetCache</a>、<a href="https://github.com/opengoofy/crane4j" target="_blank">Crane4j</a>、<a href="https://github.com/xiaoymin/knife4j" target="_blank">Knife4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等开源组件作者为国内开源世界作出的贡献
 - 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
