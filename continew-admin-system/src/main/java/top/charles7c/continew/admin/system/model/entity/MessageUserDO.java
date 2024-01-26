@@ -16,12 +16,12 @@
 
 package top.charles7c.continew.admin.system.model.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 消息和用户关联实体
@@ -33,6 +33,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("sys_message_user")
 public class MessageUserDO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

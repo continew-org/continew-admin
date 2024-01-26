@@ -16,15 +16,14 @@
 
 package top.charles7c.continew.admin.common.config.mybatis;
 
-import java.util.stream.Collectors;
-
 import cn.hutool.core.convert.Convert;
-
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionCurrentUser;
 import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
 import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataScope;
+
+import java.util.stream.Collectors;
 
 /**
  * 数据权限过滤器实现类
@@ -37,15 +36,12 @@ public class DataPermissionFilterImpl implements DataPermissionFilter {
     @Override
     public boolean isFilter() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        return null != loginUser && !loginUser.isAdmin();
+        return !loginUser.isAdmin();
     }
 
     @Override
     public DataPermissionCurrentUser getCurrentUser() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        if (null == loginUser) {
-            throw new IllegalArgumentException("Current user is not allowed to be empty.");
-        }
         DataPermissionCurrentUser currentUser = new DataPermissionCurrentUser();
         currentUser.setUserId(Convert.toStr(loginUser.getId()));
         currentUser.setDeptId(Convert.toStr(loginUser.getDeptId()));

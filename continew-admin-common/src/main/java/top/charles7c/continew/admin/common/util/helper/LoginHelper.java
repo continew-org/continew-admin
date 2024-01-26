@@ -17,6 +17,7 @@
 package top.charles7c.continew.admin.common.util.helper;
 
 import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
@@ -67,17 +68,16 @@ public class LoginHelper {
     /**
      * 获取登录用户信息
      *
-     * @return 登录用户信息（获取 TokenSession 时如未登录，会抛出异常）
+     * @return 登录用户信息
+     * @throws NotLoginException 未登录异常
      */
-    public static LoginUser getLoginUser() {
+    public static LoginUser getLoginUser() throws NotLoginException {
+        StpUtil.checkLogin();
         LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConstants.LOGIN_USER_KEY);
         if (null != loginUser) {
             return loginUser;
         }
         SaSession tokenSession = StpUtil.getTokenSession();
-        if (null == tokenSession) {
-            return null;
-        }
         loginUser = (LoginUser)tokenSession.get(CacheConstants.LOGIN_USER_KEY);
         SaHolder.getStorage().set(CacheConstants.LOGIN_USER_KEY, loginUser);
         return loginUser;
@@ -103,7 +103,7 @@ public class LoginHelper {
      * @return 登录用户 ID
      */
     public static Long getUserId() {
-        return ExceptionUtils.exToNull(() -> getLoginUser().getId());
+        return getLoginUser().getId();
     }
 
     /**
@@ -112,7 +112,7 @@ public class LoginHelper {
      * @return 登录用户名
      */
     public static String getUsername() {
-        return ExceptionUtils.exToNull(() -> getLoginUser().getUsername());
+        return getLoginUser().getUsername();
     }
 
     /**

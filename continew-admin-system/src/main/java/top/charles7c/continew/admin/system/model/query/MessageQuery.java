@@ -22,6 +22,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryIgnore;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -34,6 +35,7 @@ import java.io.Serializable;
 @Schema(description = "消息查询条件")
 public class MessageQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
