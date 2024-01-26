@@ -64,7 +64,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ## 为什么选我们？
 
 > [!TIP]
-> 更为完整的描述请查阅[《在线文档》](https://doc.charles7c.top/admin/intro/why.html)。
+> 如需完整图文描述，请点击打开[《在线文档》](https://doc.charles7c.top/admin/intro/why.html)查阅。
 
 1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Element Plus、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
 
@@ -91,10 +91,10 @@ public class DeptController extends BaseController<DeptService, DeptResponse, De
 
 7.**卓越工程：** 后端采用模块化工程结构，并适配了统一项目版本号、编译项目自动代码格式化、代码混淆等插件，提供了自定义打包部署结构配置（配置文件、三方依赖和主程序分离），提供全套环境及应用的 Docker Compose 部署脚本。为了减少您开发新项目时的改造耗时，项目品牌配置持续进行深度聚合，简单的配置和结构修改即可快速开始独属于你的新项目。
 
-8.**业务脚手架：** 有颜有料，不止是说说而已。基于成熟的前端脚手架 [Fantastic Admin](https://fantastic-admin.gitee.io/) 开发的前端项目，持续打磨 UI 设计与色彩主题。提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（提供行为验证码+生产级限流的防“轰炸”方案），用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、公告等，设计用心，逻辑合理闭环。
+8.**业务脚手架：** 有颜有料，不止是说说而已。基于成熟的前端脚手架 [Fantastic Admin](https://fantastic-admin.gitee.io/) 开发的前端项目，持续打磨 UI 设计与色彩主题。提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（生产级炸弹漏洞处理方案），用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、公告等，设计用心，逻辑合理闭环。
 > 一个好的脚手架项目，不仅仅是提供一系列组件集成与配置，也不仅仅是封装一堆好用的工具，还更应该提供一系列通用基础业务解决方案及设计，为初创团队项目减负。
 
-9.**质量与安全：** 我们对项目质量与安全抱有极高的重视，通过多种代码质量分析工具：Sonarqube、Qodana 等，识别和解决潜在的问题。
+9.**质量与安全：** 项目 CI 已集成 Sonarqube、Qodana，Push 即触发代码质量扫描，并定期进行 CVE 漏洞扫描，及时解决潜在问题。
 
 由于篇幅有限，且项目正处于高速发展期，更多功能正在陆续上线（敬请关注仓库或群内动态）。另外像最基本的统一异常、错误处理，基础线程池等配置就不在此赘述，细节优化详情请 clone 代码查看。
 > Talk is cheap, show me the code.
