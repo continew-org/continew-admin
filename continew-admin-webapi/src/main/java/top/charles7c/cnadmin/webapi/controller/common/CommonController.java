@@ -109,9 +109,9 @@ public class CommonController {
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public List<LabelValueResp<Long>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
+    public R<List<LabelValueResp<Long>>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
         List<RoleResp> list = roleService.list(query, sortQuery);
-        return roleService.buildDict(list);
+        return R.ok(roleService.buildDict(list));
     }
 
     @Operation(summary = "查询字典", description = "查询字典列表")
