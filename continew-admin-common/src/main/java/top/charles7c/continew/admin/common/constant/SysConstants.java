@@ -16,9 +16,6 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
@@ -27,8 +24,10 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
  * @author Charles7c
  * @since 2023/2/9 22:11
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SysConstants {
+
+    private SysConstants() {
+    }
 
     /**
      * 管理员角色编码

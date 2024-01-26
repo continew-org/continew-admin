@@ -22,15 +22,18 @@ package top.charles7c.continew.admin.common.constant;
  * @author Charles7c
  * @since 2024/1/20 12:33
  */
-public interface ContainerConstants extends top.charles7c.continew.starter.extension.crud.constant.ContainerConstants {
+public class ContainerConstants implements top.charles7c.continew.starter.extension.crud.constant.ContainerConstants {
+
+    private ContainerConstants() {
+    }
 
     /**
      * 用户角色 ID 列表
      */
-    String USER_ROLE_ID_LIST = "UserRoleIdList";
+    public static final String USER_ROLE_ID_LIST = "UserRoleIdList";
 
     /**
      * 角色部门列表
      */
-    String ROLE_DEPT_ID_LIST = "RoleDeptIdList";
+    public static final String ROLE_DEPT_ID_LIST = "RoleDeptIdList";
 }

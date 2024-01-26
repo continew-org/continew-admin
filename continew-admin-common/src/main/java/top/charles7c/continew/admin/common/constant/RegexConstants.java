@@ -16,9 +16,6 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import cn.hutool.core.lang.RegexPool;
 
 /**
@@ -27,8 +24,10 @@ import cn.hutool.core.lang.RegexPool;
  * @author Charles7c
  * @since 2023/1/10 20:06
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegexConstants implements RegexPool {
+
+    private RegexConstants() {
+    }
 
     /**
      * 用户名正则（长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头）

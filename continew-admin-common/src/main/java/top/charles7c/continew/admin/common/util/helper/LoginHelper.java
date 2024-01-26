@@ -23,8 +23,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
@@ -41,7 +39,6 @@ import java.time.LocalDateTime;
  * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @since 2022/12/24 12:58
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
     /**
@@ -135,5 +132,8 @@ public class LoginHelper {
      */
     public static String getNickname(Long userId) {
         return ExceptionUtils.exToNull(() -> SpringUtil.getBean(CommonUserService.class).getNicknameById(userId));
+    }
+
+    private LoginHelper() {
     }
 }

@@ -16,8 +16,6 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 
 /**
@@ -26,8 +24,10 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
  * @author Charles7c
  * @since 2022/12/22 19:30
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CacheConstants {
+
+    private CacheConstants() {
+    }
 
     /**
      * 分隔符

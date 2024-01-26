@@ -16,13 +16,9 @@
 
 package top.charles7c.continew.admin.common.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
-
 import top.charles7c.continew.admin.common.config.properties.RsaProperties;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 
@@ -32,7 +28,6 @@ import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
  * @author Charles7c
  * @since 2022/12/21 21:41
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecureUtils {
 
     /**
@@ -78,5 +73,8 @@ public class SecureUtils {
      */
     public static String md5Salt(String data, String salt) {
         return SecureUtil.md5(SecureUtil.md5(data) + salt);
+    }
+
+    private SecureUtils() {
     }
 }

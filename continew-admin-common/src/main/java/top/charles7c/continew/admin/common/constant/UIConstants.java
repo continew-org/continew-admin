@@ -16,17 +16,16 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
  * UI 相关常量
  *
  * @author Charles7c
  * @since 2023/9/17 14:12
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UIConstants {
+
+    private UIConstants() {
+    }
 
     /**
      * 主色（极致蓝）

@@ -16,17 +16,16 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 /**
  * 文件相关常量
  *
  * @author Charles7c
  * @since 2023/1/2 21:19
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileConstants {
+
+    private FileConstants() {
+    }
 
     /**
      * 头像支持的图片类型
