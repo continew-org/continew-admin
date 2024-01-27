@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.admin.common.constant.UIConstants;
+import top.charles7c.continew.admin.common.constant.UiConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
@@ -33,7 +33,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 public enum MessageTypeEnum implements IBaseEnum<Integer> {
 
     /** 系统消息 */
-    SYSTEM(1, "系统消息", UIConstants.COLOR_PRIMARY),;
+    SYSTEM(1, "系统消息", UiConstants.COLOR_PRIMARY),;
 
     private final Integer value;
     private final String description;

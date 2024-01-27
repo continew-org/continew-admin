@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.system.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.admin.common.constant.UIConstants;
+import top.charles7c.continew.admin.common.constant.UiConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
@@ -33,13 +33,13 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 public enum AnnouncementStatusEnum implements IBaseEnum<Integer> {
 
     /** 待发布 */
-    PENDING_RELEASE(1, "待发布", UIConstants.COLOR_PRIMARY),
+    PENDING_RELEASE(1, "待发布", UiConstants.COLOR_PRIMARY),
 
     /** 已发布 */
-    PUBLISHED(2, "已发布", UIConstants.COLOR_SUCCESS),
+    PUBLISHED(2, "已发布", UiConstants.COLOR_SUCCESS),
 
     /** 已过期 */
-    EXPIRED(3, "已过期", UIConstants.COLOR_ERROR),;
+    EXPIRED(3, "已过期", UiConstants.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;

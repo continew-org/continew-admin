@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.admin.common.constant.UIConstants;
+import top.charles7c.continew.admin.common.constant.UiConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
@@ -33,10 +33,10 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 public enum SuccessFailureStatusEnum implements IBaseEnum<Integer> {
 
     /** 成功 */
-    SUCCESS(1, "成功", UIConstants.COLOR_SUCCESS),
+    SUCCESS(1, "成功", UiConstants.COLOR_SUCCESS),
 
     /** 失败 */
-    FAILURE(2, "失败", UIConstants.COLOR_ERROR),;
+    FAILURE(2, "失败", UiConstants.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;

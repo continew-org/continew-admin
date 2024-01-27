@@ -22,9 +22,9 @@ package top.charles7c.continew.admin.common.constant;
  * @author Charles7c
  * @since 2023/9/17 14:12
  */
-public class UIConstants {
+public class UiConstants {
 
-    private UIConstants() {
+    private UiConstants() {
     }
 
     /**

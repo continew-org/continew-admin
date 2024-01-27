@@ -49,11 +49,4 @@ public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, 
      * @return 菜单列表
      */
     List<MenuResp> listByRoleCode(String roleCode);
-
-    /**
-     * 查询所有菜单
-     *
-     * @return 菜单列表
-     */
-    List<MenuResp> list();
 }

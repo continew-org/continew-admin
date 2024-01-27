@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.admin.common.constant.UIConstants;
+import top.charles7c.continew.admin.common.constant.UiConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
@@ -33,10 +33,10 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 public enum DisEnableStatusEnum implements IBaseEnum<Integer> {
 
     /** 启用 */
-    ENABLE(1, "启用", UIConstants.COLOR_SUCCESS),
+    ENABLE(1, "启用", UiConstants.COLOR_SUCCESS),
 
     /** 禁用 */
-    DISABLE(2, "禁用", UIConstants.COLOR_ERROR),;
+    DISABLE(2, "禁用", UiConstants.COLOR_ERROR),;
 
     private final Integer value;
     private final String description;
