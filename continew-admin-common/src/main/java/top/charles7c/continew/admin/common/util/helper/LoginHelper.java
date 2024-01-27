@@ -42,6 +42,9 @@ import java.time.LocalDateTime;
  */
 public class LoginHelper {
 
+    private LoginHelper() {
+    }
+
     /**
      * 用户登录并缓存用户信息
      *
@@ -132,8 +135,5 @@ public class LoginHelper {
      */
     public static String getNickname(Long userId) {
         return ExceptionUtils.exToNull(() -> SpringUtil.getBean(CommonUserService.class).getNicknameById(userId));
-    }
-
-    private LoginHelper() {
     }
 }

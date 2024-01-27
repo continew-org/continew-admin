@@ -30,6 +30,9 @@ import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
  */
 public class SecureUtils {
 
+    private SecureUtils() {
+    }
+
     /**
      * 公钥加密
      *
@@ -73,8 +76,5 @@ public class SecureUtils {
      */
     public static String md5Salt(String data, String salt) {
         return SecureUtil.md5(SecureUtil.md5(data) + salt);
-    }
-
-    private SecureUtils() {
     }
 }

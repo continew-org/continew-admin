@@ -143,17 +143,15 @@ public class FieldConfigDO implements Serializable {
     private LocalDateTime createTime;
 
     public FieldConfigDO(@NonNull Column column) {
-        String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
-        boolean isRequired = !column.isPk() && !column.isNullable();
-        this.tableName = column.getTableName();
+        this.setTableName(column.getTableName());
         this.setColumnName(column.getName());
-        this.setColumnType(columnType);
+        this.setColumnType(StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase());
         this.setColumnSize(column.getSize());
         this.setComment(column.getComment());
-        this.setIsRequired(isRequired);
+        this.setIsRequired(!column.isPk() && !column.isNullable());
         this.setShowInList(true);
-        this.setShowInForm(isRequired);
-        this.setShowInQuery(isRequired);
+        this.setShowInForm(this.getIsRequired());
+        this.setShowInQuery(this.getIsRequired());
         this.setFormType(FormTypeEnum.TEXT);
         this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.LIKE : QueryTypeEnum.EQ);
     }

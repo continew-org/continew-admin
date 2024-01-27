@@ -134,7 +134,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             return columnList.stream().map(FieldConfigDO::new).collect(Collectors.toList());
         }
         // 同步最新数据表列信息
-        if (requireSync) {
+        if (Boolean.TRUE.equals(requireSync)) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
             // 移除已不存在的字段配置
             List<String> columnNameList = columnList.stream().map(Column::getName).collect(Collectors.toList());
@@ -286,7 +286,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                     .getPackageName(), StringConstants.DOT));
                 File classFile = new File(classParentFile, codePreview.getFileName());
                 // 如果已经存在，且不允许覆盖，则跳过
-                if (classFile.exists() && !isOverride) {
+                if (classFile.exists() && Boolean.FALSE.equals(isOverride)) {
                     continue;
                 }
                 FileUtil.writeUtf8String(codePreview.getContent(), classFile);
@@ -309,7 +309,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 例如：D:/continew-admin-ui/src/api/tool/xxx.ts
             File apiParentFile = FileUtil.file(frontendModulePath, "src", "api", apiModuleName);
             File apiFile = new File(apiParentFile, apiCodePreview.getFileName());
-            if (apiFile.exists() && !isOverride) {
+            if (apiFile.exists() && Boolean.FALSE.equals(isOverride)) {
                 return;
             }
             FileUtil.writeUtf8String(apiCodePreview.getContent(), apiFile);
@@ -318,7 +318,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 例如：D:/continew-admin-ui/src/views/tool/xxx/index.vue
             File indexFile = FileUtil.file(frontendPath, apiModuleName, StrUtil
                 .lowerFirst(classNamePrefix), "index.vue");
-            if (indexFile.exists() && !isOverride) {
+            if (indexFile.exists() && Boolean.FALSE.equals(isOverride)) {
                 return;
             }
             FileUtil.writeUtf8String(viewCodePreview.getContent(), indexFile);

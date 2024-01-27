@@ -73,10 +73,7 @@
         <!-- 如果配置的日志等级，和 application.yml 中的日志等级配置重叠，application.yml 配置优先级高 -->
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <!--<appender-ref ref="ASYNC_FILE"/>-->
         </root>
-        <!-- 日志保留天数 -->
-        <!--<property name="FILE_MAX_HISTORY" value="15"/>-->
     </springProfile>
 
     <!-- 生产环境：打印到控制台并输出到文件 -->

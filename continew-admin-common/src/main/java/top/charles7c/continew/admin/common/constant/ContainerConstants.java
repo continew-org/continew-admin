@@ -16,13 +16,15 @@
 
 package top.charles7c.continew.admin.common.constant;
 
+import top.charles7c.continew.starter.extension.crud.constant.ContainerPool;
+
 /**
  * 数据源容器相关常量（Crane4j 数据填充组件使用）
  *
  * @author Charles7c
  * @since 2024/1/20 12:33
  */
-public class ContainerConstants implements top.charles7c.continew.starter.extension.crud.constant.ContainerConstants {
+public class ContainerConstants extends ContainerPool {
 
     private ContainerConstants() {
     }
