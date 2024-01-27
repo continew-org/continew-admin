@@ -118,38 +118,35 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         String bucketName = req.getBucketName();
         String domain = req.getDomain();
         StorageTypeEnum type = req.getType();
-        switch (type) {
-            case LOCAL -> {
-                ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
-                ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
-                ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
-                req.setBucketName(StrUtil.appendIfMissing(bucketName
-                    .replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
-                FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
-                config.setPlatform(req.getCode());
-                config.setStoragePath(bucketName);
-                fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
-                    .singletonList(config)));
-                SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
-            }
-            case S3 -> {
-                String accessKey = req.getAccessKey();
-                String secretKey = req.getSecretKey();
-                String endpoint = req.getEndpoint();
-                ValidationUtils.throwIfBlank(accessKey, "访问密钥不能为空");
-                ValidationUtils.throwIfBlank(secretKey, "私有密钥不能为空");
-                ValidationUtils.throwIfBlank(endpoint, "终端节点不能为空");
-                ValidationUtils.throwIfBlank(bucketName, "桶名称不能为空");
-                FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
-                config.setPlatform(req.getCode());
-                config.setAccessKey(accessKey);
-                config.setSecretKey(secretKey);
-                config.setEndPoint(endpoint);
-                config.setBucketName(bucketName);
-                config.setDomain(domain);
-                fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
-                    .singletonList(config), null));
-            }
+        if (StorageTypeEnum.LOCAL.equals(type)) {
+            ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
+            ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
+            ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
+            req.setBucketName(StrUtil.appendIfMissing(bucketName
+                .replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
+            FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
+            config.setPlatform(req.getCode());
+            config.setStoragePath(bucketName);
+            fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
+                .singletonList(config)));
+            SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
+        } else if (StorageTypeEnum.S3.equals(type)) {
+            String accessKey = req.getAccessKey();
+            String secretKey = req.getSecretKey();
+            String endpoint = req.getEndpoint();
+            ValidationUtils.throwIfBlank(accessKey, "访问密钥不能为空");
+            ValidationUtils.throwIfBlank(secretKey, "私有密钥不能为空");
+            ValidationUtils.throwIfBlank(endpoint, "终端节点不能为空");
+            ValidationUtils.throwIfBlank(bucketName, "桶名称不能为空");
+            FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
+            config.setPlatform(req.getCode());
+            config.setAccessKey(accessKey);
+            config.setSecretKey(secretKey);
+            config.setEndPoint(endpoint);
+            config.setBucketName(bucketName);
+            config.setDomain(domain);
+            fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
+                .singletonList(config), null));
         }
     }
 
