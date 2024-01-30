@@ -25,7 +25,7 @@
 
     <!-- 输出日志到控制台 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
+        <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>${LOG_CHARSET}</charset>
         </encoder>
@@ -33,7 +33,7 @@
 
     <!-- 输出日志到控制台（不带颜色） -->
     <appender name="CONSOLE_PROD" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
+        <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>${LOG_CHARSET}</charset>
         </encoder>
@@ -52,14 +52,14 @@
             <!-- 日志保留天数 -->
             <maxHistory>${FILE_MAX_HISTORY}</maxHistory>
         </rollingPolicy>
-        <encoder>
+        <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>${LOG_CHARSET}</charset>
         </encoder>
     </appender>
 
     <!-- 输出日志到文件（异步） -->
-    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+    <appender name="ASYNC_FILE" class="com.yomahub.tlog.core.enhance.logback.async.AspectLogbackAsyncAppender">
         <!-- 不丢失日志，默认：如果队列的 80% 已满，则会丢弃 TRACT、DEBUG、INFO 级别的日志 -->
         <discardingThreshold>0</discardingThreshold>
         <!-- 更改默认的队列的深度，该值会影响性能，默认：256 -->

@@ -248,3 +248,9 @@ generator:
     Controller:
       templatePath: generator/Controller.ftl
       packageName: controller
+
+--- ### TLog
+tlog:
+  enable-invoke-time-print: true
+  pattern: '[$spanId][$traceId]'
+  mdc-enable: false
