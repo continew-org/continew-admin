@@ -19,16 +19,15 @@ package top.charles7c.continew.admin.common.config.tlog;
 import com.yomahub.tlog.id.TLogIdGenerator;
 
 /**
- * TLog 配置
+ * TLog ID 自定义生成器
  *
  * @see TraceIdGenerator
  * @author Jasmine
- * @since 2024/01/30 11:39
+ * @since 2024/1/30 11:39
  */
 public class TraceIdGenerator extends TLogIdGenerator {
     @Override
     public String generateTraceId() {
-        String traceId = String.valueOf(System.nanoTime());
-        return traceId;
+        return String.valueOf(System.nanoTime());
     }
 }

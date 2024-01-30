@@ -32,6 +32,8 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.charles7c.continew.starter.core.constant.PropertiesConstants;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.extension.crud.annotation.EnableCrudRestController;
 import top.charles7c.continew.starter.web.annotation.EnableGlobalExceptionHandler;
 
@@ -81,7 +83,8 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         log.info("----------------------------------------------");
         log.info("{} service started successfully.", projectProperties.getName());
         log.info("API 地址：{}", baseUrl);
-        if (SpringUtil.getProperty("springdoc.swagger-ui.enabled", boolean.class, false)) {
+        String docEnabledProperty = PropertiesConstants.SPRINGDOC_SWAGGER_UI + StringConstants.DOT + PropertiesConstants.ENABLED;
+        if (Boolean.TRUE.equals(SpringUtil.getProperty(docEnabledProperty, boolean.class, false))) {
             log.info("API 文档：{}/doc.html", baseUrl);
         }
         log.info("----------------------------------------------");

@@ -18,6 +18,8 @@ package top.charles7c.continew.admin.common.config.tlog;
 
 import com.yomahub.tlog.id.TLogIdGeneratorLoader;
 import com.yomahub.tlog.spring.TLogPropertyInit;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -26,18 +28,20 @@ import top.charles7c.continew.admin.common.config.properties.TLogProperties;
 /**
  * TLog 配置
  *
+ * <p>
+ * 重写 TLog 配置以适配 Spring Boot 3.x
+ * </p>
+ *
  * @see TLogConfiguration
  * @author Jasmine
- * @since 2024/01/30 11:39
+ * @since 2024/1/30 11:39
  */
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(TLogProperties.class)
 public class TLogConfiguration {
 
     private final TLogProperties tLogProperties;
-
-    public TLogConfiguration(TLogProperties tLogProperties) {
-        this.tLogProperties = tLogProperties;
-    }
 
     @Bean
     @Primary
@@ -46,8 +50,7 @@ public class TLogConfiguration {
         tLogPropertyInit.setPattern(tLogProperties.getPattern());
         tLogPropertyInit.setEnableInvokeTimePrint(tLogProperties.getEnableInvokeTimePrint());
         tLogPropertyInit.setMdcEnable(tLogProperties.getMdcEnable());
-
-        // 设置自定义TraceId生成器
+        // 设置自定义 TraceId 生成器
         TLogIdGeneratorLoader.setIdGenerator(new TraceIdGenerator());
         return tLogPropertyInit;
     }

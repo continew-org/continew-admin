@@ -33,8 +33,6 @@
     <properties>
         <!-- 项目版本号 -->
         <revision>2.4.0-SNAPSHOT</revision>
-        <tlog.version>1.5.1</tlog.version>
-        <sonar.version>3.9.1.2184</sonar.version>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -73,13 +71,6 @@
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-common</artifactId>
                 <version>${revision}</version>
-            </dependency>
-
-            <!--轻量级的分布式日志标记追踪神器-->
-            <dependency>
-                <groupId>com.yomahub</groupId>
-                <artifactId>tlog-web-spring-boot-starter</artifactId>
-                <version>${tlog.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -188,7 +179,6 @@
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
-                        <version>${sonar.version}</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>

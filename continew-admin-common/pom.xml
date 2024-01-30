@@ -108,7 +108,7 @@
             <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
 
-        <!--轻量级的分布式日志标记追踪神器-->
+        <!-- TLog（轻量级的分布式日志标记追踪神器） -->
         <dependency>
             <groupId>com.yomahub</groupId>
             <artifactId>tlog-web-spring-boot-starter</artifactId>

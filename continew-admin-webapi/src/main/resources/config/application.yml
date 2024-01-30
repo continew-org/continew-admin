@@ -37,6 +37,11 @@ continew-starter.log:
 ## 项目日志配置
 logging:
   config: classpath:logback-spring.xml
+## TLog 链路追踪配置
+tlog:
+  enable-invoke-time-print: false
+  pattern: '[$spanId][$traceId]'
+  mdc-enable: false
 
 --- ### 线程池配置
 continew-starter.thread-pool:
@@ -248,9 +253,3 @@ generator:
     Controller:
       templatePath: generator/Controller.ftl
       packageName: controller
-
---- ### TLog
-tlog:
-  enable-invoke-time-print: true
-  pattern: '[$spanId][$traceId]'
-  mdc-enable: false

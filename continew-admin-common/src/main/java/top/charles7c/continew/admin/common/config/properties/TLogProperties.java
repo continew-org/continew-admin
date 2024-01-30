@@ -18,24 +18,38 @@ package top.charles7c.continew.admin.common.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * TLog 配置属性
  *
+ * <p>
+ * 重写 TLog 配置以适配 Spring Boot 3.x
+ * </p>
+ *
  * @author Jasmine
- * @since 2024/01/30 11:39
+ * @since 2024/1/30 11:39
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "tlog")
 public class TLogProperties {
-    /** 日志标签模板 */
+
+    /**
+     * 日志标签模板
+     */
     private String pattern;
-    /** 自动打印调用参数和时间 */
+
+    /**
+     * 自动打印调用参数和时间
+     */
     private Boolean enableInvokeTimePrint;
-    /** 自定义TraceId生成器 */
+
+    /**
+     * 自定义 TraceId 生成器
+     */
     private String idGenerator;
-    /** MDC模式 */
+
+    /**
+     * MDC 模式
+     */
     private Boolean mdcEnable;
 }

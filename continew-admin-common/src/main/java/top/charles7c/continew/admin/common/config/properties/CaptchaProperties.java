@@ -16,15 +16,10 @@
 
 package top.charles7c.continew.admin.common.config.properties;
 
-import java.awt.*;
-
 import lombok.Data;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import com.wf.captcha.*;
 
 /**
  * 验证码配置属性

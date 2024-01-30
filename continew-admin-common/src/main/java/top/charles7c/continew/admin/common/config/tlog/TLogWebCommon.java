@@ -20,19 +20,19 @@ import com.yomahub.tlog.constant.TLogConstants;
 import com.yomahub.tlog.core.rpc.TLogLabelBean;
 import com.yomahub.tlog.core.rpc.TLogRPCHandler;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * TLog
+ * TLog Web 通用拦截器
+ *
+ * <p>
+ * 重写 TLog 配置以适配 Spring Boot 3.x
+ * </p>
  *
  * @see TLogWebCommon
  * @author Jasmine
- * @since 2024/01/30 11:39
+ * @since 2024/1/30 11:39
  */
 public class TLogWebCommon extends TLogRPCHandler {
-
-    private final static Logger log = LoggerFactory.getLogger(TLogWebCommon.class);
 
     private static volatile TLogWebCommon tLogWebCommon;
 
@@ -53,9 +53,7 @@ public class TLogWebCommon extends TLogRPCHandler {
         String preIvkApp = request.getHeader(TLogConstants.PRE_IVK_APP_KEY);
         String preIvkHost = request.getHeader(TLogConstants.PRE_IVK_APP_HOST);
         String preIp = request.getHeader(TLogConstants.PRE_IP_KEY);
-
         TLogLabelBean labelBean = new TLogLabelBean(preIvkApp, preIvkHost, preIp, traceId, spanId);
-
         processProviderSide(labelBean);
     }
 

@@ -28,26 +28,26 @@ import java.io.IOException;
 /**
  * TLog 过滤器
  *
+ * <p>
+ * 重写 TLog 配置以适配 Spring Boot 3.x
+ * </p>
+ *
  * @see TLogConfiguration
  * @author Jasmine
- * @since 2024/01/30 11:39
+ * @since 2024/1/30 11:39
  */
 @Component
 public class TLogServletFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
 
     @Override
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+        if (request instanceof HttpServletRequest httpServletRequest && response instanceof HttpServletResponse httpServletResponse) {
             try {
-                TLogWebCommon.loadInstance().preHandle((HttpServletRequest)request);
-                // 把traceId放入response的header，为了方便有些人有这样的需求，从前端拿整条链路的traceId
-                ((HttpServletResponse)response).addHeader(TLogConstants.TLOG_TRACE_KEY, TLogContext.getTraceId());
+                TLogWebCommon.loadInstance().preHandle(httpServletRequest);
+                // 把 traceId 放入 response 的 header，为了方便有些人有这样的需求，从前端拿整条链路的 traceId
+                httpServletResponse.addHeader(TLogConstants.TLOG_TRACE_KEY, TLogContext.getTraceId());
                 chain.doFilter(request, response);
                 return;
             } finally {
@@ -55,10 +55,5 @@ public class TLogServletFilter implements Filter {
             }
         }
         chain.doFilter(request, response);
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }
