@@ -34,6 +34,7 @@
         <!-- 项目版本号 -->
         <revision>2.4.0-SNAPSHOT</revision>
         <tlog.version>1.5.1</tlog.version>
+        <sonar.version>3.9.1.2184</sonar.version>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -168,6 +169,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Sonar 代码质量分析 -->
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>charles7c</sonar.organization>
+                <sonar.projectKey>Charles7c_continew-admin</sonar.projectKey>
+                <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+            </properties>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <!-- 远程仓库配置：华为云、阿里云 Maven 镜像源仓库 -->
     <repositories>
