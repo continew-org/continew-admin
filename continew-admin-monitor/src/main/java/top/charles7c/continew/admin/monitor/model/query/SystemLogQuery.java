@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.monitor.model.query;
 
+import cn.hutool.core.date.DatePattern;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
+import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
-import cn.hutool.core.date.DatePattern;
-
-import top.charles7c.continew.starter.data.mybatis.plus.query.Query;
-import top.charles7c.continew.starter.data.mybatis.plus.query.QueryType;
 
 /**
  * 系统日志查询条件
@@ -44,6 +40,12 @@ public class SystemLogQuery implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 链路 ID
+     */
+    @Schema(description = "链路 ID", example = "904846526308876288")
+    private String traceId;
 
     /**
      * 创建时间

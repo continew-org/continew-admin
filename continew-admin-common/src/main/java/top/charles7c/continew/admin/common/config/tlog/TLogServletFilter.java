@@ -16,12 +16,12 @@
 
 package top.charles7c.continew.admin.common.config.tlog;
 
-import com.yomahub.tlog.constant.TLogConstants;
 import com.yomahub.tlog.context.TLogContext;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import top.charles7c.continew.admin.common.constant.SysConstants;
 
 import java.io.IOException;
 
@@ -47,7 +47,7 @@ public class TLogServletFilter implements Filter {
             try {
                 TLogWebCommon.loadInstance().preHandle(httpServletRequest);
                 // 把 traceId 放入 response 的 header，为了方便有些人有这样的需求，从前端拿整条链路的 traceId
-                httpServletResponse.addHeader(TLogConstants.TLOG_TRACE_KEY, TLogContext.getTraceId());
+                httpServletResponse.addHeader(SysConstants.TRACE_ID, TLogContext.getTraceId());
                 chain.doFilter(request, response);
                 return;
             } finally {

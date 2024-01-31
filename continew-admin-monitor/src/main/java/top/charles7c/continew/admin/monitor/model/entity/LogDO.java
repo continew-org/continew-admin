@@ -16,16 +16,14 @@
 
 package top.charles7c.continew.admin.monitor.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import top.charles7c.continew.admin.monitor.enums.LogStatusEnum;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.Data;
-
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import top.charles7c.continew.admin.monitor.enums.LogStatusEnum;
 
 /**
  * 系统日志实体
@@ -45,6 +43,11 @@ public class LogDO implements Serializable {
      */
     @TableId
     private Long id;
+
+    /**
+     * 链路 ID
+     */
+    private String traceId;
 
     /**
      * 日志描述

@@ -17,6 +17,7 @@
 package top.charles7c.continew.admin.common.config.tlog;
 
 import com.yomahub.tlog.id.TLogIdGenerator;
+import com.yomahub.tlog.id.snowflake.UniqueIdGenerator;
 
 /**
  * TLog ID 自定义生成器
@@ -28,6 +29,6 @@ import com.yomahub.tlog.id.TLogIdGenerator;
 public class TraceIdGenerator extends TLogIdGenerator {
     @Override
     public String generateTraceId() {
-        return String.valueOf(System.nanoTime());
+        return String.valueOf(UniqueIdGenerator.generateId());
     }
 }

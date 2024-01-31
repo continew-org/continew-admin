@@ -29,3 +29,9 @@ databaseChangeLog:
       file: db/changelog/v2.2.0/continew-admin_column.sql
   - include:
       file: db/changelog/v2.2.0/continew-admin_data.sql
+  - include:
+      file: db/changelog/v2.4.0/continew-admin_table.sql
+  - include:
+      file: db/changelog/v2.4.0/continew-admin_column.sql
+  - include:
+      file: db/changelog/v2.4.0/continew-admin_data.sql

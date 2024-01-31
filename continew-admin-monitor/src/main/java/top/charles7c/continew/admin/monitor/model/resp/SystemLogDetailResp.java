@@ -16,11 +16,10 @@
 
 package top.charles7c.continew.admin.monitor.model.resp;
 
-import java.io.Serial;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serial;
 
 /**
  * 系统日志详情信息
@@ -34,6 +33,12 @@ public class SystemLogDetailResp extends LogResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 链路 ID
+     */
+    @Schema(description = "链路 ID", example = "904846526308876288")
+    private String traceId;
 
     /**
      * 状态码
