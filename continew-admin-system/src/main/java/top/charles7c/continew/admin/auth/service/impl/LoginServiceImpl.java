@@ -27,6 +27,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.auth.model.resp.MetaResp;
 import top.charles7c.continew.admin.auth.model.resp.RouteResp;
@@ -39,7 +40,6 @@ import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
-import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.enums.MessageTemplateEnum;
 import top.charles7c.continew.admin.system.model.entity.DeptDO;
@@ -77,13 +77,13 @@ public class LoginServiceImpl implements LoginService {
     private final UserRoleService userRoleService;
     private final UserSocialService userSocialService;
     private final MessageService messageService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public String accountLogin(String username, String password) {
         UserDO user = userService.getByUsername(username);
         CheckUtils.throwIfNull(user, "用户名或密码不正确");
-        Long userId = user.getId();
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(password, userId.toString()), user.getPassword(), "用户名或密码不正确");
+        CheckUtils.throwIf(!passwordEncoder.matches(password, user.getPassword()), "用户名或密码不正确");
         this.checkUserStatus(user);
         return this.login(user);
     }

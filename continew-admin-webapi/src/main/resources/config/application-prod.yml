@@ -245,6 +245,13 @@ spring.servlet:
     # 单次总上传文件大小限制
     max-request-size: 20MB
 
+--- ### 密码编码器配置
+continew-starter:
+  password-encoder:
+    enabled: true
+    # BCryptPasswordEncoder
+    encoding-id: bcrypt
+
 --- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
 rsa:
   # 私钥

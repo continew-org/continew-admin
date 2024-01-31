@@ -66,15 +66,4 @@ public class SecureUtils {
     public static String decryptByRsaPrivateKey(String data, String privateKey) {
         return new String(SecureUtil.rsa(privateKey, null).decrypt(Base64.decode(data), KeyType.PrivateKey));
     }
-
-    /**
-     * MD5 加密
-     *
-     * @param data 要加密的内容
-     * @param salt 盐
-     * @return 加密后的内容
-     */
-    public static String md5Salt(String data, String salt) {
-        return SecureUtil.md5(SecureUtil.md5(data) + salt);
-    }
 }

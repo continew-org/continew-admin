@@ -27,6 +27,7 @@ import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,6 @@ import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.FileConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.mapper.UserMapper;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
@@ -72,6 +72,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final UserRoleService userRoleService;
     private final FileService fileService;
     private final FileStorageService fileStorageService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Long add(UserDO user) {
@@ -95,7 +96,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     protected void afterAdd(UserReq req, UserDO user) {
         Long userId = user.getId();
         baseMapper.lambdaUpdate()
-            .set(UserDO::getPassword, SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, userId.toString()))
+            .set(UserDO::getPassword, passwordEncoder.encode(SysConstants.DEFAULT_PASSWORD))
             .set(UserDO::getPwdResetTime, LocalDateTime.now())
             .eq(UserDO::getId, userId)
             .update();
@@ -198,12 +199,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         UserDO user = super.getById(id);
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(oldPassword, id.toString()), password, "当前密码错误");
+            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
         baseMapper.lambdaUpdate()
-            .set(UserDO::getPassword, SecureUtils.md5Salt(newPassword, id.toString()))
+            .set(UserDO::getPassword, passwordEncoder.encode(newPassword))
             .set(UserDO::getPwdResetTime, now)
             .eq(UserDO::getId, id)
             .update();
@@ -212,7 +213,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updatePhone(String newPhone, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), user.getPassword(), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getPhone, newPhone).count();
         CheckUtils.throwIf(count > 0, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -223,7 +224,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIfNotEqual(SecureUtils.md5Salt(currentPassword, id.toString()), user.getPassword(), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
@@ -234,7 +235,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void resetPassword(Long id) {
         UserDO user = super.getById(id);
-        user.setPassword(SecureUtils.md5Salt(SysConstants.DEFAULT_PASSWORD, id.toString()));
+        user.setPassword(passwordEncoder.encode(SysConstants.DEFAULT_PASSWORD));
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
     }
