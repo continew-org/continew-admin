@@ -8,6 +8,7 @@ WORKDIR /app/bin
 
 ENTRYPOINT ["java", \
             "-jar", \
+            "-XX:+UseZGC", \
             "-Djava.security.egd=file:/dev/./urandom", \
             "-Dspring.profiles.active=prod", \
             "app.jar"]

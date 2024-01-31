@@ -6,6 +6,9 @@
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v2.4.0-%23ff3f59.svg" alt="Release" />
 </a>
+<a href="https://app.codacy.com/gh/Charles7c/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
+<img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy Badge" />
+</a>
 <a href="https://sonarcloud.io/summary/new_code?id=Charles7c_continew-admin" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=Charles7c_continew-admin&metric=alert_status" alt="Sonar Status" />
 </a>
@@ -97,7 +100,7 @@ public class DeptController extends BaseController<DeptService, DeptResponse, De
 8.**业务脚手架：** 有颜有料，不止是说说而已。基于成熟的前端脚手架 [Fantastic Admin](https://fantastic-admin.gitee.io/) 开发的前端项目，持续打磨 UI 设计与色彩主题。提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（生产级炸弹漏洞处理方案），用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、公告等，设计用心，逻辑合理闭环。
 > 一个好的脚手架项目，不仅仅是提供一系列组件集成与配置，也不仅仅是封装一堆好用的工具，还更应该提供一系列通用基础业务解决方案及设计，为初创团队项目减负。
 
-9.**质量与安全：** 项目 CI 已集成 Sonarqube、Qodana，Push 即触发代码质量扫描，并定期进行 CVE 漏洞扫描，及时解决潜在问题。
+9.**质量与安全：** 项目 CI 已集成 Sonarqube、Codacy、Qodana，Push 即触发代码质量扫描，并定期进行 CVE 漏洞扫描，及时解决潜在问题。
 
 由于篇幅有限，且项目正处于高速发展期，更多功能正在陆续上线（敬请关注仓库或群内动态）。另外像最基本的统一异常、错误处理，基础线程池等配置就不在此赘述，细节优化详情请 clone 代码查看。
 > Talk is cheap, show me the code.
