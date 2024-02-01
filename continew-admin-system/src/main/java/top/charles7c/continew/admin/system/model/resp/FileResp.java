@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 
 import top.charles7c.continew.admin.system.enums.FileTypeEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 /**
  * 文件信息

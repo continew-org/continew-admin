@@ -28,7 +28,7 @@ import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
 import top.charles7c.continew.starter.core.util.IpUtils;
-import top.charles7c.continew.starter.extension.crud.base.CommonUserService;
+import top.charles7c.continew.starter.extension.crud.service.CommonUserService;
 import top.charles7c.continew.starter.web.util.ServletUtils;
 
 import java.time.LocalDateTime;

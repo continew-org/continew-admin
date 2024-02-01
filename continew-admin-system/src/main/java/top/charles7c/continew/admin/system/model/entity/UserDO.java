@@ -25,7 +25,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseDO;
+import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
 
 /**
  * 用户实体

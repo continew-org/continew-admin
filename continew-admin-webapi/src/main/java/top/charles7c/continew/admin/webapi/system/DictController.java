@@ -26,7 +26,7 @@ import top.charles7c.continew.admin.system.model.resp.DictDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictResp;
 import top.charles7c.continew.admin.system.service.DictService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 
 /**
  * 字典管理 API

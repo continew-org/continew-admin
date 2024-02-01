@@ -31,7 +31,7 @@ import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,18 +16,15 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+
 import java.io.Serial;
 import java.time.LocalDateTime;
-
-import jakarta.validation.constraints.*;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import org.hibernate.validator.constraints.Length;
-
-import top.charles7c.continew.starter.extension.crud.base.BaseReq;
 
 /**
  * 创建或修改公告信息

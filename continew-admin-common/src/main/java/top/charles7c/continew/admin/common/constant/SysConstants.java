@@ -68,9 +68,4 @@ public class SysConstants {
      * 描述类字段后缀
      */
     public static final String DESCRIPTION_FIELD_SUFFIX = "String";
-
-    /**
-     * Trace ID
-     */
-    public static final String TRACE_ID = "traceId";
 }

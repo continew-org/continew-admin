@@ -25,7 +25,7 @@ import lombok.Data;
 import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.common.enums.DataScopeEnum;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 
 import java.io.Serial;

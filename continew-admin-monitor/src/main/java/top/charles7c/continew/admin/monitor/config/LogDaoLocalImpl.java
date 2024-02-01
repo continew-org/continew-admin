@@ -38,6 +38,7 @@ import top.charles7c.continew.starter.log.common.dao.LogDao;
 import top.charles7c.continew.starter.log.common.model.LogRecord;
 import top.charles7c.continew.starter.log.common.model.LogRequest;
 import top.charles7c.continew.starter.log.common.model.LogResponse;
+import top.charles7c.continew.starter.web.autoconfigure.trace.TraceProperties;
 import top.charles7c.continew.starter.web.model.R;
 
 import java.net.URI;
@@ -56,6 +57,7 @@ public class LogDaoLocalImpl implements LogDao {
 
     private final UserService userService;
     private final LogMapper logMapper;
+    private final TraceProperties traceProperties;
 
     @Async
     @Override
@@ -88,7 +90,7 @@ public class LogDaoLocalImpl implements LogDao {
         logDO.setStatusCode(statusCode);
         Map<String, String> responseHeaders = logResponse.getHeaders();
         logDO.setResponseHeaders(JSONUtil.toJsonStr(responseHeaders));
-        logDO.setTraceId(responseHeaders.get(SysConstants.TRACE_ID));
+        logDO.setTraceId(responseHeaders.get(traceProperties.getHeaderName()));
         String responseBody = logResponse.getBody();
         logDO.setResponseBody(responseBody);
         // 状态

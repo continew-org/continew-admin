@@ -16,17 +16,14 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-import java.time.LocalDateTime;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
-import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import java.io.Serial;
+import java.time.LocalDateTime;
 
 /**
  * 公告详情信息

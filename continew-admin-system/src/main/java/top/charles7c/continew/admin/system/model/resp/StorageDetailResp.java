@@ -28,7 +28,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseDetailResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 /**
  * 存储库详情信息

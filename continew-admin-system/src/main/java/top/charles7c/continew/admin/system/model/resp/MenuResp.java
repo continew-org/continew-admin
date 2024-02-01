@@ -29,7 +29,7 @@ import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConv
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
-import top.charles7c.continew.starter.extension.crud.base.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
 
 /**
  * 菜单信息

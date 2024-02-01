@@ -26,7 +26,7 @@ import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**

@@ -23,7 +23,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.continew.starter.extension.crud.base.BaseDO;
+import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
 
 /**
  * 公告实体

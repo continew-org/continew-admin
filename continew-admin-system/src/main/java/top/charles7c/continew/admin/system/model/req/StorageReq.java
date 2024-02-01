@@ -29,7 +29,7 @@ import org.hibernate.validator.constraints.Length;
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseReq;
+import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
 
 /**
  * 创建或修改存储库信息

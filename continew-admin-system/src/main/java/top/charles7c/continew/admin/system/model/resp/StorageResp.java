@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
 
 /**
  * 存储库信息

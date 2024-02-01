@@ -39,7 +39,7 @@ import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.URLUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.base.BaseServiceImpl;
+import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.List;
 import java.util.Map;

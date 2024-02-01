@@ -229,12 +229,24 @@ sa-token.extension:
     - /error
     # 静态资源
     - /*.html
-    - /**/*.html
-    - /**/*.css
-    - /**/*.js
+    - /*/*.html
+    - /*/*.css
+    - /*/*.js
     - /webSocket/**
     # 本地存储资源
     - /file/**
+
+--- ### 密码编码器配置
+continew-starter.security:
+  password:
+    enabled: true
+    # BCryptPasswordEncoder
+    encoding-id: bcrypt
+
+--- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
+rsa:
+  # 私钥
+  privateKey: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV
 
 --- ### 文件上传配置
 spring.servlet:
@@ -244,15 +256,3 @@ spring.servlet:
     max-file-size: 10MB
     # 单次总上传文件大小限制
     max-request-size: 20MB
-
---- ### 密码编码器配置
-continew-starter:
-  password-encoder:
-    enabled: true
-    # BCryptPasswordEncoder
-    encoding-id: bcrypt
-
---- ### 非对称加密配置（例如：密码加密传输，前端公钥加密，后端私钥解密；在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
-rsa:
-  # 私钥
-  privateKey: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV

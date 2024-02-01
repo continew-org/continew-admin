@@ -28,7 +28,7 @@ import cn.hutool.core.util.DesensitizedUtil;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.extension.crud.base.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
 
 /**
  * 用户信息

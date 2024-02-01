@@ -26,7 +26,7 @@ import top.charles7c.continew.admin.system.model.resp.RoleDetailResp;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.RoleService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 
 /**
  * 角色管理 API

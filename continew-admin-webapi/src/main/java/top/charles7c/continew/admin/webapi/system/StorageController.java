@@ -26,7 +26,7 @@ import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.charles7c.continew.starter.extension.crud.base.BaseController;
+import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 
 /**
  * 存储库管理 API

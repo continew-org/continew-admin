@@ -16,23 +16,19 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
-import java.io.Serial;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
-
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.starter.extension.crud.base.BaseReq;
-import top.charles7c.continew.starter.extension.crud.base.ValidateGroup;
+import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+import top.charles7c.continew.starter.extension.crud.util.ValidateGroup;
+
+import java.io.Serial;
 
 /**
  * 创建或修改部门信息

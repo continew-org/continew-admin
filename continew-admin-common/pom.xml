@@ -96,6 +96,12 @@
             <artifactId>continew-starter-file-excel</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 安全模块 - 密码编码器 -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-starter-security-password</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter API 文档模块 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
@@ -106,12 +112,6 @@
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-starter-json-jackson</artifactId>
-        </dependency>
-
-        <!-- TLog（轻量级的分布式日志标记追踪神器） -->
-        <dependency>
-            <groupId>com.yomahub</groupId>
-            <artifactId>tlog-web-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 </project>

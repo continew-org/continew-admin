@@ -23,6 +23,7 @@ import top.charles7c.continew.admin.monitor.mapper.LogMapper;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.log.common.dao.LogDao;
 import top.charles7c.continew.starter.log.httptracepro.autoconfigure.ConditionalOnEnabledLog;
+import top.charles7c.continew.starter.web.autoconfigure.trace.TraceProperties;
 
 /**
  * 日志配置
@@ -38,7 +39,7 @@ public class LogConfiguration {
      * 日志持久层接口本地实现类
      */
     @Bean
-    public LogDao logDao(UserService userService, LogMapper logMapper) {
-        return new LogDaoLocalImpl(userService, logMapper);
+    public LogDao logDao(UserService userService, LogMapper logMapper, TraceProperties traceProperties) {
+        return new LogDaoLocalImpl(userService, logMapper, traceProperties);
     }
 }

@@ -22,7 +22,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.charles7c.continew.starter.extension.crud.base.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
 
 /**
  * 字典信息
