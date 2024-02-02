@@ -63,7 +63,7 @@ public class SocialAuthController {
     @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @GetMapping("/{source}")
-    public R authorize(@PathVariable String source) {
+    public R<String> authorize(@PathVariable String source) {
         AuthRequest authRequest = this.getAuthRequest(source);
         return R.ok("操作成功", authRequest.authorize(AuthStateUtils.createState()));
     }

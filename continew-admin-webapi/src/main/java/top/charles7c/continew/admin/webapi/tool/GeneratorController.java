@@ -89,7 +89,7 @@ public class GeneratorController {
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/config/{tableName}")
-    public R saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
+    public R<Void> saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
         generatorService.saveConfig(req, tableName);
         return R.ok("保存成功");
     }
@@ -106,7 +106,7 @@ public class GeneratorController {
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/{tableName}")
-    public R generate(@PathVariable String tableName) {
+    public R<Void> generate(@PathVariable String tableName) {
         ValidationUtils.throwIf(projectProperties.isProduction(), "仅支持在开发环境生成代码");
         generatorService.generate(tableName);
         return R.ok("生成成功，请查看生成代码是否正确");

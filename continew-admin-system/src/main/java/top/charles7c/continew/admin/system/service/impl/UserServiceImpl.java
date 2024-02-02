@@ -33,13 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
-import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.mapper.UserMapper;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
 import top.charles7c.continew.admin.system.model.query.UserQuery;
 import top.charles7c.continew.admin.system.model.req.UserBasicInfoUpdateReq;
+import top.charles7c.continew.admin.system.model.req.UserPasswordResetReq;
 import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
@@ -50,8 +50,8 @@ import top.charles7c.continew.admin.system.service.UserRoleService;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.service.CommonUserService;
+import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -92,16 +92,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
         req.setStatus(DisEnableStatusEnum.ENABLE);
+        req.setPassword(passwordEncoder.encode(req.getPassword()));
     }
 
     @Override
     protected void afterAdd(UserReq req, UserDO user) {
         Long userId = user.getId();
-        baseMapper.lambdaUpdate()
-            .set(UserDO::getPassword, passwordEncoder.encode(SysConstants.DEFAULT_PASSWORD))
-            .set(UserDO::getPwdResetTime, LocalDateTime.now())
-            .eq(UserDO::getId, userId)
-            .update();
+        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
         userRoleService.add(req.getRoleIds(), userId);
     }
@@ -166,9 +163,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
-        CheckUtils.throwIf(!StrUtil
-            .equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
-                .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
+        CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
+            .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
         // 上传新头像
         UserDO user = super.getById(id);
         FileInfo fileInfo = fileService.upload(avatarFile);
@@ -234,9 +230,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public void resetPassword(Long id) {
+    public void resetPassword(UserPasswordResetReq req, Long id) {
         UserDO user = super.getById(id);
-        user.setPassword(passwordEncoder.encode(SysConstants.DEFAULT_PASSWORD));
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
     }

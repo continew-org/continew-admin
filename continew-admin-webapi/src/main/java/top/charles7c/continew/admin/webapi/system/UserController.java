@@ -16,26 +16,28 @@
 
 package top.charles7c.continew.admin.webapi.system;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.ReUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import cn.dev33.satoken.annotation.SaCheckPermission;
-
-import top.charles7c.continew.admin.common.constant.SysConstants;
+import top.charles7c.continew.admin.common.constant.RegexConstants;
+import top.charles7c.continew.admin.common.util.SecureUtils;
 import top.charles7c.continew.admin.system.model.query.UserQuery;
+import top.charles7c.continew.admin.system.model.req.UserPasswordResetReq;
 import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
 import top.charles7c.continew.admin.system.service.UserService;
+import top.charles7c.continew.starter.core.util.ExceptionUtils;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 import top.charles7c.continew.starter.extension.crud.util.ValidateGroup;
@@ -56,24 +58,34 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     @Override
     @SaCheckPermission("system:user:add")
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
+        String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getPassword()));
+        ValidationUtils.throwIfNull(rawPassword, "密码解密失败");
+        ValidationUtils.throwIf(!ReUtil
+            .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
+        req.setPassword(rawPassword);
         Long id = baseService.add(req);
-        return R.ok(String.format("新增成功，请牢记默认密码：%s", SysConstants.DEFAULT_PASSWORD), id);
+        return R.ok("新增成功", id);
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:password:reset")
     @PatchMapping("/{id}/password")
-    public R resetPassword(@PathVariable Long id) {
-        baseService.resetPassword(id);
-        return R.ok(String.format("重置密码成功，请牢记默认密码：%s", SysConstants.DEFAULT_PASSWORD));
+    public R<Void> resetPassword(@Validated @RequestBody UserPasswordResetReq req, @PathVariable Long id) {
+        String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getNewPassword()));
+        ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
+        ValidationUtils.throwIf(!ReUtil
+            .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
+        req.setNewPassword(rawNewPassword);
+        baseService.resetPassword(req, id);
+        return R.ok("重置密码成功");
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:role:update")
     @PatchMapping("/{id}/role")
-    public R updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
+    public R<Void> updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
         baseService.updateRole(updateReq, id);
         return R.ok("分配成功");
     }

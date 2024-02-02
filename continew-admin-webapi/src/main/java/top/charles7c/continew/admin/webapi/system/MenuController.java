@@ -55,7 +55,7 @@ public class MenuController extends BaseController<MenuService, MenuResp, MenuRe
 
     @Override
     @SaCheckPermission("system:menu:update")
-    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
+    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
         this.checkPath(req);
         return super.update(req, id);
     }

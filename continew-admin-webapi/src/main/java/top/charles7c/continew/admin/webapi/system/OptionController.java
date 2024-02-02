@@ -59,7 +59,7 @@ public class OptionController {
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
-    public R update(@Validated @RequestBody List<OptionReq> req) {
+    public R<Void> update(@Validated @RequestBody List<OptionReq> req) {
         optionService.update(req);
         return R.ok();
     }
@@ -67,7 +67,7 @@ public class OptionController {
     @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
-    public R resetValue(@Validated @RequestBody OptionResetValueReq req) {
+    public R<Void> resetValue(@Validated @RequestBody OptionResetValueReq req) {
         optionService.resetValue(req);
         return R.ok();
     }

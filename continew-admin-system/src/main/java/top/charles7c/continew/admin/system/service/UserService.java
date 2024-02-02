@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
 import top.charles7c.continew.admin.system.model.query.UserQuery;
 import top.charles7c.continew.admin.system.model.req.UserBasicInfoUpdateReq;
+import top.charles7c.continew.admin.system.model.req.UserPasswordResetReq;
 import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
@@ -92,9 +93,10 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 重置密码
      *
-     * @param id ID
+     * @param req 重置信息
+     * @param id  ID
      */
-    void resetPassword(Long id);
+    void resetPassword(UserPasswordResetReq req, Long id);
 
     /**
      * 修改角色

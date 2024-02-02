@@ -28,6 +28,7 @@ import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+import top.charles7c.continew.starter.extension.crud.util.ValidateGroup;
 
 import java.io.Serial;
 import java.util.List;
@@ -60,6 +61,13 @@ public class UserReq extends BaseReq {
     @NotBlank(message = "昵称不能为空")
     @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "昵称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
     private String nickname;
+
+    /**
+     * 密码（加密）
+     */
+    @Schema(description = "密码（加密）", example = "E7c72TH+LDxKTwavjM99W1MdI9Lljh79aPKiv3XB9MXcplhm7qJ1BJCj28yaflbdVbfc366klMtjLIWQGqb0qw==")
+    @NotBlank(message = "密码不能为空", groups = ValidateGroup.Crud.Add.class)
+    private String password;
 
     /**
      * 邮箱

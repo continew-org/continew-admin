@@ -47,11 +47,6 @@ public class SysConstants {
     public static final String ALL_PERMISSION = StringConstants.ASTERISK;
 
     /**
-     * 默认密码
-     */
-    public static final String DEFAULT_PASSWORD = "123456";
-
-    /**
      * 账号登录 URI
      */
     public static final String LOGIN_URI = "/auth/account";

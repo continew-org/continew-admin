@@ -258,8 +258,4 @@ spring.servlet:
     max-request-size: 20MB
 ## 头像支持格式配置
 avatar:
-  support-suffix:
-    - jpg
-    - jpeg
-    - png
-    - gif
+  support-suffix: jpg,jpeg,png,gif

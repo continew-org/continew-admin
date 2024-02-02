@@ -56,8 +56,8 @@ public class AnnouncementController extends BaseController<AnnouncementService, 
 
     @Override
     @SaCheckPermission("system:announcement:update")
-    public R update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementReq req,
-                    @PathVariable Long id) {
+    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementReq req,
+                          @PathVariable Long id) {
         this.checkTime(req);
         return super.update(req, id);
     }

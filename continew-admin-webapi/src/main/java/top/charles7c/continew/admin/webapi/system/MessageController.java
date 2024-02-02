@@ -61,7 +61,7 @@ public class MessageController {
     @Operation(summary = "删除数据", description = "删除数据")
     @Parameter(name = "ids", description = "ID 列表", example = "1,2", in = ParameterIn.PATH)
     @DeleteMapping("/{ids}")
-    public R delete(@PathVariable List<Long> ids) {
+    public R<Void> delete(@PathVariable List<Long> ids) {
         baseService.delete(ids);
         return R.ok("删除成功");
     }
@@ -69,7 +69,7 @@ public class MessageController {
     @Operation(summary = "标记已读", description = "将消息标记为已读状态")
     @Parameter(name = "ids", description = "消息ID列表", example = "1,2", in = ParameterIn.QUERY)
     @PatchMapping("/read")
-    public R readMessage(@RequestParam(required = false) List<Long> ids) {
+    public R<Void> readMessage(@RequestParam(required = false) List<Long> ids) {
         messageUserService.readMessage(ids);
         return R.ok();
     }

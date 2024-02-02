@@ -105,7 +105,7 @@ public class CaptchaController {
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
-    public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email) throws MessagingException {
+    public R<Void> getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email) throws MessagingException {
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
         String limitCaptchaKey = limitKeyPrefix + captchaKeyPrefix + email;
@@ -129,9 +129,9 @@ public class CaptchaController {
 
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
-    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误") String phone,
-                           CaptchaVO captchaReq,
-                           HttpServletRequest request) {
+    public R<Void> getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误") String phone,
+                                 CaptchaVO captchaReq,
+                                 HttpServletRequest request) {
         // 行为验证码校验
         ResponseModel verificationRes = captchaService.verification(captchaReq);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes

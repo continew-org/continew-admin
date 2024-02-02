@@ -80,14 +80,14 @@ public class UserCenterController {
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public R updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq req) {
+    public R<Void> updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq req) {
         userService.updateBasicInfo(req, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
-    public R updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
+    public R<Void> updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
         String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getOldPassword()));
         ValidationUtils.throwIfNull(rawOldPassword, "当前密码解密失败");
@@ -97,12 +97,12 @@ public class UserCenterController {
         ValidationUtils.throwIf(!ReUtil
             .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
-        return R.ok("修改成功");
+        return R.ok("修改成功，请牢记你的新密码");
     }
 
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
-    public R updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
+    public R<Void> updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
@@ -117,7 +117,7 @@ public class UserCenterController {
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
-    public R updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
+    public R<Void> updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
         ValidationUtils.throwIfBlank(rawCurrentPassword, "当前密码解密失败");
@@ -147,7 +147,7 @@ public class UserCenterController {
     @Operation(summary = "绑定三方账号", description = "绑定三方账号")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/social/{source}")
-    public R bindSocial(@PathVariable String source, @RequestBody AuthCallback callback) {
+    public R<Void> bindSocial(@PathVariable String source, @RequestBody AuthCallback callback) {
         AuthRequest authRequest = authRequestFactory.get(source);
         AuthResponse<AuthUser> response = authRequest.login(callback);
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
@@ -159,7 +159,7 @@ public class UserCenterController {
     @Operation(summary = "解绑三方账号", description = "解绑三方账号")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @DeleteMapping("/social/{source}")
-    public R unbindSocial(@PathVariable String source) {
+    public R<Void> unbindSocial(@PathVariable String source) {
         userSocialService.deleteBySourceAndUserId(source, LoginHelper.getUserId());
         return R.ok("解绑成功");
     }

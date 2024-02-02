@@ -62,7 +62,7 @@ public class OnlineUserController {
     @Parameter(name = "token", description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE", in = ParameterIn.PATH)
     @SaCheckPermission("monitor:online:user:delete")
     @DeleteMapping("/{token}")
-    public R kickout(@PathVariable String token) {
+    public R<Void> kickout(@PathVariable String token) {
         String currentToken = StpUtil.getTokenValue();
         CheckUtils.throwIfEqual(token, currentToken, "不能强退自己");
         StpUtil.kickoutByTokenValue(token);
