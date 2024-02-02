@@ -17,29 +17,23 @@
 package top.charles7c.continew.admin.auth.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import top.charles7c.continew.admin.common.model.dto.LoginUser;
-import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Sa-Token 权限认证实现
+ * Sa-Token 配置
  *
  * @author Charles7c
- * @since 2023/3/1 22:28
+ * @since 2022/12/19 22:13
  */
-public class SaTokenPermissionImpl implements StpInterface {
+@Configuration
+public class SaTokenConfiguration {
 
-    @Override
-    public List<String> getPermissionList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        return new ArrayList<>(loginUser.getPermissions());
-    }
-
-    @Override
-    public List<String> getRoleList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        return new ArrayList<>(loginUser.getRoleCodes());
+    /**
+     * Sa-Token 权限认证配置
+     */
+    @Bean
+    public StpInterface stpInterface() {
+        return new SaTokenPermissionImpl();
     }
 }

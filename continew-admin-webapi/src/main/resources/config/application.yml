@@ -123,8 +123,6 @@ sa-token:
   ## 扩展配置
   extension:
     enabled: true
-    # 权限认证实现
-    permission-impl: top.charles7c.continew.admin.auth.config.satoken.SaTokenPermissionImpl
     # 持久层配置
     dao.type: REDIS
 

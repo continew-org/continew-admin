@@ -47,14 +47,13 @@ import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.model.resp.CaptchaResp;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
-import top.charles7c.continew.starter.captcha.graphic.autoconfigure.GraphicCaptchaProperties;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.web.model.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
 import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
+import top.charles7c.continew.starter.web.model.R;
 
 import java.time.Duration;
 import java.util.LinkedHashMap;
@@ -75,9 +74,9 @@ import java.util.Map;
 public class CaptchaController {
 
     private final CaptchaService captchaService;
+    private final Captcha captcha;
     private final ProjectProperties projectProperties;
     private final CaptchaProperties captchaProperties;
-    private final GraphicCaptchaProperties graphicCaptchaProperties;
 
     @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
@@ -98,7 +97,6 @@ public class CaptchaController {
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
     @GetMapping("/img")
     public R<CaptchaResp> getImageCaptcha() {
-        Captcha captcha = graphicCaptchaProperties.getCaptcha();
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
         RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
