@@ -16,19 +16,15 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import cn.hutool.core.lang.RegexPool;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.continew.admin.common.constant.RegexConstants;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 用户手机号修改信息
@@ -48,7 +44,7 @@ public class UserPhoneUpdateReq implements Serializable {
      */
     @Schema(description = "新手机号", example = "13811111111")
     @NotBlank(message = "新手机号不能为空")
-    @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误")
+    @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误")
     private String newPhone;
 
     /**
@@ -60,9 +56,9 @@ public class UserPhoneUpdateReq implements Serializable {
     private String captcha;
 
     /**
-     * 当前密码（加密后）
+     * 当前密码（加密）
      */
-    @Schema(description = "当前密码（加密后）", example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
+    @Schema(description = "当前密码（加密）", example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
     @NotBlank(message = "当前密码不能为空")
     private String currentPassword;
 }

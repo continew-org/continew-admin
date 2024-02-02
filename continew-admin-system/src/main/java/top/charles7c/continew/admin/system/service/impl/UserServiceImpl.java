@@ -27,12 +27,12 @@ import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
-import top.charles7c.continew.admin.common.constant.FileConstants;
 import top.charles7c.continew.admin.common.constant.SysConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
@@ -73,6 +73,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final FileService fileService;
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
+    @Value("${avatar.support-suffix}")
+    private String[] avatarSupportSuffix;
 
     @Override
     public Long add(UserDO user) {
@@ -118,7 +120,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper
             .getUserId()), "不允许禁用当前用户");
         UserDO oldUser = super.getById(id);
-        if (oldUser.getIsSystem()) {
+        if (Boolean.TRUE.equals(oldUser.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用", oldUser
                 .getNickname());
             Collection<Long> disjunctionRoleIds = CollUtil.disjunction(req.getRoleIds(), userRoleService
@@ -164,10 +166,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
-        String[] avatarSupportImgTypes = FileConstants.AVATAR_SUPPORTED_IMG_TYPES;
         CheckUtils.throwIf(!StrUtil
-            .equalsAnyIgnoreCase(avatarImageType, avatarSupportImgTypes), "头像仅支持 {} 格式的图片", String
-                .join(StringConstants.CHINESE_COMMA, avatarSupportImgTypes));
+            .equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
+                .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
         // 上传新头像
         UserDO user = super.getById(id);
         FileInfo fileInfo = fileService.upload(avatarFile);

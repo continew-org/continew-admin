@@ -24,9 +24,6 @@ package top.charles7c.continew.admin.common.constant;
  */
 public class UiConstants {
 
-    private UiConstants() {
-    }
-
     /**
      * 主色（极致蓝）
      */
@@ -51,4 +48,7 @@ public class UiConstants {
      * 默认色（中性灰）
      */
     public static final String COLOR_DEFAULT = "gray";
+
+    private UiConstants() {
+    }
 }

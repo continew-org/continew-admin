@@ -16,19 +16,15 @@
 
 package top.charles7c.continew.admin.auth.model.req;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import cn.hutool.core.lang.RegexPool;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.continew.admin.common.constant.RegexConstants;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 邮箱登录信息
@@ -48,7 +44,7 @@ public class EmailLoginReq implements Serializable {
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
     @NotBlank(message = "邮箱不能为空")
-    @Pattern(regexp = RegexConstants.EMAIL, message = "邮箱格式错误")
+    @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误")
     private String email;
 
     /**

@@ -26,9 +26,6 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
  */
 public class CacheConstants {
 
-    private CacheConstants() {
-    }
-
     /**
      * 分隔符
      */
@@ -73,4 +70,7 @@ public class CacheConstants {
      * 仪表盘缓存键前缀
      */
     public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD" + DELIMITER;
+
+    private CacheConstants() {
+    }
 }

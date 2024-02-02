@@ -26,9 +26,6 @@ import top.charles7c.continew.starter.core.constant.StringConstants;
  */
 public class SysConstants {
 
-    private SysConstants() {
-    }
-
     /**
      * 管理员角色编码
      */
@@ -68,4 +65,7 @@ public class SysConstants {
      * 描述类字段后缀
      */
     public static final String DESCRIPTION_FIELD_SUFFIX = "String";
+
+    private SysConstants() {
+    }
 }

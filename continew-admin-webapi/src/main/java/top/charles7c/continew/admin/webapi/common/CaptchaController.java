@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.webapi.common;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -44,7 +45,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.charles7c.continew.admin.common.config.properties.CaptchaProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
-import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.model.resp.CaptchaResp;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -105,7 +105,7 @@ public class CaptchaController {
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
-    public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexConstants.EMAIL, message = "邮箱格式错误") String email) throws MessagingException {
+    public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email) throws MessagingException {
         String limitKeyPrefix = CacheConstants.LIMIT_KEY_PREFIX;
         String captchaKeyPrefix = CacheConstants.CAPTCHA_KEY_PREFIX;
         String limitCaptchaKey = limitKeyPrefix + captchaKeyPrefix + email;
@@ -129,7 +129,7 @@ public class CaptchaController {
 
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
-    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误") String phone,
+    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误") String phone,
                            CaptchaVO captchaReq,
                            HttpServletRequest request) {
         // 行为验证码校验

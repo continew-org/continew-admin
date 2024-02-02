@@ -16,18 +16,13 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import cn.hutool.core.lang.RegexPool;
-
 /**
  * 正则相关常量
  *
  * @author Charles7c
  * @since 2023/1/10 20:06
  */
-public class RegexConstants implements RegexPool {
-
-    private RegexConstants() {
-    }
+public class RegexConstants {
 
     /**
      * 用户名正则（长度为 4 到 64 位，可以包含字母、数字，下划线，以字母开头）
@@ -53,4 +48,7 @@ public class RegexConstants implements RegexPool {
      * 包名正则（可以包含大小写字母、数字、下划线，每一级包名不能以数字开头）
      */
     public static final String PACKAGE_NAME = "^(?:[a-zA-Z_][a-zA-Z0-9_]*\\.)*[a-zA-Z_][a-zA-Z0-9_]*$";
+
+    private RegexConstants() {
+    }
 }

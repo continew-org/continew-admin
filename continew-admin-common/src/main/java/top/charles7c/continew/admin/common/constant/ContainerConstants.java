@@ -26,8 +26,10 @@ import top.charles7c.continew.starter.extension.crud.constant.ContainerPool;
  */
 public class ContainerConstants extends ContainerPool {
 
-    private ContainerConstants() {
-    }
+    /**
+     * 用户昵称
+     */
+    public static final String USER_NICKNAME = ContainerPool.USER_NICKNAME;
 
     /**
      * 用户角色 ID 列表
@@ -38,4 +40,7 @@ public class ContainerConstants extends ContainerPool {
      * 角色部门列表
      */
     public static final String ROLE_DEPT_ID_LIST = "RoleDeptIdList";
+
+    private ContainerConstants() {
+    }
 }

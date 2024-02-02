@@ -16,19 +16,15 @@
 
 package top.charles7c.continew.admin.auth.model.req;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import cn.hutool.core.lang.RegexPool;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
 
-import top.charles7c.continew.admin.common.constant.RegexConstants;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 手机号登录信息
@@ -48,7 +44,7 @@ public class PhoneLoginReq implements Serializable {
      */
     @Schema(description = "手机号", example = "13811111111")
     @NotBlank(message = "手机号不能为空")
-    @Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式错误")
+    @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误")
     private String phone;
 
     /**

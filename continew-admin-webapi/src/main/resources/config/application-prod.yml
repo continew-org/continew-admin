@@ -256,3 +256,10 @@ spring.servlet:
     max-file-size: 10MB
     # 单次总上传文件大小限制
     max-request-size: 20MB
+## 头像支持格式配置
+avatar:
+  support-suffix:
+    - jpg
+    - jpeg
+    - png
+    - gif

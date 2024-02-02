@@ -16,6 +16,7 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
+import cn.hutool.core.lang.RegexPool;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -64,7 +65,7 @@ public class UserReq extends BaseReq {
      * 邮箱
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
-    @Pattern(regexp = "^$|" + RegexConstants.EMAIL, message = "邮箱格式错误")
+    @Pattern(regexp = "^$|" + RegexPool.EMAIL, message = "邮箱格式错误")
     @Length(max = 255, message = "邮箱长度不能超过 {max} 个字符")
     private String email;
 
@@ -72,7 +73,7 @@ public class UserReq extends BaseReq {
      * 手机号码
      */
     @Schema(description = "手机号码", example = "13811111111")
-    @Pattern(regexp = "^$|" + RegexConstants.MOBILE, message = "手机号码格式错误")
+    @Pattern(regexp = "^$|" + RegexPool.MOBILE, message = "手机号码格式错误")
     private String phone;
 
     /**
