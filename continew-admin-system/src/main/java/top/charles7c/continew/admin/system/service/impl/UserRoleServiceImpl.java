@@ -28,7 +28,6 @@ import top.charles7c.continew.admin.system.model.entity.UserRoleDO;
 import top.charles7c.continew.admin.system.service.UserRoleService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 用户和角色业务实现
@@ -52,16 +51,14 @@ public class UserRoleServiceImpl implements UserRoleService {
             .list()
             .stream()
             .map(UserRoleDO::getRoleId)
-            .collect(Collectors.toList());
+            .toList();
         if (CollUtil.isEmpty(CollUtil.disjunction(roleIds, oldRoleIdList))) {
             return false;
         }
         // 删除原有关联
         userRoleMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
-        List<UserRoleDO> userRoleList = roleIds.stream()
-            .map(roleId -> new UserRoleDO(userId, roleId))
-            .collect(Collectors.toList());
+        List<UserRoleDO> userRoleList = roleIds.stream().map(roleId -> new UserRoleDO(userId, roleId)).toList();
         return userRoleMapper.insertBatch(userRoleList);
     }
 

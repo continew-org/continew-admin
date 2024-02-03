@@ -28,7 +28,6 @@ import top.charles7c.continew.admin.system.model.entity.RoleDeptDO;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 角色和部门业务实现
@@ -52,16 +51,14 @@ public class RoleDeptServiceImpl implements RoleDeptService {
             .list()
             .stream()
             .map(RoleDeptDO::getDeptId)
-            .collect(Collectors.toList());
+            .toList();
         if (CollUtil.isEmpty(CollUtil.disjunction(deptIds, oldDeptIdList))) {
             return false;
         }
         // 删除原有关联
         roleDeptMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleDeptDO> roleDeptList = deptIds.stream()
-            .map(deptId -> new RoleDeptDO(roleId, deptId))
-            .collect(Collectors.toList());
+        List<RoleDeptDO> roleDeptList = deptIds.stream().map(deptId -> new RoleDeptDO(roleId, deptId)).toList();
         return roleDeptMapper.insertBatch(roleDeptList);
     }
 

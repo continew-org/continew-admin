@@ -73,8 +73,8 @@ import java.util.Map;
 @RequestMapping("/captcha")
 public class CaptchaController {
 
-    private final CaptchaService captchaService;
-    private final Captcha captcha;
+    private final CaptchaService behaviorCaptchaService;
+    private final Captcha graphicCaptchaService;
     private final ProjectProperties projectProperties;
     private final CaptchaProperties captchaProperties;
 
@@ -83,14 +83,14 @@ public class CaptchaController {
     @GetMapping("/behavior")
     public R<Object> getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
         captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        return R.ok(captchaService.get(captchaReq).getRepData());
+        return R.ok(behaviorCaptchaService.get(captchaReq).getRepData());
     }
 
     @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
     public R<Object> checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq) {
-        return R.ok(captchaService.check(captchaReq));
+        return R.ok(behaviorCaptchaService.check(captchaReq));
     }
 
     @Log(ignore = true)
@@ -99,8 +99,9 @@ public class CaptchaController {
     public R<CaptchaResp> getImageCaptcha() {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
-        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
-        return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build());
+        RedisUtils.set(captchaKey, graphicCaptchaService.text(), Duration.ofMinutes(captchaProperties
+            .getExpirationInMinutes()));
+        return R.ok(CaptchaResp.builder().uuid(uuid).img(graphicCaptchaService.toBase64()).build());
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
@@ -133,7 +134,7 @@ public class CaptchaController {
                                  CaptchaVO captchaReq,
                                  HttpServletRequest request) {
         // 行为验证码校验
-        ResponseModel verificationRes = captchaService.verification(captchaReq);
+        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes
             .getRepMsg());
         CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
@@ -143,20 +144,20 @@ public class CaptchaController {
         String limitTemplateKeyPrefix = limitKeyPrefix + captchaKeyPrefix;
         // 限制短信发送频率
         // 1.同一号码同一短信模板，1分钟2条，1小时8条，24小时20条，e.g. LIMIT:CAPTCHA:XXX:188xxxxx:1
+        final String errorMsg = "获取验证码操作太频繁，请稍后再试";
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix + "MIN", phone, templateId), RateType.OVERALL, 2, 60), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "MIN", phone, templateId), RateType.OVERALL, 2, 60), errorMsg);
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix + "HOUR", phone, templateId), RateType.OVERALL, 8, 60 * 60), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "HOUR", phone, templateId), RateType.OVERALL, 8, 60 * 60), errorMsg);
         CheckUtils.throwIf(!RedisUtils.rateLimit(RedisUtils
-            .formatKey(limitTemplateKeyPrefix + "DAY", phone, templateId), RateType.OVERALL, 20, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
+            .formatKey(limitTemplateKeyPrefix + "DAY", phone, templateId), RateType.OVERALL, 20, 60 * 60 * 24), errorMsg);
         // 2.同一号码所有短信模板 24 小时 100 条，e.g. LIMIT:CAPTCHA:188xxxxx
         String limitPhoneKey = limitKeyPrefix + captchaKeyPrefix + phone;
-        CheckUtils.throwIf(!RedisUtils
-            .rateLimit(limitPhoneKey, RateType.OVERALL, 100, 60 * 60 * 24), "验证码发送过于频繁，请稍后后再试");
+        CheckUtils.throwIf(!RedisUtils.rateLimit(limitPhoneKey, RateType.OVERALL, 100, 60 * 60 * 24), errorMsg);
         // 3.同一 IP 每分钟限制发送 30 条，e.g. LIMIT:CAPTCHA:PHONE:1xx.1xx.1xx.1xx
         String limitIpKey = RedisUtils.formatKey(limitKeyPrefix + captchaKeyPrefix + "PHONE", JakartaServletUtil
             .getClientIP(request));
-        CheckUtils.throwIf(!RedisUtils.rateLimit(limitIpKey, RateType.OVERALL, 30, 60), "验证码发送过于频繁，请稍后后再试");
+        CheckUtils.throwIf(!RedisUtils.rateLimit(limitIpKey, RateType.OVERALL, 30, 60), errorMsg);
         // 生成验证码
         String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
         // 发送验证码

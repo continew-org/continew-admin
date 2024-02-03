@@ -40,7 +40,6 @@ import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 系统日志业务实现
@@ -64,7 +63,7 @@ public class LogServiceImpl implements LogService {
         List<String> columnNameList = fieldNameList.stream()
             .filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
             .map(StrUtil::toUnderlineCase)
-            .collect(Collectors.toList());
+            .toList();
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
@@ -81,7 +80,7 @@ public class LogServiceImpl implements LogService {
         List<String> columnNameList = fieldNameList.stream()
             .filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
             .map(StrUtil::toUnderlineCase)
-            .collect(Collectors.toList());
+            .toList();
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);
@@ -97,7 +96,7 @@ public class LogServiceImpl implements LogService {
         List<String> columnNameList = fieldNameList.stream()
             .filter(n -> !n.endsWith(SysConstants.DESCRIPTION_FIELD_SUFFIX))
             .map(StrUtil::toUnderlineCase)
-            .collect(Collectors.toList());
+            .toList();
         queryWrapper.select(columnNameList);
         // 分页查询
         IPage<LogDO> page = logMapper.selectPage(pageQuery.toPage(), queryWrapper);

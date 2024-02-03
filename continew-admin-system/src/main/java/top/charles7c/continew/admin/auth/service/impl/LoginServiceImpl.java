@@ -56,7 +56,6 @@ import top.charles7c.continew.starter.extension.crud.util.TreeUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 登录业务实现
@@ -158,9 +157,7 @@ public class LoginServiceImpl implements LoginService {
         } else {
             roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));
         }
-        List<MenuResp> menuList = menuSet.stream()
-            .filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType()))
-            .collect(Collectors.toList());
+        List<MenuResp> menuList = menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).toList();
         // 构建路由树
         TreeField treeField = MenuResp.class.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig = TreeUtils.genTreeNodeConfig(treeField);
@@ -175,7 +172,7 @@ public class LoginServiceImpl implements LoginService {
             MetaResp metaResp = new MetaResp();
             metaResp.setLocale(m.getTitle());
             metaResp.setIcon(m.getIcon());
-            metaResp.setIgnoreCache(!m.getIsCache());
+            metaResp.setIgnoreCache(Boolean.FALSE.equals(m.getIsCache()));
             metaResp.setHideInMenu(m.getIsHidden());
             metaResp.setOrder(m.getSort());
             tree.putExtra("meta", metaResp);

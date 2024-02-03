@@ -167,10 +167,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
      * @return 是否存在
      */
     private boolean isDefaultExists(Long id) {
-        return baseMapper.lambdaQuery()
-            .eq(StorageDO::getIsDefault, Boolean.TRUE)
-            .ne(null != id, StorageDO::getId, id)
-            .exists();
+        return baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, true).ne(null != id, StorageDO::getId, id).exists();
     }
 
     /**

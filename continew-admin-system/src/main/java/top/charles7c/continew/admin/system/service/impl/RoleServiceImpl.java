@@ -133,7 +133,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             Long roleId = detail.getId();
             if (SysConstants.ADMIN_ROLE_CODE.equals(detail.getCode())) {
                 List<MenuResp> list = menuService.list(null, null);
-                List<Long> menuIds = list.stream().map(MenuResp::getId).collect(Collectors.toList());
+                List<Long> menuIds = list.stream().map(MenuResp::getId).toList();
                 detail.setMenuIds(menuIds);
             } else {
                 detail.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
@@ -152,7 +152,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @Override
     public List<String> listNameByIds(List<Long> ids) {
         List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getName).in(RoleDO::getId, ids).list();
-        return roleList.stream().map(RoleDO::getName).collect(Collectors.toList());
+        return roleList.stream().map(RoleDO::getName).toList();
     }
 
     @Override

@@ -30,6 +30,7 @@ import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    public List<LabelValueResp> listByDictCode(String dictCode) {
+    public List<LabelValueResp<Serializable>> listByDictCode(String dictCode) {
         return baseMapper.listByDictCode(dictCode);
     }
 

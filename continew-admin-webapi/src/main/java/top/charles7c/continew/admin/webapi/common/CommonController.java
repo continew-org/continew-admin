@@ -44,14 +44,14 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
-import top.charles7c.continew.starter.web.model.R;
 import top.charles7c.continew.starter.log.common.annotation.Log;
+import top.charles7c.continew.starter.web.model.R;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 公共 API
@@ -108,21 +108,21 @@ public class CommonController {
     @CachePenetrationProtect
     @CacheRefresh(refresh = 3600, stopRefreshAfterLastAccess = 7200)
     @Cached(key = "#code", name = CacheConstants.DICT_KEY_PREFIX)
-    public R<List<LabelValueResp>> listDict(@PathVariable String code) {
-        Optional<Class<?>> enumClass = this.getEnumClassByName(code);
-        return R.ok(enumClass.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
+    public R<List<LabelValueResp<Serializable>>> listDict(@PathVariable String code) {
+        Optional<Class<?>> enumClassOptional = this.getEnumClassByName(code);
+        return R.ok(enumClassOptional.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
     }
 
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
     @Cached(name = CacheConstants.OPTION_KEY_PREFIX)
-    public R<List<LabelValueResp>> listOption(@Validated OptionQuery query) {
+    public R<List<LabelValueResp<String>>> listOption(@Validated OptionQuery query) {
         return R.ok(optionService.list(query)
             .stream()
-            .map(option -> new LabelValueResp(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
+            .map(option -> new LabelValueResp<>(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
                 .getDefaultValue())))
-            .collect(Collectors.toList()));
+            .toList());
     }
 
     /**
@@ -145,11 +145,11 @@ public class CommonController {
      * @param enumClass 枚举类型
      * @return 枚举字典
      */
-    private List<LabelValueResp> listEnumDict(Class<?> enumClass) {
+    private List<LabelValueResp<Serializable>> listEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
         return Arrays.stream(enumConstants).map(e -> {
-            IBaseEnum<Integer> baseEnum = (IBaseEnum<Integer>)e;
+            IBaseEnum baseEnum = (IBaseEnum)e;
             return new LabelValueResp<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

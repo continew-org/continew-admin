@@ -16,20 +16,17 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import cn.hutool.core.collection.CollUtil;
-
 import top.charles7c.continew.admin.system.mapper.RoleMenuMapper;
 import top.charles7c.continew.admin.system.model.entity.RoleMenuDO;
 import top.charles7c.continew.admin.system.service.RoleMenuService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 角色和菜单业务实现
@@ -60,9 +57,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         // 删除原有关联
         roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleMenuDO> roleMenuList = menuIds.stream()
-            .map(menuId -> new RoleMenuDO(roleId, menuId))
-            .collect(Collectors.toList());
+        List<RoleMenuDO> roleMenuList = menuIds.stream().map(menuId -> new RoleMenuDO(roleId, menuId)).toList();
         return roleMenuMapper.insertBatch(roleMenuList);
     }
 

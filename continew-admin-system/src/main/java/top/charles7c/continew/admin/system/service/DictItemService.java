@@ -25,6 +25,7 @@ import top.charles7c.continew.admin.system.model.resp.DictItemResp;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
 import top.charles7c.continew.starter.extension.crud.service.IService;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemDetai
      * @param dictCode 字典编码
      * @return 字典项列表
      */
-    List<LabelValueResp> listByDictCode(String dictCode);
+    List<LabelValueResp<Serializable>> listByDictCode(String dictCode);
 
     /**
      * 根据字典 ID 列表删除

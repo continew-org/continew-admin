@@ -131,13 +131,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
         if (CollUtil.isEmpty(fieldConfigList)) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            return columnList.stream().map(FieldConfigDO::new).collect(Collectors.toList());
+            return columnList.stream().map(FieldConfigDO::new).toList();
         }
         // 同步最新数据表列信息
         if (Boolean.TRUE.equals(requireSync)) {
             Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
             // 移除已不存在的字段配置
-            List<String> columnNameList = columnList.stream().map(Column::getName).collect(Collectors.toList());
+            List<String> columnNameList = columnList.stream().map(Column::getName).toList();
             fieldConfigList.removeIf(column -> !columnNameList.contains(column.getColumnName()));
             // 新增或更新字段配置
             Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
@@ -168,13 +168,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         fieldConfigMapper.delete(Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
         List<FieldConfigDO> fieldConfigList = req.getFieldConfigs();
         for (FieldConfigDO fieldConfig : fieldConfigList) {
-            if (fieldConfig.getShowInForm()) {
+            if (Boolean.TRUE.equals(fieldConfig.getShowInForm())) {
                 CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
             } else {
                 // 在表单中不显示，不需要设置必填
                 fieldConfig.setIsRequired(false);
             }
-            if (fieldConfig.getShowInQuery()) {
+            if (Boolean.TRUE.equals(fieldConfig.getShowInQuery())) {
                 CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
                 CheckUtils.throwIfNull(fieldConfig.getQueryType(), "字段 [{}] 的查询方式不能为空", fieldConfig.getFieldName());
             } else {
@@ -182,7 +182,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 fieldConfig.setQueryType(null);
             }
             // 既不在表单也不在查询中显示，不需要设置表单类型
-            if (!fieldConfig.getShowInForm() && !fieldConfig.getShowInQuery()) {
+            if (Boolean.FALSE.equals(fieldConfig.getShowInForm()) && Boolean.FALSE.equals(fieldConfig
+                .getShowInQuery())) {
                 fieldConfig.setFormType(null);
             }
             fieldConfig.setTableName(tableName);
@@ -275,7 +276,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 2.生成代码
             List<GeneratePreviewResp> backendCodePreviewList = generatePreviewList.stream()
                 .filter(GeneratePreviewResp::isBackend)
-                .collect(Collectors.toList());
+                .toList();
             Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
             for (GeneratePreviewResp codePreview : backendCodePreviewList) {
                 // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/continew/admin/tool/service/impl/XxxServiceImpl.java
@@ -298,7 +299,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             List<GeneratePreviewResp> frontendCodePreviewList = generatePreviewList.stream()
                 .filter(p -> !p.isBackend())
-                .collect(Collectors.toList());
+                .toList();
             // 1.生成 api 代码
             String apiModuleName = StrUtil.subSuf(packageName, StrUtil
                 .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
@@ -342,7 +343,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         // 移除需要忽略的字段
         List<FieldConfigDO> fieldConfigList = originFieldConfigList.stream()
             .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig.getExcludeFields()))
-            .collect(Collectors.toList());
+            .toList();
         genConfigMap.put("fieldConfigs", fieldConfigList);
         // 统计部分特殊字段特征
         genConfigMap.put("hasLocalDateTime", false);

@@ -75,6 +75,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final PasswordEncoder passwordEncoder;
     @Value("${avatar.support-suffix}")
     private String[] avatarSupportSuffix;
+    private static final String CURRENT_PASSWORD_ERROR = "当前密码错误";
 
     @Override
     public Long add(UserDO user) {
@@ -85,12 +86,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     protected void beforeAdd(UserReq req) {
+        final String errorMsgTemplate = "新增失败，[{}] 已存在";
         String username = req.getUsername();
-        CheckUtils.throwIf(this.isNameExists(username, null), "新增失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
         String email = req.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), "新增失败，[{}] 已存在", email);
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), errorMsgTemplate, email);
         String phone = req.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), "新增失败，[{}] 已存在", phone);
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
         req.setStatus(DisEnableStatusEnum.ENABLE);
         req.setPassword(passwordEncoder.encode(req.getPassword()));
     }
@@ -107,12 +109,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
     public void update(UserReq req, Long id) {
+        final String errorMsgTemplate = "修改失败，[{}] 已存在";
         String username = req.getUsername();
-        CheckUtils.throwIf(this.isNameExists(username, id), "修改失败，[{}] 已存在", username);
+        CheckUtils.throwIf(this.isNameExists(username, id), errorMsgTemplate, username);
         String email = req.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, id), "修改失败，[{}] 已存在", email);
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, id), errorMsgTemplate, email);
         String phone = req.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), "修改失败，[{}] 已存在", phone);
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), errorMsgTemplate, phone);
         DisEnableStatusEnum newStatus = req.getStatus();
         CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper
             .getUserId()), "不允许禁用当前用户");
@@ -196,7 +199,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         UserDO user = super.getById(id);
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
+            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), CURRENT_PASSWORD_ERROR);
         }
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
@@ -210,7 +213,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updatePhone(String newPhone, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), CURRENT_PASSWORD_ERROR);
         Long count = baseMapper.lambdaQuery().eq(UserDO::getPhone, newPhone).count();
         CheckUtils.throwIf(count > 0, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -221,7 +224,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), CURRENT_PASSWORD_ERROR);
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");

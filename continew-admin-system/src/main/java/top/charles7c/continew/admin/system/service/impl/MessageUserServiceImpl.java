@@ -16,17 +16,9 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import cn.hutool.core.collection.CollUtil;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.enums.MessageTypeEnum;
 import top.charles7c.continew.admin.system.mapper.MessageUserMapper;
 import top.charles7c.continew.admin.system.model.entity.MessageUserDO;
@@ -34,6 +26,10 @@ import top.charles7c.continew.admin.system.model.resp.MessageTypeUnreadResp;
 import top.charles7c.continew.admin.system.model.resp.MessageUnreadResp;
 import top.charles7c.continew.admin.system.service.MessageUserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 消息和用户关联业务实现
@@ -78,7 +74,7 @@ public class MessageUserServiceImpl implements MessageUserService {
             messageUser.setMessageId(messageId);
             messageUser.setIsRead(false);
             return messageUser;
-        }).collect(Collectors.toList());
+        }).toList();
         baseMapper.insertBatch(messageUserList);
     }
 
