@@ -75,7 +75,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final PasswordEncoder passwordEncoder;
     @Value("${avatar.support-suffix}")
     private String[] avatarSupportSuffix;
-    private static final String CURRENT_PASSWORD_ERROR = "当前密码错误";
 
     @Override
     public Long add(UserDO user) {
@@ -199,7 +198,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         UserDO user = super.getById(id);
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), CURRENT_PASSWORD_ERROR);
+            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 更新密码和密码重置时间
         LocalDateTime now = LocalDateTime.now();
@@ -213,7 +212,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updatePhone(String newPhone, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), CURRENT_PASSWORD_ERROR);
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getPhone, newPhone).count();
         CheckUtils.throwIf(count > 0, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -224,7 +223,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), CURRENT_PASSWORD_ERROR);
+        CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
         Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
         CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");

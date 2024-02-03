@@ -68,7 +68,7 @@ public class UserCenterController {
     private final UserService userService;
     private final UserSocialService userSocialService;
     private final AuthRequestFactory authRequestFactory;
-    private static final String PASSWORD_DECRYPT_FAILED = "当前密码解密失败";
+    private static final String DECRYPT_FAILED = "当前密码解密失败";
     private static final String CAPTCHA_EXPIRED = "验证码已失效";
 
     @Operation(summary = "上传头像", description = "用户上传个人头像")
@@ -91,7 +91,7 @@ public class UserCenterController {
     public R<Void> updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
         String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getOldPassword()));
-        ValidationUtils.throwIfNull(rawOldPassword, PASSWORD_DECRYPT_FAILED);
+        ValidationUtils.throwIfNull(rawOldPassword, DECRYPT_FAILED);
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
@@ -106,7 +106,7 @@ public class UserCenterController {
     public R<Void> updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
-        ValidationUtils.throwIfBlank(rawCurrentPassword, PASSWORD_DECRYPT_FAILED);
+        ValidationUtils.throwIfBlank(rawCurrentPassword, DECRYPT_FAILED);
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewPhone();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
@@ -121,7 +121,7 @@ public class UserCenterController {
     public R<Void> updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
         String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getCurrentPassword()));
-        ValidationUtils.throwIfBlank(rawCurrentPassword, PASSWORD_DECRYPT_FAILED);
+        ValidationUtils.throwIfBlank(rawCurrentPassword, DECRYPT_FAILED);
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewEmail();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
