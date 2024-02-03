@@ -16,19 +16,15 @@
 
 package top.charles7c.continew.admin.system.config;
 
-import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.recorder.FileRecorder;
-import org.springframework.stereotype.Component;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.StrUtil;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.recorder.FileRecorder;
+import org.dromara.x.file.storage.core.upload.FilePartInfo;
+import org.springframework.stereotype.Component;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.admin.system.enums.FileTypeEnum;
 import top.charles7c.continew.admin.system.mapper.FileMapper;
@@ -36,6 +32,8 @@ import top.charles7c.continew.admin.system.mapper.StorageMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.starter.core.constant.StringConstants;
+
+import java.util.Optional;
 
 /**
  * 文件记录实现类
@@ -100,4 +98,16 @@ public class FileRecorderImpl implements FileRecorder {
             .oneOpt()
             .orElse(null));
     }
+
+    @Override
+    public void update(FileInfo fileInfo) {
+        /* 不使用分片功能则无需重写 */ }
+
+    @Override
+    public void saveFilePart(FilePartInfo filePartInfo) {
+        /* 不使用分片功能则无需重写 */ }
+
+    @Override
+    public void deleteFilePartByUploadId(String s) {
+        /* 不使用分片功能则无需重写 */}
 }

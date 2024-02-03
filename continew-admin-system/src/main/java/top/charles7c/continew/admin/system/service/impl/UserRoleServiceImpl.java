@@ -69,7 +69,7 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.NONE)
+    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listRoleIdByUserId(Long userId) {
         return userRoleMapper.selectRoleIdByUserId(userId);
     }

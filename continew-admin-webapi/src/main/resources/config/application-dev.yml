@@ -175,6 +175,7 @@ springdoc:
 sms:
   # 从 YAML 读取配置
   config-type: YAML
+  http-log: true
   is-print: false
   blends:
     cloopen:

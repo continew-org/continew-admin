@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.ProgressListener;
-import org.dromara.x.file.storage.core.UploadPretreatment;
+import org.dromara.x.file.storage.core.upload.UploadPretreatment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
@@ -91,7 +91,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             }
 
             @Override
-            public void progress(long progressSize, long allSize) {
+            public void progress(long progressSize, Long allSize) {
                 log.info("已上传 [{}]，总大小 [{}]", progressSize, allSize);
             }
 

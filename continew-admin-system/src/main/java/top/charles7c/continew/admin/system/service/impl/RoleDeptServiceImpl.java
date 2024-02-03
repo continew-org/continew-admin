@@ -75,7 +75,7 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     }
 
     @Override
-    @ContainerMethod(namespace = ContainerConstants.ROLE_DEPT_ID_LIST, type = MappingType.NONE)
+    @ContainerMethod(namespace = ContainerConstants.ROLE_DEPT_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listDeptIdByRoleId(Long roleId) {
         return roleDeptMapper.selectDeptIdByRoleId(roleId);
     }
