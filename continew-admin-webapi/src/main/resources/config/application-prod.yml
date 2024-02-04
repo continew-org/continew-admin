@@ -117,7 +117,6 @@ continew-starter.captcha:
     water-mark: ${project.app-name}
   ## 图形验证码
   graphic:
-    enabled: true
     # 类型
     type: SPEC
     # 内容长度

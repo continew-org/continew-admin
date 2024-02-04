@@ -22,7 +22,6 @@ project:
 
 --- ### 日志配置
 continew-starter.log:
-  enabled: true
   # 包含信息
   include:
     - DESCRIPTION

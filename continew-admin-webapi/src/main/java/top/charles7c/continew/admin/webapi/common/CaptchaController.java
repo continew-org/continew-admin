@@ -47,6 +47,7 @@ import top.charles7c.continew.admin.common.config.properties.CaptchaProperties;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.model.resp.CaptchaResp;
 import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
+import top.charles7c.continew.starter.captcha.graphic.core.GraphicCaptchaService;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
@@ -74,7 +75,7 @@ import java.util.Map;
 public class CaptchaController {
 
     private final CaptchaService behaviorCaptchaService;
-    private final Captcha graphicCaptchaService;
+    private final GraphicCaptchaService graphicCaptchaService;
     private final ProjectProperties projectProperties;
     private final CaptchaProperties captchaProperties;
 
@@ -99,9 +100,9 @@ public class CaptchaController {
     public R<CaptchaResp> getImageCaptcha() {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
-        RedisUtils.set(captchaKey, graphicCaptchaService.text(), Duration.ofMinutes(captchaProperties
-            .getExpirationInMinutes()));
-        return R.ok(CaptchaResp.builder().uuid(uuid).img(graphicCaptchaService.toBase64()).build());
+        Captcha captcha = graphicCaptchaService.getCaptcha();
+        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
+        return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build());
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
