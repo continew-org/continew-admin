@@ -23,7 +23,7 @@ project:
 --- ### 日志配置
 continew-starter.log:
   # 包含信息
-  include:
+  includes:
     - DESCRIPTION
     - MODULE
     - REQUEST_HEADERS
@@ -122,6 +122,7 @@ sa-token:
   ## 扩展配置
   extension:
     enabled: true
+    enableJwt: true
     # 持久层配置
     dao.type: REDIS
 
