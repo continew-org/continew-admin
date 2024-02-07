@@ -16,19 +16,17 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-import java.util.Objects;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
-import cn.hutool.core.util.DesensitizedUtil;
-
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
 import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import top.charles7c.continew.starter.security.mask.annotation.JsonMask;
+import top.charles7c.continew.starter.security.mask.enums.MaskType;
+
+import java.io.Serial;
+import java.util.Objects;
 
 /**
  * 用户信息
@@ -70,13 +68,15 @@ public class UserResp extends BaseResp {
     /**
      * 邮箱
      */
-    @Schema(description = "邮箱", example = "123456789@qq.com")
+    @Schema(description = "邮箱", example = "c*******@126.com")
+    @JsonMask(MaskType.EMAIL)
     private String email;
 
     /**
      * 手机号码
      */
-    @Schema(description = "手机号码", example = "13811111111")
+    @Schema(description = "手机号码", example = "188****8888")
+    @JsonMask(MaskType.MOBILE_PHONE)
     private String phone;
 
     /**
@@ -96,14 +96,6 @@ public class UserResp extends BaseResp {
      */
     @Schema(description = "描述", example = "张三描述信息")
     private String description;
-
-    public String getEmail() {
-        return DesensitizedUtil.email(email);
-    }
-
-    public String getPhone() {
-        return DesensitizedUtil.mobilePhone(phone);
-    }
 
     @Override
     public Boolean getDisabled() {

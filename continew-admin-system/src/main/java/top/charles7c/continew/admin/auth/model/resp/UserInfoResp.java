@@ -16,11 +16,12 @@
 
 package top.charles7c.continew.admin.auth.model.resp;
 
-import cn.hutool.core.util.DesensitizedUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
+import top.charles7c.continew.starter.security.mask.annotation.JsonMask;
+import top.charles7c.continew.starter.security.mask.enums.MaskType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -68,13 +69,15 @@ public class UserInfoResp implements Serializable {
     /**
      * 邮箱
      */
-    @Schema(description = "邮箱", example = "123456789@qq.com")
+    @Schema(description = "邮箱", example = "c*******@126.com")
+    @JsonMask(MaskType.EMAIL)
     private String email;
 
     /**
      * 手机号码
      */
-    @Schema(description = "手机号码", example = "13811111111")
+    @Schema(description = "手机号码", example = "188****8888")
+    @JsonMask(MaskType.MOBILE_PHONE)
     private String phone;
 
     /**
@@ -130,14 +133,6 @@ public class UserInfoResp implements Serializable {
      */
     @Schema(description = "角色编码集合", example = "[\"test\"]")
     private Set<String> roles;
-
-    public String getEmail() {
-        return DesensitizedUtil.email(email);
-    }
-
-    public String getPhone() {
-        return DesensitizedUtil.mobilePhone(phone);
-    }
 
     public LocalDate getRegistrationDate() {
         return createTime.toLocalDate();
