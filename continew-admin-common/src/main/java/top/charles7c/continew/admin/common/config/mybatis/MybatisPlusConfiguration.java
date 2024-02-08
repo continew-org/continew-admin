@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
 
 /**
@@ -46,5 +47,13 @@ public class MybatisPlusConfiguration {
     @Bean
     public DataPermissionFilter dataPermissionFilter() {
         return new DataPermissionFilterImpl();
+    }
+
+    /**
+     * BCrypt 加/解密处理器
+     */
+    @Bean
+    public BCryptEncryptor bCryptEncryptor(PasswordEncoder passwordEncoder) {
+        return new BCryptEncryptor(passwordEncoder);
     }
 }

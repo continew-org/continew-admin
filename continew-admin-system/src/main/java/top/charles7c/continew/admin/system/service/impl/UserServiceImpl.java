@@ -93,7 +93,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
         req.setStatus(DisEnableStatusEnum.ENABLE);
-        req.setPassword(passwordEncoder.encode(req.getPassword()));
     }
 
     @Override
@@ -201,12 +200,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 更新密码和密码重置时间
-        LocalDateTime now = LocalDateTime.now();
-        baseMapper.lambdaUpdate()
-            .set(UserDO::getPassword, passwordEncoder.encode(newPassword))
-            .set(UserDO::getPwdResetTime, now)
-            .eq(UserDO::getId, id)
-            .update();
+        user.setPassword(newPassword);
+        user.setPwdResetTime(LocalDateTime.now());
+        baseMapper.updateById(user);
     }
 
     @Override
@@ -234,7 +230,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void resetPassword(UserPasswordResetReq req, Long id) {
         UserDO user = super.getById(id);
-        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        user.setPassword(req.getNewPassword());
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
     }

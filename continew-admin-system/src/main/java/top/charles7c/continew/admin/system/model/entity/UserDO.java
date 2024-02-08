@@ -16,16 +16,17 @@
 
 package top.charles7c.continew.admin.system.model.entity;
 
-import java.io.Serial;
-import java.time.LocalDateTime;
-
-import lombok.Data;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-
+import lombok.Data;
+import top.charles7c.continew.admin.common.config.mybatis.BCryptEncryptor;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
+import top.charles7c.continew.starter.security.crypto.annotation.FieldEncrypt;
+import top.charles7c.continew.starter.security.crypto.enums.Algorithm;
+
+import java.io.Serial;
+import java.time.LocalDateTime;
 
 /**
  * 用户实体
@@ -53,6 +54,7 @@ public class UserDO extends BaseDO {
     /**
      * 密码
      */
+    @FieldEncrypt(encryptor = BCryptEncryptor.class)
     private String password;
 
     /**
@@ -63,11 +65,13 @@ public class UserDO extends BaseDO {
     /**
      * 邮箱
      */
+    @FieldEncrypt(Algorithm.AES)
     private String email;
 
     /**
      * 手机号码
      */
+    @FieldEncrypt(Algorithm.AES)
     private String phone;
 
     /**

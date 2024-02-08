@@ -31,7 +31,7 @@ public class RsaProperties {
     public static final String PRIVATE_KEY;
 
     static {
-        PRIVATE_KEY = SpringUtil.getProperty("rsa.privateKey");
+        PRIVATE_KEY = SpringUtil.getProperty("continew-starter.security.crypto.private-key");
     }
 
     private RsaProperties() {
