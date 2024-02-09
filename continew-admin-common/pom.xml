@@ -96,22 +96,10 @@
             <artifactId>continew-starter-file-excel</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter 安全模块 - 加密 -->
+        <!-- ContiNew Starter 安全模块（加密、脱敏、密码编码器） -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-security-crypto</artifactId>
-        </dependency>
-
-        <!-- ContiNew Starter 安全模块 - 脱敏 -->
-        <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-security-mask</artifactId>
-        </dependency>
-
-        <!-- ContiNew Starter 安全模块 - 密码编码器 -->
-        <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-security-password</artifactId>
+            <artifactId>continew-starter-security-all</artifactId>
         </dependency>
 
         <!-- ContiNew Starter API 文档模块 -->
