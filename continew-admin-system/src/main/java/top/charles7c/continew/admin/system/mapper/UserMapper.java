@@ -21,6 +21,7 @@ import org.apache.ibatis.annotations.Select;
 
 import top.charles7c.continew.admin.common.config.mybatis.DataPermissionMapper;
 import top.charles7c.continew.admin.system.model.entity.UserDO;
+import top.charles7c.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 /**
  * 用户 Mapper
@@ -46,7 +47,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 用户信息
      */
     @Select("SELECT * FROM `sys_user` WHERE `phone` = #{phone}")
-    UserDO selectByPhone(@Param("phone") String phone);
+    UserDO selectByPhone(@FieldEncrypt @Param("phone") String phone);
 
     /**
      * 根据邮箱查询
@@ -55,7 +56,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 用户信息
      */
     @Select("SELECT * FROM `sys_user` WHERE `email` = #{email}")
-    UserDO selectByEmail(@Param("email") String email);
+    UserDO selectByEmail(@FieldEncrypt @Param("email") String email);
 
     /**
      * 根据 ID 查询昵称

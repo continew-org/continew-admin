@@ -45,7 +45,7 @@ public class UserQuery implements Serializable {
      * 用户名
      */
     @Schema(description = "用户名", example = "zhangsan")
-    @Query(columns = {"username", "nickname", "email", "phone"}, type = QueryType.LIKE)
+    @Query(columns = {"username", "nickname"}, type = QueryType.LIKE)
     private String username;
 
     /**

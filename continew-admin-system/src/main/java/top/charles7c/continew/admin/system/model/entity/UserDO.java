@@ -23,7 +23,6 @@ import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
 import top.charles7c.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.charles7c.continew.starter.security.crypto.enums.Algorithm;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -65,13 +64,13 @@ public class UserDO extends BaseDO {
     /**
      * 邮箱
      */
-    @FieldEncrypt(Algorithm.AES)
+    @FieldEncrypt
     private String email;
 
     /**
      * 手机号码
      */
-    @FieldEncrypt(Algorithm.AES)
+    @FieldEncrypt
     private String phone;
 
     /**
