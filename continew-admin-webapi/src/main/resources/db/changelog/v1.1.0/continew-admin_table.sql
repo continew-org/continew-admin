@@ -2,7 +2,7 @@
 
 -- changeset Charles7c:1
 CREATE TABLE IF NOT EXISTS `gen_config` (
-    `table_name`    varchar(64)                        COMMENT '表名称',
+    `table_name`    varchar(64)  NOT NULL              COMMENT '表名称',
     `module_name`   varchar(60)  NOT NULL              COMMENT '模块名称',
     `package_name`  varchar(60)  NOT NULL              COMMENT '包名称',
     `frontend_path` varchar(255) DEFAULT NULL          COMMENT '前端路径',

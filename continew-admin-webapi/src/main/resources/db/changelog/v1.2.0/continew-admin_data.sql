@@ -18,13 +18,13 @@ VALUES
 INSERT IGNORE INTO `sys_dict`
 (`id`, `name`, `code`, `description`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
+(547889614262632491, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
 
 INSERT IGNORE INTO `sys_dict_item`
 (`id`, `label`, `value`, `color`, `sort`, `description`, `dict_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, '通知', '1', 'blue', 1, NULL, 1, 1, NOW(), NULL, NULL),
-(2, '活动', '2', 'orangered', 2, NULL, 1, 1, NOW(), NULL, NULL);
+(547889649658363951, '通知', '1', 'blue', 1, NULL, 547889614262632491, 1, NOW(), NULL, NULL),
+(547890124537462835, '活动', '2', 'orangered', 2, NULL, 547889614262632491, 1, NOW(), NULL, NULL);
 
 -- 初始化默认参数
 INSERT IGNORE INTO `sys_option`

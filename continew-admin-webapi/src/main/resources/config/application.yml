@@ -141,7 +141,7 @@ mybatis-plus:
     db-config:
       # 主键类型（默认 assign_id，表示自行赋值）
       # auto 代表使用数据库自增策略（需要在表中设置好自增约束）
-      id-type: AUTO
+      id-type: ASSIGN_ID
       # 逻辑删除字段
       logic-delete-field: isDeleted
       # 逻辑删除全局值（默认 1，表示已删除）
@@ -153,6 +153,9 @@ mybatis-plus:
     enabled: true
     # Mapper 接口扫描包配置
     mapper-package: ${project.base-package}.**.mapper
+    # ID 生成器配置
+    id-generator:
+      type: COSID
     # 数据权限配置
     data-permission:
       enabled: true
@@ -160,6 +163,30 @@ mybatis-plus:
     pagination:
       enabled: true
       db-type: MYSQL
+
+--- ### CosId 配置
+cosid:
+  namespace: ${spring.application.name}
+  machine:
+    enabled: true
+    # 机器号分配器
+    distributor:
+      type: REDIS
+    guarder:
+      # 开启机器号守护
+      enabled: true
+  snowflake:
+    enabled: true
+    zone-id: Asia/Shanghai
+    epoch: 1577203200000
+    share:
+      # 开启时钟回拨同步
+      clock-sync: true
+      friendly: true
+    provider:
+      safe-js:
+        machine-bit: 3
+        sequence-bit: 9
 
 --- ### 服务器配置
 server:

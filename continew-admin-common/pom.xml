@@ -13,6 +13,16 @@
     <description>公共模块（存放公共工具类，公共配置等）</description>
 
     <dependencies>
+        <!-- CosId（通用、灵活、高性能的分布式 ID 生成器） -->
+        <dependency>
+            <groupId>me.ahoo.cosid</groupId>
+            <artifactId>cosid-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.ahoo.cosid</groupId>
+            <artifactId>cosid-spring-redis</artifactId>
+        </dependency>
+
         <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
         <dependency>
             <groupId>org.dromara.sms4j</groupId>
