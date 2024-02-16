@@ -1,3 +1,41 @@
+## [v2.4.0](https://github.com/Charles7c/continew-admin/compare/v2.3.0...v2.4.0) (2024-02-16)
+
+### ✨ 新特性
+
+* 集成 TLog（轻量级的分布式日志标记追踪神器） ([Gitee PR#10](https://gitee.com/Charles7c/continew-admin/pulls/10))
+* 系统日志新增 traceId 链路号记录，方便查看完整日志链路 ([860ca40](https://github.com/Charles7c/continew-admin/commit/860ca403c2c32cc6395c1608217bc9b6e7c18bd8))
+* 取消用户默认密码，改为表单填写密码 ([3d77aa9](https://github.com/Charles7c/continew-admin/commit/3d77aa91ee32065b53d9c47a57c33d6d7e4efb0e))
+* 适配 ContiNew Starter 加密模块（安全模块） ([6435175](https://github.com/Charles7c/continew-admin/commit/6435175dc3d853cb170270e39e8f1505adffeae5)) ([43da462](https://github.com/Charles7c/continew-admin/commit/43da462560e224ed92f239cb5af4db64dea51d18))
+* 适配 ContiNew Starter 脱敏模块（安全模块） ([2109789](https://github.com/Charles7c/continew-admin/commit/2109789116d9ff18773d8afeb854d1dfc70b935a))
+
+### 💎 功能优化
+
+- 优化 API 文档分组配置 ([2df4cce](https://github.com/Charles7c/continew-admin/commit/2df4cceedd35b1c2c07bcbf38b5a157604a752c2))
+- 优化 QueryTypeEnum 枚举值命名 ([9648cf6](https://github.com/Charles7c/continew-admin/commit/9648cf64a4679657f0e609f980805d274563aa53))
+- 优化 Query 相关注解使用方式 ([15b1520](https://github.com/Charles7c/continew-admin/commit/15b152008c6ae8ab89704d83a969dcfbbb8b5b88))
+- 新增 Qodana 扫描 ([f6a9581](https://github.com/Charles7c/continew-admin/commit/f6a9581adef87a8915639e6cb2d7c4d02315ebd0))
+- 新增 SonarCloud 扫描 ([a154abd](https://github.com/Charles7c/continew-admin/commit/a154abde8a39cfecc421c79e01998274b944d2c1)) ([c03c082](https://github.com/Charles7c/continew-admin/commit/c03c082d2e2884962547633f5e98663088bd2c3b))
+- 移除 Lombok 私有构造注解使用 ([a2420d3](https://github.com/Charles7c/continew-admin/commit/a2420d3f4b4652a1d9711f513b8fb22a56105141))
+- 获取不到当前登录用户信息则抛出未登录异常 ([d972a44](https://github.com/Charles7c/continew-admin/commit/d972a4466a9e8a1a6e6375e4171a4790c2ba156e))
+- 优化代码，解决 [Sonar](https://sonarcloud.io/organizations/charles7c/projects)、[Codacy](https://app.codacy.com/gh/Charles7c/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)、[Qodana](https://qodana.cloud/organizations/pQDPD/teams/p5jqd/) 扫描问题，点击各链接查看对应实时质量分析报告（Codacy 已达到 A）
+- 优化部署配置 ([b5d668e](https://github.com/Charles7c/continew-admin/commit/b5d668e014690d3f1a8a2bab0d0ad0039083e7bb))
+- 使用密码编码器重构密码加密、密码判断等相关处理 ([594f7fd](https://github.com/Charles7c/continew-admin/commit/594f7fd042f1ff96a298f2e59ffdda112113cb51))
+- 优化 SaToken 及图形验证码配置 ([70973db](https://github.com/Charles7c/continew-admin/commit/70973db71f2eed49c5878d69d8b93ff04b13a8b9))
+- 优化图形验证码使用及部分配置 ([a50d857](https://github.com/Charles7c/continew-admin/commit/a50d857c41d164355d36ae5dfd14c6badbe06202))
+
+
+### 🐛 问题修复
+
+- 修复 API 响应内容类型错误 ([439f7c7](https://github.com/Charles7c/continew-admin/commit/439f7c7c58ee27ff56b5093df71bc902c46f48fa))
+
+### 💥 破坏性变更
+
+- 调整自增 ID 为分布式 ID ([4779887](https://github.com/Charles7c/continew-admin/commit/4779887751bd3a696e4d31294057e8c03d66eaf3))
+
+### 📦 依赖升级
+
+- ContiNew Starter 1.2.0 => 1.4.0 (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v2.3.0](https://github.com/Charles7c/continew-admin/compare/v2.2.0...v2.3.0) (2024-01-21)
 
 ### ✨ 新特性

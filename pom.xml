@@ -32,7 +32,7 @@
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>2.4.0-SNAPSHOT</revision>
+        <revision>2.4.0</revision>
     </properties>
 
     <!-- 全局依赖版本管理 -->
