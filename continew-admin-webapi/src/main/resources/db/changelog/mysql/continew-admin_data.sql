@@ -1,6 +1,7 @@
 -- liquibase formatted sql
 
--- changeset Charles7c:1
+-- changeset Charles7c:2.5.0
+-- comment 初始化表数据
 -- 初始化默认菜单
 INSERT IGNORE INTO `sys_menu`
 (`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
@@ -28,6 +29,33 @@ VALUES
 (1042, '菜单修改', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:update', 2, 1, 1, NOW(), NULL, NULL),
 (1043, '菜单删除', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:delete', 3, 1, 1, NOW(), NULL, NULL),
 (1044, '菜单导出', 1040, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:menu:export', 4, 1, 1, NOW(), NULL, NULL),
+(1050, '公告管理', 1000, 2, '/system/announcement', 'Announcement', 'system/announcement/index', 'advertising', b'0', b'0', b'0', 'system:announcement:list', 5, 1, 1, NOW(), NULL, NULL),
+(1051, '公告新增', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:announcement:add', 1, 1, 1, NOW(), NULL, NULL),
+(1052, '公告修改', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:announcement:update', 2, 1, 1, NOW(), NULL, NULL),
+(1053, '公告删除', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:announcement:delete', 3, 1, 1, NOW(), NULL, NULL),
+(1054, '公告导出', 1050, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:announcement:export', 4, 1, 1, NOW(), NULL, NULL),
+(1060, '消息管理', 1000, 2, '/system/message', 'Message', 'system/message/index', 'notification', b'0', b'0', b'0', 'system:message:list', 6, 1, 1, NOW(), NULL, NULL),
+(1061, '消息删除', 1060, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:message:delete', 1, 1, 1, NOW(), NULL, NULL),
+(1070, '字典管理', 1000, 2, '/system/dict', 'Dict', 'system/dict/index', 'bookmark', b'0', b'0', b'0', 'system:dict:list', 7, 1, 1, NOW(), NULL, NULL),
+(1071, '字典新增', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dict:add', 1, 1, 1, NOW(), NULL, NULL),
+(1072, '字典修改', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dict:update', 2, 1, 1, NOW(), NULL, NULL),
+(1073, '字典删除', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dict:delete', 3, 1, 1, NOW(), NULL, NULL),
+(1074, '字典导出', 1070, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:dict:export', 4, 1, 1, NOW(), NULL, NULL),
+(1080, '系统配置', 1000, 2, '/system/config', 'Config', 'system/config/index', 'desktop', b'0', b'0', b'0', 'system:config:list', 8, 1, 1, NOW(), NULL, NULL),
+(1081, '修改配置', 1080, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:config:update', 1, 1, 1, NOW(), NULL, NULL),
+(1082, '恢复默认', 1080, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:config:reset', 2, 1, 1, NOW(), NULL, NULL),
+(1090, '文件管理', 1000, 2, '/system/file', 'File', 'system/file/index', 'file', b'0', b'0', b'0', 'system:file:list', 9, 1, 1, NOW(), NULL, NULL),
+(1091, '文件上传', 1090, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:file:upload', 1, 1, 1, NOW(), NULL, NULL),
+(1092, '文件修改', 1090, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:file:update', 2, 1, 1, NOW(), NULL, NULL),
+(1093, '文件删除', 1090, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:file:delete', 3, 1, 1, NOW(), NULL, NULL),
+(1094, '文件下载', 1090, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:file:download', 4, 1, 1, NOW(), NULL, NULL),
+(1100, '存储管理', 1000, 2, '/system/storage', 'Storage', 'system/storage/index', 'storage', b'0', b'0', b'1', 'system:storage:list', 10, 1, 1, NOW(), NULL, NULL),
+(1101, '存储新增', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:add', 1, 1, 1, NOW(), NULL, NULL),
+(1102, '存储修改', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:update', 2, 1, 1, NOW(), NULL, NULL),
+(1103, '存储删除', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:delete', 3, 1, 1, NOW(), NULL, NULL),
+(1104, '存储导出', 1100, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:storage:export', 4, 1, 1, NOW(), NULL, NULL),
+(2000, '系统工具', 0, 1, '/tool', 'Tool', NULL, 'tool', b'0', b'0', b'0', NULL, 2, 1, 1, NOW(), NULL, NULL),
+(2010, '代码生成', 2000, 2, '/tool/generator', 'Generator', 'tool/generator/index', 'code', b'0', b'0', b'0', 'tool:generator:list', 1, 1, 1, NOW(), NULL, NULL),
 (9000, '系统监控', 0, 1, '/monitor', 'Monitor', NULL, 'computer', b'0', b'0', b'0', NULL, 899, 1, 1, NOW(), NULL, NULL),
 (9010, '在线用户', 9000, 2, '/monitor/online', 'OnlineUser', 'monitor/online/index', 'anonymity', b'0', b'0', b'0', 'monitor:online:user:list', 1, 1, 1, NOW(), NULL, NULL),
 (9011, '强退用户', 9010, 3, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'monitor:online:user:delete', 1, 1, 1, NOW(), NULL, NULL),
@@ -62,8 +90,38 @@ VALUES
 INSERT IGNORE INTO `sys_user`
 (`id`, `username`, `nickname`, `password`, `gender`, `email`, `phone`, `avatar`, `description`, `status`, `is_system`, `pwd_reset_time`, `dept_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, 'admin', '超级管理员', '9802815bcc5baae7feb1ae0d0566baf2', 1, 'charles7c@126.com', '18888888888', NULL, '系统初始用户', 1, b'1', NOW(), 1, 1, NOW(), NULL, NULL),
-(547889293968801831, 'test', '测试员', '8e114197e1b33783a00542ad67e80516', 2, NULL, NULL, NULL, NULL, 2, b'0', NOW(), 547888483713155087, 1, NOW(), NULL, NULL);
+(1, 'admin', '超级管理员', '{bcrypt}$2a$10$4jGwK2BMJ7FgVR.mgwGodey8.xR8FLoU1XSXpxJ9nZQt.pufhasSa', 1, '42190c6c5639d2ca4edb4150a35e058559ccf8270361a23745a2fd285a273c28', '5bda89a4609a65546422ea56bfe5eab4', NULL, '系统初始用户', 1, b'1', NOW(), 1, 1, NOW(), NULL, NULL),
+(547889293968801831, 'test', '测试员', '{bcrypt}$2a$10$meMbyso06lupZjxT88fG8undZo6.DSNUmifRfnnre8r/s13ciq6M6', 2, NULL, NULL, NULL, NULL, 2, b'0', NOW(), 547888483713155087, 1, NOW(), NULL, NULL);
+
+-- 初始化默认参数
+INSERT IGNORE INTO `sys_option`
+(`name`, `code`, `value`, `default_value`, `description`, `update_user`, `update_time`)
+VALUES
+('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
+('版权信息', 'site_copyright', NULL,
+ 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">津ICP备2022005864号-2</a>',
+ '用于显示登录页面的底部版权信息。', NULL, NULL),
+('系统LOGO（16*16）', 'site_favicon', NULL, 'https://cnadmin.charles7c.top/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
+('系统LOGO（33*33）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
+
+-- 初始化默认字典
+INSERT IGNORE INTO `sys_dict`
+(`id`, `name`, `code`, `description`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
+VALUES
+(547889614262632491, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
+
+INSERT IGNORE INTO `sys_dict_item`
+(`id`, `label`, `value`, `color`, `sort`, `description`, `dict_id`, `create_user`, `create_time`, `update_user`, `update_time`)
+VALUES
+(547889649658363951, '通知', '1', 'blue', 1, NULL, 547889614262632491, 1, NOW(), NULL, NULL),
+(547890124537462835, '活动', '2', 'orangered', 2, NULL, 547889614262632491, 1, NOW(), NULL, NULL);
+
+-- 初始化默认用户和角色关联数据
+INSERT IGNORE INTO `sys_user_role`
+(`user_id`, `role_id`)
+VALUES
+(1, 1),
+(547889293968801831, 547888897925840928);
 
 -- 初始化默认角色和菜单关联数据
 INSERT IGNORE INTO `sys_role_menu`
@@ -79,9 +137,9 @@ VALUES
 -- 初始化默认角色和部门关联数据
 INSERT IGNORE INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES (547888897925840928, 547888483713155087);
 
--- 初始化默认用户和角色关联数据
-INSERT IGNORE INTO `sys_user_role`
-(`user_id`, `role_id`)
+-- 初始化默认存储库
+INSERT IGNORE INTO `sys_storage`
+(`id`, `name`, `code`, `type`, `access_key`, `secret_key`, `endpoint`, `bucket_name`, `domain`, `description`, `is_default`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, 1),
-(547889293968801831, 547888897925840928);
+(547890346239983671, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', b'1', 1, 1, 1, NOW(), NULL, NULL),
+(547890366586552377, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.charles7c.top/file', '本地存储', b'0', 2, 2, 1, NOW(), NULL, NULL);
