@@ -5,11 +5,11 @@
     <select id="selectDashboardList"
             resultType="top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp">
         SELECT
-            `id`, `title`, `type`
-        FROM `sys_announcement`
-        WHERE (`effective_time` IS NULL OR NOW() > `effective_time`)
-          AND (`terminate_time` IS NULL OR `terminate_time` > NOW())
-        ORDER BY `sort` ASC, `effective_time` DESC
+            id, title, type
+        FROM sys_announcement
+        WHERE (effective_time IS NULL OR NOW() > effective_time)
+          AND (terminate_time IS NULL OR terminate_time > NOW())
+        ORDER BY sort ASC, effective_time DESC
         LIMIT 5
     </select>
 </mapper>

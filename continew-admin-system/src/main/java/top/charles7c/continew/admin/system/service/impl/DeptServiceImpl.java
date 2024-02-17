@@ -155,7 +155,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
      * @return 子部门列表
      */
     private List<DeptDO> listChildren(Long id) {
-        return baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).list();
+        return baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, ancestors)", id)).list();
     }
 
     /**
@@ -170,7 +170,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
             return 0L;
         }
         return ids.stream()
-            .mapToLong(id -> baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, `ancestors`)", id)).count())
+            .mapToLong(id -> baseMapper.lambdaQuery().apply(String.format("find_in_set(%s, ancestors)", id)).count())
             .sum();
     }
 

@@ -4,11 +4,11 @@
     <select id="selectPageByUserId" resultType="top.charles7c.continew.admin.system.model.resp.MessageResp">
         SELECT
             t1.*,
-            t2.`user_id`,
-            t2.`is_read`,
-            t2.`read_time`
-        FROM `sys_message` AS t1
-            LEFT JOIN `sys_message_user` AS t2 ON t2.`message_id` = t1.`id`
+            t2.user_id,
+            t2.is_read,
+            t2.read_time
+        FROM sys_message AS t1
+            LEFT JOIN sys_message_user AS t2 ON t2.message_id = t1.id
         ${ew.getCustomSqlSegment}
     </select>
 </mapper>

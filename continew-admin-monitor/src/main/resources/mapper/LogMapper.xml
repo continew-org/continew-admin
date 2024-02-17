@@ -3,46 +3,46 @@
 <mapper namespace="top.charles7c.continew.admin.monitor.mapper.LogMapper">
     <select id="selectDashboardTotal" resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardTotalResp">
         SELECT
-            (SELECT COUNT(*) FROM `sys_log`) AS pvCount,
-            (SELECT COUNT(DISTINCT `ip`) FROM `sys_log`) AS ipCount,
-            (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = CURDATE()) AS todayPvCount,
-            (SELECT COUNT(*) FROM `sys_log` WHERE DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
+            (SELECT COUNT(*) FROM sys_log) AS pvCount,
+            (SELECT COUNT(DISTINCT ip) FROM sys_log) AS ipCount,
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURDATE()) AS todayPvCount,
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
     </select>
 
     <select id="selectListDashboardAccessTrend"
             resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp">
         SELECT
-            DATE(`create_time`) AS date,
+            DATE(create_time) AS date,
             COUNT(*) AS pvCount,
-            COUNT(DISTINCT `ip`) AS ipCount
-        FROM `sys_log`
-        GROUP BY DATE(`create_time`)
-        HAVING `date` != CURDATE()
-        ORDER BY DATE(`create_time`) DESC
+            COUNT(DISTINCT ip) AS ipCount
+        FROM sys_log
+        GROUP BY DATE(create_time)
+        HAVING date != CURDATE()
+        ORDER BY DATE(create_time) DESC
         LIMIT #{days}
     </select>
 
     <select id="selectListDashboardPopularModule"
             resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp">
         SELECT
-            `module`,
+            module,
             COUNT(*) AS pvCount,
-            SUM(CASE WHEN DATE(`create_time`) = CURDATE() THEN 1 ELSE 0 END) AS todayPvCount,
-            SUM(CASE WHEN DATE(`create_time`) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 1 ELSE 0 END) AS yesterdayPvCount
-        FROM `sys_log`
-        GROUP BY `module`
-        HAVING `module` != '验证码' AND `module` != '登录'
-        ORDER BY `pvCount` DESC
+            SUM(CASE WHEN DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) AS todayPvCount,
+            SUM(CASE WHEN DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 1 ELSE 0 END) AS yesterdayPvCount
+        FROM sys_log
+        GROUP BY module
+        HAVING module != '验证码' AND module != '登录'
+        ORDER BY pvCount DESC
         LIMIT 10
     </select>
 
     <select id="selectListDashboardGeoDistribution" resultType="java.util.Map">
         SELECT
-            SUBSTRING_INDEX(`address`, ' ', 1) AS name,
-            COUNT(DISTINCT `ip`) AS value
-        FROM `sys_log`
-        GROUP BY `name`
-        ORDER BY COUNT(DISTINCT `ip`) DESC
+            SUBSTRING_INDEX(address, ' ', 1) AS name,
+            COUNT(DISTINCT ip) AS value
+        FROM sys_log
+        GROUP BY name
+        ORDER BY COUNT(DISTINCT ip) DESC
         LIMIT 10
     </select>
 </mapper>

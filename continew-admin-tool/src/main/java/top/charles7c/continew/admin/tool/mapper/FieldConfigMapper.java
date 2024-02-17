@@ -16,13 +16,12 @@
 
 package top.charles7c.continew.admin.tool.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
 import top.charles7c.continew.admin.tool.model.entity.FieldConfigDO;
 import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+
+import java.util.List;
 
 /**
  * 字段配置 Mapper
@@ -38,6 +37,6 @@ public interface FieldConfigMapper extends BaseMapper<FieldConfigDO> {
      * @param tableName 表名称
      * @return 字段配置信息
      */
-    @Select("SELECT * FROM `gen_field_config` WHERE `table_name` = #{tableName}")
+    @Select("SELECT * FROM gen_field_config WHERE table_name = #{tableName}")
     List<FieldConfigDO> selectListByTableName(@Param("tableName") String tableName);
 }

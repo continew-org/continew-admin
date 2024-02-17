@@ -16,13 +16,12 @@
 
 package top.charles7c.continew.admin.system.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
 import top.charles7c.continew.admin.system.model.entity.RoleDeptDO;
 import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+
+import java.util.List;
 
 /**
  * 角色和部门 Mapper
@@ -38,6 +37,6 @@ public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
      * @param roleId 角色 ID
      * @return 部门 ID 列表
      */
-    @Select("SELECT `dept_id` FROM `sys_role_dept` WHERE `role_id` = #{roleId}")
+    @Select("SELECT dept_id FROM sys_role_dept WHERE role_id = #{roleId}")
     List<Long> selectDeptIdByRoleId(@Param("roleId") Long roleId);
 }
