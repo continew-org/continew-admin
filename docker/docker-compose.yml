@@ -22,6 +22,19 @@ services:
       --collation-server=utf8mb4_general_ci
       --explicit_defaults_for_timestamp=true
       --lower_case_table_names=1
+#  postgresql:
+#    image: postgres:14.2
+#    restart: always
+#    container_name: postgresql
+#    ports:
+#      - '5432:5432'
+#    environment:
+#      TZ: Asia/Shanghai
+#      POSTGRES_USER: 你的用户名
+#      POSTGRES_PASSWORD: 你的用户密码
+#      POSTGRES_DB: continew_admin
+#    volumes:
+#      - /docker/postgresql/data/:/var/lib/postgresql/data/
   redis:
     image: redis:7.2.3
     restart: always
