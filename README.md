@@ -27,11 +27,11 @@
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
 <img src="https://img.shields.io/github/forks/Charles7c/continew-admin?style=social" alt="GitHub forks" />
 </a>
-<a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
-<img src="https://gitee.com/Charles7c/continew-admin/badge/star.svg?theme=white" alt="Gitee stars" />
+<a href="https://gitee.com/continew/continew-admin" target="_blank">
+<img src="https://gitee.com/continew/continew-admin/badge/star.svg?theme=white" alt="Gitee stars" />
 </a>
-<a href="https://gitee.com/Charles7c/continew-admin" target="_blank">
-<img src="https://gitee.com/Charles7c/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
+<a href="https://gitee.com/continew/continew-admin" target="_blank">
+<img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 
 📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
@@ -65,7 +65,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 |        | 后端源码                                | 前端源码                                   |
 |--------| ----------------------------------------- | -------------------------------------------- |
 | GitHub | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin) | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
-| Gitee  | [gitee.com/Charles7c/continew-admin](https://gitee.com/Charles7c/continew-admin) | [gitee.com/Charles7c/continew-admin-ui](https://gitee.com/Charles7c/continew-admin-ui) |
+| Gitee  | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin) | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
 
 ## 为什么选我们？
 

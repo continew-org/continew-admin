@@ -2,7 +2,7 @@
 
 ### ✨ 新特性
 
-* 集成 TLog（轻量级的分布式日志标记追踪神器） ([Gitee PR#10](https://gitee.com/Charles7c/continew-admin/pulls/10))
+* 集成 TLog（轻量级的分布式日志标记追踪神器） ([Gitee PR#10](https://gitee.com/continew/continew-admin/pulls/10))
 * 系统日志新增 traceId 链路号记录，方便查看完整日志链路 ([860ca40](https://github.com/Charles7c/continew-admin/commit/860ca403c2c32cc6395c1608217bc9b6e7c18bd8))
 * 取消用户默认密码，改为表单填写密码 ([3d77aa9](https://github.com/Charles7c/continew-admin/commit/3d77aa91ee32065b53d9c47a57c33d6d7e4efb0e))
 * 适配 ContiNew Starter 加密模块（安全模块） ([6435175](https://github.com/Charles7c/continew-admin/commit/6435175dc3d853cb170270e39e8f1505adffeae5)) ([43da462](https://github.com/Charles7c/continew-admin/commit/43da462560e224ed92f239cb5af4db64dea51d18))
@@ -79,7 +79,7 @@
 
 * 发送短信验证码新增限流处理 ([e719d20](https://github.com/Charles7c/continew-admin/commit/e719d207fb76c82b584f2e1ac7210061dc71a89a))
 * 代码生成新增生成预览功能 ([4017029](https://github.com/Charles7c/continew-admin/commit/401702972f30c4e556a2cf8d048f78fa9ee1c5ba)) ([505ba49](https://github.com/Charles7c/continew-admin/commit/505ba49a5304fb3e2ba655dea901cd5e3ea74673))
-* 适配 ContiNew Starter 行为验证码，系统内所有短信发送新增前置行为验证码验证 ([Gitee PR#9](https://gitee.com/Charles7c/continew-admin/pulls/9))
+* 适配 ContiNew Starter 行为验证码，系统内所有短信发送新增前置行为验证码验证 ([Gitee PR#9](https://gitee.com/continew/continew-admin/pulls/9))
 * 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
 * 存储库管理：提供文件存储库新增、编辑、删除、导出等功能
 
@@ -167,8 +167,8 @@
 ### 🐛 问题修复
 
 - sms4j 3.0.3 => 3.0.4 ([23558d4](https://github.com/Charles7c/continew-admin/commit/23558d45620a48ed82b32a5bdd2f948a4a37263d))
-- 发送消息增加事务处理 ([Gitee#7](https://gitee.com/Charles7c/continew-admin/pulls/7)) ([1ca6f6c](https://github.com/Charles7c/continew-admin/commit/1ca6f6c7e5f8a7c78f74df547f14517293241ac4))
-- 修复前端控制台 eslint 告警 ([Gitee#6](https://gitee.com/Charles7c/continew-admin/pulls/6)) ([f4523d2](https://github.com/Charles7c/continew-admin/commit/f4523d24817b4fee5c015eaba6b98fe99f350bba)) ([2304f28](https://github.com/Charles7c/continew-admin/commit/2304f28a942fa8ea3e6d36fbebbe9346b0d3b741))
+- 发送消息增加事务处理 ([Gitee#7](https://gitee.com/continew/continew-admin/pulls/7)) ([1ca6f6c](https://github.com/Charles7c/continew-admin/commit/1ca6f6c7e5f8a7c78f74df547f14517293241ac4))
+- 修复前端控制台 eslint 告警 ([Gitee#6](https://gitee.com/continew/continew-admin/pulls/6)) ([f4523d2](https://github.com/Charles7c/continew-admin/commit/f4523d24817b4fee5c015eaba6b98fe99f350bba)) ([2304f28](https://github.com/Charles7c/continew-admin/commit/2304f28a942fa8ea3e6d36fbebbe9346b0d3b741))
 - 修复仪表盘访问趋势区块 y 轴数值过大时无法展示的问题 ([fea6024](https://github.com/Charles7c/continew-admin/commit/fea602439a3c9589bee078bfa9ff1e7efb378d71))
 - 修复控制台报错 Please use theme before using plugins ([98fbe05](https://github.com/Charles7c/continew-admin/commit/98fbe0506c1cbe2f3c16347d9610ebfa5688b506))
 - 调整 Logback 配置，取消启动时打印 Logback 状态日志 ([1f7fef5](https://github.com/Charles7c/continew-admin/commit/1f7fef5b31212e94652777be37bea4d4e02eb8c7))
@@ -236,7 +236,7 @@
 ### ✨ 新特性
 
 * 消息管理：提供消息查看、标记已读、全部已读、删除等功能（适配对接导航栏站内信功能）
-* 新增头像上传前裁剪功能 ([Gitee#5](https://gitee.com/Charles7c/continew-admin/pulls/5)) ([cbc652d](https://gitee.com/Charles7c/continew-admin/commit/cbc652de77200d29bcd42bb399c86c2e7df29c4d)) ([28f4791](https://gitee.com/Charles7c/continew-admin/commit/28f4791833060469d132c4383665e81458f9c852))
+* 新增头像上传前裁剪功能 ([Gitee#5](https://gitee.com/continew/continew-admin/pulls/5)) ([cbc652d](https://gitee.com/continew/continew-admin/commit/cbc652de77200d29bcd42bb399c86c2e7df29c4d)) ([28f4791](https://gitee.com/continew/continew-admin/commit/28f4791833060469d132c4383665e81458f9c852))
 * 支持手机号登录（演示环境不开放） ([4d70bc8](https://github.com/Charles7c/continew-admin/commit/4d70bc84db47c36c13d8e41e3a33e5a589483de8))
 * 支持邮箱登录 ([17b169e](https://github.com/Charles7c/continew-admin/commit/17b169eb0ea2ded759b6bccb213c78bfb3425941))
 * 个人中心-安全设置，支持绑定、解绑三方账号 ([efe4557](https://github.com/Charles7c/continew-admin/commit/efe455736c158e73bf0c6514c31bec5d83fe843b))
@@ -247,7 +247,7 @@
 - 新增接口文档菜单，演示环境开放接口文档 ([4a42336](https://github.com/Charles7c/continew-admin/commit/4a4233647f2ea212b007f591aafc50380b15c099))
 - 项目配置增加是否为生产环境配置项 ([38deb95](https://github.com/Charles7c/continew-admin/commit/38deb950ac7b2ed81f0e10816e943156aa076795))
 - 优化校验相关方法命名 ([f25de2d](https://github.com/Charles7c/continew-admin/commit/f25de2d7f835a3fa75d59d3de0a014c37b3b32e1))
-- 新增全局响应结果处理器 ([Gitee#3](https://gitee.com/Charles7c/continew-admin/pulls/3)) ([992a8fc](https://gitee.com/Charles7c/continew-admin/commit/992a8fca173ea76722b388aca462cff8a1128803)) ([Gitee#4](https://gitee.com/Charles7c/continew-admin/pulls/4)) ([a0b1afc](https://gitee.com/Charles7c/continew-admin/commit/a0b1afc546657766cb6031794b98ccc2b6e4cb2d))
+- 新增全局响应结果处理器 ([Gitee#3](https://gitee.com/continew/continew-admin/pulls/3)) ([992a8fc](https://gitee.com/continew/continew-admin/commit/992a8fca173ea76722b388aca462cff8a1128803)) ([Gitee#4](https://gitee.com/continew/continew-admin/pulls/4)) ([a0b1afc](https://gitee.com/continew/continew-admin/commit/a0b1afc546657766cb6031794b98ccc2b6e4cb2d))
 - 优化部分代码格式及注释 ([3a176ac](https://github.com/Charles7c/continew-admin/commit/3a176ac5efbda4aea1e883b29e68861bd352d642))
 - 重构登录页面 UI 以适配多维度认证、第三方登录等场景 ([d40d5b4](https://github.com/Charles7c/continew-admin/commit/d40d5b4ae61d858fbee3ffa0606ebebb4282d9a2)) ([a5a4cd4](https://github.com/Charles7c/continew-admin/commit/a5a4cd49646db3fa1108a8b917ef70c7757e81ad))
 - 升级前端依赖 ([698a725](https://github.com/Charles7c/continew-admin/commit/698a7251b742e6b679694f21bfc174904dca8990))
