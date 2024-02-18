@@ -121,12 +121,12 @@ public class CaptchaController {
         String content = TemplateUtils.render(captchaMail.getTemplatePath(), Dict.create()
             .set("captcha", captcha)
             .set("expiration", expirationInMinutes));
-        MailUtils.sendHtml(email, String.format("【%s】邮箱验证码", projectProperties.getName()), content);
+        MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(projectProperties.getName()), content);
         // 保存验证码
         String captchaKey = captchaKeyPrefix + email;
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
         RedisUtils.set(limitCaptchaKey, captcha, Duration.ofSeconds(captchaMail.getLimitInSeconds()));
-        return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
+        return R.ok("发送成功，验证码有效期 %s 分钟".formatted(expirationInMinutes));
     }
 
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
@@ -173,6 +173,6 @@ public class CaptchaController {
         // 保存验证码
         String captchaKey = captchaKeyPrefix + phone;
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
-        return R.ok(String.format("发送成功，验证码有效期 %s 分钟", expirationInMinutes));
+        return R.ok("发送成功，验证码有效期 %s 分钟".formatted(expirationInMinutes));
     }
 }

@@ -71,7 +71,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @SaIgnore
     @GetMapping("/")
     public String index() {
-        return String.format("%s service started successfully.", projectProperties.getName());
+        return "%s service started successfully.".formatted(projectProperties.getName());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         String hostAddress = InetAddress.getLocalHost().getHostAddress();
         Integer port = serverProperties.getPort();
         String contextPath = serverProperties.getServlet().getContextPath();
-        String baseUrl = URLUtil.normalize(String.format("%s:%s%s", hostAddress, port, contextPath));
+        String baseUrl = URLUtil.normalize("%s:%s%s".formatted(hostAddress, port, contextPath));
         log.info("----------------------------------------------");
         log.info("{} service started successfully.", projectProperties.getName());
         log.info("API 地址：{}", baseUrl);

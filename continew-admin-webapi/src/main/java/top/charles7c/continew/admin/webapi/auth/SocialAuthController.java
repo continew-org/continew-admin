@@ -87,7 +87,7 @@ public class SocialAuthController {
         try {
             return authRequestFactory.get(source);
         } catch (Exception e) {
-            throw new BadRequestException(String.format("暂不支持 [%s] 平台账号登录", source));
+            throw new BadRequestException("暂不支持 [%s] 平台账号登录".formatted(source));
         }
     }
 }
