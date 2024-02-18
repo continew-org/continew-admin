@@ -6,7 +6,7 @@
             COUNT(t1.message_id)
         FROM sys_message_user AS t1
             LEFT JOIN sys_message AS t2 ON t2.id = t1.message_id
-        WHERE t1.user_id = #{userId} AND t1.is_read = 0
+        WHERE t1.user_id = #{userId} AND t1.is_read = false
         <if test="type != null">
             AND t2.type = #{type}
         </if>
