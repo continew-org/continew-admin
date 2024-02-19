@@ -5,8 +5,8 @@
         SELECT
             (SELECT COUNT(*) FROM sys_log) AS pvCount,
             (SELECT COUNT(DISTINCT ip) FROM sys_log) AS ipCount,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURDATE()) AS todayPvCount,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)) AS yesterdayPvCount
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS todayPvCount,
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterdayPvCount
     </select>
 
     <select id="selectListDashboardAccessTrend"
@@ -16,8 +16,8 @@
             COUNT(*) AS pvCount,
             COUNT(DISTINCT ip) AS ipCount
         FROM sys_log
+        WHERE DATE(create_time) != CURRENT_DATE
         GROUP BY DATE(create_time)
-        HAVING date != CURDATE()
         ORDER BY DATE(create_time) DESC
         LIMIT #{days}
     </select>
@@ -27,22 +27,25 @@
         SELECT
             module,
             COUNT(*) AS pvCount,
-            SUM(CASE WHEN DATE(create_time) = CURDATE() THEN 1 ELSE 0 END) AS todayPvCount,
-            SUM(CASE WHEN DATE(create_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 1 ELSE 0 END) AS yesterdayPvCount
+            SUM(CASE WHEN DATE(create_time) = CURRENT_DATE THEN 1 ELSE 0 END) AS todayPvCount,
+            SUM(CASE WHEN DATE(create_time) = CURRENT_DATE - 1 THEN 1 ELSE 0 END) AS yesterdayPvCount
         FROM sys_log
+        WHERE module != '验证码' AND module != '登录'
         GROUP BY module
-        HAVING module != '验证码' AND module != '登录'
         ORDER BY pvCount DESC
         LIMIT 10
     </select>
 
     <select id="selectListDashboardGeoDistribution" resultType="java.util.Map">
         SELECT
-            SUBSTRING_INDEX(address, ' ', 1) AS name,
+            CASE
+                WHEN POSITION(' ' IN address) > 0 THEN SUBSTRING(address FROM 1 FOR POSITION(' ' IN address) - 1)
+                ELSE address
+            END AS name,
             COUNT(DISTINCT ip) AS value
         FROM sys_log
         GROUP BY name
-        ORDER BY COUNT(DISTINCT ip) DESC
+        ORDER BY value DESC
         LIMIT 10
     </select>
 </mapper>

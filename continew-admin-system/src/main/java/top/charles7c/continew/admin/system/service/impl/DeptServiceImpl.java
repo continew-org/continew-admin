@@ -18,6 +18,8 @@ package top.charles7c.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
@@ -31,6 +33,8 @@ import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.charles7c.continew.starter.data.core.enums.DatabaseType;
+import top.charles7c.continew.starter.data.core.util.MetaUtils;
 import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.ArrayList;
@@ -155,7 +159,8 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
      * @return 子部门列表
      */
     private List<DeptDO> listChildren(Long id) {
-        return baseMapper.lambdaQuery().apply("find_in_set(%s, ancestors)".formatted(id)).list();
+        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil.getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
+        return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
     }
 
     /**
@@ -169,8 +174,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         if (CollUtil.isEmpty(ids)) {
             return 0L;
         }
+        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil.getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
         return ids.stream()
-            .mapToLong(id -> baseMapper.lambdaQuery().apply("find_in_set(%s, ancestors)".formatted(id)).count())
+            .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).count())
             .sum();
     }
 
