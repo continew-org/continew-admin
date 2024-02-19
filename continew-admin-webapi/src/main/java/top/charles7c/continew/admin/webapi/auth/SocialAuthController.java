@@ -35,7 +35,7 @@ import top.charles7c.continew.admin.auth.service.LoginService;
 import top.charles7c.continew.starter.core.exception.BadRequestException;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.web.model.R;
-import top.charles7c.continew.starter.log.common.annotation.Log;
+import top.charles7c.continew.starter.log.core.annotation.Log;
 
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;

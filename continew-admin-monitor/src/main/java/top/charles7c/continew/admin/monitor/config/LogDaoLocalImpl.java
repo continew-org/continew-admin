@@ -34,10 +34,10 @@ import top.charles7c.continew.admin.monitor.model.entity.LogDO;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;
-import top.charles7c.continew.starter.log.common.dao.LogDao;
-import top.charles7c.continew.starter.log.common.model.LogRecord;
-import top.charles7c.continew.starter.log.common.model.LogRequest;
-import top.charles7c.continew.starter.log.common.model.LogResponse;
+import top.charles7c.continew.starter.log.core.dao.LogDao;
+import top.charles7c.continew.starter.log.core.model.LogRecord;
+import top.charles7c.continew.starter.log.core.model.LogRequest;
+import top.charles7c.continew.starter.log.core.model.LogResponse;
 import top.charles7c.continew.starter.web.autoconfigure.trace.TraceProperties;
 import top.charles7c.continew.starter.web.model.R;
 

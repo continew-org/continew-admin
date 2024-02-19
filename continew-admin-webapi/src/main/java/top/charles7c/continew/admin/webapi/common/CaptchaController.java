@@ -52,7 +52,7 @@ import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperti
 import top.charles7c.continew.starter.core.util.TemplateUtils;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.log.common.annotation.Log;
+import top.charles7c.continew.starter.log.core.annotation.Log;
 import top.charles7c.continew.starter.messaging.mail.util.MailUtils;
 import top.charles7c.continew.starter.web.model.R;
 
