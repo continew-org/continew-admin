@@ -3,7 +3,7 @@
 -- changeset Charles7c:2.5.0
 -- comment 初始化表数据
 -- 初始化默认菜单
-INSERT IGNORE INTO `sys_menu`
+INSERT INTO `sys_menu`
 (`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (1000, '系统管理', 0, 1, '/system', 'System', NULL, 'settings', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL),
@@ -67,34 +67,34 @@ VALUES
 (10002, 'GitHub', 0, 1, 'https://github.com/Charles7c/continew-admin', NULL, NULL, 'github', b'1', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL);
 
 -- 初始化默认部门
-INSERT IGNORE INTO `sys_dept`
+INSERT INTO `sys_dept`
 (`id`, `name`, `parent_id`, `ancestors`, `description`, `sort`, `status`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (1, 'Xxx科技有限公司', 0, '0', '系统初始部门', 1, 1, b'1', 1, NOW(), NULL, NULL),
 (547887852587843590, '天津总部', 1, '0,1', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
-(547888008188133385, '研发部', 547887852587843590, '0,1,2', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
-(547888460711591948, 'UI部', 547887852587843590, '0,1,2', NULL, 2, 1, b'0', 1, NOW(), NULL, NULL),
-(547888483713155087, '测试部', 547887852587843590, '0,1,2', NULL, 3, 1, b'0', 1, NOW(), NULL, NULL),
-(547888505959743506, '运维部', 547887852587843590, '0,1,2', NULL, 4, 1, b'0', 1, NOW(), NULL, NULL),
-(547888556819873814, '研发一组', 547888008188133385, '0,1,2,3', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
-(547888580614160409, '研发二组', 547888008188133385, '0,1,2,3', NULL, 2, 2, b'0', 1, NOW(), NULL, NULL);
+(547888008188133385, '研发部', 547887852587843590, '0,1,547887852587843590', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
+(547888460711591948, 'UI部', 547887852587843590, '0,1,547887852587843590', NULL, 2, 1, b'0', 1, NOW(), NULL, NULL),
+(547888483713155087, '测试部', 547887852587843590, '0,1,547887852587843590', NULL, 3, 1, b'0', 1, NOW(), NULL, NULL),
+(547888505959743506, '运维部', 547887852587843590, '0,1,547887852587843590', NULL, 4, 1, b'0', 1, NOW(), NULL, NULL),
+(547888556819873814, '研发一组', 547888008188133385, '0,1,547887852587843590,547888008188133385', NULL, 1, 1, b'0', 1, NOW(), NULL, NULL),
+(547888580614160409, '研发二组', 547888008188133385, '0,1,547887852587843590,547888008188133385', NULL, 2, 2, b'0', 1, NOW(), NULL, NULL);
 
 -- 初始化默认角色
-INSERT IGNORE INTO `sys_role`
+INSERT INTO `sys_role`
 (`id`, `name`, `code`, `data_scope`, `description`, `sort`, `status`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (1, '超级管理员', 'admin', 1, '系统初始角色', 1, 1, b'1', 1, NOW(), NULL, NULL),
 (547888897925840928, '测试人员', 'test', 5, NULL, 2, 1, b'0', 1, NOW(), NULL, NULL);
 
 -- 初始化默认用户：admin/admin123；test/123456
-INSERT IGNORE INTO `sys_user`
+INSERT INTO `sys_user`
 (`id`, `username`, `nickname`, `password`, `gender`, `email`, `phone`, `avatar`, `description`, `status`, `is_system`, `pwd_reset_time`, `dept_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (1, 'admin', '超级管理员', '{bcrypt}$2a$10$4jGwK2BMJ7FgVR.mgwGodey8.xR8FLoU1XSXpxJ9nZQt.pufhasSa', 1, '42190c6c5639d2ca4edb4150a35e058559ccf8270361a23745a2fd285a273c28', '5bda89a4609a65546422ea56bfe5eab4', NULL, '系统初始用户', 1, b'1', NOW(), 1, 1, NOW(), NULL, NULL),
 (547889293968801831, 'test', '测试员', '{bcrypt}$2a$10$meMbyso06lupZjxT88fG8undZo6.DSNUmifRfnnre8r/s13ciq6M6', 2, NULL, NULL, NULL, NULL, 2, b'0', NOW(), 547888483713155087, 1, NOW(), NULL, NULL);
 
 -- 初始化默认参数
-INSERT IGNORE INTO `sys_option`
+INSERT INTO `sys_option`
 (`name`, `code`, `value`, `default_value`, `description`, `update_user`, `update_time`)
 VALUES
 ('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
@@ -105,26 +105,26 @@ VALUES
 ('系统LOGO（33*33）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
 
 -- 初始化默认字典
-INSERT IGNORE INTO `sys_dict`
+INSERT INTO `sys_dict`
 (`id`, `name`, `code`, `description`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (547889614262632491, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
 
-INSERT IGNORE INTO `sys_dict_item`
+INSERT INTO `sys_dict_item`
 (`id`, `label`, `value`, `color`, `sort`, `description`, `dict_id`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (547889649658363951, '通知', '1', 'blue', 1, NULL, 547889614262632491, 1, NOW(), NULL, NULL),
 (547890124537462835, '活动', '2', 'orangered', 2, NULL, 547889614262632491, 1, NOW(), NULL, NULL);
 
 -- 初始化默认用户和角色关联数据
-INSERT IGNORE INTO `sys_user_role`
+INSERT INTO `sys_user_role`
 (`user_id`, `role_id`)
 VALUES
 (1, 1),
 (547889293968801831, 547888897925840928);
 
 -- 初始化默认角色和菜单关联数据
-INSERT IGNORE INTO `sys_role_menu`
+INSERT INTO `sys_role_menu`
 (`role_id`, `menu_id`)
 VALUES
 (547889293968801831, 1000),
@@ -135,10 +135,10 @@ VALUES
 (547889293968801831, 1014);
 
 -- 初始化默认角色和部门关联数据
-INSERT IGNORE INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES (547888897925840928, 547888483713155087);
+INSERT INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES (547888897925840928, 547888483713155087);
 
 -- 初始化默认存储库
-INSERT IGNORE INTO `sys_storage`
+INSERT INTO `sys_storage`
 (`id`, `name`, `code`, `type`, `access_key`, `secret_key`, `endpoint`, `bucket_name`, `domain`, `description`, `is_default`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (547890346239983671, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', b'1', 1, 1, 1, NOW(), NULL, NULL),

@@ -108,19 +108,19 @@ CREATE TABLE IF NOT EXISTS `sys_user_social` (
 CREATE TABLE IF NOT EXISTS `sys_user_role` (
     `user_id` bigint(20) NOT NULL COMMENT '用户ID',
     `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-    PRIMARY KEY (`user_id`,`role_id`) USING BTREE
+    PRIMARY KEY (`user_id`, `role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和角色关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_role_menu` (
     `role_id` bigint(20) NOT NULL COMMENT '角色ID',
     `menu_id` bigint(20) NOT NULL COMMENT '菜单ID',
-    PRIMARY KEY (`role_id`,`menu_id`) USING BTREE
+    PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和菜单关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_role_dept` (
     `role_id` bigint(20) NOT NULL COMMENT '角色ID',
     `dept_id` bigint(20) NOT NULL COMMENT '部门ID',
-    PRIMARY KEY (`role_id`,`dept_id`) USING BTREE
+    PRIMARY KEY (`role_id`, `dept_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_option` (
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `sys_message_user` (
     `user_id`    bigint(11) NOT NULL              COMMENT '用户ID',
     `is_read`    bit(1)     NOT NULL DEFAULT b'0' COMMENT '是否已读',
     `read_time`  datetime   DEFAULT NULL          COMMENT '读取时间',
-    PRIMARY KEY (`message_id`,`user_id`) USING BTREE
+    PRIMARY KEY (`message_id`, `user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息和用户关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_announcement` (
