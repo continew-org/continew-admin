@@ -116,7 +116,7 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数", description = "查询参数")
     @GetMapping("/option")
-    @Cached(name = CacheConstants.OPTION_KEY_PREFIX)
+    @Cached(key = "#query.code", name = CacheConstants.OPTION_KEY_PREFIX)
     public R<List<LabelValueResp<String>>> listOption(@Validated OptionQuery query) {
         return R.ok(optionService.list(query)
             .stream()

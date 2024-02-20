@@ -17,7 +17,6 @@
 package top.charles7c.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.alicp.jetcache.anno.CacheInvalidate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
@@ -28,6 +27,8 @@ import top.charles7c.continew.admin.system.model.req.OptionReq;
 import top.charles7c.continew.admin.system.model.req.OptionResetValueReq;
 import top.charles7c.continew.admin.system.model.resp.OptionResp;
 import top.charles7c.continew.admin.system.service.OptionService;
+import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
+import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 
 import java.util.List;
@@ -51,12 +52,13 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public void update(List<OptionReq> req) {
+        RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
         baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
     }
 
     @Override
-    @CacheInvalidate(key = "#req.code", name = CacheConstants.OPTION_KEY_PREFIX, multi = true)
     public void resetValue(OptionResetValueReq req) {
+        RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
         baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, req.getCode()).update();
     }
 }
