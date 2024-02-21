@@ -22,7 +22,7 @@ import top.charles7c.continew.admin.system.model.req.DeptReq;
 import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.extension.crud.service.IService;
+import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 
 /**
  * 部门业务接口

@@ -132,7 +132,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         if (obj instanceof RoleDetailResp detail) {
             Long roleId = detail.getId();
             if (SysConstants.ADMIN_ROLE_CODE.equals(detail.getCode())) {
-                List<MenuResp> list = menuService.list(null, null);
+                List<MenuResp> list = menuService.listAll();
                 List<Long> menuIds = list.stream().map(MenuResp::getId).toList();
                 detail.setMenuIds(menuIds);
             } else {

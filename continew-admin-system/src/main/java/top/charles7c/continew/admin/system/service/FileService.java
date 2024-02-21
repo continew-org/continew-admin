@@ -22,8 +22,8 @@ import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.query.FileQuery;
 import top.charles7c.continew.admin.system.model.req.FileReq;
 import top.charles7c.continew.admin.system.model.resp.FileResp;
+import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.extension.crud.service.IService;
 
 import java.util.List;
 

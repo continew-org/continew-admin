@@ -72,6 +72,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
+    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
+    public List<MenuResp> listAll() {
+        return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE.getValue()), null);
+    }
+
+    @Override
     public Set<String> listPermissionByUserId(Long userId) {
         return baseMapper.selectPermissionByUserId(userId);
     }
@@ -83,14 +89,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
         List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
         list.forEach(this::fill);
         return list;
-    }
-
-    @Override
-    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
-    public List<MenuResp> list() {
-        MenuQuery menuQuery = new MenuQuery();
-        menuQuery.setStatus(DisEnableStatusEnum.ENABLE.getValue());
-        return super.list(menuQuery, null);
     }
 
     /**

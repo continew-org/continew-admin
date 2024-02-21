@@ -153,7 +153,7 @@ public class LoginServiceImpl implements LoginService {
         // 查询菜单列表
         Set<MenuResp> menuSet = new LinkedHashSet<>();
         if (roleCodeSet.contains(SysConstants.ADMIN_ROLE_CODE)) {
-            menuSet.addAll(menuService.list());
+            menuSet.addAll(menuService.listAll());
         } else {
             roleCodeSet.forEach(roleCode -> menuSet.addAll(menuService.listByRoleCode(roleCode)));
         }

@@ -21,7 +21,7 @@ import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.req.MenuReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.extension.crud.service.IService;
+import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 
 import java.util.List;
 import java.util.Set;
@@ -33,6 +33,13 @@ import java.util.Set;
  * @since 2023/2/15 20:30
  */
 public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {
+
+    /**
+     * 查询全部菜单
+     *
+     * @return 菜单列表
+     */
+    List<MenuResp> listAll();
 
     /**
      * 根据用户 ID 查询

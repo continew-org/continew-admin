@@ -24,7 +24,7 @@ import top.charles7c.continew.admin.system.model.req.RoleReq;
 import top.charles7c.continew.admin.system.model.resp.RoleDetailResp;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.extension.crud.service.IService;
+import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 
 import java.util.List;
 import java.util.Set;

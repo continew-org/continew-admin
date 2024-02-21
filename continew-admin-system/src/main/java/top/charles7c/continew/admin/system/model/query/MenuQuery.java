@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.charles7c.continew.starter.data.core.annotation.Query;
 import top.charles7c.continew.starter.data.core.enums.QueryType;
 
@@ -31,6 +32,7 @@ import java.io.Serializable;
  * @since 2023/2/15 20:21
  */
 @Data
+@NoArgsConstructor
 @Schema(description = "菜单查询条件")
 public class MenuQuery implements Serializable {
 
@@ -49,4 +51,8 @@ public class MenuQuery implements Serializable {
      */
     @Schema(description = "状态（1：启用；2：禁用）", example = "1")
     private Integer status;
+
+    public MenuQuery(Integer status) {
+        this.status = status;
+    }
 }

@@ -23,7 +23,7 @@ import top.charles7c.continew.admin.system.model.req.DictItemReq;
 import top.charles7c.continew.admin.system.model.resp.DictItemDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictItemResp;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.extension.crud.service.IService;
+import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 
 import java.io.Serializable;
 import java.util.List;
