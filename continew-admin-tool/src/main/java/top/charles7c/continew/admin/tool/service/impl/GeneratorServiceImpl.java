@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.tool.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
@@ -149,7 +150,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                     String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0]
                         .toLowerCase();
                     fieldConfig.setColumnType(columnType);
-                    fieldConfig.setColumnSize(column.getSize());
+                    fieldConfig.setColumnSize(Convert.toStr(column.getSize()));
                     fieldConfig.setComment(column.getComment());
                 } else {
                     // 新增字段配置

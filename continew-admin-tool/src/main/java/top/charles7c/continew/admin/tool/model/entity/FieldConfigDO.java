@@ -16,6 +16,7 @@
 
 package top.charles7c.continew.admin.tool.model.entity;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.setting.dialect.Props;
@@ -76,7 +77,7 @@ public class FieldConfigDO implements Serializable {
      * 列大小
      */
     @Schema(description = "列大小", example = "255")
-    private Long columnSize;
+    private String columnSize;
 
     /**
      * 字段名称
@@ -146,7 +147,7 @@ public class FieldConfigDO implements Serializable {
         this.setTableName(column.getTableName());
         this.setColumnName(column.getName());
         this.setColumnType(StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase());
-        this.setColumnSize(column.getSize());
+        this.setColumnSize(Convert.toStr(column.getSize()));
         this.setComment(column.getComment());
         this.setIsRequired(!column.isPk() && !column.isNullable());
         this.setShowInList(true);
