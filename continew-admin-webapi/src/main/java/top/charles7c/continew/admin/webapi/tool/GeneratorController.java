@@ -16,33 +16,29 @@
 
 package top.charles7c.continew.admin.webapi.tool;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import cn.dev33.satoken.annotation.SaCheckPermission;
-
-import top.charles7c.continew.admin.tool.model.entity.FieldConfigDO;
-import top.charles7c.continew.admin.tool.model.entity.GenConfigDO;
-import top.charles7c.continew.admin.tool.model.query.TableQuery;
-import top.charles7c.continew.admin.tool.model.req.GenConfigReq;
-import top.charles7c.continew.admin.tool.model.resp.GeneratePreviewResp;
-import top.charles7c.continew.admin.tool.model.resp.TableResp;
-import top.charles7c.continew.admin.tool.service.GeneratorService;
+import top.charles7c.continew.admin.generator.model.entity.FieldConfigDO;
+import top.charles7c.continew.admin.generator.model.entity.GenConfigDO;
+import top.charles7c.continew.admin.generator.model.query.TableQuery;
+import top.charles7c.continew.admin.generator.model.req.GenConfigReq;
+import top.charles7c.continew.admin.generator.model.resp.GeneratePreviewResp;
+import top.charles7c.continew.admin.generator.model.resp.TableResp;
+import top.charles7c.continew.admin.generator.service.GeneratorService;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.web.model.R;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 代码生成 API
@@ -54,7 +50,7 @@ import top.charles7c.continew.starter.web.model.R;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tool/generator")
+@RequestMapping("/generator")
 public class GeneratorController {
 
     private final ProjectProperties projectProperties;

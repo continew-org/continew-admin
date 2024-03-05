@@ -63,23 +63,21 @@ springdoc:
   default-flat-param-object: true
   # 分组配置
   group-configs:
-    - group: 'all'
-      paths-to-match: '/**'
-      packages-to-scan: ${project.base-package}.webapi
-    - group: 'auth'
-      display-name: '系统认证'
+    - group: all
+      paths-to-match: /**
+      paths-to-exclude:
+        - /error
+    - group: auth
+      display-name: 系统认证
       packages-to-scan: ${project.base-package}.webapi.auth
-    - group: 'common'
-      display-name: '通用接口'
+    - group: common
+      display-name: 通用接口
       packages-to-scan: ${project.base-package}.webapi.common
-    - group: 'system'
-      display-name: '系统管理'
+    - group: system
+      display-name: 系统管理
       packages-to-scan: ${project.base-package}.webapi.system
-    - group: 'tool'
-      display-name: '系统工具'
-      packages-to-scan: ${project.base-package}.webapi.tool
-    - group: 'monitor'
-      display-name: '系统监控'
+    - group: monitor
+      display-name: 系统监控
       packages-to-scan: ${project.base-package}.webapi.monitor
   ## 组件配置
   components:

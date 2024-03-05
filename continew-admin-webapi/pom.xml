@@ -37,16 +37,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- 代码生成器插件（后续会改造为独立插件） -->
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-admin-generator</artifactId>
+        </dependency>
+
         <!-- 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等） -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-monitor</artifactId>
-        </dependency>
-
-        <!-- 系统工具模块（存放系统工具模块相关功能，例如：代码生成、文件管理等） -->
-        <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-admin-tool</artifactId>
         </dependency>
     </dependencies>
 
