@@ -216,4 +216,18 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <!-- 插件仓库配置 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>huawei-mirror</id>
+            <name>HuaweiCloud Mirror</name>
+            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>ali-mirror</id>
+            <name>AliYun Mirror</name>
+            <url>https://maven.aliyun.com/repository/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
