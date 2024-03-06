@@ -39,6 +39,7 @@ import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.query.OptionQuery;
 import top.charles7c.continew.admin.system.model.query.RoleQuery;
+import top.charles7c.continew.admin.system.model.resp.FileUploadResp;
 import top.charles7c.continew.admin.system.service.*;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
@@ -77,11 +78,11 @@ public class CommonController {
 
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
-    public R<String> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
+    public R<FileUploadResp> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(projectProperties.isProduction(), "演示环境不支持上传文件");
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file);
-        return R.ok("上传成功", fileInfo.getUrl());
+        return R.ok(FileUploadResp.builder().url(fileInfo.getUrl()).build());
     }
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")

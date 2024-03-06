@@ -16,32 +16,27 @@
 
 package top.charles7c.continew.admin.webapi.auth;
 
-import lombok.RequiredArgsConstructor;
-
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
+import com.xkcoding.justauth.AuthRequestFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.*;
-
-import com.xkcoding.justauth.AuthRequestFactory;
-
-import cn.dev33.satoken.annotation.SaIgnore;
-import cn.dev33.satoken.stp.StpUtil;
-
-import top.charles7c.continew.admin.auth.model.resp.LoginResp;
-import top.charles7c.continew.admin.auth.service.LoginService;
-import top.charles7c.continew.starter.core.exception.BadRequestException;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.web.model.R;
-import top.charles7c.continew.starter.log.core.annotation.Log;
-
+import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
+import org.springframework.web.bind.annotation.*;
+import top.charles7c.continew.admin.auth.model.resp.LoginResp;
+import top.charles7c.continew.admin.auth.model.resp.SocialAuthAuthorizeResp;
+import top.charles7c.continew.admin.auth.service.LoginService;
+import top.charles7c.continew.starter.core.exception.BadRequestException;
+import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
+import top.charles7c.continew.starter.log.core.annotation.Log;
+import top.charles7c.continew.starter.web.model.R;
 
 /**
  * 三方账号认证 API
@@ -63,9 +58,11 @@ public class SocialAuthController {
     @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @GetMapping("/{source}")
-    public R<String> authorize(@PathVariable String source) {
+    public R<SocialAuthAuthorizeResp> authorize(@PathVariable String source) {
         AuthRequest authRequest = this.getAuthRequest(source);
-        return R.ok("操作成功", authRequest.authorize(AuthStateUtils.createState()));
+        return R.ok(SocialAuthAuthorizeResp.builder()
+            .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
+            .build());
     }
 
     @Operation(summary = "三方账号登录", description = "三方账号登录")
