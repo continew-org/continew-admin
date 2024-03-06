@@ -193,7 +193,7 @@
         </profile>
     </profiles>
 
-    <!-- 远程仓库配置：华为云、阿里云 Maven 镜像源仓库 -->
+    <!-- 依赖仓库配置 -->
     <repositories>
         <repository>
             <id>huawei-mirror</id>
