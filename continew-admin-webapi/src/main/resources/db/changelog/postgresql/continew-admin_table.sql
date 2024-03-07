@@ -490,6 +490,7 @@ CREATE TABLE IF NOT EXISTS "gen_field_config" (
     "column_size"   int8         DEFAULT NULL,
     "field_name"    varchar(64)  NOT NULL,
     "field_type"    varchar(25)  NOT NULL,
+    "field_sort"    int4         NOT NULL DEFAULT 999,
     "comment"       varchar(512) DEFAULT NULL,
     "is_required"   bool         NOT NULL DEFAULT true,
     "show_in_list"  bool         NOT NULL DEFAULT true,
@@ -506,6 +507,7 @@ COMMENT ON COLUMN "gen_field_config"."column_type"   IS '列类型';
 COMMENT ON COLUMN "gen_field_config"."column_size"   IS '列大小';
 COMMENT ON COLUMN "gen_field_config"."field_name"    IS '字段名称';
 COMMENT ON COLUMN "gen_field_config"."field_type"    IS '字段类型';
+COMMENT ON COLUMN "gen_field_config"."field_sort"    IS '字段排序';
 COMMENT ON COLUMN "gen_field_config"."comment"       IS '注释';
 COMMENT ON COLUMN "gen_field_config"."is_required"   IS '是否必填';
 COMMENT ON COLUMN "gen_field_config"."show_in_list"  IS '是否在列表中显示';

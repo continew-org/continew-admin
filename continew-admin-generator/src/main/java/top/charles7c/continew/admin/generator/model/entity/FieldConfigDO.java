@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -92,6 +93,13 @@ public class FieldConfigDO implements Serializable {
     @Schema(description = "字段类型", example = "String")
     @NotBlank(message = "字段类型不能为空")
     private String fieldType;
+
+    /**
+     * 字段排序
+     */
+    @Schema(description = "字段排序", example = "字段排序")
+    @NotNull(message = "字段排序不能为空")
+    private Integer fieldSort;
 
     /**
      * 注释

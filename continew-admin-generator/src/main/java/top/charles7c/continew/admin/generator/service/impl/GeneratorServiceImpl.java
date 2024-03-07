@@ -130,36 +130,29 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Override
     public List<FieldConfigDO> listFieldConfig(String tableName, Boolean requireSync) {
         List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
-        if (CollUtil.isEmpty(fieldConfigList)) {
-            Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            return columnList.stream().map(FieldConfigDO::new).toList();
+        if (CollUtil.isNotEmpty(fieldConfigList) && Boolean.FALSE.equals(requireSync)) {
+            return fieldConfigList;
         }
-        // 同步最新数据表列信息
-        if (Boolean.TRUE.equals(requireSync)) {
-            Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
-            // 移除已不存在的字段配置
-            List<String> columnNameList = columnList.stream().map(Column::getName).toList();
-            fieldConfigList.removeIf(column -> !columnNameList.contains(column.getColumnName()));
-            // 新增或更新字段配置
-            Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
-                .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
-            for (Column column : columnList) {
-                FieldConfigDO fieldConfig = fieldConfigMap.get(column.getName());
-                if (null != fieldConfig) {
-                    // 更新已有字段配置
-                    String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0]
-                        .toLowerCase();
-                    fieldConfig.setColumnType(columnType);
-                    fieldConfig.setColumnSize(Convert.toStr(column.getSize()));
-                    fieldConfig.setComment(column.getComment());
-                } else {
-                    // 新增字段配置
-                    fieldConfig = new FieldConfigDO(column);
-                    fieldConfigList.add(fieldConfig);
-                }
+        List<FieldConfigDO> latestFieldConfigList = new ArrayList<>();
+        // 获取最新数据表列信息
+        Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
+        // 新增或更新字段配置
+        Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
+            .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
+        int i = 1;
+        for (Column column : columnList) {
+            FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
+                .orElseGet(() -> new FieldConfigDO(column));
+            fieldConfig.setFieldSort(i++);
+            // 更新已有字段配置
+            if (null != fieldConfig.getCreateTime()) {
+                String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
+                fieldConfig.setColumnType(columnType);
+                fieldConfig.setColumnSize(Convert.toStr(column.getSize()));
             }
+            latestFieldConfigList.add(fieldConfig);
         }
-        return fieldConfigList;
+        return latestFieldConfigList;
     }
 
     @Override

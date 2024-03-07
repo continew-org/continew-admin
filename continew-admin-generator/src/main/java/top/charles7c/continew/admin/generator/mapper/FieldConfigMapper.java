@@ -37,6 +37,6 @@ public interface FieldConfigMapper extends BaseMapper<FieldConfigDO> {
      * @param tableName 表名称
      * @return 字段配置信息
      */
-    @Select("SELECT * FROM gen_field_config WHERE table_name = #{tableName}")
+    @Select("SELECT * FROM gen_field_config WHERE table_name = #{tableName} ORDER BY field_sort ASC")
     List<FieldConfigDO> selectListByTableName(@Param("tableName") String tableName);
 }

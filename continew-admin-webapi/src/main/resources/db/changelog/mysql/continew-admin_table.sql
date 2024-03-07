@@ -294,6 +294,7 @@ CREATE TABLE IF NOT EXISTS `gen_field_config` (
     `column_size`   bigint(20)   DEFAULT NULL          COMMENT '列大小',
     `field_name`    varchar(64)  NOT NULL              COMMENT '字段名称',
     `field_type`    varchar(25)  NOT NULL              COMMENT '字段类型',
+    `field_sort`    int          NOT NULL DEFAULT 999  COMMENT '字段排序',
     `comment`       varchar(512) DEFAULT NULL          COMMENT '注释',
     `is_required`   bit(1)       NOT NULL DEFAULT b'1' COMMENT '是否必填',
     `show_in_list`  bit(1)       NOT NULL DEFAULT b'1' COMMENT '是否在列表中显示',
