@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.monitor.model.resp;
 
 import cn.crane4j.annotation.Assemble;
 import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.condition.ConditionOnPropertyNotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -49,6 +50,7 @@ public class LogResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
+    @ConditionOnPropertyNotNull
     @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
     private Long createUser;
 

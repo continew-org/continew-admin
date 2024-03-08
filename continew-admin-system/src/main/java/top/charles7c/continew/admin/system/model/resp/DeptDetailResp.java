@@ -19,14 +19,15 @@ package top.charles7c.continew.admin.system.model.resp;
 import cn.crane4j.annotation.AssembleMethod;
 import cn.crane4j.annotation.ContainerMethod;
 import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.condition.ConditionOnExpression;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.service.DeptService;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
 
@@ -55,6 +56,7 @@ public class DeptDetailResp extends BaseDetailResp {
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID", example = "2")
+    @ConditionOnExpression(value = "#target.parentId != 0")
     @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptDetailResp.class), props = @Mapping(src = "name", ref = "parentName"))
     private Long parentId;
 
