@@ -6,11 +6,42 @@ generator:
     - DATABASECHANGELOGLOCK
     - gen_config
     - gen_field_config
-  # 模板配置
+  ## 类型映射
+  typeMappings:
+    MySQL:
+      Integer:
+        - int
+        - tinyint
+        - smallint
+        - mediumint
+        - integer
+      String:
+        - varchar
+        - char
+        - text
+        - mediumtext
+        - longtext
+        - tinytext
+      LocalDate:
+        - date
+      LocalDateTime:
+        - datetime
+        - timestamp
+      Long:
+        - bigint
+      Float:
+        - float
+      Double:
+        - double
+      BigDecimal:
+        - decimal
+      Boolean:
+        - bit
+  ## 模板配置
   templateConfigs:
     DO:
       # 模板路径
-      templatePath: generator/Entity.ftl
+      templatePath: Entity.ftl
       # 包名称
       packageName: model.entity
       # 排除字段
@@ -21,20 +52,20 @@ generator:
         - updateUser
         - updateTime
     Query:
-      templatePath: generator/Query.ftl
+      templatePath: Query.ftl
       packageName: model.query
     Req:
-      templatePath: generator/Req.ftl
+      templatePath: Req.ftl
       packageName: model.req
     Resp:
-      templatePath: generator/Resp.ftl
+      templatePath: Resp.ftl
       packageName: model.resp
       excludeFields:
         - id
         - createUser
         - createTime
     DetailResp:
-      templatePath: generator/DetailResp.ftl
+      templatePath: DetailResp.ftl
       packageName: model.resp
       excludeFields:
         - id
@@ -43,14 +74,14 @@ generator:
         - updateUser
         - updateTime
     Mapper:
-      templatePath: generator/Mapper.ftl
+      templatePath: Mapper.ftl
       packageName: mapper
     Service:
-      templatePath: generator/Service.ftl
+      templatePath: Service.ftl
       packageName: service
     ServiceImpl:
-      templatePath: generator/ServiceImpl.ftl
+      templatePath: ServiceImpl.ftl
       packageName: service.impl
     Controller:
-      templatePath: generator/Controller.ftl
+      templatePath: Controller.ftl
       packageName: controller

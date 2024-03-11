@@ -46,6 +46,7 @@ import top.charles7c.continew.admin.generator.service.GeneratorService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.exception.BusinessException;
 import top.charles7c.continew.starter.core.util.TemplateUtils;
+import top.charles7c.continew.starter.data.core.enums.DatabaseType;
 import top.charles7c.continew.starter.data.core.util.MetaUtils;
 import top.charles7c.continew.starter.data.core.util.Table;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
@@ -136,6 +137,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         List<FieldConfigDO> latestFieldConfigList = new ArrayList<>();
         // 获取最新数据表列信息
         Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
+        // 获取数据库对应的类型映射配置
+        DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
+        Map<String, List<String>> typeMappingMap = generatorProperties.getTypeMappings()
+            .get(databaseType.getDatabase());
+        CheckUtils.throwIfEmpty(typeMappingMap, "请先配置对应数据库的类型映射");
+        Set<Map.Entry<String, List<String>>> typeMappingEntrySet = typeMappingMap.entrySet();
         // 新增或更新字段配置
         Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
             .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
@@ -143,13 +150,19 @@ public class GeneratorServiceImpl implements GeneratorService {
         for (Column column : columnList) {
             FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
                 .orElseGet(() -> new FieldConfigDO(column));
-            fieldConfig.setFieldSort(i++);
             // 更新已有字段配置
             if (null != fieldConfig.getCreateTime()) {
                 String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
                 fieldConfig.setColumnType(columnType);
                 fieldConfig.setColumnSize(Convert.toStr(column.getSize()));
             }
+            String fieldType = typeMappingEntrySet.stream()
+                .filter(entry -> entry.getValue().contains(fieldConfig.getColumnType()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+            fieldConfig.setFieldType(fieldType);
+            fieldConfig.setFieldSort(i++);
             latestFieldConfigList.add(fieldConfig);
         }
         return latestFieldConfigList;
@@ -232,13 +245,13 @@ public class GeneratorServiceImpl implements GeneratorService {
         // 渲染前端代码
         // api 代码
         genConfigMap.put("fieldConfigs", fieldConfigList);
-        String apiContent = TemplateUtils.render("generator/api.ftl", genConfigMap);
+        String apiContent = TemplateUtils.render("api.ftl", genConfigMap);
         GeneratePreviewResp apiCodePreview = new GeneratePreviewResp();
         apiCodePreview.setFileName(classNamePrefix.toLowerCase() + ".ts");
         apiCodePreview.setContent(apiContent);
         generatePreviewList.add(apiCodePreview);
         // view 代码
-        String viewContent = TemplateUtils.render("generator/index.ftl", genConfigMap);
+        String viewContent = TemplateUtils.render("index.ftl", genConfigMap);
         GeneratePreviewResp viewCodePreview = new GeneratePreviewResp();
         viewCodePreview.setFileName("index.vue");
         viewCodePreview.setContent(viewContent);
@@ -260,9 +273,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 1.确定后端代码基础路径
             // 例如：D:/continew-admin
             String projectPath = SystemUtil.getUserInfo().getCurrentDir();
-            // 例如：D:/continew-admin/continew-admin-tool
+            // 例如：D:/continew-admin/continew-admin-system
             File backendModuleFile = new File(projectPath, genConfig.getModuleName());
-            // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/continew/admin/tool
+            // 例如：D:/continew-admin/continew-admin-system/src/main/java/top/charles7c/continew/admin/system
             List<String> backendModuleChildPathList = CollUtil.newArrayList("src", "main", "java");
             backendModuleChildPathList.addAll(StrUtil.split(packageName, StringConstants.DOT));
             File backendParentFile = FileUtil.file(backendModuleFile, backendModuleChildPathList
@@ -273,7 +286,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 .toList();
             Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
             for (GeneratePreviewResp codePreview : backendCodePreviewList) {
-                // 例如：D:/continew-admin/continew-admin-tool/src/main/java/top/charles7c/continew/admin/tool/service/impl/XxxServiceImpl.java
+                // 例如：D:/continew-admin/continew-admin-system/src/main/java/top/charles7c/continew/admin/system/service/impl/XxxServiceImpl.java
                 TemplateConfig templateConfig = templateConfigMap.get(codePreview.getFileName()
                     .replace(classNamePrefix, StringConstants.EMPTY)
                     .replace(FileNameUtil.EXT_JAVA, StringConstants.EMPTY));
@@ -310,7 +323,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.writeUtf8String(apiCodePreview.getContent(), apiFile);
             // 2.生成 view 代码
             GeneratePreviewResp viewCodePreview = frontendCodePreviewList.get(1);
-            // 例如：D:/continew-admin-ui/src/views/tool/xxx/index.vue
+            // 例如：D:/continew-admin-ui/src/views/system/xxx/index.vue
             File indexFile = FileUtil.file(frontendPath, apiModuleName, StrUtil
                 .lowerFirst(classNamePrefix), "index.vue");
             if (indexFile.exists() && Boolean.FALSE.equals(isOverride)) {

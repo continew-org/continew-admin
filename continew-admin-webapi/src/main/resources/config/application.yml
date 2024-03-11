@@ -214,6 +214,8 @@ spring:
   profiles:
     # 启用的环境
     active: dev
+    include:
+      - generator
   main:
     # 允许定义重名的 bean 对象覆盖原有的 bean
     allow-bean-definition-overriding: true

@@ -19,8 +19,6 @@ package top.charles7c.continew.admin.generator.model.entity;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.meta.Column;
-import cn.hutool.setting.dialect.Props;
-import cn.hutool.setting.dialect.PropsUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -168,11 +166,5 @@ public class FieldConfigDO implements Serializable {
     public void setColumnName(String columnName) {
         this.columnName = columnName;
         this.fieldName = StrUtil.toCamelCase(this.columnName);
-    }
-
-    public void setColumnType(String columnType) {
-        this.columnType = columnType;
-        Props generatorProp = PropsUtil.get("generator");
-        this.fieldType = generatorProp.getStr(columnType);
     }
 }
