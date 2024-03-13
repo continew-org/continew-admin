@@ -153,7 +153,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     protected void fill(Object obj) {
         super.fill(obj);
         if (obj instanceof UserDetailResp detail) {
-            List<Long> roleIdList = detail.getRoleIds();
+            List<Long> roleIdList = userRoleService.listRoleIdByUserId(detail.getId());
+            detail.setRoleIds(roleIdList);
             if (CollUtil.isNotEmpty(roleIdList)) {
                 detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
             }
