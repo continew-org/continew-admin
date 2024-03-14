@@ -16,29 +16,23 @@
 
 package top.charles7c.continew.admin.generator.model.entity;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
-
-import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import cn.hutool.core.util.StrUtil;
-
 import top.charles7c.continew.admin.common.constant.RegexConstants;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 生成配置实体
@@ -79,13 +73,6 @@ public class GenConfigDO implements Serializable {
     @Pattern(regexp = RegexConstants.PACKAGE_NAME, message = "包名称格式错误")
     @Length(max = 60, message = "包名称不能超过 {max} 个字符")
     private String packageName;
-
-    /**
-     * 前端路径
-     */
-    @Schema(description = "前端路径", example = "D:/continew-admin-ui/src/views/system/user")
-    @Length(max = 255, message = "前端路径不能超过 {max} 个字符")
-    private String frontendPath;
 
     /**
      * 业务名称

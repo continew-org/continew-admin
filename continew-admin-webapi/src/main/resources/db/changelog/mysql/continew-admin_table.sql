@@ -277,7 +277,6 @@ CREATE TABLE IF NOT EXISTS `gen_config` (
     `table_name`    varchar(64)  NOT NULL              COMMENT '表名称',
     `module_name`   varchar(60)  NOT NULL              COMMENT '模块名称',
     `package_name`  varchar(60)  NOT NULL              COMMENT '包名称',
-    `frontend_path` varchar(255) DEFAULT NULL          COMMENT '前端路径',
     `business_name` varchar(50)  NOT NULL              COMMENT '业务名称',
     `author`        varchar(100) NOT NULL              COMMENT '作者',
     `table_prefix`  varchar(20)  DEFAULT NULL          COMMENT '表前缀',

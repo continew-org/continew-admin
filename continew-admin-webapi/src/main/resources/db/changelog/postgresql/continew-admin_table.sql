@@ -462,7 +462,6 @@ CREATE TABLE IF NOT EXISTS "gen_config" (
     "table_name"    varchar(64)  NOT NULL,
     "module_name"   varchar(60)  NOT NULL,
     "package_name"  varchar(60)  NOT NULL,
-    "frontend_path" varchar(255) DEFAULT NULL,
     "business_name" varchar(50)  NOT NULL,
     "author"        varchar(100) NOT NULL,
     "table_prefix"  varchar(20)  DEFAULT NULL,
@@ -474,7 +473,6 @@ CREATE TABLE IF NOT EXISTS "gen_config" (
 COMMENT ON COLUMN "gen_config"."table_name"    IS '表名称';
 COMMENT ON COLUMN "gen_config"."module_name"   IS '模块名称';
 COMMENT ON COLUMN "gen_config"."package_name"  IS '包名称';
-COMMENT ON COLUMN "gen_config"."frontend_path" IS '前端路径';
 COMMENT ON COLUMN "gen_config"."business_name" IS '业务名称';
 COMMENT ON COLUMN "gen_config"."author"        IS '作者';
 COMMENT ON COLUMN "gen_config"."table_prefix"  IS '表前缀';

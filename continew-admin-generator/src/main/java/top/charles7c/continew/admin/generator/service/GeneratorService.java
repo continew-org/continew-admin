@@ -16,9 +16,8 @@
 
 package top.charles7c.continew.admin.generator.service;
 
-import java.sql.SQLException;
-import java.util.List;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import top.charles7c.continew.admin.generator.model.entity.FieldConfigDO;
 import top.charles7c.continew.admin.generator.model.entity.GenConfigDO;
 import top.charles7c.continew.admin.generator.model.query.TableQuery;
@@ -27,6 +26,9 @@ import top.charles7c.continew.admin.generator.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.generator.model.resp.TableResp;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 代码生成业务接口
@@ -84,6 +86,8 @@ public interface GeneratorService {
      * 生成代码
      *
      * @param tableName 表名称
+     * @param request   请求对象
+     * @param response  响应对象
      */
-    void generate(String tableName);
+    void generate(String tableName, HttpServletRequest request, HttpServletResponse response);
 }

@@ -8,7 +8,7 @@ generator:
     - gen_field_config
   ## 类型映射
   typeMappings:
-    MySQL:
+    MYSQL:
       Integer:
         - int
         - tinyint

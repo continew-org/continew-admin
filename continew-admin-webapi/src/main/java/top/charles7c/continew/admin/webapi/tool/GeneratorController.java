@@ -21,6 +21,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +34,6 @@ import top.charles7c.continew.admin.generator.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.generator.model.resp.TableResp;
 import top.charles7c.continew.admin.generator.service.GeneratorService;
 import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.web.model.R;
@@ -102,9 +103,7 @@ public class GeneratorController {
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/{tableName}")
-    public R<Void> generate(@PathVariable String tableName) {
-        ValidationUtils.throwIf(projectProperties.isProduction(), "仅支持在开发环境生成代码");
-        generatorService.generate(tableName);
-        return R.ok("生成成功，请查看生成代码是否正确");
+    public void generate(@PathVariable String tableName, HttpServletRequest request, HttpServletResponse response) {
+        generatorService.generate(tableName, request, response);
     }
 }

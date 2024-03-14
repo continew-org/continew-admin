@@ -13,6 +13,8 @@
   const { proxy } = getCurrentInstance() as any;
   // const { dis_enable_status_enum } = proxy.useDict('dis_enable_status_enum');
 
+  const queryFormRef = ref();
+  const formRef = ref();
   const dataList = ref<DataRecord[]>([]);
   const dataDetail = ref<DataRecord>({
     // TODO 待补充详情字段默认值
@@ -102,7 +104,7 @@
     form.value = {
       // TODO 待补充需要重置的字段默认值，详情请参考其他模块 index.vue
     };
-    proxy.$refs.formRef?.resetFields();
+    formRef.value.resetFields();
   };
 
   /**
@@ -110,14 +112,14 @@
    */
   const handleCancel = () => {
     visible.value = false;
-    proxy.$refs.formRef.resetFields();
+    formRef.value.resetFields();
   };
 
   /**
    * 确定
    */
   const handleOk = () => {
-    proxy.$refs.formRef.validate((valid: any) => {
+    formRef.value.validate((valid: any) => {
       if (!valid) {
         if (form.value.id !== undefined) {
           update(form.value, form.value.id).then((res) => {
@@ -227,7 +229,7 @@
    * 重置
    */
   const resetQuery = () => {
-    proxy.$refs.queryRef.resetFields();
+    queryFormRef.value.resetFields();
     handleQuery();
   };
 
@@ -266,7 +268,7 @@
       <div class="header">
         <!-- 搜索栏 -->
         <div v-if="showQuery" class="header-query">
-          <a-form ref="queryRef" :model="queryParams" layout="inline">
+          <a-form ref="queryFormRef" :model="queryParams" layout="inline">
             <#list fieldConfigs as fieldConfig>
             <#if fieldConfig.showInQuery>
             <a-form-item field="${fieldConfig.fieldName}" hide-label>
@@ -347,7 +349,6 @@
 
       <!-- 列表区域 -->
       <a-table
-        ref="tableRef"
         row-key="id"
         :data="dataList"
         :loading="loading"

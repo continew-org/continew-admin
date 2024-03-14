@@ -20,6 +20,7 @@ import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import top.charles7c.continew.starter.data.core.enums.DatabaseType;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class GeneratorProperties {
     /**
      * 类型映射
      */
-    private Map<String, Map<String, List<String>>> typeMappings = MapUtil.newHashMap();
+    private Map<DatabaseType, Map<String, List<String>>> typeMappings = MapUtil.newHashMap();
 
     /**
      * 模板配置
