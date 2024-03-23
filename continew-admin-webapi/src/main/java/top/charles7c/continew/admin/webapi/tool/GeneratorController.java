@@ -102,8 +102,10 @@ public class GeneratorController {
     @Operation(summary = "生成代码", description = "生成代码")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("tool:generator:list")
-    @PostMapping("/{tableName}")
-    public void generate(@PathVariable String tableName, HttpServletRequest request, HttpServletResponse response) {
-        generatorService.generate(tableName, request, response);
+    @PostMapping("/{tableNames}")
+    public void generate(@PathVariable List<String> tableNames,
+                         HttpServletRequest request,
+                         HttpServletResponse response) {
+        generatorService.generate(tableNames, request, response);
     }
 }

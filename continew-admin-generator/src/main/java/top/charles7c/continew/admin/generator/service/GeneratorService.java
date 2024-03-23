@@ -85,9 +85,9 @@ public interface GeneratorService {
     /**
      * 生成代码
      *
-     * @param tableName 表名称
-     * @param request   请求对象
-     * @param response  响应对象
+     * @param tableNames 表明层
+     * @param request    请求对象
+     * @param response   响应对象
      */
-    void generate(String tableName, HttpServletRequest request, HttpServletResponse response);
+    void generate(List<String> tableNames, HttpServletRequest request, HttpServletResponse response);
 }

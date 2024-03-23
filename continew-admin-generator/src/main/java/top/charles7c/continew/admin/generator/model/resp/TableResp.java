@@ -72,4 +72,14 @@ public class TableResp implements Serializable {
      */
     @Schema(description = "是否已配置", example = "true")
     private Boolean isConfiged;
+
+    /**
+     * 是否禁用
+     */
+    @Schema(description = "是否禁用", example = "true")
+    private Boolean disabled;
+
+    public Boolean getDisabled() {
+        return !isConfiged;
+    }
 }

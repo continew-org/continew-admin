@@ -260,50 +260,57 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     @Override
-    public void generate(String tableName, HttpServletRequest request, HttpServletResponse response) {
+    public void generate(List<String> tableNames, HttpServletRequest request, HttpServletResponse response) {
         try {
-            // 初始化配置及数据
-            List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
-            GenConfigDO genConfig = genConfigMapper.selectById(tableName);
-            // 生成后端代码
-            Map<Boolean, List<GeneratePreviewResp>> generatePreviewListMap = generatePreviewList.stream()
-                .collect(Collectors.groupingBy(GeneratePreviewResp::isBackend));
-            this.generateBackendCode(generatePreviewListMap.get(true), genConfig);
-            // 生成前端代码
-            List<GeneratePreviewResp> frontendGeneratePreviewList = generatePreviewListMap.get(false);
-            String packageName = genConfig.getPackageName();
-            String moduleName = StrUtil.subSuf(packageName, StrUtil
-                .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
             String tempDir = SystemUtil.getUserInfo().getTempDir();
-            // 例如：continew-admin-ui/src
-            String frontendBasicPackagePath = tempDir + String.join(File.separator, projectProperties
-                .getAppName(), projectProperties.getAppName() + "-ui", "src");
-            // 1、生成 api 代码
-            GeneratePreviewResp apiGeneratePreview = frontendGeneratePreviewList.get(0);
-            // 例如：continew-admin-ui/src/src/api/system
-            String apiPath = String.join(File.separator, frontendBasicPackagePath, "api", moduleName);
-            // 例如：continew-admin-ui/src/api/system/user.ts
-            File apiFile = new File(apiPath, apiGeneratePreview.getFileName());
-            if (!apiFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
-                FileUtil.writeUtf8String(apiGeneratePreview.getContent(), apiFile);
-            }
-            // 2、生成 view 代码
-            GeneratePreviewResp viewGeneratePreview = frontendGeneratePreviewList.get(1);
-            // 例如：continew-admin-ui/src/views/system
-            String vuePath = String.join(File.separator, frontendBasicPackagePath, "views", moduleName, StrUtil
-                .lowerFirst(genConfig.getClassNamePrefix()));
-            // 例如：continew-admin-ui/src/views/system/user/index.vue
-            File vueFile = new File(vuePath, viewGeneratePreview.getFileName());
-            if (!vueFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
-                FileUtil.writeUtf8String(viewGeneratePreview.getContent(), vueFile);
-            }
+            // 删除旧代码
+            FileUtil.del(tempDir + projectProperties.getAppName());
+
+            tableNames.forEach(tableName -> {
+                // 初始化配置及数据
+                List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
+                GenConfigDO genConfig = genConfigMapper.selectById(tableName);
+                // 生成后端代码
+                Map<Boolean, List<GeneratePreviewResp>> generatePreviewListMap = generatePreviewList.stream()
+                    .collect(Collectors.groupingBy(GeneratePreviewResp::isBackend));
+                this.generateBackendCode(generatePreviewListMap.get(true), genConfig);
+                // 生成前端代码
+                List<GeneratePreviewResp> frontendGeneratePreviewList = generatePreviewListMap.get(false);
+                String packageName = genConfig.getPackageName();
+                String moduleName = StrUtil.subSuf(packageName, StrUtil
+                    .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+
+                // 例如：continew-admin-ui/src
+                String frontendBasicPackagePath = tempDir + String.join(File.separator, projectProperties
+                    .getAppName(), projectProperties.getAppName() + "-ui", "src");
+                // 1、生成 api 代码
+                GeneratePreviewResp apiGeneratePreview = frontendGeneratePreviewList.get(0);
+                // 例如：continew-admin-ui/src/src/api/system
+                String apiPath = String.join(File.separator, frontendBasicPackagePath, "api", moduleName);
+                // 例如：continew-admin-ui/src/api/system/user.ts
+                File apiFile = new File(apiPath, apiGeneratePreview.getFileName());
+                if (!apiFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
+                    FileUtil.writeUtf8String(apiGeneratePreview.getContent(), apiFile);
+                }
+                // 2、生成 view 代码
+                GeneratePreviewResp viewGeneratePreview = frontendGeneratePreviewList.get(1);
+                // 例如：continew-admin-ui/src/views/system
+                String vuePath = String.join(File.separator, frontendBasicPackagePath, "views", moduleName, StrUtil
+                    .lowerFirst(genConfig.getClassNamePrefix()));
+                // 例如：continew-admin-ui/src/views/system/user/index.vue
+                File vueFile = new File(vuePath, viewGeneratePreview.getFileName());
+                if (!vueFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
+                    FileUtil.writeUtf8String(viewGeneratePreview.getContent(), vueFile);
+                }
+            });
+
             // 打包下载
             File tempDirFile = new File(tempDir, projectProperties.getAppName());
-            String zipFilePath = tempDirFile.getPath() + ".zip";
+            String zipFilePath = tempDirFile.getPath() + jodd.io.ZipUtil.ZIP_EXT;
             ZipUtil.zip(tempDirFile.getPath(), zipFilePath);
             FileUploadUtils.download(request, response, new File(zipFilePath), true);
         } catch (Exception e) {
-            log.error("Generate code of table '{}' occurred an error. {}", tableName, e.getMessage(), e);
+            log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");
         }
     }
