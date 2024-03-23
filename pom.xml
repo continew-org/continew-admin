@@ -12,7 +12,7 @@
     <parent>
         <groupId>top.charles7c.continew</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>1.5.1-SNAPSHOT</version>
+        <version>1.5.1</version>
     </parent>
 
     <groupId>top.charles7c.continew</groupId>
@@ -32,7 +32,7 @@
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>2.5.0-SNAPSHOT</revision>
+        <revision>2.5.0</revision>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -204,16 +204,6 @@
             <id>ali-mirror</id>
             <name>AliYun Mirror</name>
             <url>https://maven.aliyun.com/repository/public/</url>
-        </repository>
-        <!-- 快照仓库（仅在 ContiNew Admin 开发版使用，稳定版发布时会移除） -->
-        <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
 

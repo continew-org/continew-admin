@@ -1,3 +1,42 @@
+## [v2.5.0](https://github.com/Charles7c/continew-admin/compare/v2.4.0...v2.5.0) (2024-03-23)
+
+### ✨ 新特性
+
+* 新增 PostgreSQL 数据源配置示例 ([ee48c80](https://github.com/Charles7c/continew-admin/commit/ee48c80cd10a4c4546d1cb24f1f4716bb2ac08ea))
+* 新增 PostgreSQL 部署脚本 ([3129e0a](https://github.com/Charles7c/continew-admin/commit/3129e0a6dcbd809f0013fbf6c53ad029ae9f7a0e))
+* 新增 PostgreSQL 初始 SQL 脚本 ([33b8102](https://github.com/Charles7c/continew-admin/commit/33b81029df0b51058b3525b4317b51a2351319dc))
+* 新增代码生成器插件模块（后续会改造为独立插件） ([87829d3](https://github.com/Charles7c/continew-admin/commit/87829d3ce8ab5a35091800900f7d7708f15ed9c2))
+* 代码生成同步最新数据表结构支持同步排序 ([89546de](https://github.com/Charles7c/continew-admin/commit/89546deced78f83daca7ac0ba2e7d3d8cd101d0c))
+* 新增代码批量生成功能  ([Gitee PR#12](https://gitee.com/continew/continew-admin/pulls/12)) ([040f137](https://github.com/Charles7c/continew-admin/commit/040f137934130451700bc28aeabbced30970c5f6))
+
+### 💎 功能优化
+
+- 移除 ` 符号的使用，保持数据库无关性 ([d6b07bd](https://github.com/Charles7c/continew-admin/commit/d6b07bd6d1b1f9077a7571702b58c5e9c782b446))
+- 优化字符串模板方法 API 使用 ([0f39384](https://github.com/Charles7c/continew-admin/commit/0f393845a19432e7c965e811c96774694f4d2372))
+- 调整部分 SQL 语句，以兼容 PostgreSQL 数据库 ([9f5049b](https://github.com/Charles7c/continew-admin/commit/9f5049bf26c557738867dfe833261d60d071d4a8)) ([bf60d48](https://github.com/Charles7c/continew-admin/commit/bf60d48d3a53dd5d73a78e73b6b230e3271ec3de))
+- 新增插件仓库配置 ([0439252](https://github.com/Charles7c/continew-admin/commit/04392524ac13c2096b549f99d0391fa1d375ca31))
+- 优化部分接口响应格式为 kv 格式 ([b40d872](https://github.com/Charles7c/continew-admin/commit/b40d872bc4b8dd30ad952d639158619b43cef999))
+- 适配 Crane4j 条件注解 ([bf00747](https://github.com/Charles7c/continew-admin/commit/bf007470b2362159309ff8231a2f0ad180cfc947))
+- 重构代码生成配置 ([7031a51](https://github.com/Charles7c/continew-admin/commit/7031a51cd4d7072d4da841736678bb81b2123e9d))
+- 重构代码生成功能，由指定路径生成模式调整为下载模式，更方便复杂场景 ([df0c0dd](https://github.com/Charles7c/continew-admin/commit/df0c0dd7dcf39620abaf21bd450620ec3fffcf37))
+
+
+### 🐛 问题修复
+
+- 修复 MySQL 初始 SQL 脚本数据错误 ([49d6bd6](https://github.com/Charles7c/continew-admin/commit/49d6bd6874b3df66fd2e2051ea273cb43cb7b4f6))
+- 修复参数缓存未及时过期的问题 ([976e9c4](https://github.com/Charles7c/continew-admin/commit/976e9c43df5926c533723a75222c59fde05e122e))
+- 修复代码生成 text 类型数据的长度校验时，数值显示为 65,535 的问题 ([8026f66](https://github.com/Charles7c/continew-admin/commit/8026f660c7af7bba6d4caaf31535a890e5b40a96))
+
+### 💥 破坏性变更
+
+- 调整 liquibase 目录结构，更适合开源类项目适配多种数据库脚本场景 ([1ca48a6](https://github.com/Charles7c/continew-admin/commit/1ca48a6620cff62f3648cc28042843163589e150))
+- 适配 ContiNew Starter 日志及数据库工具的包结构优化 ([3405868](https://github.com/Charles7c/continew-admin/commit/3405868c7f042beafb77a7407a388a40b9a75466))
+- 适配 ContiNew Starter Query 组件的包结构优化 ([6be1b6c](https://github.com/Charles7c/continew-admin/commit/6be1b6cfb1e7fef4422b8c38e6073a435ebae5c2))
+
+### 📦 依赖升级
+
+- ContiNew Starter 1.4.0 => 1.5.1 (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v2.4.0](https://github.com/Charles7c/continew-admin/compare/v2.3.0...v2.4.0) (2024-02-16)
 
 ### ✨ 新特性

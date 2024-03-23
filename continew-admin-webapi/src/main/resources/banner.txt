@@ -5,5 +5,5 @@
   \____|\___/ |_| |_| \__||_||_| \_| \___|  \_/\_/       /_/   \_\\__,_||_| |_| |_||_||_| |_|
 
  :: ${project.name}   ::                                               v${project.version}
- :: ContiNew Starter ::                                               v1.5.1-SNAPSHOT
+ :: ContiNew Starter ::                                               v1.5.1
  :: Spring Boot      ::                                               v${spring-boot.version}
