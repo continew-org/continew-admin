@@ -16,20 +16,17 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-
-import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+
+import java.io.Serial;
 
 /**
  * 菜单信息
@@ -54,25 +51,31 @@ public class MenuResp extends BaseResp {
     private String title;
 
     /**
-     * 图标
+     * 上级菜单 ID
      */
-    @Schema(description = "图标", example = "user")
-    @ExcelProperty(value = "图标")
-    private String icon;
+    @Schema(description = "上级菜单 ID", example = "1000")
+    private Long parentId;
 
     /**
-     * 排序
+     * 类型
      */
-    @Schema(description = "排序", example = "1")
-    @ExcelProperty(value = "排序")
-    private Integer sort;
+    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
+    private MenuTypeEnum type;
 
     /**
-     * 权限标识
+     * 路由地址
      */
-    @Schema(description = "权限标识", example = "system:user:list")
-    @ExcelProperty(value = "权限标识")
-    private String permission;
+    @Schema(description = "路由地址", example = "/system/user")
+    @ExcelProperty(value = "路由地址")
+    private String path;
+
+    /**
+     * 组件名称
+     */
+    @Schema(description = "组件名称", example = "User")
+    @ExcelProperty(value = "组件名称")
+    private String name;
 
     /**
      * 组件路径
@@ -82,11 +85,18 @@ public class MenuResp extends BaseResp {
     private String component;
 
     /**
-     * 状态
+     * 重定向地址
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
-    private DisEnableStatusEnum status;
+    @Schema(description = "重定向地址")
+    @ExcelProperty(value = "重定向地址")
+    private String redirect;
+
+    /**
+     * 图标
+     */
+    @Schema(description = "图标", example = "user")
+    @ExcelProperty(value = "图标")
+    private String icon;
 
     /**
      * 是否外链
@@ -110,29 +120,23 @@ public class MenuResp extends BaseResp {
     private Boolean isHidden;
 
     /**
-     * 路由地址
+     * 权限标识
      */
-    @Schema(description = "路由地址", example = "/system/user")
-    @ExcelProperty(value = "路由地址")
-    private String path;
+    @Schema(description = "权限标识", example = "system:user:list")
+    @ExcelProperty(value = "权限标识")
+    private String permission;
 
     /**
-     * 组件名称
+     * 排序
      */
-    @Schema(description = "组件名称", example = "User")
-    @ExcelProperty(value = "组件名称")
-    private String name;
+    @Schema(description = "排序", example = "1")
+    @ExcelProperty(value = "排序")
+    private Integer sort;
 
     /**
-     * 类型
+     * 状态
      */
-    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
-    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
-    private MenuTypeEnum type;
-
-    /**
-     * 上级菜单 ID
-     */
-    @Schema(description = "上级菜单 ID", example = "1000")
-    private Long parentId;
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
+    private DisEnableStatusEnum status;
 }

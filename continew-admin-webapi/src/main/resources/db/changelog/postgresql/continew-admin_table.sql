@@ -10,10 +10,11 @@ CREATE TABLE IF NOT EXISTS "sys_menu" (
     "path"        varchar(255) DEFAULT NULL,
     "name"        varchar(50)  DEFAULT NULL,
     "component"   varchar(255) DEFAULT NULL,
+    "redirect"    varchar(255) DEFAULT NULL,
     "icon"        varchar(50)  DEFAULT NULL,
-    "is_external" bool         NOT NULL DEFAULT false,
-    "is_cache"    bool         NOT NULL DEFAULT false,
-    "is_hidden"   bool         NOT NULL DEFAULT false,
+    "is_external" bool         DEFAULT false,
+    "is_cache"    bool         DEFAULT false,
+    "is_hidden"   bool         DEFAULT false,
     "permission"  varchar(100) DEFAULT NULL,
     "sort"        int4         NOT NULL DEFAULT 999,
     "status"      int2         NOT NULL DEFAULT 1,
@@ -34,6 +35,7 @@ COMMENT ON COLUMN "sys_menu"."type"        IS '类型（1：目录；2：菜单�
 COMMENT ON COLUMN "sys_menu"."path"        IS '路由地址';
 COMMENT ON COLUMN "sys_menu"."name"        IS '组件名称';
 COMMENT ON COLUMN "sys_menu"."component"   IS '组件路径';
+COMMENT ON COLUMN "sys_menu"."redirect"    IS '重定向地址';
 COMMENT ON COLUMN "sys_menu"."icon"        IS '图标';
 COMMENT ON COLUMN "sys_menu"."is_external" IS '是否外链';
 COMMENT ON COLUMN "sys_menu"."is_cache"    IS '是否缓存';

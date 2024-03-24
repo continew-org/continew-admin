@@ -16,8 +16,6 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import top.charles7c.continew.starter.core.constant.StringConstants;
-
 /**
  * 系统相关常量
  *
@@ -44,7 +42,7 @@ public class SysConstants {
     /**
      * 全部权限标识
      */
-    public static final String ALL_PERMISSION = StringConstants.ASTERISK;
+    public static final String ALL_PERMISSION = "*:*:*";
 
     /**
      * 账号登录 URI
