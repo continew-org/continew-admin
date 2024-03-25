@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.service;
+package top.charles7c.continew.admin.system.service;
 
-import top.charles7c.continew.admin.monitor.model.query.LoginLogQuery;
-import top.charles7c.continew.admin.monitor.model.query.OperationLogQuery;
-import top.charles7c.continew.admin.monitor.model.query.SystemLogQuery;
-import top.charles7c.continew.admin.monitor.model.resp.*;
+import top.charles7c.continew.admin.system.model.query.LogQuery;
+import top.charles7c.continew.admin.system.model.resp.*;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -35,43 +33,25 @@ import java.util.Map;
 public interface LogService {
 
     /**
-     * 分页查询操作日志列表
+     * 分页查询列表
      *
      * @param query     查询条件
      * @param pageQuery 分页查询条件
-     * @return 操作日志分页信息
+     * @return 分页列表信息
      */
-    PageResp<OperationLogResp> page(OperationLogQuery query, PageQuery pageQuery);
+    PageResp<LogResp> page(LogQuery query, PageQuery pageQuery);
 
     /**
-     * 分页查询登录日志列表
+     * 查看详情
      *
-     * @param query     查询条件
-     * @param pageQuery 分页查询条件
-     * @return 登录日志分页信息
+     * @param id ID
+     * @return 详情信息
      */
-    PageResp<LoginLogResp> page(LoginLogQuery query, PageQuery pageQuery);
-
-    /**
-     * 分页查询系统日志列表
-     *
-     * @param query     查询条件
-     * @param pageQuery 分页查询条件
-     * @return 系统日志分页信息
-     */
-    PageResp<SystemLogResp> page(SystemLogQuery query, PageQuery pageQuery);
-
-    /**
-     * 查看系统日志详情
-     *
-     * @param logId 日志 ID
-     * @return 系统日志详情
-     */
-    SystemLogDetailResp get(Long logId);
+    LogDetailResp get(Long id);
 
     /**
      * 查询仪表盘总计信息
-     * 
+     *
      * @return 仪表盘总计信息
      */
     DashboardTotalResp getDashboardTotal();

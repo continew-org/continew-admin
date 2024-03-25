@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.model.query;
+package top.charles7c.continew.admin.system.model.query;
 
 import cn.hutool.core.date.DatePattern;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
-import top.charles7c.continew.starter.data.core.annotation.Query;
-import top.charles7c.continew.starter.data.core.enums.QueryType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -29,29 +27,52 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 系统日志查询条件
+ * 日志查询条件
  *
  * @author Charles7c
- * @since 2023/1/17 23:31
+ * @since 2023/1/15 11:43
  */
 @Data
-@Schema(description = "系统日志查询条件")
-public class SystemLogQuery implements Serializable {
+@Schema(description = "日志查询条件")
+public class LogQuery implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 链路 ID
+     * 日志描述
      */
-    @Schema(description = "链路 ID", example = "904846526308876288")
-    private String traceId;
+    @Schema(description = "日志描述", example = "新增数据")
+    private String description;
 
     /**
-     * 创建时间
+     * 所属模块
      */
-    @Schema(description = "创建时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
-    @Query(type = QueryType.BETWEEN)
+    @Schema(description = "所属模块", example = "所属模块")
+    private String module;
+
+    /**
+     * IP
+     */
+    @Schema(description = "IP", example = "192.168.0.1")
+    private String ip;
+
+    /**
+     * 操作人
+     */
+    @Schema(description = "操作人", example = "admin")
+    private String createUserString;
+
+    /**
+     * 操作时间
+     */
+    @Schema(description = "操作时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> createTime;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态（1：成功；2：失败）", example = "1")
+    private Integer status;
 }

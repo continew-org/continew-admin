@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.model.resp;
+package top.charles7c.continew.admin.system.model.resp;
 
-import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
-import cn.crane4j.annotation.condition.ConditionOnPropertyNotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.charles7c.continew.admin.common.constant.ContainerConstants;
+import top.charles7c.continew.admin.system.enums.LogStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 基础日志信息
+ * 日志信息
  *
  * @author Charles7c
- * @since 2023/1/17 21:43
+ * @since 2023/1/14 18:27
  */
 @Data
+@Schema(description = "日志信息")
 public class LogResp implements Serializable {
 
     @Serial
@@ -47,11 +45,63 @@ public class LogResp implements Serializable {
     private Long id;
 
     /**
+     * 日志描述
+     */
+    @Schema(description = "日志描述", example = "新增数据")
+    private String description;
+
+    /**
+     * 所属模块
+     */
+    @Schema(description = "所属模块", example = "部门管理")
+    private String module;
+
+    /**
+     * 耗时（ms）
+     */
+    @Schema(description = "耗时（ms）", example = "58")
+    private Long timeTaken;
+
+    /**
+     * IP
+     */
+    @Schema(description = "IP", example = "192.168.0.1")
+    private String ip;
+
+    /**
+     * IP 归属地
+     */
+    @Schema(description = "IP 归属地", example = "中国北京北京市")
+    private String address;
+
+    /**
+     * 浏览器
+     */
+    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
+    private String browser;
+
+    /**
+     * 操作系统
+     */
+    @Schema(description = "操作系统", example = "Windows 10")
+    private String os;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态（1：成功；2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    private LogStatusEnum status;
+
+    /**
+     * 错误信息
+     */
+    @Schema(description = "错误信息")
+    private String errorMsg;
+
+    /**
      * 创建人
      */
     @JsonIgnore
-    @ConditionOnPropertyNotNull
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**

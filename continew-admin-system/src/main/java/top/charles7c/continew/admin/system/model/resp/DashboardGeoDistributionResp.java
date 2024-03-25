@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.model.resp;
+package top.charles7c.continew.admin.system.model.resp;
 
 import java.io.Serial;
 import java.io.Serializable;

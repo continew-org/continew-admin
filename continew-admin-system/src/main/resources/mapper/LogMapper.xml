@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.charles7c.continew.admin.monitor.mapper.LogMapper">
-    <select id="selectDashboardTotal" resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardTotalResp">
+<mapper namespace="top.charles7c.continew.admin.system.mapper.LogMapper">
+    <select id="selectLogPage" resultType="top.charles7c.continew.admin.system.model.resp.LogResp">
+        SELECT
+            t1.id,
+            t1.description,
+            t1.module,
+            t1.time_taken,
+            t1.ip,
+            t1.address,
+            t1.browser,
+            t1.os,
+            t1.status,
+            t1.error_msg,
+            t1.create_user,
+            t1.create_time,
+            t2.nickname AS createUserString
+        FROM sys_log AS t1
+        LEFT JOIN sys_user AS t2 ON t2.id = t1.create_user
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectDashboardTotal" resultType="top.charles7c.continew.admin.system.model.resp.DashboardTotalResp">
         SELECT
             (SELECT COUNT(*) FROM sys_log) AS pvCount,
             (SELECT COUNT(DISTINCT ip) FROM sys_log) AS ipCount,
@@ -10,7 +30,7 @@
     </select>
 
     <select id="selectListDashboardAccessTrend"
-            resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp">
+            resultType="top.charles7c.continew.admin.system.model.resp.DashboardAccessTrendResp">
         SELECT
             DATE(create_time) AS date,
             COUNT(*) AS pvCount,
@@ -23,7 +43,7 @@
     </select>
 
     <select id="selectListDashboardPopularModule"
-            resultType="top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp">
+            resultType="top.charles7c.continew.admin.system.model.resp.DashboardPopularModuleResp">
         SELECT
             module,
             COUNT(*) AS pvCount,

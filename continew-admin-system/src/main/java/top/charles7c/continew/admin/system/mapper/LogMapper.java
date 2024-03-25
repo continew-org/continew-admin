@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.mapper;
+package top.charles7c.continew.admin.system.mapper;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Param;
+import top.charles7c.continew.admin.system.model.entity.LogDO;
+import top.charles7c.continew.admin.system.model.resp.*;
+import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-
-import top.charles7c.continew.admin.monitor.model.entity.LogDO;
-import top.charles7c.continew.admin.monitor.model.resp.DashboardAccessTrendResp;
-import top.charles7c.continew.admin.monitor.model.resp.DashboardPopularModuleResp;
-import top.charles7c.continew.admin.monitor.model.resp.DashboardTotalResp;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 系统日志 Mapper
@@ -34,6 +34,16 @@ import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
  * @since 2022/12/22 21:47
  */
 public interface LogMapper extends BaseMapper<LogDO> {
+
+    /**
+     * 分页查询列表
+     *
+     * @param page         分页条件
+     * @param queryWrapper 查询条件
+     * @return 分页列表信息
+     */
+    IPage<LogResp> selectLogPage(@Param("page") IPage<LogDO> page,
+                                 @Param(Constants.WRAPPER) QueryWrapper<LogDO> queryWrapper);
 
     /**
      * 查询仪表盘总计信息
@@ -46,7 +56,6 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * 查询仪表盘访问趋势信息
      *
      * @param days 日期数
-     *
      * @return 仪表盘访问趋势信息
      */
     List<DashboardAccessTrendResp> selectListDashboardAccessTrend(@Param("days") Integer days);

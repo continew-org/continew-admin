@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.config;
+package top.charles7c.continew.admin.system.config.log;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.stp.StpUtil;
@@ -28,9 +28,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import top.charles7c.continew.admin.auth.model.req.AccountLoginReq;
 import top.charles7c.continew.admin.common.constant.SysConstants;
-import top.charles7c.continew.admin.monitor.enums.LogStatusEnum;
-import top.charles7c.continew.admin.monitor.mapper.LogMapper;
-import top.charles7c.continew.admin.monitor.model.entity.LogDO;
+import top.charles7c.continew.admin.system.enums.LogStatusEnum;
+import top.charles7c.continew.admin.system.mapper.LogMapper;
+import top.charles7c.continew.admin.system.model.entity.LogDO;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.starter.core.constant.StringConstants;
 import top.charles7c.continew.starter.core.util.ExceptionUtils;

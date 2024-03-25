@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.system.config;
+package top.charles7c.continew.admin.system.config.file;
 
 import java.util.List;
 

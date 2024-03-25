@@ -14,101 +14,128 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.model.resp;
+package top.charles7c.continew.admin.system.model.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import top.charles7c.continew.admin.system.enums.LogStatusEnum;
 
 import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 系统日志详情信息
+ * 系统日志实体
  *
  * @author Charles7c
- * @since 2023/1/18 20:19
+ * @since 2022/12/25 9:11
  */
 @Data
-@Schema(description = "系统日志详情信息")
-public class SystemLogDetailResp extends LogResp {
+@TableName("sys_log")
+public class LogDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @TableId
+    private Long id;
+
+    /**
      * 链路 ID
      */
-    @Schema(description = "链路 ID", example = "904846526308876288")
     private String traceId;
 
     /**
-     * 状态码
+     * 日志描述
      */
-    @Schema(description = "状态码", example = "200")
-    private Integer statusCode;
+    private String description;
 
     /**
-     * 请求方式
+     * 所属模块
      */
-    @Schema(description = "请求方式", example = "POST")
-    private String requestMethod;
+    private String module;
 
     /**
      * 请求 URL
      */
-    @Schema(description = "请求 URL", example = "http://api.charles7c.top/system/dept")
     private String requestUrl;
+
+    /**
+     * 请求方式
+     */
+    private String requestMethod;
 
     /**
      * 请求头
      */
-    @Schema(description = "请求头", example = "{\"Origin\": [\"https://cnadmin.charles7c.top\"],...}")
     private String requestHeaders;
 
     /**
      * 请求体
      */
-    @Schema(description = "请求体", example = "{\"name\": \"测试部\",...}")
     private String requestBody;
+
+    /**
+     * 状态码
+     */
+    private Integer statusCode;
 
     /**
      * 响应头
      */
-    @Schema(description = "响应头", example = "{\"Content-Type\": [\"application/json\"],...}")
     private String responseHeaders;
 
     /**
      * 响应体
      */
-    @Schema(description = "响应体", example = "{\"success\":true},...")
     private String responseBody;
+
+    /**
+     * 耗时（ms）
+     */
+    private Long timeTaken;
 
     /**
      * IP
      */
-    @Schema(description = "IP", example = "192.168.0.1")
     private String ip;
 
     /**
-     * 地址
+     * IP 归属地
      */
-    @Schema(description = "地址", example = "中国北京北京市")
     private String address;
 
     /**
      * 浏览器
      */
-    @Schema(description = "浏览器", example = "Chrome 115.0.0.0")
     private String browser;
 
     /**
      * 操作系统
      */
-    @Schema(description = "操作系统", example = "Windows 10")
     private String os;
 
     /**
-     * 耗时（ms）
+     * 状态
      */
-    @Schema(description = "耗时（ms）", example = "58")
-    private Long timeTaken;
+    private LogStatusEnum status;
+
+    /**
+     * 错误信息
+     */
+    private String errorMsg;
+
+    /**
+     * 创建人
+     */
+    private Long createUser;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
 }

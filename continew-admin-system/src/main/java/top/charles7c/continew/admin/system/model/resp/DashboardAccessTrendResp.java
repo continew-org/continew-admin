@@ -14,58 +14,43 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.monitor.model.resp;
+package top.charles7c.continew.admin.system.model.resp;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
- * 仪表盘-热门模块信息
+ * 仪表盘-访问趋势信息
  *
  * @author Charles7c
- * @since 2023/9/9 9:52
+ * @since 2023/9/9 20:20
  */
 @Data
-@Schema(description = "仪表盘-热门模块信息")
-public class DashboardPopularModuleResp implements Serializable {
+@Schema(description = "仪表盘-访问趋势信息")
+public class DashboardAccessTrendResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 模块
+     * 日期
      */
-    @Schema(description = "模块", example = "角色管理")
-    private String module;
+    @Schema(description = "日期", example = "2023-08-08")
+    private String date;
 
     /**
      * 浏览量（PV）
      */
-    @Schema(description = "浏览量（PV）", example = "1234")
+    @Schema(description = "浏览量（PV）", example = "1000")
     private Long pvCount;
 
     /**
-     * 较昨日新增 PV（百分比）
+     * IP 数
      */
-    @Schema(description = "较昨日新增（百分比）", example = "23.4")
-    private BigDecimal newPvFromYesterday;
-
-    /**
-     * 今日浏览量（PV）
-     */
-    @JsonIgnore
-    private Long todayPvCount;
-
-    /**
-     * 昨日浏览量（PV）
-     */
-    @JsonIgnore
-    private Long yesterdayPvCount;
+    @Schema(description = "IP 数", example = "500")
+    private Long ipCount;
 }
