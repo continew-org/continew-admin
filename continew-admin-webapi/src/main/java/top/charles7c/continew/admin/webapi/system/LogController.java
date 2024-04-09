@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,37 +28,50 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.admin.system.model.query.LogQuery;
-import top.charles7c.continew.admin.system.model.resp.LogDetailResp;
-import top.charles7c.continew.admin.system.model.resp.LogResp;
+import top.charles7c.continew.admin.system.model.resp.log.LogDetailResp;
+import top.charles7c.continew.admin.system.model.resp.log.LogResp;
 import top.charles7c.continew.admin.system.service.LogService;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 import top.charles7c.continew.starter.web.model.R;
 
 /**
- * 日志管理 API
+ * 系统日志 API
  *
  * @author Charles7c
  * @since 2023/1/18 23:55
  */
-@Tag(name = "日志管理 API")
+@Tag(name = "系统日志 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/log")
 public class LogController {
 
-    private final LogService logService;
+    private final LogService baseService;
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @GetMapping
     public R<PageResp<LogResp>> page(LogQuery query, @Validated PageQuery pageQuery) {
-        return R.ok(logService.page(query, pageQuery));
+        return R.ok(baseService.page(query, pageQuery));
     }
 
-    @Operation(summary = "查看详情", description = "查看详情")
+    @Operation(summary = "查询详情", description = "查询详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @GetMapping("/{id}")
     public R<LogDetailResp> get(@PathVariable Long id) {
-        return R.ok(logService.get(id));
+        return R.ok(baseService.get(id));
+    }
+
+    @Operation(summary = "导出登录日志", description = "导出登录日志")
+    @GetMapping("/export/login")
+    public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        baseService.exportLoginLog(query, sortQuery, response);
+    }
+
+    @Operation(summary = "导出操作日志", description = "导出操作日志")
+    @GetMapping("/export/operation")
+    public void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        baseService.exportOperationLog(query, sortQuery, response);
     }
 }

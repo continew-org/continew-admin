@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import top.charles7c.continew.admin.system.model.entity.LogDO;
 import top.charles7c.continew.admin.system.model.resp.*;
+import top.charles7c.continew.admin.system.model.resp.log.LogResp;
 import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 import java.util.List;
@@ -44,6 +45,14 @@ public interface LogMapper extends BaseMapper<LogDO> {
      */
     IPage<LogResp> selectLogPage(@Param("page") IPage<LogDO> page,
                                  @Param(Constants.WRAPPER) QueryWrapper<LogDO> queryWrapper);
+
+    /**
+     * 查询列表
+     *
+     * @param queryWrapper 查询条件
+     * @return 列表信息
+     */
+    List<LogResp> selectLogList(@Param(Constants.WRAPPER) QueryWrapper<LogDO> queryWrapper);
 
     /**
      * 查询仪表盘总计信息

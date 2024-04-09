@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package top.charles7c.continew.admin.system.model.resp;
+package top.charles7c.continew.admin.system.model.resp.log;
 
-import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
-import cn.crane4j.annotation.condition.ConditionOnPropertyNotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.charles7c.continew.admin.common.constant.ContainerConstants;
 import top.charles7c.continew.admin.system.enums.LogStatusEnum;
 
 import java.io.Serial;
@@ -30,14 +26,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 日志详情信息
+ * 日志信息
  *
  * @author Charles7c
- * @since 2023/1/18 20:19
+ * @since 2023/1/14 18:27
  */
 @Data
-@Schema(description = "日志详情信息")
-public class LogDetailResp implements Serializable {
+@Schema(description = "日志信息")
+public class LogResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -47,12 +43,6 @@ public class LogDetailResp implements Serializable {
      */
     @Schema(description = "ID", example = "1")
     private Long id;
-
-    /**
-     * 链路 ID
-     */
-    @Schema(description = "链路 ID", example = "904846526308876288")
-    private String traceId;
 
     /**
      * 日志描述
@@ -65,48 +55,6 @@ public class LogDetailResp implements Serializable {
      */
     @Schema(description = "所属模块", example = "部门管理")
     private String module;
-
-    /**
-     * 请求 URL
-     */
-    @Schema(description = "请求 URL", example = "http://api.charles7c.top/system/dept")
-    private String requestUrl;
-
-    /**
-     * 请求方式
-     */
-    @Schema(description = "请求方式", example = "POST")
-    private String requestMethod;
-
-    /**
-     * 请求头
-     */
-    @Schema(description = "请求头", example = "{\"Origin\": [\"https://cnadmin.charles7c.top\"],...}")
-    private String requestHeaders;
-
-    /**
-     * 请求体
-     */
-    @Schema(description = "请求体", example = "{\"name\": \"测试部\",...}")
-    private String requestBody;
-
-    /**
-     * 状态码
-     */
-    @Schema(description = "状态码", example = "200")
-    private Integer statusCode;
-
-    /**
-     * 响应头
-     */
-    @Schema(description = "响应头", example = "{\"Content-Type\": [\"application/json\"],...}")
-    private String responseHeaders;
-
-    /**
-     * 响应体
-     */
-    @Schema(description = "响应体", example = "{\"success\":true},...")
-    private String responseBody;
 
     /**
      * 耗时（ms）
@@ -154,8 +102,6 @@ public class LogDetailResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
-    @ConditionOnPropertyNotNull
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**

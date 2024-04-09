@@ -16,9 +16,13 @@
 
 package top.charles7c.continew.admin.system.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import top.charles7c.continew.admin.system.model.query.LogQuery;
 import top.charles7c.continew.admin.system.model.resp.*;
+import top.charles7c.continew.admin.system.model.resp.log.LogDetailResp;
+import top.charles7c.continew.admin.system.model.resp.log.LogResp;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.util.List;
@@ -42,12 +46,30 @@ public interface LogService {
     PageResp<LogResp> page(LogQuery query, PageQuery pageQuery);
 
     /**
-     * 查看详情
+     * 查询详情
      *
      * @param id ID
      * @return 详情信息
      */
     LogDetailResp get(Long id);
+
+    /**
+     * 导出登录日志
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @param response  响应对象
+     */
+    void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response);
+
+    /**
+     * 导出操作日志
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @param response  响应对象
+     */
+    void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response);
 
     /**
      * 查询仪表盘总计信息

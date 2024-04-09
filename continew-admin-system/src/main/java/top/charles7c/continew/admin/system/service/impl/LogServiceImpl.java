@@ -19,21 +19,31 @@ package top.charles7c.continew.admin.system.service.impl;
 import cn.crane4j.annotation.AutoOperate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.system.mapper.LogMapper;
 import top.charles7c.continew.admin.system.model.entity.LogDO;
 import top.charles7c.continew.admin.system.model.query.LogQuery;
 import top.charles7c.continew.admin.system.model.resp.*;
+import top.charles7c.continew.admin.system.model.resp.log.LogDetailResp;
+import top.charles7c.continew.admin.system.model.resp.log.LogResp;
+import top.charles7c.continew.admin.system.model.resp.log.LoginLogExportResp;
+import top.charles7c.continew.admin.system.model.resp.log.OperationLogExportResp;
 import top.charles7c.continew.admin.system.service.LogService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
 import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
+import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+import top.charles7c.continew.starter.file.excel.util.ExcelUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -50,10 +60,92 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class LogServiceImpl implements LogService {
 
-    private final LogMapper logMapper;
+    private final LogMapper baseMapper;
 
     @Override
     public PageResp<LogResp> page(LogQuery query, PageQuery pageQuery) {
+        QueryWrapper<LogDO> queryWrapper = this.handleQueryWrapper(query);
+        IPage<LogResp> page = baseMapper.selectLogPage(pageQuery.toPage(), queryWrapper);
+        return PageResp.build(page);
+    }
+
+    @Override
+    @AutoOperate(type = LogDetailResp.class)
+    public LogDetailResp get(Long id) {
+        LogDO logDO = baseMapper.selectById(id);
+        CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
+        return BeanUtil.copyProperties(logDO, LogDetailResp.class);
+    }
+
+    @Override
+    public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        List<LoginLogExportResp> list = BeanUtil.copyToList(this.list(query, sortQuery), LoginLogExportResp.class);
+        ExcelUtils.export(list, "导出登录日志数据", LoginLogExportResp.class, response);
+    }
+
+    @Override
+    public void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        List<OperationLogExportResp> list = BeanUtil.copyToList(this
+            .list(query, sortQuery), OperationLogExportResp.class);
+        ExcelUtils.export(list, "导出操作日志数据", OperationLogExportResp.class, response);
+    }
+
+    @Override
+    public DashboardTotalResp getDashboardTotal() {
+        return baseMapper.selectDashboardTotal();
+    }
+
+    @Override
+    public List<DashboardAccessTrendResp> listDashboardAccessTrend(Integer days) {
+        return baseMapper.selectListDashboardAccessTrend(days);
+    }
+
+    @Override
+    public List<DashboardPopularModuleResp> listDashboardPopularModule() {
+        return baseMapper.selectListDashboardPopularModule();
+    }
+
+    @Override
+    public List<Map<String, Object>> listDashboardGeoDistribution() {
+        return baseMapper.selectListDashboardGeoDistribution();
+    }
+
+    /**
+     * 查询列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @return 列表信息
+     */
+    private List<LogResp> list(LogQuery query, SortQuery sortQuery) {
+        QueryWrapper<LogDO> queryWrapper = this.handleQueryWrapper(query);
+        this.sort(queryWrapper, sortQuery);
+        return baseMapper.selectLogList(queryWrapper);
+    }
+
+    /**
+     * 设置排序
+     *
+     * @param queryWrapper 查询条件封装对象
+     * @param sortQuery    排序查询条件
+     */
+    private void sort(QueryWrapper<LogDO> queryWrapper, SortQuery sortQuery) {
+        Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
+        for (Sort.Order order : sort) {
+            if (null != order) {
+                String property = order.getProperty();
+                queryWrapper.orderBy(true, order.isAscending(), CharSequenceUtil.toUnderlineCase(property));
+            }
+        }
+    }
+
+    /**
+     * 处理查询条件
+     *
+     * @param query 查询条件
+     * @return QueryWrapper
+     */
+    private QueryWrapper<LogDO> handleQueryWrapper(LogQuery query) {
         QueryWrapper<LogDO> queryWrapper = new QueryWrapper<>();
         // 构建条件
         String description = query.getDescription();
@@ -81,35 +173,6 @@ public class LogServiceImpl implements LogService {
         if (null != status) {
             queryWrapper.eq("t1.status", status);
         }
-        IPage<LogResp> page = logMapper.selectLogPage(pageQuery.toPage(), queryWrapper);
-        return PageResp.build(page);
-    }
-
-    @Override
-    @AutoOperate(type = LogDetailResp.class)
-    public LogDetailResp get(Long id) {
-        LogDO logDO = logMapper.selectById(id);
-        CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
-        return BeanUtil.copyProperties(logDO, LogDetailResp.class);
-    }
-
-    @Override
-    public DashboardTotalResp getDashboardTotal() {
-        return logMapper.selectDashboardTotal();
-    }
-
-    @Override
-    public List<DashboardAccessTrendResp> listDashboardAccessTrend(Integer days) {
-        return logMapper.selectListDashboardAccessTrend(days);
-    }
-
-    @Override
-    public List<DashboardPopularModuleResp> listDashboardPopularModule() {
-        return logMapper.selectListDashboardPopularModule();
-    }
-
-    @Override
-    public List<Map<String, Object>> listDashboardGeoDistribution() {
-        return logMapper.selectListDashboardGeoDistribution();
+        return queryWrapper;
     }
 }
