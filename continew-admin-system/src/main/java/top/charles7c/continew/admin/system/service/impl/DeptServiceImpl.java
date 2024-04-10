@@ -27,7 +27,6 @@ import top.charles7c.continew.admin.system.mapper.DeptMapper;
 import top.charles7c.continew.admin.system.model.entity.DeptDO;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.req.DeptReq;
-import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
@@ -49,7 +48,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptDetailResp, DeptQuery, DeptReq> implements DeptService {
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptResp, DeptQuery, DeptReq> implements DeptService {
 
     private final UserService userService;
     private final RoleDeptService roleDeptService;
@@ -60,7 +59,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         boolean isExists = this.isNameExists(name, req.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
         req.setAncestors(this.getAncestors(req.getParentId()));
-        req.setStatus(DisEnableStatusEnum.DISABLE);
+        req.setStatus(DisEnableStatusEnum.ENABLE);
     }
 
     @Override

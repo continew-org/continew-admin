@@ -125,7 +125,7 @@ public class UserDetailResp extends BaseDetailResp {
      * 部门 ID
      */
     @Schema(description = "部门 ID", example = "5")
-    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptDetailResp.class), props = @Mapping(src = "name", ref = "deptName"))
+    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class), props = @Mapping(src = "name", ref = "deptName"))
     private Long deptId;
 
     /**

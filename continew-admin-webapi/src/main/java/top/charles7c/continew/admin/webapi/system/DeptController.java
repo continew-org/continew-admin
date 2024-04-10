@@ -17,12 +17,9 @@
 package top.charles7c.continew.admin.webapi.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.req.DeptReq;
-import top.charles7c.continew.admin.system.model.resp.DeptDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
@@ -38,4 +35,4 @@ import top.charles7c.continew.starter.extension.crud.enums.Api;
 @Tag(name = "部门管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
+public class DeptController extends BaseController<DeptService, DeptResp, DeptResp, DeptQuery, DeptReq> {}

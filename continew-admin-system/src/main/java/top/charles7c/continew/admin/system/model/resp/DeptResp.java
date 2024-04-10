@@ -16,11 +16,19 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.condition.ConditionOnExpression;
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
 
@@ -31,9 +39,10 @@ import java.io.Serial;
  * @since 2023/1/22 13:53
  */
 @Data
+@ExcelIgnoreUnannotated
 @TreeField(value = "id", nameKey = "name")
 @Schema(description = "部门信息")
-public class DeptResp extends BaseResp {
+public class DeptResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,36 +51,50 @@ public class DeptResp extends BaseResp {
      * 名称
      */
     @Schema(description = "名称", example = "测试部")
+    @ExcelProperty(value = "名称")
     private String name;
 
     /**
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID", example = "2")
+    @ConditionOnExpression(value = "#target.parentId != 0")
+    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class), props = @Mapping(src = "name", ref = "parentName"))
     private Long parentId;
 
     /**
-     * 排序
+     * 上级部门
      */
-    @Schema(description = "排序", example = "3")
-    private Integer sort;
+    @Schema(description = "上级部门", example = "天津总部")
+    @ExcelProperty(value = "上级部门")
+    private String parentName;
 
     /**
      * 状态
      */
     @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
+
+    /**
+     * 排序
+     */
+    @Schema(description = "排序", example = "3")
+    @ExcelProperty(value = "排序")
+    private Integer sort;
 
     /**
      * 是否为系统内置数据
      */
     @Schema(description = "是否为系统内置数据", example = "false")
+    @ExcelProperty(value = "系统内置")
     private Boolean isSystem;
 
     /**
      * 描述
      */
     @Schema(description = "描述", example = "测试部描述信息")
+    @ExcelProperty(value = "描述")
     private String description;
 
     @Override
