@@ -16,20 +16,18 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
-import java.io.Serial;
-
-import jakarta.validation.constraints.*;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+
+import java.io.Serial;
 
 /**
  * 创建或修改存储库信息
@@ -103,6 +101,12 @@ public class StorageReq extends BaseReq {
     private String domain;
 
     /**
+     * 排序
+     */
+    @Schema(description = "排序", example = "1")
+    private Integer sort;
+
+    /**
      * 描述
      */
     @Schema(description = "描述", example = "存储库描述")
@@ -115,12 +119,6 @@ public class StorageReq extends BaseReq {
     @Schema(description = "是否为默认存储", example = "true")
     @NotNull(message = "是否为默认存储不能为空")
     private Boolean isDefault;
-
-    /**
-     * 排序
-     */
-    @Schema(description = "排序", example = "1")
-    private Integer sort;
 
     /**
      * 状态

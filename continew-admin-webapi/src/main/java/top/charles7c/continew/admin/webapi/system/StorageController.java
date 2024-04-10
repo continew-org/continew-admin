@@ -17,16 +17,14 @@
 package top.charles7c.continew.admin.webapi.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.admin.system.model.query.StorageQuery;
 import top.charles7c.continew.admin.system.model.req.StorageReq;
-import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.StorageService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.controller.BaseController;
+import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**
  * 存储库管理 API
@@ -36,5 +34,5 @@ import top.charles7c.continew.starter.extension.crud.controller.BaseController;
  */
 @Tag(name = "存储库管理 API")
 @RestController
-@CrudRequestMapping("/system/storage")
-public class StorageController extends BaseController<StorageService, StorageResp, StorageDetailResp, StorageQuery, StorageReq> {}
+@CrudRequestMapping(value = "/system/storage", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
+public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {}

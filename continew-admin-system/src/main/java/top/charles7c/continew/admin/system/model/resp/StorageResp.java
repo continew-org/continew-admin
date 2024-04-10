@@ -16,17 +16,14 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
+
+import java.io.Serial;
 
 /**
  * 存储库信息
@@ -36,7 +33,7 @@ import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
  */
 @Data
 @Schema(description = "存储库信息")
-public class StorageResp extends BaseResp {
+public class StorageResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -52,6 +49,12 @@ public class StorageResp extends BaseResp {
      */
     @Schema(description = "编码", example = "local")
     private String code;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    private DisEnableStatusEnum status;
 
     /**
      * 类型
@@ -107,12 +110,6 @@ public class StorageResp extends BaseResp {
      */
     @Schema(description = "排序", example = "1")
     private Integer sort;
-
-    /**
-     * 状态
-     */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    private DisEnableStatusEnum status;
 
     @Override
     public Boolean getDisabled() {

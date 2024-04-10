@@ -33,7 +33,6 @@ import top.charles7c.continew.admin.system.mapper.StorageMapper;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.StorageQuery;
 import top.charles7c.continew.admin.system.model.req.StorageReq;
-import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
 import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.StorageService;
@@ -56,7 +55,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service
 @RequiredArgsConstructor
-public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageDetailResp, StorageQuery, StorageReq> implements StorageService {
+public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
 
     @Resource
     private FileService fileService;

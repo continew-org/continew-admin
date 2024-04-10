@@ -38,15 +38,15 @@ public class StorageQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 名称
+     * 关键词
      */
-    @Schema(description = "名称")
-    @Query(type = QueryType.LIKE)
-    private String name;
+    @Schema(description = "关键词", example = "本地存储")
+    @Query(columns = {"name", "description"}, type = QueryType.LIKE)
+    private String description;
 
     /**
      * 状态
      */
-    @Schema(description = "状态")
+    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
     private Integer status;
 }

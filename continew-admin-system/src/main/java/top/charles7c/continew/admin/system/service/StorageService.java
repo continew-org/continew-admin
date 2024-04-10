@@ -19,10 +19,9 @@ package top.charles7c.continew.admin.system.service;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.admin.system.model.query.StorageQuery;
 import top.charles7c.continew.admin.system.model.req.StorageReq;
-import top.charles7c.continew.admin.system.model.resp.StorageDetailResp;
 import top.charles7c.continew.admin.system.model.resp.StorageResp;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
 import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
+import top.charles7c.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 存储库业务接口
@@ -30,7 +29,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
-public interface StorageService extends BaseService<StorageResp, StorageDetailResp, StorageQuery, StorageReq>, IService<StorageDO> {
+public interface StorageService extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {
 
     /**
      * 查询默认存储库
