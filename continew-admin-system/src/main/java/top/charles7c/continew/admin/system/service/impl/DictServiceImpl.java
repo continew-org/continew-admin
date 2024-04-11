@@ -16,24 +16,18 @@
 
 package top.charles7c.continew.admin.system.service.impl;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.charles7c.continew.admin.system.mapper.DictMapper;
 import top.charles7c.continew.admin.system.model.entity.DictDO;
 import top.charles7c.continew.admin.system.model.query.DictQuery;
 import top.charles7c.continew.admin.system.model.req.DictReq;
-import top.charles7c.continew.admin.system.model.resp.DictDetailResp;
-import top.charles7c.continew.admin.system.model.resp.DictItemDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictResp;
 import top.charles7c.continew.admin.system.service.DictItemService;
 import top.charles7c.continew.admin.system.service.DictService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
-import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
-import top.charles7c.continew.starter.file.excel.util.ExcelUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +39,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictDetailResp, DictQuery, DictReq> implements DictService {
+public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictResp, DictQuery, DictReq> implements DictService {
 
     private final DictItemService dictItemService;
 
@@ -64,7 +58,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DictDO oldDict = super.getById(id);
-        if (oldDict.getIsSystem()) {
+        if (Boolean.TRUE.equals(oldDict.getIsSystem())) {
             CheckUtils.throwIfNotEqual(req.getCode(), oldDict.getCode(), "[{}] 是系统内置字典，不允许修改字典编码", oldDict.getName());
         }
     }
@@ -79,21 +73,6 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
         CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除", isSystemData.orElseGet(DictDO::new)
             .getName());
         dictItemService.deleteByDictIds(ids);
-    }
-
-    @Override
-    public void export(DictQuery query, SortQuery sortQuery, HttpServletResponse response) {
-        List<DictResp> dictList = this.list(query, sortQuery);
-        List<DictItemDetailResp> dictItemList = new ArrayList<>();
-        for (DictResp dict : dictList) {
-            List<DictItemDetailResp> tempDictItemList = dictItemService.listByDictId(dict.getId());
-            for (DictItemDetailResp dictItem : tempDictItemList) {
-                dictItem.setDictName(dict.getName());
-                dictItem.setDictCode(dict.getCode());
-                dictItemList.add(dictItem);
-            }
-        }
-        ExcelUtils.export(dictItemList, "导出数据", DictItemDetailResp.class, response);
     }
 
     /**

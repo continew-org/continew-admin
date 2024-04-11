@@ -20,10 +20,9 @@ import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.entity.DictItemDO;
 import top.charles7c.continew.admin.system.model.query.DictItemQuery;
 import top.charles7c.continew.admin.system.model.req.DictItemReq;
-import top.charles7c.continew.admin.system.model.resp.DictItemDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictItemResp;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
 import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
+import top.charles7c.continew.starter.extension.crud.service.BaseService;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,15 +33,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictItemService extends BaseService<DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq>, IService<DictItemDO> {
-
-    /**
-     * 根据字典 ID 查询
-     *
-     * @param dictId 字典 ID
-     * @return 字典项列表
-     */
-    List<DictItemDetailResp> listByDictId(Long dictId);
+public interface DictItemService extends BaseService<DictItemResp, DictItemResp, DictItemQuery, DictItemReq>, IService<DictItemDO> {
 
     /**
      * 根据字典编码查询

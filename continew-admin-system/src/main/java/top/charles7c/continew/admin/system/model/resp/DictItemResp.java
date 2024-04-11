@@ -16,13 +16,14 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-
-import lombok.Data;
-
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import java.io.Serial;
 
 /**
  * 字典项信息
@@ -32,7 +33,7 @@ import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
  */
 @Data
 @Schema(description = "字典项信息")
-public class DictItemResp extends BaseResp {
+public class DictItemResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -56,14 +57,27 @@ public class DictItemResp extends BaseResp {
     private String color;
 
     /**
-     * 描述
+     * 状态
      */
-    @Schema(description = "描述", example = "通知描述信息")
-    private String description;
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
+    private DisEnableStatusEnum status;
 
     /**
      * 排序
      */
     @Schema(description = "排序", example = "1")
     private Integer sort;
+
+    /**
+     * 描述
+     */
+    @Schema(description = "描述", example = "通知描述信息")
+    private String description;
+
+    /**
+     * 字典 ID
+     */
+    @Schema(description = "字典 ID", example = "1")
+    private Long dictId;
 }

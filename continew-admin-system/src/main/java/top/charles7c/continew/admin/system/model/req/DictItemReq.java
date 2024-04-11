@@ -16,17 +16,16 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
-import java.io.Serial;
-
-import jakarta.validation.constraints.*;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-
+import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+
+import java.io.Serial;
 
 /**
  * 创建或修改字典项信息
@@ -77,6 +76,12 @@ public class DictItemReq extends BaseReq {
     @Schema(description = "描述", example = "通知描述信息")
     @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    private DisEnableStatusEnum status;
 
     /**
      * 所属字典

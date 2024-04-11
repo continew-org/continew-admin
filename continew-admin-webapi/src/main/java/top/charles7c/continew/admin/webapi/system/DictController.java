@@ -17,16 +17,14 @@
 package top.charles7c.continew.admin.webapi.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RestController;
 import top.charles7c.continew.admin.system.model.query.DictQuery;
 import top.charles7c.continew.admin.system.model.req.DictReq;
-import top.charles7c.continew.admin.system.model.resp.DictDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictResp;
 import top.charles7c.continew.admin.system.service.DictService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.controller.BaseController;
+import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**
  * 字典管理 API
@@ -36,5 +34,5 @@ import top.charles7c.continew.starter.extension.crud.controller.BaseController;
  */
 @Tag(name = "字典管理 API")
 @RestController
-@CrudRequestMapping("/system/dict")
-public class DictController extends BaseController<DictService, DictResp, DictDetailResp, DictQuery, DictReq> {}
+@CrudRequestMapping(value = "/system/dict", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
+public class DictController extends BaseController<DictService, DictResp, DictResp, DictQuery, DictReq> {}

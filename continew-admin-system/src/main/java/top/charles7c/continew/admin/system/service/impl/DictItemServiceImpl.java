@@ -23,12 +23,10 @@ import top.charles7c.continew.admin.system.mapper.DictItemMapper;
 import top.charles7c.continew.admin.system.model.entity.DictItemDO;
 import top.charles7c.continew.admin.system.model.query.DictItemQuery;
 import top.charles7c.continew.admin.system.model.req.DictItemReq;
-import top.charles7c.continew.admin.system.model.resp.DictItemDetailResp;
 import top.charles7c.continew.admin.system.model.resp.DictItemResp;
 import top.charles7c.continew.admin.system.service.DictItemService;
 import top.charles7c.continew.starter.core.util.validate.CheckUtils;
 import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
-import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,7 +39,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemDetailResp, DictItemQuery, DictItemReq> implements DictItemService {
+public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> implements DictItemService {
 
     @Override
     protected void beforeAdd(DictItemReq req) {
@@ -53,17 +51,6 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     protected void beforeUpdate(DictItemReq req, Long id) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, id, req.getDictId()), "修改失败，字典值 [{}] 已存在", value);
-    }
-
-    @Override
-    public List<DictItemDetailResp> listByDictId(Long dictId) {
-        DictItemQuery dictItemQuery = new DictItemQuery();
-        dictItemQuery.setDictId(dictId);
-        SortQuery sortQuery = new SortQuery();
-        sortQuery.setSort(new String[] {"sort,asc"});
-        List<DictItemDetailResp> detailList = super.list(dictItemQuery, sortQuery, DictItemDetailResp.class);
-        detailList.forEach(super::fill);
-        return detailList;
     }
 
     @Override

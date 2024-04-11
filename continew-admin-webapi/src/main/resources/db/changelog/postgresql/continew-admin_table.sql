@@ -256,6 +256,7 @@ CREATE TABLE IF NOT EXISTS "sys_dict_item" (
     "color"       varchar(30)  DEFAULT NULL,
     "sort"        int4         NOT NULL DEFAULT 999,
     "description" varchar(200) DEFAULT NULL,
+    "status"      int2         NOT NULL DEFAULT 1,
     "dict_id"     int8         NOT NULL,
     "create_user" int8         NOT NULL,
     "create_time" timestamp    NOT NULL,
@@ -273,6 +274,7 @@ COMMENT ON COLUMN "sys_dict_item"."value"       IS '值';
 COMMENT ON COLUMN "sys_dict_item"."color"       IS '标签颜色';
 COMMENT ON COLUMN "sys_dict_item"."sort"        IS '排序';
 COMMENT ON COLUMN "sys_dict_item"."description" IS '描述';
+COMMENT ON COLUMN "sys_dict_item"."status"      IS '状态（1：启用；2：禁用）';
 COMMENT ON COLUMN "sys_dict_item"."dict_id"     IS '字典ID';
 COMMENT ON COLUMN "sys_dict_item"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_dict_item"."create_time" IS '创建时间';

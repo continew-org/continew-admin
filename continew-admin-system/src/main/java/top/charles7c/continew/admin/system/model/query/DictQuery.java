@@ -38,10 +38,9 @@ public class DictQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 名称
+     * 关键词
      */
-    @Schema(description = "名称")
+    @Schema(description = "关键词")
     @Query(columns = {"name", "code", "description"}, type = QueryType.LIKE)
-    private String name;
-
+    private String description;
 }

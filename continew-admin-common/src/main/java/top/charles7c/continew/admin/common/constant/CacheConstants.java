@@ -57,11 +57,6 @@ public class CacheConstants {
     public static final String MENU_KEY_PREFIX = "MENU" + DELIMITER;
 
     /**
-     * 字典缓存键前缀
-     */
-    public static final String DICT_KEY_PREFIX = "DICT" + DELIMITER;
-
-    /**
      * 参数缓存键前缀
      */
     public static final String OPTION_KEY_PREFIX = "OPTION" + DELIMITER;
