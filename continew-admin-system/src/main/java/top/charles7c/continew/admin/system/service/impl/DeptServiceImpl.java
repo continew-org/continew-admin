@@ -59,7 +59,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         boolean isExists = this.isNameExists(name, req.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);
         req.setAncestors(this.getAncestors(req.getParentId()));
-        req.setStatus(DisEnableStatusEnum.ENABLE);
     }
 
     @Override

@@ -66,7 +66,6 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储库");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
-        req.setStatus(DisEnableStatusEnum.ENABLE);
         this.load(req);
     }
 

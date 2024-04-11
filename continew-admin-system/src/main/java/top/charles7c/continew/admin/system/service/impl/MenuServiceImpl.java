@@ -51,7 +51,6 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     public Long add(MenuReq req) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
-        req.setStatus(DisEnableStatusEnum.ENABLE);
         return super.add(req);
     }
 

@@ -68,7 +68,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         // 新增信息
-        req.setStatus(DisEnableStatusEnum.ENABLE);
         Long roleId = super.add(req);
         // 保存角色和菜单关联
         roleMenuService.add(req.getMenuIds(), roleId);
