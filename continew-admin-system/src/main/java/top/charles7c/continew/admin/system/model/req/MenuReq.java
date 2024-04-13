@@ -16,21 +16,17 @@
 
 package top.charles7c.continew.admin.system.model.req;
 
-import java.io.Serial;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
 import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.hibernate.validator.constraints.Length;
-
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+
+import java.io.Serial;
 
 /**
  * 创建或修改菜单信息
@@ -102,6 +98,12 @@ public class MenuReq extends BaseReq {
     @Schema(description = "组件路径", example = "/system/user/index")
     @Length(max = 255, message = "组件路径长度不能超过 {max} 个字符")
     private String component;
+
+    /**
+     * 重定向地址
+     */
+    @Schema(description = "重定向地址")
+    private String redirect;
 
     /**
      * 是否外链

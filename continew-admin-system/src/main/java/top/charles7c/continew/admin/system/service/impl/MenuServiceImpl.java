@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.charles7c.continew.admin.common.constant.CacheConstants;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
+import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.charles7c.continew.admin.system.mapper.MenuMapper;
 import top.charles7c.continew.admin.system.model.entity.MenuDO;
 import top.charles7c.continew.admin.system.model.query.MenuQuery;
@@ -51,6 +52,9 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     public Long add(MenuReq req) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
+        if (MenuTypeEnum.DIR.equals(req.getType())) {
+            req.setComponent("Layout");
+        }
         return super.add(req);
     }
 
