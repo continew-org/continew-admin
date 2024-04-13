@@ -82,15 +82,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     public void update(RoleReq req, Long id) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
-        String code = req.getCode();
-        CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         RoleDO oldRole = super.getById(id);
+        CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改", oldRole.getName());
         DataScopeEnum oldDataScope = oldRole.getDataScope();
-        String oldCode = oldRole.getCode();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用", oldRole
                 .getName());
-            CheckUtils.throwIfNotEqual(req.getCode(), oldCode, "[{}] 是系统内置角色，不允许修改角色编码", oldRole.getName());
             CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限", oldRole.getName());
         }
         // 更新信息
@@ -101,9 +98,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
             // 保存角色和部门关联
             boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
-            // 如果角色编码、功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
-            if (ObjectUtil.notEqual(req.getCode(), oldCode) || ObjectUtil.notEqual(req
-                .getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
+            // 如果功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
+            if (ObjectUtil.notEqual(req.getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
                 onlineUserService.cleanByRoleId(id);
             }
         }

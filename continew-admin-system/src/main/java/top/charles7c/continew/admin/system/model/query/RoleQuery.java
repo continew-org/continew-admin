@@ -38,10 +38,10 @@ public class RoleQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 名称
+     * 关键词
      */
-    @Schema(description = "名称", example = "测试人员")
-    @Query(columns = {"name", "code"}, type = QueryType.LIKE)
+    @Schema(description = "关键词", example = "测试人员")
+    @Query(columns = {"name", "code", "description"}, type = QueryType.LIKE)
     private String name;
 
     /**

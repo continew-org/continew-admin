@@ -27,6 +27,7 @@ import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.RoleService;
 import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.charles7c.continew.starter.extension.crud.controller.BaseController;
+import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**
  * 角色管理 API
@@ -36,5 +37,5 @@ import top.charles7c.continew.starter.extension.crud.controller.BaseController;
  */
 @Tag(name = "角色管理 API")
 @RestController
-@CrudRequestMapping("/system/role")
+@CrudRequestMapping(value = "/system/role", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
 public class RoleController extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {}
