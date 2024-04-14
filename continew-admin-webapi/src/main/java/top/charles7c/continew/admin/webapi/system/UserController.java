@@ -67,7 +67,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
         return R.ok("新增成功", id);
     }
 
-    @Operation(summary = "重置密码", description = "重置用户登录密码为默认密码")
+    @Operation(summary = "重置密码", description = "重置用户登录密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:password:reset")
     @PatchMapping("/{id}/password")

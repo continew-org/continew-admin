@@ -42,11 +42,11 @@ public class UserQuery implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户名
+     * 关键词
      */
-    @Schema(description = "用户名", example = "zhangsan")
-    @Query(columns = {"username", "nickname"}, type = QueryType.LIKE)
-    private String username;
+    @Schema(description = "关键词", example = "zhangsan")
+    @Query(columns = {"username", "nickname", "description"}, type = QueryType.LIKE)
+    private String description;
 
     /**
      * 状态

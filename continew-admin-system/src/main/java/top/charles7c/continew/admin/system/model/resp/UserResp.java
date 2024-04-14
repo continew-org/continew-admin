@@ -16,12 +16,16 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.Mapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import top.charles7c.continew.admin.system.service.DeptService;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.charles7c.continew.starter.security.mask.annotation.JsonMask;
 import top.charles7c.continew.starter.security.mask.enums.MaskType;
 
@@ -36,7 +40,7 @@ import java.util.Objects;
  */
 @Data
 @Schema(description = "用户信息")
-public class UserResp extends BaseResp {
+public class UserResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -96,6 +100,19 @@ public class UserResp extends BaseResp {
      */
     @Schema(description = "描述", example = "张三描述信息")
     private String description;
+
+    /**
+     * 部门 ID
+     */
+    @Schema(description = "部门 ID", example = "5")
+    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class), props = @Mapping(src = "name", ref = "deptName"))
+    private Long deptId;
+
+    /**
+     * 所属部门
+     */
+    @Schema(description = "所属部门", example = "测试部")
+    private String deptName;
 
     @Override
     public Boolean getDisabled() {

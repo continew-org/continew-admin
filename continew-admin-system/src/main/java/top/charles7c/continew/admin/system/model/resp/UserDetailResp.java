@@ -142,10 +142,10 @@ public class UserDetailResp extends BaseDetailResp {
     private List<Long> roleIds;
 
     /**
-     * 所属角色
+     * 角色
      */
-    @Schema(description = "所属角色", example = "测试人员")
-    @ExcelProperty(value = "所属角色")
+    @Schema(description = "角色", example = "测试人员")
+    @ExcelProperty(value = "角色")
     private String roleNames;
 
     @Override

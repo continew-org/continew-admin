@@ -16,15 +16,13 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import java.io.Serial;
-
-import lombok.Data;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DataScopeEnum;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
+import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
+
+import java.io.Serial;
 
 /**
  * 角色信息
@@ -34,7 +32,7 @@ import top.charles7c.continew.starter.extension.crud.model.resp.BaseResp;
  */
 @Data
 @Schema(description = "角色信息")
-public class RoleResp extends BaseResp {
+public class RoleResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;

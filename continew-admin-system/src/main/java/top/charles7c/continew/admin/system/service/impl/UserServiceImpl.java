@@ -122,7 +122,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
                 .getNickname());
             Collection<Long> disjunctionRoleIds = CollUtil.disjunction(req.getRoleIds(), userRoleService
                 .listRoleIdByUserId(id));
-            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更所属角色", oldUser.getNickname());
+            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色", oldUser.getNickname());
         }
         // 更新信息
         super.update(req, id);
