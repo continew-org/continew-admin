@@ -24,7 +24,7 @@ import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
 import top.charles7c.continew.starter.extension.crud.service.BaseService;
 
 /**
- * 存储库业务接口
+ * 存储业务接口
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
@@ -32,9 +32,9 @@ import top.charles7c.continew.starter.extension.crud.service.BaseService;
 public interface StorageService extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {
 
     /**
-     * 查询默认存储库
+     * 查询默认存储
      *
-     * @return 存储库信息
+     * @return 存储信息
      */
     StorageDO getDefaultStorage();
 
@@ -42,23 +42,21 @@ public interface StorageService extends BaseService<StorageResp, StorageResp, St
      * 根据编码查询
      *
      * @param code 编码
-     * @return 存储库信息
+     * @return 存储信息
      */
     StorageDO getByCode(String code);
 
     /**
-     * 加载存储库
+     * 加载存储
      *
-     * @param req
-     *            存储库信息
+     * @param req 存储信息
      */
     void load(StorageReq req);
 
     /**
-     * 卸载存储库
+     * 卸载存储
      *
-     * @param req
-     *            存储库信息
+     * @param req 存储信息
      */
     void unload(StorageReq req);
 }

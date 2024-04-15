@@ -26,13 +26,13 @@ import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import java.io.Serial;
 
 /**
- * 存储库信息
+ * 存储响应信息
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
 @Data
-@Schema(description = "存储库信息")
+@Schema(description = "存储响应信息")
 public class StorageResp extends BaseDetailResp {
 
     @Serial
@@ -41,7 +41,7 @@ public class StorageResp extends BaseDetailResp {
     /**
      * 名称
      */
-    @Schema(description = "名称", example = "存储库1")
+    @Schema(description = "名称", example = "存储1")
     private String name;
 
     /**
@@ -88,15 +88,15 @@ public class StorageResp extends BaseDetailResp {
     private String bucketName;
 
     /**
-     * 自定义域名
+     * 域名
      */
-    @Schema(description = "自定义域名", example = "http://localhost:8000/file")
+    @Schema(description = "域名", example = "http://localhost:8000/file")
     private String domain;
 
     /**
      * 描述
      */
-    @Schema(description = "描述", example = "存储库描述")
+    @Schema(description = "描述", example = "存储描述")
     private String description;
 
     /**

@@ -27,12 +27,13 @@ import top.charles7c.continew.starter.extension.crud.controller.BaseController;
 import top.charles7c.continew.starter.extension.crud.enums.Api;
 
 /**
- * 存储库管理 API
+ * 存储管理 API
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
-@Tag(name = "存储库管理 API")
+@Tag(name = "存储管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/storage", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
-public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {}
+public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {
+}

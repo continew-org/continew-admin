@@ -73,14 +73,14 @@ public class FileDO extends BaseDO {
     private FileTypeEnum type;
 
     /**
-     * 存储库 ID
+     * 存储 ID
      */
     private Long storageId;
 
     /**
      * 转换为 X-File-Storage 文件信息对象
      *
-     * @param storageCode 存储库编码
+     * @param storageCode 存储编码
      * @return X-File-Storage 文件信息对象
      */
     public FileInfo toFileInfo(String storageCode) {

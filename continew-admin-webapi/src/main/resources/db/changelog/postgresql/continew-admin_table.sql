@@ -420,7 +420,7 @@ COMMENT ON COLUMN "sys_storage"."access_key"  IS 'Access Key（访问密钥）';
 COMMENT ON COLUMN "sys_storage"."secret_key"  IS 'Secret Key（私有密钥）';
 COMMENT ON COLUMN "sys_storage"."endpoint"    IS 'Endpoint（终端节点）';
 COMMENT ON COLUMN "sys_storage"."bucket_name" IS '桶名称';
-COMMENT ON COLUMN "sys_storage"."domain"      IS '自定义域名';
+COMMENT ON COLUMN "sys_storage"."domain"      IS '域名';
 COMMENT ON COLUMN "sys_storage"."description" IS '描述';
 COMMENT ON COLUMN "sys_storage"."is_default"  IS '是否为默认存储';
 COMMENT ON COLUMN "sys_storage"."sort"        IS '排序';
@@ -429,7 +429,7 @@ COMMENT ON COLUMN "sys_storage"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_storage"."create_time" IS '创建时间';
 COMMENT ON COLUMN "sys_storage"."update_user" IS '修改人';
 COMMENT ON COLUMN "sys_storage"."update_time" IS '修改时间';
-COMMENT ON TABLE  "sys_storage"               IS '存储库表';
+COMMENT ON TABLE  "sys_storage"               IS '存储表';
 
 CREATE TABLE IF NOT EXISTS "sys_file" (
     "id"            int8         NOT NULL,
@@ -455,7 +455,7 @@ COMMENT ON COLUMN "sys_file"."size"        IS '大小（字节）';
 COMMENT ON COLUMN "sys_file"."url"         IS 'URL';
 COMMENT ON COLUMN "sys_file"."extension"   IS '扩展名';
 COMMENT ON COLUMN "sys_file"."type"        IS '类型（1：其他；2：图片；3：文档；4：视频；5：音频）';
-COMMENT ON COLUMN "sys_file"."storage_id"  IS '存储库ID';
+COMMENT ON COLUMN "sys_file"."storage_id"  IS '存储ID';
 COMMENT ON COLUMN "sys_file"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_file"."create_time" IS '创建时间';
 COMMENT ON COLUMN "sys_file"."update_user" IS '修改人';

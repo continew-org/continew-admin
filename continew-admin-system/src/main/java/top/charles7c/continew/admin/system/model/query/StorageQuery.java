@@ -25,13 +25,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 存储库查询条件
+ * 存储查询条件
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
 @Data
-@Schema(description = "存储库查询条件")
+@Schema(description = "存储查询条件")
 public class StorageQuery implements Serializable {
 
     @Serial
@@ -41,7 +41,7 @@ public class StorageQuery implements Serializable {
      * 关键词
      */
     @Schema(description = "关键词", example = "本地存储")
-    @Query(columns = {"name", "description"}, type = QueryType.LIKE)
+    @Query(columns = {"name", "code", "description"}, type = QueryType.LIKE)
     private String description;
 
     /**

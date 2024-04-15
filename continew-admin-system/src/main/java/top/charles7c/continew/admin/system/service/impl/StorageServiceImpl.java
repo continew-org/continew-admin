@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * 存储库业务实现
+ * 存储业务实现
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
@@ -57,13 +57,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @RequiredArgsConstructor
 public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
 
+    private final FileStorageService fileStorageService;
     @Resource
     private FileService fileService;
-    private final FileStorageService fileStorageService;
 
     @Override
     protected void beforeAdd(StorageReq req) {
-        CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储库");
+        CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         this.load(req);
@@ -76,7 +76,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         DisEnableStatusEnum newStatus = req.getStatus();
         StorageDO oldStorage = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
-            .equals(newStatus), "[{}] 是默认存储库，不允许禁用", oldStorage.getName());
+            .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
         DisEnableStatusEnum oldStatus = oldStorage.getStatus();
         if (DisEnableStatusEnum.ENABLE.equals(oldStatus) || DisEnableStatusEnum.DISABLE.equals(newStatus)) {
             this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
@@ -85,17 +85,17 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             this.load(req);
         }
         if (Boolean.TRUE.equals(req.getIsDefault())) {
-            CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储库");
-            CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储库");
+            CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储");
+            CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储");
         }
     }
 
     @Override
     protected void beforeDelete(List<Long> ids) {
-        CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储库存在文件关联，请删除文件后重试");
+        CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件关联，请删除文件后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
         storageList.forEach(s -> {
-            CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储库，不允许禁用", s.getName());
+            CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储，不允许禁用", s.getName());
             this.unload(BeanUtil.copyProperties(s, StorageReq.class));
         });
     }
@@ -118,8 +118,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         StorageTypeEnum type = req.getType();
         if (StorageTypeEnum.LOCAL.equals(type)) {
             ValidationUtils.throwIfBlank(bucketName, "存储路径不能为空");
-            ValidationUtils.throwIfBlank(domain, "自定义域名不能为空");
-            ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "自定义域名格式错误");
+            ValidationUtils.throwIfBlank(domain, "域名不能为空");
+            ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "域名格式错误");
             req.setBucketName(StrUtil.appendIfMissing(bucketName
                 .replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
             FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
@@ -159,7 +159,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     }
 
     /**
-     * 默认存储库是否存在
+     * 默认存储是否存在
      *
      * @param id ID
      * @return 是否存在

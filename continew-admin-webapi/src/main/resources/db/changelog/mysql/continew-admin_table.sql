@@ -241,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
     `secret_key`  varchar(255) DEFAULT NULL                COMMENT 'Secret Key（私有密钥）',
     `endpoint`    varchar(255) DEFAULT NULL                COMMENT 'Endpoint（终端节点）',
     `bucket_name` varchar(255) DEFAULT NULL                COMMENT '桶名称',
-    `domain`      varchar(255) NOT NULL DEFAULT ''         COMMENT '自定义域名',
+    `domain`      varchar(255) NOT NULL DEFAULT ''         COMMENT '域名',
     `description` varchar(200) DEFAULT NULL                COMMENT '描述',
     `is_default`  bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否为默认存储',
     `sort`        int          NOT NULL DEFAULT 999        COMMENT '排序',
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
     UNIQUE INDEX `uk_code`(`code`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储库表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储表';
 
 CREATE TABLE IF NOT EXISTS `sys_file` (
     `id`            bigint(20)   NOT NULL                    COMMENT 'ID',
@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
     `url`           varchar(512) NOT NULL                    COMMENT 'URL',
     `extension`     varchar(100) DEFAULT NULL                COMMENT '扩展名',
     `type`          tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：其他；2：图片；3：文档；4：视频；5：音频）',
-    `storage_id`    bigint(20)   NOT NULL                    COMMENT '存储库ID',
+    `storage_id`    bigint(20)   NOT NULL                    COMMENT '存储ID',
     `create_user`   bigint(20)   NOT NULL                    COMMENT '创建人',
     `create_time`   datetime     NOT NULL                    COMMENT '创建时间',
     `update_user`   bigint(20)   NOT NULL                    COMMENT '修改人',

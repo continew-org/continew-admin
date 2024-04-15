@@ -20,9 +20,10 @@ import top.charles7c.continew.admin.system.model.entity.StorageDO;
 import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
- * 存储库 Mapper
+ * 存储 Mapper
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
-public interface StorageMapper extends BaseMapper<StorageDO> {}
+public interface StorageMapper extends BaseMapper<StorageDO> {
+}

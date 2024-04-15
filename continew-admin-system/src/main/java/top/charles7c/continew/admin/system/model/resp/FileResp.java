@@ -73,8 +73,8 @@ public class FileResp extends BaseDetailResp {
     private FileTypeEnum type;
 
     /**
-     * 存储库 ID
+     * 存储 ID
      */
-    @Schema(description = "存储库ID", example = "1")
+    @Schema(description = "存储ID", example = "1")
     private Long storageId;
 }

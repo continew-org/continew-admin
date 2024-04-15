@@ -57,10 +57,9 @@ VALUES
 (1106, '文件下载', 1100, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:file:download', 6, 1, 1, NOW(), NULL, NULL),
 (1110, '存储管理', 1000, 2, '/system/storage', 'Storage', 'system/storage/index', NULL, 'storage', b'0', b'0', b'0', NULL, 8, 1, 1, NOW(), NULL, NULL),
 (1111, '存储列表', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:list', 1, 1, 1, NOW(), NULL, NULL),
-(1112, '存储详情', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:detail', 2, 1, 1, NOW(), NULL, NULL),
-(1113, '存储新增', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:add', 3, 1, 1, NOW(), NULL, NULL),
-(1114, '存储修改', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:update', 4, 1, 1, NOW(), NULL, NULL),
-(1115, '存储删除', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:delete', 5, 1, 1, NOW(), NULL, NULL),
+(1112, '存储新增', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:add', 2, 1, 1, NOW(), NULL, NULL),
+(1113, '存储修改', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:update', 3, 1, 1, NOW(), NULL, NULL),
+(1114, '存储删除', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:delete', 4, 1, 1, NOW(), NULL, NULL),
 (1190, '系统配置', 1000, 2, '/system/config', 'Config', 'system/config/index', NULL, 'desktop', b'0', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL),
 (1191, '配置查询', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:query', 1, 1, 1, NOW(), NULL, NULL),
 (1192, '配置修改', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:update', 2, 1, 1, NOW(), NULL, NULL),
@@ -150,7 +149,7 @@ VALUES
 -- 初始化默认角色和部门关联数据
 INSERT INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES (547888897925840928, 547888483713155087);
 
--- 初始化默认存储库
+-- 初始化默认存储
 INSERT INTO `sys_storage`
 (`id`, `name`, `code`, `type`, `access_key`, `secret_key`, `endpoint`, `bucket_name`, `domain`, `description`, `is_default`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES

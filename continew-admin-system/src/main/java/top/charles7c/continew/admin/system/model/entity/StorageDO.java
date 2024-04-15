@@ -16,18 +16,16 @@
 
 package top.charles7c.continew.admin.system.model.entity;
 
-import java.io.Serial;
-
-import lombok.Data;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-
+import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.system.enums.StorageTypeEnum;
 import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
 
+import java.io.Serial;
+
 /**
- * 存储库实体
+ * 存储实体
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
@@ -55,17 +53,17 @@ public class StorageDO extends BaseDO {
     private StorageTypeEnum type;
 
     /**
-     * Access Key
+     * Access Key（访问密钥）
      */
     private String accessKey;
 
     /**
-     * Secret Key
+     * Secret Key（私有密钥）
      */
     private String secretKey;
 
     /**
-     * Endpoint
+     * Endpoint（终端节点）
      */
     private String endpoint;
 
@@ -75,7 +73,7 @@ public class StorageDO extends BaseDO {
     private String bucketName;
 
     /**
-     * 自定义域名
+     * 域名
      */
     private String domain;
 

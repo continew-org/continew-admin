@@ -30,13 +30,13 @@ import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
 import java.io.Serial;
 
 /**
- * 创建或修改存储库信息
+ * 存储请求信息
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
 @Data
-@Schema(description = "创建或修改存储库信息")
+@Schema(description = "存储请求信息")
 public class StorageReq extends BaseReq {
 
     @Serial
@@ -45,7 +45,7 @@ public class StorageReq extends BaseReq {
     /**
      * 名称
      */
-    @Schema(description = "名称", example = "存储库1")
+    @Schema(description = "名称", example = "存储1")
     @NotBlank(message = "名称不能为空")
     @Length(max = 100, message = "名称长度不能超过 {max} 个字符")
     private String name;
@@ -94,10 +94,10 @@ public class StorageReq extends BaseReq {
     private String bucketName;
 
     /**
-     * 自定义域名
+     * 域名
      */
-    @Schema(description = "自定义域名", example = "http://localhost:8000/file")
-    @Length(max = 255, message = "自定义域名长度不能超过 {max} 个字符")
+    @Schema(description = "域名", example = "http://localhost:8000/file")
+    @Length(max = 255, message = "域名长度不能超过 {max} 个字符")
     private String domain;
 
     /**
@@ -109,7 +109,7 @@ public class StorageReq extends BaseReq {
     /**
      * 描述
      */
-    @Schema(description = "描述", example = "存储库描述")
+    @Schema(description = "描述", example = "存储描述")
     @Length(max = 200, message = "描述长度不能超过 {max} 个字符")
     private String description;
 

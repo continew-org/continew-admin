@@ -78,7 +78,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         StorageDO storage;
         if (StrUtil.isBlank(storageCode)) {
             storage = storageService.getDefaultStorage();
-            CheckUtils.throwIfNull(storage, "请先指定默认存储库");
+            CheckUtils.throwIfNull(storage, "请先指定默认存储");
         } else {
             storage = storageService.getByCode(storageCode);
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
