@@ -9,8 +9,8 @@
             LEFT JOIN sys_user_role AS t4 ON t4.role_id = t3.id
             LEFT JOIN sys_user AS t5 ON t5.id = t4.user_id
         WHERE t5.id = #{userId}
-          AND t1.type IN (2, 3)
           AND t1.status = 1
+          AND t1.permission IS NOT NULL
           AND t3.status = 1
     </select>
 
