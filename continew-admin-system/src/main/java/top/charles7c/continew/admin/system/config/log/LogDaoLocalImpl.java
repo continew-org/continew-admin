@@ -18,6 +18,7 @@ package top.charles7c.continew.admin.system.config.log;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
@@ -45,6 +46,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 日志持久层接口本地实现类
@@ -112,9 +114,12 @@ public class LogDaoLocalImpl implements LogDao {
             }
         }
         // 操作人
-        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap) && requestHeaderMap
-            .containsKey(HttpHeaders.AUTHORIZATION)) {
-            String authorization = requestHeaderMap.get(HttpHeaders.AUTHORIZATION);
+        String headerName = HttpHeaders.AUTHORIZATION;
+        boolean isContains = CollUtil.containsAny(requestHeaderMap.keySet(), Set.of(headerName, headerName
+            .toLowerCase()));
+        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap) && isContains) {
+            String authorization = requestHeaderMap.getOrDefault(headerName, requestHeaderMap.get(headerName
+                .toLowerCase()));
             String token = authorization.replace(SaManager.getConfig()
                 .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
