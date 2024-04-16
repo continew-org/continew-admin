@@ -46,23 +46,6 @@ jobs:
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
             docker images | grep none | awk '{print $3}' | xargs docker rmi
-  # Qodana 扫描
-  qodana-scan:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      checks: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}  # to check out the actual pull request commit, not the merge commit
-          fetch-depth: 0 # a full history is required for pull request analysis
-      - name: Analyze
-        uses: JetBrains/qodana-action@v2023.3
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
   # Sonar 扫描
   sonar-scan:
     runs-on: ubuntu-latest
