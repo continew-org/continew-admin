@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Configuration;
 
 import top.charles7c.continew.admin.system.mapper.LogMapper;
 import top.charles7c.continew.admin.system.service.UserService;
-import top.charles7c.continew.starter.log.core.dao.LogDao;
-import top.charles7c.continew.starter.log.httptracepro.autoconfigure.ConditionalOnEnabledLog;
-import top.charles7c.continew.starter.web.autoconfigure.trace.TraceProperties;
+import top.continew.starter.log.core.dao.LogDao;
+import top.continew.starter.log.httptracepro.autoconfigure.ConditionalOnEnabledLog;
+import top.continew.starter.web.autoconfigure.trace.TraceProperties;
 
 /**
  * 日志配置

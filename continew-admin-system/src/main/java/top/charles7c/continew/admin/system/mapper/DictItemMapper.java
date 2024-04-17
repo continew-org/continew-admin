@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.system.mapper;
 import org.apache.ibatis.annotations.Param;
 import top.charles7c.continew.admin.common.model.resp.LabelValueResp;
 import top.charles7c.continew.admin.system.model.entity.DictItemDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 import java.io.Serializable;
 import java.util.List;

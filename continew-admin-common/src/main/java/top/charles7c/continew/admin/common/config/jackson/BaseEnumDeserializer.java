@@ -16,18 +16,16 @@
 
 package top.charles7c.continew.admin.common.config.jackson;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-
-import com.fasterxml.jackson.core.*;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ReflectUtil;
-
-import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * 通用枚举接口 IBaseEnum 反序列化器

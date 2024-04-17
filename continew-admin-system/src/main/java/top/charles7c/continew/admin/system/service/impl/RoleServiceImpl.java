@@ -38,8 +38,8 @@ import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.model.resp.RoleDetailResp;
 import top.charles7c.continew.admin.system.model.resp.RoleResp;
 import top.charles7c.continew.admin.system.service.*;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;

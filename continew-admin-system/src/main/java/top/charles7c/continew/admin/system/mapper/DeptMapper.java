@@ -17,7 +17,7 @@
 package top.charles7c.continew.admin.system.mapper;
 
 import top.charles7c.continew.admin.system.model.entity.DeptDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 部门 Mapper

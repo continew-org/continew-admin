@@ -16,7 +16,7 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import top.charles7c.continew.starter.extension.crud.constant.ContainerPool;
+import top.continew.starter.extension.crud.constant.ContainerPool;
 
 /**
  * 数据源容器相关常量（Crane4j 数据填充组件使用）

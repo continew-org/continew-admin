@@ -20,7 +20,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import top.charles7c.continew.admin.common.config.properties.RsaProperties;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.core.util.validate.ValidationUtils;
 
 /**
  * 加密/解密工具类

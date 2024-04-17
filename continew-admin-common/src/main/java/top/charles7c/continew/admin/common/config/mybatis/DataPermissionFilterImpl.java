@@ -19,9 +19,9 @@ package top.charles7c.continew.admin.common.config.mybatis;
 import cn.hutool.core.convert.Convert;
 import top.charles7c.continew.admin.common.model.dto.LoginUser;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionCurrentUser;
-import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
-import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataScope;
+import top.continew.starter.data.mybatis.plus.datapermission.DataPermissionCurrentUser;
+import top.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
+import top.continew.starter.data.mybatis.plus.datapermission.DataScope;
 
 import java.util.stream.Collectors;
 

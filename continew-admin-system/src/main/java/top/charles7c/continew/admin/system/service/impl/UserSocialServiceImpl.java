@@ -31,7 +31,7 @@ import top.charles7c.continew.admin.common.enums.SocialSourceEnum;
 import top.charles7c.continew.admin.system.mapper.UserSocialMapper;
 import top.charles7c.continew.admin.system.model.entity.UserSocialDO;
 import top.charles7c.continew.admin.system.service.UserSocialService;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.core.util.validate.CheckUtils;
 
 import me.zhyd.oauth.model.AuthUser;
 

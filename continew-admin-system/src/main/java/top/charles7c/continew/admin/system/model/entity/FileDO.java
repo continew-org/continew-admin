@@ -27,9 +27,9 @@ import com.baomidou.mybatisplus.annotation.*;
 import cn.hutool.core.util.StrUtil;
 
 import top.charles7c.continew.admin.system.enums.FileTypeEnum;
-import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.core.util.URLUtils;
-import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 /**
  * 文件实体

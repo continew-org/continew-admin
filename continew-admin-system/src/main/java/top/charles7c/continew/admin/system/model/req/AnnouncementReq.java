@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

@@ -54,73 +54,85 @@
 
         <!-- ContiNew Starter 扩展模块 - CURD（增删改查） -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-extension-crud</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 认证模块 - JustAuth -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-auth-justauth</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 认证模块 - SaToken -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-auth-satoken</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-data-mybatis-plus</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 缓存模块 - JetCache -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-cache-jetcache</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 消息模块 - 邮件 -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-messaging-mail</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 验证码模块 - 图形验证码 -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-captcha-graphic</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 验证码模块 - 行为验证码 -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-captcha-behavior</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 文件处理模块 - Excel -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-file-excel</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter 安全模块（加密、脱敏、密码编码器） -->
+        <!-- ContiNew Starter 安全模块 - 加密 -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-starter-security-all</artifactId>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-security-crypto</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter 安全模块 - 脱敏 -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-security-mask</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter 安全模块 - 密码编码器 -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-security-password</artifactId>
         </dependency>
 
         <!-- ContiNew Starter API 文档模块 -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-api-doc</artifactId>
         </dependency>
 
         <!-- ContiNew Starter JSON 模块 - Jackson -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
     </dependencies>

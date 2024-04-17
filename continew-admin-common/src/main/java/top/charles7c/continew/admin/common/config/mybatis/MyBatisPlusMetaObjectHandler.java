@@ -20,8 +20,8 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import top.charles7c.continew.admin.common.util.helper.LoginHelper;
-import top.charles7c.continew.starter.core.exception.BusinessException;
-import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.core.exception.BusinessException;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.time.LocalDateTime;
 

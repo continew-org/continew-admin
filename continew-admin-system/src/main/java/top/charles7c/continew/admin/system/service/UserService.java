@@ -25,8 +25,8 @@ import top.charles7c.continew.admin.system.model.req.UserReq;
 import top.charles7c.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.charles7c.continew.admin.system.model.resp.UserDetailResp;
 import top.charles7c.continew.admin.system.model.resp.UserResp;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.mybatis.plus.service.IService;
 
 import java.util.List;
 

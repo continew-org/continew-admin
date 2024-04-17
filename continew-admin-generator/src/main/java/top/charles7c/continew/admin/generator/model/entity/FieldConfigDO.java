@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import top.charles7c.continew.admin.generator.enums.FormTypeEnum;
 import top.charles7c.continew.admin.generator.enums.QueryTypeEnum;
-import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.constant.StringConstants;
 
 import java.io.Serial;
 import java.io.Serializable;

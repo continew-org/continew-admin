@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import top.charles7c.continew.admin.common.constant.UiConstants;
-import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
  * 成功/失败状态枚举

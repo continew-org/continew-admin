@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 
-import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
  * 通用枚举接口 IBaseEnum 序列化器

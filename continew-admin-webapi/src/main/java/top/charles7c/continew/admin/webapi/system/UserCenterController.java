@@ -45,10 +45,10 @@ import top.charles7c.continew.admin.system.model.resp.AvatarResp;
 import top.charles7c.continew.admin.system.model.resp.UserSocialBindResp;
 import top.charles7c.continew.admin.system.service.UserService;
 import top.charles7c.continew.admin.system.service.UserSocialService;
-import top.charles7c.continew.starter.cache.redisson.util.RedisUtils;
-import top.charles7c.continew.starter.core.util.ExceptionUtils;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.web.model.R;
+import top.continew.starter.cache.redisson.util.RedisUtils;
+import top.continew.starter.core.util.ExceptionUtils;
+import top.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.web.model.R;
 
 import java.util.List;
 

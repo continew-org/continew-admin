@@ -25,8 +25,8 @@ import top.charles7c.continew.admin.system.model.req.DictReq;
 import top.charles7c.continew.admin.system.model.resp.DictResp;
 import top.charles7c.continew.admin.system.service.DictItemService;
 import top.charles7c.continew.admin.system.service.DictService;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

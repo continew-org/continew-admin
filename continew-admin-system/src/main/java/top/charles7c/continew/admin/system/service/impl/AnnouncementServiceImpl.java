@@ -30,7 +30,7 @@ import top.charles7c.continew.admin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.continew.admin.system.model.resp.AnnouncementResp;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
 import top.charles7c.continew.admin.system.service.AnnouncementService;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 /**
  * 公告业务实现

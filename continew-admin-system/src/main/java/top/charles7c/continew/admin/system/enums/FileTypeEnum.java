@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 import cn.hutool.core.util.StrUtil;
 
-import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
  * 文件类型枚举

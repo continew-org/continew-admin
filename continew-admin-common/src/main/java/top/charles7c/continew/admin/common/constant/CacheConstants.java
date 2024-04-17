@@ -16,7 +16,7 @@
 
 package top.charles7c.continew.admin.common.constant;
 
-import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.constant.StringConstants;
 
 /**
  * 缓存相关常量

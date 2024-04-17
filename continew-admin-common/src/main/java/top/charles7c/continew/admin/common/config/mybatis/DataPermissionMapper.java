@@ -20,8 +20,8 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
-import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermission;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.datapermission.DataPermission;
 
 import java.util.List;
 

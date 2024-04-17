@@ -21,8 +21,8 @@ import lombok.Data;
 import top.charles7c.continew.admin.common.config.mybatis.BCryptEncryptor;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
-import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
-import top.charles7c.continew.starter.security.crypto.annotation.FieldEncrypt;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

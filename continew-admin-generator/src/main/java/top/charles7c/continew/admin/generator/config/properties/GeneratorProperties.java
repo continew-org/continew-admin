@@ -20,7 +20,7 @@ import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import top.charles7c.continew.starter.data.core.enums.DatabaseType;
+import top.continew.starter.data.core.enums.DatabaseType;
 
 import java.util.List;
 import java.util.Map;

@@ -21,7 +21,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.system.enums.LogStatusEnum;
-import top.charles7c.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 
 import java.io.Serial;
 import java.io.Serializable;

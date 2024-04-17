@@ -18,7 +18,7 @@ package top.charles7c.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
 

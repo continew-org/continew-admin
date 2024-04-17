@@ -31,11 +31,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
-import top.charles7c.continew.starter.core.constant.PropertiesConstants;
-import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.extension.crud.annotation.EnableCrudRestController;
-import top.charles7c.continew.starter.web.annotation.EnableGlobalExceptionHandler;
+import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.extension.crud.annotation.EnableCrudRestController;
+import top.continew.starter.web.annotation.EnableGlobalExceptionHandler;
 
 import java.net.InetAddress;
 

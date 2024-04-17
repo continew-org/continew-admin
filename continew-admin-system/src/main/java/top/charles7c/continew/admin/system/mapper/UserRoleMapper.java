@@ -22,7 +22,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import top.charles7c.continew.admin.system.model.entity.UserRoleDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 用户和角色 Mapper

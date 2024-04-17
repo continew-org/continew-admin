@@ -17,7 +17,7 @@
 package top.charles7c.continew.admin.system.mapper;
 
 import top.charles7c.continew.admin.system.model.entity.RoleDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 角色 Mapper

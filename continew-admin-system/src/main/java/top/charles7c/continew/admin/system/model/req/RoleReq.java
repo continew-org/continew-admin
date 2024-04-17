@@ -33,7 +33,7 @@ import org.hibernate.validator.constraints.Length;
 import top.charles7c.continew.admin.common.constant.RegexConstants;
 import top.charles7c.continew.admin.common.enums.DataScopeEnum;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.starter.extension.crud.model.req.BaseReq;
+import top.continew.starter.extension.crud.model.req.BaseReq;
 
 /**
  * 创建或修改角色信息

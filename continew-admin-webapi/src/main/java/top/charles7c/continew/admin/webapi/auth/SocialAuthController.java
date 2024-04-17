@@ -33,10 +33,10 @@ import org.springframework.web.bind.annotation.*;
 import top.charles7c.continew.admin.auth.model.resp.LoginResp;
 import top.charles7c.continew.admin.auth.model.resp.SocialAuthAuthorizeResp;
 import top.charles7c.continew.admin.auth.service.LoginService;
-import top.charles7c.continew.starter.core.exception.BadRequestException;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.log.core.annotation.Log;
-import top.charles7c.continew.starter.web.model.R;
+import top.continew.starter.core.exception.BadRequestException;
+import top.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.log.core.annotation.Log;
+import top.continew.starter.web.model.R;
 
 /**
  * 三方账号认证 API

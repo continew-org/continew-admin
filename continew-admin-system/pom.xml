@@ -15,7 +15,7 @@
     <dependencies>
         <!-- ContiNew Starter 日志模块 - HttpTracePro（Spring Boot Actuator HttpTrace 定制增强版） -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-starter-log-httptrace-pro</artifactId>
         </dependency>
 

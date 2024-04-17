@@ -22,8 +22,8 @@ import top.charles7c.continew.admin.system.model.req.AnnouncementReq;
 import top.charles7c.continew.admin.system.model.resp.AnnouncementDetailResp;
 import top.charles7c.continew.admin.system.model.resp.AnnouncementResp;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
-import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.mybatis.plus.service.IService;
 
 import java.util.List;
 

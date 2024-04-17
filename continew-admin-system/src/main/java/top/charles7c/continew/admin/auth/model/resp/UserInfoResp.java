@@ -20,8 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.GenderEnum;
-import top.charles7c.continew.starter.security.mask.annotation.JsonMask;
-import top.charles7c.continew.starter.security.mask.enums.MaskType;
+import top.continew.starter.security.mask.annotation.JsonMask;
+import top.continew.starter.security.mask.enums.MaskType;
 
 import java.io.Serial;
 import java.io.Serializable;

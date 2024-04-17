@@ -31,7 +31,7 @@ import top.charles7c.continew.admin.system.mapper.FileMapper;
 import top.charles7c.continew.admin.system.mapper.StorageMapper;
 import top.charles7c.continew.admin.system.model.entity.FileDO;
 import top.charles7c.continew.admin.system.model.entity.StorageDO;
-import top.charles7c.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.constant.StringConstants;
 
 import java.util.Optional;
 

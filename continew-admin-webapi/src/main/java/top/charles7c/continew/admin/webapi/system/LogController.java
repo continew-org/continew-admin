@@ -31,10 +31,10 @@ import top.charles7c.continew.admin.system.model.query.LogQuery;
 import top.charles7c.continew.admin.system.model.resp.log.LogDetailResp;
 import top.charles7c.continew.admin.system.model.resp.log.LogResp;
 import top.charles7c.continew.admin.system.service.LogService;
-import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.query.SortQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
-import top.charles7c.continew.starter.web.model.R;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.query.SortQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
+import top.continew.starter.web.model.R;
 
 /**
  * 系统日志 API

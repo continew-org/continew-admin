@@ -31,10 +31,10 @@ import top.charles7c.continew.admin.system.model.resp.DeptResp;
 import top.charles7c.continew.admin.system.service.DeptService;
 import top.charles7c.continew.admin.system.service.RoleDeptService;
 import top.charles7c.continew.admin.system.service.UserService;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.data.core.enums.DatabaseType;
-import top.charles7c.continew.starter.data.core.util.MetaUtils;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.data.core.enums.DatabaseType;
+import top.continew.starter.data.core.util.MetaUtils;
+import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

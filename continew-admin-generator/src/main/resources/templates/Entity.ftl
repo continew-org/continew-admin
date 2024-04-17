@@ -12,7 +12,7 @@ import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 /**
  * ${businessName}实体

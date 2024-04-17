@@ -24,7 +24,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 
 import top.charles7c.continew.admin.system.model.entity.MessageDO;
 import top.charles7c.continew.admin.system.model.resp.MessageResp;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 消息 Mapper

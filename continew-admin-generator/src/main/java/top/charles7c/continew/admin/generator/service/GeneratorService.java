@@ -24,8 +24,8 @@ import top.charles7c.continew.admin.generator.model.query.TableQuery;
 import top.charles7c.continew.admin.generator.model.req.GenConfigReq;
 import top.charles7c.continew.admin.generator.model.resp.GeneratePreviewResp;
 import top.charles7c.continew.admin.generator.model.resp.TableResp;
-import top.charles7c.continew.starter.extension.crud.model.query.PageQuery;
-import top.charles7c.continew.starter.extension.crud.model.resp.PageResp;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.sql.SQLException;
 import java.util.List;

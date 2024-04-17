@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.system.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.charles7c.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
  * 存储类型枚举

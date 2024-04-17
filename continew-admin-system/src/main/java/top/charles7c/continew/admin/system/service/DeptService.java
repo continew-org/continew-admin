@@ -20,8 +20,8 @@ import top.charles7c.continew.admin.system.model.entity.DeptDO;
 import top.charles7c.continew.admin.system.model.query.DeptQuery;
 import top.charles7c.continew.admin.system.model.req.DeptReq;
 import top.charles7c.continew.admin.system.model.resp.DeptResp;
-import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 部门业务接口

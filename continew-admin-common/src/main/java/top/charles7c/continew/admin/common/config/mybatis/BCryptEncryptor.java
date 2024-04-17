@@ -17,7 +17,7 @@
 package top.charles7c.continew.admin.common.config.mybatis;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import top.charles7c.continew.starter.security.crypto.encryptor.IEncryptor;
+import top.continew.starter.security.crypto.encryptor.IEncryptor;
 
 /**
  * BCrypt 加/解密处理器（不可逆）

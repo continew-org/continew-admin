@@ -48,10 +48,10 @@ import top.charles7c.continew.admin.system.service.FileService;
 import top.charles7c.continew.admin.system.service.RoleService;
 import top.charles7c.continew.admin.system.service.UserRoleService;
 import top.charles7c.continew.admin.system.service.UserService;
-import top.charles7c.continew.starter.core.constant.StringConstants;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.service.CommonUserService;
-import top.charles7c.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.service.CommonUserService;
+import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

@@ -48,10 +48,10 @@ import top.charles7c.continew.admin.system.model.entity.UserSocialDO;
 import top.charles7c.continew.admin.system.model.req.MessageReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.*;
-import top.charles7c.continew.starter.core.autoconfigure.project.ProjectProperties;
-import top.charles7c.continew.starter.core.util.validate.CheckUtils;
-import top.charles7c.continew.starter.extension.crud.annotation.TreeField;
-import top.charles7c.continew.starter.extension.crud.util.TreeUtils;
+import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.annotation.TreeField;
+import top.continew.starter.extension.crud.util.TreeUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;

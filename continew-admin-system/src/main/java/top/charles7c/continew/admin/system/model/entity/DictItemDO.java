@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.system.model.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
-import top.charles7c.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
 

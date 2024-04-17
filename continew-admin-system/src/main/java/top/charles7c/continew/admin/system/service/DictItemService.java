@@ -21,8 +21,8 @@ import top.charles7c.continew.admin.system.model.entity.DictItemDO;
 import top.charles7c.continew.admin.system.model.query.DictItemQuery;
 import top.charles7c.continew.admin.system.model.req.DictItemReq;
 import top.charles7c.continew.admin.system.model.resp.DictItemResp;
-import top.charles7c.continew.starter.data.mybatis.plus.service.IService;
-import top.charles7c.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.service.BaseService;
 
 import java.io.Serializable;
 import java.util.List;

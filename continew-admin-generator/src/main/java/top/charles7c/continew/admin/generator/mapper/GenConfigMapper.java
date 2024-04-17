@@ -17,7 +17,7 @@
 package top.charles7c.continew.admin.generator.mapper;
 
 import top.charles7c.continew.admin.generator.model.entity.GenConfigDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 /**
  * 生成配置 Mapper

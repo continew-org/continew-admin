@@ -27,13 +27,13 @@ import top.charles7c.continew.admin.system.model.query.MenuQuery;
 import top.charles7c.continew.admin.system.model.req.MenuReq;
 import top.charles7c.continew.admin.system.model.resp.MenuResp;
 import top.charles7c.continew.admin.system.service.MenuService;
-import top.charles7c.continew.starter.core.util.URLUtils;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.charles7c.continew.starter.extension.crud.controller.BaseController;
-import top.charles7c.continew.starter.extension.crud.enums.Api;
-import top.charles7c.continew.starter.extension.crud.util.ValidateGroup;
-import top.charles7c.continew.starter.web.model.R;
+import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
+import top.continew.starter.extension.crud.controller.BaseController;
+import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.util.ValidateGroup;
+import top.continew.starter.web.model.R;
 
 /**
  * 菜单管理 API

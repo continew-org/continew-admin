@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
-import top.charles7c.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 /**
  * ${businessName}详情信息

@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import top.charles7c.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
+import top.continew.starter.data.mybatis.plus.datapermission.DataPermissionFilter;
 
 /**
  * MyBatis Plus 配置

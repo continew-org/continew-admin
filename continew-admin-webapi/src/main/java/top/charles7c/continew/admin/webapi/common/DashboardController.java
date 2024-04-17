@@ -37,9 +37,9 @@ import top.charles7c.continew.admin.system.model.resp.DashboardPopularModuleResp
 import top.charles7c.continew.admin.system.model.resp.DashboardTotalResp;
 import top.charles7c.continew.admin.system.service.DashboardService;
 import top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp;
-import top.charles7c.continew.starter.core.util.validate.ValidationUtils;
-import top.charles7c.continew.starter.web.model.R;
-import top.charles7c.continew.starter.log.core.annotation.Log;
+import top.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.web.model.R;
+import top.continew.starter.log.core.annotation.Log;
 
 import java.util.List;
 

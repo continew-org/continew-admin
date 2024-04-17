@@ -19,7 +19,7 @@ package top.charles7c.continew.admin.generator.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import top.charles7c.continew.admin.generator.model.entity.FieldConfigDO;
-import top.charles7c.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
 
 import java.util.List;
 
