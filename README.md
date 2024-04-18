@@ -83,7 +83,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 @Tag(name = "部门管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
-public class DeptController extends BaseController<DeptService, DeptResponse, DeptDetailResponse, DeptQuery, DeptRequest> {}
+public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
 4.**代码生成器：** 提供代码生成器，已配套前、后端代码生成模板，数据表设计完之后，简单配置一下即可生成前、后端 80% 的代码，包含 CRUD API、权限控制、参数校验、接口文档等内容。如果业务不复杂，也可能就是 99% 的代码。
@@ -290,22 +290,6 @@ continew-admin
 │  │  │     └─ logback-spring.xml（日志配置文件）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml（包含打包相关配置）
-├─ continew-admin-monitor（系统监控模块，存放系统监控相关业务功能，例如：在线用户、日志管理等）
-│  ├─ src
-│  │  ├─ main
-│  │  │  ├─ java/top/charles7c/continew/admin/monitor
-│  │  │  │  ├─ config（系统监控相关配置）
-│  │  │  │  ├─ enums（系统监控相关枚举）
-│  │  │  │  ├─ mapper（系统监控相关 Mapper）
-│  │  │  │  ├─ model（系统监控相关模型）
-│  │  │  │  │  ├─ entity（系统监控相关实体对象）
-│  │  │  │  │  ├─ query（系统监控相关查询条件）
-│  │  │  │  │  └─ resp（系统监控相关响应对象（Response））
-│  │  │  │  └─ service（系统监控相关业务接口及实现类）
-│  │  │  └─ resources
-│  │  │     └─ mapper（系统监控相关 Mapper XML 文件目录）
-│  │  └─ test（测试相关代码目录）
-│  └─ pom.xml
 ├─ continew-admin-system（系统管理模块，存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）
 │  ├─ src
 │  │  ├─ main

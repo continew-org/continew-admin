@@ -42,12 +42,6 @@
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-generator</artifactId>
         </dependency>
-
-        <!-- 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等） -->
-        <dependency>
-            <groupId>top.charles7c.continew</groupId>
-            <artifactId>continew-admin-monitor</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

@@ -24,7 +24,6 @@
 
     <modules>
         <module>continew-admin-webapi</module>
-        <module>continew-admin-monitor</module>
         <module>continew-admin-system</module>
         <module>continew-admin-generator</module>
         <module>continew-admin-common</module>
@@ -49,13 +48,6 @@
             <dependency>
                 <groupId>top.charles7c.continew</groupId>
                 <artifactId>continew-admin-generator</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 系统监控模块（存放系统监控模块相关功能，例如：日志管理、服务监控等） -->
-            <dependency>
-                <groupId>top.charles7c.continew</groupId>
-                <artifactId>continew-admin-monitor</artifactId>
                 <version>${revision}</version>
             </dependency>
 
