@@ -43,7 +43,7 @@ import top.continew.starter.web.model.R;
  */
 @Tag(name = "菜单管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/menu", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/menu", api = {Api.TREE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
 public class MenuController extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     @Override

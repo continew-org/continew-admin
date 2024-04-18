@@ -16,14 +16,11 @@
 
 package top.charles7c.continew.admin.system.model.resp;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.charles7c.continew.admin.common.enums.DisEnableStatusEnum;
 import top.charles7c.continew.admin.common.enums.MenuTypeEnum;
 import top.continew.starter.extension.crud.annotation.TreeField;
-import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseResp;
 
 import java.io.Serial;
@@ -36,7 +33,6 @@ import java.io.Serial;
  */
 @Data
 @TreeField(value = "id")
-@ExcelIgnoreUnannotated
 @Schema(description = "菜单信息")
 public class MenuResp extends BaseResp {
 
@@ -47,7 +43,6 @@ public class MenuResp extends BaseResp {
      * 标题
      */
     @Schema(description = "标题", example = "用户管理")
-    @ExcelProperty(value = "标题")
     private String title;
 
     /**
@@ -60,83 +55,71 @@ public class MenuResp extends BaseResp {
      * 类型
      */
     @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
-    @ExcelProperty(value = "类型", converter = ExcelBaseEnumConverter.class)
     private MenuTypeEnum type;
 
     /**
      * 路由地址
      */
     @Schema(description = "路由地址", example = "/system/user")
-    @ExcelProperty(value = "路由地址")
     private String path;
 
     /**
      * 组件名称
      */
     @Schema(description = "组件名称", example = "User")
-    @ExcelProperty(value = "组件名称")
     private String name;
 
     /**
      * 组件路径
      */
     @Schema(description = "组件路径", example = "/system/user/index")
-    @ExcelProperty(value = "组件路径")
     private String component;
 
     /**
      * 重定向地址
      */
     @Schema(description = "重定向地址")
-    @ExcelProperty(value = "重定向地址")
     private String redirect;
 
     /**
      * 图标
      */
     @Schema(description = "图标", example = "user")
-    @ExcelProperty(value = "图标")
     private String icon;
 
     /**
      * 是否外链
      */
     @Schema(description = "是否外链", example = "false")
-    @ExcelProperty(value = "是否外链")
     private Boolean isExternal;
 
     /**
      * 是否缓存
      */
     @Schema(description = "是否缓存", example = "false")
-    @ExcelProperty(value = "是否缓存")
     private Boolean isCache;
 
     /**
      * 是否隐藏
      */
     @Schema(description = "是否隐藏", example = "false")
-    @ExcelProperty(value = "是否隐藏")
     private Boolean isHidden;
 
     /**
      * 权限标识
      */
     @Schema(description = "权限标识", example = "system:user:list")
-    @ExcelProperty(value = "权限标识")
     private String permission;
 
     /**
      * 排序
      */
     @Schema(description = "排序", example = "1")
-    @ExcelProperty(value = "排序")
     private Integer sort;
 
     /**
      * 状态
      */
     @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
     private DisEnableStatusEnum status;
 }
