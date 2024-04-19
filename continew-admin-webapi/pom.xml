@@ -43,6 +43,7 @@
             <artifactId>continew-admin-generator</artifactId>
         </dependency>
 
+        <!-- continew-admin-system模块 -->
         <dependency>
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-system</artifactId>
