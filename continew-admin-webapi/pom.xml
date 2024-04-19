@@ -42,6 +42,11 @@
             <groupId>top.charles7c.continew</groupId>
             <artifactId>continew-admin-generator</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>top.charles7c.continew</groupId>
+            <artifactId>continew-admin-system</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
