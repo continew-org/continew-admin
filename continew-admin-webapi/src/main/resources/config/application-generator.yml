@@ -42,7 +42,7 @@ generator:
   templateConfigs:
     DO:
       # 模板路径
-      templatePath: Entity.ftl
+      templatePath: backend/Entity.ftl
       # 包名称
       packageName: model.entity
       # 排除字段
@@ -53,20 +53,20 @@ generator:
         - updateUser
         - updateTime
     Query:
-      templatePath: Query.ftl
+      templatePath: backend/Query.ftl
       packageName: model.query
     Req:
-      templatePath: Req.ftl
+      templatePath: backend/Req.ftl
       packageName: model.req
     Resp:
-      templatePath: Resp.ftl
+      templatePath: backend/Resp.ftl
       packageName: model.resp
       excludeFields:
         - id
         - createUser
         - createTime
     DetailResp:
-      templatePath: DetailResp.ftl
+      templatePath: backend/DetailResp.ftl
       packageName: model.resp
       excludeFields:
         - id
@@ -75,14 +75,34 @@ generator:
         - updateUser
         - updateTime
     Mapper:
-      templatePath: Mapper.ftl
+      templatePath: backend/Mapper.ftl
       packageName: mapper
     Service:
-      templatePath: Service.ftl
+      templatePath: backend/Service.ftl
       packageName: service
     ServiceImpl:
-      templatePath: ServiceImpl.ftl
+      templatePath: backend/ServiceImpl.ftl
       packageName: service.impl
     Controller:
-      templatePath: Controller.ftl
+      templatePath: backend/Controller.ftl
       packageName: controller
+    api:
+      templatePath: frontend/api.ftl
+      packageName: src/apis
+      extension: .ts
+      backend: false
+    index:
+      templatePath: frontend/index.ftl
+      packageName: src/views
+      extension: .vue
+      backend: false
+    AddModal:
+      templatePath: frontend/AddModal.ftl
+      packageName: src/views
+      extension: .vue
+      backend: false
+    DetailDrawer:
+      templatePath: frontend/DetailDrawer.ftl
+      packageName: src/views
+      extension: .vue
+      backend: false

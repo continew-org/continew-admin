@@ -21,7 +21,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
@@ -227,7 +226,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
         genConfigMap.put("apiModuleName", apiModuleName);
         genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
-        // 渲染后端代码
+        // 渲染代码
         String classNamePrefix = genConfig.getClassNamePrefix();
         Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
         for (Map.Entry<String, TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
@@ -235,27 +234,22 @@ public class GeneratorServiceImpl implements GeneratorService {
             String className = classNamePrefix + StrUtil.nullToEmpty(templateConfigEntry.getKey());
             genConfigMap.put("className", className);
             TemplateConfig templateConfig = templateConfigEntry.getValue();
-            String content = TemplateUtils.render(templateConfig.getTemplatePath(), genConfigMap);
+            boolean isBackend = templateConfig.isBackend();
+            String extension = templateConfig.getExtension();
             GeneratePreviewResp generatePreview = new GeneratePreviewResp();
-            generatePreview.setFileName(className + FileNameUtil.EXT_JAVA);
-            generatePreview.setContent(content);
-            generatePreview.setBackend(true);
+            generatePreview.setBackend(isBackend);
             generatePreviewList.add(generatePreview);
+            if (isBackend) {
+                generatePreview.setFileName(className + extension);
+                generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), genConfigMap));
+            } else {
+                generatePreview.setFileName(".vue".equals(extension) && "index".equals(templateConfigEntry.getKey())
+                    ? "index.vue"
+                    : this.getFrontendFileName(classNamePrefix, className, extension));
+                genConfigMap.put("fieldConfigs", fieldConfigList);
+                generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), genConfigMap));
+            }
         }
-        // 渲染前端代码
-        // api 代码
-        genConfigMap.put("fieldConfigs", fieldConfigList);
-        String apiContent = TemplateUtils.render("api.ftl", genConfigMap);
-        GeneratePreviewResp apiGeneratePreview = new GeneratePreviewResp();
-        apiGeneratePreview.setFileName(classNamePrefix.toLowerCase() + ".ts");
-        apiGeneratePreview.setContent(apiContent);
-        generatePreviewList.add(apiGeneratePreview);
-        // view 代码
-        String viewContent = TemplateUtils.render("index.ftl", genConfigMap);
-        GeneratePreviewResp viewGeneratePreview = new GeneratePreviewResp();
-        viewGeneratePreview.setFileName("index.vue");
-        viewGeneratePreview.setContent(viewContent);
-        generatePreviewList.add(viewGeneratePreview);
         return generatePreviewList;
     }
 
@@ -265,45 +259,12 @@ public class GeneratorServiceImpl implements GeneratorService {
             String tempDir = SystemUtil.getUserInfo().getTempDir();
             // 删除旧代码
             FileUtil.del(tempDir + projectProperties.getAppName());
-
             tableNames.forEach(tableName -> {
                 // 初始化配置及数据
                 List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
-                GenConfigDO genConfig = genConfigMapper.selectById(tableName);
-                // 生成后端代码
-                Map<Boolean, List<GeneratePreviewResp>> generatePreviewListMap = generatePreviewList.stream()
-                    .collect(Collectors.groupingBy(GeneratePreviewResp::isBackend));
-                this.generateBackendCode(generatePreviewListMap.get(true), genConfig);
-                // 生成前端代码
-                List<GeneratePreviewResp> frontendGeneratePreviewList = generatePreviewListMap.get(false);
-                String packageName = genConfig.getPackageName();
-                String moduleName = StrUtil.subSuf(packageName, StrUtil
-                    .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
-
-                // 例如：continew-admin-ui/src
-                String frontendBasicPackagePath = tempDir + String.join(File.separator, projectProperties
-                    .getAppName(), projectProperties.getAppName() + "-ui", "src");
-                // 1、生成 api 代码
-                GeneratePreviewResp apiGeneratePreview = frontendGeneratePreviewList.get(0);
-                // 例如：continew-admin-ui/src/src/api/system
-                String apiPath = String.join(File.separator, frontendBasicPackagePath, "api", moduleName);
-                // 例如：continew-admin-ui/src/api/system/user.ts
-                File apiFile = new File(apiPath, apiGeneratePreview.getFileName());
-                if (!apiFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
-                    FileUtil.writeUtf8String(apiGeneratePreview.getContent(), apiFile);
-                }
-                // 2、生成 view 代码
-                GeneratePreviewResp viewGeneratePreview = frontendGeneratePreviewList.get(1);
-                // 例如：continew-admin-ui/src/views/system
-                String vuePath = String.join(File.separator, frontendBasicPackagePath, "views", moduleName, StrUtil
-                    .lowerFirst(genConfig.getClassNamePrefix()));
-                // 例如：continew-admin-ui/src/views/system/user/index.vue
-                File vueFile = new File(vuePath, viewGeneratePreview.getFileName());
-                if (!vueFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
-                    FileUtil.writeUtf8String(viewGeneratePreview.getContent(), vueFile);
-                }
+                // 生成代码
+                this.generateCode(generatePreviewList, genConfigMapper.selectById(tableName));
             });
-
             // 打包下载
             File tempDirFile = new File(tempDir, projectProperties.getAppName());
             String zipFilePath = tempDirFile.getPath() + jodd.io.ZipUtil.ZIP_EXT;
@@ -316,27 +277,46 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     /**
-     * 生成后端代码
+     * 生成代码
      *
      * @param generatePreviewList 生成预览列表
      * @param genConfig           生成配置
      */
-    private void generateBackendCode(List<GeneratePreviewResp> generatePreviewList, GenConfigDO genConfig) {
+    private void generateCode(List<GeneratePreviewResp> generatePreviewList, GenConfigDO genConfig) {
+        // 获取前后端基础路径
         String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig);
+        String frontendBasicPackagePath = SystemUtil.getUserInfo().getTempDir() + String
+            .join(File.separator, projectProperties.getAppName(), projectProperties.getAppName() + "-ui");
+        String packageName = genConfig.getPackageName();
+        String moduleName = StrUtil.subSuf(packageName, StrUtil
+            .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+        // 生成代码
         Map<String, TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
         for (GeneratePreviewResp generatePreview : generatePreviewList) {
             // 获取对应模板配置
-            TemplateConfig templateConfig = templateConfigMap.get(generatePreview.getFileName()
-                .replace(genConfig.getClassNamePrefix(), StringConstants.EMPTY)
-                .replace(FileNameUtil.EXT_JAVA, StringConstants.EMPTY));
-            // 例如：continew-admin/continew-admin-system/src/main/java/top/charles7c/continew/admin/system/service/impl
-            String packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
-            // 例如：continew-admin/continew-admin-system/src/main/java/top/charles7c/continew/admin/system/service/impl/XxxServiceImpl.java
-            File classFile = new File(packagePath, generatePreview.getFileName());
+            TemplateConfig templateConfig = templateConfigMap.getOrDefault(StrUtil.subBefore(generatePreview
+                .getFileName(), StringConstants.DOT, true)
+                .replace(genConfig.getClassNamePrefix(), StringConstants.EMPTY), templateConfigMap.get("api"));
+            String packagePath;
+            if (generatePreview.isBackend()) {
+                // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
+                packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
+                    .replace(StringConstants.DOT, File.separator));
+            } else {
+                // 例如：continew-admin/continew-admin-ui/src/views/system
+                packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
+                    .replace(StringConstants.SLASH, File.separator), moduleName);
+                // 例如：continew-admin/continew-admin-ui/src/views/system/user
+                packagePath = ".vue".equals(templateConfig.getExtension())
+                    ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
+                    : packagePath;
+            }
+            // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
+            // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
+            File file = new File(packagePath, generatePreview.getFileName());
             // 如果已经存在，且不允许覆盖，则跳过
-            if (!classFile.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
-                FileUtil.writeUtf8String(generatePreview.getContent(), classFile);
+            if (!file.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
+                FileUtil.writeUtf8String(generatePreview.getContent(), file);
             }
         }
     }
@@ -348,11 +328,23 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @return 后端包路径
      */
     private String buildBackendBasicPackagePath(GenConfigDO genConfig) {
-        // 例如：continew-admin/continew-admin-system/src/main/java/top/charles7c/continew/admin/system
+        // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
         return SystemUtil.getUserInfo().getTempDir() + String.join(File.separator, projectProperties
             .getAppName(), projectProperties.getAppName(), genConfig.getModuleName(), "src", "main", "java", genConfig
                 .getPackageName()
                 .replace(StringConstants.DOT, File.separator));
+    }
+
+    /**
+     * 获取前端文件名
+     *
+     * @param classNamePrefix 类名前缀
+     * @param className       类名
+     * @param extension       扩展名
+     * @return 前端文件名
+     */
+    private String getFrontendFileName(String classNamePrefix, String className, String extension) {
+        return (".ts".equals(extension) ? StrUtil.lowerFirst(classNamePrefix) : className) + extension;
     }
 
     /**
