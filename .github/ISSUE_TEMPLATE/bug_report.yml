@@ -49,7 +49,7 @@ body:
       label: 确认
       description: 在提交 issue 之前，请确保执行过以下操作。
       options:
-        - label: 阅读[文档](https://doc.charles7c.top/admin/other/faq.html)
+        - label: 阅读[文档](https://continew.top/admin/other/faq.html)
           required: true
         - label: 根据报错信息百度或 Google 一下
           required: true

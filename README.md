@@ -34,7 +34,7 @@
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=white" alt="Gitee forks" />
 </a>
 
-📚 [在线文档](https://doc.charles7c.top) | 🚀 [演示地址](https://cnadmin.charles7c.top)（账号/密码：admin/admin123）
+📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://admin.continew.top)（账号/密码：admin/admin123）
 
 ## 简介
 
@@ -72,7 +72,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ## 为什么选我们？
 
 > [!TIP]
-> 如需完整图文描述，请点击打开[《在线文档》](https://doc.charles7c.top/admin/intro/why.html)查阅。
+> 如需完整图文描述，请点击打开[《在线文档》](https://continew.top/admin/intro/why.html)查阅。
 
 1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Element Plus、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
 
@@ -110,7 +110,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ##  系统功能
 
 > [!TIP]
-> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://doc.charles7c.top/admin/intro/require.html#任务清单) 和 [更新日志](https://doc.charles7c.top/admin/other/changelog.html)。
+> 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://continew.top/admin/intro/require.html#任务清单) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
 
 - 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传、个人操作日志查看
 - 用户管理：提供用户的相关配置，新增用户后，默认密码为 123456
@@ -204,7 +204,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ## 快速开始
 
 > [!TIP]
-> 更详细的流程，请查看在线文档[《快速开始》](https://doc.charles7c.top/admin/intro/quick-start.html)。
+> 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/admin/intro/quick-start.html)。
 
 ```bash
 # 1.克隆本项目
@@ -366,11 +366,11 @@ continew-admin
 
 ContiNew Admin 致力于提供开箱即用，持续舒适的开发体验。作为一个开源项目，Creator 的初心是希望 ContiNew Admin 依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://doc.charles7c.top/support.html) 讨论或认领任务。
+我们非常欢迎广大社区用户为 ContiNew Admin **贡献（开发，测试、文档、答疑等）** 或优化代码，欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/support.html) 讨论或认领任务。
 
 ### 分支说明
 
-ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://doc.charles7c.top/admin/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
+ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大版本的维护分支，PR 前请注意对应分支是否处于维护状态，版本支持情况请查看 [更新日志/版本支持](https://continew.top/admin/other/changelog.html#%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81)。
 
 | 分支  | 说明                                                         |
 | ----- | ------------------------------------------------------------ |

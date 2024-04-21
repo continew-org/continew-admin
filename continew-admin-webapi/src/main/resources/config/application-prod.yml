@@ -1,7 +1,7 @@
 --- ### 项目配置
 project:
   # URL（跨域配置默认放行此 URL，请注意更改为你实际的前端 URL）
-  url: https://cnadmin.charles7c.top
+  url: https://admin.continew.top
   # 是否为生产环境
   production: true
 

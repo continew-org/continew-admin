@@ -42,5 +42,5 @@
 
 <!-- 在提交 issue 之前，请确保执行过以下操作。 -->
 
-- [ ] 阅读[文档](https://doc.charles7c.top/admin/other/faq.html)
+- [ ] 阅读[文档](https://continew.top/admin/other/faq.html)
 - [ ] 搜索是否有其他人提交过类似的 issue，如果对应 issue 尚未解决，您可以先订阅关注该 issue（为了方便后来者查找问题解决方法，请尽量避免创建重复的 issue）

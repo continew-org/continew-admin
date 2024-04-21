@@ -69,7 +69,7 @@ public class LogDetailResp implements Serializable {
     /**
      * 请求 URL
      */
-    @Schema(description = "请求 URL", example = "http://api.charles7c.top/system/dept")
+    @Schema(description = "请求 URL", example = "http://api.continew.top/system/dept")
     private String requestUrl;
 
     /**
@@ -81,7 +81,7 @@ public class LogDetailResp implements Serializable {
     /**
      * 请求头
      */
-    @Schema(description = "请求头", example = "{\"Origin\": [\"https://cnadmin.charles7c.top\"],...}")
+    @Schema(description = "请求头", example = "{\"Origin\": [\"https://admin.continew.top\"],...}")
     private String requestHeaders;
 
     /**

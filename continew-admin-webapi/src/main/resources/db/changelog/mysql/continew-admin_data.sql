@@ -74,7 +74,7 @@ VALUES
 (3013, '预览', 3010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tool:generator:preview', 3, 1, 1, NOW(), NULL, NULL),
 (3014, '生成', 3010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tool:generator:generate', 4, 1, 1, NOW(), NULL, NULL),
 (10000, '关于项目', 0, 1, '/project', 'Project', 'Layout', NULL, 'apps', b'0', b'0', b'0', NULL, 999, 1, 1, NOW(), NULL, NULL),
-(10001, '接口文档', 10000, 2, 'https://api.charles7c.top/doc.html', NULL, NULL, NULL, 'code-square', b'1', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL),
+(10001, '接口文档', 10000, 2, 'https://api.continew.top/doc.html', NULL, NULL, NULL, 'code-square', b'1', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL),
 (10002, 'Gitee', 10000, 2, 'https://gitee.com/continew/continew-admin', NULL, NULL, NULL, 'gitee', b'1', b'0', b'0', NULL, 2, 1, 1, NOW(), NULL, NULL),
 (10003, 'GitHub', 10000, 2, 'https://github.com/charles7c/continew-admin', NULL, NULL, NULL, 'github', b'1', b'0', b'0', NULL, 3, 1, 1, NOW(), NULL, NULL);
 
@@ -113,8 +113,8 @@ VALUES
 ('版权信息', 'site_copyright', NULL,
  'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">津ICP备2022005864号-2</a>',
  '用于显示登录页面的底部版权信息。', NULL, NULL),
-('系统LOGO（16*16）', 'site_favicon', NULL, 'https://cnadmin.charles7c.top/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
-('系统LOGO（33*33）', 'site_logo', NULL, 'https://cnadmin.charles7c.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
+('系统LOGO（16*16）', 'site_favicon', NULL, 'https://admin.continew.top/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
+('系统LOGO（33*33）', 'site_logo', NULL, 'https://admin.continew.top/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
 
 -- 初始化默认字典
 INSERT INTO `sys_dict`
@@ -154,4 +154,4 @@ INSERT INTO `sys_storage`
 (`id`, `name`, `code`, `type`, `access_key`, `secret_key`, `endpoint`, `bucket_name`, `domain`, `description`, `is_default`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (547890346239983671, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', b'1', 1, 1, 1, NOW(), NULL, NULL),
-(547890366586552377, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.charles7c.top/file', '本地存储', b'0', 2, 2, 1, NOW(), NULL, NULL);
+(547890366586552377, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', b'0', 2, 2, 1, NOW(), NULL, NULL);

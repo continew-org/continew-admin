@@ -40,6 +40,7 @@ import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
+import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.util.ValidateGroup;
 import top.continew.starter.web.model.R;
 
@@ -52,7 +53,7 @@ import top.continew.starter.web.model.R;
 @Tag(name = "用户管理 API")
 @Validated
 @RestController
-@CrudRequestMapping("/system/user")
+@CrudRequestMapping(value = "/system/user", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     @Override
