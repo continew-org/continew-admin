@@ -16,6 +16,7 @@
 
 package top.continew.admin.webapi.system;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -51,6 +52,7 @@ public class LogController {
     private final LogService baseService;
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
+    @SaCheckPermission("monitor:log:list")
     @GetMapping
     public R<PageResp<LogResp>> page(LogQuery query, @Validated PageQuery pageQuery) {
         return R.ok(baseService.page(query, pageQuery));
@@ -58,18 +60,21 @@ public class LogController {
 
     @Operation(summary = "查询详情", description = "查询详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
+    @SaCheckPermission("monitor:log:list")
     @GetMapping("/{id}")
     public R<LogDetailResp> get(@PathVariable Long id) {
         return R.ok(baseService.get(id));
     }
 
     @Operation(summary = "导出登录日志", description = "导出登录日志")
+    @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/login")
     public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
         baseService.exportLoginLog(query, sortQuery, response);
     }
 
     @Operation(summary = "导出操作日志", description = "导出操作日志")
+    @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/operation")
     public void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
         baseService.exportOperationLog(query, sortQuery, response);

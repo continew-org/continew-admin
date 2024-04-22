@@ -46,13 +46,13 @@ import top.continew.starter.web.model.R;
 @Tag(name = "在线用户 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/monitor/online/user")
+@RequestMapping("/monitor/online")
 public class OnlineUserController {
 
     private final OnlineUserService onlineUserService;
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
-    @SaCheckPermission("monitor:online:user:list")
+    @SaCheckPermission("monitor:online:list")
     @GetMapping
     public R<PageResp<OnlineUserResp>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
         return R.ok(onlineUserService.page(query, pageQuery));
@@ -60,7 +60,7 @@ public class OnlineUserController {
 
     @Operation(summary = "强退在线用户", description = "强退在线用户")
     @Parameter(name = "token", description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE", in = ParameterIn.PATH)
-    @SaCheckPermission("monitor:online:user:delete")
+    @SaCheckPermission("monitor:online:kickout")
     @DeleteMapping("/{token}")
     public R<Void> kickout(@PathVariable String token) {
         String currentToken = StpUtil.getTokenValue();

@@ -96,7 +96,10 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
         storageList.forEach(s -> {
             CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储，不允许禁用", s.getName());
-            this.unload(BeanUtil.copyProperties(s, StorageReq.class));
+            // 卸载启用状态的存储
+            if (DisEnableStatusEnum.ENABLE.equals(s.getStatus())) {
+                this.unload(BeanUtil.copyProperties(s, StorageReq.class));
+            }
         });
     }
 

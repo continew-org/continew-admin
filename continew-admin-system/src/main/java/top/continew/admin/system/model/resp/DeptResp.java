@@ -51,7 +51,7 @@ public class DeptResp extends BaseDetailResp {
      * 名称
      */
     @Schema(description = "名称", example = "测试部")
-    @ExcelProperty(value = "名称")
+    @ExcelProperty(value = "名称", order = 2)
     private String name;
 
     /**
@@ -60,41 +60,42 @@ public class DeptResp extends BaseDetailResp {
     @Schema(description = "上级部门 ID", example = "2")
     @ConditionOnExpression(value = "#target.parentId != 0")
     @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class), props = @Mapping(src = "name", ref = "parentName"))
+    @ExcelProperty(value = "上级部门 ID", order = 3)
     private Long parentId;
 
     /**
      * 上级部门
      */
     @Schema(description = "上级部门", example = "天津总部")
-    @ExcelProperty(value = "上级部门")
+    @ExcelProperty(value = "上级部门", order = 4)
     private String parentName;
 
     /**
      * 状态
      */
     @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 5)
     private DisEnableStatusEnum status;
 
     /**
      * 排序
      */
     @Schema(description = "排序", example = "3")
-    @ExcelProperty(value = "排序")
+    @ExcelProperty(value = "排序", order = 6)
     private Integer sort;
 
     /**
      * 是否为系统内置数据
      */
     @Schema(description = "是否为系统内置数据", example = "false")
-    @ExcelProperty(value = "系统内置")
+    @ExcelProperty(value = "系统内置", order = 7)
     private Boolean isSystem;
 
     /**
      * 描述
      */
     @Schema(description = "描述", example = "测试部描述信息")
-    @ExcelProperty(value = "描述")
+    @ExcelProperty(value = "描述", order = 8)
     private String description;
 
     @Override
