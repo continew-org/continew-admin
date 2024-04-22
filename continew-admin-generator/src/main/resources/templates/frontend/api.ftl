@@ -56,3 +56,8 @@ export function update${classNamePrefix}(data: any, id: string) {
 export function delete${classNamePrefix}(id: string) {
   return http.del(`${'$'}{BASE_URL}/${'$'}{id}`)
 }
+
+/** @desc 导出${businessName} */
+export function export${classNamePrefix}(query: ${classNamePrefix}Query) {
+  return http.download<any>(`${'$'}{BASE_URL}/export`, query)
+}

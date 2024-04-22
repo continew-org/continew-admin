@@ -35,6 +35,9 @@
             </a-button>
           </a-tooltip>
         </template>
+        <template #name="{ record }">
+          <a-link @click="onDetail(record)">{{ record.name }}</a-link>
+        </template>
         <template #action="{ record }">
           <a-space>
             <a-link v-permission="['${apiModuleName}:${apiName}:update']" @click="onUpdate(record)">修改</a-link>
@@ -60,8 +63,6 @@
 import { list${classNamePrefix}, delete${classNamePrefix}, export${classNamePrefix}, type ${classNamePrefix}Resp, type ${classNamePrefix}Query } from '@/apis'
 import ${classNamePrefix}AddModal from './${classNamePrefix}AddModal.vue'
 import ${classNamePrefix}DetailDrawer from './${classNamePrefix}DetailDrawer.vue'
-import { Message } from '@arco-design/web-vue'
-import type { TreeInstance } from '@arco-design/web-vue'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useTable, useDownload } from '@/hooks'
 import { isMobile } from '@/utils'
