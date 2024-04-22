@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.charles7c.continew.admin.system.mapper.MessageMapper">
-    <select id="selectPageByUserId" resultType="top.charles7c.continew.admin.system.model.resp.MessageResp">
+<mapper namespace="top.continew.admin.system.mapper.MessageMapper">
+    <select id="selectPageByUserId" resultType="top.continew.admin.system.model.resp.MessageResp">
         SELECT
             t1.*,
             t2.user_id,

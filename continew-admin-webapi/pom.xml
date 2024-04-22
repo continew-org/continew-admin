@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.charles7c.continew</groupId>
+        <groupId>top.continew</groupId>
         <artifactId>continew-admin</artifactId>
         <version>${revision}</version>
     </parent>
@@ -15,7 +15,7 @@
     <properties>
         <!-- ### 打包配置相关 ### -->
         <!-- 启动类 -->
-        <main-class>top.charles7c.continew.admin.ContiNewAdminApplication</main-class>
+        <main-class>top.continew.admin.ContiNewAdminApplication</main-class>
         <!-- 程序 jar 输出目录 -->
         <bin-path>bin</bin-path>
         <!-- 配置文件输出目录 -->
@@ -39,13 +39,13 @@
 
         <!-- 代码生成器插件（后续会改造为独立插件） -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-admin-generator</artifactId>
         </dependency>
 
         <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
         <dependency>
-            <groupId>top.charles7c.continew</groupId>
+            <groupId>top.continew</groupId>
             <artifactId>continew-admin-system</artifactId>
         </dependency>
     </dependencies>

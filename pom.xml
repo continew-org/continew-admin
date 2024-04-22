@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!--
@@ -15,10 +15,11 @@
         <version>2.0.0</version>
     </parent>
 
-    <groupId>top.charles7c.continew</groupId>
+    <groupId>top.continew</groupId>
     <artifactId>continew-admin</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <name>ContiNew Admin</name>
     <description>ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。</description>
     <url>https://github.com/Charles7c/continew-admin</url>
 
@@ -39,28 +40,28 @@
         <dependencies>
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
-                <groupId>top.charles7c.continew</groupId>
+                <groupId>top.continew</groupId>
                 <artifactId>continew-admin-webapi</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 代码生成器插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.charles7c.continew</groupId>
+                <groupId>top.continew</groupId>
                 <artifactId>continew-admin-generator</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
-                <groupId>top.charles7c.continew</groupId>
+                <groupId>top.continew</groupId>
                 <artifactId>continew-admin-system</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 公共模块（存放公共工具类，公共配置等） -->
             <dependency>
-                <groupId>top.charles7c.continew</groupId>
+                <groupId>top.continew</groupId>
                 <artifactId>continew-admin-common</artifactId>
                 <version>${revision}</version>
             </dependency>

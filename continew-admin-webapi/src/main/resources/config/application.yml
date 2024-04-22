@@ -9,7 +9,7 @@ project:
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 基本包
-  base-package: top.charles7c.continew.admin
+  base-package: top.continew.admin
   ## 作者信息配置
   contact:
     name: Charles7c

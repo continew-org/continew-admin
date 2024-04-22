@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.charles7c.continew.admin.system.mapper.AnnouncementMapper">
+<mapper namespace="top.continew.admin.system.mapper.AnnouncementMapper">
 
     <select id="selectDashboardList"
-            resultType="top.charles7c.continew.admin.system.model.resp.DashboardAnnouncementResp">
+            resultType="top.continew.admin.system.model.resp.DashboardAnnouncementResp">
         SELECT
             id, title, type
         FROM sys_announcement

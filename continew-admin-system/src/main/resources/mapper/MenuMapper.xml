@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.charles7c.continew.admin.system.mapper.MenuMapper">
+<mapper namespace="top.continew.admin.system.mapper.MenuMapper">
     <select id="selectPermissionByUserId" resultType="java.lang.String">
         SELECT DISTINCT t1.permission
         FROM sys_menu AS t1
@@ -14,7 +14,7 @@
           AND t3.status = 1
     </select>
 
-    <select id="selectListByRoleCode" resultType="top.charles7c.continew.admin.system.model.entity.MenuDO">
+    <select id="selectListByRoleCode" resultType="top.continew.admin.system.model.entity.MenuDO">
         SELECT t1.*
         FROM sys_menu AS t1
             LEFT JOIN sys_role_menu AS t2 ON t2.menu_id = t1.id

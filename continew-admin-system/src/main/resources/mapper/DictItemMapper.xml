@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="top.charles7c.continew.admin.system.mapper.DictItemMapper">
-    <select id="listByDictCode" resultType="top.charles7c.continew.admin.common.model.resp.LabelValueResp">
+<mapper namespace="top.continew.admin.system.mapper.DictItemMapper">
+    <select id="listByDictCode" resultType="top.continew.admin.common.model.resp.LabelValueResp">
         SELECT t1.label, t1.value, t1.color
         FROM sys_dict_item AS t1
         LEFT JOIN sys_dict AS t2 ON t1.dict_id = t2.id
