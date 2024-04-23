@@ -28,6 +28,7 @@ import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
 import org.dromara.x.file.storage.core.platform.FileStorage;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.admin.system.mapper.StorageMapper;
 import top.continew.admin.system.model.entity.StorageDO;
@@ -37,6 +38,7 @@ import top.continew.admin.system.model.resp.StorageResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
@@ -62,15 +64,37 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     private FileService fileService;
 
     @Override
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof StorageResp resp) {
+            if (StrUtil.isNotBlank(resp.getSecretKey())) {
+                resp.setSecretKeyEncrypted(SecureUtils.encryptByRsaPublicKey(resp.getSecretKey()));
+                resp.setSecretKey(StrUtil.hide(resp.getSecretKey(), 4, resp.getSecretKey().length() - 3));
+            }
+        }
+    }
+
+    @Override
     protected void beforeAdd(StorageReq req) {
+        decryptSecretKey(req);
         CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         this.load(req);
     }
 
+    private void decryptSecretKey(StorageReq req) {
+        if (!StorageTypeEnum.S3.equals(req.getType())) {
+            return;
+        }
+        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getSecretKey()));
+        ValidationUtils.throwIfNull(secretKey, "密钥解密失败");
+        req.setSecretKey(secretKey);
+    }
+
     @Override
     protected void beforeUpdate(StorageReq req, Long id) {
+        decryptSecretKey(req);
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DisEnableStatusEnum newStatus = req.getStatus();

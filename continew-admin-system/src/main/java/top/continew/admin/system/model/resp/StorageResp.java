@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.model.resp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
@@ -72,8 +71,13 @@ public class StorageResp extends BaseDetailResp {
      * 私有密钥
      */
     @Schema(description = "私有密钥", example = "")
-    @JsonIgnore
     private String secretKey;
+
+    /**
+     * 私有密钥加密串
+     */
+    @Schema(description = "私有密钥加密串", example = "")
+    private String secretKeyEncrypted;
 
     /**
      * 终端节点
