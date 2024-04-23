@@ -45,6 +45,18 @@ public class SecureUtils {
     }
 
     /**
+     * 公钥加密
+     *
+     * @param data 要加密的内容
+     * @return 公钥加密并 Base64 加密后的内容
+     */
+    public static String encryptByRsaPublicKey(String data) {
+        String publicKey = RsaProperties.PUBLIC_KEY;
+        ValidationUtils.throwIfBlank(publicKey, "请配置 RSA 公钥");
+        return encryptByRsaPublicKey(data, publicKey);
+    }
+
+    /**
      * 私钥解密
      *
      * @param data 要解密的内容（Base64 加密过）
