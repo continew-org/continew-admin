@@ -62,12 +62,12 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 项目源码
 
-**注意：** 体验 3.0.0 请注意使用 3.0.x 分支，对应前端为：[github.com/Charles7c/continew-admin-ui-gi](https://github.com/Charles7c/continew-admin-ui-gi)
+|          | Gitee                                                                                     | GitHub                                                                             |
+|----------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| 后端       | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin)            | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin)     |
+| 前端       | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)      | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
+| 2.5 版本前端 | [gitee.com/continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [github.com/Charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
 
-|        | 后端源码                                | 前端源码                                   |
-|--------| ----------------------------------------- | -------------------------------------------- |
-| GitHub | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin) | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
-| Gitee  | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin) | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
 
 ## 为什么选我们？
 
@@ -268,7 +268,7 @@ continew-admin
 ├─ continew-admin-webapi（API 及打包部署模块）
 │  ├─ src
 │  │  ├─ main
-│  │  │  ├─ java/top/charles7c/continew/admin
+│  │  │  ├─ java/top/continew/admin
 │  │  │  │  ├─ webapi
 │  │  │  │  │  ├─ auth（系统认证相关 API）
 │  │  │  │  │  ├─ common（通用相关 API）
@@ -293,7 +293,7 @@ continew-admin
 ├─ continew-admin-system（系统管理模块，存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）
 │  ├─ src
 │  │  ├─ main
-│  │  │  ├─ java/top/charles7c/continew/admin
+│  │  │  ├─ java/top/continew/admin
 │  │  │  │  ├─ auth（系统认证相关业务）
 │  │  │  │  │  ├─ config（系统认证相关配置）
 │  │  │  │  │  ├─ model（系统认证相关模型）
@@ -318,7 +318,7 @@ continew-admin
 ├─ continew-admin-generator（代码生成器插件模块）
 │  ├─ src
 │  │  ├─ main
-│  │  │  ├─ java/top/charles7c/continew/admin/generator
+│  │  │  ├─ java/top/continew/admin/generator
 │  │  │  │  ├─ config（代码生成器相关配置）
 │  │  │  │  ├─ enums（代码生成器相关枚举）
 │  │  │  │  ├─ mapper（代码生成器相关 Mapper）
@@ -336,7 +336,7 @@ continew-admin
 │  └─ pom.xml
 ├─ continew-admin-common（公共模块，存放公共工具类，公共配置等）
 │  ├─ src
-│  │  ├─ main/java/top/charles7c/continew/admin/common
+│  │  ├─ main/java/top/continew/admin/common
 │  │  │  ├─ config（公共配置）
 │  │  │  ├─ constant（公共常量）
 │  │  │  ├─ enums（公共枚举）
