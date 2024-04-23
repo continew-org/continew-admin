@@ -66,12 +66,11 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     @Override
     protected void fill(Object obj) {
         super.fill(obj);
-        if (obj instanceof StorageResp resp) {
-            if (StrUtil.isNotBlank(resp.getSecretKey())) {
-                resp.setSecretKeyEncrypted(SecureUtils.encryptByRsaPublicKey(resp.getSecretKey()));
-                resp.setSecretKey(StrUtil.hide(resp.getSecretKey(), 4, resp.getSecretKey().length() - 3));
-            }
+        if (obj instanceof StorageResp resp && StrUtil.isNotBlank(resp.getSecretKey())) {
+            resp.setSecretKeyEncrypted(SecureUtils.encryptByRsaPublicKey(resp.getSecretKey()));
+            resp.setSecretKey(StrUtil.hide(resp.getSecretKey(), 4, resp.getSecretKey().length() - 3));
         }
+
     }
 
     @Override
