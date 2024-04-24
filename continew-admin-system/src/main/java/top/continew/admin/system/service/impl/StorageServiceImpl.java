@@ -22,7 +22,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileStorageProperties;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
@@ -58,7 +57,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
 
     private final FileStorageService fileStorageService;
@@ -67,7 +65,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     protected void beforeAdd(StorageReq req) {
-        decodeSecretKey(req, null);
+        this.decodeSecretKey(req, null);
         CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
@@ -82,11 +80,13 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         StorageDO oldStorage = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
             .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
-        decodeSecretKey(req, oldStorage);
+        this.decodeSecretKey(req, oldStorage);
         DisEnableStatusEnum oldStatus = oldStorage.getStatus();
-        if (DisEnableStatusEnum.ENABLE.equals(oldStatus) && DisEnableStatusEnum.DISABLE.equals(newStatus)) {
+        // 先卸载
+        if (DisEnableStatusEnum.ENABLE.equals(oldStatus)) {
             this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
         }
+        // 再加载
         if (DisEnableStatusEnum.ENABLE.equals(newStatus)) {
             this.load(req);
         }
@@ -94,23 +94,6 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储");
             CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储");
         }
-    }
-
-    private void decodeSecretKey(StorageReq req, StorageDO storage) {
-        if (!StorageTypeEnum.S3.equals(req.getType())) {
-            return;
-        }
-
-        // 修改Storage时，如果SecretKey不修改，字段脱敏无法回带手动设置
-        if ((StrUtil.isBlank(req.getSecretKey()) || req.getSecretKey().contains("*")) && StrUtil.isNotBlank(storage
-            .getSecretKey())) {
-            req.setSecretKey(storage.getSecretKey());
-            return;
-        }
-
-        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getSecretKey()));
-        ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
-        req.setSecretKey(secretKey);
     }
 
     @Override
@@ -182,6 +165,29 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         fileStorage.close();
         SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req
             .getBucketName()));
+    }
+
+    /**
+     * 解密 SecretKey
+     *
+     * @param req     请求参数
+     * @param storage 存储信息
+     */
+    private void decodeSecretKey(StorageReq req, StorageDO storage) {
+        if (!StorageTypeEnum.S3.equals(req.getType())) {
+            return;
+        }
+        // 修改时，如果 SecretKey 不修改，需要手动修正
+        String newSecretKey = req.getSecretKey();
+        boolean isSecretKeyNotUpdate = StrUtil.isBlank(newSecretKey) || newSecretKey.contains(StringConstants.ASTERISK);
+        if (null != storage && isSecretKeyNotUpdate) {
+            req.setSecretKey(storage.getSecretKey());
+            return;
+        }
+        // 新增时或修改了 SecretKey
+        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(newSecretKey));
+        ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
+        req.setSecretKey(secretKey);
     }
 
     /**
