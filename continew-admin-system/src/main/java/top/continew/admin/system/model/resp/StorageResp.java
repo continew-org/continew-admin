@@ -21,6 +21,7 @@ import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import top.continew.starter.security.mask.annotation.JsonMask;
 
 import java.io.Serial;
 
@@ -71,13 +72,8 @@ public class StorageResp extends BaseDetailResp {
      * 私有密钥
      */
     @Schema(description = "私有密钥", example = "")
+    @JsonMask(left = 4, right = 3)
     private String secretKey;
-
-    /**
-     * 私有密钥加密串
-     */
-    @Schema(description = "私有密钥加密串", example = "")
-    private String secretKeyEncrypted;
 
     /**
      * 终端节点
@@ -119,4 +115,5 @@ public class StorageResp extends BaseDetailResp {
     public Boolean getDisabled() {
         return this.getIsDefault();
     }
+
 }

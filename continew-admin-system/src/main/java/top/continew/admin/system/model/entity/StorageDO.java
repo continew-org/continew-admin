@@ -21,6 +21,7 @@ import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;
 
@@ -55,11 +56,13 @@ public class StorageDO extends BaseDO {
     /**
      * Access Key（访问密钥）
      */
+    @FieldEncrypt
     private String accessKey;
 
     /**
      * Secret Key（私有密钥）
      */
+    @FieldEncrypt
     private String secretKey;
 
     /**

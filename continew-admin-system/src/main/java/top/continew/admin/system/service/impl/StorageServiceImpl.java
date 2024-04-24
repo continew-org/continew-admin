@@ -22,6 +22,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileStorageProperties;
 import org.dromara.x.file.storage.core.FileStorageService;
 import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
@@ -57,6 +58,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
 
     private final FileStorageService fileStorageService;
@@ -64,44 +66,25 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     private FileService fileService;
 
     @Override
-    protected void fill(Object obj) {
-        super.fill(obj);
-        if (obj instanceof StorageResp resp && StrUtil.isNotBlank(resp.getSecretKey())) {
-            resp.setSecretKeyEncrypted(SecureUtils.encryptByRsaPublicKey(resp.getSecretKey()));
-            resp.setSecretKey(StrUtil.hide(resp.getSecretKey(), 4, resp.getSecretKey().length() - 3));
-        }
-
-    }
-
-    @Override
     protected void beforeAdd(StorageReq req) {
-        decryptSecretKey(req);
+        decodeSecretKey(req, null);
         CheckUtils.throwIf(Boolean.TRUE.equals(req.getIsDefault()) && this.isDefaultExists(null), "请先取消原有默认存储");
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
         this.load(req);
     }
 
-    private void decryptSecretKey(StorageReq req) {
-        if (!StorageTypeEnum.S3.equals(req.getType())) {
-            return;
-        }
-        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getSecretKey()));
-        ValidationUtils.throwIfNull(secretKey, "密钥解密失败");
-        req.setSecretKey(secretKey);
-    }
-
     @Override
     protected void beforeUpdate(StorageReq req, Long id) {
-        decryptSecretKey(req);
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
         DisEnableStatusEnum newStatus = req.getStatus();
         StorageDO oldStorage = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
             .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
+        decodeSecretKey(req, oldStorage);
         DisEnableStatusEnum oldStatus = oldStorage.getStatus();
-        if (DisEnableStatusEnum.ENABLE.equals(oldStatus) || DisEnableStatusEnum.DISABLE.equals(newStatus)) {
+        if (DisEnableStatusEnum.ENABLE.equals(oldStatus) && DisEnableStatusEnum.DISABLE.equals(newStatus)) {
             this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
         }
         if (DisEnableStatusEnum.ENABLE.equals(newStatus)) {
@@ -111,6 +94,23 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储");
             CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储");
         }
+    }
+
+    private void decodeSecretKey(StorageReq req, StorageDO storage) {
+        if (!StorageTypeEnum.S3.equals(req.getType())) {
+            return;
+        }
+
+        // 修改Storage时，如果SecretKey不修改，字段脱敏无法回带手动设置
+        if ((StrUtil.isBlank(req.getSecretKey()) || req.getSecretKey().contains("*")) && StrUtil.isNotBlank(storage
+            .getSecretKey())) {
+            req.setSecretKey(storage.getSecretKey());
+            return;
+        }
+
+        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getSecretKey()));
+        ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
+        req.setSecretKey(secretKey);
     }
 
     @Override
