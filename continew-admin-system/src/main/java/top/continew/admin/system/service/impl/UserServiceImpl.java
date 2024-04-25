@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -125,7 +126,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色", oldUser.getNickname());
         }
         // 更新信息
-        super.update(req, id);
+        UserDO newUser = BeanUtil.toBean(req, UserDO.class);
+        newUser.setId(id);
+        baseMapper.updateById(newUser);
         // 保存用户和角色关联
         userRoleService.add(req.getRoleIds(), id);
     }
