@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -32,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
@@ -68,6 +70,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
+    private final OnlineUserService onlineUserService;
     private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final FileService fileService;
@@ -125,9 +128,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色", oldUser.getNickname());
         }
         // 更新信息
-        super.update(req, id);
+        UserDO newUser = BeanUtil.toBean(req, UserDO.class);
+        newUser.setId(id);
+        baseMapper.updateById(newUser);
         // 保存用户和角色关联
-        userRoleService.add(req.getRoleIds(), id);
+        boolean isSaveUserRoleSuccess = userRoleService.add(req.getRoleIds(), id);
+        // 如果功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
+        if (DisEnableStatusEnum.DISABLE.equals(newStatus) || isSaveUserRoleSuccess) {
+            onlineUserService.cleanByUserId(id);
+        }
     }
 
     @Override

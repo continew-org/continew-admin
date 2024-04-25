@@ -84,6 +84,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，[{}] 已存在", name);
         RoleDO oldRole = super.getById(id);
         CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改", oldRole.getName());
+        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(req.getStatus()) && userRoleService
+            .isRoleIdExists(id), "所选角色存在用户关联，请解除关联后重试");
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, req.getStatus(), "[{}] 是系统内置角色，不允许禁用", oldRole
@@ -141,7 +143,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         if (CollUtil.isEmpty(list)) {
             return new ArrayList<>(0);
         }
-        return list.stream().map(r -> new LabelValueResp<>(r.getName(), r.getId())).toList();
+        return list.stream()
+            .map(r -> new LabelValueResp<>(r.getName(), r.getId(), DisEnableStatusEnum.DISABLE.equals(r.getStatus())))
+            .toList();
     }
 
     @Override

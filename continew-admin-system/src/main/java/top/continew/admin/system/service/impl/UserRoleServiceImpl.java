@@ -78,4 +78,9 @@ public class UserRoleServiceImpl implements UserRoleService {
     public Long countByRoleIds(List<Long> roleIds) {
         return userRoleMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).count();
     }
+
+    @Override
+    public boolean isRoleIdExists(Long roleId) {
+        return userRoleMapper.lambdaQuery().eq(UserRoleDO::getRoleId, roleId).exists();
+    }
 }

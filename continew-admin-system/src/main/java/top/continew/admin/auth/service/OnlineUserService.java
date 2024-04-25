@@ -55,4 +55,11 @@ public interface OnlineUserService {
      * @param roleId 角色 ID
      */
     void cleanByRoleId(Long roleId);
+
+    /**
+     * 根据用户 ID 清除登录
+     *
+     * @param userId 用户 ID
+     */
+    void cleanByUserId(Long userId);
 }
