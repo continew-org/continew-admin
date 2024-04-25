@@ -92,6 +92,14 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         });
     }
 
+    @Override
+    public void cleanByUserId(Long userId) {
+        if (!StpUtil.isLogin(userId)) {
+            return;
+        }
+        StpUtil.logout(userId);
+    }
+
     /**
      * 是否符合查询条件
      *

@@ -33,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
@@ -69,6 +70,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
+    private final OnlineUserService onlineUserService;
     private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final FileService fileService;
@@ -130,7 +132,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         newUser.setId(id);
         baseMapper.updateById(newUser);
         // 保存用户和角色关联
-        userRoleService.add(req.getRoleIds(), id);
+        boolean isSaveUserRoleSuccess = userRoleService.add(req.getRoleIds(), id);
+        // 如果功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
+        if (DisEnableStatusEnum.DISABLE.equals(newStatus) || isSaveUserRoleSuccess) {
+            onlineUserService.cleanByUserId(id);
+        }
     }
 
     @Override

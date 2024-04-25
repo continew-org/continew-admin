@@ -57,4 +57,12 @@ public interface UserRoleService {
      * @return 总记录数
      */
     Long countByRoleIds(List<Long> roleIds);
+
+    /**
+     * 根据角色 ID 判断是否已被用户关联
+     *
+     * @param roleId 角色 ID
+     * @return 是否已关联
+     */
+    boolean isRoleIdExists(Long roleId);
 }

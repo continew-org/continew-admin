@@ -52,6 +52,12 @@ public class LabelValueResp<T> implements Serializable {
     private T value;
 
     /**
+     * 是否禁用
+     */
+    @Schema(description = "是否禁用", example = "false")
+    private Boolean disabled;
+
+    /**
      * 颜色
      */
     @Schema(description = "颜色", example = "#165DFF")
@@ -67,5 +73,11 @@ public class LabelValueResp<T> implements Serializable {
         this.label = label;
         this.value = value;
         this.color = color;
+    }
+
+    public LabelValueResp(String label, T value, Boolean disabled) {
+        this.label = label;
+        this.value = value;
+        this.disabled = disabled;
     }
 }
