@@ -70,7 +70,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
 
     @Operation(summary = "重置密码", description = "重置用户登录密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
-    @SaCheckPermission("system:user:password:reset")
+    @SaCheckPermission("system:user:resetPwd")
     @PatchMapping("/{id}/password")
     public R<Void> resetPassword(@Validated @RequestBody UserPasswordResetReq req, @PathVariable Long id) {
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getNewPassword()));
@@ -84,7 +84,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
-    @SaCheckPermission("system:user:role:update")
+    @SaCheckPermission("system:user:updateRole")
     @PatchMapping("/{id}/role")
     public R<Void> updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
         baseService.updateRole(updateReq, id);
