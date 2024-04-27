@@ -111,7 +111,7 @@ INSERT INTO "sys_option"
 VALUES
 ('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
 ('版权信息', 'site_copyright', NULL,
- 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener" style="text-decoration: none; color: rgb(78,89,105)">津ICP备2022005864号-2</a>',
+ 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">津ICP备2022005864号-2</a>',
  '用于显示登录页面的底部版权信息。', NULL, NULL),
 ('系统LOGO（16*16）', 'site_favicon', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
 ('系统LOGO（33*33）', 'site_logo', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
