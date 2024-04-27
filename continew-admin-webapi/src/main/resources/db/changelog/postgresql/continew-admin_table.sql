@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS "sys_role" (
     "data_scope"  int2         NOT NULL DEFAULT 4,
     "description" varchar(200) DEFAULT NULL,
     "sort"        int4         NOT NULL DEFAULT 999,
-    "status"      int2         NOT NULL DEFAULT 1,
     "is_system"   bool         NOT NULL DEFAULT false,
     "create_user" int8         NOT NULL,
     "create_time" timestamp    NOT NULL,
@@ -107,7 +106,6 @@ COMMENT ON COLUMN "sys_role"."code"        IS '编码';
 COMMENT ON COLUMN "sys_role"."data_scope"  IS '数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）';
 COMMENT ON COLUMN "sys_role"."description" IS '描述';
 COMMENT ON COLUMN "sys_role"."sort"        IS '排序';
-COMMENT ON COLUMN "sys_role"."status"      IS '状态（1：启用；2：禁用）';
 COMMENT ON COLUMN "sys_role"."is_system"   IS '是否为系统内置数据';
 COMMENT ON COLUMN "sys_role"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_role"."create_time" IS '创建时间';

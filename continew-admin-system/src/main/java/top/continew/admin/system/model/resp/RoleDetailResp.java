@@ -24,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
@@ -74,13 +73,6 @@ public class RoleDetailResp extends BaseDetailResp {
     @Schema(description = "排序", example = "1")
     @ExcelProperty(value = "排序")
     private Integer sort;
-
-    /**
-     * 状态
-     */
-    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
-    private DisEnableStatusEnum status;
 
     /**
      * 是否为系统内置数据

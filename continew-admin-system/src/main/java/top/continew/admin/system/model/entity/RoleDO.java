@@ -19,7 +19,6 @@ package top.continew.admin.system.model.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
@@ -61,11 +60,6 @@ public class RoleDO extends BaseDO {
      * 排序
      */
     private Integer sort;
-
-    /**
-     * 状态
-     */
-    private DisEnableStatusEnum status;
 
     /**
      * 是否为系统内置数据

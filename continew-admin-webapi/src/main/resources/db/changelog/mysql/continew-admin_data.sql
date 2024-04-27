@@ -93,10 +93,10 @@ VALUES
 
 -- 初始化默认角色
 INSERT INTO `sys_role`
-(`id`, `name`, `code`, `data_scope`, `description`, `sort`, `status`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
+(`id`, `name`, `code`, `data_scope`, `description`, `sort`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(1, '系统管理员', 'admin', 1, '系统初始角色', 1, 1, b'1', 1, NOW(), NULL, NULL),
-(547888897925840928, '测试人员', 'test', 5, NULL, 2, 1, b'0', 1, NOW(), NULL, NULL);
+(1, '系统管理员', 'admin', 1, '系统初始角色', 1, b'1', 1, NOW(), NULL, NULL),
+(547888897925840928, '测试人员', 'test', 5, NULL, 2, b'0', 1, NOW(), NULL, NULL);
 
 -- 初始化默认用户：admin/admin123；test/123456
 INSERT INTO `sys_user`

@@ -56,7 +56,6 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
     `data_scope`  tinyint(1)   NOT NULL DEFAULT 4          COMMENT '数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）',
     `description` varchar(200) DEFAULT NULL                COMMENT '描述',
     `sort`        int          NOT NULL DEFAULT 999        COMMENT '排序',
-    `status`      tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
     `is_system`   bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否为系统内置数据',
     `create_user` bigint(20)   NOT NULL                    COMMENT '创建人',
     `create_time` datetime     NOT NULL                    COMMENT '创建时间',

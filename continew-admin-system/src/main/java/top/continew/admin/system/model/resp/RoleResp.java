@@ -19,7 +19,6 @@ package top.continew.admin.system.model.resp;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
@@ -61,12 +60,6 @@ public class RoleResp extends BaseDetailResp {
      */
     @Schema(description = "排序", example = "1")
     private Integer sort;
-
-    /**
-     * 状态
-     */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    private DisEnableStatusEnum status;
 
     /**
      * 是否为系统内置数据

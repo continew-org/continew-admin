@@ -24,7 +24,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
@@ -92,10 +91,4 @@ public class RoleReq extends BaseReq {
      */
     @Schema(description = "权限范围：部门 ID 列表", example = "5")
     private List<Long> deptIds = new ArrayList<>();
-
-    /**
-     * 状态
-     */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
-    private DisEnableStatusEnum status;
 }
