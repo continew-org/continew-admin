@@ -14,50 +14,42 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.entity;
+package top.continew.admin.system.model.resp;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
 /**
- * 公告实体
+ * 仪表盘-公告信息
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
-@TableName("sys_announcement")
-public class AnnouncementDO extends BaseDO {
+@Schema(description = "仪表盘-公告信息")
+public class DashboardNoticeResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID", example = "1")
+    private Long id;
+
+    /**
      * 标题
      */
+    @Schema(description = "标题", example = "这是公告标题")
     private String title;
 
     /**
-     * 内容
+     * 类型（取值于字典 notice_type）
      */
-    private String content;
-
-    /**
-     * 类型
-     */
+    @Schema(description = "类型（取值于字典 notice_type）", example = "1")
     private String type;
-
-    /**
-     * 生效时间
-     */
-    private LocalDateTime effectiveTime;
-
-    /**
-     * 终止时间
-     */
-    private LocalDateTime terminateTime;
 }

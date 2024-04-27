@@ -44,7 +44,7 @@ public class DictResp extends BaseDetailResp {
     /**
      * 编码
      */
-    @Schema(description = "编码", example = "announcement_type")
+    @Schema(description = "编码", example = "notice_type")
     private String code;
 
     /**

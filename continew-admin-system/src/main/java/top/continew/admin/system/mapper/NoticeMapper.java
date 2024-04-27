@@ -14,39 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.enums;
+package top.continew.admin.system.mapper;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.admin.system.model.entity.NoticeDO;
+import top.continew.admin.system.model.resp.DashboardNoticeResp;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+
+import java.util.List;
 
 /**
- * 公告状态枚举
+ * 公告 Mapper
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-@Getter
-@RequiredArgsConstructor
-public enum AnnouncementStatusEnum implements IBaseEnum<Integer> {
+public interface NoticeMapper extends BaseMapper<NoticeDO> {
 
     /**
-     * 待发布
+     * 查询仪表盘公告列表
+     *
+     * @return 仪表盘公告列表
      */
-    PENDING_RELEASE(1, "待发布", UiConstants.COLOR_PRIMARY),
-
-    /**
-     * 已发布
-     */
-    PUBLISHED(2, "已发布", UiConstants.COLOR_SUCCESS),
-
-    /**
-     * 已过期
-     */
-    EXPIRED(3, "已过期", UiConstants.COLOR_ERROR),;
-
-    private final Integer value;
-    private final String description;
-    private final String color;
+    List<DashboardNoticeResp> selectDashboardList();
 }

@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.req;
+package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
-import top.continew.starter.extension.crud.model.req.BaseReq;
+import top.continew.admin.system.enums.NoticeStatusEnum;
+import top.continew.starter.extension.crud.model.resp.BaseResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 创建或修改公告信息
+ * 公告信息
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
-@Schema(description = "创建或修改公告信息")
-public class AnnouncementReq extends BaseReq {
+@Schema(description = "公告信息")
+public class NoticeResp extends BaseResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -43,23 +41,12 @@ public class AnnouncementReq extends BaseReq {
      * 标题
      */
     @Schema(description = "标题", example = "这是公告标题")
-    @NotBlank(message = "标题不能为空")
-    @Length(max = 150, message = "标题长度不能超过 {max} 个字符")
     private String title;
 
     /**
-     * 内容
+     * 类型（取值于字典 notice_type）
      */
-    @Schema(description = "内容", example = "这是公告内容")
-    @NotBlank(message = "内容不能为空")
-    private String content;
-
-    /**
-     * 类型（取值于字典 announcement_type）
-     */
-    @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
-    @NotBlank(message = "类型不能为空")
-    @Length(max = 30, message = "类型长度不能超过 {max} 个字符")
+    @Schema(description = "类型（取值于字典 notice_type）", example = "1")
     private String type;
 
     /**
@@ -72,6 +59,21 @@ public class AnnouncementReq extends BaseReq {
      * 终止时间
      */
     @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
-    @Future(message = "终止时间必须是未来时间")
     private LocalDateTime terminateTime;
+
+    /**
+     * 状态
+     *
+     * @return 公告状态
+     */
+    @Schema(description = "状态（1：待发布；2：已发布；3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
+    public NoticeStatusEnum getStatus() {
+        if (null != this.effectiveTime && this.effectiveTime.isAfter(LocalDateTime.now())) {
+            return NoticeStatusEnum.PENDING_RELEASE;
+        }
+        if (null != this.terminateTime && this.terminateTime.isBefore(LocalDateTime.now())) {
+            return NoticeStatusEnum.EXPIRED;
+        }
+        return NoticeStatusEnum.PUBLISHED;
+    }
 }

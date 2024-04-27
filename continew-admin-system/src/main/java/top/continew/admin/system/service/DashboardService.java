@@ -62,5 +62,5 @@ public interface DashboardService {
      *
      * @return 公告列表
      */
-    List<DashboardAnnouncementResp> listAnnouncement();
+    List<DashboardNoticeResp> listNotice();
 }

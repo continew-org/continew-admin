@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.query;
+package top.continew.admin.system.enums;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import top.continew.starter.data.core.annotation.Query;
-import top.continew.starter.data.core.enums.QueryType;
-
-import java.io.Serial;
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import top.continew.admin.common.constant.UiConstants;
+import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
 /**
- * 公告查询条件
+ * 公告状态枚举
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-@Data
-@Schema(description = "公告查询条件")
-public class AnnouncementQuery implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Getter
+@RequiredArgsConstructor
+public enum NoticeStatusEnum implements IBaseEnum<Integer> {
 
     /**
-     * 标题
+     * 待发布
      */
-    @Schema(description = "标题", example = "这是公告标题")
-    @Query(type = QueryType.LIKE)
-    private String title;
+    PENDING_RELEASE(1, "待发布", UiConstants.COLOR_PRIMARY),
 
     /**
-     * 类型
+     * 已发布
      */
-    @Schema(description = "类型", example = "1")
-    private String type;
+    PUBLISHED(2, "已发布", UiConstants.COLOR_SUCCESS),
+
+    /**
+     * 已过期
+     */
+    EXPIRED(3, "已过期", UiConstants.COLOR_ERROR),;
+
+    private final Integer value;
+    private final String description;
+    private final String color;
 }

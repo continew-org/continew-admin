@@ -36,7 +36,7 @@ import top.continew.admin.system.model.resp.DashboardGeoDistributionResp;
 import top.continew.admin.system.model.resp.DashboardPopularModuleResp;
 import top.continew.admin.system.model.resp.DashboardTotalResp;
 import top.continew.admin.system.service.DashboardService;
-import top.continew.admin.system.model.resp.DashboardAnnouncementResp;
+import top.continew.admin.system.model.resp.DashboardNoticeResp;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.web.model.R;
 import top.continew.starter.log.core.annotation.Log;
@@ -89,8 +89,8 @@ public class DashboardController {
     }
 
     @Operation(summary = "查询公告列表", description = "查询公告列表")
-    @GetMapping("/announcement")
-    public R<List<DashboardAnnouncementResp>> listAnnouncement() {
-        return R.ok(dashboardService.listAnnouncement());
+    @GetMapping("/notice")
+    public R<List<DashboardNoticeResp>> listNotice() {
+        return R.ok(dashboardService.listNotice());
     }
 }

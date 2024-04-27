@@ -360,7 +360,7 @@ COMMENT ON COLUMN "sys_message_user"."is_read"    IS '是否已读';
 COMMENT ON COLUMN "sys_message_user"."read_time"  IS '读取时间';
 COMMENT ON TABLE  "sys_message_user"              IS '消息和用户关联表';
 
-CREATE TABLE IF NOT EXISTS "sys_announcement" (
+CREATE TABLE IF NOT EXISTS "sys_notice" (
     "id"             int8         NOT NULL,
     "title"          varchar(150) NOT NULL,
     "content"        text         NOT NULL,
@@ -374,20 +374,20 @@ CREATE TABLE IF NOT EXISTS "sys_announcement" (
     "update_time"    timestamp    DEFAULT NULL,
     PRIMARY KEY ("id")
 );
-CREATE INDEX "idx_announcement_create_user" ON "sys_announcement" ("create_user");
-CREATE INDEX "idx_announcement_update_user" ON "sys_announcement" ("update_user");
-COMMENT ON COLUMN "sys_announcement"."id"             IS 'ID';
-COMMENT ON COLUMN "sys_announcement"."title"          IS '标题';
-COMMENT ON COLUMN "sys_announcement"."content"        IS '内容';
-COMMENT ON COLUMN "sys_announcement"."type"           IS '类型';
-COMMENT ON COLUMN "sys_announcement"."effective_time" IS '生效时间';
-COMMENT ON COLUMN "sys_announcement"."terminate_time" IS '终止时间';
-COMMENT ON COLUMN "sys_announcement"."sort"           IS '排序';
-COMMENT ON COLUMN "sys_announcement"."create_user"    IS '创建人';
-COMMENT ON COLUMN "sys_announcement"."create_time"    IS '创建时间';
-COMMENT ON COLUMN "sys_announcement"."update_user"    IS '修改人';
-COMMENT ON COLUMN "sys_announcement"."update_time"    IS '修改时间';
-COMMENT ON TABLE  "sys_announcement"                  IS '公告表';
+CREATE INDEX "idx_notice_create_user" ON "sys_notice" ("create_user");
+CREATE INDEX "idx_notice_update_user" ON "sys_notice" ("update_user");
+COMMENT ON COLUMN "sys_notice"."id"             IS 'ID';
+COMMENT ON COLUMN "sys_notice"."title"          IS '标题';
+COMMENT ON COLUMN "sys_notice"."content"        IS '内容';
+COMMENT ON COLUMN "sys_notice"."type"           IS '类型';
+COMMENT ON COLUMN "sys_notice"."effective_time" IS '生效时间';
+COMMENT ON COLUMN "sys_notice"."terminate_time" IS '终止时间';
+COMMENT ON COLUMN "sys_notice"."sort"           IS '排序';
+COMMENT ON COLUMN "sys_notice"."create_user"    IS '创建人';
+COMMENT ON COLUMN "sys_notice"."create_time"    IS '创建时间';
+COMMENT ON COLUMN "sys_notice"."update_user"    IS '修改人';
+COMMENT ON COLUMN "sys_notice"."update_time"    IS '修改时间';
+COMMENT ON TABLE  "sys_notice"                  IS '公告表';
 
 CREATE TABLE IF NOT EXISTS "sys_storage" (
     "id"          int8         NOT NULL,

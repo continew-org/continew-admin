@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `sys_message_user` (
     PRIMARY KEY (`message_id`, `user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息和用户关联表';
 
-CREATE TABLE IF NOT EXISTS `sys_announcement` (
+CREATE TABLE IF NOT EXISTS `sys_notice` (
     `id`             bigint(20)   NOT NULL             COMMENT 'ID',
     `title`          varchar(150) NOT NULL             COMMENT '标题',
     `content`        mediumtext   NOT NULL             COMMENT '内容',

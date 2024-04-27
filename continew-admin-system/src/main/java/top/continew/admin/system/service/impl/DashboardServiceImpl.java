@@ -20,7 +20,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.continew.admin.system.service.AnnouncementService;
+import top.continew.admin.system.service.NoticeService;
 import top.continew.admin.system.service.DashboardService;
 import top.continew.admin.system.service.LogService;
 import top.continew.admin.system.model.resp.*;
@@ -40,7 +40,7 @@ import java.util.Map;
 public class DashboardServiceImpl implements DashboardService {
 
     private final LogService logService;
-    private final AnnouncementService announcementService;
+    private final NoticeService noticeService;
 
     @Override
     public DashboardTotalResp getTotal() {
@@ -85,7 +85,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DashboardAnnouncementResp> listAnnouncement() {
-        return announcementService.listDashboard();
+    public List<DashboardNoticeResp> listNotice() {
+        return noticeService.listDashboard();
     }
 }

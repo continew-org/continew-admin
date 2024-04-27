@@ -50,7 +50,7 @@ public class DictReq extends BaseReq {
     /**
      * 编码
      */
-    @Schema(description = "编码", example = "announcement_type")
+    @Schema(description = "编码", example = "notice_type")
     @NotBlank(message = "编码不能为空")
     @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
     private String code;

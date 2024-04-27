@@ -16,25 +16,25 @@
 
 package top.continew.admin.webapi.system;
 
-import java.time.LocalDateTime;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
-
-import top.continew.admin.system.model.query.AnnouncementQuery;
-import top.continew.admin.system.model.req.AnnouncementReq;
-import top.continew.admin.system.model.resp.AnnouncementDetailResp;
-import top.continew.admin.system.model.resp.AnnouncementResp;
-import top.continew.admin.system.service.AnnouncementService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import top.continew.admin.system.model.query.NoticeQuery;
+import top.continew.admin.system.model.req.NoticeReq;
+import top.continew.admin.system.model.resp.NoticeDetailResp;
+import top.continew.admin.system.model.resp.NoticeResp;
+import top.continew.admin.system.service.NoticeService;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
+import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.util.ValidateGroup;
 import top.continew.starter.web.model.R;
+
+import java.time.LocalDateTime;
 
 /**
  * 公告管理 API
@@ -44,19 +44,19 @@ import top.continew.starter.web.model.R;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping("/system/announcement")
-public class AnnouncementController extends BaseController<AnnouncementService, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> {
+@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
+public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
 
     @Override
-    @SaCheckPermission("system:announcement:add")
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody AnnouncementReq req) {
+    @SaCheckPermission("system:notice:add")
+    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody NoticeReq req) {
         this.checkTime(req);
         return super.add(req);
     }
 
     @Override
-    @SaCheckPermission("system:announcement:update")
-    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody AnnouncementReq req,
+    @SaCheckPermission("system:notice:update")
+    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody NoticeReq req,
                           @PathVariable Long id) {
         this.checkTime(req);
         return super.update(req, id);
@@ -67,7 +67,7 @@ public class AnnouncementController extends BaseController<AnnouncementService, 
      *
      * @param req 创建或修改信息
      */
-    private void checkTime(AnnouncementReq req) {
+    private void checkTime(NoticeReq req) {
         LocalDateTime effectiveTime = req.getEffectiveTime();
         LocalDateTime terminateTime = req.getTerminateTime();
         if (null != effectiveTime && null != terminateTime) {

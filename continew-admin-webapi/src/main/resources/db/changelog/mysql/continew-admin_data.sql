@@ -120,7 +120,7 @@ VALUES
 INSERT INTO `sys_dict`
 (`id`, `name`, `code`, `description`, `is_system`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
-(547889614262632491, '公告类型', 'announcement_type', NULL, b'1', 1, NOW(), NULL, NULL);
+(547889614262632491, '公告类型', 'notice_type', NULL, b'1', 1, NOW(), NULL, NULL);
 
 INSERT INTO `sys_dict_item`
 (`id`, `label`, `value`, `color`, `sort`, `description`, `status`, `dict_id`, `create_user`, `create_time`, `update_user`, `update_time`)

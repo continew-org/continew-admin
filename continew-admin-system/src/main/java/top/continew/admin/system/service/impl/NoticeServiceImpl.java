@@ -16,21 +16,19 @@
 
 package top.continew.admin.system.service.impl;
 
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
-import top.continew.admin.system.mapper.AnnouncementMapper;
-import top.continew.admin.system.model.entity.AnnouncementDO;
-import top.continew.admin.system.model.query.AnnouncementQuery;
-import top.continew.admin.system.model.req.AnnouncementReq;
-import top.continew.admin.system.model.resp.AnnouncementDetailResp;
-import top.continew.admin.system.model.resp.AnnouncementResp;
-import top.continew.admin.system.model.resp.DashboardAnnouncementResp;
-import top.continew.admin.system.service.AnnouncementService;
+import top.continew.admin.system.mapper.NoticeMapper;
+import top.continew.admin.system.model.entity.NoticeDO;
+import top.continew.admin.system.model.query.NoticeQuery;
+import top.continew.admin.system.model.req.NoticeReq;
+import top.continew.admin.system.model.resp.DashboardNoticeResp;
+import top.continew.admin.system.model.resp.NoticeDetailResp;
+import top.continew.admin.system.model.resp.NoticeResp;
+import top.continew.admin.system.service.NoticeService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+
+import java.util.List;
 
 /**
  * 公告业务实现
@@ -40,10 +38,10 @@ import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
  */
 @Service
 @RequiredArgsConstructor
-public class AnnouncementServiceImpl extends BaseServiceImpl<AnnouncementMapper, AnnouncementDO, AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq> implements AnnouncementService {
+public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> implements NoticeService {
 
     @Override
-    public List<DashboardAnnouncementResp> listDashboard() {
+    public List<DashboardNoticeResp> listDashboard() {
         return baseMapper.selectDashboardList();
     }
 }

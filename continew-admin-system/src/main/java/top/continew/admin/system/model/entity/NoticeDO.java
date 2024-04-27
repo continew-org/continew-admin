@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.entity;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 公告详情信息
+ * 公告实体
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
-@ExcelIgnoreUnannotated
-@Schema(description = "公告详情信息")
-public class AnnouncementDetailResp extends BaseDetailResp {
+@TableName("sys_notice")
+public class NoticeDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,35 +39,25 @@ public class AnnouncementDetailResp extends BaseDetailResp {
     /**
      * 标题
      */
-    @Schema(description = "标题", example = "这是公告标题")
-    @ExcelProperty(value = "标题")
     private String title;
 
     /**
      * 内容
      */
-    @Schema(description = "内容", example = "这是公告内容")
-    @ExcelProperty(value = "内容")
     private String content;
 
     /**
-     * 类型（取值于字典 announcement_type）
+     * 类型
      */
-    @Schema(description = "类型（取值于字典 announcement_type）", example = "1")
-    @ExcelProperty(value = "类型")
     private String type;
 
     /**
      * 生效时间
      */
-    @Schema(description = "生效时间", example = "2023-08-08 00:00:00", type = "string")
-    @ExcelProperty(value = "生效时间")
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
-    @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
-    @ExcelProperty(value = "终止时间")
     private LocalDateTime terminateTime;
 }

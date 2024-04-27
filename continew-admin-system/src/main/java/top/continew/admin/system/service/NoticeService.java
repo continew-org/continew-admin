@@ -16,12 +16,12 @@
 
 package top.continew.admin.system.service;
 
-import top.continew.admin.system.model.entity.AnnouncementDO;
-import top.continew.admin.system.model.query.AnnouncementQuery;
-import top.continew.admin.system.model.req.AnnouncementReq;
-import top.continew.admin.system.model.resp.AnnouncementDetailResp;
-import top.continew.admin.system.model.resp.AnnouncementResp;
-import top.continew.admin.system.model.resp.DashboardAnnouncementResp;
+import top.continew.admin.system.model.entity.NoticeDO;
+import top.continew.admin.system.model.query.NoticeQuery;
+import top.continew.admin.system.model.req.NoticeReq;
+import top.continew.admin.system.model.resp.NoticeDetailResp;
+import top.continew.admin.system.model.resp.NoticeResp;
+import top.continew.admin.system.model.resp.DashboardNoticeResp;
 import top.continew.starter.extension.crud.service.BaseService;
 import top.continew.starter.data.mybatis.plus.service.IService;
 
@@ -33,12 +33,12 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-public interface AnnouncementService extends BaseService<AnnouncementResp, AnnouncementDetailResp, AnnouncementQuery, AnnouncementReq>, IService<AnnouncementDO> {
+public interface NoticeService extends BaseService<NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq>, IService<NoticeDO> {
 
     /**
      * 查询仪表盘公告列表
      *
      * @return 仪表盘公告列表
      */
-    List<DashboardAnnouncementResp> listDashboard();
+    List<DashboardNoticeResp> listDashboard();
 }
