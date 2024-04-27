@@ -1,3 +1,50 @@
+## [v3.0.0](https://github.com/Charles7c/continew-admin/compare/v2.5.0...v3.0.0) (2024-04-27)
+
+### ✨ 新特性
+
+* 系统日志新增导出 API ([bd0f40c](https://github.com/Charles7c/continew-admin/commit/bd0f40c6ad397174baf80b04923ef1e94ff28e3c))
+* 适配 3.0 前端菜单，并梳理菜单数据
+* 适配 3.0 前端代码生成模板，代码预览及生成 ([3dbe72f](https://github.com/Charles7c/continew-admin/commit/3dbe72fd570c44b32599d869abd30331137a6c7d))
+
+### 💎 功能优化
+
+- 重构日志管理相关接口 ([7793f82](https://github.com/Charles7c/continew-admin/commit/7793f82009bcdb5fcdfe5e91daab211ab1705bf7))
+- 优化部门管理相关 API，合并 DeptResp 及 DeptDetailResp ([a2cf072](https://github.com/Charles7c/continew-admin/commit/a2cf072609ac33543605ecbb5f8e498237bc3d91))
+- 优化存储管理相关 API，合并 StorageResp 及 StorageDetailResp ([f7b5a4f](https://github.com/Charles7c/continew-admin/commit/f7b5a4ff8dd93f444c00d103b0609ae81e0dd70c))
+- 优化字典管理相关 API ([9ec5945](https://github.com/Charles7c/continew-admin/commit/9ec594509f2d4b31f46e3aca66d65d139dc8b94f))
+- 移除部门、角色、菜单、用户、存储的状态默认值 ([bd5ede2](https://github.com/Charles7c/continew-admin/commit/bd5ede2e2956057376b930ecfed88ca44437cbc1))
+- 代码生成新增 MySQL json 数据类型映射 ([fe57350](https://github.com/Charles7c/continew-admin/commit/fe5735090d94f5d900d79142e5e42ba2db9c0249))
+- 优化角色管理相关 API，角色编码不允许修改 ([df59cee](https://github.com/Charles7c/continew-admin/commit/df59cee98565f9f45b04d16533888be39c3d7a6f))
+- 优化用户管理相关 API ([5269608](https://github.com/Charles7c/continew-admin/commit/5269608c61b1f5a6a9f61cd45b349f28db714232))
+- 文件管理查询 API 调整为分页查询 ([f8bea90](https://github.com/Charles7c/continew-admin/commit/f8bea901938aec0f0ac21c63179c5bde2a0965a7))
+- 移除 Qodana 扫描 ([d88581f](https://github.com/Charles7c/continew-admin/commit/d88581f939afb0caa3589c8ee76c9b296bb9997e))
+- 移除菜单导出接口 ([4363c91](https://github.com/Charles7c/continew-admin/commit/4363c91872e6d83e139b22c95a0d7e83183d8f69))
+- 优化系统日志、在线用户、存储管理、部门管理相关代码 ([a2e4f9a](https://github.com/Charles7c/continew-admin/commit/a2e4f9a28b744e269c46dc66c60311bb939021a7))
+- 优化查询参数字典 API 地址 ([79a3de8](https://github.com/Charles7c/continew-admin/commit/79a3de8971c613277bdcea79463b6f06959e7b85))
+- 移除角色状态字段 ([e89ba7d](https://github.com/Charles7c/continew-admin/commit/e89ba7d5cd793e20c3562c7bd1e4655ed1e5a2a3))
+
+
+### 🐛 问题修复
+
+- 使用字典时，仅查询启用状态字典 ([17c795f](https://github.com/Charles7c/continew-admin/commit/17c795fedef5b6801f2053d97b9d78d067775ca1))
+- 获取 Authorization 请求头内容兼容小写请求头场景 ([e68c445](https://github.com/Charles7c/continew-admin/commit/e68c4455a8af1b4d7a25cd63f9fc9e5aabb441ab))
+- 修复查询用户权限存在空值的问题 ([fce4a56](https://github.com/Charles7c/continew-admin/commit/fce4a566d7204791650153f0a5507a5d05d2d6c3))
+- 存储管理 S3 存储功能修复 (GitHub#51) ([f71c4c2](https://github.com/Charles7c/continew-admin/commit/f71c4c226ffd7c27f6726873be6af125affaf148))
+- 修复 sys_role_menu 表初始数据错误 ([70ed667](https://github.com/Charles7c/continew-admin/commit/70ed667c16388093204eecd97e4914076c62d1ff))
+- 修复用户管理/角色管理编辑及状态变更问题 (GitHub#53) ([abf1e65](https://github.com/Charles7c/continew-admin/commit/abf1e651e9782a6f7bf2a896018de17130038c57))
+- 修复Failed to submit a listener notification task. Event loop shut down? 问题，开发时表现为需要点击两次才能关闭程序 ([f5ab22e](https://github.com/Charles7c/continew-admin/commit/f5ab22eedf594cee43592a2f29409ee9c33a88d3))
+
+### 💥 破坏性变更
+
+- 适配 continew-starter 2.0.0，top.charles7c.continew.starter => top.continew.starter ([f5ab22e](https://github.com/Charles7c/continew-admin/commit/f5ab22eedf594cee43592a2f29409ee9c33a88d3))
+- 移除 monitor 模块 ([b6206a3](https://github.com/Charles7c/continew-admin/commit/b6206a334671894306043f86ec07d7c045cd757d))
+- top.charles7c.continew.admin => top.continew.admin ([08eeabc](https://github.com/Charles7c/continew-admin/commit/08eeabc47d58db3cfc861a3a527e52bf89f6183b))
+- 公告管理 Announcement => Notice ([dbe93df](https://github.com/Charles7c/continew-admin/commit/dbe93df8bcec0b7dfb24fbd92f35928a3156f4e5))
+
+### 📦 依赖升级
+
+- ContiNew Starter 1.5.1 => 2.0.0 (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v2.5.0](https://github.com/Charles7c/continew-admin/compare/v2.4.0...v2.5.0) (2024-03-23)
 
 ### ✨ 新特性
