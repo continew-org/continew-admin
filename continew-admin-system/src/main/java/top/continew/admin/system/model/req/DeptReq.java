@@ -26,7 +26,6 @@ import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.model.req.BaseReq;
-import top.continew.starter.extension.crud.util.ValidateGroup;
 
 import java.io.Serial;
 
@@ -47,7 +46,7 @@ public class DeptReq extends BaseReq {
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID", example = "2")
-    @NotNull(message = "上级部门不能为空", groups = ValidateGroup.Crud.Add.class)
+    @NotNull(message = "上级部门不能为空")
     private Long parentId;
 
     /**

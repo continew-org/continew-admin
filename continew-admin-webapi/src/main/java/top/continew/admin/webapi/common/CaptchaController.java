@@ -17,6 +17,7 @@
 package top.continew.admin.webapi.common;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.map.MapUtil;
@@ -57,6 +58,7 @@ import top.continew.starter.messaging.mail.util.MailUtils;
 import top.continew.starter.web.model.R;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -101,8 +103,10 @@ public class CaptchaController {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
         Captcha captcha = graphicCaptchaService.getCaptcha();
+        long expireTime = LocalDateTimeUtil.toEpochMilli(LocalDateTime.now()
+            .plusMinutes(captchaProperties.getExpirationInMinutes()));
         RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
-        return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).build());
+        return R.ok(CaptchaResp.builder().uuid(uuid).img(captcha.toBase64()).expireTime(expireTime).build());
     }
 
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
