@@ -16,7 +16,6 @@
 
 package top.continew.admin.webapi.system;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,14 +47,12 @@ import java.time.LocalDateTime;
 public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
 
     @Override
-    @SaCheckPermission("system:notice:add")
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody NoticeReq req) {
         this.checkTime(req);
         return super.add(req);
     }
 
     @Override
-    @SaCheckPermission("system:notice:update")
     public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody NoticeReq req,
                           @PathVariable Long id) {
         this.checkTime(req);

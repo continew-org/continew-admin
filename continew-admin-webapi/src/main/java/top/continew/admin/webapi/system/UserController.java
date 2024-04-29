@@ -57,15 +57,13 @@ import top.continew.starter.web.model.R;
 public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     @Override
-    @SaCheckPermission("system:user:add")
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getPassword()));
         ValidationUtils.throwIfNull(rawPassword, "密码解密失败");
         ValidationUtils.throwIf(!ReUtil
             .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         req.setPassword(rawPassword);
-        Long id = baseService.add(req);
-        return R.ok("新增成功", id);
+        return super.add(req);
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码")

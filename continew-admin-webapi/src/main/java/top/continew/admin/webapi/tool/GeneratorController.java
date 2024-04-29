@@ -33,7 +33,6 @@ import top.continew.admin.generator.model.req.GenConfigReq;
 import top.continew.admin.generator.model.resp.GeneratePreviewResp;
 import top.continew.admin.generator.model.resp.TableResp;
 import top.continew.admin.generator.service.GeneratorService;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.web.model.R;
@@ -54,7 +53,6 @@ import java.util.List;
 @RequestMapping("/generator")
 public class GeneratorController {
 
-    private final ProjectProperties projectProperties;
     private final GeneratorService generatorService;
 
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")

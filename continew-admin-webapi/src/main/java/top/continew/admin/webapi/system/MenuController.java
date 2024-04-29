@@ -16,7 +16,6 @@
 
 package top.continew.admin.webapi.system;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,14 +48,12 @@ import top.continew.starter.web.model.R;
 public class MenuController extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     @Override
-    @SaCheckPermission("system:menu:add")
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuReq req) {
         this.checkPath(req);
         return super.add(req);
     }
 
     @Override
-    @SaCheckPermission("system:menu:update")
     public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
         this.checkPath(req);
         return super.update(req, id);
