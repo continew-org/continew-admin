@@ -98,7 +98,7 @@ public class CaptchaController {
 
     @Log(ignore = true)
     @Operation(summary = "获取图片验证码", description = "获取图片验证码（Base64编码，带图片格式：data:image/gif;base64）")
-    @GetMapping("/img")
+    @GetMapping("/image")
     public R<CaptchaResp> getImageCaptcha() {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
