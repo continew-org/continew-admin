@@ -217,8 +217,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void updatePhone(String newPhone, String currentPassword, Long id) {
         UserDO user = super.getById(id);
         CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
-        Long count = baseMapper.lambdaQuery().eq(UserDO::getPhone, newPhone).count();
-        CheckUtils.throwIf(count > 0, "手机号已绑定其他账号，请更换其他手机号");
+        CheckUtils.throwIf(this.isPhoneExists(newPhone, id), "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
         // 更新手机号
         baseMapper.lambdaUpdate().set(UserDO::getPhone, newPhone).eq(UserDO::getId, id).update();
@@ -228,8 +227,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void updateEmail(String newEmail, String currentPassword, Long id) {
         UserDO user = super.getById(id);
         CheckUtils.throwIf(!passwordEncoder.matches(currentPassword, user.getPassword()), "当前密码错误");
-        Long count = baseMapper.lambdaQuery().eq(UserDO::getEmail, newEmail).count();
-        CheckUtils.throwIf(count > 0, "邮箱已绑定其他账号，请更换其他邮箱");
+        CheckUtils.throwIf(this.isEmailExists(newEmail, id), "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
@@ -296,7 +294,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 是否存在
      */
     private boolean isEmailExists(String email, Long id) {
-        return baseMapper.lambdaQuery().eq(UserDO::getEmail, email).ne(null != id, UserDO::getId, id).exists();
+        Long count = baseMapper.selectCountByEmail(email, id);
+        return null != count && count > 0;
     }
 
     /**
@@ -307,6 +306,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 是否存在
      */
     private boolean isPhoneExists(String phone, Long id) {
-        return baseMapper.lambdaQuery().eq(UserDO::getPhone, phone).ne(null != id, UserDO::getId, id).exists();
+        Long count = baseMapper.selectCountByPhone(phone, id);
+        return null != count && count > 0;
     }
 }
