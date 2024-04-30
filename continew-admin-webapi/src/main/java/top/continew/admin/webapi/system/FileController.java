@@ -15,18 +15,20 @@
  */
 
 package top.continew.admin.webapi.system;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
 import top.continew.admin.system.model.resp.FileResp;
+import top.continew.admin.system.model.resp.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.log.core.annotation.Log;
+import top.continew.starter.web.model.R;
 
 /**
  * 文件管理 API
@@ -36,6 +38,16 @@ import top.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "文件管理 API")
 @RestController
+@RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.DELETE})
 public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
+
+    private final FileService fileService;
+
+    @Log(ignore = true)
+    @Operation(summary = "查询文件资源统计", description = "查询文件资源统计")
+    @GetMapping("/statistics")
+    public R<FileStatisticsResp> statistics() {
+        return R.ok(fileService.statistics());
+    }
 }
