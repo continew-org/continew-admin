@@ -16,8 +16,13 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.unit.DataSizeUtil;
+import cn.hutool.core.io.unit.DataUnit;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +39,7 @@ import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
 import top.continew.admin.system.model.resp.FileResp;
+import top.continew.admin.system.model.resp.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.constant.StringConstants;
@@ -111,6 +117,19 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     @Override
     public Long countByStorageIds(List<Long> storageIds) {
         return baseMapper.lambdaQuery().in(FileDO::getStorageId, storageIds).count();
+    }
+
+    @Override
+    public FileStatisticsResp statistics() {
+        FileStatisticsResp resp = new FileStatisticsResp();
+        List<FileStatisticsResp> statisticsList = baseMapper.statistics();
+        if (CollUtil.isEmpty(statisticsList)) {
+            return resp;
+        }
+        resp.setData(statisticsList);
+        resp.setSize(statisticsList.stream().mapToLong(FileStatisticsResp::getSize).sum());
+        resp.setNumber(statisticsList.stream().mapToLong(FileStatisticsResp::getNumber).sum());
+        return resp;
     }
 
     @Override
