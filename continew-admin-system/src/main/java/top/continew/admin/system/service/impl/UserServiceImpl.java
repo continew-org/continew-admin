@@ -25,6 +25,9 @@ import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.CacheUpdate;
 import com.alicp.jetcache.anno.Cached;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.FileStorageService;
@@ -38,6 +41,7 @@ import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.UserMapper;
+import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.UserBasicInfoUpdateReq;
@@ -46,19 +50,20 @@ import top.continew.admin.system.model.req.UserReq;
 import top.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.continew.admin.system.model.resp.UserDetailResp;
 import top.continew.admin.system.model.resp.UserResp;
-import top.continew.admin.system.service.FileService;
-import top.continew.admin.system.service.RoleService;
-import top.continew.admin.system.service.UserRoleService;
-import top.continew.admin.system.service.UserService;
+import top.continew.admin.system.service.*;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 用户业务实现
@@ -76,33 +81,25 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final FileService fileService;
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
+    @Resource
+    private DeptService deptService;
     @Value("${avatar.support-suffix}")
     private String[] avatarSupportSuffix;
+
+    @Override
+    public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
+        QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
+        IPage<UserDO> page = baseMapper.selectUserPage(pageQuery.toPage(), queryWrapper);
+        PageResp<UserResp> pageResp = PageResp.build(page, this.listClass);
+        pageResp.getList().forEach(this::fill);
+        return pageResp;
+    }
 
     @Override
     public Long add(UserDO user) {
         user.setStatus(DisEnableStatusEnum.ENABLE);
         baseMapper.insert(user);
         return user.getId();
-    }
-
-    @Override
-    protected void beforeAdd(UserReq req) {
-        final String errorMsgTemplate = "新增失败，[{}] 已存在";
-        String username = req.getUsername();
-        CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
-        String email = req.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), errorMsgTemplate, email);
-        String phone = req.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
-    }
-
-    @Override
-    protected void afterAdd(UserReq req, UserDO user) {
-        Long userId = user.getId();
-        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
-        // 保存用户和角色关联
-        userRoleService.add(req.getRoleIds(), userId);
     }
 
     @Override
@@ -155,17 +152,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         userRoleService.deleteByUserIds(ids);
         // 删除用户
         super.delete(ids);
-    }
-
-    @Override
-    protected void fill(Object obj) {
-        super.fill(obj);
-        if (obj instanceof UserDetailResp detail) {
-            List<Long> roleIdList = detail.getRoleIds();
-            if (CollUtil.isNotEmpty(roleIdList)) {
-                detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
-            }
-        }
     }
 
     @Override
@@ -273,6 +259,65 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX, syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
+    }
+
+    @Override
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof UserDetailResp detail) {
+            List<Long> roleIdList = detail.getRoleIds();
+            if (CollUtil.isNotEmpty(roleIdList)) {
+                detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
+            }
+        }
+    }
+
+    @Override
+    protected void beforeAdd(UserReq req) {
+        final String errorMsgTemplate = "新增失败，[{}] 已存在";
+        String username = req.getUsername();
+        CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
+        String email = req.getEmail();
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), errorMsgTemplate, email);
+        String phone = req.getPhone();
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
+    }
+
+    @Override
+    protected void afterAdd(UserReq req, UserDO user) {
+        Long userId = user.getId();
+        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
+        // 保存用户和角色关联
+        userRoleService.add(req.getRoleIds(), userId);
+    }
+
+    /**
+     * 构建 QueryWrapper
+     *
+     * @param query 查询条件
+     * @return QueryWrapper
+     */
+    private QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
+        String description = query.getDescription();
+        Integer status = query.getStatus();
+        List<Date> createTimeList = query.getCreateTime();
+        Long deptId = query.getDeptId();
+        return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
+            .or()
+            .like("t1.nickname", description)
+            .or()
+            .like("t1.description", description))
+            .eq(null != status, "t1.status", status)
+            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
+                .getLast(createTimeList))
+            .and(null != deptId, q -> {
+                List<Long> deptIdList = deptService.listChildren(deptId)
+                    .stream()
+                    .map(DeptDO::getId)
+                    .collect(Collectors.toList());
+                deptIdList.add(deptId);
+                q.in("t1.dept_id", deptIdList);
+            });
     }
 
     /**

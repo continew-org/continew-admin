@@ -20,6 +20,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
@@ -50,8 +51,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptResp, DeptQuery, DeptReq> implements DeptService {
 
-    private final UserService userService;
+    @Resource
+    private UserService userService;
     private final RoleDeptService roleDeptService;
+
+    @Override
+    public List<DeptDO> listChildren(Long id) {
+        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
+            .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
+        return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
+    }
 
     @Override
     protected void beforeAdd(DeptReq req) {
@@ -148,18 +157,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         DeptDO parentDept = baseMapper.selectById(parentId);
         CheckUtils.throwIfNull(parentDept, "上级部门不存在");
         return parentDept;
-    }
-
-    /**
-     * 查询子部门列表
-     *
-     * @param id ID
-     * @return 子部门列表
-     */
-    private List<DeptDO> listChildren(Long id) {
-        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
-            .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
-        return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
     }
 
     /**

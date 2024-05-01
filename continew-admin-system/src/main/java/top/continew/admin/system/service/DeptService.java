@@ -23,6 +23,8 @@ import top.continew.admin.system.model.resp.DeptResp;
 import top.continew.starter.data.mybatis.plus.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
+import java.util.List;
+
 /**
  * 部门业务接口
  *
@@ -30,4 +32,12 @@ import top.continew.starter.extension.crud.service.BaseService;
  * @since 2023/1/22 17:54
  */
 public interface DeptService extends BaseService<DeptResp, DeptResp, DeptQuery, DeptReq>, IService<DeptDO> {
+
+    /**
+     * 查询子部门列表
+     *
+     * @param id ID
+     * @return 子部门列表
+     */
+    List<DeptDO> listChildren(Long id);
 }

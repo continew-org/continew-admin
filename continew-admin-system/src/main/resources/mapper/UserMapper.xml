@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.continew.admin.system.mapper.UserMapper">
 
+    <select id="selectUserPage" resultType="top.continew.admin.system.model.entity.UserDO">
+        SELECT t1.*
+        FROM sys_user AS t1
+        LEFT JOIN sys_dept AS t2 ON t2.id = t1.dept_id
+        ${ew.customSqlSegment}
+    </select>
+
     <select id="selectCountByEmail" resultType="java.lang.Long">
         SELECT count(*)
         FROM sys_user
