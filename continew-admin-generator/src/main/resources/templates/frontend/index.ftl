@@ -28,7 +28,7 @@
             <span>新增</span>
           </a-button>
           <a-tooltip content="导出">
-            <a-button v-permission="['${apiModuleName}:${apiName}:export']" @click="onExport">
+            <a-button v-permission="['${apiModuleName}:${apiName}:export']" class="gi_hover_btn-border" @click="onExport">
               <template #icon>
                 <icon-download />
               </template>
@@ -74,7 +74,7 @@ const columns: TableInstanceColumns[] = [
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInList>
-  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}' },
+  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: ${fieldConfig.fieldName} },
   </#if>
   </#list>
 </#if>
