@@ -41,7 +41,6 @@ import top.continew.admin.system.model.resp.log.LoginLogExportResp;
 import top.continew.admin.system.model.resp.log.OperationLogExportResp;
 import top.continew.admin.system.service.LogService;
 import top.continew.starter.core.util.validate.CheckUtils;
-import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
@@ -66,7 +65,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public PageResp<LogResp> page(LogQuery query, PageQuery pageQuery) {
-        QueryWrapper<LogDO> queryWrapper = this.handleQueryWrapper(query);
+        QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
         IPage<LogResp> page = baseMapper.selectLogPage(pageQuery.toPage(), queryWrapper);
         return PageResp.build(page);
     }
@@ -120,7 +119,7 @@ public class LogServiceImpl implements LogService {
      * @return 列表信息
      */
     private List<LogResp> list(LogQuery query, SortQuery sortQuery) {
-        QueryWrapper<LogDO> queryWrapper = this.handleQueryWrapper(query);
+        QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
         this.sort(queryWrapper, sortQuery);
         return baseMapper.selectLogList(queryWrapper);
     }
@@ -142,39 +141,28 @@ public class LogServiceImpl implements LogService {
     }
 
     /**
-     * 处理查询条件
+     * 构建 QueryWrapper
      *
      * @param query 查询条件
      * @return QueryWrapper
      */
-    private QueryWrapper<LogDO> handleQueryWrapper(LogQuery query) {
-        QueryWrapper<LogDO> queryWrapper = new QueryWrapper<>();
-        // 构建条件
+    private QueryWrapper<LogDO> buildQueryWrapper(LogQuery query) {
         String description = query.getDescription();
-        if (StrUtil.isNotBlank(description)) {
-            queryWrapper.and(q -> q.like("t1.description", description).or().like("t1.module", description));
-        }
         String module = query.getModule();
-        if (StrUtil.isNotBlank(module)) {
-            queryWrapper.eq("t1.module", module);
-        }
         String ip = query.getIp();
-        if (StrUtil.isNotBlank(ip)) {
-            queryWrapper.and(q -> q.like("t1.ip", ip).or().like("t1.address", ip));
-        }
         String createUserString = query.getCreateUserString();
-        if (StrUtil.isNotBlank(createUserString)) {
-            queryWrapper.and(q -> q.like("t2.username", createUserString).or().like("t2.nickname", createUserString));
-        }
-        List<Date> createTimeList = query.getCreateTime();
-        if (CollUtil.isNotEmpty(createTimeList)) {
-            ValidationUtils.throwIf(createTimeList.size() != 2, "[{}] 必须是一个范围", "createTime");
-            queryWrapper.between("t1.create_time", createTimeList.get(0), createTimeList.get(1));
-        }
         Integer status = query.getStatus();
-        if (null != status) {
-            queryWrapper.eq("t1.status", status);
-        }
-        return queryWrapper;
+        List<Date> createTimeList = query.getCreateTime();
+        return new QueryWrapper<LogDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)
+            .or()
+            .like("t1.module", description))
+            .eq(StrUtil.isNotBlank(module), "t1.module", module)
+            .and(StrUtil.isNotBlank(ip), q -> q.like("t1.ip", ip).or().like("t1.address", ip))
+            .and(StrUtil.isNotBlank(createUserString), q -> q.like("t2.username", createUserString)
+                .or()
+                .like("t2.nickname", createUserString))
+            .eq(null != status, "t1.status", status)
+            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
+                .getLast(createTimeList));
     }
 }

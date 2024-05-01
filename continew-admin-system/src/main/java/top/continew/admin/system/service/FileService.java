@@ -64,9 +64,9 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
     Long countByStorageIds(List<Long> storageIds);
 
     /**
-     * 查询文件资源统计
+     * 查询文件资源统计信息
      *
-     * @return 资源统计结果
+     * @return 资源统计信息
      */
     FileStatisticsResp statistics();
 }

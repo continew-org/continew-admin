@@ -18,6 +18,7 @@ package top.continew.admin.system.model.query;
 
 import cn.hutool.core.date.DatePattern;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -68,6 +69,7 @@ public class LogQuery implements Serializable {
      */
     @Schema(description = "操作时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
+    @Size(max = 2, message = "操作时间必须是一个范围")
     private List<Date> createTime;
 
     /**

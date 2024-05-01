@@ -31,12 +31,11 @@ import java.util.List;
  */
 public interface FileMapper extends BaseMapper<FileDO> {
 
-
     /**
-     * 查询文件资源统计
+     * 查询文件资源统计信息
      *
-     * @return 文件资源统计结果
+     * @return 文件资源统计信息
      */
-    @Select("SELECT type,COUNT(1) number,SUM(size) size FROM sys_file GROUP BY type")
+    @Select("SELECT type, COUNT(1) number, SUM(size) size FROM sys_file GROUP BY type")
     List<FileStatisticsResp> statistics();
 }

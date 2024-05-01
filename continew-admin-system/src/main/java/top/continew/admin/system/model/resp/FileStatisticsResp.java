@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.model.resp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.system.enums.FileTypeEnum;
@@ -25,13 +26,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 文件资源统计
+ * 文件资源统计信息
  *
  * @author Kils
- * @since 2024/04/30 14:30
+ * @since 2024/4/30 14:30
  */
 @Data
-@Schema(description = "文件资源统计")
+@Schema(description = "文件资源统计信息")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileStatisticsResp implements Serializable {
 
     @Serial
@@ -40,7 +42,8 @@ public class FileStatisticsResp implements Serializable {
     /**
      * 文件类型
      */
-    @Schema(description = "文件类型", example = "")
+    @Schema(description = "类型（1：其他；2：图片；3：文档；4：视频；5：音频）", type = "Integer", allowableValues = {"1", "2", "3", "4",
+        "5"}, example = "2")
     private FileTypeEnum type;
 
     /**
