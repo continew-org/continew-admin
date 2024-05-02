@@ -88,7 +88,7 @@ const columns: TableInstanceColumns[] = [
   }
 ]
 
-const queryForm: ${classNamePrefix}Query = reactive({
+const queryForm = reactive<${classNamePrefix}Query>({
 <#list fieldConfigs as fieldConfig>
 <#if fieldConfig.showInQuery>
   ${fieldConfig.fieldName}: undefined,

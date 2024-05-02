@@ -22,7 +22,7 @@ export interface ${classNamePrefix}DetailResp {
   updateUserString: string
 </#if>
 }
-export interface ${classNamePrefix}Query extends PageQuery {
+export interface ${classNamePrefix}Query {
 <#if fieldConfigs??>
 <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInQuery>
@@ -30,10 +30,12 @@ export interface ${classNamePrefix}Query extends PageQuery {
   </#if>
 </#list>
 </#if>
+  sort: Array<string>
 }
+export interface ${classNamePrefix}PageQuery extends ${classNamePrefix}Query, PageQuery {}
 
 /** @desc 查询${businessName}列表 */
-export function list${classNamePrefix}(query: ${classNamePrefix}Query) {
+export function list${classNamePrefix}(query: ${classNamePrefix}PageQuery) {
   return http.get<PageRes<${classNamePrefix}Resp[]>>(`${'$'}{BASE_URL}`, query)
 }
 
