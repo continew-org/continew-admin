@@ -31,7 +31,7 @@
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>3.0.0</revision>
+        <revision>3.0.1</revision>
     </properties>
 
     <!-- 全局依赖版本管理 -->

@@ -1,3 +1,23 @@
+## [v3.0.1](https://github.com/Charles7c/continew-admin/compare/v3.0.0...v3.0.1) (2024-05-03)
+
+### ✨ 新特性
+
+* 新增验证码超时显示效果，超时后显示已过期请刷新 (GitHub#56) ([4c6a7fb](https://github.com/Charles7c/continew-admin/commit/4c6a7fb91ad195b86d776f8aef6aef81d07b2eb1))
+* 文件管理增加资源统计，统计总存储量、各类型文件存储占用 (GitHub#58) ([15c966f](https://github.com/Charles7c/continew-admin/commit/15c966f7bb255db3edea249f8d3354324cbdbf5b))
+
+### 💎 功能优化
+
+- 获取图片验证码 URL /img => /image ([9a1a472](https://github.com/Charles7c/continew-admin/commit/9a1a472ec996362cb918e79b9ce37bfa2639a10b))
+- 移除对部分 API 重复的权限校验 ([53eaef9](https://github.com/Charles7c/continew-admin/commit/53eaef9fbdfd6d0866a3d5e424d783e2e7bc0e17))
+- 优化代码生成模板 ([dc92731](https://github.com/Charles7c/continew-admin/commit/dc9273132dc8e266f2d44c834b9c2733256afdfe)) ([def831f](https://github.com/Charles7c/continew-admin/commit/def831f2dca0703f5ef8b84b0e695a32b171461d))
+
+
+### 🐛 问题修复
+
+- 修复查询用户邮箱、手机号时未自动加密导致的错误 ([faa56d1](https://github.com/Charles7c/continew-admin/commit/faa56d16b92cbdb8f7e16c8b43c2916ae692d881))
+- 修复根据部门查询用户列表数据错误 ([42ac82e](https://github.com/Charles7c/continew-admin/commit/42ac82e7ceef9336741c2514470c0db36ab7075e))
+- 修复文件类型处理错误 ([9b60e24](https://github.com/Charles7c/continew-admin/commit/9b60e24364bfb4cc7cd9996a43579a062197cdf3))
+
 ## [v3.0.0](https://github.com/Charles7c/continew-admin/compare/v2.5.0...v3.0.0) (2024-04-27)
 
 ### ✨ 新特性
