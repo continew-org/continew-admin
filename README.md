@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v3.0.1-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v3.1.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://app.codacy.com/gh/Charles7c/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
 <img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy Badge" />
@@ -74,7 +74,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 > [!TIP]
 > 如需完整图文描述，请点击打开[《在线文档》](https://continew.top/admin/intro/why.html)查阅。
 
-1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Element Plus、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
+1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Arco Design Vue（字节出品的高颜值，细节丰富的 UI 框架）、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
 
 2.**Starter 组件：** 从 v2.1.0 版本开始，抽取并封装后端基础组件及各框架集成配置到 ContiNew Starter 项目，且 **[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter)**，可在你的任意项目中直接引入所需依赖使用。即使你不用脚手架项目，难道能让你搭项目框架更快、更爽、更省力的 Starter 也要 Say No 吗？
 
