@@ -43,7 +43,8 @@ public enum FileTypeEnum implements IBaseEnum<Integer> {
     /**
      * 图片
      */
-    IMAGE(2, "图片", List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng", "xcf")),
+    IMAGE(2, "图片", List
+        .of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng", "xcf")),
 
     /**
      * 文档

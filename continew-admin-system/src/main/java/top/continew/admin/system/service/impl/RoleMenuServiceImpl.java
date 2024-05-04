@@ -38,13 +38,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoleMenuServiceImpl implements RoleMenuService {
 
-    private final RoleMenuMapper roleMenuMapper;
+    private final RoleMenuMapper baseMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> menuIds, Long roleId) {
         // 检查是否有变更
-        List<Long> oldMenuIdList = roleMenuMapper.lambdaQuery()
+        List<Long> oldMenuIdList = baseMapper.lambdaQuery()
             .select(RoleMenuDO::getMenuId)
             .eq(RoleMenuDO::getRoleId, roleId)
             .list()
@@ -55,16 +55,16 @@ public class RoleMenuServiceImpl implements RoleMenuService {
             return false;
         }
         // 删除原有关联
-        roleMenuMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
+        baseMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
         List<RoleMenuDO> roleMenuList = menuIds.stream().map(menuId -> new RoleMenuDO(roleId, menuId)).toList();
-        return roleMenuMapper.insertBatch(roleMenuList);
+        return baseMapper.insertBatch(roleMenuList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByRoleIds(List<Long> roleIds) {
-        roleMenuMapper.lambdaUpdate().in(RoleMenuDO::getRoleId, roleIds).remove();
+        baseMapper.lambdaUpdate().in(RoleMenuDO::getRoleId, roleIds).remove();
     }
 
     @Override
@@ -72,6 +72,6 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         if (CollUtil.isEmpty(roleIds)) {
             return new ArrayList<>(0);
         }
-        return roleMenuMapper.selectMenuIdByRoleIds(roleIds);
+        return baseMapper.selectMenuIdByRoleIds(roleIds);
     }
 }

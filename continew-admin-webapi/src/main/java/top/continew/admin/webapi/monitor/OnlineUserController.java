@@ -49,13 +49,13 @@ import top.continew.starter.web.model.R;
 @RequestMapping("/monitor/online")
 public class OnlineUserController {
 
-    private final OnlineUserService onlineUserService;
+    private final OnlineUserService baseService;
 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:online:list")
     @GetMapping
     public R<PageResp<OnlineUserResp>> page(OnlineUserQuery query, @Validated PageQuery pageQuery) {
-        return R.ok(onlineUserService.page(query, pageQuery));
+        return R.ok(baseService.page(query, pageQuery));
     }
 
     @Operation(summary = "强退在线用户", description = "强退在线用户")

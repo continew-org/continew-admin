@@ -43,12 +43,10 @@ import top.continew.starter.web.model.R;
 @CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.DELETE})
 public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
 
-    private final FileService fileService;
-
     @Log(ignore = true)
     @Operation(summary = "查询文件资源统计", description = "查询文件资源统计")
     @GetMapping("/statistics")
     public R<FileStatisticsResp> statistics() {
-        return R.ok(fileService.statistics());
+        return R.ok(baseService.statistics());
     }
 }

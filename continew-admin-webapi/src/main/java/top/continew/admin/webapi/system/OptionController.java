@@ -16,24 +16,20 @@
 
 package top.continew.admin.webapi.system;
 
-import java.util.List;
-
-import lombok.RequiredArgsConstructor;
-
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import cn.dev33.satoken.annotation.SaCheckPermission;
-
 import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.req.OptionReq;
 import top.continew.admin.system.model.req.OptionResetValueReq;
 import top.continew.admin.system.model.resp.OptionResp;
 import top.continew.admin.system.service.OptionService;
 import top.continew.starter.web.model.R;
+
+import java.util.List;
 
 /**
  * 参数管理 API
@@ -47,20 +43,20 @@ import top.continew.starter.web.model.R;
 @RequestMapping("/system/option")
 public class OptionController {
 
-    private final OptionService optionService;
+    private final OptionService baseService;
 
     @Operation(summary = "查询参数列表", description = "查询参数列表")
     @SaCheckPermission("system:config:list")
     @GetMapping
     public R<List<OptionResp>> list(@Validated OptionQuery query) {
-        return R.ok(optionService.list(query));
+        return R.ok(baseService.list(query));
     }
 
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
     public R<Void> update(@Validated @RequestBody List<OptionReq> req) {
-        optionService.update(req);
+        baseService.update(req);
         return R.ok();
     }
 
@@ -68,7 +64,7 @@ public class OptionController {
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
     public R<Void> resetValue(@Validated @RequestBody OptionResetValueReq req) {
-        optionService.resetValue(req);
+        baseService.resetValue(req);
         return R.ok();
     }
 }

@@ -53,13 +53,13 @@ import java.util.List;
 @RequestMapping("/generator")
 public class GeneratorController {
 
-    private final GeneratorService generatorService;
+    private final GeneratorService baseService;
 
     @Operation(summary = "分页查询数据表", description = "分页查询数据表")
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/table")
     public R<PageResp<TableResp>> pageTable(TableQuery query, @Validated PageQuery pageQuery) throws SQLException {
-        return R.ok(generatorService.pageTable(query, pageQuery));
+        return R.ok(baseService.pageTable(query, pageQuery));
     }
 
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
@@ -69,7 +69,7 @@ public class GeneratorController {
     @GetMapping("/field/{tableName}")
     public R<List<FieldConfigDO>> listFieldConfig(@PathVariable String tableName,
                                                   @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
-        return R.ok(generatorService.listFieldConfig(tableName, requireSync));
+        return R.ok(baseService.listFieldConfig(tableName, requireSync));
     }
 
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
@@ -77,7 +77,7 @@ public class GeneratorController {
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/config/{tableName}")
     public R<GenConfigDO> getGenConfig(@PathVariable String tableName) throws SQLException {
-        return R.ok(generatorService.getGenConfig(tableName));
+        return R.ok(baseService.getGenConfig(tableName));
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")
@@ -85,7 +85,7 @@ public class GeneratorController {
     @SaCheckPermission("tool:generator:list")
     @PostMapping("/config/{tableName}")
     public R<Void> saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
-        generatorService.saveConfig(req, tableName);
+        baseService.saveConfig(req, tableName);
         return R.ok("保存成功");
     }
 
@@ -94,7 +94,7 @@ public class GeneratorController {
     @SaCheckPermission("tool:generator:list")
     @GetMapping("/preview/{tableName}")
     public R<List<GeneratePreviewResp>> preview(@PathVariable String tableName) {
-        return R.ok(generatorService.preview(tableName));
+        return R.ok(baseService.preview(tableName));
     }
 
     @Operation(summary = "生成代码", description = "生成代码")
@@ -104,6 +104,6 @@ public class GeneratorController {
     public void generate(@PathVariable List<String> tableNames,
                          HttpServletRequest request,
                          HttpServletResponse response) {
-        generatorService.generate(tableNames, request, response);
+        baseService.generate(tableNames, request, response);
     }
 }

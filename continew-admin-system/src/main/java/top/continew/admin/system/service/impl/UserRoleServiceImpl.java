@@ -39,13 +39,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserRoleServiceImpl implements UserRoleService {
 
-    private final UserRoleMapper userRoleMapper;
+    private final UserRoleMapper baseMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> roleIds, Long userId) {
         // 检查是否有变更
-        List<Long> oldRoleIdList = userRoleMapper.lambdaQuery()
+        List<Long> oldRoleIdList = baseMapper.lambdaQuery()
             .select(UserRoleDO::getRoleId)
             .eq(UserRoleDO::getUserId, userId)
             .list()
@@ -56,26 +56,26 @@ public class UserRoleServiceImpl implements UserRoleService {
             return false;
         }
         // 删除原有关联
-        userRoleMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
+        baseMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
         List<UserRoleDO> userRoleList = roleIds.stream().map(roleId -> new UserRoleDO(userId, roleId)).toList();
-        return userRoleMapper.insertBatch(userRoleList);
+        return baseMapper.insertBatch(userRoleList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByUserIds(List<Long> userIds) {
-        userRoleMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
+        baseMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
     }
 
     @Override
     @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listRoleIdByUserId(Long userId) {
-        return userRoleMapper.selectRoleIdByUserId(userId);
+        return baseMapper.selectRoleIdByUserId(userId);
     }
 
     @Override
     public boolean isRoleIdExists(List<Long> roleIds) {
-        return userRoleMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).exists();
+        return baseMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).exists();
     }
 }

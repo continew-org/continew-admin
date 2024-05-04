@@ -39,13 +39,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleDeptServiceImpl implements RoleDeptService {
 
-    private final RoleDeptMapper roleDeptMapper;
+    private final RoleDeptMapper baseMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> deptIds, Long roleId) {
         // 检查是否有变更
-        List<Long> oldDeptIdList = roleDeptMapper.lambdaQuery()
+        List<Long> oldDeptIdList = baseMapper.lambdaQuery()
             .select(RoleDeptDO::getDeptId)
             .eq(RoleDeptDO::getRoleId, roleId)
             .list()
@@ -56,27 +56,27 @@ public class RoleDeptServiceImpl implements RoleDeptService {
             return false;
         }
         // 删除原有关联
-        roleDeptMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
+        baseMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
         List<RoleDeptDO> roleDeptList = deptIds.stream().map(deptId -> new RoleDeptDO(roleId, deptId)).toList();
-        return roleDeptMapper.insertBatch(roleDeptList);
+        return baseMapper.insertBatch(roleDeptList);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByRoleIds(List<Long> roleIds) {
-        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getRoleId, roleIds).remove();
+        baseMapper.lambdaUpdate().in(RoleDeptDO::getRoleId, roleIds).remove();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByDeptIds(List<Long> deptIds) {
-        roleDeptMapper.lambdaUpdate().in(RoleDeptDO::getDeptId, deptIds).remove();
+        baseMapper.lambdaUpdate().in(RoleDeptDO::getDeptId, deptIds).remove();
     }
 
     @Override
     @ContainerMethod(namespace = ContainerConstants.ROLE_DEPT_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listDeptIdByRoleId(Long roleId) {
-        return roleDeptMapper.selectDeptIdByRoleId(roleId);
+        return baseMapper.selectDeptIdByRoleId(roleId);
     }
 }
