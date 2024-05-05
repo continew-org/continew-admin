@@ -1,5 +1,7 @@
 name: "\U0001F680 新 Feature 建议"
 description: Suggest an idea for this project
+title: "[Feature] "
+labels: ["feature"]
 body:
   - type: markdown
     attributes:
@@ -40,3 +42,5 @@ body:
           required: true
         - label: 搜索是否有其他人提交过类似的 issue，如果对应 issue 尚未解决，您可以先订阅关注该 issue（为了方便后来者查找问题解决方法，请尽量避免创建重复的 issue）
           required: true
+        - label: 您是否愿意为您提出的 Feature 提交 PR？
+          required: false

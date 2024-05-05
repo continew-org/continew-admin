@@ -343,7 +343,6 @@ continew-admin
 │  │  │  └─ util（公共工具类）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ .gitee（Gitee 相关配置目录，实际开发时直接删除）
 ├─ .github（GitHub 相关配置目录，实际开发时直接删除）
 ├─ .idea
 │  └─ icon.png（IDEA 项目图标，实际开发时直接删除）

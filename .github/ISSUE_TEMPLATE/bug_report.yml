@@ -1,6 +1,7 @@
 name: "\U0001F41E Bug 报告"
 description: Create a report to help us improve
-labels: ['bug: pending triage']
+title: "[Bug] "
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -34,8 +35,11 @@ body:
     id: environment-info
     attributes:
       label: 环境信息
-      description: 描述清楚您所使用的相关环境，例如：JDK 版本：1.8.0_202；框架版本：v1.0.0；其他可能与该 issue 相关的依赖版本。
-      placeholder: JDK 版本, 框架版本等
+      description: |
+        examples:
+          - **ContiNew Admin version(s)**: v3.0.1
+      value: "ContiNew Admin version(s):"
+      render: markdown
     validations:
       required: true
   - type: textarea
