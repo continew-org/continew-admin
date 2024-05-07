@@ -16,6 +16,7 @@
 
 package top.continew.admin.webapi.system;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
 
     @Log(ignore = true)
     @Operation(summary = "查询文件资源统计", description = "查询文件资源统计")
+    @SaCheckPermission("system:file:list")
     @GetMapping("/statistics")
     public R<FileStatisticsResp> statistics() {
         return R.ok(baseService.statistics());
