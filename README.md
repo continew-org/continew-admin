@@ -38,9 +38,17 @@
 
 ## 简介
 
-ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，持续提供舒适的开发体验，依托开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
+ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架。开箱即用，重视每一处代码规范，重视每一种解决方案细节，持续提供舒适的前、后端开发体验。
 
-当前采用的技术栈：Spring Boot3（Java17）、Vue3 & TS & Vite & Arco Design、Sa-Token、MyBatisPlus、Redisson、JetCache、JustAuth、Crane4j、EasyExcel、Liquibase、Hutool 等。
+当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design & TS & Vite、Sa-Token、MyBatis Plus、Redisson、JetCache、JustAuth、Crane4j、EasyExcel、Liquibase、Hutool 等。
+
+## 项目源码
+
+|          | Gitee（码云）                                                                            | GitHub                                                                          |
+|----------|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 后端       | [continew/continew-admin](https://gitee.com/continew/continew-admin)                 | [charles7c/continew-admin](https://github.com/Charles7c/continew-admin)                 |
+| 前端       | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)           | [charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui)           |
+| 前端（v2.5） | [continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
 
 ## 项目起源
 
@@ -50,33 +58,23 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 技术的发展，导致这些雏形程序的生命周期很是短暂，它们有别于我归档的其他数据，有时由于工作的原因，没有时间很好的去沉淀它们，在使用时变得越来越不顺手。所以，某段时间，我放弃了维护，而是去采用一些更为成熟的框架。
 
-不过，在陆续几年使用了一些同类框架之后，我前后遇到了一些困难：
+不过，在陆续几年使用了一些成熟框架后，我前后遇到了一些困难：
 
-1. 想要找到一个扩展性佳，代码规范良好，开发体验舒适的框架很不容易，总是差些什么
-2. 对于初始使用似乎过度设计，上手困难？或是功能不全，全在专业版（收费）？更甚者，代码阅读性差，文档还要收费
-3. 好不容易找到一些相较合适的，没过“多久”，部分作者可能谈恋爱了，没法对外发“电”了
-4. 提 PR 可能又和原作者理念不一致，对部分框架进行二开，但又会囿于原始设计
-5. 在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，想要依靠工作来完善一个脚手架，既不现实也不甚美妙
+1. 代码洁癖想要找到一个**扩展性佳，代码规范良好，开发体验舒适**的框架很不容易，总是差些什么
+2. 项目上手困难或是基础版功能不全，需要的全在专业版，亦或者代码阅读性差，文档收费
+3. 部分解决方案缺失，已有解决方案也过于偏向样板化，无法形成良好的逻辑闭环
+4. 好不容易找到一些相较合适的，没过多久，部分作者可能暂时没法对外发“电”了，随着了解深入，很多 Bug 或新技术趋势还是需要自己研究解决
 
-“种一棵树最好的时间是十年前，其次是现在”。最终，我选择自己在业余时间从头写一个试试，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。我希望它不仅仅能吸收我的需求，而是依托开源协作模式，接受更多的可能性，沉淀更优秀的思考，设计。另外，开源出来，如果能为更广泛的小伙伴提供舒适的开发体验那就更好了。
-
-## 项目源码
-
-|          | Gitee                                                                                     | GitHub                                                                             |
-|----------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| 后端       | [gitee.com/continew/continew-admin](https://gitee.com/continew/continew-admin)            | [github.com/Charles7c/continew-admin](https://github.com/Charles7c/continew-admin)     |
-| 前端       | [gitee.com/continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)      | [github.com/Charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui) |
-| 2.5 版本前端 | [gitee.com/continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [github.com/Charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
-
+在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，但一些优秀的实践需要花时间持续进行沉淀，只要我没跳出这个圈子，我还是需要一直去做好程序归档。“种一棵树最好的时间是十年前，其次是现在”，最终，我选择在业余时间更加正视这件事，从头归档沉淀，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。并且这次我选择了开源，我希望它不仅仅能吸收我的需求和沉淀，而是依托开源协作模式，及时发现更多的问题，接受更多的可能性，沉淀更优秀的思考，设计。
 
 ## 为什么选我们？
 
 > [!TIP]
-> 如需完整图文描述，请点击打开[《在线文档》](https://continew.top/admin/intro/why.html)查阅。
+> 更为完整的图文描述请查阅[《在线文档》](https://continew.top/admin/intro/why.html)。
 
-1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。 e.g. 前端：Vue3 & Arco Design Vue（字节出品的高颜值，细节丰富的 UI 框架）、TypeScript、Vite5；后端：Spring Boot、Sa-Token、MyBatis Plus、Redisson、JetCache、Crane4j、Hutool 等。
+1.**甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，让技术不掉队。在技术选型时，进行深度广泛地调研，从流行度、成熟度和发展潜力等多方面甄选技术栈。
 
-2.**Starter 组件：** 从 v2.1.0 版本开始，抽取并封装后端基础组件及各框架集成配置到 ContiNew Starter 项目，且 **[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter)**，可在你的任意项目中直接引入所需依赖使用。即使你不用脚手架项目，难道能让你搭项目框架更快、更爽、更省力的 Starter 也要 Say No 吗？
+2.**Starter 组件：** 从 v2.1.0 版本开始，抽取并封装后端基础组件及各框架集成配置到 ContiNew Starter 项目，且 **[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)**，可在你的任意项目中直接引入所需依赖使用。即使你不用脚手架项目，难道能让你搭项目框架更快、更爽、更省力的 Starter 也要 Say No 吗？
 
 3.**CRUD 套件：** 封装通用增删改查套件，适配后端各分层，几分钟即可提供一套 CRUD API，包括新增、修改、批量删除、查询详情、分页列表查询、全部列表查询、树型列表查询、导出到 Excel，且 API 支持按实际所需开放或扩展。
 ```java
@@ -86,46 +84,50 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
-4.**代码生成器：** 提供代码生成器，已配套前、后端代码生成模板，数据表设计完之后，简单配置一下即可生成前、后端 80% 的代码，包含 CRUD API、权限控制、参数校验、接口文档等内容。如果业务不复杂，也可能就是 99% 的代码。
+4.**代码生成器：** 提供代码生成器，已配套前、后端代码生成模板，数据表设计完之后，简单配置一下即可生成前、后端 80% 的代码，包含 CRUD API、权限控制、参数校验、接口文档等内容。如果业务不复杂，也可能就是 95% 的代码。
 
-5.**改善开发体验：** 持续适配、优化能改善开发体验的组件。
+5.**改善开发体验：** 持续优化及适配能改善开发体验的组件。
+- 适配 ContiNew Starter 组件，针对多数框架进行了深度封装的 starter，改善你在开发每个 Spring Boot Web 项目的体验。
 - 适配 Crane4j 数据填充组件，减少因为一个用户名而产生的联表回填；
 - 适配 P6Spy SQL 性能分析组件，开发期间方便监控 SQL 执行；
 - 适配 TLog 链路追踪组件，方便在杂乱的日志文件中追踪你某次请求的日志记录；
 - 适配 JetCache 缓存框架（比 Spring Cache 更强大易用），通过注解声明即可快速实现方法级缓存，极大改善编码式缓存体验，且支持灵活的二级缓存配置、分布式自动刷新等能力；
-- 适配 ContiNew Starter 组件，针对多数框架进行了深度封装的 starter，改善你在开发每个 Spring Boot Web 项目的体验。
+- 前端适配 Vue Devtools（Vue 官方提供的调试浏览器插件），极大提高 Vue 开发及调试效率
 
-6.**Almost最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%，代码分层使用体验佳，变量、方法命名清晰统一，前端代码也使用严格的 ESLint、StyleLint 等检查。良好的设计，代码复用率极高！写代码时，让你有一种无需多写，理应如此的感觉。代码洁癖者的福音，不看莫吱声。
+6.**Almost最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%，代码分层使用体验佳，变量、方法命名清晰统一，前端代码也使用严格的 ESLint、StyleLint 等检查。良好的设计，代码复用率极高！写代码时，让你有一种无需多写，理应如此的感觉。我是代码洁癖，我实际写的时候很清楚这到底是不是乱吹。
 
 7.**卓越工程：** 后端采用模块化工程结构，并适配了统一项目版本号、编译项目自动代码格式化、代码混淆等插件，提供了自定义打包部署结构配置（配置文件、三方依赖和主程序分离），提供全套环境及应用的 Docker Compose 部署脚本。为了减少您开发新项目时的改造耗时，项目品牌配置持续进行深度聚合，简单的配置和结构修改即可快速开始独属于你的新项目。
 
-8.**业务脚手架：** 有颜有料，不止是说说而已，提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（生产级炸弹漏洞处理方案），用户管理、角色管理、部门管理、文件管理、系统配置、系统日志、消息中心、公告等，设计用心，逻辑合理闭环。
+8.**业务脚手架：** 有颜有料，不止是说说而已，持续打磨 UI 设计与色彩主题。提供基于 RBAC 的权限控制、通用数据权限，包含丰富的通用业务功能：第三方登录，邮箱、短信（生产级炸弹漏洞处理方案），个人中心、用户管理、角色管理、部门管理、系统配置（基础站点配置、邮件配置、安全配置）、系统日志、消息中心、通知公告等，设计用心，逻辑合理闭环。
 > 一个好的脚手架项目，不仅仅是提供一系列组件集成与配置，也不仅仅是封装一堆好用的工具，还更应该提供一系列通用基础业务解决方案及设计，为初创团队项目减负。
 
-9.**高可靠代码：** 项目 CI 已集成 Sonarqube、Codacy，Push 即触发代码质量扫描，并定期进行 CVE 漏洞扫描，及时解决潜在问题。
+9.**质量与安全：** CI 已集成 Sonar、Codacy，Push 即扫描代码质量，定期扫描 CVE 漏洞，及时解决潜在问题。封装数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供诸多安全解决方案。
 
 由于篇幅有限，且项目正处于高速发展期，更多功能正在陆续上线（敬请关注仓库或群内动态）。另外像最基本的统一异常、错误处理，基础线程池等配置就不在此赘述，细节优化详情请 clone 代码查看。
-> Talk is cheap, show me the code.
+> Talk is cheap, show the code.
 
 ##  系统功能
 
 > [!TIP]
 > 更多功能和优化正在赶来💦，最新项目计划、进展请进群或关注 [任务清单](https://continew.top/admin/intro/require.html#任务清单) 和 [更新日志](https://continew.top/admin/other/changelog.html)。
 
-- 个人中心：支持基础信息修改、安全设置（密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑）、头像裁剪上传等能力
-- 用户管理：提供系统用户的新增维护，支持禁用登录及重置指定用户密码
+- 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑、头像裁剪上传
+- 消息中心：提供站内信消息统一查看、标记已读、全部已读、删除等功能
+- 用户管理：提供用户的相关配置，新增、修改、删除、重置密码、导出
+- 部门管理：可配置系统组织架构，并以树形表格展示
 - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
 - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
-- 部门管理：可配置系统组织架构，以树形表格展示
-- 公告管理：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
-- 消息管理：提供消息查看、标记已读、全部已读、删除等功能（适配对接导航栏站内信功能）（v3.1 重构，v2.5 版可用）
+- 通知公告：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
 - 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
 - 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
 - 存储管理：提供文件存储库新增、编辑、删除等功能，支持本地存储、兼容 S3 协议存储
-- 系统配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致（v3.1 支持邮件配置）
-- 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能
+- 系统配置：
+    - 基础配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致
+    - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
+    - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于`密码有效期`、`修改密码最短时间间隔`、`密码错误锁定账号次数、时间` 等
+- 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
 - 在线用户：管理当前登录用户，可一键踢下线
-- 系统日志：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
+- 日志管理：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
 
 ## 系统截图
 
@@ -197,6 +199,39 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
     </tbody>
 </table>
 
+## 核心技术栈
+
+| 名称                                                         | 版本           | 简介                                                         |
+| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+| <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.4.21       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.55.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://cn.vitejs.dev/" target="_blank">Vite</a>    | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
+| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 2.0.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.10       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
+| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
+| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.5        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.3.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
+| Hikari                                                       | 5.0.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
+| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33       | MySQL Java 驱动。                                            |
+| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
+| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
+| [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md) | 2.7.5        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.28.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
+| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
+| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.1.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
+| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.2.1        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
+| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
+| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.4        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
+| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
+| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
+| [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)    | 2.7.0        | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
+| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.5.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.27       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+
 ## 快速开始
 
 > [!TIP]
@@ -224,35 +259,6 @@ git clone https://github.com/Charles7c/continew-admin.git
 #   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
 # 5.2 其他方式部署
 ```
-
-## 核心技术栈
-
-| 名称                                                         | 版本           | 简介                                                         |
-| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
-| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 2.0.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.10       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
-| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
-| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.37.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.5        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
-| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.3.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                       | 5.0.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
-| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.0.33       | MySQL Java 驱动。                                            |
-| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
-| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.20.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md) | 2.7.5        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.28.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
-| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
-| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.1.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
-| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.2.1        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
-| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
-| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.4        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
-| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)    | 2.7.0        | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
-| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.5.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.27       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.30      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 项目结构
 
