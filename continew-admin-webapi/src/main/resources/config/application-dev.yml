@@ -1,6 +1,6 @@
 --- ### 项目配置
 project:
-  # URL
+  # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
   url: http://localhost:5173
 
 --- ### 服务器配置
@@ -233,7 +233,7 @@ sa-token.extension:
     - /*/*.html
     - /*/*.css
     - /*/*.js
-    - /webSocket/*
+    - /webSocket/**
     # 接口文档相关资源
     - /favicon.ico
     - /doc.html
