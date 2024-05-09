@@ -16,14 +16,12 @@
 
 package top.continew.admin.generator.model.resp;
 
-import java.io.Serial;
-import java.io.Serializable;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 生成预览信息
@@ -37,6 +35,9 @@ public class GeneratePreviewResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    @Schema(description = "生成的文件路径", example = "continew-admin\\continew-admin\\continew-admin-generator\\src\\main\\java\\top\\continew\\admin\\generator\\service")
+    private String path;
 
     /**
      * 文件名
