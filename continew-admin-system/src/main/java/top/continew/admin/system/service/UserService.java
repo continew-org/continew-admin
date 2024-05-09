@@ -76,20 +76,20 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 修改手机号
      *
-     * @param newPhone        新手机号
-     * @param currentPassword 当前密码
-     * @param id              ID
+     * @param newPhone    新手机号
+     * @param oldPassword 当前密码
+     * @param id          ID
      */
-    void updatePhone(String newPhone, String currentPassword, Long id);
+    void updatePhone(String newPhone, String oldPassword, Long id);
 
     /**
      * 修改邮箱
      *
-     * @param newEmail        新邮箱
-     * @param currentPassword 当前密码
-     * @param id              ID
+     * @param newEmail    新邮箱
+     * @param oldPassword 当前密码
+     * @param id          ID
      */
-    void updateEmail(String newEmail, String currentPassword, Long id);
+    void updateEmail(String newEmail, String oldPassword, Long id);
 
     /**
      * 重置密码

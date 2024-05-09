@@ -100,30 +100,30 @@ public class UserCenterController {
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
     public R<Void> updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
-        String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
-            .getCurrentPassword()));
-        ValidationUtils.throwIfBlank(rawCurrentPassword, DECRYPT_FAILED);
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewPhone();
+        String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getOldPassword()));
+        ValidationUtils.throwIfBlank(rawOldPassword, DECRYPT_FAILED);
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getPhone();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.delete(captchaKey);
-        userService.updatePhone(updateReq.getNewPhone(), rawCurrentPassword, LoginHelper.getUserId());
+        userService.updatePhone(updateReq.getPhone(), rawOldPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
     public R<Void> updateEmail(@Validated @RequestBody UserEmailUpdateRequest updateReq) {
-        String rawCurrentPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
-            .getCurrentPassword()));
-        ValidationUtils.throwIfBlank(rawCurrentPassword, DECRYPT_FAILED);
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getNewEmail();
+        String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
+            .getOldPassword()));
+        ValidationUtils.throwIfBlank(rawOldPassword, DECRYPT_FAILED);
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getEmail();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.delete(captchaKey);
-        userService.updateEmail(updateReq.getNewEmail(), rawCurrentPassword, LoginHelper.getUserId());
+        userService.updateEmail(updateReq.getEmail(), rawOldPassword, LoginHelper.getUserId());
         return R.ok("修改成功");
     }
 

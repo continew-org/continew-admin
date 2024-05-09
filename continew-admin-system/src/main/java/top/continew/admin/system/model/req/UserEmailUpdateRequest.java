@@ -45,7 +45,7 @@ public class UserEmailUpdateRequest implements Serializable {
     @Schema(description = "新邮箱", example = "123456789@qq.com")
     @NotBlank(message = "新邮箱不能为空")
     @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误")
-    private String newEmail;
+    private String email;
 
     /**
      * 验证码
@@ -60,5 +60,5 @@ public class UserEmailUpdateRequest implements Serializable {
      */
     @Schema(description = "当前密码（加密）", example = "SYRLSszQGcMv4kP2Yolou9zf28B9GDakR9u91khxmR7V++i5A384kwnNZxqgvT6bjT4zqpIDuMFLWSt92hQJJA==")
     @NotBlank(message = "当前密码不能为空")
-    private String currentPassword;
+    private String oldPassword;
 }

@@ -102,7 +102,7 @@ public class UserInfoResp implements Serializable {
      * 密码是否已过期
      */
     @Schema(description = "密码是否已过期", example = "true")
-    private Boolean passwordExpired;
+    private Boolean pwdExpired;
 
     /**
      * 创建时间

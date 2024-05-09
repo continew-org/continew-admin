@@ -88,15 +88,15 @@ public class GeneratorServiceImpl implements GeneratorService {
             tableList.removeIf(table -> !StrUtil.containsAny(table.getTableName(), tableName));
         }
         tableList.removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
-                .getExcludeTables()));
+            .getExcludeTables()));
         CollUtil.sort(tableList, Comparator.comparing(Table::getCreateTime)
-                .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
-                .reversed());
+            .thenComparing(table -> Optional.ofNullable(table.getUpdateTime()).orElse(table.getCreateTime()))
+            .reversed());
         List<TableResp> tableRespList = BeanUtil.copyToList(tableList, TableResp.class);
         PageResp<TableResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
         for (TableResp tableResp : pageResp.getList()) {
             long count = genConfigMapper.selectCount(Wrappers.lambdaQuery(GenConfigDO.class)
-                    .eq(GenConfigDO::getTableName, tableResp.getTableName()));
+                .eq(GenConfigDO::getTableName, tableResp.getTableName()));
             tableResp.setIsConfiged(count > 0);
         }
         return pageResp;
@@ -118,8 +118,8 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             // 默认作者名称（上次保存使用的作者名称）
             GenConfigDO lastGenConfig = genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class)
-                    .orderByDesc(GenConfigDO::getCreateTime)
-                    .last("LIMIT 1"));
+                .orderByDesc(GenConfigDO::getCreateTime)
+                .last("LIMIT 1"));
             if (null != lastGenConfig) {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
@@ -148,11 +148,11 @@ public class GeneratorServiceImpl implements GeneratorService {
         Set<Map.Entry<String, List<String>>> typeMappingEntrySet = typeMappingMap.entrySet();
         // 新增或更新字段配置
         Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
-                .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
+            .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (key1, key2) -> key2));
         int i = 1;
         for (Column column : columnList) {
             FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
-                    .orElseGet(() -> new FieldConfigDO(column));
+                .orElseGet(() -> new FieldConfigDO(column));
             // 更新已有字段配置
             if (null != fieldConfig.getCreateTime()) {
                 String columnType = StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase();
@@ -160,10 +160,10 @@ public class GeneratorServiceImpl implements GeneratorService {
                 fieldConfig.setColumnSize(Convert.toStr(column.getSize()));
             }
             String fieldType = typeMappingEntrySet.stream()
-                    .filter(entry -> entry.getValue().contains(fieldConfig.getColumnType()))
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .orElse(null);
+                .filter(entry -> entry.getValue().contains(fieldConfig.getColumnType()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
             fieldConfig.setFieldType(fieldType);
             fieldConfig.setFieldSort(i++);
             latestFieldConfigList.add(fieldConfig);
@@ -193,7 +193,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             // 既不在表单也不在查询中显示，不需要设置表单类型
             if (Boolean.FALSE.equals(fieldConfig.getShowInForm()) && Boolean.FALSE.equals(fieldConfig
-                    .getShowInQuery())) {
+                .getShowInQuery())) {
                 fieldConfig.setFormType(null);
             }
             fieldConfig.setTableName(tableName);
@@ -222,7 +222,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         genConfigMap.put("date", DateUtil.date().toString("yyyy/MM/dd HH:mm"));
         String packageName = genConfig.getPackageName();
         String apiModuleName = StrUtil.subSuf(packageName, StrUtil
-                .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+            .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
         genConfigMap.put("apiModuleName", apiModuleName);
         genConfigMap.put("apiName", StrUtil.lowerFirst(genConfig.getClassNamePrefix()));
         // 渲染代码
@@ -243,8 +243,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                 generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), genConfigMap));
             } else {
                 generatePreview.setFileName(".vue".equals(extension) && "index".equals(templateConfigEntry.getKey())
-                        ? "index.vue"
-                        : this.getFrontendFileName(classNamePrefix, className, extension));
+                    ? "index.vue"
+                    : this.getFrontendFileName(classNamePrefix, className, extension));
                 genConfigMap.put("fieldConfigs", fieldConfigList);
                 generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), genConfigMap));
             }
@@ -253,26 +253,29 @@ public class GeneratorServiceImpl implements GeneratorService {
         return generatePreviewList;
     }
 
-    private void setPreviewPath(GeneratePreviewResp generatePreview, GenConfigDO genConfig, GeneratorProperties.TemplateConfig templateConfig) {
+    private void setPreviewPath(GeneratePreviewResp generatePreview,
+                                GenConfigDO genConfig,
+                                GeneratorProperties.TemplateConfig templateConfig) {
         // 获取前后端基础路径
         String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig);
-        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties.getAppName() + "-ui");
+        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties
+            .getAppName() + "-ui");
         String packageName = genConfig.getPackageName();
         String moduleName = StrUtil.subSuf(packageName, StrUtil
-                .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
+            .lastIndexOfIgnoreCase(packageName, StringConstants.DOT) + 1);
         String packagePath;
         if (generatePreview.isBackend()) {
             // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
             packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
-                    .replace(StringConstants.DOT, File.separator));
+                .replace(StringConstants.DOT, File.separator));
         } else {
             // 例如：continew-admin/continew-admin-ui/src/views/system
             packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
-                    .replace(StringConstants.SLASH, File.separator), moduleName);
+                .replace(StringConstants.SLASH, File.separator), moduleName);
             // 例如：continew-admin/continew-admin-ui/src/views/system/user
             packagePath = ".vue".equals(templateConfig.getExtension())
-                    ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
-                    : packagePath;
+                ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
+                : packagePath;
         }
         generatePreview.setPath(packagePath);
     }
@@ -310,7 +313,8 @@ public class GeneratorServiceImpl implements GeneratorService {
         for (GeneratePreviewResp generatePreview : generatePreviewList) {
             // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
             // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
-            File file = new File(SystemUtil.getUserInfo().getTempDir() + generatePreview.getPath(), generatePreview.getFileName());
+            File file = new File(SystemUtil.getUserInfo().getTempDir() + generatePreview.getPath(), generatePreview
+                .getFileName());
             // 如果已经存在，且不允许覆盖，则跳过
             if (!file.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
                 FileUtil.writeUtf8String(generatePreview.getContent(), file);
@@ -326,9 +330,8 @@ public class GeneratorServiceImpl implements GeneratorService {
      */
     private String buildBackendBasicPackagePath(GenConfigDO genConfig) {
         // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
-        return String.join(File.separator, projectProperties
-                .getAppName(), projectProperties.getAppName(), genConfig.getModuleName(), "src", "main", "java", genConfig
-                .getPackageName()
+        return String.join(File.separator, projectProperties.getAppName(), projectProperties.getAppName(), genConfig
+            .getModuleName(), "src", "main", "java", genConfig.getPackageName()
                 .replace(StringConstants.DOT, File.separator));
     }
 
@@ -357,8 +360,8 @@ public class GeneratorServiceImpl implements GeneratorService {
         GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();
         // 移除需要忽略的字段
         List<FieldConfigDO> fieldConfigList = originFieldConfigList.stream()
-                .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig.getExcludeFields()))
-                .toList();
+            .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig.getExcludeFields()))
+            .toList();
         genConfigMap.put("fieldConfigs", fieldConfigList);
         // 统计部分特殊字段特征
         genConfigMap.put("hasLocalDateTime", false);
@@ -378,7 +381,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             QueryTypeEnum queryType = fieldConfig.getQueryType();
             if (null != queryType && StrUtil.equalsAny(queryType.name(), QueryTypeEnum.IN.name(), QueryTypeEnum.NOT_IN
-                    .name(), QueryTypeEnum.BETWEEN.name())) {
+                .name(), QueryTypeEnum.BETWEEN.name())) {
                 genConfigMap.put("hasListQueryField", true);
             }
         }
