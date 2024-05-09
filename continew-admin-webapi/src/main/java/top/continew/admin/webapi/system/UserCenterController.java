@@ -16,7 +16,6 @@
 
 package top.continew.admin.webapi.system;
 
-import cn.hutool.core.util.ReUtil;
 import com.xkcoding.justauth.AuthRequestFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +31,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.SocialSourceEnum;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.common.util.helper.LoginHelper;
@@ -95,8 +93,6 @@ public class UserCenterController {
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
-        ValidationUtils.throwIf(!ReUtil
-            .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
         userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
         return R.ok("修改成功，请牢记你的新密码");
     }

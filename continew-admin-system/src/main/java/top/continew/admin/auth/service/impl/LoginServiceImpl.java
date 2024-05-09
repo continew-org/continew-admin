@@ -20,10 +20,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.service.LoginService;
 import top.continew.admin.auth.service.PermissionService;
+import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
@@ -41,6 +39,7 @@ import top.continew.admin.common.enums.MessageTypeEnum;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.enums.MessageTemplateEnum;
+import top.continew.admin.system.enums.OptionCodeEnum;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.entity.UserDO;
@@ -48,11 +47,13 @@ import top.continew.admin.system.model.entity.UserSocialDO;
 import top.continew.admin.system.model.req.MessageReq;
 import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.*;
+import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.util.TreeUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -76,14 +77,39 @@ public class LoginServiceImpl implements LoginService {
     private final UserSocialService userSocialService;
     private final MessageService messageService;
     private final PasswordEncoder passwordEncoder;
+    private final OptionService optionService;
 
     @Override
     public String accountLogin(String username, String password) {
         UserDO user = userService.getByUsername(username);
-        CheckUtils.throwIfNull(user, "用户名或密码不正确");
-        CheckUtils.throwIf(!passwordEncoder.matches(password, user.getPassword()), "用户名或密码不正确");
+        boolean isError = ObjectUtil.isNull(user) || !passwordEncoder.matches(password, user.getPassword());
+        isPasswordLocked(username, isError);
+        CheckUtils.throwIf(isError, "用户名或密码错误");
         this.checkUserStatus(user);
         return this.login(user);
+    }
+
+    /**
+     * 检测用户是否被密码锁定
+     *
+     * @param username 用户名
+     */
+    private void isPasswordLocked(String username, boolean isError) {
+        // 不锁定账户
+        int maxErrorCount = optionService.getValueByCode2Int(OptionCodeEnum.PASSWORD_ERROR_COUNT);
+        if (maxErrorCount <= 0) {
+            return;
+        }
+        String key = CacheConstants.USER_KEY_PREFIX + "PASSWORD-ERROR:" + username;
+        Long currentErrorCount = RedisUtils.get(key);
+        currentErrorCount = currentErrorCount == null ? 0 : currentErrorCount;
+        int lockMinutes = optionService.getValueByCode2Int(OptionCodeEnum.PASSWORD_LOCK_MINUTES);
+        if (isError) {
+            // 密码错误自增次数，并重置时间
+            currentErrorCount = currentErrorCount + 1;
+            RedisUtils.set(key, currentErrorCount, Duration.ofMinutes(lockMinutes));
+        }
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "密码错误已达 {} 次，账户锁定 {} 分钟", maxErrorCount, lockMinutes);
     }
 
     @Override

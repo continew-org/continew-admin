@@ -28,6 +28,7 @@ import top.continew.admin.system.model.resp.UserResp;
 import top.continew.starter.extension.crud.service.BaseService;
 import top.continew.starter.data.mybatis.plus.service.IService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -137,4 +138,12 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
+
+    /**
+     * 密码是否已过期
+     * 
+     * @param pwdResetTime 上次重置密码时间
+     * @return 是否过期
+     */
+    Boolean isPasswordExpired(LocalDateTime pwdResetTime);
 }

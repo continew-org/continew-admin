@@ -127,6 +127,7 @@ public class AuthController {
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
         userInfoResp.setPermissions(loginUser.getPermissions());
         userInfoResp.setRoles(loginUser.getRoleCodes());
+        userInfoResp.setPasswordExpired(userService.isPasswordExpired(userDetailResp.getPwdResetTime()));
         return R.ok(userInfoResp);
     }
 
