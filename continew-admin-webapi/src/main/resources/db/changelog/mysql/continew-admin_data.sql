@@ -114,7 +114,14 @@ VALUES
  'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">津ICP备2022005864号-2</a>',
  '用于显示登录页面的底部版权信息。', NULL, NULL),
 ('系统LOGO（16*16）', 'site_favicon', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
-('系统LOGO（33*33）', 'site_logo', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL);
+('系统LOGO（33*33）', 'site_logo', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL),
+('密码是否允许包含正反序帐户名', 'password_contain_name', NULL, '0', '', NULL, NULL),
+('密码错误锁定帐户次数', 'password_error_count', NULL, '5', '0表示不限制。', NULL, NULL),
+('密码有效期', 'password_expiration_days', NULL, '0', '取值范围为0-999,0表示永久有效。', NULL, NULL),
+('密码错误锁定帐户的时间', 'password_lock_minutes', NULL, '5', '0表示不解锁。', NULL, NULL),
+('密码最小长度', 'password_min_length', NULL, '8', '取值范围为8-32。', NULL, NULL),
+('密码是否必须包含特殊字符', 'password_special_char', NULL, '0', '', NULL, NULL),
+('修改密码最短间隔', 'password_update_interval', NULL, '5', '取值范围为0-9999,0表示不限制。', NULL, NULL);
 
 -- 初始化默认字典
 INSERT INTO `sys_dict`

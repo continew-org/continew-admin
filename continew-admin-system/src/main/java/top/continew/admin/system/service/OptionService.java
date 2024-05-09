@@ -17,7 +17,9 @@
 package top.continew.admin.system.service;
 
 import java.util.List;
+import java.util.function.Function;
 
+import top.continew.admin.system.enums.OptionCodeEnum;
 import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.req.OptionReq;
 import top.continew.admin.system.model.req.OptionResetValueReq;
@@ -52,4 +54,21 @@ public interface OptionService {
      * @param req 重置信息
      */
     void resetValue(OptionResetValueReq req);
+
+    /**
+     * 根据code获取int参数值
+     * 
+     * @param code code
+     * @return 参数值
+     */
+    int getValueByCode2Int(OptionCodeEnum code);
+
+    /**
+     * 根据code获取参数值
+     * 
+     * @param code   code
+     * @param mapper 类型转换 ex:value -> Integer.parseInt(value)
+     * @return 参数值
+     */
+    <T> T getValueByCode(OptionCodeEnum code, Function<String, T> mapper);
 }

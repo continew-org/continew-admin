@@ -17,9 +17,14 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.system.enums.OptionCodeEnum;
 import top.continew.admin.system.mapper.OptionMapper;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.admin.system.model.query.OptionQuery;
@@ -29,9 +34,11 @@ import top.continew.admin.system.model.resp.OptionResp;
 import top.continew.admin.system.service.OptionService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 参数业务实现
@@ -61,4 +68,27 @@ public class OptionServiceImpl implements OptionService {
         RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
         baseMapper.lambdaUpdate().set(OptionDO::getValue, null).in(OptionDO::getCode, req.getCode()).update();
     }
+
+    @Override
+    public int getValueByCode2Int(OptionCodeEnum code) {
+        return this.getValueByCode(code, Integer::parseInt);
+    }
+
+    @Override
+    public <T> T getValueByCode(OptionCodeEnum code, Function<String, T> mapper) {
+        String value = RedisUtils.get(CacheConstants.OPTION_KEY_PREFIX + code.getValue());
+        if (StrUtil.isNotBlank(value)) {
+            return mapper.apply(value);
+        }
+        LambdaQueryWrapper<OptionDO> queryWrapper = Wrappers.<OptionDO>lambdaQuery()
+            .eq(OptionDO::getCode, code.getValue())
+            .select(OptionDO::getValue, OptionDO::getDefaultValue);
+        OptionDO optionDO = baseMapper.selectOne(queryWrapper);
+        CheckUtils.throwIf(ObjUtil.isEmpty(optionDO), "配置 [{}] 不存在", code);
+        value = StrUtil.nullToDefault(optionDO.getValue(), optionDO.getDefaultValue());
+        CheckUtils.throwIf(StrUtil.isBlank(value), "配置 [{}] 不存在", code);
+        RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code.getValue(), value);
+        return mapper.apply(value);
+    }
+
 }

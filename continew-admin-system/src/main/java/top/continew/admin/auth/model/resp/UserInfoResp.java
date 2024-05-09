@@ -99,6 +99,12 @@ public class UserInfoResp implements Serializable {
     private LocalDateTime pwdResetTime;
 
     /**
+     * 密码是否已过期
+     */
+    @Schema(description = "密码是否已过期", example = "true")
+    private Boolean passwordExpired;
+
+    /**
      * 创建时间
      */
     @JsonIgnore

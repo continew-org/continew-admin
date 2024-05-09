@@ -35,6 +35,11 @@ public class RegexConstants {
     public static final String PASSWORD = "^(?=.*\\d)(?=.*[a-z]).{6,32}$";
 
     /**
+     * 密码正则严格版（长度为 8 到 32 位，包含至少1个大写字母、1个小写字母、1个数字，1个特殊字符）
+     */
+    public static final String PASSWORD_STRICT = "^\\S*(?=\\S{8,32})(?=\\S*\\d)(?=\\S*[A-Z])(?=\\S*[a-z])(?=\\S*[!@#$%^&*? ])\\S*$";
+
+    /**
      * 通用编码正则（长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头）
      */
     public static final String GENERAL_CODE = "^[a-zA-Z][a-zA-Z0-9_]{1,29}$";
