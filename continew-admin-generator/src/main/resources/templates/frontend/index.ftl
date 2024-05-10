@@ -9,7 +9,8 @@
         :loading="loading"
         :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
         :pagination="pagination"
-        :disabledColumnKeys="['name']"
+        :disabled-tools="['size']"
+        :disabled-column-keys="['name']"
         @refresh="search"
       >
         <template #custom-left>
@@ -60,33 +61,15 @@
 </template>
 
 <script setup lang="ts">
-import { list${classNamePrefix}, delete${classNamePrefix}, export${classNamePrefix}, type ${classNamePrefix}Resp, type ${classNamePrefix}Query } from '@/apis'
 import ${classNamePrefix}AddModal from './${classNamePrefix}AddModal.vue'
 import ${classNamePrefix}DetailDrawer from './${classNamePrefix}DetailDrawer.vue'
+import { type ${classNamePrefix}Resp, type ${classNamePrefix}Query, delete${classNamePrefix}, export${classNamePrefix}, list${classNamePrefix} } from '@/apis'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
-import { useTable, useDownload } from '@/hooks'
+import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
 
 defineOptions({ name: '${classNamePrefix}' })
-
-const columns: TableInstanceColumns[] = [
-<#if fieldConfigs??>
-  <#list fieldConfigs as fieldConfig>
-  <#if fieldConfig.showInList>
-  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: ${fieldConfig.fieldName} },
-  </#if>
-  </#list>
-</#if>
-  {
-    title: '操作',
-    slotName: 'action',
-    width: 130,
-    align: 'center',
-    fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
-  }
-]
 
 const queryForm = reactive<${classNamePrefix}Query>({
 <#list fieldConfigs as fieldConfig>
@@ -114,6 +97,24 @@ const reset = () => {
 </#list>
   search()
 }
+
+const columns: TableInstanceColumns[] = [
+<#if fieldConfigs??>
+  <#list fieldConfigs as fieldConfig>
+  <#if fieldConfig.showInList>
+  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: ${fieldConfig.fieldName} },
+  </#if>
+  </#list>
+</#if>
+  {
+    title: '操作',
+    slotName: 'action',
+    width: 130,
+    align: 'center',
+    fixed: !isMobile() ? 'right' : undefined,
+    show: has.hasPermOr(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
+  }
+]
 
 // 删除
 const onDelete = (item: ${classNamePrefix}Resp) => {
