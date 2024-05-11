@@ -72,7 +72,7 @@ public class MenuController extends BaseController<MenuService, MenuResp, MenuRe
         // 非外链菜单参数修正
         if (Boolean.FALSE.equals(isExternal)) {
             ValidationUtils.throwIf(URLUtils.isHttpUrl(path), "路由地址格式错误");
-            req.setPath(StrUtil.prependIfMissing(path, StringConstants.SLASH));
+            req.setPath(StrUtil.isBlank(path) ? path : StrUtil.prependIfMissing(path, StringConstants.SLASH));
             req.setName(StrUtil.removePrefix(req.getName(), StringConstants.SLASH));
             req.setComponent(StrUtil.removePrefix(req.getComponent(), StringConstants.SLASH));
         }

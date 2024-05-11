@@ -6,7 +6,7 @@
 INSERT INTO "sys_menu"
 ("id", "title", "parent_id", "type", "path", "name", "component", "redirect", "icon", "is_external", "is_cache", "is_hidden", "permission", "sort", "status", "create_user", "create_time", "update_user", "update_time")
 VALUES
-(1000, '系统管理', 0, 1, '/system', 'System', 'Layout', NULL, 'settings', false, false, false, NULL, 1, 1, 1, NOW(), NULL, NULL),
+(1000, '系统管理', 0, 1, '/system', 'System', 'Layout', '/system/user', 'settings', false, false, false, NULL, 1, 1, 1, NOW(), NULL, NULL),
 (1010, '用户管理', 1000, 2, '/system/user', 'SystemUser', 'system/user/index', NULL, 'user', false, false, false, NULL, 1, 1, 1, NOW(), NULL, NULL),
 (1011, '查看', 1010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:user:list', 1, 1, 1, NOW(), NULL, NULL),
 (1012, '新增', 1010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:user:add', 2, 1, 1, NOW(), NULL, NULL),
