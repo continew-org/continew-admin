@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import top.continew.admin.common.util.WsUtils;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.query.MessageQuery;
 import top.continew.admin.system.model.resp.MessageResp;
@@ -80,5 +81,11 @@ public class MessageController {
     @GetMapping("/unread")
     public R<MessageUnreadResp> countUnreadMessage(@RequestParam(required = false) Boolean detail) {
         return R.ok(messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail));
+    }
+
+    @GetMapping("/testSend")
+    public R<Object> testSend() {
+         WsUtils.sendToUser("1", "服务端消息发送");
+        return R.ok();
     }
 }
