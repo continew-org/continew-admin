@@ -1,59 +1,58 @@
 <template>
-  <div class="gi_page">
-    <a-card title="${businessName}管理" class="general-card">
-      <GiTable
-        ref="tableRef"
-        row-key="id"
-        :data="dataList"
-        :columns="columns"
-        :loading="loading"
-        :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
-        :pagination="pagination"
-        :disabled-tools="['size']"
-        :disabled-column-keys="['name']"
-        @refresh="search"
-      >
-        <template #custom-left>
-          <#list fieldConfigs as fieldConfig>
-          <#if fieldConfig.showInQuery>
-          <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
-            <template #prefix><icon-search /></template>
-          </a-input>
-          </#if>
-          </#list>
-          <a-button @click="reset">重置</a-button>
-        </template>
-        <template #custom-right>
-          <a-button v-permission="['${apiModuleName}:${apiName}:add']" type="primary" @click="onAdd">
-            <template #icon><icon-plus /></template>
-            <span>新增</span>
+  <div class="table-page">
+    <GiTable
+      ref="tableRef"
+      row-key="id"
+      title="${businessName}管理"
+      :data="dataList"
+      :columns="columns"
+      :loading="loading"
+      :scroll="{ x: '100%', y: '100%', minWidth: 1000 }"
+      :pagination="pagination"
+      :disabled-tools="['size']"
+      :disabled-column-keys="['name']"
+      @refresh="search"
+    >
+      <template #custom-left>
+        <#list fieldConfigs as fieldConfig>
+        <#if fieldConfig.showInQuery>
+        <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
+          <template #prefix><icon-search /></template>
+        </a-input>
+        </#if>
+        </#list>
+        <a-button @click="reset">重置</a-button>
+      </template>
+      <template #custom-right>
+        <a-button v-permission="['${apiModuleName}:${apiName}:add']" type="primary" @click="onAdd">
+          <template #icon><icon-plus /></template>
+          <span>新增</span>
+        </a-button>
+        <a-tooltip content="导出">
+          <a-button v-permission="['${apiModuleName}:${apiName}:export']" class="gi_hover_btn-border" @click="onExport">
+            <template #icon>
+              <icon-download />
+            </template>
           </a-button>
-          <a-tooltip content="导出">
-            <a-button v-permission="['${apiModuleName}:${apiName}:export']" class="gi_hover_btn-border" @click="onExport">
-              <template #icon>
-                <icon-download />
-              </template>
-            </a-button>
-          </a-tooltip>
-        </template>
-        <template #name="{ record }">
-          <a-link @click="onDetail(record)">{{ record.name }}</a-link>
-        </template>
-        <template #action="{ record }">
-          <a-space>
-            <a-link v-permission="['${apiModuleName}:${apiName}:update']" @click="onUpdate(record)">修改</a-link>
-            <a-link
-              v-permission="['${apiModuleName}:${apiName}:delete']"
-              status="danger"
-              :disabled="record.disabled"
-              @click="onDelete(record)"
-            >
-              删除
-            </a-link>
-          </a-space>
-        </template>
-      </GiTable>
-    </a-card>
+        </a-tooltip>
+      </template>
+      <template #name="{ record }">
+        <a-link @click="onDetail(record)">{{ record.name }}</a-link>
+      </template>
+      <template #action="{ record }">
+        <a-space>
+          <a-link v-permission="['${apiModuleName}:${apiName}:update']" @click="onUpdate(record)">修改</a-link>
+          <a-link
+            v-permission="['${apiModuleName}:${apiName}:delete']"
+            status="danger"
+            :disabled="record.disabled"
+            @click="onDelete(record)"
+          >
+            删除
+          </a-link>
+        </a-space>
+      </template>
+    </GiTable>
 
     <${classNamePrefix}AddModal ref="${classNamePrefix}AddModalRef" @save-success="search" />
     <${classNamePrefix}DetailDrawer ref="${classNamePrefix}DetailDrawerRef" />
@@ -88,16 +87,6 @@ const {
   handleDelete
 } = useTable((p) => list${classNamePrefix}({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
 
-// 重置
-const reset = () => {
-<#list fieldConfigs as fieldConfig>
-<#if fieldConfig.showInQuery>
-  queryForm.${fieldConfig.fieldName} = undefined
-</#if>
-</#list>
-  search()
-}
-
 const columns: TableInstanceColumns[] = [
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>
@@ -115,6 +104,16 @@ const columns: TableInstanceColumns[] = [
     show: has.hasPermOr(['${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
   }
 ]
+
+// 重置
+const reset = () => {
+<#list fieldConfigs as fieldConfig>
+<#if fieldConfig.showInQuery>
+  queryForm.${fieldConfig.fieldName} = undefined
+</#if>
+</#list>
+  search()
+}
 
 // 删除
 const onDelete = (item: ${classNamePrefix}Resp) => {
