@@ -16,10 +16,12 @@
 
 package top.continew.admin.common.util;
 
+import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import top.continew.admin.common.model.dto.Msg;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ public class WsUtils {
         } else {
             webSocketSession.close(CloseStatus.SERVER_ERROR);
             WsUtils.remove(webSocketSession);
-            log.error("服务端主动关闭连接：用户{}错误信息：{}", userId, msg);
+            log.error("服务端主动关闭连接：用户{}信息：{}", userId, msg);
         }
     }
 
@@ -146,10 +148,8 @@ public class WsUtils {
     }
 
 
-
-
     /**
-     * 发送消息
+     * 发送消息给指定用户
      *
      * @param userId  对象id
      * @param message 消息
@@ -170,7 +170,28 @@ public class WsUtils {
     }
 
     /**
-     * 发送消息
+     * 发送消息给指定用户
+     *
+     * @param userId  对象id
+     * @param message 消息
+     * @throws IOException IO
+     */
+    public static void sendToUser(String userId, Msg message) {
+        WebSocketSession webSocketSession = getWebSocketSession(userId);
+        if (webSocketSession == null || !webSocketSession.isOpen()) {
+            log.warn("用户【{}】已关闭，无法送消息：{}", userId, JSONObject.toJSONString(message));
+        } else {
+            try {
+                webSocketSession.sendMessage(new TextMessage(JSONObject.toJSONString(message)));
+            } catch (IOException e) {
+                log.error("发送消息失败：{}", e.getMessage(), e);
+            }
+            log.info("sendMessage：向{}发送消息：{}", userId, JSONObject.toJSONString(message));
+        }
+    }
+
+    /**
+     * 发送消息全部在线用户
      *
      * @param message 消息
      * @throws IOException IO
@@ -180,7 +201,17 @@ public class WsUtils {
     }
 
     /**
-     * 发送消息
+     * 发送消息全部在线用户
+     *
+     * @param message 消息
+     * @throws IOException IO
+     */
+    public static void sendToAll(Msg message) {
+        getUserList().forEach(userId -> sendToUser(userId, JSONObject.toJSONString(message)));
+    }
+
+    /**
+     * 发送通过webSocketSession发送消息
      *
      * @param webSocketSession 对象id
      * @param message          消息
@@ -197,6 +228,27 @@ public class WsUtils {
                 log.error("发送消息失败：{}", e.getMessage(), e);
             }
             log.info("sendMessage：向{}发送消息：{}", webSocketSession.getId(), message);
+        }
+    }
+
+    /**
+     * 发送通过webSocketSession发送消息
+     *
+     * @param webSocketSession 对象id
+     * @param message          消息
+     * @throws IOException IO
+     */
+    public static void send(WebSocketSession webSocketSession, Msg message) {
+
+        if (webSocketSession == null || !webSocketSession.isOpen()) {
+            log.warn("连接对象【{}】已关闭，无法送消息：{}", webSocketSession.getId(), JSONObject.toJSONString(message));
+        } else {
+            try {
+                webSocketSession.sendMessage(new TextMessage(JSONObject.toJSONString(message)));
+            } catch (IOException e) {
+                log.error("发送消息失败：{}", e.getMessage(), e);
+            }
+            log.info("sendMessage：向{}发送消息：{}", webSocketSession.getId(), JSONObject.toJSONString(message));
         }
     }
 

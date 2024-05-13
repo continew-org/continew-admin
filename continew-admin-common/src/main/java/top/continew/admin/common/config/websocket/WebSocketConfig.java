@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.config.websocket;
+package top.continew.admin.common.config.websocket;
 
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import top.continew.admin.system.handler.MyWebSocketHandler;
+import top.continew.admin.common.handler.MyWebSocketHandler;
 
 /**
  * Created by WeiRan on 2024.03.13 16:45

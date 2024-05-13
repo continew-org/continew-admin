@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.handler;
+package top.continew.admin.common.handler;
 
 /**
  * Created by WeiRan on 2024.03.13 16:41

@@ -21,6 +21,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import top.continew.admin.common.enums.ChatTypeEnum;
+import top.continew.admin.common.enums.MsgTypeEnum;
+import top.continew.admin.common.model.dto.LoginUser;
+import top.continew.admin.common.model.dto.Msg;
+import top.continew.admin.common.util.NoticeMsgUtils;
+import top.continew.admin.common.util.WsUtils;
+import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.query.NoticeQuery;
 import top.continew.admin.system.model.req.NoticeReq;
 import top.continew.admin.system.model.resp.NoticeDetailResp;
@@ -49,7 +56,9 @@ public class NoticeController extends BaseController<NoticeService, NoticeResp, 
     @Override
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody NoticeReq req) {
         this.checkTime(req);
-        return super.add(req);
+        Long id = super.add(req).getData();
+        WsUtils.sendToAll(NoticeMsgUtils.conversion(req.getTitle(), String.valueOf(id)));
+        return R.ok(id);
     }
 
     @Override

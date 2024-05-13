@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.config.websocket;
+package top.continew.admin.common.config.websocket;
 
 /**
  * Created by WeiRan on 2024.03.13 16:43
