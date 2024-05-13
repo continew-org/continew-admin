@@ -17,8 +17,7 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
+import cn.hutool.core.util.*;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,7 +84,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             storage = storageService.getByCode(storageCode);
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
-        UploadPretreatment uploadPretreatment = fileStorageService.of(file).setPlatform(storage.getCode());
+
+        UploadPretreatment uploadPretreatment = fileStorageService.of(file)
+            .thumbnail(img -> img.size(100, 100))
+            .setPlatform(storage.getCode())
+            .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage);
         uploadPretreatment.setProgressMonitor(new ProgressListener() {
             @Override
             public void start() {
@@ -133,7 +136,12 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         super.fill(obj);
         if (obj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
             StorageDO storage = storageService.getById(fileResp.getStorageId());
-            fileResp.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl()));
+            String url = URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl());
+            fileResp.setUrl(url);
+            String thumbnailUrl = StrUtil.isBlank(fileResp.getThumbnailUrl())
+                ? url
+                : URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getThumbnailUrl());
+            fileResp.setThumbnailUrl(thumbnailUrl);
         }
     }
 }

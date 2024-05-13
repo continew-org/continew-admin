@@ -267,6 +267,8 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
     `create_time`   datetime     NOT NULL                    COMMENT '创建时间',
     `update_user`   bigint(20)   NOT NULL                    COMMENT '修改人',
     `update_time`   datetime     NOT NULL                    COMMENT '修改时间',
+    `thumbnail_size` bigint(20) NULL DEFAULT NULL COMMENT '缩略图大小（字节)',
+    `thumbnail_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '缩略图URL',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `idx_url`(`url`) USING BTREE,
     INDEX `idx_type`(`type`) USING BTREE,
