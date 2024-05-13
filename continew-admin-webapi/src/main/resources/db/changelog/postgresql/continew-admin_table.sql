@@ -441,6 +441,8 @@ CREATE TABLE IF NOT EXISTS "sys_file" (
     "create_time"   timestamp    NOT NULL,
     "update_user"   int8         NOT NULL,
     "update_time"   timestamp    NOT NULL,
+    "thumbnail_size"   int8    DEFAULT NULL,
+    "thumbnail_url"   varchar(512)    DEFAULT NULL,
     PRIMARY KEY ("id")
 );
 CREATE INDEX "idx_file_url"  ON "sys_file" ("url");
@@ -458,6 +460,8 @@ COMMENT ON COLUMN "sys_file"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_file"."create_time" IS '创建时间';
 COMMENT ON COLUMN "sys_file"."update_user" IS '修改人';
 COMMENT ON COLUMN "sys_file"."update_time" IS '修改时间';
+COMMENT ON COLUMN "sys_file"."thumbnail_size" IS '缩略图大小（字节)';
+COMMENT ON COLUMN "sys_file"."thumbnail_url" IS '缩略图URL';
 COMMENT ON TABLE  "sys_file"               IS '文件表';
 
 CREATE TABLE IF NOT EXISTS "gen_config" (

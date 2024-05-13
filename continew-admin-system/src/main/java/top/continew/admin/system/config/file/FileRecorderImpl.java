@@ -17,6 +17,7 @@
 package top.continew.admin.system.config.file;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,9 @@ public class FileRecorderImpl implements FileRecorder {
         file.setUrl(fileInfo.getUrl());
         file.setExtension(fileInfo.getExt());
         file.setType(FileTypeEnum.getByExtension(file.getExtension()));
-        StorageDO storage = storageMapper.lambdaQuery().eq(StorageDO::getCode, fileInfo.getPlatform()).one();
+        file.setThumbnailUrl(fileInfo.getThUrl());
+        file.setThumbnailSize(fileInfo.getThSize());
+        StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         file.setStorageId(storage.getId());
         file.setCreateTime(DateUtil.toLocalDateTime(fileInfo.getCreateTime()));
         file.setUpdateUser(LoginHelper.getUserId());

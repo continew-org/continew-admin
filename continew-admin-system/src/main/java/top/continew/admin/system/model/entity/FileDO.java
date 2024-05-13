@@ -71,6 +71,16 @@ public class FileDO extends BaseDO {
     private FileTypeEnum type;
 
     /**
+     * 缩略图大小（字节)
+     */
+    private Long thumbnailSize;
+
+    /**
+     * 缩略图URL
+     */
+    private String thumbnailUrl;
+
+    /**
      * 存储 ID
      */
     private Long storageId;
