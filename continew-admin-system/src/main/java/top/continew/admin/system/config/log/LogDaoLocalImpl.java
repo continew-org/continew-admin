@@ -35,6 +35,7 @@ import top.continew.admin.system.model.entity.LogDO;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ExceptionUtils;
+import top.continew.starter.core.util.StrUtils;
 import top.continew.starter.log.core.dao.LogDao;
 import top.continew.starter.log.core.model.LogRecord;
 import top.continew.starter.log.core.model.LogRequest;
@@ -67,9 +68,7 @@ public class LogDaoLocalImpl implements LogDao {
         LogDO logDO = new LogDO();
         logDO.setDescription(logRecord.getDescription());
         String module = logRecord.getModule();
-        logDO.setModule(StrUtil.isNotBlank(module)
-            ? logRecord.getModule().replace("API", StringConstants.EMPTY).trim()
-            : null);
+        logDO.setModule(StrUtils.blankToDefault(module, null, m -> m.replace("API", StringConstants.EMPTY).trim()));
         logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
         logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
         // 请求信息

@@ -100,16 +100,14 @@ public class LoginServiceImpl implements LoginService {
         if (maxErrorCount <= 0) {
             return;
         }
-        String key = CacheConstants.USER_KEY_PREFIX + "PASSWORD-ERROR:" + username;
-        Long currentErrorCount = RedisUtils.get(key);
-        currentErrorCount = currentErrorCount == null ? 0 : currentErrorCount;
         int lockMinutes = optionService.getValueByCode2Int(OptionCodeEnum.PASSWORD_LOCK_MINUTES);
+        String key = CacheConstants.USER_KEY_PREFIX + "PASSWORD-ERROR:" + username;
+        long currentErrorCount = 0;
         if (isError) {
-            // 密码错误自增次数，并重置时间
-            currentErrorCount = currentErrorCount + 1;
-            RedisUtils.set(key, currentErrorCount, Duration.ofMinutes(lockMinutes));
+            currentErrorCount = RedisUtils.incr(key);
+            RedisUtils.expire(key, Duration.ofMinutes(lockMinutes));
         }
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "密码错误已达 {} 次，账户锁定 {} 分钟", maxErrorCount, lockMinutes);
+        CheckUtils.throwIf(currentErrorCount > maxErrorCount, "密码错误已达 {} 次，账户锁定 {} 分钟", maxErrorCount, lockMinutes);
     }
 
     @Override

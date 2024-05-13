@@ -159,7 +159,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
@@ -290,7 +289,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void updateRole(UserRoleUpdateReq updateReq, Long id) {
         super.getById(id);
         // 保存用户和角色关联
@@ -335,31 +333,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    protected void beforeAdd(UserReq req) {
-        final String errorMsgTemplate = "新增失败，[{}] 已存在";
-        String username = req.getUsername();
-        CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
-        String email = req.getEmail();
-        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), errorMsgTemplate, email);
-        String phone = req.getPhone();
-        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
-    }
-
-    @Override
-    protected void afterAdd(UserReq req, UserDO user) {
-        Long userId = user.getId();
-        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
-        // 保存用户和角色关联
-        userRoleService.add(req.getRoleIds(), userId);
-    }
-
-    /**
-     * 构建 QueryWrapper
-     *
-     * @param query 查询条件
-     * @return QueryWrapper
-     */
-    private QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
+    protected QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
         String description = query.getDescription();
         Integer status = query.getStatus();
         List<Date> createTimeList = query.getCreateTime();
@@ -380,6 +354,25 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
                 deptIdList.add(deptId);
                 q.in("t1.dept_id", deptIdList);
             });
+    }
+
+    @Override
+    protected void beforeAdd(UserReq req) {
+        final String errorMsgTemplate = "新增失败，[{}] 已存在";
+        String username = req.getUsername();
+        CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
+        String email = req.getEmail();
+        CheckUtils.throwIf(StrUtil.isNotBlank(email) && this.isEmailExists(email, null), errorMsgTemplate, email);
+        String phone = req.getPhone();
+        CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, null), errorMsgTemplate, phone);
+    }
+
+    @Override
+    protected void afterAdd(UserReq req, UserDO user) {
+        Long userId = user.getId();
+        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
+        // 保存用户和角色关联
+        userRoleService.add(req.getRoleIds(), userId);
     }
 
     /**

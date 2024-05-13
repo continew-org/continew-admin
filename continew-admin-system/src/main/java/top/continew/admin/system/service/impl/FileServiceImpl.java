@@ -84,7 +84,6 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             storage = storageService.getByCode(storageCode);
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
-
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .thumbnail(img -> img.size(100, 100))
             .setPlatform(storage.getCode())

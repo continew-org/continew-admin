@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
+import top.continew.starter.core.util.StrUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -130,9 +131,8 @@ public class GenConfigDO implements Serializable {
     }
 
     public String getClassNamePrefix() {
-        String rawClassName = StrUtil.isNotBlank(this.tablePrefix)
-            ? StrUtil.removePrefix(this.tableName, this.tablePrefix)
-            : this.tableName;
+        String rawClassName = StrUtils.blankToDefault(this.tablePrefix, this.tableName, prefix -> StrUtil
+            .removePrefix(this.tableName, prefix));
         return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }
