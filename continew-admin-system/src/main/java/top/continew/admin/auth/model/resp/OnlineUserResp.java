@@ -16,8 +16,11 @@
 
 package top.continew.admin.auth.model.resp;
 
+import cn.crane4j.annotation.Assemble;
+import cn.crane4j.annotation.Mapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.starter.extension.crud.constant.ContainerPool;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -40,6 +43,7 @@ public class OnlineUserResp implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
+    @Assemble(container = ContainerPool.USER_NICKNAME, props = @Mapping(ref = "nickname"))
     private Long id;
 
     /**
@@ -89,4 +93,10 @@ public class OnlineUserResp implements Serializable {
      */
     @Schema(description = "登录时间", example = "2023-08-08 08:08:08", type = "string")
     private LocalDateTime loginTime;
+
+    /**
+     * 最后活跃时间
+     */
+    @Schema(description = "最后活跃时间", example = "2023-08-08 08:08:08", type = "string")
+    private LocalDateTime lastActiveTime;
 }

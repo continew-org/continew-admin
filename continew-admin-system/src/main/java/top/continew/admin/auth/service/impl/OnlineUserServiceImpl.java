@@ -16,6 +16,7 @@
 
 package top.continew.admin.auth.service.impl;
 
+import cn.crane4j.annotation.AutoOperate;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
@@ -49,11 +50,17 @@ import java.util.List;
 public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
+    @AutoOperate(type = OnlineUserResp.class, on = "list")
     public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
         List<LoginUser> loginUserList = this.list(query);
         List<OnlineUserResp> list = BeanUtil.copyToList(loginUserList, OnlineUserResp.class);
         PageResp<OnlineUserResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
-        pageResp.getList().forEach(u -> u.setNickname(LoginHelper.getNickname(u.getId())));
+        pageResp.getList().forEach(u -> {
+            long lastActiveTime = StpUtil.getStpLogic().getTokenLastActiveTime(u.getToken());
+            if (SaTokenDao.NOT_VALUE_EXPIRE != lastActiveTime) {
+                u.setLastActiveTime(DateUtil.toLocalDateTime(new Date(lastActiveTime)));
+            }
+        });
         return pageResp;
     }
 
