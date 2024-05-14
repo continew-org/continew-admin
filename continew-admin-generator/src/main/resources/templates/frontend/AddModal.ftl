@@ -53,7 +53,7 @@ const columns: Columns = [
 </#list>
 ]
 
-const { form, resetForm } = useForm<({
+const { form, resetForm } = useForm({
     // todo 待补充
 })
 

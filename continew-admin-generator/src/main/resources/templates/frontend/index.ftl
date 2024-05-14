@@ -85,7 +85,7 @@ const {
   pagination,
   search,
   handleDelete
-} = useTable((p) => list${classNamePrefix}({ ...queryForm, page: p.page, size: p.size }), { immediate: true })
+} = useTable((page) => list${classNamePrefix}({ ...queryForm, ...page }), { immediate: true })
 
 const columns: TableInstanceColumns[] = [
 <#if fieldConfigs??>
