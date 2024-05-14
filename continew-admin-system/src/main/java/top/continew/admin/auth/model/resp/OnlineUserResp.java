@@ -20,7 +20,7 @@ import cn.crane4j.annotation.Assemble;
 import cn.crane4j.annotation.Mapping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.starter.extension.crud.constant.ContainerPool;
+import top.continew.admin.common.constant.ContainerConstants;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -43,13 +43,14 @@ public class OnlineUserResp implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
-    @Assemble(container = ContainerPool.USER_NICKNAME, props = @Mapping(ref = "nickname"))
+    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "nickname"))
     private Long id;
 
     /**
      * 令牌
      */
     @Schema(description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
+    @Assemble(container = ContainerConstants.ONLINE_USER_LAST_ACTIVE_TIME, props = @Mapping(ref = "lastActiveTime"))
     private String token;
 
     /**

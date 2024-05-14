@@ -17,6 +17,8 @@
 package top.continew.admin.auth.service.impl;
 
 import cn.crane4j.annotation.AutoOperate;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.MappingType;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
@@ -28,12 +30,14 @@ import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -54,14 +58,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
         List<LoginUser> loginUserList = this.list(query);
         List<OnlineUserResp> list = BeanUtil.copyToList(loginUserList, OnlineUserResp.class);
-        PageResp<OnlineUserResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
-        pageResp.getList().forEach(u -> {
-            long lastActiveTime = StpUtil.getStpLogic().getTokenLastActiveTime(u.getToken());
-            if (SaTokenDao.NOT_VALUE_EXPIRE != lastActiveTime) {
-                u.setLastActiveTime(DateUtil.toLocalDateTime(new Date(lastActiveTime)));
-            }
-        });
-        return pageResp;
+        return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
     }
 
     @Override
@@ -84,6 +81,13 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         // 设置排序
         CollUtil.sort(loginUserList, Comparator.comparing(LoginUser::getLoginTime).reversed());
         return loginUserList;
+    }
+
+    @Override
+    @ContainerMethod(namespace = ContainerConstants.ONLINE_USER_LAST_ACTIVE_TIME, type = MappingType.ORDER_OF_KEYS)
+    public LocalDateTime getLastActiveTime(String token) {
+        long lastActiveTime = StpUtil.getStpLogic().getTokenLastActiveTime(token);
+        return lastActiveTime == SaTokenDao.NOT_VALUE_EXPIRE ? null : DateUtil.date(lastActiveTime).toLocalDateTime();
     }
 
     @Override

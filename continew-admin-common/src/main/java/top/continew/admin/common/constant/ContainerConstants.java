@@ -41,6 +41,11 @@ public class ContainerConstants extends ContainerPool {
      */
     public static final String ROLE_DEPT_ID_LIST = "RoleDeptIdList";
 
+    /**
+     * 在线用户最后活跃时间
+     */
+    public static final String ONLINE_USER_LAST_ACTIVE_TIME = "OnlineUserLastActiveTime";
+
     private ContainerConstants() {
     }
 }
