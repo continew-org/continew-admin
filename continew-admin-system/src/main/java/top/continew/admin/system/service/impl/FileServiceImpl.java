@@ -17,7 +17,10 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ import org.dromara.x.file.storage.core.ProgressListener;
 import org.dromara.x.file.storage.core.upload.UploadPretreatment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
@@ -38,6 +42,7 @@ import top.continew.admin.system.model.resp.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.StrUtils;
 import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
@@ -85,9 +90,12 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
-            .thumbnail(img -> img.size(100, 100))
             .setPlatform(storage.getCode())
             .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage);
+        // 图片文件生成缩略图
+        if (FileTypeEnum.IMAGE.getExtensions().contains(FileNameUtil.extName(file.getOriginalFilename()))) {
+            uploadPretreatment.thumbnail(img -> img.size(100, 100));
+        }
         uploadPretreatment.setProgressMonitor(new ProgressListener() {
             @Override
             public void start() {
@@ -135,11 +143,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         super.fill(obj);
         if (obj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
             StorageDO storage = storageService.getById(fileResp.getStorageId());
-            String url = URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getUrl());
+            String prefix = storage.getDomain() + StringConstants.SLASH;
+            String url = URLUtil.normalize(prefix + fileResp.getUrl());
             fileResp.setUrl(url);
-            String thumbnailUrl = StrUtil.isBlank(fileResp.getThumbnailUrl())
-                ? url
-                : URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileResp.getThumbnailUrl());
+            String thumbnailUrl = StrUtils.blankToDefault(fileResp.getThumbnailUrl(), url, thUrl -> URLUtil
+                .normalize(prefix + thUrl));
             fileResp.setThumbnailUrl(thumbnailUrl);
         }
     }
