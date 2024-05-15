@@ -146,4 +146,18 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 是否过期
      */
     Boolean isPasswordExpired(LocalDateTime pwdResetTime);
+
+    /**
+     * 获取所有用户信息
+     *
+     * @return 用户集合
+     */
+    List<UserDO> getUserList();
+
+    /**
+     * 获取所有用户的id
+     * 
+     * @return
+     */
+    List<Long> userIdList();
 }

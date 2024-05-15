@@ -24,9 +24,7 @@ import org.springframework.web.socket.WebSocketSession;
 import top.continew.admin.common.model.dto.Msg;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,7 +43,6 @@ public class WsUtils {
      * 静态变量，用来记录当前在线连接数，线程安全的类。
      */
     public static AtomicInteger onlineCount = new AtomicInteger(0);
-
 
     /**
      * 绑定用户连接
@@ -84,7 +81,6 @@ public class WsUtils {
         }
     }
 
-
     /**
      * 通过userId获取WebSocketSession
      *
@@ -102,7 +98,7 @@ public class WsUtils {
      * @return
      */
     public static String getUserId(WebSocketSession session) {
-        return (String) session.getAttributes().get("userId");
+        return (String)session.getAttributes().get("userId");
     }
 
     /**
@@ -112,9 +108,8 @@ public class WsUtils {
      * @return
      */
     public static String getIp(WebSocketSession session) {
-        return (String) session.getAttributes().get("ip");
+        return (String)session.getAttributes().get("ip");
     }
-
 
     /**
      * 判断链接是否存在
@@ -126,7 +121,6 @@ public class WsUtils {
         return WsUtils.webSocketSessionMap.containsKey(userId);
     }
 
-
     /**
      * 判断链接是否存在
      *
@@ -137,7 +131,6 @@ public class WsUtils {
         return WsUtils.webSocketSessionMap.containsKey(getUserId(webSocketSession));
     }
 
-
     /**
      * 获取所有的用户连接的用户id
      *
@@ -146,7 +139,6 @@ public class WsUtils {
     public static List<String> getUserList() {
         return Collections.list(webSocketSessionMap.keys());
     }
-
 
     /**
      * 发送消息给指定用户
@@ -251,6 +243,5 @@ public class WsUtils {
             log.info("sendMessage：向{}发送消息：{}", webSocketSession.getId(), JSONObject.toJSONString(message));
         }
     }
-
 
 }

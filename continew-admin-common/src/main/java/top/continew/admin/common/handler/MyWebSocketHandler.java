@@ -33,12 +33,11 @@ import java.io.IOException;
 
 /**
  * @author zhong
- * webscoket 处理器
+ *         webscoket 处理器
  */
 @Component
 @Slf4j
 public class MyWebSocketHandler extends TextWebSocketHandler {
-
 
     /**
      * 收到客户端消息时触发的回调
@@ -56,7 +55,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         }
         try {
             //业务逻辑处理
-            WsUtils.send(session, "我收到了你的消息");
+            // WsUtils.send(session, "我收到了你的消息");
         } catch (Exception e) {
             log.error("WebSocket消息解析失败：{}", e.getMessage(), e);
             WsUtils.close(session, "消息解析失败：" + e.getMessage());

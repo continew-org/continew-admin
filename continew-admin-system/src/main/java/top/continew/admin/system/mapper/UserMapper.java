@@ -26,6 +26,8 @@ import top.continew.admin.system.model.entity.UserDO;
 import top.continew.starter.data.mybatis.plus.datapermission.DataPermission;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
+import java.util.List;
+
 /**
  * 用户 Mapper
  *
@@ -96,4 +98,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 用户数量
      */
     Long selectCountByPhone(@FieldEncrypt @Param("phone") String phone, @Param("id") Long id);
+
+    @Select("SELECT id FROM sys_user")
+    List<Long> userIdList();
 }

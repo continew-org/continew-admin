@@ -85,7 +85,7 @@ public class MessageController {
 
     @GetMapping("/testSend")
     public R<Object> testSend() {
-         WsUtils.sendToUser("1", "服务端消息发送");
+        WsUtils.sendToUser("1", "服务端消息发送");
         return R.ok();
     }
 }

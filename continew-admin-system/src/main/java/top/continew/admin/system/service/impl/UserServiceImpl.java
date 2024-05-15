@@ -85,6 +85,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
+    private final UserMapper userMapper;
+
     @Resource
     private DeptService deptService;
     @Value("${avatar.support-suffix}")
@@ -259,6 +261,26 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             return true;
         }
         return pwdResetTime.plusDays(passwordExpirationDays).isBefore(LocalDateTime.now());
+    }
+
+    /**
+     * 获取所有用户信息
+     *
+     * @return 用户集合
+     */
+    @Override
+    public List<UserDO> getUserList() {
+        return this.lambdaQuery().list();
+    }
+
+    /**
+     * 获取所有用户的id
+     *
+     * @return
+     */
+    @Override
+    public List<Long> userIdList() {
+        return userMapper.userIdList();
     }
 
     @Override

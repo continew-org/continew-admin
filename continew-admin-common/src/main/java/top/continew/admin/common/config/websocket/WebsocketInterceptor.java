@@ -66,7 +66,7 @@ public class WebsocketInterceptor extends HttpSessionHandshakeInterceptor {
         ServletServerHttpResponse res = (ServletServerHttpResponse)response;
 
         HttpServletRequest httpServletRequest = ServletUtils.getRequest();
-        String ip=JakartaServletUtil.getClientIP(httpServletRequest);
+        String ip = JakartaServletUtil.getClientIP(httpServletRequest);
         String token = req.getServletRequest().getParameter("token");
         log.info("开始建立连接....token:{}", token);
         log.info("attributes:{}", attributes);
