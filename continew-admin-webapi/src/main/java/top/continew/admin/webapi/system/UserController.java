@@ -61,7 +61,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getPassword()));
         ValidationUtils.throwIfNull(rawPassword, "密码解密失败");
         ValidationUtils.throwIf(!ReUtil
-            .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
+            .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         req.setPassword(rawPassword);
         return super.add(req);
     }
@@ -74,7 +74,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
         ValidationUtils.throwIf(!ReUtil
-            .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字");
+            .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         req.setNewPassword(rawNewPassword);
         baseService.resetPassword(req, id);
         return R.ok("重置密码成功");

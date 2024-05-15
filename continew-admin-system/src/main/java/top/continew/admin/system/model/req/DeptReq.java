@@ -54,7 +54,7 @@ public class DeptReq extends BaseReq {
      */
     @Schema(description = "名称", example = "测试部")
     @NotBlank(message = "名称不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2 到 30 位，可以包含中文、字母、数字、下划线，短横线")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2-30 个字符，支持中文、字母、数字、下划线，短横线")
     private String name;
 
     /**

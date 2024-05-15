@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +69,7 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
-    public R<LoginResp> accountLogin(@Validated @RequestBody AccountLoginReq loginReq) {
+    public R<LoginResp> accountLogin(@Validated @RequestBody AccountLoginReq loginReq, HttpServletRequest request) {
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + loginReq.getUuid();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
@@ -77,21 +78,7 @@ public class AuthController {
         // 用户登录
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
-        String token = loginService.accountLogin(loginReq.getUsername(), rawPassword);
-        return R.ok(LoginResp.builder().token(token).build());
-    }
-
-    @SaIgnore
-    @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
-    @PostMapping("/email")
-    public R<LoginResp> emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
-        String email = loginReq.getEmail();
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
-        String captcha = RedisUtils.get(captchaKey);
-        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
-        RedisUtils.delete(captchaKey);
-        String token = loginService.emailLogin(email);
+        String token = loginService.accountLogin(loginReq.getUsername(), rawPassword, request);
         return R.ok(LoginResp.builder().token(token).build());
     }
 
@@ -106,6 +93,20 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
         String token = loginService.phoneLogin(phone);
+        return R.ok(LoginResp.builder().token(token).build());
+    }
+
+    @SaIgnore
+    @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
+    @PostMapping("/email")
+    public R<LoginResp> emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
+        String email = loginReq.getEmail();
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
+        String captcha = RedisUtils.get(captchaKey);
+        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
+        RedisUtils.delete(captchaKey);
+        String token = loginService.emailLogin(email);
         return R.ok(LoginResp.builder().token(token).build());
     }
 

@@ -25,6 +25,16 @@ package top.continew.admin.common.constant;
 public class SysConstants {
 
     /**
+     * 否
+     */
+    public static final Integer NO = 0;
+
+    /**
+     * 是
+     */
+    public static final Integer YES = 1;
+
+    /**
      * 管理员角色编码
      */
     public static final String ADMIN_ROLE_CODE = "admin";

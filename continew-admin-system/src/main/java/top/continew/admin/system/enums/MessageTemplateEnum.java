@@ -32,7 +32,7 @@ public enum MessageTemplateEnum {
     /**
      * 第三方登录
      */
-    SOCIAL_REGISTER("欢迎注册 {}", "尊敬的 {}，欢迎注册使用，请及时配置您的密码。");
+    SOCIAL_REGISTER("欢迎注册 %s", "尊敬的 %s，欢迎注册使用，请及时配置您的密码。");
 
     private final String title;
     private final String content;

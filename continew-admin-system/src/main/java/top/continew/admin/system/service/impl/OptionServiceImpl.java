@@ -17,14 +17,10 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.system.enums.OptionCodeEnum;
 import top.continew.admin.system.mapper.OptionMapper;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.admin.system.model.query.OptionQuery;
@@ -70,25 +66,24 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public int getValueByCode2Int(OptionCodeEnum code) {
+    public int getValueByCode2Int(String code) {
         return this.getValueByCode(code, Integer::parseInt);
     }
 
     @Override
-    public <T> T getValueByCode(OptionCodeEnum code, Function<String, T> mapper) {
-        String value = RedisUtils.get(CacheConstants.OPTION_KEY_PREFIX + code.getValue());
+    public <T> T getValueByCode(String code, Function<String, T> mapper) {
+        String value = RedisUtils.get(CacheConstants.OPTION_KEY_PREFIX + code);
         if (StrUtil.isNotBlank(value)) {
             return mapper.apply(value);
         }
-        LambdaQueryWrapper<OptionDO> queryWrapper = Wrappers.<OptionDO>lambdaQuery()
-            .eq(OptionDO::getCode, code.getValue())
-            .select(OptionDO::getValue, OptionDO::getDefaultValue);
-        OptionDO optionDO = baseMapper.selectOne(queryWrapper);
-        CheckUtils.throwIf(ObjUtil.isEmpty(optionDO), "配置 [{}] 不存在", code);
-        value = StrUtil.nullToDefault(optionDO.getValue(), optionDO.getDefaultValue());
-        CheckUtils.throwIf(StrUtil.isBlank(value), "配置 [{}] 不存在", code);
-        RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code.getValue(), value);
+        OptionDO option = baseMapper.lambdaQuery()
+            .eq(OptionDO::getCode, code)
+            .select(OptionDO::getValue, OptionDO::getDefaultValue)
+            .one();
+        CheckUtils.throwIfNull(option, "参数 [{}] 不存在", code);
+        value = StrUtil.nullToDefault(option.getValue(), option.getDefaultValue());
+        CheckUtils.throwIfBlank(value, "参数 [{}] 数据错误", code);
+        RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code, value);
         return mapper.apply(value);
     }
-
 }

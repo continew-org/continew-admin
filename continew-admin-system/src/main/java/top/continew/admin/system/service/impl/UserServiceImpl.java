@@ -18,7 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
@@ -41,6 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
+import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.UserMapper;
@@ -63,10 +63,13 @@ import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static top.continew.admin.system.enums.OptionCodeEnum.*;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 
 /**
  * 用户业务实现
@@ -197,7 +200,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 校验密码合法性
-        checkPassword(newPassword, user);
+        this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
         user.setPassword(newPassword);
         user.setPwdResetTime(LocalDateTime.now());
@@ -205,52 +208,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         onlineUserService.cleanByUserId(user.getId());
     }
 
-    /**
-     * 检测修改密码合法性
-     *
-     * @param password 密码
-     * @param user     用户
-     */
-    private void checkPassword(String password, UserDO user) {
-        // 密码最小长度
-        int passwordMinLength = optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH);
-        ValidationUtils.throwIf(StrUtil.length(password) < passwordMinLength, PASSWORD_MIN_LENGTH
-            .getDescription() + "为 {}", passwordMinLength);
-        // 密码是否允许包含正反序用户名
-        int passwordContainName = optionService.getValueByCode2Int(PASSWORD_CONTAIN_NAME);
-        if (passwordContainName == 1) {
-            String username = user.getUsername();
-            ValidationUtils.throwIf(StrUtil.containsIgnoreCase(password, username) || StrUtil
-                .containsIgnoreCase(password, StrUtil.reverse(username)), PASSWORD_CONTAIN_NAME.getDescription());
-        }
-        // 密码是否必须包含特殊字符
-        int passwordSpecialChar = optionService.getValueByCode2Int(PASSWORD_SPECIAL_CHAR);
-        String match = RegexConstants.PASSWORD;
-        String desc = "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字";
-        if (passwordSpecialChar == 1) {
-            match = RegexConstants.PASSWORD_STRICT;
-            desc = "密码长度为 8 到 32 位，包含至少1个大写字母、1个小写字母、1个数字，1个特殊字符";
-        }
-        ValidationUtils.throwIf(!ReUtil.isMatch(match, password), desc);
-        // 密码修改间隔
-        if (ObjectUtil.isNull(user.getPwdResetTime())) {
-            return;
-        }
-        int passwordUpdateInterval = optionService.getValueByCode2Int(PASSWORD_UPDATE_INTERVAL);
-        if (passwordUpdateInterval <= 0) {
-            return;
-        }
-        LocalDateTime lastResetTime = user.getPwdResetTime();
-        LocalDateTime limitUpdateTime = lastResetTime.plusMinutes(passwordUpdateInterval);
-        ValidationUtils.throwIf(LocalDateTime.now().isBefore(limitUpdateTime), "上次修改于：{}，下次可修改时间：{}", LocalDateTimeUtil
-            .formatNormal(lastResetTime), LocalDateTimeUtil.formatNormal(limitUpdateTime));
-    }
-
     @Override
     public Boolean isPasswordExpired(LocalDateTime pwdResetTime) {
         // 永久有效
-        int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS);
-        if (passwordExpirationDays <= 0) {
+        int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name());
+        if (passwordExpirationDays <= SysConstants.NO) {
             return false;
         }
         // 初始密码也提示修改
@@ -373,6 +335,33 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
         userRoleService.add(req.getRoleIds(), userId);
+    }
+
+    /**
+     * 检测密码合法性
+     *
+     * @param password 密码
+     * @param user     用户信息
+     */
+    private void checkPassword(String password, UserDO user) {
+        // 密码最小长度
+        int passwordMinLength = optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name());
+        ValidationUtils.throwIf(StrUtil.length(password) < passwordMinLength, PASSWORD_MIN_LENGTH.getDescription()
+            .formatted(passwordMinLength));
+        // 密码是否允许包含正反序账号名
+        int passwordAllowContainUsername = optionService.getValueByCode2Int(PASSWORD_ALLOW_CONTAIN_USERNAME.name());
+        if (passwordAllowContainUsername == SysConstants.NO) {
+            String username = user.getUsername();
+            ValidationUtils.throwIf(StrUtil.containsAnyIgnoreCase(password, username, StrUtil
+                .reverse(username)), PASSWORD_ALLOW_CONTAIN_USERNAME.getDescription());
+        }
+        int passwordMaxLength = PASSWORD_MIN_LENGTH.getMax();
+        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConstants.PASSWORD_TEMPLATE
+            .formatted(passwordMinLength, passwordMaxLength), password), "密码长度为 {}-{} 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字", passwordMinLength, passwordMaxLength);
+        // 密码是否必须包含特殊字符
+        int passwordContainSpecialChar = optionService.getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name());
+        ValidationUtils.throwIf(passwordContainSpecialChar == SysConstants.YES && !ReUtil
+            .isMatch(RegexConstants.SPECIAL_CHARACTER, password), PASSWORD_CONTAIN_SPECIAL_CHARACTERS.getDescription());
     }
 
     /**
