@@ -158,6 +158,20 @@ COMMENT ON COLUMN "sys_user"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_user"."update_time"    IS '修改时间';
 COMMENT ON TABLE  "sys_user"                  IS '用户表';
 
+CREATE TABLE IF NOT EXISTS "sys_user_password_history" (
+    "id"          int8         NOT NULL,
+    "user_id"     int8         NOT NULL,
+    "password"    varchar(255) NOT NULL,
+    "create_time" timestamp    NOT NULL,
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_uph_user_id" ON "sys_user_password_history" ("user_id");
+COMMENT ON COLUMN "sys_user_password_history"."id"          IS 'ID';
+COMMENT ON COLUMN "sys_user_password_history"."user_id"     IS '用户ID';
+COMMENT ON COLUMN "sys_user_password_history"."password"    IS '密码';
+COMMENT ON COLUMN "sys_user_password_history"."create_time" IS '创建时间';
+COMMENT ON TABLE  "sys_user_password_history"               IS '用户历史密码表';
+
 CREATE TABLE IF NOT EXISTS "sys_user_social" (
     "source"          varchar(255) NOT NULL,
     "open_id"         varchar(255) NOT NULL,

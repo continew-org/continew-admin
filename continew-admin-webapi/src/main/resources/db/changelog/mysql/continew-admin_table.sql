@@ -95,6 +95,15 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
     INDEX `idx_update_user`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
+CREATE TABLE IF NOT EXISTS `sys_user_password_history` (
+    `id`          bigint(20)   NOT NULL COMMENT 'ID',
+    `user_id`     bigint(20)   NOT NULL COMMENT '用户ID',
+    `password`    varchar(255) NOT NULL COMMENT '密码',
+    `create_time` datetime     NOT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户历史密码表';
+
 CREATE TABLE IF NOT EXISTS `sys_user_social` (
     `source`          varchar(255) NOT NULL     COMMENT '来源',
     `open_id`         varchar(255) NOT NULL     COMMENT '开放ID',

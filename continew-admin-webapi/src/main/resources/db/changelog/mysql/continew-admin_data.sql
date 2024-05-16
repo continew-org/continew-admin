@@ -121,7 +121,7 @@ VALUES
 ('密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '取值范围为 0-999（0 表示永久有效）。', NULL, NULL),
 ('密码重复使用规则', 'PASSWORD_REUSE_POLICY', NULL, '5', '不允许使用最近 N 次密码，取值范围为 3-32。', NULL, NULL),
 ('密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '取值范围为 8-32。', NULL, NULL),
-('密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '0', '', NULL, NULL),
+('密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', '', NULL, NULL),
 ('密码是否必须包含特殊字符', 'PASSWORD_CONTAIN_SPECIAL_CHARACTERS', NULL, '0', '', NULL, NULL);
 
 -- 初始化默认字典

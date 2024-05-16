@@ -17,8 +17,6 @@
 package top.continew.admin.system.model.entity;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.dromara.x.file.storage.core.FileInfo;
@@ -42,9 +40,6 @@ public class FileDO extends BaseDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
 
     /**
      * 名称

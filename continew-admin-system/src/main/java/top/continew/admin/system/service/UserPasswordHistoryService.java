@@ -16,37 +16,30 @@
 
 package top.continew.admin.system.service;
 
-import java.util.List;
-
 /**
- * 角色和菜单业务接口
+ * 用户历史密码业务接口
  *
  * @author Charles7c
- * @since 2023/2/19 10:40
+ * @since 2024/5/16 21:58
  */
-public interface RoleMenuService {
+public interface UserPasswordHistoryService {
 
     /**
      * 新增
      *
-     * @param menuIds 菜单 ID 列表
-     * @param roleId  角色 ID
-     * @return 是否新增成功（true：成功；false：无变更/失败）
+     * @param userId   用户 ID
+     * @param password 密码
+     * @param count    保留 N 个历史
      */
-    boolean add(List<Long> menuIds, Long roleId);
+    void add(Long userId, String password, int count);
 
     /**
-     * 根据角色 ID 删除
+     * 密码是否为重复使用
      *
-     * @param roleIds 角色 ID 列表
+     * @param userId   用户 ID
+     * @param password 密码
+     * @param count    最近 N 次
+     * @return 是否为重复使用
      */
-    void deleteByRoleIds(List<Long> roleIds);
-
-    /**
-     * 根据角色 ID 查询
-     *
-     * @param roleIds 角色 ID 列表
-     * @return 菜单 ID 列表
-     */
-    List<Long> listMenuIdByRoleIds(List<Long> roleIds);
+    boolean isPasswordReused(Long userId, String password, int count);
 }

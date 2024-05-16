@@ -14,39 +14,25 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.service;
+package top.continew.admin.system.mapper;
 
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.admin.system.model.entity.UserPasswordHistoryDO;
 
 /**
- * 角色和菜单业务接口
+ * 用户历史密码 Mapper
  *
  * @author Charles7c
- * @since 2023/2/19 10:40
+ * @since 2024/5/16 21:58
  */
-public interface RoleMenuService {
+public interface UserPasswordHistoryMapper extends BaseMapper<UserPasswordHistoryDO> {
 
     /**
-     * 新增
+     * 删除过期历史密码
      *
-     * @param menuIds 菜单 ID 列表
-     * @param roleId  角色 ID
-     * @return 是否新增成功（true：成功；false：无变更/失败）
+     * @param userId 用户 ID
+     * @param count  保留 N 个历史
      */
-    boolean add(List<Long> menuIds, Long roleId);
-
-    /**
-     * 根据角色 ID 删除
-     *
-     * @param roleIds 角色 ID 列表
-     */
-    void deleteByRoleIds(List<Long> roleIds);
-
-    /**
-     * 根据角色 ID 查询
-     *
-     * @param roleIds 角色 ID 列表
-     * @return 菜单 ID 列表
-     */
-    List<Long> listMenuIdByRoleIds(List<Long> roleIds);
+    void deleteExpired(@Param("userId") Long userId, @Param("count") int count);
 }

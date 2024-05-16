@@ -145,5 +145,5 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @param pwdResetTime 上次重置密码时间
      * @return 是否过期
      */
-    Boolean isPasswordExpired(LocalDateTime pwdResetTime);
+    boolean isPasswordExpired(LocalDateTime pwdResetTime);
 }

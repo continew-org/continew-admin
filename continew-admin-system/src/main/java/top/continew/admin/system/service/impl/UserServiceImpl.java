@@ -88,6 +88,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
+    private final UserPasswordHistoryService userPasswordHistoryService;
     @Resource
     private DeptService deptService;
     @Value("${avatar.support-suffix}")
@@ -192,6 +193,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
@@ -200,16 +202,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 校验密码合法性
-        this.checkPassword(newPassword, user);
+        int passwordReusePolicy = this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
         user.setPassword(newPassword);
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
-        onlineUserService.cleanByUserId(user.getId());
+        // 保存历史密码
+        userPasswordHistoryService.add(id, password, passwordReusePolicy);
     }
 
     @Override
-    public Boolean isPasswordExpired(LocalDateTime pwdResetTime) {
+    public boolean isPasswordExpired(LocalDateTime pwdResetTime) {
         // 永久有效
         int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name());
         if (passwordExpirationDays <= SysConstants.NO) {
@@ -343,7 +346,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @param password 密码
      * @param user     用户信息
      */
-    private void checkPassword(String password, UserDO user) {
+    private int checkPassword(String password, UserDO user) {
         // 密码最小长度
         int passwordMinLength = optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name());
         ValidationUtils.throwIf(StrUtil.length(password) < passwordMinLength, PASSWORD_MIN_LENGTH.getDescription()
@@ -362,6 +365,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         int passwordContainSpecialChar = optionService.getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name());
         ValidationUtils.throwIf(passwordContainSpecialChar == SysConstants.YES && !ReUtil
             .isMatch(RegexConstants.SPECIAL_CHARACTER, password), PASSWORD_CONTAIN_SPECIAL_CHARACTERS.getDescription());
+        // 密码重复使用规则
+        int passwordReusePolicy = optionService.getValueByCode2Int(PASSWORD_REUSE_POLICY.name());
+        ValidationUtils.throwIf(userPasswordHistoryService.isPasswordReused(user
+            .getId(), password, passwordReusePolicy), PASSWORD_REUSE_POLICY.getDescription()
+                .formatted(passwordReusePolicy));
+        return passwordReusePolicy;
     }
 
     /**
