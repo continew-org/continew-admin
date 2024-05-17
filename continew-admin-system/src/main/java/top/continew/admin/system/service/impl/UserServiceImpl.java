@@ -20,7 +20,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
@@ -39,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
@@ -56,7 +54,6 @@ import top.continew.admin.system.model.resp.UserResp;
 import top.continew.admin.system.service.*;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
-import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
@@ -348,28 +345,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      */
     private int checkPassword(String password, UserDO user) {
         // 密码最小长度
-        int passwordMinLength = optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name());
-        ValidationUtils.throwIf(StrUtil.length(password) < passwordMinLength, PASSWORD_MIN_LENGTH.getDescription()
-            .formatted(passwordMinLength));
-        // 密码是否允许包含正反序账号名
-        int passwordAllowContainUsername = optionService.getValueByCode2Int(PASSWORD_ALLOW_CONTAIN_USERNAME.name());
-        if (passwordAllowContainUsername == SysConstants.NO) {
-            String username = user.getUsername();
-            ValidationUtils.throwIf(StrUtil.containsAnyIgnoreCase(password, username, StrUtil
-                .reverse(username)), PASSWORD_ALLOW_CONTAIN_USERNAME.getDescription());
-        }
-        int passwordMaxLength = PASSWORD_MIN_LENGTH.getMax();
-        ValidationUtils.throwIf(!ReUtil.isMatch(RegexConstants.PASSWORD_TEMPLATE
-            .formatted(passwordMinLength, passwordMaxLength), password), "密码长度为 {}-{} 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字", passwordMinLength, passwordMaxLength);
+        PASSWORD_MIN_LENGTH.validate(password, optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name()), user);
         // 密码是否必须包含特殊字符
-        int passwordContainSpecialChar = optionService.getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name());
-        ValidationUtils.throwIf(passwordContainSpecialChar == SysConstants.YES && !ReUtil
-            .isMatch(RegexConstants.SPECIAL_CHARACTER, password), PASSWORD_CONTAIN_SPECIAL_CHARACTERS.getDescription());
+        PASSWORD_CONTAIN_SPECIAL_CHARACTERS.validate(password, optionService
+            .getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name()), user);
+        // 密码是否允许包含正反序账号名
+        PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, optionService
+            .getValueByCode2Int(PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
         // 密码重复使用规则
         int passwordReusePolicy = optionService.getValueByCode2Int(PASSWORD_REUSE_POLICY.name());
-        ValidationUtils.throwIf(userPasswordHistoryService.isPasswordReused(user
-            .getId(), password, passwordReusePolicy), PASSWORD_REUSE_POLICY.getDescription()
-                .formatted(passwordReusePolicy));
+        PASSWORD_REUSE_POLICY.validate(password, passwordReusePolicy, user);
         return passwordReusePolicy;
     }
 
