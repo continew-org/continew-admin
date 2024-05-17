@@ -79,7 +79,6 @@ import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
     private final OnlineUserService onlineUserService;
-    private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final FileService fileService;
     private final FileStorageService fileStorageService;
@@ -281,17 +280,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX, syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
-    }
-
-    @Override
-    protected void fill(Object obj) {
-        super.fill(obj);
-        if (obj instanceof UserDetailResp detail) {
-            List<Long> roleIdList = detail.getRoleIds();
-            if (CollUtil.isNotEmpty(roleIdList)) {
-                detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
-            }
-        }
     }
 
     @Override

@@ -16,10 +16,10 @@
 
 package top.continew.admin.auth.model.resp;
 
-import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.ContainerConstants;
 
 import java.io.Serial;
@@ -43,14 +43,14 @@ public class OnlineUserResp implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "nickname"))
+    @Assemble(prop = ":nickname", container = ContainerConstants.USER_NICKNAME)
     private Long id;
 
     /**
      * 令牌
      */
     @Schema(description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
-    @Assemble(container = ContainerConstants.ONLINE_USER_LAST_ACTIVE_TIME, props = @Mapping(ref = "lastActiveTime"))
+    @AssembleMethod(prop = ":lastActiveTime", targetType = OnlineUserService.class, method = @ContainerMethod(bindMethod = "getLastActiveTime", type = MappingType.ORDER_OF_KEYS))
     private String token;
 
     /**
