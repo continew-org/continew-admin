@@ -19,6 +19,7 @@ package top.continew.admin.webapi.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ import java.util.List;
  * @since 2023/8/26 19:38
  */
 @Tag(name = "参数管理 API")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/option")
@@ -55,8 +57,8 @@ public class OptionController {
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PatchMapping
-    public R<Void> update(@Validated @RequestBody List<OptionReq> req) {
-        baseService.update(req);
+    public R<Void> update(@Valid @RequestBody List<OptionReq> options) {
+        baseService.update(options);
         return R.ok();
     }
 

@@ -17,10 +17,12 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.system.enums.PasswordPolicyEnum;
 import top.continew.admin.system.mapper.OptionMapper;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.admin.system.model.query.OptionQuery;
@@ -31,10 +33,13 @@ import top.continew.admin.system.service.OptionService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 参数业务实现
@@ -54,9 +59,20 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public void update(List<OptionReq> req) {
+    public void update(List<OptionReq> options) {
+        Map<String, String> passwordPolicyOptionMap = options.stream()
+            .filter(option -> StrUtil.startWith(option.getCode(), PasswordPolicyEnum.PREFIX))
+            .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue, (oldVal, newVal) -> oldVal));
+        // 校验密码策略参数取值范围
+        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap.entrySet()) {
+            String code = passwordPolicyOptionEntry.getKey();
+            String value = passwordPolicyOptionEntry.getValue();
+            ValidationUtils.throwIf(!NumberUtil.isNumber(value), "参数 [%s] 的值必须为数字", code);
+            PasswordPolicyEnum passwordPolicy = PasswordPolicyEnum.valueOf(code);
+            passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyOptionMap);
+        }
         RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
-        baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
+        baseMapper.updateBatchById(BeanUtil.copyToList(options, OptionDO.class));
     }
 
     @Override

@@ -43,9 +43,9 @@ public interface OptionService {
     /**
      * 修改参数
      *
-     * @param req 参数信息
+     * @param options 参数列表
      */
-    void update(List<OptionReq> req);
+    void update(List<OptionReq> options);
 
     /**
      * 重置参数
