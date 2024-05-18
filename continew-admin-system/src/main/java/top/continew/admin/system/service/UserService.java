@@ -25,8 +25,8 @@ import top.continew.admin.system.model.req.UserReq;
 import top.continew.admin.system.model.req.UserRoleUpdateReq;
 import top.continew.admin.system.model.resp.UserDetailResp;
 import top.continew.admin.system.model.resp.UserResp;
-import top.continew.starter.extension.crud.service.BaseService;
 import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.service.BaseService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,6 +46,22 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return ID
      */
     Long add(UserDO user);
+
+    /**
+     * 重置密码
+     *
+     * @param req 重置信息
+     * @param id  ID
+     */
+    void resetPassword(UserPasswordResetReq req, Long id);
+
+    /**
+     * 修改角色
+     *
+     * @param updateReq 修改信息
+     * @param id        ID
+     */
+    void updateRole(UserRoleUpdateReq updateReq, Long id);
 
     /**
      * 上传头像
@@ -74,6 +90,14 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     void updatePassword(String oldPassword, String newPassword, Long id);
 
     /**
+     * 密码是否已过期
+     *
+     * @param pwdResetTime 上次重置密码时间
+     * @return 是否过期
+     */
+    boolean isPasswordExpired(LocalDateTime pwdResetTime);
+
+    /**
      * 修改手机号
      *
      * @param newPhone    新手机号
@@ -90,22 +114,6 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @param id          ID
      */
     void updateEmail(String newEmail, String oldPassword, Long id);
-
-    /**
-     * 重置密码
-     *
-     * @param req 重置信息
-     * @param id  ID
-     */
-    void resetPassword(UserPasswordResetReq req, Long id);
-
-    /**
-     * 修改角色
-     *
-     * @param updateReq 修改信息
-     * @param id        ID
-     */
-    void updateRole(UserRoleUpdateReq updateReq, Long id);
 
     /**
      * 根据用户名查询
@@ -138,12 +146,4 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
-
-    /**
-     * 密码是否已过期
-     * 
-     * @param pwdResetTime 上次重置密码时间
-     * @return 是否过期
-     */
-    boolean isPasswordExpired(LocalDateTime pwdResetTime);
 }

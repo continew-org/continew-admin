@@ -159,6 +159,21 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
+    public void resetPassword(UserPasswordResetReq req, Long id) {
+        UserDO user = super.getById(id);
+        user.setPassword(req.getNewPassword());
+        user.setPwdResetTime(LocalDateTime.now());
+        baseMapper.updateById(user);
+    }
+
+    @Override
+    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
+        super.getById(id);
+        // 保存用户和角色关联
+        userRoleService.add(updateReq.getRoleIds(), id);
+    }
+
+    @Override
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
@@ -239,21 +254,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
-    }
-
-    @Override
-    public void resetPassword(UserPasswordResetReq req, Long id) {
-        UserDO user = super.getById(id);
-        user.setPassword(req.getNewPassword());
-        user.setPwdResetTime(LocalDateTime.now());
-        baseMapper.updateById(user);
-    }
-
-    @Override
-    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
-        super.getById(id);
-        // 保存用户和角色关联
-        userRoleService.add(updateReq.getRoleIds(), id);
     }
 
     @Override

@@ -17,6 +17,7 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,9 @@ public class UserPasswordHistoryServiceImpl implements UserPasswordHistoryServic
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(Long userId, String password, int count) {
+        if (StrUtil.isBlank(password)) {
+            return;
+        }
         baseMapper.insert(new UserPasswordHistoryDO(userId, password));
         // 删除过期历史密码
         baseMapper.deleteExpired(userId, count);
