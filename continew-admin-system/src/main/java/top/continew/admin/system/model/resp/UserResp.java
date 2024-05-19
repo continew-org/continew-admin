@@ -44,7 +44,7 @@ import java.util.Objects;
  */
 @Data
 @Schema(description = "用户信息")
-@Assemble(key = "id", prop = ":roleIds", container = ContainerConstants.USER_ROLE_ID_LIST)
+@Assemble(key = "id", prop = ":roleIds", sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST)
 public class UserResp extends BaseDetailResp {
 
     @Serial

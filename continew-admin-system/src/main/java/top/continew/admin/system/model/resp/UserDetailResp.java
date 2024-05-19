@@ -47,7 +47,7 @@ import java.util.Objects;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "用户详情信息")
-@Assemble(key = "id", prop = ":roleIds", container = ContainerConstants.USER_ROLE_ID_LIST)
+@Assemble(key = "id", prop = ":roleIds", sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST)
 public class UserDetailResp extends BaseDetailResp {
 
     @Serial
