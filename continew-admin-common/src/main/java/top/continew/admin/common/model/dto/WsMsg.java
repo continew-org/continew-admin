@@ -21,22 +21,40 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class Msg implements Serializable {
-    //消息id
+public class WsMsg implements Serializable {
+    /**
+     * 消息 ID
+     */
     public String msgId;
-    //发送者id
+
+    /**
+     * 发送者 ID
+     */
     public String fromId;
-    //发送人名称
+
+    /**
+     * 发送人名称
+     */
     public String fromName;
-    //接受者id
+
+    /**
+     * 接受者ID
+     */
     public String toId;
-    //消息格式.区分消息体格式.txt,json,html.markdown
-    public int format;
-    //消息类型
+
+    /**
+     * 消息类型
+     */
     public int msgType;
-    //发送消息时间戳
+
+    /**
+     * 发送消息时间戳
+     */
     public long sendTime;
-    //内容
+
+    /**
+     * 内容
+     */
     public String content;
 
 }

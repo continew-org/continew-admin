@@ -17,12 +17,12 @@
 package top.continew.admin.common.util;
 
 import top.continew.admin.common.enums.MessageTypeEnum;
-import top.continew.admin.common.model.dto.Msg;
+import top.continew.admin.common.model.dto.WsMsg;
 import top.continew.admin.common.util.helper.LoginHelper;
 
 public class NoticeMsgUtils {
-    public static Msg conversion(String massage, String id) {
-        Msg msg = new Msg();
+    public static WsMsg conversion(String massage, String id) {
+        WsMsg msg = new WsMsg();
         msg.setMsgId(id);
         msg.setFromId(LoginHelper.getUserId().toString());
         msg.setFromName(LoginHelper.getUsername());

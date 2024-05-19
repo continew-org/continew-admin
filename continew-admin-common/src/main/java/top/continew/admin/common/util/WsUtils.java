@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import top.continew.admin.common.model.dto.Msg;
+import top.continew.admin.common.model.dto.WsMsg;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -47,7 +47,7 @@ public class WsUtils {
     /**
      * 绑定用户连接
      *
-     * @param userId
+     * @param userId 用户ID
      * @param session
      */
     public static void bindUser(String userId, WebSocketSession session) {
@@ -169,7 +169,7 @@ public class WsUtils {
      * @param message 消息
      * @throws IOException IO
      */
-    public static void sendToUser(String userId, Msg message) {
+    public static void sendToUser(String userId, WsMsg message) {
         WebSocketSession webSocketSession = getWebSocketSession(userId);
         if (webSocketSession == null || !webSocketSession.isOpen()) {
             log.warn("用户【{}】已关闭，无法送消息：{}", userId, JSONObject.toJSONString(message));
@@ -199,7 +199,7 @@ public class WsUtils {
      * @param message 消息
      * @throws IOException IO
      */
-    public static void sendToAll(Msg message) {
+    public static void sendToAll(WsMsg message) {
         getUserList().forEach(userId -> sendToUser(userId, JSONObject.toJSONString(message)));
     }
 
@@ -231,7 +231,7 @@ public class WsUtils {
      * @param message          消息
      * @throws IOException IO
      */
-    public static void send(WebSocketSession webSocketSession, Msg message) {
+    public static void send(WebSocketSession webSocketSession, WsMsg message) {
 
         if (webSocketSession == null || !webSocketSession.isOpen()) {
             log.warn("连接对象【{}】已关闭，无法送消息：{}", webSocketSession.getId(), JSONObject.toJSONString(message));
