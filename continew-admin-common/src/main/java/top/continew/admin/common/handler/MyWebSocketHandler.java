@@ -75,7 +75,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         WsUtils.bindUser(userId, session);
         //在线数加1
         WsUtils.onlineCount.incrementAndGet();
-        log.info("与用户【{}】建立了连接", userId);
+        log.info("与用户【{}】建立了连接 当前在线人数【{}】", userId, WsUtils.onlineCount.get());
         log.info("attributes:{}", session.getAttributes());
 
     }
@@ -89,7 +89,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.info("用户【{}】断开连接,status:{}", WsUtils.getUserId(session), status.getCode());
+        log.info("用户【{}】断开连接,status:{},当前剩余在线人数【{}】", WsUtils.getUserId(session), status.getCode(), WsUtils.onlineCount.get());
         // 关闭连接
         WsUtils.close(session, "断开连接后触发的回调");
     }

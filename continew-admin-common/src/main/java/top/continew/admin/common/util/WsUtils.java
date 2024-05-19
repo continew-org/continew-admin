@@ -73,6 +73,7 @@ public class WsUtils {
     public static void close(WebSocketSession webSocketSession, String msg) throws IOException {
         String userId = getUserId(webSocketSession);
         if (!webSocketSession.isOpen()) {
+            WsUtils.remove(webSocketSession);
             log.warn("连接对象【{}】已关闭：{}", userId, msg);
         } else {
             webSocketSession.close(CloseStatus.SERVER_ERROR);
