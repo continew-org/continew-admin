@@ -24,7 +24,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import top.continew.admin.common.handler.MyWebSocketHandler;
 
 /**
- * Created by WeiRan on 2024.03.13 16:45
+ * WebSocketConfig配置
+ *
+ * @author WeiRan
+ * @since 2024.03.13 16:45
  */
 @Configuration
 @EnableWebSocket
@@ -36,6 +39,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Resource
     private MyWebSocketHandler myWebSocketHandler;
 
+    /**
+     *注册WebSocket处理程序并设置必要的配置。
+     *
+     *@param registry 用于注册处理程序的WebSocketHandlerRegistry
+     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry

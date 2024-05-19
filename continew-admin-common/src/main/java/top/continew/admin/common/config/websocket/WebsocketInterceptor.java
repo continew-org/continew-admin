@@ -39,23 +39,24 @@ import top.continew.starter.web.util.ServletUtils;
 import java.util.Map;
 
 /**
- * @author zhong
- *         用来处理webscocket拦截器
+ * 用来处理webscocket拦截器
+ *
+ * @author WeiRan
+ * @since 2024.03.13 16:45
  */
 @Component
 @Slf4j
 public class WebsocketInterceptor extends HttpSessionHandshakeInterceptor {
 
     /**
-     * 建立连接时
+     * 在建立 WebSocket 连接之前处理握手过程。
      *
-     * @param request    the current request
-     * @param response   the current response
-     * @param wsHandler  the target WebSocket handler
-     * @param attributes the attributes from the HTTP handshake to associate with the WebSocket
-     *                   session; the provided attributes are copied, the original map is not used.
-     * @return
-     * @throws Exception
+     * @param  request     HTTP 请求对象
+     * @param  response    HTTP 响应对象
+     * @param  wsHandler   WebSocket 处理程序
+     * @param  attributes 用于存储 WebSocket 会话的自定义属性的映射
+     * @return             如果握手成功则返回 true，否则返回 false
+     * @throws Exception  如果在握手过程中发生错误
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request,
@@ -77,11 +78,10 @@ public class WebsocketInterceptor extends HttpSessionHandshakeInterceptor {
             res.getBody().write(errorMessage.getBytes());
             return false;
         }
-        /**
-         * 鉴权: return false 不通过
-         * response.setStatusCode(HttpStatus.UNAUTHORIZED);
-         * return false;
-         */
+
+        // 鉴权: 如果返回 false 则表示未通过
+        // response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        //返回 false;
         LoginUser loginUser = LoginHelper.getLoginUser(token);
         if (loginUser == null) {
             res.setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -98,12 +98,14 @@ public class WebsocketInterceptor extends HttpSessionHandshakeInterceptor {
     }
 
     /**
-     * 成功建立连接后
+     * WebSocket 握手成功完成后调用此方法。
+     * 它记录一条消息指示连接已建立，然后调用
+     * 方法的超类实现。
      *
-     * @param request   the current request
-     * @param response  the current response
-     * @param wsHandler the target WebSocket handler
-     * @param exception an exception raised during the handshake, or {@code null} if none
+     * @param  request     表示传入 HTTP 请求的 ServerHttpRequest 对象
+     * @param  response    表示传出 HTTP 响应的 ServerHttpResponse 对象
+     * @param  wsHandler   将处理 WebSocket 会话的 WebSocketHandler 对象
+     * @param  exception   在握手过程中发生的异常，如果没有异常则为 null
      */
     @Override
     public void afterHandshake(ServerHttpRequest request,
