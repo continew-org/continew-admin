@@ -16,6 +16,7 @@
 
 package top.continew.admin.webapi.system;
 
+import cn.hutool.core.util.IdUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -23,9 +24,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.common.util.NoticeMsgUtils;
 import top.continew.admin.common.util.WsUtils;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.query.MessageQuery;
+import top.continew.admin.system.model.req.MessageReq;
 import top.continew.admin.system.model.resp.MessageResp;
 import top.continew.admin.system.model.resp.MessageUnreadResp;
 import top.continew.admin.system.service.MessageService;
@@ -35,6 +39,7 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.web.model.R;
 import top.continew.starter.log.core.annotation.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,8 +89,15 @@ public class MessageController {
     }
 
     @GetMapping("/testSend")
-    public R<Object> testSend() {
-        WsUtils.sendToUser("1", "服务端消息发送");
+    public R<Object> testSend(String msg) {
+        List<Long> userIdList = new ArrayList<>();
+        userIdList.add(LoginHelper.getUserId());
+        MessageReq req = new MessageReq();
+        req.setTitle(msg);
+        req.setContent(msg);
+        req.setType(MessageTypeEnum.SYSTEM);
+        baseService.add(req, userIdList);
+        WsUtils.sendToUser(LoginHelper.getUserId().toString(), NoticeMsgUtils.conversion(msg, IdUtil.fastSimpleUUID()));
         return R.ok();
     }
 }
