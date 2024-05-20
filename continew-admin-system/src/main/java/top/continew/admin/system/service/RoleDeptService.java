@@ -31,7 +31,7 @@ public interface RoleDeptService {
      *
      * @param deptIds 部门 ID 列表
      * @param roleId  角色 ID
-     * @return true：成功；false：无变更/失败
+     * @return 是否新增成功（true：成功；false：无变更/失败）
      */
     boolean add(List<Long> deptIds, Long roleId);
 

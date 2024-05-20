@@ -31,7 +31,7 @@ public interface UserRoleService {
      *
      * @param roleIds 角色 ID 列表
      * @param userId  用户 ID
-     * @return true：成功；false：无变更/失败
+     * @return 是否新增成功（true：成功；false：无变更/失败）
      */
     boolean add(List<Long> roleIds, Long userId);
 
@@ -54,7 +54,7 @@ public interface UserRoleService {
      * 根据角色 ID 判断是否已被用户关联
      *
      * @param roleIds 角色 ID 列表
-     * @return true：已关联；false：未关联
+     * @return 是否已关联（true：已关联；false：未关联）
      */
     boolean isRoleIdExists(List<Long> roleIds);
 }

@@ -14,48 +14,54 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * 字典信息
+ * 用户历史密码实体
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 2024/5/16 21:58
  */
 @Data
-@Schema(description = "字典信息")
-public class DictResp extends BaseDetailResp {
+@NoArgsConstructor
+@TableName("sys_user_password_history")
+public class UserPasswordHistoryDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 名称
+     * ID
      */
-    @Schema(description = "名称", example = "公告类型")
-    private String name;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
-     * 编码
+     * 用户 ID
      */
-    @Schema(description = "编码", example = "notice_type")
-    private String code;
+    private Long userId;
 
     /**
-     * 描述
+     * 密码
      */
-    @Schema(description = "描述", example = "公告类型描述信息")
-    private String description;
+    private String password;
 
     /**
-     * 是否为系统内置数据
+     * 创建时间
      */
-    @Schema(description = "是否为系统内置数据", example = "true")
-    private Boolean isSystem;
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    public UserPasswordHistoryDO(Long userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
 }

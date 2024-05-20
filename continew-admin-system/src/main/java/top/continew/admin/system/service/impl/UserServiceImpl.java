@@ -18,10 +18,8 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
@@ -40,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.constant.RegexConstants;
+import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.UserMapper;
@@ -56,17 +54,19 @@ import top.continew.admin.system.model.resp.UserResp;
 import top.continew.admin.system.service.*;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
-import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static top.continew.admin.system.enums.OptionCodeEnum.*;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 
 /**
  * 用户业务实现
@@ -85,8 +85,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
-    private final UserMapper userMapper;
-
+    private final UserPasswordHistoryService userPasswordHistoryService;
     @Resource
     private DeptService deptService;
     @Value("${avatar.support-suffix}")
@@ -161,7 +160,21 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    public void resetPassword(UserPasswordResetReq req, Long id) {
+        UserDO user = super.getById(id);
+        user.setPassword(req.getNewPassword());
+        user.setPwdResetTime(LocalDateTime.now());
+        baseMapper.updateById(user);
+    }
+
+    @Override
+    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
+        super.getById(id);
+        // 保存用户和角色关联
+        userRoleService.add(updateReq.getRoleIds(), id);
+    }
+
+    @Override
     public String uploadAvatar(MultipartFile avatarFile, Long id) {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
@@ -192,6 +205,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
@@ -200,60 +214,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 校验密码合法性
-        checkPassword(newPassword, user);
+        int passwordReusePolicy = this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
         user.setPassword(newPassword);
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
-        onlineUserService.cleanByUserId(user.getId());
-    }
-
-    /**
-     * 检测修改密码合法性
-     *
-     * @param password 密码
-     * @param user     用户
-     */
-    private void checkPassword(String password, UserDO user) {
-        // 密码最小长度
-        int passwordMinLength = optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH);
-        ValidationUtils.throwIf(StrUtil.length(password) < passwordMinLength, PASSWORD_MIN_LENGTH
-            .getDescription() + "为 {}", passwordMinLength);
-        // 密码是否允许包含正反序用户名
-        int passwordContainName = optionService.getValueByCode2Int(PASSWORD_CONTAIN_NAME);
-        if (passwordContainName == 1) {
-            String username = user.getUsername();
-            ValidationUtils.throwIf(StrUtil.containsIgnoreCase(password, username) || StrUtil
-                .containsIgnoreCase(password, StrUtil.reverse(username)), PASSWORD_CONTAIN_NAME.getDescription());
-        }
-        // 密码是否必须包含特殊字符
-        int passwordSpecialChar = optionService.getValueByCode2Int(PASSWORD_SPECIAL_CHAR);
-        String match = RegexConstants.PASSWORD;
-        String desc = "密码长度为 6 到 32 位，可以包含字母、数字、下划线，特殊字符，同时包含字母和数字";
-        if (passwordSpecialChar == 1) {
-            match = RegexConstants.PASSWORD_STRICT;
-            desc = "密码长度为 8 到 32 位，包含至少1个大写字母、1个小写字母、1个数字，1个特殊字符";
-        }
-        ValidationUtils.throwIf(!ReUtil.isMatch(match, password), desc);
-        // 密码修改间隔
-        if (ObjectUtil.isNull(user.getPwdResetTime())) {
-            return;
-        }
-        int passwordUpdateInterval = optionService.getValueByCode2Int(PASSWORD_UPDATE_INTERVAL);
-        if (passwordUpdateInterval <= 0) {
-            return;
-        }
-        LocalDateTime lastResetTime = user.getPwdResetTime();
-        LocalDateTime limitUpdateTime = lastResetTime.plusMinutes(passwordUpdateInterval);
-        ValidationUtils.throwIf(LocalDateTime.now().isBefore(limitUpdateTime), "上次修改于：{}，下次可修改时间：{}", LocalDateTimeUtil
-            .formatNormal(lastResetTime), LocalDateTimeUtil.formatNormal(limitUpdateTime));
+        // 保存历史密码
+        userPasswordHistoryService.add(id, password, passwordReusePolicy);
     }
 
     @Override
-    public Boolean isPasswordExpired(LocalDateTime pwdResetTime) {
+    public boolean isPasswordExpired(LocalDateTime pwdResetTime) {
         // 永久有效
-        int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS);
-        if (passwordExpirationDays <= 0) {
+        int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name());
+        if (passwordExpirationDays <= SysConstants.NO) {
             return false;
         }
         // 初始密码也提示修改
@@ -261,26 +235,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             return true;
         }
         return pwdResetTime.plusDays(passwordExpirationDays).isBefore(LocalDateTime.now());
-    }
-
-    /**
-     * 获取所有用户信息
-     *
-     * @return 用户集合
-     */
-    @Override
-    public List<UserDO> getUserList() {
-        return this.lambdaQuery().list();
-    }
-
-    /**
-     * 获取所有用户的id
-     *
-     * @return
-     */
-    @Override
-    public List<Long> userIdList() {
-        return userMapper.userIdList();
     }
 
     @Override
@@ -346,14 +300,27 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    protected void fill(Object obj) {
-        super.fill(obj);
-        if (obj instanceof UserDetailResp detail) {
-            List<Long> roleIdList = detail.getRoleIds();
-            if (CollUtil.isNotEmpty(roleIdList)) {
-                detail.setRoleNames(String.join(StringConstants.CHINESE_COMMA, roleService.listNameByIds(roleIdList)));
-            }
-        }
+    protected QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
+        String description = query.getDescription();
+        Integer status = query.getStatus();
+        List<Date> createTimeList = query.getCreateTime();
+        Long deptId = query.getDeptId();
+        return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
+            .or()
+            .like("t1.nickname", description)
+            .or()
+            .like("t1.description", description))
+            .eq(null != status, "t1.status", status)
+            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
+                .getLast(createTimeList))
+            .and(null != deptId, q -> {
+                List<Long> deptIdList = deptService.listChildren(deptId)
+                    .stream()
+                    .map(DeptDO::getId)
+                    .collect(Collectors.toList());
+                deptIdList.add(deptId);
+                q.in("t1.dept_id", deptIdList);
+            });
     }
 
     @Override
@@ -376,32 +343,24 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     /**
-     * 构建 QueryWrapper
+     * 检测密码合法性
      *
-     * @param query 查询条件
-     * @return QueryWrapper
+     * @param password 密码
+     * @param user     用户信息
      */
-    private QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
-        String description = query.getDescription();
-        Integer status = query.getStatus();
-        List<Date> createTimeList = query.getCreateTime();
-        Long deptId = query.getDeptId();
-        return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
-            .or()
-            .like("t1.nickname", description)
-            .or()
-            .like("t1.description", description))
-            .eq(null != status, "t1.status", status)
-            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
-                .getLast(createTimeList))
-            .and(null != deptId, q -> {
-                List<Long> deptIdList = deptService.listChildren(deptId)
-                    .stream()
-                    .map(DeptDO::getId)
-                    .collect(Collectors.toList());
-                deptIdList.add(deptId);
-                q.in("t1.dept_id", deptIdList);
-            });
+    private int checkPassword(String password, UserDO user) {
+        // 密码最小长度
+        PASSWORD_MIN_LENGTH.validate(password, optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name()), user);
+        // 密码是否必须包含特殊字符
+        PASSWORD_CONTAIN_SPECIAL_CHARACTERS.validate(password, optionService
+            .getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name()), user);
+        // 密码是否允许包含正反序账号名
+        PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, optionService
+            .getValueByCode2Int(PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
+        // 密码重复使用规则
+        int passwordReusePolicy = optionService.getValueByCode2Int(PASSWORD_REUSE_POLICY.name());
+        PASSWORD_REUSE_POLICY.validate(password, passwordReusePolicy, user);
+        return passwordReusePolicy;
     }
 
     /**

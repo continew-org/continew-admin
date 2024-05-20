@@ -17,7 +17,6 @@
 package top.continew.admin.system.model.resp.log;
 
 import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
 import cn.crane4j.annotation.condition.ConditionOnPropertyNotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -155,7 +154,7 @@ public class LogDetailResp implements Serializable {
      */
     @JsonIgnore
     @ConditionOnPropertyNotNull
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
+    @Assemble(prop = ":createUserString", container = ContainerConstants.USER_NICKNAME)
     private Long createUser;
 
     /**

@@ -17,14 +17,12 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.system.enums.OptionCodeEnum;
+import top.continew.admin.system.enums.PasswordPolicyEnum;
 import top.continew.admin.system.mapper.OptionMapper;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.admin.system.model.query.OptionQuery;
@@ -35,10 +33,13 @@ import top.continew.admin.system.service.OptionService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 参数业务实现
@@ -58,9 +59,20 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public void update(List<OptionReq> req) {
+    public void update(List<OptionReq> options) {
+        Map<String, String> passwordPolicyOptionMap = options.stream()
+            .filter(option -> StrUtil.startWith(option.getCode(), PasswordPolicyEnum.PREFIX))
+            .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue, (oldVal, newVal) -> oldVal));
+        // 校验密码策略参数取值范围
+        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap.entrySet()) {
+            String code = passwordPolicyOptionEntry.getKey();
+            String value = passwordPolicyOptionEntry.getValue();
+            ValidationUtils.throwIf(!NumberUtil.isNumber(value), "参数 [%s] 的值必须为数字", code);
+            PasswordPolicyEnum passwordPolicy = PasswordPolicyEnum.valueOf(code);
+            passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyOptionMap);
+        }
         RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
-        baseMapper.updateBatchById(BeanUtil.copyToList(req, OptionDO.class));
+        baseMapper.updateBatchById(BeanUtil.copyToList(options, OptionDO.class));
     }
 
     @Override
@@ -70,25 +82,24 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public int getValueByCode2Int(OptionCodeEnum code) {
+    public int getValueByCode2Int(String code) {
         return this.getValueByCode(code, Integer::parseInt);
     }
 
     @Override
-    public <T> T getValueByCode(OptionCodeEnum code, Function<String, T> mapper) {
-        String value = RedisUtils.get(CacheConstants.OPTION_KEY_PREFIX + code.getValue());
+    public <T> T getValueByCode(String code, Function<String, T> mapper) {
+        String value = RedisUtils.get(CacheConstants.OPTION_KEY_PREFIX + code);
         if (StrUtil.isNotBlank(value)) {
             return mapper.apply(value);
         }
-        LambdaQueryWrapper<OptionDO> queryWrapper = Wrappers.<OptionDO>lambdaQuery()
-            .eq(OptionDO::getCode, code.getValue())
-            .select(OptionDO::getValue, OptionDO::getDefaultValue);
-        OptionDO optionDO = baseMapper.selectOne(queryWrapper);
-        CheckUtils.throwIf(ObjUtil.isEmpty(optionDO), "配置 [{}] 不存在", code);
-        value = StrUtil.nullToDefault(optionDO.getValue(), optionDO.getDefaultValue());
-        CheckUtils.throwIf(StrUtil.isBlank(value), "配置 [{}] 不存在", code);
-        RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code.getValue(), value);
+        OptionDO option = baseMapper.lambdaQuery()
+            .eq(OptionDO::getCode, code)
+            .select(OptionDO::getValue, OptionDO::getDefaultValue)
+            .one();
+        CheckUtils.throwIfNull(option, "参数 [{}] 不存在", code);
+        value = StrUtil.nullToDefault(option.getValue(), option.getDefaultValue());
+        CheckUtils.throwIfBlank(value, "参数 [{}] 数据错误", code);
+        RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code, value);
         return mapper.apply(value);
     }
-
 }

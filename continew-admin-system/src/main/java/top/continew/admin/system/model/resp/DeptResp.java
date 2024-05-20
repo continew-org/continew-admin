@@ -59,7 +59,7 @@ public class DeptResp extends BaseDetailResp {
      */
     @Schema(description = "上级部门 ID", example = "2")
     @ConditionOnExpression(value = "#target.parentId != 0")
-    @AssembleMethod(targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class), props = @Mapping(src = "name", ref = "parentName"))
+    @AssembleMethod(props = @Mapping(src = "name", ref = "parentName"), targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
     @ExcelProperty(value = "上级部门 ID", order = 3)
     private Long parentId;
 

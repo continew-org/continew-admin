@@ -70,6 +70,18 @@ public class FileResp extends BaseDetailResp {
     private FileTypeEnum type;
 
     /**
+     * 缩略图大小（字节)
+     */
+    @Schema(description = "缩略图大小（字节)", example = "1024")
+    private Long thumbnailSize;
+
+    /**
+     * 缩略图URL
+     */
+    @Schema(description = "缩略图URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg.min.jpg")
+    private String thumbnailUrl;
+
+    /**
      * 存储 ID
      */
     @Schema(description = "存储ID", example = "1")

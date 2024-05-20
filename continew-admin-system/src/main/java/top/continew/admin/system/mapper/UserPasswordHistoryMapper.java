@@ -14,33 +14,25 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.constant;
+package top.continew.admin.system.mapper;
 
-import top.continew.starter.extension.crud.constant.ContainerPool;
+import org.apache.ibatis.annotations.Param;
+import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.admin.system.model.entity.UserPasswordHistoryDO;
 
 /**
- * 数据源容器相关常量（Crane4j 数据填充组件使用）
+ * 用户历史密码 Mapper
  *
  * @author Charles7c
- * @since 2024/1/20 12:33
+ * @since 2024/5/16 21:58
  */
-public class ContainerConstants extends ContainerPool {
+public interface UserPasswordHistoryMapper extends BaseMapper<UserPasswordHistoryDO> {
 
     /**
-     * 用户昵称
+     * 删除过期历史密码
+     *
+     * @param userId 用户 ID
+     * @param count  保留 N 个历史
      */
-    public static final String USER_NICKNAME = ContainerPool.USER_NICKNAME;
-
-    /**
-     * 用户角色 ID 列表
-     */
-    public static final String USER_ROLE_ID_LIST = "UserRoleIdList";
-
-    /**
-     * 用户角色名称列表
-     */
-    public static final String USER_ROLE_NAME_LIST = "UserRoleNameList";
-
-    private ContainerConstants() {
-    }
+    void deleteExpired(@Param("userId") Long userId, @Param("count") int count);
 }

@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset Charles7c:2.5.0
+-- changeset Charles7c:1
 -- comment 初始化表结构
 CREATE TABLE IF NOT EXISTS "sys_menu" (
     "id"          int8         NOT NULL,
@@ -157,6 +157,20 @@ COMMENT ON COLUMN "sys_user"."create_time"    IS '创建时间';
 COMMENT ON COLUMN "sys_user"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_user"."update_time"    IS '修改时间';
 COMMENT ON TABLE  "sys_user"                  IS '用户表';
+
+CREATE TABLE IF NOT EXISTS "sys_user_password_history" (
+    "id"          int8         NOT NULL,
+    "user_id"     int8         NOT NULL,
+    "password"    varchar(255) NOT NULL,
+    "create_time" timestamp    NOT NULL,
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_uph_user_id" ON "sys_user_password_history" ("user_id");
+COMMENT ON COLUMN "sys_user_password_history"."id"          IS 'ID';
+COMMENT ON COLUMN "sys_user_password_history"."user_id"     IS '用户ID';
+COMMENT ON COLUMN "sys_user_password_history"."password"    IS '密码';
+COMMENT ON COLUMN "sys_user_password_history"."create_time" IS '创建时间';
+COMMENT ON TABLE  "sys_user_password_history"               IS '用户历史密码表';
 
 CREATE TABLE IF NOT EXISTS "sys_user_social" (
     "source"          varchar(255) NOT NULL,
@@ -430,35 +444,39 @@ COMMENT ON COLUMN "sys_storage"."update_time" IS '修改时间';
 COMMENT ON TABLE  "sys_storage"               IS '存储表';
 
 CREATE TABLE IF NOT EXISTS "sys_file" (
-    "id"            int8         NOT NULL,
-    "name"          varchar(255) NOT NULL,
-    "size"          int8         NOT NULL,
-    "url"           varchar(512) NOT NULL,
-    "extension"     varchar(100) DEFAULT NULL,
-    "type"          int2         NOT NULL DEFAULT 1,
-    "storage_id"    int8         NOT NULL,
-    "create_user"   int8         NOT NULL,
-    "create_time"   timestamp    NOT NULL,
-    "update_user"   int8         NOT NULL,
-    "update_time"   timestamp    NOT NULL,
+    "id"             int8         NOT NULL,
+    "name"           varchar(255) NOT NULL,
+    "size"           int8         NOT NULL,
+    "url"            varchar(512) NOT NULL,
+    "extension"      varchar(100) DEFAULT NULL,
+    "thumbnail_size" int8         DEFAULT NULL,
+    "thumbnail_url"  varchar(512) DEFAULT NULL,
+    "type"           int2         NOT NULL DEFAULT 1,
+    "storage_id"     int8         NOT NULL,
+    "create_user"    int8         NOT NULL,
+    "create_time"    timestamp    NOT NULL,
+    "update_user"    int8         NOT NULL,
+    "update_time"    timestamp    NOT NULL,
     PRIMARY KEY ("id")
 );
 CREATE INDEX "idx_file_url"  ON "sys_file" ("url");
 CREATE INDEX "idx_file_type" ON "sys_file" ("type");
 CREATE INDEX "idx_file_create_user" ON "sys_file" ("create_user");
 CREATE INDEX "idx_file_update_user" ON "sys_file" ("update_user");
-COMMENT ON COLUMN "sys_file"."id"          IS 'ID';
-COMMENT ON COLUMN "sys_file"."name"        IS '名称';
-COMMENT ON COLUMN "sys_file"."size"        IS '大小（字节）';
-COMMENT ON COLUMN "sys_file"."url"         IS 'URL';
-COMMENT ON COLUMN "sys_file"."extension"   IS '扩展名';
-COMMENT ON COLUMN "sys_file"."type"        IS '类型（1：其他；2：图片；3：文档；4：视频；5：音频）';
-COMMENT ON COLUMN "sys_file"."storage_id"  IS '存储ID';
-COMMENT ON COLUMN "sys_file"."create_user" IS '创建人';
-COMMENT ON COLUMN "sys_file"."create_time" IS '创建时间';
-COMMENT ON COLUMN "sys_file"."update_user" IS '修改人';
-COMMENT ON COLUMN "sys_file"."update_time" IS '修改时间';
-COMMENT ON TABLE  "sys_file"               IS '文件表';
+COMMENT ON COLUMN "sys_file"."id"             IS 'ID';
+COMMENT ON COLUMN "sys_file"."name"           IS '名称';
+COMMENT ON COLUMN "sys_file"."size"           IS '大小（字节）';
+COMMENT ON COLUMN "sys_file"."url"            IS 'URL';
+COMMENT ON COLUMN "sys_file"."extension"      IS '扩展名';
+COMMENT ON COLUMN "sys_file"."thumbnail_size" IS '缩略图大小（字节)';
+COMMENT ON COLUMN "sys_file"."thumbnail_url"  IS '缩略图URL';
+COMMENT ON COLUMN "sys_file"."type"           IS '类型（1：其他；2：图片；3：文档；4：视频；5：音频）';
+COMMENT ON COLUMN "sys_file"."storage_id"     IS '存储ID';
+COMMENT ON COLUMN "sys_file"."create_user"    IS '创建人';
+COMMENT ON COLUMN "sys_file"."create_time"    IS '创建时间';
+COMMENT ON COLUMN "sys_file"."update_user"    IS '修改人';
+COMMENT ON COLUMN "sys_file"."update_time"    IS '修改时间';
+COMMENT ON TABLE  "sys_file"                  IS '文件表';
 
 CREATE TABLE IF NOT EXISTS "gen_config" (
     "table_name"    varchar(64)  NOT NULL,

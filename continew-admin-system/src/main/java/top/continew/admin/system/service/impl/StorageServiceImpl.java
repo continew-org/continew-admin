@@ -74,10 +74,10 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     protected void beforeUpdate(StorageReq req, Long id) {
-        String code = req.getCode();
-        CheckUtils.throwIf(this.isCodeExists(code, id), "修改失败，[{}] 已存在", code);
-        DisEnableStatusEnum newStatus = req.getStatus();
         StorageDO oldStorage = super.getById(id);
+        CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
+        CheckUtils.throwIfNotEqual(req.getType(), oldStorage.getType(), "不允许修改存储类型");
+        DisEnableStatusEnum newStatus = req.getStatus();
         CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
             .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
         this.decodeSecretKey(req, oldStorage);

@@ -17,7 +17,6 @@
 package top.continew.admin.system.model.resp;
 
 import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -81,7 +80,7 @@ public class MessageResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
+    @Assemble(prop = ":createUserString", container = ContainerConstants.USER_NICKNAME)
     private Long createUser;
 
     /**

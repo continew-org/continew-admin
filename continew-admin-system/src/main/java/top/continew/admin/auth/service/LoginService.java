@@ -16,6 +16,7 @@
 
 package top.continew.admin.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me.zhyd.oauth.model.AuthUser;
 import top.continew.admin.auth.model.resp.RouteResp;
 
@@ -34,9 +35,10 @@ public interface LoginService {
      *
      * @param username 用户名
      * @param password 密码
+     * @param request  请求对象
      * @return 令牌
      */
-    String accountLogin(String username, String password);
+    String accountLogin(String username, String password, HttpServletRequest request);
 
     /**
      * 手机号登录

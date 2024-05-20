@@ -22,6 +22,7 @@ import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -48,6 +49,14 @@ public interface OnlineUserService {
      * @return 列表信息
      */
     List<LoginUser> list(OnlineUserQuery query);
+
+    /**
+     * 查询 Token 最后活跃时间
+     *
+     * @param token Token
+     * @return 最后活跃时间
+     */
+    LocalDateTime getLastActiveTime(String token);
 
     /**
      * 根据角色 ID 清除

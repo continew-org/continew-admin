@@ -55,7 +55,7 @@ public class StorageReq extends BaseReq {
      */
     @Schema(description = "编码", example = "local")
     @NotBlank(message = "编码不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "编码长度为 2 到 30 位，可以包含字母、数字，下划线，以字母开头")
+    @Pattern(regexp = RegexConstants.GENERAL_CODE, message = "编码长度为 2-30 个字符，支持大小写字母、数字、下划线，以字母开头")
     private String code;
 
     /**

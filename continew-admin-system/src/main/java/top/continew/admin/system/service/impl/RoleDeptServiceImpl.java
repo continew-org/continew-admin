@@ -16,13 +16,10 @@
 
 package top.continew.admin.system.service.impl;
 
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.MappingType;
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.system.mapper.RoleDeptMapper;
 import top.continew.admin.system.model.entity.RoleDeptDO;
 import top.continew.admin.system.service.RoleDeptService;
@@ -75,7 +72,6 @@ public class RoleDeptServiceImpl implements RoleDeptService {
     }
 
     @Override
-    @ContainerMethod(namespace = ContainerConstants.ROLE_DEPT_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listDeptIdByRoleId(Long roleId) {
         return baseMapper.selectDeptIdByRoleId(roleId);
     }

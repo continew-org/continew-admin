@@ -66,6 +66,11 @@ public class CacheConstants {
      */
     public static final String DASHBOARD_KEY_PREFIX = "DASHBOARD" + DELIMITER;
 
+    /**
+     * 用户密码错误次数缓存键前缀
+     */
+    public static final String USER_PASSWORD_ERROR_KEY_PREFIX = USER_KEY_PREFIX + "PASSWORD_ERROR" + DELIMITER;
+
     private CacheConstants() {
     }
 }

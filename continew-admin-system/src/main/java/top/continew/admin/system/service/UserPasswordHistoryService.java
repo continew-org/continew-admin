@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.constant;
-
-import top.continew.starter.extension.crud.constant.ContainerPool;
+package top.continew.admin.system.service;
 
 /**
- * 数据源容器相关常量（Crane4j 数据填充组件使用）
+ * 用户历史密码业务接口
  *
  * @author Charles7c
- * @since 2024/1/20 12:33
+ * @since 2024/5/16 21:58
  */
-public class ContainerConstants extends ContainerPool {
+public interface UserPasswordHistoryService {
 
     /**
-     * 用户昵称
+     * 新增
+     *
+     * @param userId   用户 ID
+     * @param password 密码
+     * @param count    保留 N 个历史
      */
-    public static final String USER_NICKNAME = ContainerPool.USER_NICKNAME;
+    void add(Long userId, String password, int count);
 
     /**
-     * 用户角色 ID 列表
+     * 密码是否为重复使用
+     *
+     * @param userId   用户 ID
+     * @param password 密码
+     * @param count    最近 N 次
+     * @return 是否为重复使用
      */
-    public static final String USER_ROLE_ID_LIST = "UserRoleIdList";
-
-    /**
-     * 用户角色名称列表
-     */
-    public static final String USER_ROLE_NAME_LIST = "UserRoleNameList";
-
-    private ContainerConstants() {
-    }
+    boolean isPasswordReused(Long userId, String password, int count);
 }

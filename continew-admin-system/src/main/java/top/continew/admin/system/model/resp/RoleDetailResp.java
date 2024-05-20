@@ -16,14 +16,15 @@
 
 package top.continew.admin.system.model.resp;
 
-import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.MappingType;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
+import top.continew.admin.system.service.RoleDeptService;
 import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
@@ -39,7 +40,7 @@ import java.util.List;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "角色详情信息")
-@Assemble(container = ContainerConstants.ROLE_DEPT_ID_LIST, key = "id", props = @Mapping(ref = "deptIds"))
+@AssembleMethod(key = "id", prop = ":deptIds", targetType = RoleDeptService.class, method = @ContainerMethod(bindMethod = "listDeptIdByRoleId", type = MappingType.ORDER_OF_KEYS))
 public class RoleDetailResp extends BaseDetailResp {
 
     @Serial

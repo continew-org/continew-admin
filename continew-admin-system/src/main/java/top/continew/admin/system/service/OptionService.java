@@ -16,14 +16,13 @@
 
 package top.continew.admin.system.service;
 
-import java.util.List;
-import java.util.function.Function;
-
-import top.continew.admin.system.enums.OptionCodeEnum;
 import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.req.OptionReq;
 import top.continew.admin.system.model.req.OptionResetValueReq;
 import top.continew.admin.system.model.resp.OptionResp;
+
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * 参数业务接口
@@ -44,9 +43,9 @@ public interface OptionService {
     /**
      * 修改参数
      *
-     * @param req 参数信息
+     * @param options 参数列表
      */
-    void update(List<OptionReq> req);
+    void update(List<OptionReq> options);
 
     /**
      * 重置参数
@@ -56,19 +55,19 @@ public interface OptionService {
     void resetValue(OptionResetValueReq req);
 
     /**
-     * 根据code获取int参数值
-     * 
-     * @param code code
-     * @return 参数值
+     * 根据编码查询参数值
+     *
+     * @param code 编码
+     * @return 参数值（自动转换为 int 类型）
      */
-    int getValueByCode2Int(OptionCodeEnum code);
+    int getValueByCode2Int(String code);
 
     /**
-     * 根据code获取参数值
-     * 
-     * @param code   code
-     * @param mapper 类型转换 ex:value -> Integer.parseInt(value)
+     * 根据编码查询参数值
+     *
+     * @param code   编码
+     * @param mapper 转换方法 e.g.：value -> Integer.parseInt(value)
      * @return 参数值
      */
-    <T> T getValueByCode(OptionCodeEnum code, Function<String, T> mapper);
+    <T> T getValueByCode(String code, Function<String, T> mapper);
 }

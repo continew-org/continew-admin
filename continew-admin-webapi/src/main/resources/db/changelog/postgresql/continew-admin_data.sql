@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset Charles7c:2.5.0
+-- changeset Charles7c:1
 -- comment 初始化表数据
 -- 初始化默认菜单
 INSERT INTO "sys_menu"
@@ -109,19 +109,20 @@ VALUES
 INSERT INTO "sys_option"
 ("name", "code", "value", "default_value", "description", "update_user", "update_time")
 VALUES
-('系统标题', 'site_title', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
-('版权信息', 'site_copyright', NULL,
- 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">津ICP备2022005864号-2</a>',
+('系统标题', 'SITE_TITLE', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
+('版权信息', 'SITE_COPYRIGHT', NULL,
+ 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">津ICP备2022005864号-3</a>',
  '用于显示登录页面的底部版权信息。', NULL, NULL),
-('系统LOGO（16*16）', 'site_favicon', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
-('系统LOGO（33*33）', 'site_logo', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL),
-('密码是否允许包含正反序帐户名', 'password_contain_name', NULL, '0', '', NULL, NULL),
-('密码错误锁定帐户次数', 'password_error_count', NULL, '5', '0表示不限制。', NULL, NULL),
-('密码有效期', 'password_expiration_days', NULL, '0', '取值范围为0-999,0表示永久有效。', NULL, NULL),
-('密码错误锁定帐户的时间', 'password_lock_minutes', NULL, '5', '0表示不解锁。', NULL, NULL),
-('密码最小长度', 'password_min_length', NULL, '8', '取值范围为8-32。', NULL, NULL),
-('密码是否必须包含特殊字符', 'password_special_char', NULL, '0', '', NULL, NULL),
-('修改密码最短间隔', 'password_update_interval', NULL, '5', '取值范围为0-9999,0表示不限制。', NULL, NULL);
+('系统LOGO（16*16）', 'SITE_FAVICON', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
+('系统LOGO（33*33）', 'SITE_LOGO', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL),
+('登录密码错误锁定账号的次数', 'PASSWORD_ERROR_LOCK_COUNT', NULL, '5', '取值范围为 0-10（0 表示不锁定）。', NULL, NULL),
+('登录密码错误锁定账号的时间（min）', 'PASSWORD_ERROR_LOCK_MINUTES', NULL, '5', '取值范围为 1-1440（一天）。', NULL, NULL),
+('密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '取值范围为 0-999（0 表示永久有效）。', NULL, NULL),
+('密码到期提前提示（天）', 'PASSWORD_EXPIRATION_WARNING_DAYS', NULL, '0', '密码到期 N 天前进行提示（0 表示不提示）。', NULL, NULL),
+('密码重复使用规则', 'PASSWORD_REUSE_POLICY', NULL, '5', '不允许使用最近 N 次密码，取值范围为 3-32。', NULL, NULL),
+('密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '取值范围为 8-32。', NULL, NULL),
+('密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', '', NULL, NULL),
+('密码是否必须包含特殊字符', 'PASSWORD_CONTAIN_SPECIAL_CHARACTERS', NULL, '0', '', NULL, NULL);
 
 -- 初始化默认字典
 INSERT INTO "sys_dict"
