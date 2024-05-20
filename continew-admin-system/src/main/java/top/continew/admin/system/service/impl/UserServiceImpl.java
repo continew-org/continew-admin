@@ -79,7 +79,6 @@ import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
     private final OnlineUserService onlineUserService;
-    private final RoleService roleService;
     private final UserRoleService userRoleService;
     private final FileService fileService;
     private final FileStorageService fileStorageService;
@@ -255,22 +254,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
         baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
-    }
-
-    @Override
-    public void resetPassword(UserPasswordResetReq req, Long id) {
-        UserDO user = super.getById(id);
-        user.setPassword(req.getNewPassword());
-        user.setPwdResetTime(LocalDateTime.now());
-        baseMapper.updateById(user);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
-        super.getById(id);
-        // 保存用户和角色关联
-        userRoleService.add(updateReq.getRoleIds(), id);
     }
 
     @Override

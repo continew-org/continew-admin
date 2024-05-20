@@ -16,24 +16,16 @@
 
 package top.continew.admin.webapi.system;
 
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.enums.MessageTypeEnum;
-import top.continew.admin.common.util.NoticeMsgUtils;
-import top.continew.admin.common.util.WsUtils;
 import top.continew.admin.system.model.query.NoticeQuery;
-import top.continew.admin.system.model.req.MessageReq;
 import top.continew.admin.system.model.req.NoticeReq;
 import top.continew.admin.system.model.resp.NoticeDetailResp;
 import top.continew.admin.system.model.resp.NoticeResp;
-import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.NoticeService;
-import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
@@ -51,26 +43,13 @@ import java.time.LocalDateTime;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
 public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
-    private final UserService userService;
-    private final MessageService baseService;
 
     @Override
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody NoticeReq req) {
         this.checkTime(req);
-
-        //消息通知入库
-        Long id = super.add(req).getData();
-        //消息入库
-        MessageReq messageReq = new MessageReq();
-        messageReq.setTitle(req.getTitle());
-        messageReq.setContent(req.getContent());
-        messageReq.setType(MessageTypeEnum.SYSTEM);
-        baseService.add(messageReq, userService.userIdList());
-        WsUtils.sendToAll(NoticeMsgUtils.conversion(JSONObject.toJSONString(messageReq), String.valueOf(id)));
-        return R.ok(id);
+        return super.add(req);
     }
 
     @Override

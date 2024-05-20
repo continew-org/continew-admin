@@ -116,22 +116,6 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     void updateEmail(String newEmail, String oldPassword, Long id);
 
     /**
-     * 重置密码
-     *
-     * @param req 重置信息
-     * @param id  ID
-     */
-    void resetPassword(UserPasswordResetReq req, Long id);
-
-    /**
-     * 修改角色
-     *
-     * @param updateReq 修改信息
-     * @param id        ID
-     */
-    void updateRole(UserRoleUpdateReq updateReq, Long id);
-
-    /**
      * 根据用户名查询
      *
      * @param username 用户名
@@ -162,26 +146,4 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
-
-    /**
-     * 密码是否已过期
-     * 
-     * @param pwdResetTime 上次重置密码时间
-     * @return 是否过期
-     */
-    Boolean isPasswordExpired(LocalDateTime pwdResetTime);
-
-    /**
-     * 获取所有用户信息
-     *
-     * @return 用户集合
-     */
-    List<UserDO> getUserList();
-
-    /**
-     * 获取所有用户的id
-     *
-     * @return
-     */
-    List<Long> userIdList();
 }
