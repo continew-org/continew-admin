@@ -23,6 +23,7 @@ import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.anji.captcha.model.common.RepCodeEnum;
 import com.anji.captcha.model.common.ResponseModel;
@@ -86,13 +87,17 @@ public class CaptchaController {
     @GetMapping("/behavior")
     public R<Object> getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
         captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        return R.ok(behaviorCaptchaService.get(captchaReq).getRepData());
+        ResponseModel responseModel = behaviorCaptchaService.get(captchaReq);
+        CheckUtils.throwIf(() -> !StrUtil.equals(RepCodeEnum.SUCCESS.getCode(), responseModel
+            .getRepCode()), responseModel.getRepMsg());
+        return R.ok(responseModel.getRepData());
     }
 
     @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
-    public R<Object> checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq) {
+    public R<Object> checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq, HttpServletRequest request) {
+        captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
         return R.ok(behaviorCaptchaService.check(captchaReq));
     }
 
