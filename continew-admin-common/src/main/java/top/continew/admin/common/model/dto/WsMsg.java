@@ -53,7 +53,7 @@ public class WsMsg implements Serializable {
     public long sendTime;
 
     /**
-     * 内容
+     * 消息内容
      */
     public String content;
 
