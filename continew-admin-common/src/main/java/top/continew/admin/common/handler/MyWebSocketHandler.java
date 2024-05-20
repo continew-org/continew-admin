@@ -91,7 +91,8 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // 关闭连接
         WsUtils.close(session, "断开连接后触发的回调");
-        log.info("用户【{}】断开连接,status:{},当前剩余在线人数【{}】", WsUtils.getUserId(session), status.getCode(), WsUtils.onlineCount.get());
+        log.info("用户【{}】断开连接,status:{},当前剩余在线人数【{}】", WsUtils.getUserId(session), status.getCode(), WsUtils.onlineCount
+            .get());
     }
 
     /**

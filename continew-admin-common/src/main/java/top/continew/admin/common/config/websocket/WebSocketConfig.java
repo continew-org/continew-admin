@@ -40,9 +40,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private MyWebSocketHandler myWebSocketHandler;
 
     /**
-     *注册WebSocket处理程序并设置必要的配置。
+     * 注册WebSocket处理程序并设置必要的配置。
      *
-     *@param registry 用于注册处理程序的WebSocketHandlerRegistry
+     * @param registry 用于注册处理程序的WebSocketHandlerRegistry
      */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {

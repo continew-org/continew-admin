@@ -18,6 +18,7 @@ package top.continew.admin.common.util;
 
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import top.continew.admin.common.model.dto.WsMsg;
@@ -71,9 +72,20 @@ public class WsUtils {
      * 关闭 WebSocket 连接的方法。
      *
      * @param webSocketSession WebSocketSession信息，表示当前的 WebSocket 连接。
-     * @param msg 发送消息内容，用于记录关闭连接的原因或相关信息。
+     * @param msg              发送消息内容，用于记录关闭连接的原因或相关信息。
      * @throws IOException 当关闭 WebSocket 连接时可能抛出的 IO 异常。
      */
+    public static void close(WebSocketSession webSocketSession, String msg) throws IOException {
+        String userId = getUserId(webSocketSession);
+        if (!webSocketSession.isOpen()) {
+            WsUtils.remove(webSocketSession);
+            log.warn("连接对象【{}】已关闭：{}", userId, msg);
+        } else {
+            webSocketSession.close(CloseStatus.SERVER_ERROR);
+            WsUtils.remove(webSocketSession);
+            log.error("服务端主动关闭连接：用户{}信息：{}", userId, msg);
+        }
+    }
 
     /**
      * 通过用户ID获取对应的 WebSocketSession。
@@ -85,7 +97,6 @@ public class WsUtils {
         return webSocketSessionMap.get(userId);
     }
 
-
     /**
      * 获取用户的session
      *
@@ -93,9 +104,8 @@ public class WsUtils {
      * @return 用户的ID，类型为字符串
      */
     public static String getUserId(WebSocketSession session) {
-        return (String) session.getAttributes().get("userId");
+        return (String)session.getAttributes().get("userId");
     }
-
 
     /**
      * 获取用户的IP地址
@@ -104,9 +114,8 @@ public class WsUtils {
      * @return 用户的IP地址，类型为字符串
      */
     public static String getIp(WebSocketSession session) {
-        return (String) session.getAttributes().get("ip");
+        return (String)session.getAttributes().get("ip");
     }
-
 
     /**
      * 判断链接是否存在
@@ -118,7 +127,6 @@ public class WsUtils {
         return WsUtils.webSocketSessionMap.containsKey(userId);
     }
 
-
     /**
      * 判断链接是否存在
      *
@@ -129,7 +137,6 @@ public class WsUtils {
         return WsUtils.webSocketSessionMap.containsKey(getUserId(webSocketSession));
     }
 
-
     /**
      * 获取所有用户连接的用户ID列表。
      *
@@ -138,7 +145,6 @@ public class WsUtils {
     public static List<String> getUserList() {
         return Collections.list(webSocketSessionMap.keys());
     }
-
 
     /**
      * 发送消息给指定用户。
@@ -162,7 +168,6 @@ public class WsUtils {
         }
     }
 
-
     /**
      * 发送消息给指定用户。
      *
@@ -183,7 +188,6 @@ public class WsUtils {
             log.info("sendMessage：向{}发送消息：{}", userId, JSONObject.toJSONString(message));
         }
     }
-
 
     /**
      * 发送消息全部在线用户
@@ -245,6 +249,5 @@ public class WsUtils {
             log.info("sendMessage：向{}发送消息：{}", webSocketSession.getId(), JSONObject.toJSONString(wsMsg));
         }
     }
-
 
 }
