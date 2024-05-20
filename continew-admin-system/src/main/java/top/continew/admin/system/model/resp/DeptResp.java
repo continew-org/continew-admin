@@ -97,9 +97,4 @@ public class DeptResp extends BaseDetailResp {
     @Schema(description = "描述", example = "测试部描述信息")
     @ExcelProperty(value = "描述", order = 8)
     private String description;
-
-    @Override
-    public Boolean getDisabled() {
-        return this.getIsSystem();
-    }
 }
