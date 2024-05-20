@@ -26,6 +26,8 @@ import top.continew.admin.system.model.entity.UserDO;
 import top.continew.starter.data.mybatis.plus.datapermission.DataPermission;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
+import java.util.List;
+
 /**
  * 用户 Mapper
  *
@@ -41,9 +43,18 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @param queryWrapper 查询条件
      * @return 分页列表信息
      */
-    @DataPermission
+    @DataPermission("t1")
     IPage<UserDO> selectUserPage(@Param("page") IPage<UserDO> page,
                                  @Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
+
+    /**
+     * 查询列表
+     *
+     * @param queryWrapper 查询条件
+     * @return 列表信息
+     */
+    @DataPermission("t1")
+    List<UserDO> selectUserList(@Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
 
     /**
      * 根据用户名查询

@@ -55,6 +55,7 @@ import top.continew.admin.system.service.*;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
@@ -280,6 +281,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX, syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
+    }
+
+    @Override
+    protected <E> List<E> list(UserQuery query, SortQuery sortQuery, Class<E> targetClass) {
+        QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
+        // 设置排序
+        super.sort(queryWrapper, sortQuery);
+        List<UserDO> entityList = baseMapper.selectUserList(queryWrapper);
+        if (entityClass == targetClass) {
+            return (List<E>)entityList;
+        }
+        return BeanUtil.copyToList(entityList, targetClass);
     }
 
     @Override

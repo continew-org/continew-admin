@@ -2,10 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.continew.admin.system.mapper.UserMapper">
 
-    <select id="selectUserPage" resultType="top.continew.admin.system.model.entity.UserDO">
-        SELECT t1.*
+    <sql id="selectUser">
+        SELECT
+            t1.id,
+            t1.create_user,
+            t1.create_time,
+            t1.update_user,
+            t1.update_time,
+            t1.username,
+            t1.nickname,
+            t1.password,
+            t1.gender,
+            t1.email,
+            t1.phone,
+            t1.avatar,
+            t1.description,
+            t1.status,
+            t1.is_system,
+            t1.pwd_reset_time,
+            t1.dept_id
         FROM sys_user AS t1
         LEFT JOIN sys_dept AS t2 ON t2.id = t1.dept_id
+    </sql>
+
+    <select id="selectUserPage" resultType="top.continew.admin.system.model.entity.UserDO">
+        <include refid="selectUser" />
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectUserList" resultType="top.continew.admin.system.model.entity.UserDO">
+        <include refid="selectUser" />
         ${ew.customSqlSegment}
     </select>
 
