@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.MessageMapper;
 import top.continew.admin.system.model.entity.MessageDO;
 import top.continew.admin.system.model.query.MessageQuery;
@@ -66,6 +67,7 @@ public class MessageServiceImpl implements MessageService {
     public void add(MessageReq req, List<Long> userIdList) {
         CheckUtils.throwIf(() -> CollUtil.isEmpty(userIdList), "消息接收人不能为空");
         MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
+        message.setCreateUser(LoginHelper.getUserId());
         baseMapper.insert(message);
         messageUserService.add(message.getId(), userIdList);
     }
