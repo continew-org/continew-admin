@@ -122,7 +122,13 @@ continew-starter.captcha:
   behavior:
     enabled: true
     cache-type: REDIS
-    water-mark: ${project.app-name}
+    water-mark:
+    # 一分钟内接口请求次数限制开关（默认：0，关闭，开启后下方失败锁定配置才会生效）
+    req-frequency-limit-enable: 0
+    # 一分钟内验证码最多失败次数限制（默认：5次）
+    req-get-lock-limit: 5
+    # 一分钟内验证码最多失败次数限制达标后锁定时间（默认：300秒）
+    req-get-lock-seconds: 300
   ## 图形验证码
   graphic:
     # 类型
