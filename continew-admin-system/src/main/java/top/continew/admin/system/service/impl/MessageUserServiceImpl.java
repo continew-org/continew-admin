@@ -20,6 +20,7 @@ import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.MessageUserMapper;
 import top.continew.admin.system.model.entity.MessageUserDO;
 import top.continew.admin.system.model.resp.MessageTypeUnreadResp;
@@ -84,6 +85,7 @@ public class MessageUserServiceImpl implements MessageUserService {
             .set(MessageUserDO::getIsRead, true)
             .set(MessageUserDO::getReadTime, LocalDateTime.now())
             .eq(MessageUserDO::getIsRead, false)
+            .eq(MessageUserDO::getUserId, LoginHelper.getUserId())
             .in(CollUtil.isNotEmpty(ids), MessageUserDO::getMessageId, ids)
             .update();
     }
