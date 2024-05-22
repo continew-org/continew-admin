@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.service.LoginService;
 import top.continew.admin.auth.service.PermissionService;
@@ -108,6 +109,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String socialLogin(AuthUser authUser) {
         String source = authUser.getSource();
         String openId = authUser.getUuid();
