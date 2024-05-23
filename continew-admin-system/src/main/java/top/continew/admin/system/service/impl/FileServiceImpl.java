@@ -154,6 +154,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             String thumbnailUrl = StrUtils.blankToDefault(fileResp.getThumbnailUrl(), url, thUrl -> URLUtil
                 .normalize(prefix + thUrl));
             fileResp.setThumbnailUrl(thumbnailUrl);
+            fileResp.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
         }
     }
 }

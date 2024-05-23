@@ -76,14 +76,20 @@ public class FileResp extends BaseDetailResp {
     private Long thumbnailSize;
 
     /**
-     * 缩略图URL
+     * 缩略图 URL
      */
-    @Schema(description = "缩略图URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg.min.jpg")
+    @Schema(description = "缩略图 URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg.min.jpg")
     private String thumbnailUrl;
 
     /**
      * 存储 ID
      */
-    @Schema(description = "存储ID", example = "1")
+    @Schema(description = "存储 ID", example = "1")
     private Long storageId;
+
+    /**
+     * 存储名称
+     */
+    @Schema(description = "存储名称", example = "MinIO")
+    private String storageName;
 }
