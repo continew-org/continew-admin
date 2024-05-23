@@ -1,7 +1,6 @@
 <template>
   <div class="table-page">
     <GiTable
-      ref="tableRef"
       row-key="id"
       title="${businessName}管理"
       :data="dataList"
@@ -16,9 +15,37 @@
       <template #custom-left>
         <#list fieldConfigs as fieldConfig>
         <#if fieldConfig.showInQuery>
-        <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
-          <template #prefix><icon-search /></template>
-        </a-input>
+	        <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
+	        <a-select
+	          v-model="queryForm.${fieldConfig.fieldName}"
+	          :options="${fieldConfig.columnName}_enum"
+	          placeholder="请选择${fieldConfig.comment}"
+	          allow-clear
+	          style="width: 150px"
+	          @change="search"
+	        />	        
+	        <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
+			<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.columnName}_enum" @change="search"/>	        
+	        <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
+            <a-date-picker
+              v-model="queryForm.${fieldConfig.fieldName}"
+              placeholder="请选择${fieldConfig.comment}"
+              format="YYYY-MM-DD"
+              style="width: 100%"
+            />
+	        <#elseif fieldConfig.formType == "DATE_TIME"><#-- 日期时间框 -->
+            <a-date-picker
+              v-model="queryForm.${fieldConfig.fieldName}"
+              placeholder="请选择${fieldConfig.comment}"
+              show-time
+              format="YYYY-MM-DD HH:mm:ss"
+              style="width: 100%"
+            />	        
+	        <#else>
+	        <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
+	          <template #prefix><icon-search /></template>
+	        </a-input>
+        	</#if>
         </#if>
         </#list>
         <a-button @click="reset">重置</a-button>
@@ -67,6 +94,7 @@ import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
 import has from '@/utils/has'
+import { useDict } from '@/hooks/app'
 
 defineOptions({ name: '${classNamePrefix}' })
 
@@ -78,6 +106,14 @@ const queryForm = reactive<${classNamePrefix}Query>({
 </#list>
   sort: ['createTime,desc']
 })
+
+<#list fieldConfigs as fieldConfig>
+<#if fieldConfig.showInQuery>
+<#if fieldConfig.formType == "SELECT" || fieldConfig.formType == "RADIO">
+const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
+</#if>
+</#if>
+</#list>
 
 const {
   tableData: dataList,
@@ -91,7 +127,7 @@ const columns: TableInstanceColumns[] = [
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInList>
-  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: ${fieldConfig.fieldName} },
+  { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: '${fieldConfig.fieldName}' },
   </#if>
   </#list>
 </#if>

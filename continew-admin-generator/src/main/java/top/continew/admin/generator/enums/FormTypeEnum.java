@@ -55,7 +55,26 @@ public enum FormTypeEnum implements IBaseEnum<Integer> {
      * 日期时间框
      */
     DATE_TIME(6, "日期时间框"),;
-
+    /**
+     * 树形选择
+     */
+    TREE_SELECT(7, "树选择"), 
+    /**
+     * 复选框 
+     */
+    CHECK_GROUP(8, "复选框"),  
+    /**
+     * 数字输入框 
+     */
+    INPUT_NUMBER(9, "数字输入框"),
+    /**
+     * 密码输入框 
+     */
+    INPUT_PASSWORD(10, "密码输入框"),  
+    /**
+     * 开关
+     */
+    SWITCH(11, "开关"),;
     private final Integer value;
     private final String description;
 }
