@@ -145,6 +145,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             ValidationUtils.throwIfBlank(secretKey, "私有密钥不能为空");
             ValidationUtils.throwIfBlank(endpoint, "终端节点不能为空");
             ValidationUtils.throwIfBlank(bucketName, "桶名称不能为空");
+            ValidationUtils.throwIfBlank(domain, "域名不能为空");
+            ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "域名格式错误");
             FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
             config.setPlatform(req.getCode());
             config.setAccessKey(accessKey);
