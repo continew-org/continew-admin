@@ -16,8 +16,9 @@
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
 import { get${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from '@/apis'
-import { type Columns, GiForm } from '@/components/GiForm'
+import { type Columns, GiForm, type Options } from '@/components/GiForm'
 import { useForm } from '@/hooks'
+import { useDict } from '@/hooks/app'
 
 const emit = defineEmits<{
   (e: 'save-success'): void
@@ -27,6 +28,16 @@ const dataId = ref('')
 const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改${businessName}' : '新增${businessName}'))
 const formRef = ref<InstanceType<typeof GiForm>>()
+
+<#list fieldConfigs as fieldConfig>
+<#if fieldConfig.showInForm>
+<#-- SELECT/RADIO/CHECK_GROUP/TREE_SELECT控件从服务器端获取数据 -->
+<#if fieldConfig.formType = 'SELECT' || fieldConfig.formType = 'RADIO' 
+	|| fieldConfig.formType = 'CHECK_GROUP' || fieldConfig.formType = 'TREE_SELECT'>
+const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
+</#if>
+</#if>
+</#list>
 
 const options: Options = {
   form: {},
@@ -44,7 +55,35 @@ const columns: Columns = [
     type: 'input',
     <#elseif fieldConfig.formType = 'TEXT_AREA'>
     type: 'textarea',
-    </#if>
+    <#elseif fieldConfig.formType = 'DATE'>
+    type: 'date-picker',
+    <#elseif fieldConfig.formType = 'DATE_TIME'>
+    type: 'time-picker',
+    <#elseif fieldConfig.formType = 'INPUT_NUMBER'>
+    type: 'input-number', 
+    <#elseif fieldConfig.formType = 'INPUT_PASSWORD'>
+    type: 'input-password',
+    <#elseif fieldConfig.formType = 'SWITCH'>
+    type: 'switch',
+    <#elseif fieldConfig.formType = 'CHECK_GROUP'>
+    type: 'check-group',
+    props: {
+    	options: ${fieldConfig.columnName}_enum,
+    },        
+   	<#elseif fieldConfig.formType = 'TREE_SELECT'>
+    type: 'tree-select',
+    data: '${fieldConfig.columnName}_enum',
+    <#elseif fieldConfig.formType = 'SELECT'>
+    type: 'select', 
+    props: {
+    	options: ${fieldConfig.columnName}_enum,
+    },
+    <#elseif fieldConfig.formType = 'RADIO'>
+    type: 'radio-group',   
+    props: {
+    	options: ${fieldConfig.columnName}_enum,
+    },
+    </#if>   
     <#if fieldConfig.isRequired>
     rules: [{ required: true, message: '请输入${fieldConfig.comment}' }]
     </#if>
