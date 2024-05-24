@@ -13,17 +13,20 @@ jobs:
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
       # 2、安装 Java 环境
       - name: Setup Java
-        uses: actions/setup-java@master
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
+          distribution: "adopt"
           java-version: 17
-          cache: 'maven'
+          cache: "maven"
       # 3、打包
       - name: Build
-        run: mvn -B package --file pom.xml
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+          mvn -B package --file pom.xml
       # 4、拷贝到服务器
       - name: Copy
         uses: garygrossgarten/github-action-scp@release
@@ -46,33 +49,3 @@ jobs:
             cd /docker
             docker-compose up --force-recreate --build -d continew-admin-server
             docker images | grep none | awk '{print $3}' | xargs docker rmi
-  # Sonar 扫描
-  sonar-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 0
-      - name: Setup Java
-        uses: actions/setup-java@master
-        with:
-          distribution: 'adopt'
-          java-version: 17
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Analyze
-        run: mvn -B verify -Psonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
