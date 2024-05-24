@@ -84,9 +84,8 @@ public enum FormTypeEnum implements IBaseEnum<Integer> {
     /**
      * 树形选择
      */
-    TREE_SELECT(11, "树选择"),
-    ;
-    
+    TREE_SELECT(11, "树选择"),;
+
     private final Integer value;
     private final String description;
 }
