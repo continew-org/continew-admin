@@ -31,9 +31,9 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 
 <#list fieldConfigs as fieldConfig>
 <#if fieldConfig.showInForm>
-<#-- SELECT/RADIO/CHECK_GROUP/TREE_SELECT控件从服务器端获取数据 -->
+<#-- SELECT/RADIO/CHECK_BOX/TREE_SELECT控件从服务器端获取数据 -->
 <#if fieldConfig.formType = 'SELECT' || fieldConfig.formType = 'RADIO' 
-	|| fieldConfig.formType = 'CHECK_GROUP' || fieldConfig.formType = 'TREE_SELECT'>
+	|| fieldConfig.formType = 'CHECK_BOX' || fieldConfig.formType = 'TREE_SELECT'>
 const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
 </#if>
 </#if>
@@ -51,7 +51,7 @@ const columns: Columns = [
   {
     label: '${fieldConfig.comment}',
     field: '${fieldConfig.fieldName}',
-    <#if fieldConfig.formType = 'TEXT'>
+    <#if fieldConfig.formType = 'INPUT'>
     type: 'input',
     <#elseif fieldConfig.formType = 'TEXT_AREA'>
     type: 'textarea',
@@ -65,7 +65,7 @@ const columns: Columns = [
     type: 'input-password',
     <#elseif fieldConfig.formType = 'SWITCH'>
     type: 'switch',
-    <#elseif fieldConfig.formType = 'CHECK_GROUP'>
+    <#elseif fieldConfig.formType = 'CHECK_BOX'>
     type: 'check-group',
     props: {
     	options: ${fieldConfig.columnName}_enum,

@@ -159,7 +159,7 @@ public class FieldConfigDO implements Serializable {
         this.setShowInList(true);
         this.setShowInForm(this.getIsRequired());
         this.setShowInQuery(this.getIsRequired());
-        this.setFormType(FormTypeEnum.TEXT);
+        this.setFormType(FormTypeEnum.INPUT);
         this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.LIKE : QueryTypeEnum.EQ);
     }
 
