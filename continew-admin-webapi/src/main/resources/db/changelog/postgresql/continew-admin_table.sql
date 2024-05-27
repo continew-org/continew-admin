@@ -217,6 +217,8 @@ COMMENT ON COLUMN "sys_role_dept"."dept_id" IS '部门ID';
 COMMENT ON TABLE  "sys_role_dept"           IS '角色和部门关联表';
 
 CREATE TABLE IF NOT EXISTS "sys_option" (
+    "id"            int8         NOT NULL,
+    "category"      varchar(50)  DEFAULT NULL,
     "name"          varchar(50)  NOT NULL,
     "code"          varchar(100) NOT NULL,
     "value"         text         DEFAULT NULL,
@@ -224,9 +226,11 @@ CREATE TABLE IF NOT EXISTS "sys_option" (
     "description"   varchar(200) DEFAULT NULL,
     "update_user"   int8         DEFAULT NULL,
     "update_time"   timestamp    DEFAULT NULL,
-    PRIMARY KEY ("code")
+    PRIMARY KEY ("id")
 );
-CREATE INDEX "idx_option_update_user" ON "sys_option" ("update_user");
+CREATE UNIQUE INDEX "uk_option_category_code" ON "sys_option" ("category", "code");
+COMMENT ON COLUMN "sys_option"."id"            IS 'ID';
+COMMENT ON COLUMN "sys_option"."category"      IS '类别';
 COMMENT ON COLUMN "sys_option"."name"          IS '名称';
 COMMENT ON COLUMN "sys_option"."code"          IS '键';
 COMMENT ON COLUMN "sys_option"."value"         IS '值';

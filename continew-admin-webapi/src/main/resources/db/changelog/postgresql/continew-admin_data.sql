@@ -107,22 +107,29 @@ VALUES
 
 -- 初始化默认参数
 INSERT INTO "sys_option"
-("name", "code", "value", "default_value", "description", "update_user", "update_time")
+("id", "category", "name", "code", "value", "default_value", "description", "update_user", "update_time")
 VALUES
-('系统标题', 'SITE_TITLE', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
-('版权信息', 'SITE_COPYRIGHT', NULL,
- 'Copyright © 2022-present&nbsp;<a href="https://blog.charles7c.top/about/me" target="_blank" rel="noopener">Charles7c</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://github.com/Charles7c/continew-admin" target="_blank" rel="noopener">ContiNew Admin</a>&nbsp;<span>⋅</span>&nbsp;<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">津ICP备2022005864号-3</a>',
- '用于显示登录页面的底部版权信息。', NULL, NULL),
-('系统LOGO（16*16）', 'SITE_FAVICON', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
-('系统LOGO（33*33）', 'SITE_LOGO', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL),
-('登录密码错误锁定账号的次数', 'PASSWORD_ERROR_LOCK_COUNT', NULL, '5', '取值范围为 0-10（0 表示不锁定）。', NULL, NULL),
-('登录密码错误锁定账号的时间（min）', 'PASSWORD_ERROR_LOCK_MINUTES', NULL, '5', '取值范围为 1-1440（一天）。', NULL, NULL),
-('密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '取值范围为 0-999（0 表示永久有效）。', NULL, NULL),
-('密码到期提前提示（天）', 'PASSWORD_EXPIRATION_WARNING_DAYS', NULL, '0', '密码到期 N 天前进行提示（0 表示不提示）。', NULL, NULL),
-('密码重复使用规则', 'PASSWORD_REUSE_POLICY', NULL, '5', '不允许使用最近 N 次密码，取值范围为 3-32。', NULL, NULL),
-('密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '取值范围为 8-32。', NULL, NULL),
-('密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', '', NULL, NULL),
-('密码是否必须包含特殊字符', 'PASSWORD_CONTAIN_SPECIAL_CHARACTERS', NULL, '0', '', NULL, NULL);
+(1, 'SITE', '系统标题', 'SITE_TITLE', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。', NULL, NULL),
+(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '持续迭代优化的前后端分离中后台管理系统框架', NULL, NULL, NULL),
+(3, 'SITE', '版权信息', 'SITE_COPYRIGHT', NULL, 'Copyright © 2022 - present ContiNew Admin 版权所有', '用于显示登录页面的底部版权信息。', NULL, NULL),
+(4, 'SITE', '备案号', 'SITE_BEIAN', NULL, '津ICP备2022005864号-3', 'ICP备案号', NULL, NULL),
+(5, 'SITE', 'favicon', 'SITE_FAVICON', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。', NULL, NULL),
+(6, 'SITE', '系统LOGO', 'SITE_LOGO', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。', NULL, NULL),
+(7, 'PASSWORD', '登录密码错误锁定账号的次数', 'PASSWORD_ERROR_LOCK_COUNT', NULL, '5', '取值范围为 0-10（0 表示不锁定）。', NULL, NULL),
+(8, 'PASSWORD', '登录密码错误锁定账号的时间（min）', 'PASSWORD_ERROR_LOCK_MINUTES', NULL, '5', '取值范围为 1-1440（一天）。', NULL, NULL),
+(9, 'PASSWORD', '密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '取值范围为 0-999（0 表示永久有效）。', NULL, NULL),
+(10, 'PASSWORD', '密码到期提前提示（天）', 'PASSWORD_EXPIRATION_WARNING_DAYS', NULL, '0', '密码到期 N 天前进行提示（0 表示不提示）。', NULL, NULL),
+(11, 'PASSWORD', '密码重复使用规则', 'PASSWORD_REUSE_POLICY', NULL, '3', '不允许使用最近 N 次密码，取值范围为 3-32。', NULL, NULL),
+(12, 'PASSWORD', '密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '取值范围为 8-32。', NULL, NULL),
+(13, 'PASSWORD', '密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', NULL, NULL, NULL),
+(14, 'PASSWORD', '密码是否必须包含特殊字符', 'PASSWORD_CONTAIN_SPECIAL_CHARACTERS', NULL, '0', NULL, NULL, NULL),
+(15, 'MAIL', '发件人邮箱', 'MAIL_FROM', NULL, 'charles7c@126.com', NULL, NULL, NULL),
+(16, 'MAIL', 'SMTP服务器', 'MAIL_SMTP_HOST', NULL, 'smtp.126.com', NULL, NULL, NULL),
+(17, 'MAIL', 'SMTP端口', 'MAIL_SMTP_PORT', NULL, '465', NULL, NULL, NULL),
+(18, 'MAIL', 'SMTP用户名', 'MAIL_SMTP_USERNAME', NULL, 'charles7c@126.com', NULL, NULL, NULL),
+(19, 'MAIL', 'SMTP密码', 'MAIL_SMTP_PASSWORD', NULL, NULL, NULL, NULL, NULL),
+(20, 'MAIL', '是否启用SSL', 'MAIL_SSL_ENABLED', NULL, '1', NULL, NULL, NULL),
+(21, 'MAIL', 'SSL端口', 'MAIL_SSL_PORT', NULL, '465', NULL, NULL, NULL);
 
 -- 初始化默认字典
 INSERT INTO "sys_dict"

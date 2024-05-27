@@ -133,6 +133,8 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_option` (
+    `id`            bigint(20)   NOT NULL              COMMENT 'ID',
+    `category`      varchar(50)  DEFAULT NULL COMMENT '类别',
     `name`          varchar(50)  NOT NULL     COMMENT '名称',
     `code`          varchar(100) NOT NULL     COMMENT '键',
     `value`         text         DEFAULT NULL COMMENT '值',
@@ -140,7 +142,8 @@ CREATE TABLE IF NOT EXISTS `sys_option` (
     `description`   varchar(200) DEFAULT NULL COMMENT '描述',
     `update_user`   bigint(20)   DEFAULT NULL COMMENT '修改人',
     `update_time`   datetime     DEFAULT NULL COMMENT '修改时间',
-    PRIMARY KEY (`code`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE INDEX `uk_category_code`(`category`, `code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='参数表';
 
 CREATE TABLE IF NOT EXISTS `sys_dict` (

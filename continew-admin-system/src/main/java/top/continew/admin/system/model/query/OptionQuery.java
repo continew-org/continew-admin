@@ -17,7 +17,6 @@
 package top.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.enums.QueryType;
@@ -43,7 +42,13 @@ public class OptionQuery implements Serializable {
      * 键列表
      */
     @Schema(description = "键列表", example = "site_title,site_copyright")
-    @NotEmpty(message = "键不能为空")
     @Query(type = QueryType.IN)
     private List<String> code;
+
+    /**
+     * 类别
+     */
+    @Schema(description = "类别", example = "SITE")
+    @Query
+    private String category;
 }

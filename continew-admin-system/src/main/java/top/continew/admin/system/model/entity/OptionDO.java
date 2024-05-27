@@ -16,15 +16,11 @@
 
 package top.continew.admin.system.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import top.continew.starter.extension.crud.model.entity.BaseUpdateDO;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * 参数实体
@@ -34,10 +30,15 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("sys_option")
-public class OptionDO implements Serializable {
+public class OptionDO extends BaseUpdateDO {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 类别
+     */
+    private String category;
 
     /**
      * 名称
@@ -47,7 +48,6 @@ public class OptionDO implements Serializable {
     /**
      * 键
      */
-    @TableId
     private String code;
 
     /**
@@ -64,16 +64,4 @@ public class OptionDO implements Serializable {
      * 描述
      */
     private String description;
-
-    /**
-     * 修改人
-     */
-    @TableField(fill = FieldFill.UPDATE)
-    private Long updateUser;
-
-    /**
-     * 修改时间
-     */
-    @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
 }
