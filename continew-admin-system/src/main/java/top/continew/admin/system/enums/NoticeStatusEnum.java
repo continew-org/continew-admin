@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
 import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 
+import java.time.LocalDateTime;
+
 /**
  * 公告状态枚举
  *
@@ -49,4 +51,22 @@ public enum NoticeStatusEnum implements IBaseEnum<Integer> {
     private final Integer value;
     private final String description;
     private final String color;
+
+    /**
+     * 获取公告状态
+     *
+     * @param effectiveTime 生效时间
+     * @param terminateTime 终止时间
+     * @return 公告状态
+     */
+    public static NoticeStatusEnum getStatus(LocalDateTime effectiveTime, LocalDateTime terminateTime) {
+        LocalDateTime now = LocalDateTime.now();
+        if (effectiveTime != null && effectiveTime.isAfter(now)) {
+            return PENDING_RELEASE;
+        }
+        if (terminateTime != null && terminateTime.isBefore(now)) {
+            return EXPIRED;
+        }
+        return PUBLISHED;
+    }
 }

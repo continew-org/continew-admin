@@ -68,12 +68,6 @@ public class NoticeResp extends BaseResp {
      */
     @Schema(description = "状态（1：待发布；2：已发布；3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
     public NoticeStatusEnum getStatus() {
-        if (null != this.effectiveTime && this.effectiveTime.isAfter(LocalDateTime.now())) {
-            return NoticeStatusEnum.PENDING_RELEASE;
-        }
-        if (null != this.terminateTime && this.terminateTime.isBefore(LocalDateTime.now())) {
-            return NoticeStatusEnum.EXPIRED;
-        }
-        return NoticeStatusEnum.PUBLISHED;
+        return NoticeStatusEnum.getStatus(effectiveTime, terminateTime);
     }
 }
