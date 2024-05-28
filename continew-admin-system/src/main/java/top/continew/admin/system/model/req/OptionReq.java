@@ -18,6 +18,7 @@ package top.continew.admin.system.model.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.starter.extension.crud.model.req.BaseReq;
@@ -36,6 +37,13 @@ public class OptionReq extends BaseReq {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @Schema(description = "ID", example = "1")
+    @NotNull(message = "ID不能为空")
+    private Long id;
 
     /**
      * 键

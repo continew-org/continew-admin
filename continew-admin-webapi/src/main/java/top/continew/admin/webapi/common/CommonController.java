@@ -112,7 +112,7 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数字典", description = "查询参数字典")
     @GetMapping("/dict/option")
-    @Cached(key = "#query.code", name = CacheConstants.OPTION_KEY_PREFIX)
+    @Cached(key = "#query.category", name = CacheConstants.OPTION_KEY_PREFIX)
     public R<List<LabelValueResp<String>>> listOptionDict(@Validated OptionQuery query) {
         return R.ok(optionService.list(query)
             .stream()

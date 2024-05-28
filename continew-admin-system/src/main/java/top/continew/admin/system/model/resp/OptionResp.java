@@ -38,6 +38,12 @@ public class OptionResp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID", example = "1")
+    private Long id;
+
+    /**
      * 名称
      */
     @Schema(description = "名称", example = "系统标题")

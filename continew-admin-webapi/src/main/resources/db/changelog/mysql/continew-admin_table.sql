@@ -3,7 +3,7 @@
 -- changeset Charles7c:1
 -- comment 初始化表结构
 CREATE TABLE IF NOT EXISTS `sys_menu` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `title`       varchar(30)  NOT NULL                    COMMENT '标题',
     `parent_id`   bigint(20)   NOT NULL DEFAULT 0          COMMENT '上级菜单ID',
     `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：目录；2：菜单；3：按钮）',
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='菜单表';
 
 CREATE TABLE IF NOT EXISTS `sys_dept` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `name`        varchar(30)  NOT NULL                    COMMENT '名称',
     `parent_id`   bigint(20)   NOT NULL DEFAULT 0          COMMENT '上级部门ID',
     `ancestors`   varchar(512) NOT NULL DEFAULT ''         COMMENT '祖级列表',
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='部门表';
 
 CREATE TABLE IF NOT EXISTS `sys_role` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `name`        varchar(30)  NOT NULL                    COMMENT '名称',
     `code`        varchar(30)  NOT NULL                    COMMENT '编码',
     `data_scope`  tinyint(1)   NOT NULL DEFAULT 4          COMMENT '数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）',
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
 CREATE TABLE IF NOT EXISTS `sys_user` (
-    `id`             bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `username`       varchar(64)  NOT NULL                    COMMENT '用户名',
     `nickname`       varchar(30)  NOT NULL                    COMMENT '昵称',
     `password`       varchar(255) DEFAULT NULL                COMMENT '密码',
@@ -96,10 +96,10 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
 CREATE TABLE IF NOT EXISTS `sys_user_password_history` (
-    `id`          bigint(20)   NOT NULL COMMENT 'ID',
-    `user_id`     bigint(20)   NOT NULL COMMENT '用户ID',
-    `password`    varchar(255) NOT NULL COMMENT '密码',
-    `create_time` datetime     NOT NULL COMMENT '创建时间',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `user_id`     bigint(20)   NOT NULL                COMMENT '用户ID',
+    `password`    varchar(255) NOT NULL                COMMENT '密码',
+    `create_time` datetime     NOT NULL                COMMENT '创建时间',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `idx_user_id`(`user_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户历史密码表';
@@ -133,36 +133,36 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_option` (
-    `id`            bigint(20)   NOT NULL              COMMENT 'ID',
-    `category`      varchar(50)  DEFAULT NULL COMMENT '类别',
-    `name`          varchar(50)  NOT NULL     COMMENT '名称',
-    `code`          varchar(100) NOT NULL     COMMENT '键',
-    `value`         text         DEFAULT NULL COMMENT '值',
-    `default_value` text         DEFAULT NULL COMMENT '默认值',
-    `description`   varchar(200) DEFAULT NULL COMMENT '描述',
-    `update_user`   bigint(20)   DEFAULT NULL COMMENT '修改人',
-    `update_time`   datetime     DEFAULT NULL COMMENT '修改时间',
+    `id`            bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `category`      varchar(50)  NOT NULL                COMMENT '类别',
+    `name`          varchar(50)  NOT NULL                COMMENT '名称',
+    `code`          varchar(100) NOT NULL                COMMENT '键',
+    `value`         text         DEFAULT NULL            COMMENT '值',
+    `default_value` text         DEFAULT NULL            COMMENT '默认值',
+    `description`   varchar(200) DEFAULT NULL            COMMENT '描述',
+    `update_user`   bigint(20)   DEFAULT NULL            COMMENT '修改人',
+    `update_time`   datetime     DEFAULT NULL            COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `uk_category_code`(`category`, `code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='参数表';
 
 CREATE TABLE IF NOT EXISTS `sys_dict` (
-    `id`          bigint(20)   NOT NULL              COMMENT 'ID',
-    `name`        varchar(30)  NOT NULL              COMMENT '名称',
-    `code`        varchar(30)  NOT NULL              COMMENT '编码',
-    `description` varchar(200) DEFAULT NULL          COMMENT '描述',
-    `is_system`   bit(1)       NOT NULL DEFAULT b'0' COMMENT '是否为系统内置数据',
-    `create_user` bigint(20)   NOT NULL              COMMENT '创建人',
-    `create_time` datetime     NOT NULL              COMMENT '创建时间',
-    `update_user` bigint(20)   DEFAULT NULL          COMMENT '修改人',
-    `update_time` datetime     DEFAULT NULL          COMMENT '修改时间',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `name`        varchar(30)  NOT NULL                COMMENT '名称',
+    `code`        varchar(30)  NOT NULL                COMMENT '编码',
+    `description` varchar(200) DEFAULT NULL            COMMENT '描述',
+    `is_system`   bit(1)       NOT NULL DEFAULT b'0'   COMMENT '是否为系统内置数据',
+    `create_user` bigint(20)   NOT NULL                COMMENT '创建人',
+    `create_time` datetime     NOT NULL                COMMENT '创建时间',
+    `update_user` bigint(20)   DEFAULT NULL            COMMENT '修改人',
+    `update_time` datetime     DEFAULT NULL            COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `uk_name`(`name`) USING BTREE,
     UNIQUE INDEX `uk_code`(`code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典表';
 
 CREATE TABLE IF NOT EXISTS `sys_dict_item` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `label`       varchar(30)  NOT NULL                    COMMENT '标签',
     `value`       varchar(30)  NOT NULL                    COMMENT '值',
     `color`       varchar(30)  DEFAULT NULL                COMMENT '标签颜色',
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项表';
 
 CREATE TABLE IF NOT EXISTS `sys_log` (
-    `id`               bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`               bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `trace_id`         varchar(255) DEFAULT NULL                COMMENT '链路ID',
     `description`      varchar(255) NOT NULL                    COMMENT '日志描述',
     `module`           varchar(50)  NOT NULL                    COMMENT '所属模块',
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统日志表';
 
 CREATE TABLE IF NOT EXISTS `sys_message` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `title`       varchar(50)  NOT NULL                    COMMENT '标题',
     `content`     varchar(255) DEFAULT NULL                COMMENT '内容',
     `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：系统消息）',
@@ -227,24 +227,24 @@ CREATE TABLE IF NOT EXISTS `sys_message_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息和用户关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_notice` (
-    `id`             bigint(20)   NOT NULL             COMMENT 'ID',
-    `title`          varchar(150) NOT NULL             COMMENT '标题',
-    `content`        mediumtext   NOT NULL             COMMENT '内容',
-    `type`           varchar(30)  NOT NULL             COMMENT '类型',
-    `effective_time` datetime     DEFAULT NULL         COMMENT '生效时间',
-    `terminate_time` datetime     DEFAULT NULL         COMMENT '终止时间',
-    `sort`           int          NOT NULL DEFAULT 999 COMMENT '排序',
-    `create_user`    bigint(20)   NOT NULL             COMMENT '创建人',
-    `create_time`    datetime     NOT NULL             COMMENT '创建时间',
-    `update_user`    bigint(20)   DEFAULT NULL         COMMENT '修改人',
-    `update_time`    datetime     DEFAULT NULL         COMMENT '修改时间',
+    `id`             bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `title`          varchar(150) NOT NULL                COMMENT '标题',
+    `content`        mediumtext   NOT NULL                COMMENT '内容',
+    `type`           varchar(30)  NOT NULL                COMMENT '类型',
+    `effective_time` datetime     DEFAULT NULL            COMMENT '生效时间',
+    `terminate_time` datetime     DEFAULT NULL            COMMENT '终止时间',
+    `sort`           int          NOT NULL DEFAULT 999    COMMENT '排序',
+    `create_user`    bigint(20)   NOT NULL                COMMENT '创建人',
+    `create_time`    datetime     NOT NULL                COMMENT '创建时间',
+    `update_user`    bigint(20)   DEFAULT NULL            COMMENT '修改人',
+    `update_time`    datetime     DEFAULT NULL            COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `idx_create_user`(`create_user`) USING BTREE,
     INDEX `idx_update_user`(`update_user`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公告表';
 
 CREATE TABLE IF NOT EXISTS `sys_storage` (
-    `id`          bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `name`        varchar(100) NOT NULL                    COMMENT '名称',
     `code`        varchar(30)  NOT NULL                    COMMENT '编码',
     `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：兼容S3协议存储；2：本地存储）',
@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储表';
 
 CREATE TABLE IF NOT EXISTS `sys_file` (
-    `id`             bigint(20)   NOT NULL                    COMMENT 'ID',
+    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `name`           varchar(255) NOT NULL                    COMMENT '名称',
     `size`           bigint(20)   NOT NULL                    COMMENT '大小（字节）',
     `url`            varchar(512) NOT NULL                    COMMENT 'URL',

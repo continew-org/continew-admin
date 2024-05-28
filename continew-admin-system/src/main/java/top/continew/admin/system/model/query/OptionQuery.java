@@ -41,7 +41,7 @@ public class OptionQuery implements Serializable {
     /**
      * 键列表
      */
-    @Schema(description = "键列表", example = "site_title,site_copyright")
+    @Schema(description = "键列表", example = "SITE_TITLE,SITE_COPYRIGHT")
     @Query(type = QueryType.IN)
     private List<String> code;
 
@@ -49,6 +49,5 @@ public class OptionQuery implements Serializable {
      * 类别
      */
     @Schema(description = "类别", example = "SITE")
-    @Query
     private String category;
 }

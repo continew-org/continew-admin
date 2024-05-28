@@ -218,7 +218,7 @@ COMMENT ON TABLE  "sys_role_dept"           IS '角色和部门关联表';
 
 CREATE TABLE IF NOT EXISTS "sys_option" (
     "id"            int8         NOT NULL,
-    "category"      varchar(50)  DEFAULT NULL,
+    "category"      varchar(50)  NOT NULL,
     "name"          varchar(50)  NOT NULL,
     "code"          varchar(100) NOT NULL,
     "value"         text         DEFAULT NULL,
