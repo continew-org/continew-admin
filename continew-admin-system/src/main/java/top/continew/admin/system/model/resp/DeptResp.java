@@ -16,16 +16,11 @@
 
 package top.continew.admin.system.model.resp;
 
-import cn.crane4j.annotation.AssembleMethod;
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.Mapping;
-import cn.crane4j.annotation.condition.ConditionOnExpression;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.system.service.DeptService;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
@@ -58,17 +53,8 @@ public class DeptResp extends BaseDetailResp {
      * 上级部门 ID
      */
     @Schema(description = "上级部门 ID", example = "2")
-    @ConditionOnExpression(value = "#target.parentId != 0")
-    @AssembleMethod(props = @Mapping(src = "name", ref = "parentName"), targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
     @ExcelProperty(value = "上级部门 ID", order = 3)
     private Long parentId;
-
-    /**
-     * 上级部门
-     */
-    @Schema(description = "上级部门", example = "天津总部")
-    @ExcelProperty(value = "上级部门", order = 4)
-    private String parentName;
 
     /**
      * 状态

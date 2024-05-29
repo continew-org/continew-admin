@@ -20,17 +20,18 @@
             t1.status,
             t1.is_system,
             t1.pwd_reset_time,
-            t1.dept_id
+            t1.dept_id,
+            t2.name AS deptName
         FROM sys_user AS t1
         LEFT JOIN sys_dept AS t2 ON t2.id = t1.dept_id
     </sql>
 
-    <select id="selectUserPage" resultType="top.continew.admin.system.model.entity.UserDO">
+    <select id="selectUserPage" resultType="top.continew.admin.system.model.resp.UserDetailResp">
         <include refid="selectUser" />
         ${ew.customSqlSegment}
     </select>
 
-    <select id="selectUserList" resultType="top.continew.admin.system.model.entity.UserDO">
+    <select id="selectUserList" resultType="top.continew.admin.system.model.resp.UserDetailResp">
         <include refid="selectUser" />
         ${ew.customSqlSegment}
     </select>

@@ -17,9 +17,6 @@
 package top.continew.admin.system.model.resp;
 
 import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.AssembleMethod;
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.Mapping;
 import cn.crane4j.core.executor.handler.ManyToManyAssembleOperationHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -27,7 +24,6 @@ import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
-import top.continew.admin.system.service.DeptService;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.continew.starter.security.mask.annotation.JsonMask;
 import top.continew.starter.security.mask.enums.MaskType;
@@ -110,7 +106,6 @@ public class UserResp extends BaseDetailResp {
      * 部门 ID
      */
     @Schema(description = "部门 ID", example = "5")
-    @AssembleMethod(props = @Mapping(src = "name", ref = "deptName"), targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
     private Long deptId;
 
     /**

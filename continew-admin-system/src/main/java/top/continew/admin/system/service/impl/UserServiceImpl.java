@@ -94,7 +94,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
         QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
-        IPage<UserDO> page = baseMapper.selectUserPage(pageQuery.toPage(), queryWrapper);
+        IPage<UserDetailResp> page = baseMapper.selectUserPage(pageQuery.toPage(), queryWrapper);
         PageResp<UserResp> pageResp = PageResp.build(page, this.listClass);
         pageResp.getList().forEach(this::fill);
         return pageResp;
@@ -288,7 +288,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
         // 设置排序
         super.sort(queryWrapper, sortQuery);
-        List<UserDO> entityList = baseMapper.selectUserList(queryWrapper);
+        List<UserDetailResp> entityList = baseMapper.selectUserList(queryWrapper);
         if (entityClass == targetClass) {
             return (List<E>)entityList;
         }
@@ -309,7 +309,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .eq(null != status, "t1.status", status)
             .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
                 .getLast(createTimeList))
-            .and(null != deptId, q -> {
+            .and(null != deptId && !SysConstants.SUPER_DEPT_ID.equals(deptId), q -> {
                 List<Long> deptIdList = deptService.listChildren(deptId)
                     .stream()
                     .map(DeptDO::getId)

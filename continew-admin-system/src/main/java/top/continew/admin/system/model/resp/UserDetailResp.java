@@ -20,6 +20,7 @@ import cn.crane4j.annotation.Assemble;
 import cn.crane4j.annotation.AssembleMethod;
 import cn.crane4j.annotation.ContainerMethod;
 import cn.crane4j.annotation.Mapping;
+import cn.crane4j.annotation.condition.ConditionOnExpression;
 import cn.crane4j.core.executor.handler.ManyToManyAssembleOperationHandler;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -33,6 +34,7 @@ import top.continew.admin.system.service.DeptService;
 import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.continew.starter.file.excel.converter.ExcelListConverter;
+import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -86,6 +88,7 @@ public class UserDetailResp extends BaseDetailResp {
      * 部门 ID
      */
     @Schema(description = "部门 ID", example = "5")
+    @ConditionOnExpression("#target.deptName == null")
     @AssembleMethod(props = @Mapping(src = "name", ref = "deptName"), targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
     @ExcelProperty(value = "部门 ID", order = 6)
     private Long deptId;
@@ -117,6 +120,7 @@ public class UserDetailResp extends BaseDetailResp {
      */
     @Schema(description = "手机号码", example = "13811111111")
     @ExcelProperty(value = "手机号码", order = 10)
+    @FieldEncrypt
     private String phone;
 
     /**
@@ -124,6 +128,7 @@ public class UserDetailResp extends BaseDetailResp {
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
     @ExcelProperty(value = "邮箱", order = 11)
+    @FieldEncrypt
     private String email;
 
     /**
