@@ -20,10 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.extension.crud.model.req.BaseReq;
 
@@ -54,7 +52,7 @@ public class DeptReq extends BaseReq {
      */
     @Schema(description = "名称", example = "测试部")
     @NotBlank(message = "名称不能为空")
-    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "名称长度为 2-30 个字符，支持中文、字母、数字、下划线，短横线")
+    @Length(max = 30, message = "名称长度不能超过 {max} 个字符")
     private String name;
 
     /**
