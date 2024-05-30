@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS "sys_user" (
     "gender"         int2         NOT NULL DEFAULT 0,
     "email"          varchar(255) DEFAULT NULL,
     "phone"          varchar(255) DEFAULT NULL,
-    "avatar"         varchar(255) DEFAULT NULL,
+    "avatar"         text         DEFAULT NULL,
     "description"    varchar(200) DEFAULT NULL,
     "status"         int2         NOT NULL DEFAULT 1,
     "is_system"      bool         NOT NULL DEFAULT false,
@@ -146,7 +146,7 @@ COMMENT ON COLUMN "sys_user"."password"       IS '密码';
 COMMENT ON COLUMN "sys_user"."gender"         IS '性别（0：未知；1：男；2：女）';
 COMMENT ON COLUMN "sys_user"."email"          IS '邮箱';
 COMMENT ON COLUMN "sys_user"."phone"          IS '手机号码';
-COMMENT ON COLUMN "sys_user"."avatar"         IS '头像地址';
+COMMENT ON COLUMN "sys_user"."avatar"         IS '头像';
 COMMENT ON COLUMN "sys_user"."description"    IS '描述';
 COMMENT ON COLUMN "sys_user"."status"         IS '状态（1：启用；2：禁用）';
 COMMENT ON COLUMN "sys_user"."is_system"      IS '是否为系统内置数据';

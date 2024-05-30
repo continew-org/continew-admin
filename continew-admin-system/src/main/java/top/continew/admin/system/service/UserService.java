@@ -28,6 +28,7 @@ import top.continew.admin.system.model.resp.UserResp;
 import top.continew.starter.data.mybatis.plus.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -70,7 +71,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @param id     ID
      * @return 新头像路径
      */
-    String uploadAvatar(MultipartFile avatar, Long id);
+    String updateAvatar(MultipartFile avatar, Long id) throws IOException;
 
     /**
      * 修改基础信息

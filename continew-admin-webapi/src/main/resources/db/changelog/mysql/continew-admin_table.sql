@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
     `gender`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 0 COMMENT '性别（0：未知；1：男；2：女）',
     `email`          varchar(255) DEFAULT NULL                COMMENT '邮箱',
     `phone`          varchar(255) DEFAULT NULL                COMMENT '手机号码',
-    `avatar`         varchar(255) DEFAULT NULL                COMMENT '头像地址',
+    `avatar`         longtext     DEFAULT NULL                COMMENT '头像',
     `description`    varchar(200) DEFAULT NULL                COMMENT '描述',
     `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
     `is_system`      bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否为系统内置数据',
