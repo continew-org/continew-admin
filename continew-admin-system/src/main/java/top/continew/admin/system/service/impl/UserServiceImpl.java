@@ -18,6 +18,7 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -29,8 +30,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,11 +59,9 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
@@ -81,8 +78,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     private final OnlineUserService onlineUserService;
     private final UserRoleService userRoleService;
-    private final FileService fileService;
-    private final FileStorageService fileStorageService;
     private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
     private final UserPasswordHistoryService userPasswordHistoryService;
@@ -175,22 +170,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public String uploadAvatar(MultipartFile avatarFile, Long id) {
+    public String updateAvatar(MultipartFile avatarFile, Long id) throws IOException {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
             .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
-        // 上传新头像
-        UserDO user = super.getById(id);
-        FileInfo fileInfo = fileService.upload(avatarFile);
         // 更新用户头像
-        String newAvatar = fileInfo.getUrl();
-        baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
-        // 删除原头像
-        String oldAvatar = user.getAvatar();
-        if (StrUtil.isNotBlank(oldAvatar)) {
-            fileStorageService.delete(oldAvatar);
-        }
-        return newAvatar;
+        String base64 = ImgUtil.toBase64DataUri(ImgUtil.scale(ImgUtil.toImage(avatarFile
+            .getBytes()), 100, 100, null), avatarImageType);
+        baseMapper.lambdaUpdate().set(UserDO::getAvatar, base64).eq(UserDO::getId, id).update();
+        return base64;
     }
 
     @Override

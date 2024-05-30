@@ -48,6 +48,7 @@ import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.web.model.R;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -69,12 +70,12 @@ public class UserCenterController {
     private final UserSocialService userSocialService;
     private final AuthRequestFactory authRequestFactory;
 
-    @Operation(summary = "上传头像", description = "用户上传个人头像")
+    @Operation(summary = "修改头像", description = "用户修改个人头像")
     @PostMapping("/avatar")
-    public R<AvatarResp> uploadAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) {
+    public R<AvatarResp> updateAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) throws IOException {
         ValidationUtils.throwIf(avatarFile::isEmpty, "头像不能为空");
-        String newAvatar = userService.uploadAvatar(avatarFile, LoginHelper.getUserId());
-        return R.ok("上传成功", AvatarResp.builder().avatar(newAvatar).build());
+        String newAvatar = userService.updateAvatar(avatarFile, LoginHelper.getUserId());
+        return R.ok("修改成功", AvatarResp.builder().avatar(newAvatar).build());
     }
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
