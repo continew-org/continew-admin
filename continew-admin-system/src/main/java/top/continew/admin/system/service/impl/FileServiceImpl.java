@@ -146,7 +146,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         super.fill(obj);
         if (obj instanceof FileResp fileResp && !URLUtils.isHttpUrl(fileResp.getUrl())) {
             StorageDO storage = storageService.getById(fileResp.getStorageId());
-            String prefix = storage.getDomain() + StringConstants.SLASH;
+            String prefix = StrUtil.appendIfMissing(storage.getDomain(), StringConstants.SLASH);
             String url = URLUtil.normalize(prefix + fileResp.getUrl());
             fileResp.setUrl(url);
             String thumbnailUrl = StrUtils.blankToDefault(fileResp.getThumbnailUrl(), url, thUrl -> URLUtil

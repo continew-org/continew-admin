@@ -85,7 +85,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         List<Table> tableList = MetaUtils.getTables(dataSource);
         String tableName = query.getTableName();
         if (StrUtil.isNotBlank(tableName)) {
-            tableList.removeIf(table -> !StrUtil.containsAny(table.getTableName(), tableName));
+            tableList.removeIf(table -> !StrUtil.containsAnyIgnoreCase(table.getTableName(), tableName));
         }
         tableList.removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
             .getExcludeTables()));

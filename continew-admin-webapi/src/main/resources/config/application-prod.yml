@@ -29,14 +29,14 @@ spring.datasource:
         password: ${DB_PWD:123456}
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: ${spring.datasource.type}
-      # 从库配置（可配多个，构成多从）
-      slave_1:
-        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-        username:
-        password:
-        lazy: true
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        type: ${spring.datasource.type}
+#      # 从库配置（可配多个，构成多从）
+#      slave_1:
+#        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+#        username:
+#        password:
+#        lazy: true
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        type: ${spring.datasource.type}
 #      # PostgreSQL 库配置
 #      postgresql:
 #        url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
