@@ -20,7 +20,6 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -31,7 +30,6 @@ import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.model.resp.LabelValueResp;
 import top.continew.admin.system.model.query.DeptQuery;
 import top.continew.admin.system.model.query.MenuQuery;
@@ -112,7 +110,6 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数字典", description = "查询参数字典")
     @GetMapping("/dict/option")
-    @Cached(key = "#query.category", name = CacheConstants.OPTION_KEY_PREFIX)
     public R<List<LabelValueResp<String>>> listOptionDict(@Validated OptionQuery query) {
         return R.ok(optionService.list(query)
             .stream()

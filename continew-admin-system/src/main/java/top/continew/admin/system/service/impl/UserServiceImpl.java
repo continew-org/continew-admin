@@ -20,6 +20,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
@@ -333,16 +334,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @param user     用户信息
      */
     private int checkPassword(String password, UserDO user) {
+        Map<String, String> passwordPolicy = optionService.getByCategory(CATEGORY);
         // 密码最小长度
-        PASSWORD_MIN_LENGTH.validate(password, optionService.getValueByCode2Int(PASSWORD_MIN_LENGTH.name()), user);
+        PASSWORD_MIN_LENGTH.validate(password, MapUtil.getInt(passwordPolicy, PASSWORD_MIN_LENGTH.name()), user);
         // 密码是否必须包含特殊字符
-        PASSWORD_CONTAIN_SPECIAL_CHARACTERS.validate(password, optionService
-            .getValueByCode2Int(PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name()), user);
+        PASSWORD_CONTAIN_SPECIAL_CHARACTERS.validate(password, MapUtil
+            .getInt(passwordPolicy, PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name()), user);
         // 密码是否允许包含正反序账号名
-        PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, optionService
-            .getValueByCode2Int(PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
+        PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, MapUtil
+            .getInt(passwordPolicy, PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
         // 密码重复使用规则
-        int passwordReusePolicy = optionService.getValueByCode2Int(PASSWORD_REUSE_POLICY.name());
+        int passwordReusePolicy = MapUtil.getInt(passwordPolicy, PASSWORD_REUSE_POLICY.name());
         PASSWORD_REUSE_POLICY.validate(password, passwordReusePolicy, user);
         return passwordReusePolicy;
     }

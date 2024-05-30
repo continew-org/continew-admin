@@ -166,9 +166,9 @@ public enum PasswordPolicyEnum {
     private final String msg;
 
     /**
-     * 策略前缀
+     * 策略类别
      */
-    public static final String PREFIX = "PASSWORD_";
+    public static final String CATEGORY = "PASSWORD";
 
     /**
      * 校验取值范围

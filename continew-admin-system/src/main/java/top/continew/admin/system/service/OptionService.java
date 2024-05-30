@@ -22,6 +22,7 @@ import top.continew.admin.system.model.req.OptionResetValueReq;
 import top.continew.admin.system.model.resp.OptionResp;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -39,6 +40,14 @@ public interface OptionService {
      * @return 列表信息
      */
     List<OptionResp> list(OptionQuery query);
+
+    /**
+     * 根据类别查询
+     *
+     * @param category 类别
+     * @return 参数信息
+     */
+    Map<String, String> getByCategory(String category);
 
     /**
      * 修改参数
