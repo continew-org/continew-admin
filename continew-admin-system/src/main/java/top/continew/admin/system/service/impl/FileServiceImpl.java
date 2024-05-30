@@ -31,7 +31,6 @@ import org.dromara.x.file.storage.core.upload.UploadPretreatment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.enums.FileTypeEnum;
-import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
@@ -119,9 +118,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         });
         // 处理本地存储文件 URL
         FileInfo fileInfo = uploadPretreatment.upload();
-        fileInfo.setUrl(StorageTypeEnum.LOCAL.equals(storage.getType())
-            ? URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getUrl())
-            : fileInfo.getUrl());
+        fileInfo.setUrl(URLUtil.normalize(storage.getDomain() + StringConstants.SLASH + fileInfo.getPath() + fileInfo
+            .getFilename()));
         return fileInfo;
     }
 
