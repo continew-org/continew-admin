@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 import top.continew.admin.common.config.properties.CaptchaProperties;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.model.resp.CaptchaResp;
+import top.continew.admin.system.service.OptionService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.captcha.graphic.core.GraphicCaptchaService;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -77,10 +78,11 @@ import java.util.Map;
 @RequestMapping("/captcha")
 public class CaptchaController {
 
-    private final CaptchaService behaviorCaptchaService;
-    private final GraphicCaptchaService graphicCaptchaService;
     private final ProjectProperties projectProperties;
     private final CaptchaProperties captchaProperties;
+    private final CaptchaService behaviorCaptchaService;
+    private final GraphicCaptchaService graphicCaptchaService;
+    private final OptionService optionService;
 
     @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
@@ -127,7 +129,11 @@ public class CaptchaController {
         String captcha = RandomUtil.randomNumbers(captchaMail.getLength());
         // 发送验证码
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
+        Map<String, String> siteConfig = optionService.getByCategory("SITE");
         String content = TemplateUtils.render(captchaMail.getTemplatePath(), Dict.create()
+            .set("siteUrl", projectProperties.getUrl())
+            .set("siteTitle", siteConfig.get("SITE_TITLE"))
+            .set("siteCopyright", siteConfig.get("SITE_COPYRIGHT"))
             .set("captcha", captcha)
             .set("expiration", expirationInMinutes));
         MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(projectProperties.getName()), content);
