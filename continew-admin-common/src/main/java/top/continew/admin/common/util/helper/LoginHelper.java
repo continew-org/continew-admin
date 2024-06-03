@@ -93,7 +93,7 @@ public class LoginHelper {
      * @return 登录用户信息
      */
     public static LoginUser getLoginUser(String token) {
-        SaSession tokenSession = StpUtil.getTokenSessionByToken(token);
+        SaSession tokenSession = StpUtil.getStpLogic().getTokenSessionByToken(token, false);
         if (null == tokenSession) {
             return null;
         }
