@@ -72,7 +72,7 @@ spring.data:
     host: ${REDIS_HOST:127.0.0.1}
     # 端口（默认 6379）
     port: ${REDIS_PORT:6379}
-    # 密码（未设置密码时可为空或注释掉）
+    # 密码（未设置密码时请注释掉）
     password: ${REDIS_PWD:123456}
     # 数据库索引
     database: ${REDIS_DB:0}
@@ -183,9 +183,6 @@ continew-starter.web.cors:
   exposed-headers: '*'
 
 --- ### 接口文档配置
-springdoc:
-  swagger-ui:
-    enabled: false
 ## 接口文档增强配置
 knife4j:
   # 开启生产环境屏蔽
