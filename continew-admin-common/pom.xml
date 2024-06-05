@@ -82,6 +82,12 @@
             <artifactId>continew-starter-cache-jetcache</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 消息模块 - WebSocket -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-messaging-websocket</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 消息模块 - 邮件 -->
         <dependency>
             <groupId>top.continew</groupId>
@@ -135,10 +141,5 @@
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
-
     </dependencies>
 </project>

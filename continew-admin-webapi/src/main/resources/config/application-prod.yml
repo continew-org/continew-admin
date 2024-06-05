@@ -188,6 +188,14 @@ knife4j:
   # 开启生产环境屏蔽
   production: true
 
+--- ### WebSocket 配置
+continew-starter.messaging.websocket:
+  enabled: true
+  path: /websocket
+  # 配置允许跨域的域名
+  allowed-origins:
+    - ${project.url}
+
 --- ### 短信配置
 sms:
   # 从 YAML 读取配置
@@ -242,7 +250,7 @@ sa-token.extension:
     - /*/*.html
     - /*/*.css
     - /*/*.js
-    - /webSocket/**
+    - /websocket/**
     # 本地存储资源
     - /file/**
 

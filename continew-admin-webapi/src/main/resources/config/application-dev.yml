@@ -184,6 +184,13 @@ springdoc:
   swagger-ui:
     enabled: true
 
+--- ### WebSocket 配置
+continew-starter.messaging.websocket:
+  enabled: true
+  path: /websocket
+  # 配置允许跨域的域名
+  allowed-origins: '*'
+
 --- ### 短信配置
 sms:
   # 从 YAML 读取配置
@@ -239,7 +246,7 @@ sa-token.extension:
     - /*/*.html
     - /*/*.css
     - /*/*.js
-    - /webSocket/**
+    - /websocket/**
     # 接口文档相关资源
     - /favicon.ico
     - /doc.html
