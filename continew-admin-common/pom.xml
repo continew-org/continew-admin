@@ -55,7 +55,7 @@
         <!-- ContiNew Starter 扩展模块 - CURD（增删改查） -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-extension-crud</artifactId>
+            <artifactId>continew-starter-extension-crud-mp</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 认证模块 - JustAuth -->
