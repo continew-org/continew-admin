@@ -19,6 +19,7 @@ package top.continew.admin.system.model.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
+import top.continew.starter.extension.crud.annotation.DictField;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
@@ -30,6 +31,7 @@ import java.io.Serial;
  * @since 2023/2/8 22:54
  */
 @Data
+@DictField
 @TableName("sys_role")
 public class RoleDO extends BaseDO {
 

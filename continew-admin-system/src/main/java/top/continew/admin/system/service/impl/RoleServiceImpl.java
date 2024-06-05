@@ -31,7 +31,6 @@ import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
 import top.continew.admin.common.model.dto.RoleDTO;
-import top.continew.admin.common.model.resp.LabelValueResp;
 import top.continew.admin.system.mapper.RoleMapper;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
@@ -134,14 +133,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
                 detail.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
             }
         }
-    }
-
-    @Override
-    public List<LabelValueResp<Long>> buildDict(List<RoleResp> list) {
-        if (CollUtil.isEmpty(list)) {
-            return new ArrayList<>(0);
-        }
-        return list.stream().map(r -> new LabelValueResp<>(r.getName(), r.getId())).toList();
     }
 
     @Override
