@@ -20,17 +20,19 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.common.model.resp.LabelValueResp;
+import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.model.query.DeptQuery;
 import top.continew.admin.system.model.query.MenuQuery;
 import top.continew.admin.system.model.query.OptionQuery;
@@ -41,10 +43,10 @@ import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.continew.starter.extension.crud.model.query.SortQuery;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.log.core.annotation.Log;
 import top.continew.starter.web.model.R;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -95,8 +97,6 @@ public class CommonController {
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public R<List<LabelValueResp<Long>>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
-        return R.ok(roleService.buildDict(roleService.list(query, sortQuery)));
     public R<List<LabelValueResp>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
         return R.ok(roleService.listDict(query, sortQuery));
     }
@@ -104,7 +104,7 @@ public class CommonController {
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "notice_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
-    public R<List<LabelValueResp<Serializable>>> listDict(@PathVariable String code) {
+    public R<List<LabelValueResp>> listDict(@PathVariable String code) {
         Optional<Class<?>> enumClassOptional = this.getEnumClassByName(code);
         return R.ok(enumClassOptional.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
     }
@@ -112,8 +112,11 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询参数字典", description = "查询参数字典")
     @GetMapping("/dict/option")
-    public R<List<LabelValueResp<String>>> listOptionDict(@Validated OptionQuery query) {
-        return R.ok(optionService.list(query)
+    @Cached(key = "#category", name = CacheConstants.OPTION_KEY_PREFIX)
+    public R<List<LabelValueResp<String>>> listOptionDict(@NotBlank(message = "类别不能为空") @RequestParam String category) {
+        OptionQuery optionQuery = new OptionQuery();
+        optionQuery.setCategory(category);
+        return R.ok(optionService.list(optionQuery)
             .stream()
             .map(option -> new LabelValueResp<>(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
                 .getDefaultValue())))
@@ -140,11 +143,11 @@ public class CommonController {
      * @param enumClass 枚举类型
      * @return 枚举字典
      */
-    private List<LabelValueResp<Serializable>> listEnumDict(Class<?> enumClass) {
+    private List<LabelValueResp> listEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
         return Arrays.stream(enumConstants).map(e -> {
             IBaseEnum baseEnum = (IBaseEnum)e;
-            return new LabelValueResp<>(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
+            return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
         }).toList();
     }
 }

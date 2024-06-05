@@ -18,7 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.continew.admin.common.model.resp.LabelValueResp;
 import top.continew.admin.system.mapper.DictItemMapper;
 import top.continew.admin.system.model.entity.DictItemDO;
 import top.continew.admin.system.model.query.DictItemQuery;
@@ -26,9 +25,9 @@ import top.continew.admin.system.model.req.DictItemReq;
 import top.continew.admin.system.model.resp.DictItemResp;
 import top.continew.admin.system.service.DictItemService;
 import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -54,7 +53,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    public List<LabelValueResp<Serializable>> listByDictCode(String dictCode) {
+    public List<LabelValueResp> listByDictCode(String dictCode) {
         return baseMapper.listByDictCode(dictCode);
     }
 

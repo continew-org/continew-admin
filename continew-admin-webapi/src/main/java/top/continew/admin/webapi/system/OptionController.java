@@ -56,7 +56,7 @@ public class OptionController {
 
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
-    @PatchMapping
+    @PutMapping
     public R<Void> update(@Valid @RequestBody List<OptionReq> options) {
         baseService.update(options);
         return R.ok();

@@ -17,11 +17,10 @@
 package top.continew.admin.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import top.continew.admin.common.model.resp.LabelValueResp;
 import top.continew.admin.system.model.entity.DictItemDO;
 import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -38,5 +37,5 @@ public interface DictItemMapper extends BaseMapper<DictItemDO> {
      * @param dictCode 字典编码
      * @return 字典项列表
      */
-    List<LabelValueResp<Serializable>> listByDictCode(@Param("dictCode") String dictCode);
+    List<LabelValueResp> listByDictCode(@Param("dictCode") String dictCode);
 }

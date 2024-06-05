@@ -16,15 +16,14 @@
 
 package top.continew.admin.system.service;
 
-import top.continew.admin.common.model.resp.LabelValueResp;
 import top.continew.admin.system.model.entity.DictItemDO;
 import top.continew.admin.system.model.query.DictItemQuery;
 import top.continew.admin.system.model.req.DictItemReq;
 import top.continew.admin.system.model.resp.DictItemResp;
 import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.BaseService;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -41,7 +40,7 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemResp,
      * @param dictCode 字典编码
      * @return 字典项列表
      */
-    List<LabelValueResp<Serializable>> listByDictCode(String dictCode);
+    List<LabelValueResp> listByDictCode(String dictCode);
 
     /**
      * 根据字典 ID 列表删除

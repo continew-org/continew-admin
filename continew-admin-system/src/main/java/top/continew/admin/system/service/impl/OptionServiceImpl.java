@@ -58,7 +58,6 @@ public class OptionServiceImpl implements OptionService {
     private final OptionMapper baseMapper;
 
     @Override
-    @Cached(key = "#query.category", name = CacheConstants.OPTION_KEY_PREFIX)
     public List<OptionResp> list(OptionQuery query) {
         return BeanUtil.copyToList(baseMapper.selectList(QueryWrapperHelper.build(query)), OptionResp.class);
     }
