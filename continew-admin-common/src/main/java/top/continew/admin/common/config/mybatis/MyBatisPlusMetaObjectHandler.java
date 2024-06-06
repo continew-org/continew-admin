@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.starter.core.exception.BusinessException;
+import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.time.LocalDateTime;
@@ -61,8 +62,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
             if (null == metaObject) {
                 return;
             }
-
-            Long createUser = LoginHelper.getUserId();
+            Long createUser = ExceptionUtils.exToNull(LoginHelper::getUserId);
             LocalDateTime createTime = LocalDateTime.now();
             if (metaObject.getOriginalObject() instanceof BaseDO baseDO) {
                 // 继承了 BaseDO 的类，填充创建信息字段
