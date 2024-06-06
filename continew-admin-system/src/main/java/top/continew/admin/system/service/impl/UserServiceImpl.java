@@ -233,7 +233,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIf(this.isPhoneExists(newPhone, id), "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
         // 更新手机号
-        baseMapper.lambdaUpdate().set(UserDO::getPhone, newPhone).eq(UserDO::getId, id).update();
+        baseMapper.updatePhone(newPhone, id);
     }
 
     @Override
@@ -243,7 +243,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIf(this.isEmailExists(newEmail, id), "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
-        baseMapper.lambdaUpdate().set(UserDO::getEmail, newEmail).eq(UserDO::getId, id).update();
+        baseMapper.updateEmail(newEmail, id);
     }
 
     @Override
