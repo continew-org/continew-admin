@@ -117,7 +117,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 影响行数
      */
     @Select("UPDATE sys_user SET phone = #{phone} WHERE id = #{id}")
-    int updatePhone(@FieldEncrypt @Param("phone") String phone, @Param("id") Long id);
+    Integer updatePhone(@FieldEncrypt @Param("phone") String phone, @Param("id") Long id);
 
     /**
      * 修改邮箱
@@ -127,5 +127,5 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 影响行数
      */
     @Select("UPDATE sys_user SET email = #{email} WHERE id = #{id}")
-    int updateEmail(@FieldEncrypt @Param("email") String email, @Param("id") Long id);
+    Integer updateEmail(@FieldEncrypt @Param("email") String email, @Param("id") Long id);
 }
