@@ -55,6 +55,7 @@ import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.util.TreeUtils;
+import top.continew.starter.messaging.websocket.util.WebSocketUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -139,7 +140,7 @@ public class LoginServiceImpl implements LoginService {
             userSocial.setUserId(userId);
             userSocial.setSource(source);
             userSocial.setOpenId(openId);
-            this.sendSystemMsg(user);
+            this.sendSecurityMsg(user);
         } else {
             user = BeanUtil.copyProperties(userService.getById(userSocial.getUserId()), UserDO.class);
         }
@@ -243,16 +244,17 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
-     * 发送系统消息
+     * 发送安全消息
      *
      * @param user 用户信息
      */
-    private void sendSystemMsg(UserDO user) {
+    private void sendSecurityMsg(UserDO user) {
         MessageReq req = new MessageReq();
         MessageTemplateEnum socialRegister = MessageTemplateEnum.SOCIAL_REGISTER;
         req.setTitle(socialRegister.getTitle().formatted(projectProperties.getName()));
         req.setContent(socialRegister.getContent().formatted(user.getNickname()));
-        req.setType(MessageTypeEnum.SYSTEM);
+        req.setType(MessageTypeEnum.SECURITY);
         messageService.add(req, CollUtil.toList(user.getId()));
+        WebSocketUtils.sendMessage(user.getId().toString(), "1");
     }
 }

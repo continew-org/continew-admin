@@ -135,13 +135,16 @@ VALUES
 INSERT INTO "sys_dict"
 ("id", "name", "code", "description", "is_system", "create_user", "create_time", "update_user", "update_time")
 VALUES
-(547889614262632491, '公告类型', 'notice_type', NULL, true, 1, NOW(), NULL, NULL);
+(1, '公告类型', 'notice_type', NULL, true, 1, NOW(), NULL, NULL),
+(2, '消息类型', 'message_type', NULL, true, 1, NOW(), NULL, NULL);
 
 INSERT INTO "sys_dict_item"
 ("id", "label", "value", "color", "sort", "description", "status", "dict_id", "create_user", "create_time", "update_user", "update_time")
 VALUES
-(547889649658363951, '通知', '1', 'blue', 1, NULL, 1, 547889614262632491, 1, NOW(), NULL, NULL),
-(547890124537462835, '活动', '2', 'orangered', 2, NULL, 1, 547889614262632491, 1, NOW(), NULL, NULL);
+(1, '通知', '1', 'blue', 1, NULL, 1, 1, 1, NOW(), NULL, NULL),
+(2, '活动', '2', 'orangered', 2, NULL, 1, 1, 1, NOW(), NULL, NULL),
+(3, '安全消息', '1', 'blue', 1, NULL, 1, 2, 1, NOW(), NULL, NULL),
+(4, '活动消息', '2', 'orangered', 2, NULL, 1, 2, 1, NOW(), NULL, NULL);
 
 -- 初始化默认用户和角色关联数据
 INSERT INTO "sys_user_role"
@@ -168,5 +171,5 @@ INSERT INTO "sys_role_dept" ("role_id", "dept_id") VALUES (547888897925840928, 5
 INSERT INTO "sys_storage"
 ("id", "name", "code", "type", "access_key", "secret_key", "endpoint", "bucket_name", "domain", "description", "is_default", "sort", "status", "create_user", "create_time", "update_user", "update_time")
 VALUES
-(547890346239983671, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', true, 1, 1, 1, NOW(), NULL, NULL),
-(547890366586552377, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', false, 2, 2, 1, NOW(), NULL, NULL);
+(1, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', true, 1, 1, 1, NOW(), NULL, NULL),
+(2, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', false, 2, 2, 1, NOW(), NULL, NULL);

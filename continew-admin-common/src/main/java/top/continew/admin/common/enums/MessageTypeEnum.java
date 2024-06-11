@@ -32,9 +32,9 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 public enum MessageTypeEnum implements IBaseEnum<Integer> {
 
     /**
-     * 系统消息
+     * 安全消息
      */
-    SYSTEM(1, "系统消息", UiConstants.COLOR_PRIMARY),;
+    SECURITY(1, "安全消息", UiConstants.COLOR_PRIMARY),;
 
     private final Integer value;
     private final String description;

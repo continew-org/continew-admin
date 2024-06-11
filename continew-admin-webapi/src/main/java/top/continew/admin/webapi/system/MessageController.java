@@ -16,7 +16,6 @@
 
 package top.continew.admin.webapi.system;
 
-import cn.hutool.core.convert.Convert;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -24,10 +23,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.continew.admin.common.enums.MessageTypeEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.query.MessageQuery;
-import top.continew.admin.system.model.req.MessageReq;
 import top.continew.admin.system.model.resp.MessageResp;
 import top.continew.admin.system.model.resp.MessageUnreadResp;
 import top.continew.admin.system.service.MessageService;
@@ -35,10 +32,8 @@ import top.continew.admin.system.service.MessageUserService;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.log.core.annotation.Log;
-import top.continew.starter.messaging.websocket.util.WebSocketUtils;
 import top.continew.starter.web.model.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,18 +80,5 @@ public class MessageController {
     @GetMapping("/unread")
     public R<MessageUnreadResp> countUnreadMessage(@RequestParam(required = false) Boolean detail) {
         return R.ok(messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail));
-    }
-
-    @GetMapping("/testSend")
-    public R<Object> testSend(String msg) {
-        List<Long> userIdList = new ArrayList<>();
-        userIdList.add(LoginHelper.getUserId());
-        MessageReq req = new MessageReq();
-        req.setTitle(msg);
-        req.setContent(msg);
-        req.setType(MessageTypeEnum.SYSTEM);
-        baseService.add(req, userIdList);
-        WebSocketUtils.sendMessage(Convert.toStr(LoginHelper.getUserId()), msg);
-        return R.ok();
     }
 }
