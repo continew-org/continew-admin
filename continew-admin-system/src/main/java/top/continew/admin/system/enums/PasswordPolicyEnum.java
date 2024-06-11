@@ -97,7 +97,7 @@ public enum PasswordPolicyEnum {
     /**
      * 密码是否必须包含特殊字符
      */
-    PASSWORD_CONTAIN_SPECIAL_CHARACTERS("密码是否必须包含特殊字符取值只能为是（%d）或否（%d）", SysConstants.NO, SysConstants.YES, "密码必须包含特殊字符") {
+    PASSWORD_REQUIRE_SYMBOLS("密码是否必须包含特殊字符取值只能为是（%d）或否（%d）", SysConstants.NO, SysConstants.YES, "密码必须包含特殊字符") {
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
             ValidationUtils.throwIf(value != SysConstants.YES && value != SysConstants.NO, this.getDescription()
@@ -132,9 +132,9 @@ public enum PasswordPolicyEnum {
     },
 
     /**
-     * 密码重复使用规则
+     * 密码重复使用次数
      */
-    PASSWORD_REUSE_POLICY("密码重复使用规则取值范围为 %d-%d", 3, 32, "不允许使用最近 %d 次的历史密码") {
+    PASSWORD_REPETITION_TIMES("密码重复使用规则取值范围为 %d-%d", 3, 32, "新密码不得与历史前 %d 次密码重复") {
         @Override
         public void validate(String password, int value, UserDO user) {
             UserPasswordHistoryService userPasswordHistoryService = SpringUtil

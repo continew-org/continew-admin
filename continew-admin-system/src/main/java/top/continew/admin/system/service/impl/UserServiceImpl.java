@@ -203,13 +203,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
         }
         // 校验密码合法性
-        int passwordReusePolicy = this.checkPassword(newPassword, user);
+        int passwordRepetitionTimes = this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
         user.setPassword(newPassword);
         user.setPwdResetTime(LocalDateTime.now());
         baseMapper.updateById(user);
         // 保存历史密码
-        userPasswordHistoryService.add(id, password, passwordReusePolicy);
+        userPasswordHistoryService.add(id, password, passwordRepetitionTimes);
     }
 
     @Override
@@ -332,21 +332,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      *
      * @param password 密码
      * @param user     用户信息
+     * @return 密码允许重复使用次数
      */
     private int checkPassword(String password, UserDO user) {
         Map<String, String> passwordPolicy = optionService.getByCategory(CATEGORY);
         // 密码最小长度
         PASSWORD_MIN_LENGTH.validate(password, MapUtil.getInt(passwordPolicy, PASSWORD_MIN_LENGTH.name()), user);
         // 密码是否必须包含特殊字符
-        PASSWORD_CONTAIN_SPECIAL_CHARACTERS.validate(password, MapUtil
-            .getInt(passwordPolicy, PASSWORD_CONTAIN_SPECIAL_CHARACTERS.name()), user);
+        PASSWORD_REQUIRE_SYMBOLS.validate(password, MapUtil.getInt(passwordPolicy, PASSWORD_REQUIRE_SYMBOLS
+            .name()), user);
         // 密码是否允许包含正反序账号名
         PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, MapUtil
             .getInt(passwordPolicy, PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
-        // 密码重复使用规则
-        int passwordReusePolicy = MapUtil.getInt(passwordPolicy, PASSWORD_REUSE_POLICY.name());
-        PASSWORD_REUSE_POLICY.validate(password, passwordReusePolicy, user);
-        return passwordReusePolicy;
+        // 密码重复使用次数
+        int passwordRepetitionTimes = MapUtil.getInt(passwordPolicy, PASSWORD_REPETITION_TIMES.name());
+        PASSWORD_REPETITION_TIMES.validate(password, passwordRepetitionTimes, user);
+        return passwordRepetitionTimes;
     }
 
     /**
