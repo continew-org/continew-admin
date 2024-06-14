@@ -74,7 +74,7 @@ public class FileDO extends BaseDO {
     /**
      * 缩略图URL
      */
-    private String thumbnailUrl; 
+    private String thumbnailUrl;
 
     /**
      * 存储 ID
@@ -91,16 +91,16 @@ public class FileDO extends BaseDO {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setOriginalFilename(StrUtils
             .blankToDefault(this.extension, this.name, ex -> this.name + StringConstants.DOT + ex));
-        fileInfo.setSize(this.size); 
+        fileInfo.setSize(this.size);
         fileInfo.setUrl(this.url);
         fileInfo.setExt(this.extension);
         fileInfo.setBasePath(StringConstants.EMPTY);
         fileInfo.setPath(StringConstants.EMPTY);
-        fileInfo.setFilename(URLUtils.isHttpUrl(this.url) 
-            ? StrUtil.subAfter(this.url, StringConstants.SLASH, true) 
+        fileInfo.setFilename(URLUtils.isHttpUrl(this.url)
+            ? StrUtil.subAfter(this.url, StringConstants.SLASH, true)
             : this.url);
-        fileInfo.setThFilename(this.thumbnailUrl);  
-        fileInfo.setPlatform(storageCode); 
+        fileInfo.setThFilename(this.thumbnailUrl);
+        fileInfo.setPlatform(storageCode);
         return fileInfo;
     }
 }
