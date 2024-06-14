@@ -98,6 +98,16 @@ public class LoginUser implements Serializable {
     private LocalDateTime loginTime;
 
     /**
+     * 最后一次修改密码时间
+     */
+    private LocalDateTime pwdResetTime;
+
+    /**
+     * 登录时系统设置的密码过期天数
+     */
+    private Integer passwordExpirationDays;
+
+    /**
      * 是否为管理员
      *
      * @return true：是；false：否

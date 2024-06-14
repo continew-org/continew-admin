@@ -25,9 +25,11 @@ import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.IpUtils;
+import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.web.util.ServletUtils;
 
@@ -75,6 +77,16 @@ public class LoginHelper {
      * @throws NotLoginException 未登录异常
      */
     public static LoginUser getLoginUser() throws NotLoginException {
+        return getLoginUser(true);
+    }
+
+    /**
+     * 登录用户信息
+     *
+     * @param checkPasswordExpired 是否校验密码过期
+     * @throws NotLoginException 未登录异常
+     */
+    public static LoginUser getLoginUser(boolean checkPasswordExpired) throws NotLoginException {
         StpUtil.checkLogin();
         LoginUser loginUser = (LoginUser)SaHolder.getStorage().get(CacheConstants.LOGIN_USER_KEY);
         if (null != loginUser) {
@@ -83,7 +95,31 @@ public class LoginHelper {
         SaSession tokenSession = StpUtil.getTokenSession();
         loginUser = (LoginUser)tokenSession.get(CacheConstants.LOGIN_USER_KEY);
         SaHolder.getStorage().set(CacheConstants.LOGIN_USER_KEY, loginUser);
+        CheckUtils.throwIf(checkPasswordExpired && isPasswordExpired(loginUser), "密码已过期，请立即修改。");
         return loginUser;
+    }
+
+    /**
+     * 密码是否已过期
+     *
+     * @param loginUser 登录用户
+     * @return 是否过期
+     */
+    public static boolean isPasswordExpired(LoginUser loginUser) {
+        if (loginUser == null) {
+            loginUser = getLoginUser();
+        }
+        LocalDateTime pwdResetTime = loginUser.getPwdResetTime();
+        Integer passwordExpirationDays = loginUser.getPasswordExpirationDays();
+        // 永久有效
+        if (passwordExpirationDays == null || passwordExpirationDays <= SysConstants.NO) {
+            return false;
+        }
+        // 初始密码也提示修改
+        if (pwdResetTime == null) {
+            return true;
+        }
+        return pwdResetTime.plusDays(passwordExpirationDays).isBefore(LocalDateTime.now());
     }
 
     /**
@@ -107,6 +143,16 @@ public class LoginHelper {
      */
     public static Long getUserId() {
         return getLoginUser().getId();
+    }
+
+    /**
+     * 获取登录用户 ID
+     *
+     * @param checkPasswordExpired 是否校验密码过期
+     * @return 登录用户 ID
+     */
+    public static Long getUserId(boolean checkPasswordExpired) {
+        return getLoginUser(checkPasswordExpired).getId();
     }
 
     /**

@@ -94,7 +94,7 @@ public class UserCenterController {
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
-        userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
+        userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId(false));
         return R.ok("修改成功，请牢记你的新密码");
     }
 

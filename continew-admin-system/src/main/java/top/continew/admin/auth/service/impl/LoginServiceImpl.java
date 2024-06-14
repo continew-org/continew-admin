@@ -61,6 +61,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
+
 /**
  * 登录业务实现
  *
@@ -199,6 +201,7 @@ public class LoginServiceImpl implements LoginService {
         loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
         loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
         loginUser.setRoles(roleService.listByUserId(userId));
+        loginUser.setPasswordExpirationDays(optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
         return LoginHelper.login(loginUser);
     }
 

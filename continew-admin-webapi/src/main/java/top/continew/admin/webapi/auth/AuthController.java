@@ -123,12 +123,12 @@ public class AuthController {
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
     public R<UserInfoResp> getUserInfo() {
-        LoginUser loginUser = LoginHelper.getLoginUser();
+        LoginUser loginUser = LoginHelper.getLoginUser(false);
         UserDetailResp userDetailResp = userService.get(loginUser.getId());
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
         userInfoResp.setPermissions(loginUser.getPermissions());
         userInfoResp.setRoles(loginUser.getRoleCodes());
-        userInfoResp.setPwdExpired(userService.isPasswordExpired(userDetailResp.getPwdResetTime()));
+        userInfoResp.setPwdExpired(LoginHelper.isPasswordExpired(loginUser));
         return R.ok(userInfoResp);
     }
 
@@ -136,6 +136,6 @@ public class AuthController {
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
     public R<List<RouteResp>> listRoute() {
-        return R.ok(loginService.buildRouteTree(LoginHelper.getUserId()));
+        return R.ok(loginService.buildRouteTree(LoginHelper.getUserId(false)));
     }
 }

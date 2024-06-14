@@ -29,7 +29,6 @@ import top.continew.starter.data.mybatis.plus.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -89,14 +88,6 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @param id          ID
      */
     void updatePassword(String oldPassword, String newPassword, Long id);
-
-    /**
-     * 密码是否已过期
-     *
-     * @param pwdResetTime 上次重置密码时间
-     * @return 是否过期
-     */
-    boolean isPasswordExpired(LocalDateTime pwdResetTime);
 
     /**
      * 修改手机号
