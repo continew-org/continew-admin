@@ -70,7 +70,7 @@ public class DashboardController {
     @GetMapping("/access/trend/{days}")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "#days", cacheType = CacheType.BOTH, name = CacheConstants.DASHBOARD_KEY_PREFIX, syncLocal = true)
+    @Cached(key = "#days", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
     public R<List<DashboardAccessTrendResp>> listAccessTrend(@PathVariable Integer days) {
         ValidationUtils.throwIf(7 != days && 30 != days, "仅支持查询近 7/30 天访问趋势信息");
         return R.ok(dashboardService.listAccessTrend(days));

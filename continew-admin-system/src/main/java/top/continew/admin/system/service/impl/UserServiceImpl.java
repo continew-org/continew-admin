@@ -267,7 +267,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    @Cached(key = "#id", cacheType = CacheType.BOTH, name = CacheConstants.USER_KEY_PREFIX, syncLocal = true)
+    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

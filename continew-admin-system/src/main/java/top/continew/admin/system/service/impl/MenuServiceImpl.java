@@ -19,6 +19,7 @@ package top.continew.admin.system.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -79,7 +80,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
+    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
     public List<MenuResp> listAll() {
         return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE.getValue()), null);
     }
