@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.img.ImgUtil;
@@ -210,20 +211,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         baseMapper.updateById(user);
         // 保存历史密码
         userPasswordHistoryService.add(id, password, passwordRepetitionTimes);
-    }
-
-    @Override
-    public boolean isPasswordExpired(LocalDateTime pwdResetTime) {
-        // 永久有效
-        int passwordExpirationDays = optionService.getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name());
-        if (passwordExpirationDays <= SysConstants.NO) {
-            return false;
-        }
-        // 初始密码也提示修改
-        if (pwdResetTime == null) {
-            return true;
-        }
-        return pwdResetTime.plusDays(passwordExpirationDays).isBefore(LocalDateTime.now());
+        // 修改后登出
+        StpUtil.logout();
     }
 
     @Override

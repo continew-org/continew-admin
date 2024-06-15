@@ -68,6 +68,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
+
 /**
  * 登录业务实现
  *
@@ -209,8 +211,11 @@ public class LoginServiceImpl implements LoginService {
             .listRoleCodeByUserId(userId), threadPoolTaskExecutor);
         CompletableFuture<Set<RoleDTO>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
             .listByUserId(userId), threadPoolTaskExecutor);
+        CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
+            .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
         CompletableFuture.allOf(permissionFuture, roleCodeFuture, roleFuture);
-        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleCodeFuture.join(), roleFuture.join());
+        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleCodeFuture.join(), roleFuture
+            .join(), passwordExpirationDaysFuture.join());
         BeanUtil.copyProperties(user, loginUser);
         return LoginHelper.login(loginUser);
     }

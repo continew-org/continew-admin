@@ -190,6 +190,16 @@ cosid:
         machine-bit: 3
         sequence-bit: 9
 
+--- ### 认证配置
+auth:
+  ## 密码配置
+  password:
+    excludes:
+      - /auth/route
+      - /auth/user/info
+      - /auth/logout
+      - /system/user/password
+
 --- ### 服务器配置
 server:
   servlet:
