@@ -16,7 +16,6 @@
 
 package top.continew.admin.common.config.websocket;
 
-import cn.hutool.core.convert.Convert;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,7 @@ public class CurrentUserProviderImpl implements CurrentUserProvider {
         String token = servletRequest.getParameter("token");
         LoginUser loginUser = LoginHelper.getLoginUser(token);
         CurrentUser currentUser = new CurrentUser();
-        currentUser.setUserId(Convert.toStr(loginUser.getId()));
+        currentUser.setUserId(loginUser.getToken());
         return currentUser;
     }
 }

@@ -16,11 +16,15 @@
 
 package top.continew.admin.auth.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -255,6 +259,9 @@ public class LoginServiceImpl implements LoginService {
         req.setContent(socialRegister.getContent().formatted(user.getNickname()));
         req.setType(MessageTypeEnum.SECURITY);
         messageService.add(req, CollUtil.toList(user.getId()));
-        WebSocketUtils.sendMessage(user.getId().toString(), "1");
+        List<String> tokenList = StpUtil.getTokenValueListByLoginId(user.getId());
+        for (String token : tokenList) {
+            WebSocketUtils.sendMessage(token, "1");
+        }
     }
 }
