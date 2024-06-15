@@ -18,6 +18,7 @@ package top.continew.admin.common.model.dto;
 
 import cn.hutool.core.collection.CollUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.continew.admin.common.constant.SysConstants;
 
 import java.io.Serial;
@@ -32,6 +33,7 @@ import java.util.Set;
  * @since 2022/12/24 13:01
  */
 @Data
+@NoArgsConstructor
 public class LoginUser implements Serializable {
 
     @Serial
@@ -96,6 +98,12 @@ public class LoginUser implements Serializable {
      * 登录时间
      */
     private LocalDateTime loginTime;
+
+    public LoginUser(Set<String> permissions, Set<String> roleCodes, Set<RoleDTO> roles) {
+        this.permissions = permissions;
+        this.roleCodes = roleCodes;
+        this.roles = roles;
+    }
 
     /**
      * 是否为管理员

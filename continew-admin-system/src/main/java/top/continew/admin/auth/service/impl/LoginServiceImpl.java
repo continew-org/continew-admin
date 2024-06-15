@@ -30,6 +30,7 @@ import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,7 @@ import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.MenuTypeEnum;
 import top.continew.admin.common.enums.MessageTypeEnum;
 import top.continew.admin.common.model.dto.LoginUser;
+import top.continew.admin.common.model.dto.RoleDTO;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.enums.MessageTemplateEnum;
 import top.continew.admin.system.enums.PasswordPolicyEnum;
@@ -64,6 +66,7 @@ import top.continew.starter.messaging.websocket.util.WebSocketUtils;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 登录业务实现
@@ -86,6 +89,7 @@ public class LoginServiceImpl implements LoginService {
     private final MessageService messageService;
     private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Override
     public String accountLogin(String username, String password, HttpServletRequest request) {
@@ -199,10 +203,15 @@ public class LoginServiceImpl implements LoginService {
      */
     private String login(UserDO user) {
         Long userId = user.getId();
-        LoginUser loginUser = BeanUtil.copyProperties(user, LoginUser.class);
-        loginUser.setPermissions(permissionService.listPermissionByUserId(userId));
-        loginUser.setRoleCodes(permissionService.listRoleCodeByUserId(userId));
-        loginUser.setRoles(roleService.listByUserId(userId));
+        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> permissionService
+            .listPermissionByUserId(userId), threadPoolTaskExecutor);
+        CompletableFuture<Set<String>> roleCodeFuture = CompletableFuture.supplyAsync(() -> permissionService
+            .listRoleCodeByUserId(userId), threadPoolTaskExecutor);
+        CompletableFuture<Set<RoleDTO>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
+            .listByUserId(userId), threadPoolTaskExecutor);
+        CompletableFuture.allOf(permissionFuture, roleCodeFuture, roleFuture);
+        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleCodeFuture.join(), roleFuture.join());
+        BeanUtil.copyProperties(user, loginUser);
         return LoginHelper.login(loginUser);
     }
 

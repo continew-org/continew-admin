@@ -55,6 +55,10 @@ continew-starter.thread-pool:
   queue-capacity: 128
   # 活跃时间（单位：秒）
   keep-alive-seconds: 300
+  # 关闭线程池是否等待任务完成
+  wait-for-tasks-to-complete-on-shutdown: true
+  # 执行器在关闭时阻塞的最长毫秒数，以等待剩余任务完成执行（单位：毫秒）
+  await-termination-millis: 30000
 
 --- ### 接口文档配置
 springdoc:
