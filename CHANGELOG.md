@@ -1,3 +1,58 @@
+## [v3.1.0](https://github.com/Charles7c/continew-admin/compare/v3.0.1...v3.1.0) (2024-06-16)
+
+### ✨ 新特性
+
+* 系统配置新增安全设置功能，支持多种密码策略配置，例如：有效期、密码重复使用次数、密码错误锁定等 (GitHub#61) ([1de2a8f](https://github.com/Charles7c/continew-admin/commit/1de2a8f2dcf01ef8eeb7e2d662c09af00b38ffb1)) ([90ecaab](https://github.com/Charles7c/continew-admin/commit/90ecaab63241b8d351ebaffa4faece8c609882b1)) ([3994142](https://github.com/Charles7c/continew-admin/commit/3994142ace6cd6ce9d094b8a4ceed080a2b2ec33)) ([1427c13](https://github.com/Charles7c/continew-admin/commit/1427c13b7a0b4e0f569ccc20a3172ad748c98e14)) ([5f5fee6](https://github.com/Charles7c/continew-admin/commit/5f5fee63f8e584ffd9542bf132ee724762187d83)) ([c1e9d31](https://github.com/Charles7c/continew-admin/commit/c1e9d318e0643c0854a848425955948d05b158d3)) ([48d0f47](https://github.com/Charles7c/continew-admin/commit/48d0f476149ff7bc30fe05fe3dec84e5a947cf19))
+* 图片文件支持缩略图 (GitHub#63) ([d320c95](https://github.com/Charles7c/continew-admin/commit/d320c9596a321dce1028ac36d23bcd04535e87a6)) ([d44fb3a](https://github.com/Charles7c/continew-admin/commit/d44fb3a681370b5763f028cc761fbb5fc94a104c))
+* 在线用户增加最后活跃时间显示 ([926497a](https://github.com/Charles7c/continew-admin/commit/926497a18acbb6ef170de9f68bd97e025e212f3e))
+* 新增 WebSocket 消息通知，站内信重新上线 (GitHub#67) ([9970c46](https://github.com/Charles7c/continew-admin/commit/9970c461cce5c710f1f8479d4bdd258e65558256)) ([94168e2](https://github.com/Charles7c/continew-admin/commit/94168e246f75364605b6fbdb82c9438e2b959c61)) ([5abdb8d](https://github.com/Charles7c/continew-admin/commit/5abdb8d86161e7bd03ace14b3c899f6ad13020e2))
+* 文件上传按日期拆分目录 (GitHub#68) ([08aa085](https://github.com/Charles7c/continew-admin/commit/08aa08550589876a821a37d56a5fae8867292978))
+* 代码生成增加了 TREE_SELECT/CHECK_GROUP/INPUT_NUMBER/INPUT_PASSWORD控件 (Gitee#17) ([8632b22](https://github.com/Charles7c/continew-admin/commit/8632b22bd5b6d43e31b6aeac930836464849441b)) ([cf18c10](https://github.com/Charles7c/continew-admin/commit/cf18c1046b77c9f38d28b0e6608d345df3bbd5a9))
+* 系统参数新增根据类别查询方法 ([694cbb2](https://github.com/Charles7c/continew-admin/commit/694cbb2850c05f7eb35fb982530a6c204f1f64b0))
+* 支持动态邮件 ([1dbb339](https://github.com/Charles7c/continew-admin/commit/1dbb33935a05e9fde749191e34682e632c8e1e63))
+
+### 💎 功能优化
+
+- 优化部分命名 ([a3cf39f](https://github.com/Charles7c/continew-admin/commit/a3cf39f9f8611f7f34dd9f55166d0fe75b72145b))
+- 优化代码生成预览 (Gitee#14) ([ad7412f](https://github.com/Charles7c/continew-admin/commit/ad7412f9cbee5d851d060d8e9d717b2553d3d4cb))
+- 优化个人中心部分参数命名 ([61dd3a4](https://github.com/Charles7c/continew-admin/commit/61dd3a4c3aef2d4a873a1d4de13bc1962179eeb1))
+- 根据前端最新 ESLint 配置优化代码生成模板 ([044b4b6](https://github.com/Charles7c/continew-admin/commit/044b4b669aa2b77b3f5ac27095202e57045fd10d))
+- 优化代码生成模板 ([3ddcdf0](https://github.com/Charles7c/continew-admin/commit/3ddcdf0f67d12250da4b7f6f6ff3d63a880e6d4c)) ([6396e9a](https://github.com/Charles7c/continew-admin/commit/6396e9a7364bf899023c2399083b43c67efb30cf)) ([2fb4001](https://github.com/Charles7c/continew-admin/commit/2fb40015c1ca2bc58b66891e2cfbfac70b029016))
+- 使用 Crane4j 优化在线用户数据填充 ([cb81135](https://github.com/Charles7c/continew-admin/commit/cb811350f36364fcc85355c081b8b60c7d5bfb2a))
+- 用户角色名称调整为角色名称列表返回，并全局优化 Crane4j 组件的使用方式 ([857a1c9](https://github.com/Charles7c/continew-admin/commit/857a1c90838c8305f916af9dccfd4ca847ca8c66)) ([0b76d5c](https://github.com/Charles7c/continew-admin/commit/0b76d5ca33f5900862d48321e8384ee8ded6ae4e))
+- 优化部分方法排序 ([651cc8a](https://github.com/Charles7c/continew-admin/commit/651cc8ae71bd3f544bd41adac0ef7044011300a7))
+- 字典管理分页查询接口 => 查询列表接口 ([b13d0e9](https://github.com/Charles7c/continew-admin/commit/b13d0e9ee530fc1a8b382e08ead065989f2b0e7f))
+- 移除部门响应信息中的 getDisabled 方法 ([659144a](https://github.com/Charles7c/continew-admin/commit/659144afdaf5d1b4667437053a770cf39681cdd7))
+- 文件管理存储路径改为相对路径 (GitHub#69) ([8854f20](https://github.com/Charles7c/continew-admin/commit/8854f20ce90f6a1c379ac81a27bb40784a838095))
+- 查询文件列表增加存储名称信息返回 ([69bc1e5](https://github.com/Charles7c/continew-admin/commit/69bc1e52e122c14a695d2e37589d36cbb64de8a4))
+- 系统参数表结构新增ID、类别字段 ([45396f2](https://github.com/Charles7c/continew-admin/commit/45396f2dc23b4de47912c1d77b05711c839672ce))
+- 优化公告状态判断 ([a07aedb](https://github.com/Charles7c/continew-admin/commit/a07aedbf35e32f3d09d2e9ed8857b9a9d2e2e13a))
+- 重构系统参数相关接口 ([6d0060b](https://github.com/Charles7c/continew-admin/commit/6d0060b21c374afd9880e57490345a140187a7cd))
+- 优化用户及部门查询 ([448f9a0](https://github.com/Charles7c/continew-admin/commit/448f9a0a819d6816a5ae3ada2e07690a5f70f7df))
+- 用户头像改为Base64存储 ([969216d](https://github.com/Charles7c/continew-admin/commit/969216d7c67332eae826c11233c8745d9d3ad81c)) ([513ea83](https://github.com/Charles7c/continew-admin/commit/513ea83152708194348afeb93d31aed1a9914e57)) ([7a6cafc](https://github.com/Charles7c/continew-admin/commit/7a6cafc6e4ff6914fa62a870538b51759af866a8))
+- 优化配置文件 ([5b3d4f5](https://github.com/Charles7c/continew-admin/commit/5b3d4f57788e30b62a1e1af9c2620a4cc8659bfe))
+- 优化登录 Helper ([afbd619](https://github.com/Charles7c/continew-admin/commit/afbd619d098ff3d70fc786db9594cebf03c07e10))
+- 重构查询参数及字典接口 ([1d60213](https://github.com/Charles7c/continew-admin/commit/1d602134377fc13b062981476b8c17947b36006d))
+- 重构查询角色字典接口 ([1e73d06](https://github.com/Charles7c/continew-admin/commit/1e73d06a972d380bbed253eaffd806d8e0698525))
+- 使用 CompletableFuture 实现异步加载用户权限、角色代码和角色信息，以提高登录时的性能和响应速度 ([d5f3c74](https://github.com/charles7c/continew-admin/commit/d5f3c7417ad7b1178b5a53da3fd6f3cb7cd3b19a))
+
+
+### 🐛 问题修复
+
+- 补充查询文件资源统计权限校验注解 ([60cbf04](https://github.com/Charles7c/continew-admin/commit/60cbf0402a350d05a09abec57ba94c7758b46499))
+- Postgresql startup script fixes (GitHub#60) ([8caad16](https://github.com/Charles7c/continew-admin/commit/8caad16ef226e473a81f79b82485c3d03ded7a42))
+- 修复初始菜单数据错误 ([f062797](https://github.com/Charles7c/continew-admin/commit/f062797629bd7fc220ceae1e44859146ef4a14ff))
+- 字典编码、存储编码及类型、菜单类型不允许修改 ([79d0101](https://github.com/Charles7c/continew-admin/commit/79d0101e5eb1baa86979b6a6d3c584a2a483320f))
+- 修复行为验证码接口请求次数限制 ([573e634](https://github.com/Charles7c/continew-admin/commit/573e634b433c473551244418e695a34bbd3fa675))
+- 修复导出用户报错 ([655a695](https://github.com/Charles7c/continew-admin/commit/655a695753d12db624fbf2afaf10d38f67241e31))
+- 移除部门名称错误正则 ([0285874](https://github.com/Charles7c/continew-admin/commit/0285874540c0cadc8aae74077f6368b6e7977c35))
+- 修复插入第三方登录用户时报错 ([0cfc7a5](https://github.com/Charles7c/continew-admin/commit/0cfc7a5c80c3558028c7225fc459ecb07149ab0d))
+- 修复更新手机号、邮箱未加密的问题 ([485d708](https://github.com/Charles7c/continew-admin/commit/485d708cd45df922ec8e601b7bd7344e9ebd9299)) ([e6d7205](https://github.com/Charles7c/continew-admin/commit/e6d720571d3273f27351e81a19fdd97b9b4336f6))
+
+### 📦 依赖升级
+
+- ContiNew Starter 2.0.0 => 2.1.0 (更多依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/Charles7c/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v3.0.1](https://github.com/Charles7c/continew-admin/compare/v3.0.0...v3.0.1) (2024-05-03)
 
 ### ✨ 新特性

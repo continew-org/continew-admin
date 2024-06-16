@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v3.1.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/RELEASE-v3.1.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://app.codacy.com/gh/Charles7c/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
 <img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy Badge" />
@@ -122,9 +122,9 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
 - 存储管理：提供文件存储库新增、编辑、删除等功能，支持本地存储、兼容 S3 协议存储
 - 系统配置：
-    - 基础配置：提供修改系统标题、Logo、favicon 等基础配置功能，以方便用户系统与其自身品牌形象保持一致
-    - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
-    - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于`密码有效期`、`修改密码最短时间间隔`、`密码错误锁定账号次数、时间` 等
+  - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
+  - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
+  - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`密码重复次数`、`密码错误锁定账号次数、时间` 等
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
 - 在线用户：管理当前登录用户，可一键踢下线
 - 日志管理：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
@@ -132,7 +132,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ## 系统截图
 
 > [!TIP]
-> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2024年5月3日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
+> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2024年6月13日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
 
 <table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
     <tbody>
@@ -142,15 +142,15 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
         </tr>
         <tr>
             <td><img src=".image/screenshot/002仪表盘-查看公告.png" alt="仪表盘-查看公告" width="1920" /></td>
-            <td><img src=".image/screenshot/010账号管理.png" alt="账号管理" width="1920" /></td>
+            <td><img src=".image/screenshot/010个人中心.png" alt="个人中心" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src=".image/screenshot/011安全设置.png" alt="安全设置" width="1920" /></td>
-            <td><img src=".image/screenshot/012安全设置-修改邮箱.png" alt="安全设置-修改邮箱" width="1920" /></td>
+            <td><img src=".image/screenshot/011消息中心.png" alt="消息中心" width="1920" /></td>
+            <td><img src=".image/screenshot/012安全设置-修改邮箱-邮箱验证码.png" alt="安全设置-修改邮箱-邮箱验证码" width="1920" /></td>
         </tr>
         <tr>
-            <td><img src=".image/screenshot/013安全设置-修改邮箱-邮箱验证码.png" alt="安全设置-修改邮箱-邮箱验证码" width="1920" /></td>
             <td><img src=".image/screenshot/060系统管理-系统配置.png" alt="系统管理-系统配置" width="1920" /></td>
+            <td><img src=".image/screenshot/061系统管理-安全配置.png" alt="系统管理-安全配置" width="1920" /></td>
         </tr>
         <tr>
             <td><img src=".image/screenshot/020系统管理-用户管理-列表.png" alt="系统管理-用户管理-列表" width="1920" /></td>
