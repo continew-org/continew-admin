@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { useWindowSize } from '@vueuse/core'
-import { type ${classNamePrefix}DetailResp, get${classNamePrefix} } from '@/apis'
+import { type ${classNamePrefix}DetailResp, get${classNamePrefix} } from '@/apis/${apiModuleName}/${apiName}'
 
 const { width } = useWindowSize()
 

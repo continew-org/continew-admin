@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { Message } from '@arco-design/web-vue'
-import { get${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from '@/apis'
+import { get${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from '@/apis/${apiModuleName}/${apiName}'
 import { type Columns, GiForm, type Options } from '@/components/GiForm'
 import { useForm } from '@/hooks'
 import { useDict } from '@/hooks/app'
@@ -32,7 +32,7 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 <#list fieldConfigs as fieldConfig>
 <#if fieldConfig.showInForm>
 <#-- SELECT/RADIO/CHECK_BOX/TREE_SELECT控件从服务器端获取数据 -->
-<#if fieldConfig.formType = 'SELECT' || fieldConfig.formType = 'RADIO' 
+<#if fieldConfig.formType = 'SELECT' || fieldConfig.formType = 'RADIO'
 	|| fieldConfig.formType = 'CHECK_BOX' || fieldConfig.formType = 'TREE_SELECT'>
 const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
 </#if>
@@ -67,23 +67,17 @@ const columns: Columns = [
     type: 'switch',
     <#elseif fieldConfig.formType = 'CHECK_BOX'>
     type: 'check-group',
-    props: {
-    	options: ${fieldConfig.columnName}_enum,
-    },        
+    options: ${fieldConfig.columnName}_enum,
    	<#elseif fieldConfig.formType = 'TREE_SELECT'>
     type: 'tree-select',
     data: '${fieldConfig.columnName}_enum',
     <#elseif fieldConfig.formType = 'SELECT'>
     type: 'select', 
-    props: {
-    	options: ${fieldConfig.columnName}_enum,
-    },
+    options: ${fieldConfig.columnName}_enum,
     <#elseif fieldConfig.formType = 'RADIO'>
     type: 'radio-group',   
-    props: {
-    	options: ${fieldConfig.columnName}_enum,
-    },
-    </#if>   
+    options: ${fieldConfig.columnName}_enum,
+    </#if>
     <#if fieldConfig.isRequired>
     rules: [{ required: true, message: '请输入${fieldConfig.comment}' }]
     </#if>

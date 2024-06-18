@@ -27,20 +27,40 @@
 	        <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
 			<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.columnName}_enum" @change="search"/>	        
 	        <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
-            <a-date-picker
-              v-model="queryForm.${fieldConfig.fieldName}"
-              placeholder="请选择${fieldConfig.comment}"
-              format="YYYY-MM-DD"
-              style="width: 100%"
+            <#if fieldConfig.queryType == "BETWEEN">
+            <a-range-picker
+                    v-model="queryForm.${fieldConfig.fieldName}"
+                    :placeholder="['请选择开始${fieldConfig.comment}','请选择结束${fieldConfig.comment}']"
+                    format="YYYY-MM-DD"
+                    style="width: 100%"
             />
-	        <#elseif fieldConfig.formType == "DATE_TIME"><#-- 日期时间框 -->
+            <#else>
             <a-date-picker
-              v-model="queryForm.${fieldConfig.fieldName}"
-              placeholder="请选择${fieldConfig.comment}"
-              show-time
-              format="YYYY-MM-DD HH:mm:ss"
-              style="width: 100%"
-            />	        
+                    v-model="queryForm.${fieldConfig.fieldName}"
+                    placeholder="请选择${fieldConfig.comment}"
+                    format="YYYY-MM-DD"
+                    style="width: 100%"
+            />
+            </#if>
+
+        <#elseif fieldConfig.formType == "DATE_TIME"><#-- 日期时间框 -->
+            <#if fieldConfig.queryType == "BETWEEN">
+          <a-range-picker
+                  v-model="queryForm.${fieldConfig.fieldName}"
+                  :placeholder="['请选择开始${fieldConfig.comment}','请选择结束${fieldConfig.comment}']"
+                  show-time
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style="width: 100%"
+            />
+            <#else>
+          <a-date-picker
+                  v-model="queryForm.${fieldConfig.fieldName}"
+                  placeholder="请选择${fieldConfig.comment}"
+                  show-time
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style="width: 100%"
+            />
+            </#if>
 	        <#else>
 	        <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
 	          <template #prefix><icon-search /></template>
@@ -89,7 +109,7 @@
 <script setup lang="ts">
 import ${classNamePrefix}AddModal from './${classNamePrefix}AddModal.vue'
 import ${classNamePrefix}DetailDrawer from './${classNamePrefix}DetailDrawer.vue'
-import { type ${classNamePrefix}Resp, type ${classNamePrefix}Query, delete${classNamePrefix}, export${classNamePrefix}, list${classNamePrefix} } from '@/apis'
+import { type ${classNamePrefix}Resp, type ${classNamePrefix}Query, delete${classNamePrefix}, export${classNamePrefix}, list${classNamePrefix} } from '@/apis/${apiModuleName}/${apiName}'
 import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
 import { isMobile } from '@/utils'
