@@ -22,19 +22,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.query.UserQuery;
+import top.continew.admin.system.model.req.UserImportReq;
 import top.continew.admin.system.model.req.UserPasswordResetReq;
 import top.continew.admin.system.model.req.UserReq;
 import top.continew.admin.system.model.req.UserRoleUpdateReq;
-import top.continew.admin.system.model.resp.UserDetailResp;
-import top.continew.admin.system.model.resp.UserResp;
+import top.continew.admin.system.model.resp.*;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
@@ -43,6 +45,8 @@ import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.util.ValidateGroup;
 import top.continew.starter.web.model.R;
+
+import java.io.IOException;
 
 /**
  * 用户管理 API
@@ -53,8 +57,11 @@ import top.continew.starter.web.model.R;
 @Tag(name = "用户管理 API")
 @Validated
 @RestController
+@RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/user", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
+
+    private final UserService userService;
 
     @Override
     public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
@@ -64,6 +71,28 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
             .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         req.setPassword(rawPassword);
         return super.add(req);
+    }
+
+    @Operation(summary = "下载用户导入模板", description = "下载用户导入模板")
+    @SaCheckPermission("system:user:import")
+    @GetMapping(value = "downloadImportUserTemplate", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public void downloadImportUserTemplate(HttpServletResponse response) throws IOException {
+        userService.downloadImportUserTemplate(response);
+    }
+
+    @Operation(summary = "解析用户导入数据", description = "解析用户导入数据")
+    @SaCheckPermission("system:user:import")
+    @PostMapping(value = "parseImportUser")
+    public R<UserImportParseResp> parseImportUser(@NotNull(message = "文件不能为空") MultipartFile file) {
+        ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
+        return R.ok(userService.parseImportUser(file));
+    }
+
+    @Operation(summary = "导入用户", description = "导入用户")
+    @SaCheckPermission("system:user:import")
+    @PostMapping(value = "import")
+    public R<UserImportResp> importUser(@Validated @RequestBody UserImportReq req) {
+        return R.ok(userService.importUser(req));
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码")

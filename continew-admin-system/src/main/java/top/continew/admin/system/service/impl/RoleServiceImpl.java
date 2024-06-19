@@ -22,6 +22,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,6 +160,22 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @Override
     public RoleDO getByCode(String code) {
         return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).one();
+    }
+
+    @Override
+    public List<RoleDO> listByNames(List<String> list) {
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, list));
+    }
+
+    @Override
+    public int countByNames(List<String> roleNames) {
+        if (CollUtil.isEmpty(roleNames)) {
+            return 0;
+        }
+        return (int)this.count(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
     }
 
     /**

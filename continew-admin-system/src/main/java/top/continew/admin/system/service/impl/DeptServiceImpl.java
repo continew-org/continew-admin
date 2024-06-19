@@ -20,6 +20,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,7 @@ import top.continew.starter.data.core.enums.DatabaseType;
 import top.continew.starter.data.core.util.MetaUtils;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 部门业务实现
@@ -60,6 +59,22 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
             .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
         return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
+    }
+
+    @Override
+    public List<DeptDO> listByNames(List<String> list) {
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        return this.list(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, list));
+    }
+
+    @Override
+    public int countByNames(List<String> deptNames) {
+        if (CollUtil.isEmpty(deptNames)) {
+            return 0;
+        }
+        return (int)this.count(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, deptNames));
     }
 
     @Override

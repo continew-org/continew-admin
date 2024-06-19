@@ -67,4 +67,20 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * @return 角色信息
      */
     RoleDO getByCode(String code);
+
+    /**
+     * 根据角色名称查询
+     *
+     * @param list 名称列表
+     * @return 角色列表
+     */
+    List<RoleDO> listByNames(List<String> list);
+
+    /**
+     * 根据角色名称查询数量
+     *
+     * @param roleNames 名称列表
+     * @return 角色数量
+     */
+    int countByNames(List<String> roleNames);
 }

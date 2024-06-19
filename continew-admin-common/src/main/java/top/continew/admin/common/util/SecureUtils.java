@@ -19,8 +19,15 @@ package top.continew.admin.common.util;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.extra.spring.SpringUtil;
 import top.continew.admin.common.config.properties.RsaProperties;
+import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.validate.ValidationUtils;
+import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
+import top.continew.starter.security.crypto.encryptor.AesEncryptor;
+import top.continew.starter.security.crypto.encryptor.IEncryptor;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 加密/解密工具类
@@ -31,29 +38,6 @@ import top.continew.starter.core.util.validate.ValidationUtils;
 public class SecureUtils {
 
     private SecureUtils() {
-    }
-
-    /**
-     * 公钥加密
-     *
-     * @param data      要加密的内容
-     * @param publicKey 公钥
-     * @return 公钥加密并 Base64 加密后的内容
-     */
-    public static String encryptByRsaPublicKey(String data, String publicKey) {
-        return Base64.encode(SecureUtil.rsa(null, publicKey).encrypt(data, KeyType.PublicKey));
-    }
-
-    /**
-     * 公钥加密
-     *
-     * @param data 要加密的内容
-     * @return 公钥加密并 Base64 加密后的内容
-     */
-    public static String encryptByRsaPublicKey(String data) {
-        String publicKey = RsaProperties.PUBLIC_KEY;
-        ValidationUtils.throwIfBlank(publicKey, "请配置 RSA 公钥");
-        return encryptByRsaPublicKey(data, publicKey);
     }
 
     /**
@@ -77,5 +61,23 @@ public class SecureUtils {
      */
     public static String decryptByRsaPrivateKey(String data, String privateKey) {
         return new String(SecureUtil.rsa(privateKey, null).decrypt(Base64.decode(data), KeyType.PrivateKey));
+    }
+
+    /**
+     * 对普通加密字段列表进行AES加密，优化starter加密模块后优化这个方法
+     *
+     * @param values 待加密内容
+     * @return 加密后内容
+     */
+    public static List<String> encryptFieldByAes(List<String> values) {
+        IEncryptor encryptor = new AesEncryptor();
+        CryptoProperties properties = SpringUtil.getBean(CryptoProperties.class);
+        return values.stream().map(value -> {
+            try {
+                return encryptor.encrypt(value, properties.getPassword(), properties.getPublicKey());
+            } catch (Exception e) {
+                throw new BusinessException("字段加密异常");
+            }
+        }).collect(Collectors.toList());
     }
 }

@@ -40,4 +40,20 @@ public interface DeptService extends BaseService<DeptResp, DeptResp, DeptQuery, 
      * @return 子部门列表
      */
     List<DeptDO> listChildren(Long id);
+
+    /**
+     * 通过名称查询部门
+     *
+     * @param list 名称列表
+     * @return 部门列表
+     */
+    List<DeptDO> listByNames(List<String> list);
+
+    /**
+     * 通过名称查询部门数量
+     *
+     * @param deptNames 名称列表
+     * @return 部门数量
+     */
+    int countByNames(List<String> deptNames);
 }
