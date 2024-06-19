@@ -16,14 +16,14 @@
 
 package top.continew.admin.system.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.model.entity.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
-import top.continew.admin.system.model.req.UserBasicInfoUpdateReq;
-import top.continew.admin.system.model.req.UserPasswordResetReq;
-import top.continew.admin.system.model.req.UserReq;
-import top.continew.admin.system.model.req.UserRoleUpdateReq;
+import top.continew.admin.system.model.req.*;
 import top.continew.admin.system.model.resp.UserDetailResp;
+import top.continew.admin.system.model.resp.UserImportParseResp;
+import top.continew.admin.system.model.resp.UserImportResp;
 import top.continew.admin.system.model.resp.UserResp;
 import top.continew.starter.data.mybatis.plus.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
@@ -138,4 +138,23 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
+
+    /**
+     * 下载用户导入模板
+     */
+    void downloadImportUserTemplate(HttpServletResponse response) throws IOException;
+
+    /**
+     * 导入用户
+     *
+     */
+    UserImportResp importUser(UserImportReq req);
+
+    /**
+     * 解析用户导入数据
+     *
+     * @param file 导入用户文件
+     * @return 解析结果
+     */
+    UserImportParseResp parseImportUser(MultipartFile file);
 }

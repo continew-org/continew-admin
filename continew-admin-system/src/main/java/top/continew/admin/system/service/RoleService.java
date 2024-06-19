@@ -37,14 +37,6 @@ import java.util.Set;
 public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
 
     /**
-     * 根据 ID 列表查询
-     *
-     * @param ids ID 列表
-     * @return 名称列表
-     */
-    List<String> listNameByIds(List<Long> ids);
-
-    /**
      * 根据用户 ID 查询角色编码
      *
      * @param userId 用户 ID
@@ -67,4 +59,20 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * @return 角色信息
      */
     RoleDO getByCode(String code);
+
+    /**
+     * 根据角色名称查询
+     *
+     * @param list 名称列表
+     * @return 角色列表
+     */
+    List<RoleDO> listByNames(List<String> list);
+
+    /**
+     * 根据角色名称查询数量
+     *
+     * @param roleNames 名称列表
+     * @return 角色数量
+     */
+    int countByNames(List<String> roleNames);
 }

@@ -69,6 +69,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
+    public void saveBatch(List<UserRoleDO> list) {
+        baseMapper.insertBatch(list);
+    }
+
+    @Override
     @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.ORDER_OF_KEYS)
     public List<Long> listRoleIdByUserId(Long userId) {
         return baseMapper.selectRoleIdByUserId(userId);

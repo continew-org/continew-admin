@@ -71,6 +71,11 @@ public class CacheConstants {
      */
     public static final String USER_PASSWORD_ERROR_KEY_PREFIX = USER_KEY_PREFIX + "PASSWORD_ERROR" + DELIMITER;
 
+    /**
+     * 数据导入临时会话key
+     */
+    public static final String DATA_IMPORT_KEY = "SYSTEM" + DELIMITER + "DATA_IMPORT" + DELIMITER;
+
     private CacheConstants() {
     }
 }

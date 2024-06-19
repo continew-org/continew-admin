@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.system.model.entity.UserRoleDO;
+
 import java.util.List;
 
 /**
@@ -41,6 +43,13 @@ public interface UserRoleService {
      * @param userIds 用户 ID 列表
      */
     void deleteByUserIds(List<Long> userIds);
+
+    /**
+     * 批量插入
+     *
+     * @param list 数据集
+     */
+    void saveBatch(List<UserRoleDO> list);
 
     /**
      * 根据用户 ID 查询

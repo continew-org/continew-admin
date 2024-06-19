@@ -16,18 +16,16 @@
 
 package top.continew.admin.system.service.impl;
 
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.MappingType;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
 import top.continew.admin.common.model.dto.RoleDTO;
@@ -136,13 +134,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_NAME_LIST, type = MappingType.ORDER_OF_KEYS)
-    public List<String> listNameByIds(List<Long> ids) {
-        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getName).in(RoleDO::getId, ids).list();
-        return roleList.stream().map(RoleDO::getName).toList();
-    }
-
-    @Override
     public Set<String> listCodeByUserId(Long userId) {
         List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
         List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
@@ -159,6 +150,22 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @Override
     public RoleDO getByCode(String code) {
         return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).one();
+    }
+
+    @Override
+    public List<RoleDO> listByNames(List<String> list) {
+        if (CollUtil.isEmpty(list)) {
+            return Collections.emptyList();
+        }
+        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, list));
+    }
+
+    @Override
+    public int countByNames(List<String> roleNames) {
+        if (CollUtil.isEmpty(roleNames)) {
+            return 0;
+        }
+        return (int)this.count(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
     }
 
     /**
