@@ -23,7 +23,6 @@ import org.dromara.x.file.storage.core.FileInfo;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.StrUtils;
-import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
@@ -89,18 +88,22 @@ public class FileDO extends BaseDO {
      */
     public FileInfo toFileInfo(String storageCode) {
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setOriginalFilename(StrUtils
-            .blankToDefault(this.extension, this.name, ex -> this.name + StringConstants.DOT + ex));
-        fileInfo.setSize(this.size);
         fileInfo.setUrl(this.url);
-        fileInfo.setExt(this.extension);
-        fileInfo.setBasePath(StringConstants.EMPTY);
-        fileInfo.setPath(StringConstants.EMPTY);
-        fileInfo.setFilename(URLUtils.isHttpUrl(this.url)
+        fileInfo.setSize(this.size);
+        fileInfo.setFilename(StrUtil.contains(this.url, StringConstants.SLASH)
             ? StrUtil.subAfter(this.url, StringConstants.SLASH, true)
             : this.url);
-        fileInfo.setThFilename(this.thumbnailUrl);
+        fileInfo.setOriginalFilename(StrUtils
+            .blankToDefault(this.extension, this.name, ex -> this.name + StringConstants.DOT + ex));
+        fileInfo.setBasePath(StringConstants.EMPTY);
+        fileInfo.setPath(StrUtil.subBefore(this.url, StringConstants.SLASH, true) + StringConstants.SLASH);
+        fileInfo.setExt(this.extension);
         fileInfo.setPlatform(storageCode);
+        fileInfo.setThUrl(this.thumbnailUrl);
+        fileInfo.setThFilename(StrUtil.contains(this.thumbnailUrl, StringConstants.SLASH)
+            ? StrUtil.subAfter(this.thumbnailUrl, StringConstants.SLASH, true)
+            : this.thumbnailUrl);
+        fileInfo.setThSize(this.thumbnailSize);
         return fileInfo;
     }
 }

@@ -57,11 +57,11 @@ public class FileRecorderImpl implements FileRecorder {
         file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
             ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
             : originalFilename);
+        file.setUrl(fileInfo.getUrl());
         file.setSize(fileInfo.getSize());
-        file.setUrl(fileInfo.getPath() + fileInfo.getFilename());
         file.setExtension(fileInfo.getExt());
         file.setType(FileTypeEnum.getByExtension(file.getExtension()));
-        file.setThumbnailUrl(fileInfo.getPath() + fileInfo.getThFilename());
+        file.setThumbnailUrl(fileInfo.getThUrl());
         file.setThumbnailSize(fileInfo.getThSize());
         StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         file.setStorageId(storage.getId());
@@ -87,20 +87,6 @@ public class FileRecorderImpl implements FileRecorder {
         return fileMapper.lambdaUpdate().eq(FileDO::getUrl, file.getUrl()).remove();
     }
 
-    /**
-     * 根据 URL 查询文件
-     *
-     * @param url URL
-     * @return 文件信息
-     */
-    private FileDO getFileByUrl(String url) {
-        Optional<FileDO> fileOptional = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).oneOpt();
-        return fileOptional.orElseGet(() -> fileMapper.lambdaQuery()
-            .eq(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true))
-            .oneOpt()
-            .orElse(null));
-    }
-
     @Override
     public void update(FileInfo fileInfo) {
         /* 不使用分片功能则无需重写 */
@@ -114,5 +100,19 @@ public class FileRecorderImpl implements FileRecorder {
     @Override
     public void deleteFilePartByUploadId(String s) {
         /* 不使用分片功能则无需重写 */
+    }
+
+    /**
+     * 根据 URL 查询文件
+     *
+     * @param url URL
+     * @return 文件信息
+     */
+    private FileDO getFileByUrl(String url) {
+        Optional<FileDO> fileOptional = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).oneOpt();
+        return fileOptional.orElseGet(() -> fileMapper.lambdaQuery()
+            .likeLeft(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true))
+            .oneOpt()
+            .orElse(null));
     }
 }
