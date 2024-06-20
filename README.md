@@ -1,31 +1,31 @@
 # ContiNew Admin 中后台管理框架
 
-<a href="https://github.com/Charles7c/continew-admin/blob/dev/LICENSE" target="_blank">
+<a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin" target="_blank">
+<a href="https://github.com/continew-org/continew-admin" target="_blank">
 <img src="https://img.shields.io/badge/RELEASE-v3.1.0-%23ff3f59.svg" alt="Release" />
 </a>
-<a href="https://app.codacy.com/gh/Charles7c/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
+<a href="https://app.codacy.com/gh/continew-org/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
 <img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy Badge" />
 </a>
 <a href="https://sonarcloud.io/summary/new_code?id=Charles7c_continew-admin" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=Charles7c_continew-admin&metric=alert_status" alt="Sonar Status" />
 </a>
-<a href="https://github.com/Charles7c/continew-starter" target="_blank">
+<a href="https://github.com/continew-org/continew-starter" target="_blank">
 <img src="https://img.shields.io/badge/ContiNew Starter-2.1.0-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-3.1.11-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
 </a>
-<a href="https://github.com/Charles7c/continew-starter" target="_blank">
+<a href="https://github.com/continew-org/continew-starter" target="_blank">
 <img src="https://img.shields.io/badge/Open JDK-17-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/github/stars/Charles7c/continew-admin?style=social" alt="GitHub stars" />
+<a href="https://github.com/continew-org/continew-admin" target="_blank">
+<img src="https://img.shields.io/github/stars/continew-org/continew-admin?style=social" alt="GitHub stars" />
 </a>
-<a href="https://github.com/Charles7c/continew-admin" target="_blank">
-<img src="https://img.shields.io/github/forks/Charles7c/continew-admin?style=social" alt="GitHub forks" />
+<a href="https://github.com/continew-org/continew-admin" target="_blank">
+<img src="https://img.shields.io/github/forks/continew-org/continew-admin?style=social" alt="GitHub forks" />
 </a>
 <a href="https://gitee.com/continew/continew-admin" target="_blank">
 <img src="https://gitee.com/continew/continew-admin/badge/star.svg?theme=white" alt="Gitee stars" />
@@ -46,9 +46,9 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 |          | Gitee（码云）                                                                            | GitHub                                                                          |
 |----------|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 后端       | [continew/continew-admin](https://gitee.com/continew/continew-admin)                 | [charles7c/continew-admin](https://github.com/Charles7c/continew-admin)                 |
-| 前端       | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)           | [charles7c/continew-admin-ui](https://github.com/Charles7c/continew-admin-ui)           |
-| 前端（v2.5） | [continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [charles7c/continew-admin-ui-arco](https://github.com/Charles7c/continew-admin-ui-arco) |
+| 后端       | [continew/continew-admin](https://gitee.com/continew/continew-admin)                 | [charles7c/continew-admin](https://github.com/continew-org/continew-admin)                 |
+| 前端       | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)           | [charles7c/continew-admin-ui](https://github.com/continew-org/continew-admin-ui)           |
+| 前端（v2.5） | [continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [charles7c/continew-admin-ui-arco](https://github.com/continew-org/continew-admin-ui-arco) |
 
 ## 项目起源
 
@@ -207,7 +207,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.55.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://cn.vitejs.dev/" target="_blank">Vite</a>    | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/Charles7c/continew-starter) | 2.1.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter) | 2.1.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.1.11       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.10.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.38.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
@@ -239,7 +239,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 ```bash
 # 1.克隆本项目
-git clone https://github.com/Charles7c/continew-admin.git
+git clone https://github.com/continew-org/continew-admin.git
 
 # 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
 
@@ -386,7 +386,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 2. 然后，将 fork 过来的项目（即您的项目）克隆到本地
 3. 切换到当前仍在维护的分支（请务必充分了解分支使用说明，可进群联系维护者确认）
 4. 开始修改代码，修改完成后，将代码 commit 并 push 到您的远程仓库
-5. 在 Gitee 或 Github 上新建 pull request（pr），选择好源和目标，按模板要求填写说明信息后提交即可（多多参考 [已批准合并的 pr 记录](https://github.com/Charles7c/continew-admin/pulls?q=is%3Apr+is%3Amerged)，会大大增加批准合并率）
+5. 在 Gitee 或 Github 上新建 pull request（pr），选择好源和目标，按模板要求填写说明信息后提交即可（多多参考 [已批准合并的 pr 记录](https://github.com/continew-org/continew-admin/pulls?q=is%3Apr+is%3Amerged)，会大大增加批准合并率）
 6. 最后，耐心等待维护者合并您的请求即可
 
 请记住，如果您有任何疑问或需要帮助，我们将随时提供支持。
@@ -394,7 +394,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 > [!IMPORTANT]
 > 欢迎大家为 ContiNew Admin 贡献代码，我们非常感谢您的支持！为了更好地管理项目，维护者有一些要求：
 >
-> 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/Charles7c/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
+> 1. 请确保代码、配置文件的结构和命名规范良好，完善的代码注释甚至包括接口文档参数示例，并遵循阿里巴巴的 <a href="https://github.com/continew-org/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范，保证代码质量和可维护性
 > 2. 在提交代码前，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit 的 message（建议在 IntelliJ IDEA 中下载并安装 Git Commit Template 插件，以便按照规范进行 commit）
 > 3. 提交代码之前，请关闭所有代码窗口，执行 `mvn compile` 命令（代码格式化插件会在项目编译时对全局代码进行格式修正），编译通过后，不要再打开查看任何代码窗口，直接提交即可，以免不同的 IDE 配置会自动进行代码格式化
 
@@ -414,7 +414,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 </div>
 <details>
 <summary>无加群意愿</summary>
-如无加群意愿，欢迎在 <a href="https://github.com/Charles7c/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
+如无加群意愿，欢迎在 <a href="https://github.com/continew-org/continew-admin/issues" target="_blank">Issues</a> 中反馈交流~ 🍻
 </details>
 
 ## 鸣谢
@@ -423,7 +423,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 感谢参与贡献的每一位小伙伴🥰
 
-<a href="https://github.com/Charles7c/continew-admin/graphs/contributors">
+<a href="https://github.com/continew-org/continew-admin/graphs/contributors">
   <img src="https://opencollective.com/continew-admin/contributors.svg?width=890&button=false" alt="contributors" />
 </a>
 
@@ -435,7 +435,7 @@ ContiNew Admin 的分支目前分为下个大版本的开发分支和上个大�
 
 ## License
 
-- 遵循 <a href="https://github.com/Charles7c/continew-admin/blob/dev/LICENSE" target="_blank">Apache-2.0</a> 开源许可协议
+- 遵循 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" target="_blank">Apache-2.0</a> 开源许可协议
 - Copyright © 2022-present <a href="https://blog.charles7c.top" target="_blank">Charles7c</a>
 
 ## GitHub Star 趋势
