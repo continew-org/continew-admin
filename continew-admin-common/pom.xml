@@ -64,12 +64,6 @@
             <artifactId>continew-starter-auth-justauth</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter 认证模块 - SaToken -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-starter-auth-satoken</artifactId>
-        </dependency>
-
         <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
             <groupId>top.continew</groupId>
@@ -86,6 +80,12 @@
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-messaging-websocket</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- ContiNew Starter 消息模块 - 邮件 -->

@@ -21,8 +21,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.helper.LoginHelper;
-import top.continew.starter.messaging.websocket.core.CurrentUserProvider;
-import top.continew.starter.messaging.websocket.model.CurrentUser;
+import top.continew.starter.messaging.websocket.core.WebSocketClientService;
 
 /**
  * 当前登录用户 Provider
@@ -31,15 +30,13 @@ import top.continew.starter.messaging.websocket.model.CurrentUser;
  * @since 2024/6/4 22:13
  */
 @Component
-public class CurrentUserProviderImpl implements CurrentUserProvider {
+public class WebSocketClientServiceImpl implements WebSocketClientService {
 
     @Override
-    public CurrentUser getCurrentUser(ServletServerHttpRequest request) {
+    public String getClientId(ServletServerHttpRequest request) {
         HttpServletRequest servletRequest = request.getServletRequest();
         String token = servletRequest.getParameter("token");
         LoginUser loginUser = LoginHelper.getLoginUser(token);
-        CurrentUser currentUser = new CurrentUser();
-        currentUser.setUserId(loginUser.getToken());
-        return currentUser;
+        return loginUser.getToken();
     }
 }

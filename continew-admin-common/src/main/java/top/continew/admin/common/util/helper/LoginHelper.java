@@ -55,7 +55,7 @@ public class LoginHelper {
         // 记录登录信息
         HttpServletRequest request = ServletUtils.getRequest();
         loginUser.setIp(JakartaServletUtil.getClientIP(request));
-        loginUser.setAddress(IpUtils.getAddress(loginUser.getIp()));
+        loginUser.setAddress(ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(loginUser.getIp())));
         loginUser.setBrowser(ServletUtils.getBrowser(request));
         loginUser.setLoginTime(LocalDateTime.now());
         loginUser.setOs(StrUtil.subBefore(ServletUtils.getOs(request), " or", false));
