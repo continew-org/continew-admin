@@ -63,7 +63,6 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void deleteByUserIds(List<Long> userIds) {
         baseMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
     }

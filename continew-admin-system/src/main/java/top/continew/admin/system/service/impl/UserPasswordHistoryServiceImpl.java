@@ -53,6 +53,11 @@ public class UserPasswordHistoryServiceImpl implements UserPasswordHistoryServic
     }
 
     @Override
+    public void deleteByUserIds(List<Long> userIds) {
+        baseMapper.lambdaUpdate().in(UserPasswordHistoryDO::getUserId, userIds).remove();
+    }
+
+    @Override
     public boolean isPasswordReused(Long userId, String password, int count) {
         // 查询近 N 个历史密码
         List<UserPasswordHistoryDO> list = baseMapper.lambdaQuery()

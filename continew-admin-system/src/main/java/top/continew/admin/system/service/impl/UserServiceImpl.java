@@ -345,6 +345,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .getNickname());
         // 删除用户和角色关联
         userRoleService.deleteByUserIds(ids);
+        // 删除历史密码
+        userPasswordHistoryService.deleteByUserIds(ids);
         // 删除用户
         super.delete(ids);
     }

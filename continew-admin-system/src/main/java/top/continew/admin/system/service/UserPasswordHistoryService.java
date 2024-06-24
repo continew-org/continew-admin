@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service;
 
+import java.util.List;
+
 /**
  * 用户历史密码业务接口
  *
@@ -32,6 +34,13 @@ public interface UserPasswordHistoryService {
      * @param count    保留 N 个历史
      */
     void add(Long userId, String password, int count);
+
+    /**
+     * 根据用户 ID 删除
+     *
+     * @param userIds 用户 ID 列表
+     */
+    void deleteByUserIds(List<Long> userIds);
 
     /**
      * 密码是否为重复使用
