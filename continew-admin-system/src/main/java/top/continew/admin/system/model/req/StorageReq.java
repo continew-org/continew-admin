@@ -76,7 +76,6 @@ public class StorageReq extends BaseReq {
      * 私有密钥
      */
     @Schema(description = "私有密钥", example = "")
-    @Length(max = 255, message = "私有密钥长度不能超过 {max} 个字符")
     private String secretKey;
 
     /**

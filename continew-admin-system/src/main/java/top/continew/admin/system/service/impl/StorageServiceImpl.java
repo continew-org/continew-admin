@@ -189,6 +189,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         // 新增时或修改了 SecretKey
         String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(newSecretKey));
         ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
+        ValidationUtils.throwIf(secretKey.length() > 255, "私有密钥长度不能超过 255 个字符");
         req.setSecretKey(secretKey);
     }
 
