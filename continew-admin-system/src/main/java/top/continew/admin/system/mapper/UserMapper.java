@@ -108,24 +108,4 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 用户数量
      */
     Long selectCountByPhone(@FieldEncrypt @Param("phone") String phone, @Param("id") Long id);
-
-    /**
-     * 修改手机号
-     *
-     * @param phone 手机号
-     * @param id    ID
-     * @return 影响行数
-     */
-    @Select("UPDATE sys_user SET phone = #{phone} WHERE id = #{id}")
-    Integer updatePhone(@FieldEncrypt @Param("phone") String phone, @Param("id") Long id);
-
-    /**
-     * 修改邮箱
-     *
-     * @param email 邮箱
-     * @param id    ID
-     * @return 影响行数
-     */
-    @Select("UPDATE sys_user SET email = #{email} WHERE id = #{id}")
-    Integer updateEmail(@FieldEncrypt @Param("email") String email, @Param("id") Long id);
 }
