@@ -17,9 +17,11 @@
 package top.continew.admin;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alicp.jetcache.anno.config.EnableMethodCache;
+import com.github.xiaoymin.knife4j.spring.configuration.Knife4jProperties;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,12 +34,8 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
-import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.extension.crud.annotation.EnableCrudRestController;
 import top.continew.starter.web.annotation.EnableGlobalExceptionHandler;
-
-import java.net.InetAddress;
 
 /**
  * 启动程序
@@ -75,16 +73,16 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
-        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+    public void run(ApplicationArguments args) {
+        String hostAddress = NetUtil.getLocalhostStr();
         Integer port = serverProperties.getPort();
         String contextPath = serverProperties.getServlet().getContextPath();
         String baseUrl = URLUtil.normalize("%s:%s%s".formatted(hostAddress, port, contextPath));
         log.info("----------------------------------------------");
         log.info("{} service started successfully.", projectProperties.getName());
         log.info("API 地址：{}", baseUrl);
-        String docEnabledProperty = PropertiesConstants.SPRINGDOC_SWAGGER_UI + StringConstants.DOT + PropertiesConstants.ENABLED;
-        if (Boolean.TRUE.equals(SpringUtil.getProperty(docEnabledProperty, boolean.class, false))) {
+        Knife4jProperties knife4jProperties = SpringUtil.getBean(Knife4jProperties.class);
+        if (!knife4jProperties.isProduction()) {
             log.info("API 文档：{}/doc.html", baseUrl);
         }
         log.info("----------------------------------------------");
