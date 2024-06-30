@@ -18,8 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.CacheInvalidate;
-import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +31,8 @@ import top.continew.admin.system.model.query.MenuQuery;
 import top.continew.admin.system.model.req.MenuReq;
 import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.MenuService;
+import top.continew.starter.cache.redisson.util.RedisUtils;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
@@ -50,7 +50,6 @@ import java.util.Set;
 public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq> implements MenuService {
 
     @Override
-    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public Long add(MenuReq req) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
@@ -58,29 +57,30 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
         if (MenuTypeEnum.DIR.equals(req.getType())) {
             req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
         }
+        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
         return super.add(req);
     }
 
     @Override
-    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public void update(MenuReq req, Long id) {
         String title = req.getTitle();
         CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);
         MenuDO oldMenu = super.getById(id);
         CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
         super.update(req, id);
+        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheInvalidate(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public void delete(List<Long> ids) {
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
         super.delete(ids);
+        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
-    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
     public List<MenuResp> listAll() {
         return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE.getValue()), null);
     }
