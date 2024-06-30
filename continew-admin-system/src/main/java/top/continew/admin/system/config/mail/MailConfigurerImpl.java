@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.service.OptionService;
 import top.continew.starter.messaging.mail.core.MailConfig;
-import top.continew.starter.messaging.mail.core.MailConfigService;
+import top.continew.starter.messaging.mail.core.MailConfigurer;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MailConfigServiceImpl implements MailConfigService {
+public class MailConfigurerImpl implements MailConfigurer {
 
     private final OptionService optionService;
 
