@@ -145,8 +145,6 @@ captcha:
     length: 6
     # 过期时间
     expirationInMinutes: 5
-    # 限制时间
-    limitInSeconds: 60
     # 模板路径
     templatePath: mail/captcha.ftl
   ## 短信验证码配置
@@ -254,8 +252,9 @@ sa-token.extension:
     # 本地存储资源
     - /file/**
 
---- ### 字段加/解密配置
+--- ### 安全配置
 continew-starter.security:
+  ## 字段加/解密配置
   crypto:
     enabled: true
     # 对称加密算法密钥
@@ -263,13 +262,15 @@ continew-starter.security:
     # 非对称加密算法密钥（在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
     public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM51dgYtMyF+tTQt80sfFOpSV27a7t9uaUVeFrdGiVxscuizE7H8SMntYqfn9lp8a5GH5P1/GGehVjUD2gF/4kcCAwEAAQ==
     private-key: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV
-
---- ### 密码编码器配置
-continew-starter.security:
+  ## 密码编码器配置
   password:
     enabled: true
     # BCryptPasswordEncoder
     encoding-id: bcrypt
+  ## 限流器配置
+  limiter:
+    enabled: true
+    key-prefix: RateLimiter
 
 --- ### 文件上传配置
 spring.servlet:

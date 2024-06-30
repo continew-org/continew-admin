@@ -112,6 +112,12 @@
             <artifactId>continew-starter-file-excel</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 安全模块 - 限流器 -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-security-limiter</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 安全模块 - 加密 -->
         <dependency>
             <groupId>top.continew</groupId>
