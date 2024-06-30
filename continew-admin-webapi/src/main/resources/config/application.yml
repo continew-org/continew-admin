@@ -48,18 +48,6 @@ continew-starter.web:
       pattern: '[$spanId][$traceId]'
       mdc-enable: false
 
---- ### 线程池配置
-continew-starter.thread-pool:
-  enabled: true
-  # 队列容量
-  queue-capacity: 128
-  # 活跃时间（单位：秒）
-  keep-alive-seconds: 300
-  # 关闭线程池是否等待任务完成
-  wait-for-tasks-to-complete-on-shutdown: true
-  # 执行器在关闭时阻塞的最长毫秒数，以等待剩余任务完成执行（单位：毫秒）
-  await-termination-millis: 30000
-
 --- ### 接口文档配置
 springdoc:
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认 false）
@@ -224,17 +212,43 @@ server:
 spring:
   application:
     name: ${project.app-name}
+  main:
+    # 允许定义重名的 bean 对象覆盖原有的 bean
+    allow-bean-definition-overriding: true
+    # 允许循环依赖
+    allow-circular-references: true
   ## 环境配置
   profiles:
     # 启用的环境
     active: dev
     include:
       - generator
-  main:
-    # 允许定义重名的 bean 对象覆盖原有的 bean
-    allow-bean-definition-overriding: true
-    # 允许循环依赖
-    allow-circular-references: true
+  ## 线程池配置（默认启用扩展配置，如未指定 corePoolSize、maxPoolSize 则根据机器配置自动设置）
+  task:
+    # 异步任务
+    execution:
+      thread-name-prefix: task-pool
+      # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
+      # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
+      rejected-policy: CALLER_RUNS
+      pool:
+        keep-alive: 300s
+      shutdown:
+        # 是否等待任务执行完成再关闭线程池（默认 false）
+        await-termination: true
+        # 等待时间
+        await-termination-period: 30s
+    # 定时任务
+    scheduling:
+      thread-name-prefix: schedule-pool
+      # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
+      # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
+      rejected-policy: CALLER_RUNS
+      shutdown:
+        # 是否等待任务执行完成再关闭线程池（默认 false）
+        await-termination: true
+        # 等待时间
+        await-termination-period: 30s
 
 --- ### 健康检查配置
 management.health:
