@@ -317,24 +317,26 @@ continew-admin
 │  │  │     └─ mapper（系统管理相关 Mapper XML 文件目录）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ continew-admin-generator（代码生成器插件模块）
-│  ├─ src
-│  │  ├─ main
-│  │  │  ├─ java/top/continew/admin/generator
-│  │  │  │  ├─ config（代码生成器相关配置）
-│  │  │  │  ├─ enums（代码生成器相关枚举）
-│  │  │  │  ├─ mapper（代码生成器相关 Mapper）
-│  │  │  │  ├─ model（代码生成器相关模型）
-│  │  │  │  │  ├─ entity（代码生成器相关实体对象）
-│  │  │  │  │  ├─ query（代码生成器相关查询条件）
-│  │  │  │  │  ├─ req（代码生成器相关请求对象（Request））
-│  │  │  │  │  └─ resp（代码生成器相关响应对象（Response））
-│  │  │  │  └─ service（代码生成器相关业务接口及实现类）
-│  │  │  └─ resources
-│  │  │     ├─ templates/generator（代码生成相关模板目录）
-│  │  │     ├─ application.yml（代码生成配置文件）
-│  │  │     └─ generator.properties（代码生成类型映射配置文件）
-│  │  └─ test（测试相关代码目录）
+├─ continew-admin-plugins（插件模块，存放代码生成、任务调度等扩展模块，后续会进行插件化改造）
+│  ├─ continew-admin-generator（代码生成器插件模块）
+│  │  ├─ src
+│  │  │  ├─ main
+│  │  │  │  ├─ java/top/continew/admin/generator
+│  │  │  │  │  ├─ config（代码生成器相关配置）
+│  │  │  │  │  ├─ enums（代码生成器相关枚举）
+│  │  │  │  │  ├─ mapper（代码生成器相关 Mapper）
+│  │  │  │  │  ├─ model（代码生成器相关模型）
+│  │  │  │  │  │  ├─ entity（代码生成器相关实体对象）
+│  │  │  │  │  │  ├─ query（代码生成器相关查询条件）
+│  │  │  │  │  │  ├─ req（代码生成器相关请求对象（Request））
+│  │  │  │  │  │  └─ resp（代码生成器相关响应对象（Response））
+│  │  │  │  │  └─ service（代码生成器相关业务接口及实现类）
+│  │  │  │  └─ resources
+│  │  │  │     ├─ templates/generator（代码生成相关模板目录）
+│  │  │  │     ├─ application.yml（代码生成配置文件）
+│  │  │  │     └─ generator.properties（代码生成类型映射配置文件）
+│  │  │  └─ test（测试相关代码目录）
+│  │  └─ pom.xml
 │  └─ pom.xml
 ├─ continew-admin-common（公共模块，存放公共工具类，公共配置等）
 │  ├─ src

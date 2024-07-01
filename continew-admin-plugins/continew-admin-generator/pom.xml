@@ -5,18 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>top.continew</groupId>
-        <artifactId>continew-admin</artifactId>
+        <artifactId>continew-admin-plugins</artifactId>
         <version>${revision}</version>
     </parent>
 
     <artifactId>continew-admin-generator</artifactId>
     <description>代码生成器插件</description>
-
-    <dependencies>
-        <!-- 公共模块（存放公共工具类，公共配置等） -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-admin-common</artifactId>
-        </dependency>
-    </dependencies>
 </project>
