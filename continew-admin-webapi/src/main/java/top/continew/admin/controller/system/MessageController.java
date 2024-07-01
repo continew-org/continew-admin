@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.system;
+package top.continew.admin.controller.system;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

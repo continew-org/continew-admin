@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.system;
+package top.continew.admin.controller.system;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;

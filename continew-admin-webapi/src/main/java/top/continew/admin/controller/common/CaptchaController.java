@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.common;
+package top.continew.admin.controller.common;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.date.LocalDateTimeUtil;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.monitor;
+package top.continew.admin.controller.monitor;
 
 import lombok.RequiredArgsConstructor;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.auth.config.satoken;
+package top.continew.admin.config.satoken;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

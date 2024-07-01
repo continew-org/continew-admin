@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.auth;
+package top.continew.admin.controller.auth;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;

@@ -271,7 +271,8 @@ continew-admin
 │  ├─ src
 │  │  ├─ main
 │  │  │  ├─ java/top/continew/admin
-│  │  │  │  ├─ webapi
+│  │  │  │  ├─ config （配置）
+│  │  │  │  ├─ controller
 │  │  │  │  │  ├─ auth（系统认证相关 API）
 │  │  │  │  │  ├─ common（通用相关 API）
 │  │  │  │  │  ├─ monitor（系统监控相关 API）
@@ -297,7 +298,6 @@ continew-admin
 │  │  ├─ main
 │  │  │  ├─ java/top/continew/admin
 │  │  │  │  ├─ auth（系统认证相关业务）
-│  │  │  │  │  ├─ config（系统认证相关配置）
 │  │  │  │  │  ├─ model（系统认证相关模型）
 │  │  │  │  │  │  ├─ query（系统认证相关查询条件）
 │  │  │  │  │  │  ├─ req（系统认证相关请求对象（Request））

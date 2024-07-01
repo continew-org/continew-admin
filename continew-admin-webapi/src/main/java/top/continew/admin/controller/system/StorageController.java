@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.system;
+package top.continew.admin.controller.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import org.springframework.web.bind.annotation.RestController;
-
-import top.continew.admin.system.model.query.RoleQuery;
-import top.continew.admin.system.model.req.RoleReq;
-import top.continew.admin.system.model.resp.RoleDetailResp;
-import top.continew.admin.system.model.resp.RoleResp;
-import top.continew.admin.system.service.RoleService;
+import top.continew.admin.system.model.query.StorageQuery;
+import top.continew.admin.system.model.req.StorageReq;
+import top.continew.admin.system.model.resp.StorageResp;
+import top.continew.admin.system.service.StorageService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 
 /**
- * 角色管理 API
+ * 存储管理 API
  *
  * @author Charles7c
- * @since 2023/2/8 23:11
+ * @since 2023/12/26 22:09
  */
-@Tag(name = "角色管理 API")
+@Tag(name = "存储管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/role", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
-public class RoleController extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
+@CrudRequestMapping(value = "/system/storage", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
+public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {
 }

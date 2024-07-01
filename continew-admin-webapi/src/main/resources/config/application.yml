@@ -61,16 +61,16 @@ springdoc:
         - /error
     - group: auth
       display-name: 系统认证
-      packages-to-scan: ${project.base-package}.webapi.auth
+      packages-to-scan: ${project.base-package}.controller.auth
     - group: common
       display-name: 通用接口
-      packages-to-scan: ${project.base-package}.webapi.common
+      packages-to-scan: ${project.base-package}.controller.common
     - group: system
       display-name: 系统管理
-      packages-to-scan: ${project.base-package}.webapi.system
+      packages-to-scan: ${project.base-package}.controller.system
     - group: monitor
       display-name: 系统监控
-      packages-to-scan: ${project.base-package}.webapi.monitor
+      packages-to-scan: ${project.base-package}.controller.monitor
   ## 组件配置
   components:
     # 鉴权配置

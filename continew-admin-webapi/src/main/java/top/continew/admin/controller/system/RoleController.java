@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-package top.continew.admin.webapi.system;
+package top.continew.admin.controller.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.system.model.query.DictQuery;
-import top.continew.admin.system.model.req.DictReq;
-import top.continew.admin.system.model.resp.DictResp;
-import top.continew.admin.system.service.DictService;
+
+import top.continew.admin.system.model.query.RoleQuery;
+import top.continew.admin.system.model.req.RoleReq;
+import top.continew.admin.system.model.resp.RoleDetailResp;
+import top.continew.admin.system.model.resp.RoleResp;
+import top.continew.admin.system.service.RoleService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 
 /**
- * 字典管理 API
+ * 角色管理 API
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 2023/2/8 23:11
  */
-@Tag(name = "字典管理 API")
+@Tag(name = "角色管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dict", api = {Api.LIST, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
-public class DictController extends BaseController<DictService, DictResp, DictResp, DictQuery, DictReq> {
+@CrudRequestMapping(value = "/system/role", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
+public class RoleController extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
 }

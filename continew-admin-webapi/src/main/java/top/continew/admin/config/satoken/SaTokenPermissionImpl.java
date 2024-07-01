@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.auth.config.satoken;
+package top.continew.admin.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
 import top.continew.admin.common.model.dto.LoginUser;
