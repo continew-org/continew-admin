@@ -42,11 +42,6 @@ public class CacheConstants {
     public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA" + DELIMITER;
 
     /**
-     * 限流键前缀
-     */
-    public static final String LIMIT_KEY_PREFIX = "LIMIT" + DELIMITER;
-
-    /**
      * 用户缓存键前缀
      */
     public static final String USER_KEY_PREFIX = "USER" + DELIMITER;
@@ -55,6 +50,11 @@ public class CacheConstants {
      * 菜单缓存键前缀
      */
     public static final String MENU_KEY_PREFIX = "MENU" + DELIMITER;
+
+    /**
+     * 字典缓存键前缀
+     */
+    public static final String DICT_KEY_PREFIX = "DICT" + DELIMITER;
 
     /**
      * 参数缓存键前缀

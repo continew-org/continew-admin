@@ -18,7 +18,6 @@ package top.continew.admin.controller.common;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,16 +40,12 @@ import top.continew.admin.system.model.resp.FileUploadResp;
 import top.continew.admin.system.service.*;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.validate.ValidationUtils;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.log.core.annotation.Log;
 import top.continew.starter.web.model.R;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * 公共 API
@@ -101,12 +96,12 @@ public class CommonController {
         return R.ok(roleService.listDict(query, sortQuery));
     }
 
+    @SaIgnore
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "notice_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
     public R<List<LabelValueResp>> listDict(@PathVariable String code) {
-        Optional<Class<?>> enumClassOptional = this.getEnumClassByName(code);
-        return R.ok(enumClassOptional.map(this::listEnumDict).orElseGet(() -> dictItemService.listByDictCode(code)));
+        return R.ok(dictItemService.listByDictCode(code));
     }
 
     @SaIgnore
@@ -121,33 +116,5 @@ public class CommonController {
             .map(option -> new LabelValueResp<>(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
                 .getDefaultValue())))
             .toList());
-    }
-
-    /**
-     * 根据枚举类名查询
-     *
-     * @param enumClassName 枚举类名
-     * @return 枚举类型
-     */
-    private Optional<Class<?>> getEnumClassByName(String enumClassName) {
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), IBaseEnum.class);
-        return classSet.stream()
-            .filter(c -> StrUtil.equalsAnyIgnoreCase(c.getSimpleName(), enumClassName, StrUtil
-                .toCamelCase(enumClassName)))
-            .findFirst();
-    }
-
-    /**
-     * 查询枚举字典
-     *
-     * @param enumClass 枚举类型
-     * @return 枚举字典
-     */
-    private List<LabelValueResp> listEnumDict(Class<?> enumClass) {
-        Object[] enumConstants = enumClass.getEnumConstants();
-        return Arrays.stream(enumConstants).map(e -> {
-            IBaseEnum baseEnum = (IBaseEnum)e;
-            return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
-        }).toList();
     }
 }
