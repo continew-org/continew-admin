@@ -59,9 +59,9 @@ public class JobClient {
     private final String password;
 
     public JobClient(String url, String username, String password) {
-        Assert.notBlank(url, "任务调度服务 URL 不能为空");
-        Assert.notBlank(username, "任务调度服务用户名不能为空");
-        Assert.notBlank(password, "任务调度服务密码不能为空");
+        Assert.notBlank(url, "任务调度中心 URL 不能为空");
+        Assert.notBlank(username, "任务调度中心用户名不能为空");
+        Assert.notBlank(password, "任务调度中心密码不能为空");
         this.url = url;
         this.username = username;
         this.password = password;
@@ -85,7 +85,7 @@ public class JobClient {
             return result.getData();
         } catch (Exception e) {
             log.error("Request job server failed, error msg: {}", e.getMessage(), e);
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("连接任务调度中心异常");
         }
     }
 
@@ -110,7 +110,7 @@ public class JobClient {
             return page;
         } catch (Exception e) {
             log.error("Request job server failed, error msg: {}", e.getMessage(), e);
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("连接任务调度中心异常");
         }
     }
 
@@ -143,7 +143,7 @@ public class JobClient {
         httpRequest.body(JSONUtil.toJsonStr(paramMap));
         HttpResponse response = httpRequest.execute();
         if (!response.isOk() || response.body() == null) {
-            throw new IllegalStateException("连接任务调度中心错误");
+            throw new IllegalStateException("连接任务调度中心异常");
         }
         Result<?> result = JSONUtil.toBean(response.body(), Result.class);
         if (!STATUS_SUCCESS.equals(result.getStatus())) {
@@ -160,7 +160,7 @@ public class JobClient {
      */
     private void checkResponse(ResponseEntity<?> responseEntity) {
         if (!responseEntity.getStatusCode().is2xxSuccessful() || responseEntity.getBody() == null) {
-            throw new IllegalStateException("连接任务调度中心错误");
+            throw new IllegalStateException("连接任务调度中心异常");
         }
     }
 }

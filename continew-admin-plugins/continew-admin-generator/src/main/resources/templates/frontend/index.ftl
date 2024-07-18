@@ -172,8 +172,8 @@ const reset = () => {
 }
 
 // 删除
-const onDelete = (item: ${classNamePrefix}Resp) => {
-  return handleDelete(() => delete${classNamePrefix}(item.id), {
+const onDelete = (record: ${classNamePrefix}Resp) => {
+  return handleDelete(() => delete${classNamePrefix}(record.id), {
     content: `是否确定删除该条数据？`,
     showModal: true
   })
@@ -191,14 +191,14 @@ const onAdd = () => {
 }
 
 // 修改
-const onUpdate = (item: ${classNamePrefix}Resp) => {
-  ${classNamePrefix}AddModalRef.value?.onUpdate(item.id)
+const onUpdate = (record: ${classNamePrefix}Resp) => {
+  ${classNamePrefix}AddModalRef.value?.onUpdate(record.id)
 }
 
 const ${classNamePrefix}DetailDrawerRef = ref<InstanceType<typeof ${classNamePrefix}DetailDrawer>>()
 // 详情
-const onDetail = (item: ${classNamePrefix}Resp) => {
-  ${classNamePrefix}DetailDrawerRef.value?.onDetail(item.id)
+const onDetail = (record: ${classNamePrefix}Resp) => {
+  ${classNamePrefix}DetailDrawerRef.value?.onDetail(record.id)
 }
 </script>
 
