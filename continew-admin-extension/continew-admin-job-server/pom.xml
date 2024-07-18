@@ -14,7 +14,7 @@
 
     <properties>
         <!-- SnailJob 服务端 -->
-        <snail-job.version>1.1.0-beta1</snail-job.version>
+        <snail-job.version>1.1.0</snail-job.version>
     </properties>
 
     <dependencies>

@@ -115,7 +115,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
         QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
         IPage<UserDetailResp> page = baseMapper.selectUserPage(pageQuery.toPage(), queryWrapper);
-        PageResp<UserResp> pageResp = PageResp.build(page, this.listClass);
+        PageResp<UserResp> pageResp = PageResp.build(page, super.getListClass());
         pageResp.getList().forEach(this::fill);
         return pageResp;
     }
@@ -462,7 +462,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         // 设置排序
         super.sort(queryWrapper, sortQuery);
         List<UserDetailResp> entityList = baseMapper.selectUserList(queryWrapper);
-        if (entityClass == targetClass) {
+        if (this.getEntityClass() == targetClass) {
             return (List<E>)entityList;
         }
         return BeanUtil.copyToList(entityList, targetClass);

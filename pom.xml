@@ -13,7 +13,7 @@
     <parent>
         <groupId>top.continew</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>2.2.0</version>
+        <version>2.3.0</version>
     </parent>
 
     <groupId>top.continew</groupId>
@@ -34,30 +34,11 @@
     <properties>
         <!-- 项目版本号 -->
         <revision>3.1.0</revision>
-        <!-- SnailJob -->
-        <snail-job.version>1.1.0-beta1</snail-job.version>
     </properties>
 
     <!-- 全局依赖版本管理 -->
     <dependencyManagement>
         <dependencies>
-            <!-- SnailJob（灵活，可靠和快速的分布式任务重试和分布式任务调度平台） -->
-            <dependency>
-                <groupId>com.aizuda</groupId>
-                <artifactId>snail-job-client-starter</artifactId>
-                <version>${snail-job.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aizuda</groupId>
-                <artifactId>snail-job-client-retry-core</artifactId>
-                <version>${snail-job.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aizuda</groupId>
-                <artifactId>snail-job-client-job-core</artifactId>
-                <version>${snail-job.version}</version>
-            </dependency>
-
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
                 <groupId>top.continew</groupId>
