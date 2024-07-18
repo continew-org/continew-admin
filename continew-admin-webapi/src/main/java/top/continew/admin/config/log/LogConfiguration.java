@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.config.log;
+package top.continew.admin.config.log;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
