@@ -25,6 +25,25 @@
     </properties>
 
     <dependencies>
+        <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-admin-system</artifactId>
+        </dependency>
+
+        <!-- 代码生成器插件（后续会改造为独立插件） -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-admin-generator</artifactId>
+        </dependency>
+
+        <!-- 任务调度插件（后续会改造为独立插件） -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-admin-job</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -35,18 +54,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!-- 代码生成器插件（后续会改造为独立插件） -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-admin-generator</artifactId>
-        </dependency>
-
-        <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-admin-system</artifactId>
         </dependency>
     </dependencies>
 

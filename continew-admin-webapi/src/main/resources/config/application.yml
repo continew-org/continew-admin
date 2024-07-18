@@ -122,10 +122,12 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
   type-aliases-package: ${project.base-package}.**.model
+  ## MyBatis 配置
   configuration:
     # MyBatis 自动映射策略
     # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
     auto-mapping-behavior: PARTIAL
+  ## 全局配置
   global-config:
     banner: true
     db-config:

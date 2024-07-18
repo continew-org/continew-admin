@@ -15,6 +15,7 @@
 
     <modules>
         <module>continew-admin-generator</module>
+        <module>continew-admin-job</module>
     </modules>
 
     <dependencies>

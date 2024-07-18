@@ -1,0 +1,69 @@
+server:
+  port: 18001
+
+--- ### 数据源配置
+spring.datasource:
+  type: com.zaxxer.hikari.HikariDataSource
+  ## 动态数据源配置（可配多主多从：m1、s1...；纯粹多库：mysql、oracle...；混合配置：m1、s1、oracle...）
+  dynamic:
+    # 设置默认的数据源或者数据源组（默认：master）
+    primary: master
+    # 严格匹配数据源（true：未匹配到指定数据源时抛异常；false：使用默认数据源；默认 false）
+    strict: false
+    datasource:
+      # 主库配置（可配多个，构成多主）
+      master:
+        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+        username: ${DB_USER:root}
+        password: ${DB_PWD:123456}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: ${spring.datasource.type}
+    hikari:
+      # 最大连接数量（默认 10，根据实际环境调整）
+      # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
+      max-pool-size: 20
+      # 获取连接超时时间（默认 30000 毫秒，30 秒）
+      connection-timeout: 30000
+      # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
+      idle-timeout: 600000
+      # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
+      keepaliveTime: 30000
+      # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
+      max-lifetime: 1800000
+## Liquibase 配置
+spring.liquibase:
+  # 是否启用
+  enabled: true
+  # 配置文件路径
+  change-log: classpath:/db/changelogs/db.changelog-master.yaml
+
+--- ### Snail Job 服务端配置
+snail-job:
+  # Netty 端口
+  netty-port: 1788
+  # 合并日志默认保存天数
+  merge-Log-days: 1
+  # 合并日志默认的条数
+  merge-Log-num: 500
+  # 配置日志保存时间（单位：天）
+  log-storage: 90
+  # 配置每批次拉取重试数据的大小
+  retry-pull-page-size: 100
+  # 配置一个客户端每秒最多接收的重试数量指令
+  limiter: 10
+  # 配置号段模式下的步长
+  step: 100
+  # bucket 的总数量
+  bucket-total: 128
+  # Dashboard 任务容错天数
+  summary-day: 7
+  # 配置负载均衡周期时间
+  load-balance-cycle-time: 10
+  ## 回调配置
+  callback:
+    # 回调 uniqueId 前缀
+    prefix: CB
+    # 配置回调的最大执行次数
+    max-count: 288
+    # 配置回调触发的间隔时间
+    trigger-interval: 900

@@ -173,3 +173,18 @@ INSERT INTO `sys_storage`
 VALUES
 (1, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', b'1', 1, 1, 1, NOW(), NULL, NULL),
 (2, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', b'0', 2, 2, 1, NOW(), NULL, NULL);
+
+-- changeset Kai:3.2-1
+INSERT INTO `sys_menu` (`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `redirect`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
+VALUES
+(4000, '任务调度', 0, 1, '/schedule', 'Schedule', 'Layout', '/schedule/job', 'schedule', b'0', b'0', b'0', NULL, 997, 1, 1, NOW(), NULL, NULL),
+(4010, '任务管理', 4000, 2, '/schedule/job', 'ScheduleJob', 'schedule/job/index', NULL, 'select-all', b'0', b'0', b'0', NULL, 1, 1, 1, NOW(), NULL, NULL),
+(4011, '查看', 4010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:job:list', 1, 1, 1, NOW(), NULL, NULL),
+(4012, '新增', 4010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:job:add', 2, 1, 1, NOW(), NULL, NULL),
+(4013, '修改', 4010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:job:update', 3, 1, 1, NOW(), NULL, NULL),
+(4014, '删除', 4010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:job:delete', 4, 1, 1, NOW(), NULL, NULL),
+(4015, '执行', 1010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:job:trigger', 5, 1, 1, NOW(), NULL, NULL),
+(4020, '任务日志', 4000, 2, '/schedule/log', 'ScheduleLog', 'schedule/log/index', NULL, 'find-replace', b'0', b'0', b'0', NULL, 2, 1, 1, NOW(), NULL, NULL),
+(4021, '查看', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:list', 1, 1, 1, NOW(), NULL, NULL),
+(4022, '停止', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:stop', 2, 1, 1, NOW(), NULL, NULL),
+(4023, '重试', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:retry', 3, 1, 1, NOW(), NULL, NULL);

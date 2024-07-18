@@ -1,0 +1,26 @@
+--- ### Spring 配置
+spring:
+  application:
+    name: continew-admin-job-server
+
+--- ### MyBatis Plus 配置
+mybatis-plus:
+  # 类型别名扫描包配置
+  typeAliasesPackage: com.aizuda.snailjob.template.datasource.persistence.po
+  ## MyBatis 配置
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+  ## 全局配置
+  global-config:
+    db-config:
+      where-strategy: NOT_EMPTY
+      capital-mode: false
+      # 逻辑删除全局值（默认 1，表示已删除）
+      logic-delete-value: 1
+      # 逻辑未删除全局值（默认 0，表示未删除）
+      logic-not-delete-value: 0
+
+--- ### 日志配置
+logging:
+  config: classpath:logback-spring.xml

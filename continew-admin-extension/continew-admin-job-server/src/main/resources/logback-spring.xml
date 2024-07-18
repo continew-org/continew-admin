@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+
+    <!-- 关闭 Logback 的状态监听器（通过更换默认状态监听器实现） -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- 应用名 -->
+    <springProperty name="APP_NAME" source="spring.application.name" scope="context"/>
+    <!-- 保存路径 -->
+    <property name="LOG_PATH" value="${LOG_PATH:-./logs/job-server}"/>
+    <!-- 字符集 -->
+    <property name="LOG_CHARSET" value="utf-8"/>
+    <!-- 格式化输出：%d 表示日期；%thread 表示线程名；%-5level：级别从左显示 5 个字符宽度；%msg：日志消息；%n 是换行符 -->
+    <!-- 控制台输出格式（带颜色） -->
+    <property name="CONSOLE_LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %green([%thread]) %boldMagenta(%logger{50}) - %msg%n"/>
+    <!-- 文件输出格式 -->
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{50} - %msg%n"/>
+    <!-- 单个日志文件大小上限 -->
+    <property name="FILE_MAX_SIZE" value="20MB"/>
+
+    <!-- 输出日志到控制台 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出日志到控制台（不带颜色） -->
+    <appender name="CONSOLE_PROD" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出日志到文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <!-- 滚动策略：基于文件大小和时间归档日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志文件的路径及文件名 -->
+            <fileNamePattern>${LOG_PATH}/%d{yyyy-MM-dd}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 日志文件大小（超过指定大小后，会切分新文件，从索引 0 开始计数，例如：app.2024-01-01.1.log.gz ） -->
+            <maxFileSize>${FILE_MAX_SIZE}</maxFileSize>
+            <!-- 日志保留天数 -->
+            <maxHistory>${FILE_MAX_HISTORY}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出日志到文件（异步） -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志，默认：如果队列的 80% 已满，则会丢弃 TRACT、DEBUG、INFO 级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度，该值会影响性能，默认：256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的 appender，最多只能添加一个 -->
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- Snail Job Server -->
+    <appender name="JOB_SERVER" class="com.aizuda.snailjob.server.common.appender.SnailJobServerLogbackAppender" />
+
+    <!-- 开发环境：只打印到控制台 -->
+    <springProfile name="dev">
+        <!-- 如果配置的日志等级，和 application.yml 中的日志等级配置重叠，application.yml 配置优先级高 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="JOB_SERVER"/>
+        </root>
+    </springProfile>
+
+    <!-- 生产环境：打印到控制台并输出到文件 -->
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_PROD"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="JOB_SERVER"/>
+        </root>
+        <!-- 日志保留天数（根据国家法律，网络运行状态、网络安全事件、个人敏感信息操作等相关记录，留存的日志不少于六个月，并且进行网络多机备份。） -->
+        <property name="FILE_MAX_HISTORY" value="180"/>
+    </springProfile>
+</configuration>

@@ -283,3 +283,51 @@ spring.servlet:
 ## 头像支持格式配置
 avatar:
   support-suffix: jpg,jpeg,png,gif
+
+--- ### Snail Job 配置
+snail-job:
+  # 分组名
+  group: continew_admin
+  # 客户端地址（默认自动获取本机 IP）
+  #host: 127.0.0.1
+  # 客户端端口（默认：1789）
+  port: 1789
+  # 名称空间 ID
+  namespace: 764d604ec6fc45f68cd92514c40e9e1a
+  # 令牌
+  token: SJ_Wyz3dmsdbDOkDujOTSSoBjGQP1BMsVnj
+  ## 服务端配置
+  server:
+    # 服务端地址
+    url: http://127.0.0.1:8001/snail-job
+    # 服务端用户名
+    username: admin
+    # 服务端密码
+    password: admin
+    # 服务端地址，若服务端集群部署则此处配置域名
+    host: 127.0.0.1
+    # 服务端端口号
+    port: 1788
+  ## 重试数据批量上报滑动窗口配置
+  retry:
+    reportSlidingWindow:
+      # 窗口期单位
+      chrono-unit: SECONDS
+      # 窗口期时间长度
+      duration: 10
+      # 总量窗口期阈值
+      total-threshold: 50
+      # 窗口数量预警
+      window-total-threshold: 150
+  ## 调度线程池配置
+  dispatcherThreadPool:
+    # 核心线程数
+    corePoolSize: 16
+    # 最大线程数
+    maximumPoolSize: 16
+    # 线程存活时间
+    keepAliveTime: 1
+    # 时间单位
+    timeUnit: SECONDS
+    # 队列容量
+    queueCapacity: 10000
