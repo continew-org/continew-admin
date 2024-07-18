@@ -96,7 +96,6 @@ public class CommonController {
         return R.ok(roleService.listDict(query, sortQuery));
     }
 
-    @SaIgnore
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "notice_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
