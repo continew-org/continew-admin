@@ -73,6 +73,22 @@ services:
     depends_on:
       - redis
       - mysql
+  job-server:
+    build: ./job-server
+    restart: always
+    container_name: continew-admin-job-server
+    ports:
+      - '18001:18001'
+      - '1788:1788'
+    environment:
+      TZ: Asia/Shanghai
+      DB_HOST: 172.17.0.1
+      DB_PORT: 3306
+      DB_USER: 你的数据库用户名
+      DB_PWD: 你的数据库密码
+      DB_NAME: continew_admin_job
+    depends_on:
+      - mysql
   nginx:
     image: nginx:1.25.3
     restart: always
