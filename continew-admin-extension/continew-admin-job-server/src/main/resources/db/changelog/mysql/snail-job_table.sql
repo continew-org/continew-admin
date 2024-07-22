@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset snail-job-server:1
+-- changeset snail-job-server:1.1.0
 SET NAMES utf8mb4;
 
 CREATE TABLE `sj_namespace`
@@ -17,10 +17,6 @@ CREATE TABLE `sj_namespace`
     UNIQUE KEY `uk_unique_id` (`unique_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='命名空间';
-
-INSERT INTO `sj_namespace` (`id`, `name`, `unique_id`, `create_dt`, `update_dt`, `deleted`)
-VALUES (1, 'Default', '764d604ec6fc45f68cd92514c40e9e1a', now(), now(), 0);
-
 
 CREATE TABLE `sj_group_config`
 (
@@ -234,15 +230,13 @@ CREATE TABLE `sj_server_node`
 
 CREATE TABLE `sj_distributed_lock`
 (
-    `id`         bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
     `name`       varchar(64)         NOT NULL COMMENT '锁名称',
     `lock_until` timestamp(3)        NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '锁定时长',
     `locked_at`  timestamp(3)        NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '锁定时间',
     `locked_by`  varchar(255)        NOT NULL COMMENT '锁定者',
     `create_dt`  datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`  datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_name` (`name`)
+    PRIMARY KEY (`name`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4 COMMENT ='锁定表'
@@ -260,10 +254,6 @@ CREATE TABLE `sj_system_user`
     UNIQUE KEY `uk_username` (`username`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='系统用户表';
-
--- pwd: admin
-INSERT INTO `sj_system_user` (username, password, role)
-VALUES ('admin', '465c194afb65670f38322df087f0a9bb225cc257e43eb4ac5a0c98ef5b3173ac', 2);
 
 CREATE TABLE `sj_system_user_permission`
 (
@@ -357,12 +347,16 @@ CREATE TABLE `sj_job_task`
     `job_id`         bigint(20)          NOT NULL COMMENT '任务信息id',
     `task_batch_id`  bigint(20)          NOT NULL COMMENT '调度任务id',
     `parent_id`      bigint(20)          NOT NULL DEFAULT 0 COMMENT '父执行器id',
-    `task_status`    tinyint(4)          NOT NULL DEFAULT 0 COMMENT '执行的状态 0、失败 1、成功',
+    `task_status`    tinyint             NOT NULL DEFAULT 0 COMMENT '执行的状态 0、失败 1、成功',
     `retry_count`    int(11)             NOT NULL DEFAULT 0 COMMENT '重试次数',
+    `mr_stage`       tinyint                      DEFAULT NULL COMMENT '动态分片所处阶段 1:map 2:reduce 3:mergeReduce',
+    `leaf`           tinyint             NOT NULL DEFAULT '1' COMMENT '叶子节点',
+    `task_name`      varchar(255)        NOT NULL DEFAULT '' COMMENT '任务名称',
     `client_info`    varchar(128)                 DEFAULT NULL COMMENT '客户端地址 clientId#ip:port',
+    `wf_context`     text                         DEFAULT NULL COMMENT '工作流全局上下文',
     `result_message` text                NOT NULL COMMENT '执行结果',
     `args_str`       text                         DEFAULT NULL COMMENT '执行方法参数',
-    `args_type`      tinyint(4)          NOT NULL DEFAULT 1 COMMENT '参数类型 ',
+    `args_type`      tinyint             NOT NULL DEFAULT 1 COMMENT '参数类型 ',
     `ext_attrs`      varchar(256)        NULL     DEFAULT '' COMMENT '扩展字段',
     `create_dt`      datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`      datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
@@ -459,6 +453,7 @@ CREATE TABLE `sj_workflow`
     `executor_timeout` int(11)             NOT NULL DEFAULT 0 COMMENT '任务执行超时时间，单位秒',
     `description`      varchar(256)        NOT NULL DEFAULT '' COMMENT '描述',
     `flow_info`        text                         DEFAULT NULL COMMENT '流程信息',
+    `wf_context`       text                         DEFAULT NULL COMMENT '上下文',
     `bucket_index`     int(11)             NOT NULL DEFAULT 0 COMMENT 'bucket',
     `version`          int(11)             NOT NULL COMMENT '版本号',
     `ext_attrs`        varchar(256)        NULL     DEFAULT '' COMMENT '扩展字段',
@@ -507,8 +502,10 @@ CREATE TABLE `sj_workflow_task_batch`
     `task_batch_status` tinyint(4)          NOT NULL DEFAULT 0 COMMENT '任务批次状态 0、失败 1、成功',
     `operation_reason`  tinyint(4)          NOT NULL DEFAULT 0 COMMENT '操作原因',
     `flow_info`         text                         DEFAULT NULL COMMENT '流程信息',
+    `wf_context`        text                         DEFAULT NULL COMMENT '全局上下文',
     `execution_at`      bigint(13)          NOT NULL DEFAULT 0 COMMENT '任务执行时间',
     `ext_attrs`         varchar(256)        NULL     DEFAULT '' COMMENT '扩展字段',
+    `version`           int(11)              NOT NULL DEFAULT 1 COMMENT '版本号',
     `deleted`           tinyint(4)          NOT NULL DEFAULT 0 COMMENT '逻辑删除 1、删除',
     `create_dt`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',

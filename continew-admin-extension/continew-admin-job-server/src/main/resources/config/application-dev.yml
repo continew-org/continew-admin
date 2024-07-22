@@ -35,7 +35,7 @@ spring.liquibase:
   # 是否启用
   enabled: true
   # 配置文件路径
-  change-log: classpath:/db/changelogs/db.changelog-master.yaml
+  change-log: classpath:/db/changelog/db.changelog-master.yaml
 
 --- ### Snail Job 服务端配置
 snail-job:

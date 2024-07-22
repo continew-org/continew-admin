@@ -49,16 +49,16 @@ import top.continew.admin.job.constant.JobConstants;
 public class HttpExchangeConfiguration {
 
     private final ObjectMapper objectMapper;
-    @Value("${snail-job.server.url}")
-    private String baseUrl;
-
     @Value("${snail-job.namespace}")
     private String namespace;
 
-    @Value("${snail-job.server.username}")
+    @Value("${snail-job.server.api.url}")
+    private String baseUrl;
+
+    @Value("${snail-job.server.api.username}")
     private String username;
 
-    @Value("${snail-job.server.password}")
+    @Value("${snail-job.server.api.password}")
     private String password;
 
     @Bean

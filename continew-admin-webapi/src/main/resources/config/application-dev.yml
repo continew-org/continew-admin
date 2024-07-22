@@ -289,28 +289,30 @@ avatar:
 
 --- ### Snail Job 配置
 snail-job:
-  # 分组名
-  group: continew-admin
   # 客户端地址（默认自动获取本机 IP）
   #host: 127.0.0.1
   # 客户端端口（默认：1789）
   port: 1789
-  # 名称空间 ID
+  # 命名空间 ID
   namespace: 764d604ec6fc45f68cd92514c40e9e1a
+  # 分组名
+  group: continew-admin
   # 令牌
   token: SJ_Wyz3dmsdbDOkDujOTSSoBjGQP1BMsVnj
-  ## 服务端配置
+  ## 服务端配置（任务调度中心）
   server:
-    # 服务端地址
-    url: http://127.0.0.1:8001/snail-job
-    # 服务端用户名
-    username: admin
-    # 服务端密码
-    password: admin
     # 服务端地址，若服务端集群部署则此处配置域名
     host: 127.0.0.1
-    # 服务端端口号
+    # Netty 端口号
     port: 1788
+    # API 配置
+    api:
+      # URL
+      url: http://127.0.0.1:8001/snail-job
+      # 用户名
+      username: admin
+      # 密码
+      password: admin
   ## 重试数据批量上报滑动窗口配置
   retry:
     reportSlidingWindow:
