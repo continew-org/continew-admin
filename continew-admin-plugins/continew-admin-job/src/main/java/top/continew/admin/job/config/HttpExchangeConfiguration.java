@@ -21,16 +21,22 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.config.RequestConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import top.continew.admin.job.api.JobApi;
 import top.continew.admin.job.api.JobBatchApi;
@@ -46,6 +52,7 @@ import top.continew.admin.job.constant.JobConstants;
  */
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class HttpExchangeConfiguration {
 
     private final ObjectMapper objectMapper;
@@ -74,30 +81,55 @@ public class HttpExchangeConfiguration {
     @Bean
     public HttpServiceProxyFactory httpServiceProxyFactory() {
         HttpClient httpClient = HttpClient.create()
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
-            .doOnConnected(conn -> {
-                conn.addHandlerLast(new ReadTimeoutHandler(10));
-                conn.addHandlerLast(new WriteTimeoutHandler(10));
-            });
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                .doOnConnected(conn -> {
+                    conn.addHandlerLast(new ReadTimeoutHandler(10));
+                    conn.addHandlerLast(new WriteTimeoutHandler(10));
+                }).wiretap(true);
+
         WebClient webClient = WebClient.builder()
-            .codecs(config -> config.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper)))
-            .codecs(config -> config.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper)))
-            .clientConnector(new ReactorClientHttpConnector(httpClient))
-            .filter((request, next) -> {
-                // 设置请求头
-                ClientRequest filtered = ClientRequest.from(request)
-                    .header(JobConstants.NAMESPACE_ID_HEADER, namespace)
-                    .header(JobConstants.AUTH_TOKEN_HEADER, jobClient().getToken())
-                    .build();
-                return next.exchange(filtered);
-            })
-            .baseUrl(baseUrl)
-            .build();
-        return HttpServiceProxyFactory.builder(WebClientAdapter.forClient(webClient)).build();
+                .codecs(config -> config.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper)))
+                .codecs(config -> config.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper)))
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(logRequest())
+                .filter(logResponse())
+                .filter((request, next) -> {
+                    // 设置请求头
+                    ClientRequest filtered = ClientRequest.from(request)
+                            .header(JobConstants.NAMESPACE_ID_HEADER, namespace)
+                            .header(JobConstants.AUTH_TOKEN_HEADER, jobClient().getToken())
+                            .build();
+                    return next.exchange(filtered);
+                })
+                .baseUrl(baseUrl)
+                .build();
+        return HttpServiceProxyFactory.builderFor(WebClientAdapter.create(webClient)).build();
     }
 
     @Bean
     public JobClient jobClient() {
         return new JobClient(baseUrl, username, password);
+    }
+
+    /**
+     * 打印请求日志
+     */
+    private ExchangeFilterFunction logRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+            log.info("---> {} {}", clientRequest.method(), clientRequest.url());
+            return Mono.just(clientRequest);
+        });
+    }
+
+    /**
+     * 打印响应日志
+     */
+    private ExchangeFilterFunction logResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> clientResponse.bodyToMono(String.class).flatMap(body -> {
+            log.info("<---  {}", clientResponse.statusCode());
+            log.info("Content-Type:{}", clientResponse.headers().contentType().orElse(MediaType.APPLICATION_JSON));
+            log.info("body: {}", body);
+            return Mono.just(ClientResponse.from(clientResponse).body(body).build());
+        }));
     }
 }
