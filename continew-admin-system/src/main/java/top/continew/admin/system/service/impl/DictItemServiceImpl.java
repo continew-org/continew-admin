@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
 public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> implements DictItemService {
 
     private final ProjectProperties projectProperties;
-    private final Map<String, List<LabelValueResp>> enumDictCache = new ConcurrentHashMap<>();
+    private static final Map<String, List<LabelValueResp>> ENUM_DICT_CACHE = new ConcurrentHashMap<>();
 
     @Override
     protected void beforeAdd(DictItemReq req) {
@@ -71,7 +71,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     @Override
     @Cached(key = "#dictCode", name = CacheConstants.DICT_KEY_PREFIX)
     public List<LabelValueResp> listByDictCode(String dictCode) {
-        return Optional.ofNullable(enumDictCache.get(dictCode.toLowerCase()))
+        return Optional.ofNullable(ENUM_DICT_CACHE.get(dictCode.toLowerCase()))
             .orElseGet(() -> baseMapper.listByDictCode(dictCode));
     }
 
@@ -117,7 +117,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     @PostConstruct
     public void init() {
         Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), IBaseEnum.class);
-        enumDictCache.putAll(classSet.stream()
+        ENUM_DICT_CACHE.putAll(classSet.stream()
             .collect(Collectors.toMap(cls -> StrUtil.toUnderlineCase(cls.getSimpleName())
                 .toLowerCase(), this::toEnumDict)));
     }
