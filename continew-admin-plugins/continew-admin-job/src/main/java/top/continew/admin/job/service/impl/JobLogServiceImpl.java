@@ -22,10 +22,10 @@ import top.continew.admin.job.api.JobBatchApi;
 import top.continew.admin.job.api.JobClient;
 import top.continew.admin.job.model.JobInstanceLogPageResult;
 import top.continew.admin.job.model.query.JobInstanceLogQuery;
-import top.continew.admin.job.model.query.JobLogQuery;
 import top.continew.admin.job.model.query.JobInstanceQuery;
-import top.continew.admin.job.model.resp.JobLogResp;
+import top.continew.admin.job.model.query.JobLogQuery;
 import top.continew.admin.job.model.resp.JobInstanceResp;
+import top.continew.admin.job.model.resp.JobLogResp;
 import top.continew.admin.job.service.JobLogService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -49,8 +49,8 @@ public class JobLogServiceImpl implements JobLogService {
     @Override
     public PageResp<JobLogResp> page(JobLogQuery query) {
         return jobClient.requestPage(() -> jobBatchApi.page(query.getJobId(), query.getJobName(), query
-            .getGroupName(), query.getTaskBatchStatus().getValue(), query.getDatetimeRange(), query.getPage(), query
-                .getSize()));
+            .getGroupName(), query.getTaskBatchStatus() != null ? query.getTaskBatchStatus().getValue() : null, query
+                .getDatetimeRange(), query.getPage(), query.getSize()));
     }
 
     @Override
