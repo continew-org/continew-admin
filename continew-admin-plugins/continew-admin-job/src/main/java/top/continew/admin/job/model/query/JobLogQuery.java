@@ -23,6 +23,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
+import top.continew.admin.job.enums.JobExecuteStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -63,7 +64,7 @@ public class JobLogQuery implements Serializable {
      * 任务批次状态
      */
     @Schema(description = "任务批次状态", example = "1")
-    private Integer taskBatchStatus;
+    private JobExecuteStatusEnum taskBatchStatus;
 
     /**
      * 创建时间

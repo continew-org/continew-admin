@@ -45,8 +45,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public PageResp<JobResp> page(JobQuery query) {
-        return jobClient.requestPage(() -> jobApi.page(query.getGroupName(), query.getJobName(), query
-            .getJobStatus(), query.getPage(), query.getSize()));
+        return jobClient.requestPage(() -> jobApi.page(query.getGroupName(), query.getJobName(), query.getJobStatus()
+            .getValue(), query.getPage(), query.getSize()));
     }
 
     @Override

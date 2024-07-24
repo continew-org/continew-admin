@@ -51,6 +51,11 @@ public enum ImportPolicyEnum implements IBaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
+    @Override
+    public String toString() {
+        return "%s: %s".formatted(this.value, this.description);
+    }
+
     public boolean validate(ImportPolicyEnum importPolicy, String data, List<String> existList) {
         return this == importPolicy && CollUtil.isNotEmpty(existList) && existList.contains(data);
     }

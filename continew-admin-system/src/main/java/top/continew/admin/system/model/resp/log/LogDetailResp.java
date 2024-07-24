@@ -140,7 +140,7 @@ public class LogDetailResp implements Serializable {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：成功；2：失败）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private LogStatusEnum status;
 
     /**

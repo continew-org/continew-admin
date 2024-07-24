@@ -54,7 +54,7 @@ public class MenuResp extends BaseResp {
     /**
      * 类型
      */
-    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @Schema(description = "类型", example = "2")
     private MenuTypeEnum type;
 
     /**
@@ -120,6 +120,6 @@ public class MenuResp extends BaseResp {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
 }

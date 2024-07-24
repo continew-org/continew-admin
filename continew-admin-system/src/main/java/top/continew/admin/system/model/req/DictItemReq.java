@@ -80,7 +80,7 @@ public class DictItemReq extends BaseReq {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
 
     /**

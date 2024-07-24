@@ -62,7 +62,7 @@ public class StorageReq extends BaseReq {
     /**
      * 类型
      */
-    @Schema(description = "类型", type = "Integer", allowableValues = {"1", "2"}, example = "2")
+    @Schema(description = "类型", example = "2")
     @NotNull(message = "类型非法")
     private StorageTypeEnum type;
 
@@ -129,6 +129,6 @@ public class StorageReq extends BaseReq {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
 }

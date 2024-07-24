@@ -44,7 +44,7 @@ public class MenuReq extends BaseReq {
     /**
      * 类型
      */
-    @Schema(description = "类型（1：目录；2：菜单；3：按钮）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "2")
+    @Schema(description = "类型", example = "2")
     @NotNull(message = "类型非法")
     private MenuTypeEnum type;
 
@@ -132,7 +132,7 @@ public class MenuReq extends BaseReq {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     @NotNull(message = "状态非法")
     private DisEnableStatusEnum status;
 }

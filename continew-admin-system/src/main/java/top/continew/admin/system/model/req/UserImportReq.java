@@ -49,27 +49,27 @@ public class UserImportReq extends BaseReq {
     /**
      * 用户重复策略
      */
-    @Schema(description = "重复用户策略", type = "Integer", allowableValues = {"1", "2", "3", "4"}, example = "1")
+    @Schema(description = "重复用户策略", example = "1")
     @NotNull(message = "重复用户策略不能为空")
     private ImportPolicyEnum duplicateUser;
 
     /**
      * 重复邮箱策略
      */
-    @Schema(description = "重复邮箱策略", type = "Integer", allowableValues = {"1", "2", "3", "4"}, example = "1")
+    @Schema(description = "重复邮箱策略", example = "1")
     @NotNull(message = "重复邮箱策略不能为空")
     private ImportPolicyEnum duplicateEmail;
 
     /**
      * 重复手机策略
      */
-    @Schema(description = "重复手机策略", type = "Integer", allowableValues = {"1", "2", "3", "4"}, example = "1")
+    @Schema(description = "重复手机策略", example = "1")
     @NotNull(message = "重复手机策略不能为空")
     private ImportPolicyEnum duplicatePhone;
 
     /**
      * 默认状态
      */
-    @Schema(description = "默认状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "默认状态", example = "1")
     private DisEnableStatusEnum defaultStatus;
 }

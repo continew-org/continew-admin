@@ -64,4 +64,9 @@ public enum JobExecuteStatusEnum implements IBaseEnum<Integer> {
     private final Integer value;
     private final String description;
     private final String color;
+
+    @Override
+    public String toString() {
+        return "%s: %s".formatted(this.value, this.description);
+    }
 }

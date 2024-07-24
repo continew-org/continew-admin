@@ -66,7 +66,7 @@ public class NoticeResp extends BaseResp {
      *
      * @return 公告状态
      */
-    @Schema(description = "状态（1：待发布；2：已发布；3：已过期）", type = "Integer", allowableValues = {"1", "2", "3"}, example = "1")
+    @Schema(description = "状态", example = "1")
     public NoticeStatusEnum getStatus() {
         return NoticeStatusEnum.getStatus(effectiveTime, terminateTime);
     }

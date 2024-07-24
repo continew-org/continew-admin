@@ -49,7 +49,8 @@ public class JobLogServiceImpl implements JobLogService {
     @Override
     public PageResp<JobLogResp> page(JobLogQuery query) {
         return jobClient.requestPage(() -> jobBatchApi.page(query.getJobId(), query.getJobName(), query
-            .getGroupName(), query.getTaskBatchStatus(), query.getDatetimeRange(), query.getPage(), query.getSize()));
+            .getGroupName(), query.getTaskBatchStatus().getValue(), query.getDatetimeRange(), query.getPage(), query
+                .getSize()));
     }
 
     @Override

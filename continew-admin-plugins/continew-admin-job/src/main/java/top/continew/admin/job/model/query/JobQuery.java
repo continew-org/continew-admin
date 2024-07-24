@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import top.continew.admin.job.enums.JobStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -53,7 +54,7 @@ public class JobQuery implements Serializable {
      * 任务状态
      */
     @Schema(description = "任务状态", example = "1")
-    private Integer jobStatus;
+    private JobStatusEnum jobStatus;
 
     /**
      * 页码

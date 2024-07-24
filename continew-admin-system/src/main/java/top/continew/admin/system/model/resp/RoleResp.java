@@ -51,8 +51,7 @@ public class RoleResp extends BaseDetailResp {
     /**
      * 数据权限
      */
-    @Schema(description = "数据权限（1：全部数据权限；2：本部门及以下数据权限；3：本部门数据权限；4：仅本人数据权限；5：自定义数据权限）", type = "Integer", allowableValues = {
-        "1", "2", "3", "4", "5"}, example = "5")
+    @Schema(description = "数据权限", example = "5")
     private DataScopeEnum dataScope;
 
     /**

@@ -53,13 +53,13 @@ public class StorageResp extends BaseDetailResp {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
 
     /**
      * 类型
      */
-    @Schema(description = "类型（1：兼容S3协议存储；2：本地存储）", type = "Integer", allowableValues = {"1", "2"}, example = "2")
+    @Schema(description = "类型", example = "2")
     private StorageTypeEnum type;
 
     /**

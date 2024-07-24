@@ -61,7 +61,7 @@ public class UserResp extends BaseDetailResp {
     /**
      * 性别
      */
-    @Schema(description = "性别（0：未知；1：男；2：女）", type = "Integer", allowableValues = {"0", "1", "2"}, example = "1")
+    @Schema(description = "性别", example = "1")
     private GenderEnum gender;
 
     /**
@@ -87,7 +87,7 @@ public class UserResp extends BaseDetailResp {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", type = "Integer", allowableValues = {"1", "2"}, example = "1")
+    @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
 
     /**
