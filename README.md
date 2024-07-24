@@ -44,11 +44,11 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 
 ## 项目源码
 
-|          | Gitee（码云）                                                                            | GitHub                                                                          |
-|----------|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 后端       | [continew/continew-admin](https://gitee.com/continew/continew-admin)                 | [charles7c/continew-admin](https://github.com/continew-org/continew-admin)                 |
-| 前端       | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui)           | [charles7c/continew-admin-ui](https://github.com/continew-org/continew-admin-ui)           |
-| 前端（v2.5） | [continew/continew-admin-ui-arco](https://gitee.com/continew/continew-admin-ui-arco) | [charles7c/continew-admin-ui-arco](https://github.com/continew-org/continew-admin-ui-arco) |
+|         | 后端                                                         | 前端                                                         |
+| :------ | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
+| GitCode | [continew/continew-admin](https://gitcode.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitcode.com/continew/continew-admin-ui) |
+| GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) | [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui) |
 
 ## 项目起源
 
