@@ -2,6 +2,10 @@
 spring:
   application:
     name: continew-admin-job-server
+  ## 环境配置
+  profiles:
+    # 启用的环境
+    active: dev
 
 --- ### MyBatis Plus 配置
 mybatis-plus:
