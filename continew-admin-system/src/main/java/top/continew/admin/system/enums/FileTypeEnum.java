@@ -65,11 +65,6 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
     private final String description;
     private final List<String> extensions;
 
-    @Override
-    public String toString() {
-        return "%s: %s".formatted(this.value, this.description);
-    }
-
     /**
      * 根据扩展名查询
      *

@@ -47,9 +47,4 @@ public enum MenuTypeEnum implements BaseEnum<Integer> {
 
     private final Integer value;
     private final String description;
-
-    @Override
-    public String toString() {
-        return "%s: %s".formatted(this.value, this.description);
-    }
 }
