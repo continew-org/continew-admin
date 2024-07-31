@@ -47,7 +47,7 @@ public class FileStorageConfigLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         StorageQuery query = new StorageQuery();
-        query.setStatus(DisEnableStatusEnum.ENABLE.getValue());
+        query.setStatus(DisEnableStatusEnum.ENABLE);
         List<StorageResp> storageList = storageService.list(query, null);
         if (CollUtil.isEmpty(storageList)) {
             return;

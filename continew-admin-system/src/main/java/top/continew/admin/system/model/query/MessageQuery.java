@@ -18,6 +18,7 @@ package top.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.enums.MessageTypeEnum;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.annotation.QueryIgnore;
 import top.continew.starter.data.core.enums.QueryType;
@@ -54,8 +55,8 @@ public class MessageQuery implements Serializable {
     /**
      * 类型
      */
-    @Schema(description = "类型（1：系统消息）", example = "1")
-    private Integer type;
+    @Schema(description = "类型", example = "1")
+    private MessageTypeEnum type;
 
     /**
      * 是否已读

@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -49,8 +50,8 @@ public class UserQuery implements Serializable {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
-    private Integer status;
+    @Schema(description = "状态", example = "1")
+    private DisEnableStatusEnum status;
 
     /**
      * 创建时间

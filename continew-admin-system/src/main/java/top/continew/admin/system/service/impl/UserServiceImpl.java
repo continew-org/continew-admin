@@ -471,7 +471,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     protected QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
         String description = query.getDescription();
-        Integer status = query.getStatus();
+        DisEnableStatusEnum status = query.getStatus();
         List<Date> createTimeList = query.getCreateTime();
         Long deptId = query.getDeptId();
         return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)

@@ -19,6 +19,7 @@ package top.continew.admin.system.model.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.enums.QueryType;
 
@@ -49,10 +50,10 @@ public class MenuQuery implements Serializable {
     /**
      * 状态
      */
-    @Schema(description = "状态（1：启用；2：禁用）", example = "1")
-    private Integer status;
+    @Schema(description = "状态", example = "1")
+    private DisEnableStatusEnum status;
 
-    public MenuQuery(Integer status) {
+    public MenuQuery(DisEnableStatusEnum status) {
         this.status = status;
     }
 }

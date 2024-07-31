@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.model.entity.LogDO;
 import top.continew.admin.system.model.query.LogQuery;
@@ -151,7 +152,7 @@ public class LogServiceImpl implements LogService {
         String module = query.getModule();
         String ip = query.getIp();
         String createUserString = query.getCreateUserString();
-        Integer status = query.getStatus();
+        DisEnableStatusEnum status = query.getStatus();
         List<Date> createTimeList = query.getCreateTime();
         return new QueryWrapper<LogDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)
             .or()
