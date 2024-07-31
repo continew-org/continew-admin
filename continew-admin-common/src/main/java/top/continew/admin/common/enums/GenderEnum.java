@@ -18,7 +18,7 @@ package top.continew.admin.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 性别枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum GenderEnum implements IBaseEnum<Integer> {
+public enum GenderEnum implements BaseEnum<Integer> {
 
     /**
      * 未知

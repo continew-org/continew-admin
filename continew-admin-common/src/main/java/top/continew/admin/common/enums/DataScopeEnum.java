@@ -18,7 +18,7 @@ package top.continew.admin.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 数据权限枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DataScopeEnum implements IBaseEnum<Integer> {
+public enum DataScopeEnum implements BaseEnum<Integer> {
 
     /**
      * 全部数据权限

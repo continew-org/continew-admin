@@ -31,7 +31,7 @@ import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.service.DeptService;
-import top.continew.starter.extension.crud.converter.ExcelBaseEnumConverter;
+import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.continew.starter.file.excel.converter.ExcelListConverter;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;

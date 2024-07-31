@@ -19,7 +19,7 @@ package top.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 消息类型枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum MessageTypeEnum implements IBaseEnum<Integer> {
+public enum MessageTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 安全消息

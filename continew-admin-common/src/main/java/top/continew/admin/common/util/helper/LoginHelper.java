@@ -30,6 +30,7 @@ import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.IpUtils;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.web.util.ServletUtils;
+import top.continew.starter.web.util.SpringWebUtils;
 
 import java.time.LocalDateTime;
 
@@ -53,7 +54,7 @@ public class LoginHelper {
      */
     public static String login(LoginUser loginUser) {
         // 记录登录信息
-        HttpServletRequest request = ServletUtils.getRequest();
+        HttpServletRequest request = SpringWebUtils.getRequest();
         loginUser.setIp(JakartaServletUtil.getClientIP(request));
         loginUser.setAddress(ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(loginUser.getIp())));
         loginUser.setBrowser(ServletUtils.getBrowser(request));

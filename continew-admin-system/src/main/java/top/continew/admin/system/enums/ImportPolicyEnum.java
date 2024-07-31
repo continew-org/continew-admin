@@ -19,7 +19,7 @@ package top.continew.admin.system.enums;
 import cn.hutool.core.collection.CollUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Getter
 @RequiredArgsConstructor
-public enum ImportPolicyEnum implements IBaseEnum<Integer> {
+public enum ImportPolicyEnum implements BaseEnum<Integer> {
 
     /**
      * 跳过该行

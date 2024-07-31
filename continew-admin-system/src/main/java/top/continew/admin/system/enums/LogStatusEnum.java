@@ -18,7 +18,7 @@ package top.continew.admin.system.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 操作状态枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum LogStatusEnum implements IBaseEnum<Integer> {
+public enum LogStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 成功

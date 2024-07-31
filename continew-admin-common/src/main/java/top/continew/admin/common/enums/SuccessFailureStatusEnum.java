@@ -19,7 +19,7 @@ package top.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 成功/失败状态枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum SuccessFailureStatusEnum implements IBaseEnum<Integer> {
+public enum SuccessFailureStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 成功

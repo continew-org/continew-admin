@@ -19,7 +19,7 @@ package top.continew.admin.system.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @RequiredArgsConstructor
-public enum NoticeStatusEnum implements IBaseEnum<Integer> {
+public enum NoticeStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 待发布

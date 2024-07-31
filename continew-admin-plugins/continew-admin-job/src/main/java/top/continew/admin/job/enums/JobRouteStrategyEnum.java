@@ -18,7 +18,7 @@ package top.continew.admin.job.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 任务路由策略枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum JobRouteStrategyEnum implements IBaseEnum<Integer> {
+public enum JobRouteStrategyEnum implements BaseEnum<Integer> {
 
     /**
      * 轮询

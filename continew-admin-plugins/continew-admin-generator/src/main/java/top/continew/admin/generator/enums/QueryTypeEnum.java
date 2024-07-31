@@ -19,7 +19,7 @@ package top.continew.admin.generator.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 查询类型枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum QueryTypeEnum implements IBaseEnum<Integer> {
+public enum QueryTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 等于 =，例如：WHERE age = 18

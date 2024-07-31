@@ -19,7 +19,7 @@ package top.continew.admin.generator.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 表单类型枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum FormTypeEnum implements IBaseEnum<Integer> {
+public enum FormTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 输入框

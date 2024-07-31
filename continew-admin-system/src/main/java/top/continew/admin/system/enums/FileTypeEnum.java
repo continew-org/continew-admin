@@ -19,7 +19,7 @@ package top.continew.admin.system.enums;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 @Getter
 @RequiredArgsConstructor
-public enum FileTypeEnum implements IBaseEnum<Integer> {
+public enum FileTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 其他

@@ -33,7 +33,7 @@ import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
@@ -106,7 +106,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     private List<LabelValueResp> toEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
         return Arrays.stream(enumConstants).map(e -> {
-            IBaseEnum baseEnum = (IBaseEnum)e;
+            BaseEnum baseEnum = (BaseEnum)e;
             return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
         }).toList();
     }
@@ -116,7 +116,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
      */
     @PostConstruct
     public void init() {
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), IBaseEnum.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
         ENUM_DICT_CACHE.putAll(classSet.stream()
             .collect(Collectors.toMap(cls -> StrUtil.toUnderlineCase(cls.getSimpleName())
                 .toLowerCase(), this::toEnumDict)));

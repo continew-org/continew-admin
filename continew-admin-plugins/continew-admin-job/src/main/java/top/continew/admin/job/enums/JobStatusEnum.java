@@ -19,7 +19,7 @@ package top.continew.admin.job.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 任务状态枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum JobStatusEnum implements IBaseEnum<Integer> {
+public enum JobStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 禁用

@@ -19,7 +19,7 @@ package top.continew.admin.common.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.constant.UiConstants;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 启用/禁用状态枚举
@@ -29,7 +29,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum DisEnableStatusEnum implements IBaseEnum<Integer> {
+public enum DisEnableStatusEnum implements BaseEnum<Integer> {
 
     /**
      * 启用

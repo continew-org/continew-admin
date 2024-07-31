@@ -18,7 +18,7 @@ package top.continew.admin.job.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 任务触发类型枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum JobTriggerTypeEnum implements IBaseEnum<Integer> {
+public enum JobTriggerTypeEnum implements BaseEnum<Integer> {
 
     /**
      * CRON

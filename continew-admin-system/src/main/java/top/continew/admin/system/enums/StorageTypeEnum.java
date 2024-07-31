@@ -18,7 +18,7 @@ package top.continew.admin.system.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
+import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 存储类型枚举
@@ -28,7 +28,7 @@ import top.continew.starter.data.mybatis.plus.base.IBaseEnum;
  */
 @Getter
 @RequiredArgsConstructor
-public enum StorageTypeEnum implements IBaseEnum<Integer> {
+public enum StorageTypeEnum implements BaseEnum<Integer> {
 
     /**
      * 兼容S3协议存储
