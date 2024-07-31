@@ -319,3 +319,8 @@ CREATE TABLE IF NOT EXISTS `gen_field_config` (
     `create_time`   datetime NOT NULL COMMENT '创建时间',
     INDEX `idx_table_name`(`table_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字段配置表';
+
+-- changeset kils:3.2.0-1
+ALTER TABLE `sys_option`
+    MODIFY COLUMN `value` longtext DEFAULT NULL COMMENT '值',
+    MODIFY COLUMN `default_value` longtext DEFAULT NULL COMMENT '默认值';
