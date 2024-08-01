@@ -19,7 +19,7 @@ package top.continew.admin.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
 import top.continew.admin.system.mapper.MessageUserMapper;
 import top.continew.admin.system.model.entity.MessageUserDO;
 import top.continew.admin.system.model.resp.MessageTypeUnreadResp;

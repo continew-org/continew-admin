@@ -18,7 +18,7 @@ package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
 
 import java.io.Serial;
 import java.io.Serializable;

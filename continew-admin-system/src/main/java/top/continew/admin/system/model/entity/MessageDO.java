@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -31,7 +31,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.enums.SocialSourceEnum;
+import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.entity.UserSocialDO;

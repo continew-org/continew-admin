@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.enums;
+package top.continew.admin.system.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

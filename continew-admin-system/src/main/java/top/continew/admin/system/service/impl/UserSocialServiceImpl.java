@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.json.JSONUtil;
 
-import top.continew.admin.common.enums.SocialSourceEnum;
+import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.mapper.UserSocialMapper;
 import top.continew.admin.system.model.entity.UserSocialDO;
 import top.continew.admin.system.service.UserSocialService;

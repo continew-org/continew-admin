@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.common.enums.MenuTypeEnum;
+import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.admin.system.mapper.MenuMapper;
 import top.continew.admin.system.model.entity.MenuDO;
 import top.continew.admin.system.model.query.MenuQuery;

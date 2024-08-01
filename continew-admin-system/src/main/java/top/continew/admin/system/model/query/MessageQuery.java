@@ -18,7 +18,7 @@ package top.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.enums.MessageTypeEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.annotation.QueryIgnore;
 import top.continew.starter.data.core.enums.QueryType;
