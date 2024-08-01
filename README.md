@@ -87,7 +87,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 4.**代码生成器：** 提供代码生成器，已配套前、后端代码生成模板，数据表设计完之后，简单配置一下即可生成前、后端 80% 的代码，包含 CRUD API、权限控制、参数校验、接口文档等内容。如果业务不复杂，也可能就是 95% 的代码。
 
 5.**改善开发体验：** 持续优化及适配能改善开发体验的组件。
-- 适配 ContiNew Starter 组件，针对多数框架进行了深度封装的 starter，改善你在开发每个 Spring Boot Web 项目的体验。
+
+- 适配 ContiNew Starter 各组件，针对 Spring 基础配置、通用解决方案以及流行框架进行了深度封装的 starter 集合，改善你在开发每个 Spring Boot Web 项目的体验。（枚举参数处理、默认线程池、跨域、加密、脱敏、限流、日志、异常及响应通用解决方案等等，更多细节可查看 Starter 源码）
 - 适配 Crane4j 数据填充组件，减少因为一个用户名而产生的联表回填；
 - 适配 P6Spy SQL 性能分析组件，开发期间方便监控 SQL 执行；
 - 适配 TLog 链路追踪组件，方便在杂乱的日志文件中追踪你某次请求的日志记录；
@@ -113,21 +114,29 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 - 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑、头像裁剪上传
 - 消息中心：提供站内信消息统一查看、标记已读、全部已读、删除等功能
-- 用户管理：提供用户的相关配置，新增、修改、删除、重置密码、导出
-- 部门管理：可配置系统组织架构，并以树形表格展示
-- 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
-- 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
-- 通知公告：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
-- 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
-- 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
-- 存储管理：提供文件存储库新增、编辑、删除等功能，支持本地存储、兼容 S3 协议存储
-- 系统配置：
-  - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
-  - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
-  - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`密码重复次数`、`密码错误锁定账号次数、时间` 等
+- 系统管理
+  - 用户管理：提供用户的相关配置，新增、修改、删除、重置密码、导出
+  - 部门管理：可配置系统组织架构，并以树形表格展示
+  - 角色管理：对权限与菜单进行分配，可根据部门设置角色的数据权限
+  - 菜单管理：已实现菜单动态路由，后端可配置化，支持多级菜单
+  - 通知公告：提供公告的发布、查看和删除等功能。管理员可以在后台发布公告，并可以设置公告的生效时间、终止时间，以 markdown-it 为内核渲染 Markdown 格式内容显示
+  - 字典管理：提供对系统公用数据字典的维护，例如：公告类型，支持字典标签背景色和排序等配置
+  - 文件管理：提供文件上传、下载、预览（目前支持图片、音视频）、重命名、切换视图（列表、网格）等功能
+  - 存储管理：提供文件存储库新增、编辑、删除等功能，支持本地存储、兼容 S3 协议存储
+  - 系统配置：
+    - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
+    - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
+    - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`密码重复次数`、`密码错误锁定账号次数、时间` 等
+
+- 系统监控
+  - 在线用户：管理当前登录用户，可一键踢下线
+  - 日志管理：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
+
+- 任务调度
+  - 任务管理：提供定时任务的新增、修改、删除、执行功能，支持 CORN 和固定频率
+  - 任务日志：提供任务执行日志的查询功能，支持停止、重试指定批次，支持查询集群各节点的详细输出日志
+
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
-- 在线用户：管理当前登录用户，可一键踢下线
-- 日志管理：提供登录日志、操作日志管理功能，可查看指定日志的详细请求及响应信息
 
 ## 系统截图
 
@@ -201,8 +210,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 ## 核心技术栈
 
-| 名称                                                         | 版本           | 简介                                                         |
-| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
+| 名称                                                         | 版本         | 简介                                                         |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
 | <a href="https://cn.vuejs.org/" target="_blank">Vue</a>      | 3.4.21       | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.55.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
@@ -221,6 +230,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md) | 2.7.6        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.32.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
 | <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
+| [Snail Job](https://snailjob.opensnail.com/)                 | 1.1.0        | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
 | [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.2.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.2.1        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.6       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
@@ -278,7 +288,7 @@ continew-admin
 │  │  │  │  │  ├─ monitor（系统监控相关 API）
 │  │  │  │  │  ├─ system（系统管理相关 API）
 │  │  │  │  │  └─ tool（系统工具相关 API）
-│  │  │  │  └─ ContiNewAdminApplication.java（Spring Boot 启动程序）
+│  │  │  │  └─ ContiNewAdminApplication.java（ContiNew Admin 启动程序）
 │  │  │  └─ resources
 │  │  │     ├─ config（核心配置目录）
 │  │  │     │  ├─ application-dev.yml（开发环境配置文件）
@@ -318,6 +328,20 @@ continew-admin
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
 ├─ continew-admin-plugins（插件模块，存放代码生成、任务调度等扩展模块，后续会进行插件化改造）
+│  ├─ continew-admin-job（任务调度插件模块）
+│  │  ├─ src
+│  │  │  ├─ main/java/top/continew/admin/job
+│  │  │  │  ├─ api（任务调度中心相关 API）
+│  │  │  │  ├─ config（任务调度相关配置）
+│  │  │  │  ├─ constant（任务调度相关常量）
+│  │  │  │  ├─ enums（任务调度相关枚举）
+│  │  │  │  ├─ model（任务调度相关模型）
+│  │  │  │  │  ├─ query（任务调度相关查询条件）
+│  │  │  │  │  ├─ req（任务调度相关请求对象（Request））
+│  │  │  │  │  └─ resp（任务调度相关响应对象（Response））
+│  │  │  │  └─ service（代码生成器相关业务接口及实现类）
+│  │  │  └─ test（测试相关代码目录）
+│  │  └─ pom.xml
 │  ├─ continew-admin-generator（代码生成器插件模块）
 │  │  ├─ src
 │  │  │  ├─ main
@@ -350,6 +374,25 @@ continew-admin
 │  │  │  │  └─ resp（公共响应对象（Response））
 │  │  │  └─ util（公共工具类）
 │  │  └─ test（测试相关代码目录）
+│  └─ pom.xml
+├─ continew-admin-extension（扩展模块）
+│  ├─ continew-admin-job-server（任务调度服务模块，实际开发时如果是公司统一提供环境，可直接删除本模块）
+│  │  ├─ src
+│  │  │  ├─ main
+│  │  │  │  ├─ java/top/continew/admin/extension/job
+│  │  │  │  │  └─ JobServerApplication.java（任务调度服务启动程序）
+│  │  │  │  └─ resources
+│  │  │  │     ├─ config（核心配置目录）
+│  │  │  │     │  ├─ application-dev.yml（开发环境配置文件）
+│  │  │  │     │  ├─ application-prod.yml（生产环境配置文件）
+│  │  │  │     │  └─ application.yml（通用配置文件）
+│  │  │  │     ├─ db/changelog（Liquibase 数据脚本配置目录）
+│  │  │  │     │  ├─ mysql（MySQL 数据库初始 SQL 脚本目录）
+│  │  │  │     │  ├─ postgresql（PostgreSQL 数据库初始 SQL 脚本目录）
+│  │  │  │     │  └─ db.changelog-master.yaml（Liquibase 变更记录文件）
+│  │  │  │     └─ logback-spring.xml（日志配置文件）
+│  │  │  └─ test（测试相关代码目录）
+│  │  └─ pom.xml
 │  └─ pom.xml
 ├─ .github（GitHub 相关配置目录，实际开发时直接删除）
 ├─ .idea
