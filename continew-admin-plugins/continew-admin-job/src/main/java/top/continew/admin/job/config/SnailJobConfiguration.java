@@ -23,6 +23,7 @@ import com.aizuda.snailjob.client.common.appender.SnailLogbackAppender;
 import com.aizuda.snailjob.client.common.event.SnailClientStartingEvent;
 import com.aizuda.snailjob.client.starter.EnableSnailJob;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
@@ -34,6 +35,7 @@ import org.springframework.context.event.EventListener;
  */
 @Configuration
 @EnableSnailJob
+@ConditionalOnProperty(prefix = "snail-job", value = "enabled", havingValue = "true", matchIfMissing = true)
 public class SnailJobConfiguration {
 
     /**

@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @since 2024/6/25 22:24
  */
 @SpringBootApplication
-public class ContinewAdminJobApplication {
+public class JobServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(com.aizuda.snailjob.server.SnailJobServerApplication.class, args);
