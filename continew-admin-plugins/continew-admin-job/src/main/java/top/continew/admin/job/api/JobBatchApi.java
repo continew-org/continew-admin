@@ -17,7 +17,6 @@
 package top.continew.admin.job.api;
 
 import com.aizuda.snailjob.common.core.model.Result;
-import com.aizuda.snailjob.common.core.model.Result;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,10 +26,9 @@ import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 import top.continew.admin.job.model.JobInstanceLogPageResult;
 import top.continew.admin.job.model.JobPageResult;
-import top.continew.admin.job.model.resp.JobLogResp;
 import top.continew.admin.job.model.resp.JobInstanceResp;
+import top.continew.admin.job.model.resp.JobLogResp;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -60,7 +58,7 @@ public interface JobBatchApi {
                                                          @RequestParam(value = "jobName", required = false) String jobName,
                                                          @RequestParam(value = "groupName", required = false) String groupName,
                                                          @RequestParam(value = "taskBatchStatus", required = false) Integer taskBatchStatus,
-                                                         @RequestParam(value = "datetimeRange", required = false) LocalDateTime[] datetimeRange,
+                                                         @RequestParam(value = "datetimeRange", required = false) String[] datetimeRange,
                                                          @RequestParam(value = "page") Integer page,
                                                          @RequestParam(value = "size") Integer size);
 

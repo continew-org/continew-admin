@@ -16,6 +16,8 @@
 
 package top.continew.admin.job.service.impl;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.job.api.JobBatchApi;
@@ -29,6 +31,7 @@ import top.continew.admin.job.model.resp.JobLogResp;
 import top.continew.admin.job.service.JobLogService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,9 +51,12 @@ public class JobLogServiceImpl implements JobLogService {
 
     @Override
     public PageResp<JobLogResp> page(JobLogQuery query) {
+        LocalDateTime[] datetimeRange = query.getDatetimeRange();
         return jobClient.requestPage(() -> jobBatchApi.page(query.getJobId(), query.getJobName(), query
-            .getGroupName(), query.getTaskBatchStatus() != null ? query.getTaskBatchStatus().getValue() : null, query
-                .getDatetimeRange(), query.getPage(), query.getSize()));
+            .getGroupName(), query.getTaskBatchStatus() != null
+                ? query.getTaskBatchStatus().getValue()
+                : null, new String[] {DateUtil.format(datetimeRange[0], DatePattern.UTC_SIMPLE_PATTERN), DateUtil
+                    .format(datetimeRange[1], DatePattern.UTC_SIMPLE_PATTERN)}, query.getPage(), query.getSize()));
     }
 
     @Override
