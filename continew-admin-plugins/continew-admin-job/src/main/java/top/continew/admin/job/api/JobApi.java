@@ -29,6 +29,7 @@ import top.continew.admin.job.model.req.JobStatusReq;
 import top.continew.admin.job.model.resp.JobResp;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 任务 REST API
@@ -87,11 +88,11 @@ public interface JobApi {
     /**
      * 删除
      *
-     * @param id ID
+     * @param ids ID 列表
      * @return 响应信息
      */
-    @DeleteExchange("/job/{id}")
-    ResponseEntity<Result<Boolean>> delete(@PathVariable("id") Long id);
+    @DeleteExchange("/job/ids")
+    ResponseEntity<Result<Boolean>> delete(@RequestBody Set<Long> ids);
 
     /**
      * 执行

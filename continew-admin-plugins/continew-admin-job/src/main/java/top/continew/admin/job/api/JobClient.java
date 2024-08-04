@@ -75,18 +75,13 @@ public class JobClient {
      * @return 响应信息
      */
     public <T> T request(Supplier<ResponseEntity<Result<T>>> apiSupplier) {
-        try {
-            ResponseEntity<Result<T>> responseEntity = apiSupplier.get();
-            this.checkResponse(responseEntity);
-            Result<T> result = responseEntity.getBody();
-            if (!STATUS_SUCCESS.equals(result.getStatus())) {
-                throw new IllegalStateException(result.getMessage());
-            }
-            return result.getData();
-        } catch (Exception e) {
-            log.error("Request job server failed, error msg: {}", e.getMessage(), e);
-            throw new IllegalStateException("连接任务调度中心异常");
+        ResponseEntity<Result<T>> responseEntity = apiSupplier.get();
+        this.checkResponse(responseEntity);
+        Result<T> result = responseEntity.getBody();
+        if (!STATUS_SUCCESS.equals(result.getStatus())) {
+            throw new IllegalStateException(result.getMessage());
         }
+        return result.getData();
     }
 
     /**
@@ -97,21 +92,16 @@ public class JobClient {
      * @return 分页列表信息
      */
     public <T> PageResp<T> requestPage(Supplier<ResponseEntity<JobPageResult<List<T>>>> apiSupplier) {
-        try {
-            ResponseEntity<JobPageResult<List<T>>> responseEntity = apiSupplier.get();
-            this.checkResponse(responseEntity);
-            JobPageResult<List<T>> result = responseEntity.getBody();
-            if (!STATUS_SUCCESS.equals(result.getStatus())) {
-                throw new IllegalStateException(result.getMessage());
-            }
-            PageResp<T> page = new PageResp<>();
-            page.setList(result.getData());
-            page.setTotal(result.getTotal());
-            return page;
-        } catch (Exception e) {
-            log.error("Request job server failed, error msg: {}", e.getMessage(), e);
-            throw new IllegalStateException("连接任务调度中心异常");
+        ResponseEntity<JobPageResult<List<T>>> responseEntity = apiSupplier.get();
+        this.checkResponse(responseEntity);
+        JobPageResult<List<T>> result = responseEntity.getBody();
+        if (!STATUS_SUCCESS.equals(result.getStatus())) {
+            throw new IllegalStateException(result.getMessage());
         }
+        PageResp<T> page = new PageResp<>();
+        page.setList(result.getData());
+        page.setTotal(result.getTotal());
+        return page;
     }
 
     /**
@@ -147,8 +137,9 @@ public class JobClient {
         }
         Result<?> result = JSONUtil.toBean(response.body(), Result.class);
         if (!STATUS_SUCCESS.equals(result.getStatus())) {
-            throw new IllegalStateException("Password Authentication failed, expected a successful response. error msg: %s"
-                .formatted(result.getMessage()));
+            log.warn("Password Authentication failed, expected a successful response. error msg: {}", result
+                .getMessage());
+            throw new IllegalStateException(result.getMessage());
         }
         return JSONUtil.parseObj(result.getData()).getStr("token");
     }

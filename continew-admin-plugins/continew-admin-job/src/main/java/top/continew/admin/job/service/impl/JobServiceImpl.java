@@ -27,6 +27,7 @@ import top.continew.admin.job.model.resp.JobResp;
 import top.continew.admin.job.service.JobService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public boolean delete(Long id) {
-        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.delete(id)));
+        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.delete(Collections.singleton(id))));
     }
 
     @Override

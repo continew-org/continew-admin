@@ -31,14 +31,14 @@ import top.continew.starter.core.enums.BaseEnum;
 public enum JobTriggerTypeEnum implements BaseEnum<Integer> {
 
     /**
-     * CRON
-     */
-    CRON(1, "CRON"),
-
-    /**
      * 固定时间
      */
-    FIXED_TIME(2, "固定时间"),;
+    FIXED_TIME(2, "固定时间"),
+
+    /**
+     * CRON
+     */
+    CRON(3, "CRON");
 
     private final Integer value;
     private final String description;
