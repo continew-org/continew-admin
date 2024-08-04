@@ -188,3 +188,7 @@ VALUES
 (4021, '查看', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:list', 1, 1, 1, NOW(), NULL, NULL),
 (4022, '停止', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:stop', 2, 1, 1, NOW(), NULL, NULL),
 (4023, '重试', 4020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'schedule:log:retry', 3, 1, 1, NOW(), NULL, NULL);
+
+-- changeset Charles7c:3.2-2
+UPDATE `sys_menu` SET `type` = 2, `path` = '/system/notice/detail', name = 'SystemNoticeDetail', component = 'system/notice/page/detail', `is_external` = b'0', `is_cache` = b'0', `is_hidden` = b'1' WHERE `id` = 1091;
+UPDATE `sys_menu` SET `type` = 2, `path` = '/system/notice/add', name = 'SystemNoticeAdd', component = 'system/notice/page/add', `is_external` = b'0', `is_cache` = b'0', `is_hidden` = b'1' WHERE `id` = 1092;

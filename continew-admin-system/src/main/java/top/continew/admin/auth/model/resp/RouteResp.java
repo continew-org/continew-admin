@@ -39,6 +39,18 @@ public class RouteResp implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * ID
+     */
+    @Schema(description = "ID", example = "1010")
+    private Long id;
+
+    /**
+     * 上级菜单 ID
+     */
+    @Schema(description = "上级菜单ID", example = "1000")
+    private Long parentId;
+
+    /**
      * 标题
      */
     @Schema(description = "标题", example = "用户管理")
