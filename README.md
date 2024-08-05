@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/continew-org/continew-admin" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v3.2.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/RELEASE-v3.2.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://app.codacy.com/gh/continew-org/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" target="_blank">
 <img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy Badge" />
