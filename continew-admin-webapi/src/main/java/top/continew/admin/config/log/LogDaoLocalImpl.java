@@ -22,6 +22,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,6 @@ import top.continew.starter.log.core.model.LogResponse;
 import top.continew.starter.web.autoconfigure.trace.TraceProperties;
 import top.continew.starter.web.model.R;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Map;
@@ -66,63 +66,101 @@ public class LogDaoLocalImpl implements LogDao {
     @Override
     public void add(LogRecord logRecord) {
         LogDO logDO = new LogDO();
-        logDO.setDescription(logRecord.getDescription());
-        String module = logRecord.getModule();
-        logDO.setModule(StrUtils.blankToDefault(module, null, m -> m.replace("API", StringConstants.EMPTY).trim()));
-        logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
-        logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
-        // 请求信息
+        // 设置请求信息
         LogRequest logRequest = logRecord.getRequest();
+        this.setRequest(logDO, logRequest);
+        // 设置响应信息
+        LogResponse logResponse = logRecord.getResponse();
+        this.setResponse(logDO, logResponse);
+        // 设置基本信息
+        logDO.setDescription(logRecord.getDescription());
+        logDO.setModule(StrUtils.blankToDefault(logRecord.getModule(), null, m -> m
+            .replace("API", StringConstants.EMPTY)
+            .trim()));
+        logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
+        logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
+        // 设置操作人
+        this.setCreateUser(logDO, logRequest, logResponse);
+        logMapper.insert(logDO);
+    }
+
+    /**
+     * 设置请求信息
+     *
+     * @param logDO      日志信息
+     * @param logRequest 请求信息
+     */
+    private void setRequest(LogDO logDO, LogRequest logRequest) {
         logDO.setRequestMethod(logRequest.getMethod());
-        URI requestUrl = logRequest.getUrl();
-        String requestUri = requestUrl.getPath();
-        logDO.setRequestUrl(requestUrl.toString());
-        Map<String, String> requestHeaderMap = logRequest.getHeaders();
-        logDO.setRequestHeaders(JSONUtil.toJsonStr(requestHeaderMap));
-        String requestBody = logRequest.getBody();
-        logDO.setRequestBody(requestBody);
+        logDO.setRequestUrl(logRequest.getUrl().toString());
+        logDO.setRequestHeaders(JSONUtil.toJsonStr(logRequest.getHeaders()));
+        logDO.setRequestBody(logRequest.getBody());
         logDO.setIp(logRequest.getIp());
         logDO.setAddress(logRequest.getAddress());
         logDO.setBrowser(logRequest.getBrowser());
         logDO.setOs(StrUtil.subBefore(logRequest.getOs(), " or", false));
-        // 响应信息
-        LogResponse logResponse = logRecord.getResponse();
-        Integer statusCode = logResponse.getStatus();
-        logDO.setStatusCode(statusCode);
+    }
+
+    /**
+     * 设置响应信息
+     *
+     * @param logDO       日志信息
+     * @param logResponse 响应信息
+     */
+    private void setResponse(LogDO logDO, LogResponse logResponse) {
         Map<String, String> responseHeaders = logResponse.getHeaders();
         logDO.setResponseHeaders(JSONUtil.toJsonStr(responseHeaders));
         logDO.setTraceId(responseHeaders.get(traceProperties.getHeaderName()));
         String responseBody = logResponse.getBody();
         logDO.setResponseBody(responseBody);
         // 状态
+        Integer statusCode = logResponse.getStatus();
+        logDO.setStatusCode(statusCode);
         logDO.setStatus(statusCode >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : LogStatusEnum.SUCCESS);
-        if (StrUtil.isNotBlank(responseBody) && JSONUtil.isTypeJSON(responseBody)) {
+        if (StrUtil.isNotBlank(responseBody)) {
             R result = JSONUtil.toBean(responseBody, R.class);
             if (!result.isSuccess()) {
                 logDO.setStatus(LogStatusEnum.FAILURE);
                 logDO.setErrorMsg(result.getMsg());
             }
-            // 操作人
-            if (requestUri.startsWith(SysConstants.LOGOUT_URI)) {
-                Long loginId = Convert.toLong(result.getData(), -1L);
-                logDO.setCreateUser(-1 != loginId ? loginId : null);
-            } else if (result.isSuccess() && requestUri.startsWith(SysConstants.LOGIN_URI)) {
-                AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername())
-                    .getId()));
-            }
         }
-        // 操作人
+    }
+
+    /**
+     * 设置操作人
+     *
+     * @param logDO       日志信息
+     * @param logRequest  请求信息
+     * @param logResponse 响应信息
+     */
+    private void setCreateUser(LogDO logDO, LogRequest logRequest, LogResponse logResponse) {
+        String requestUri = URLUtil.getPath(logDO.getRequestUrl());
+        // 解析退出接口信息
+        String responseBody = logResponse.getBody();
+        if (requestUri.startsWith(SysConstants.LOGOUT_URI) && StrUtil.isNotBlank(responseBody)) {
+            R result = JSONUtil.toBean(responseBody, R.class);
+            logDO.setCreateUser(Convert.toLong(result.getData(), null));
+            return;
+        }
+        // 解析登录接口信息
+        if (requestUri.startsWith(SysConstants.LOGIN_URI) && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
+            String requestBody = logRequest.getBody();
+            AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
+            logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername())
+                .getId()));
+            return;
+        }
+        // 解析 Token 信息
+        Map<String, String> requestHeaders = logRequest.getHeaders();
         String headerName = HttpHeaders.AUTHORIZATION;
-        boolean isContains = CollUtil.containsAny(requestHeaderMap.keySet(), Set.of(headerName, headerName
+        boolean isContainsAuthHeader = CollUtil.containsAny(requestHeaders.keySet(), Set.of(headerName, headerName
             .toLowerCase()));
-        if (!requestUri.startsWith(SysConstants.LOGOUT_URI) && MapUtil.isNotEmpty(requestHeaderMap) && isContains) {
-            String authorization = requestHeaderMap.getOrDefault(headerName, requestHeaderMap.get(headerName
+        if (MapUtil.isNotEmpty(requestHeaders) && isContainsAuthHeader) {
+            String authorization = requestHeaders.getOrDefault(headerName, requestHeaders.get(headerName
                 .toLowerCase()));
             String token = authorization.replace(SaManager.getConfig()
                 .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
         }
-        logMapper.insert(logDO);
     }
 }
