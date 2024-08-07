@@ -20,9 +20,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.img.ImgUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.*;
@@ -78,7 +78,6 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -130,8 +129,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void downloadImportUserTemplate(HttpServletResponse response) throws IOException {
         try {
-            BufferedInputStream inputStream = FileUtil.getInputStream("templates/import/userImportTemplate.xlsx");
-            byte[] bytes = IoUtil.readBytes(inputStream);
+            byte[] bytes = ResourceUtil.readBytes("templates/import/userImportTemplate.xlsx");
             response.setHeader("Content-Disposition", "attachment;filename=" + URLUtil.encode("用户导入模板.xlsx"));
             response.addHeader("Content-Length", String.valueOf(bytes.length));
             response.setHeader("Access-Control-Allow-Origin", "*");
