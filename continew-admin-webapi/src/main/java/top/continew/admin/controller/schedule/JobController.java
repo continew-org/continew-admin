@@ -32,7 +32,6 @@ import top.continew.admin.job.service.JobService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.util.ValidateGroup;
 import top.continew.starter.log.core.annotation.Log;
-import top.continew.starter.web.model.R;
 
 import java.util.List;
 
@@ -55,54 +54,53 @@ public class JobController {
     @Operation(summary = "分页查询任务列表", description = "分页查询任务列表")
     @SaCheckPermission("schedule:job:list")
     @GetMapping
-    public R<PageResp<JobResp>> page(JobQuery query) {
-        return R.ok(baseService.page(query));
+    public PageResp<JobResp> page(JobQuery query) {
+        return baseService.page(query);
     }
 
     @Operation(summary = "新增任务", description = "新增任务")
     @SaCheckPermission("schedule:job:add")
     @PostMapping
-    public R<Void> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody JobReq req) {
-        return baseService.add(req) ? R.ok() : R.fail();
+    public void add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody JobReq req) {
+        baseService.add(req);
     }
 
     @Operation(summary = "修改任务", description = "修改任务")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:job:update")
     @PutMapping("/{id}")
-    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody JobReq req, @PathVariable Long id) {
-        return baseService.update(req, id) ? R.ok() : R.fail();
+    public void update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody JobReq req, @PathVariable Long id) {
+        baseService.update(req, id);
     }
 
     @Operation(summary = "修改任务状态", description = "修改任务状态")
     @SaCheckPermission("schedule:job:update")
     @PatchMapping("/{id}/status")
-    public R<Void> updateStatus(@Validated @RequestBody JobStatusReq req, @PathVariable Long id) {
-        return baseService.updateStatus(req, id) ? R.ok() : R.fail();
+    public void updateStatus(@Validated @RequestBody JobStatusReq req, @PathVariable Long id) {
+        baseService.updateStatus(req, id);
     }
 
     @Operation(summary = "删除任务", description = "删除任务")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:job:delete")
     @DeleteMapping("/{id}")
-    public R<Void> delete(@PathVariable Long id) {
-        return baseService.delete(id) ? R.ok() : R.fail();
+    public void delete(@PathVariable Long id) {
+        baseService.delete(id);
     }
 
     @Operation(summary = "执行任务", description = "执行任务")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:job:trigger")
     @PostMapping("/trigger/{id}")
-    public R<Void> trigger(@PathVariable Long id) {
-        return baseService.trigger(id) ? R.ok() : R.fail();
+    public void trigger(@PathVariable Long id) {
+        baseService.trigger(id);
     }
 
     @Log(ignore = true)
     @Operation(summary = "查询任务分组列表", description = "查询任务分组列表")
     @SaCheckPermission("schedule:job:list")
     @GetMapping("/group")
-    public R<List<String>> listGroup() {
-        List<String> groupList = baseService.listGroup();
-        return R.ok(groupList);
+    public List<String> listGroup() {
+        return baseService.listGroup();
     }
 }

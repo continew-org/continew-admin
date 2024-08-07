@@ -43,7 +43,6 @@ import top.continew.admin.system.service.UserService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
-import top.continew.starter.web.model.R;
 import top.continew.starter.log.core.annotation.Log;
 
 import java.util.List;
@@ -69,7 +68,7 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
     @PostMapping("/account")
-    public R<LoginResp> accountLogin(@Validated @RequestBody AccountLoginReq loginReq, HttpServletRequest request) {
+    public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq, HttpServletRequest request) {
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + loginReq.getUuid();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
@@ -79,13 +78,13 @@ public class AuthController {
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
         ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
         String token = loginService.accountLogin(loginReq.getUsername(), rawPassword, request);
-        return R.ok(LoginResp.builder().token(token).build());
+        return LoginResp.builder().token(token).build();
     }
 
     @SaIgnore
     @Operation(summary = "手机号登录", description = "根据手机号和验证码进行登录认证")
     @PostMapping("/phone")
-    public R<LoginResp> phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
+    public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
         String phone = loginReq.getPhone();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
         String captcha = RedisUtils.get(captchaKey);
@@ -93,13 +92,13 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
         String token = loginService.phoneLogin(phone);
-        return R.ok(LoginResp.builder().token(token).build());
+        return LoginResp.builder().token(token).build();
     }
 
     @SaIgnore
     @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
     @PostMapping("/email")
-    public R<LoginResp> emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
+    public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
         String email = loginReq.getEmail();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
         String captcha = RedisUtils.get(captchaKey);
@@ -107,35 +106,35 @@ public class AuthController {
         ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
         String token = loginService.emailLogin(email);
-        return R.ok(LoginResp.builder().token(token).build());
+        return LoginResp.builder().token(token).build();
     }
 
     @Operation(summary = "用户退出", description = "注销用户的当前登录")
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public R<Object> logout() {
+    public Object logout() {
         Object loginId = StpUtil.getLoginId(-1L);
         StpUtil.logout();
-        return R.ok(loginId);
+        return loginId;
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
-    public R<UserInfoResp> getUserInfo() {
+    public UserInfoResp getUserInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         UserDetailResp userDetailResp = userService.get(loginUser.getId());
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
         userInfoResp.setPermissions(loginUser.getPermissions());
         userInfoResp.setRoles(loginUser.getRoleCodes());
         userInfoResp.setPwdExpired(loginUser.isPasswordExpired());
-        return R.ok(userInfoResp);
+        return userInfoResp;
     }
 
     @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
-    public R<List<RouteResp>> listRoute() {
-        return R.ok(loginService.buildRouteTree(LoginHelper.getUserId()));
+    public List<RouteResp> listRoute() {
+        return loginService.buildRouteTree(LoginHelper.getUserId());
     }
 }

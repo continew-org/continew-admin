@@ -48,6 +48,20 @@ continew-starter.web:
       pattern: '[$spanId][$traceId]'
       mdc-enable: false
 
+--- ### 全局响应配置
+continew-starter.web:
+  response:
+    # 是否开启国际化（默认：false）
+    i18n: false
+    # 自定义成功响应码（默认：0）
+    default-success-code: 0
+    # 自定义成功提示（默认：ok）
+    default-success-msg: ok
+    # 自定义失败响应码（默认：1）
+    default-error-code: 1
+    # 自定义失败提示（默认：error）
+    default-error-msg: error
+
 --- ### 接口文档配置
 springdoc:
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认 false）

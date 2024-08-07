@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.extension.crud.annotation.EnableCrudRestController;
-import top.continew.starter.web.annotation.EnableGlobalExceptionHandler;
+import top.continew.starter.web.annotation.EnableGlobalResponse;
 
 /**
  * 启动程序
@@ -44,13 +44,13 @@ import top.continew.starter.web.annotation.EnableGlobalExceptionHandler;
  * @since 2022/12/8 23:15
  */
 @Slf4j
-@RestController
 @EnableFileStorage
+@EnableMethodCache(basePackages = "top.continew.admin")
+@EnableGlobalResponse
+@EnableCrudRestController
+@RestController
 @SpringBootApplication
 @RequiredArgsConstructor
-@EnableCrudRestController
-@EnableGlobalExceptionHandler
-@EnableMethodCache(basePackages = "top.continew.admin")
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ProjectProperties projectProperties;

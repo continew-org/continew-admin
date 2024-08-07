@@ -28,7 +28,6 @@ import top.continew.admin.system.model.req.OptionReq;
 import top.continew.admin.system.model.req.OptionResetValueReq;
 import top.continew.admin.system.model.resp.OptionResp;
 import top.continew.admin.system.service.OptionService;
-import top.continew.starter.web.model.R;
 
 import java.util.List;
 
@@ -50,23 +49,21 @@ public class OptionController {
     @Operation(summary = "查询参数列表", description = "查询参数列表")
     @SaCheckPermission("system:config:list")
     @GetMapping
-    public R<List<OptionResp>> list(@Validated OptionQuery query) {
-        return R.ok(baseService.list(query));
+    public List<OptionResp> list(@Validated OptionQuery query) {
+        return baseService.list(query);
     }
 
     @Operation(summary = "修改参数", description = "修改参数")
     @SaCheckPermission("system:config:update")
     @PutMapping
-    public R<Void> update(@Valid @RequestBody List<OptionReq> options) {
+    public void update(@Valid @RequestBody List<OptionReq> options) {
         baseService.update(options);
-        return R.ok();
     }
 
     @Operation(summary = "重置参数", description = "重置参数")
     @SaCheckPermission("system:config:reset")
     @PatchMapping("/value")
-    public R<Void> resetValue(@Validated @RequestBody OptionResetValueReq req) {
+    public void resetValue(@Validated @RequestBody OptionResetValueReq req) {
         baseService.resetValue(req);
-        return R.ok();
     }
 }

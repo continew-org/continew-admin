@@ -43,7 +43,6 @@ import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.log.core.annotation.Log;
-import top.continew.starter.web.model.R;
 
 import java.util.List;
 
@@ -71,49 +70,49 @@ public class CommonController {
 
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
-    public R<FileUploadResp> upload(@NotNull(message = "文件不能为空") MultipartFile file) {
+    public FileUploadResp upload(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(projectProperties.isProduction(), "演示环境不支持上传文件");
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file);
-        return R.ok(FileUploadResp.builder().url(fileInfo.getUrl()).build());
+        return FileUploadResp.builder().url(fileInfo.getUrl()).build();
     }
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")
     @GetMapping("/tree/dept")
-    public R<List<Tree<Long>>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
-        return R.ok(deptService.tree(query, sortQuery, true));
+    public List<Tree<Long>> listDeptTree(DeptQuery query, SortQuery sortQuery) {
+        return deptService.tree(query, sortQuery, true);
     }
 
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
-    public R<List<Tree<Long>>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
-        return R.ok(menuService.tree(query, sortQuery, true));
+    public List<Tree<Long>> listMenuTree(MenuQuery query, SortQuery sortQuery) {
+        return menuService.tree(query, sortQuery, true);
     }
 
     @Operation(summary = "查询角色字典", description = "查询角色字典列表")
     @GetMapping("/dict/role")
-    public R<List<LabelValueResp>> listRoleDict(RoleQuery query, SortQuery sortQuery) {
-        return R.ok(roleService.listDict(query, sortQuery));
+    public List<LabelValueResp> listRoleDict(RoleQuery query, SortQuery sortQuery) {
+        return roleService.listDict(query, sortQuery);
     }
 
     @Operation(summary = "查询字典", description = "查询字典列表")
     @Parameter(name = "code", description = "字典编码", example = "notice_type", in = ParameterIn.PATH)
     @GetMapping("/dict/{code}")
-    public R<List<LabelValueResp>> listDict(@PathVariable String code) {
-        return R.ok(dictItemService.listByDictCode(code));
+    public List<LabelValueResp> listDict(@PathVariable String code) {
+        return dictItemService.listByDictCode(code);
     }
 
     @SaIgnore
     @Operation(summary = "查询参数字典", description = "查询参数字典")
     @GetMapping("/dict/option")
     @Cached(key = "#category", name = CacheConstants.OPTION_KEY_PREFIX)
-    public R<List<LabelValueResp<String>>> listOptionDict(@NotBlank(message = "类别不能为空") @RequestParam String category) {
+    public List<LabelValueResp<String>> listOptionDict(@NotBlank(message = "类别不能为空") String category) {
         OptionQuery optionQuery = new OptionQuery();
         optionQuery.setCategory(category);
-        return R.ok(optionService.list(optionQuery)
+        return optionService.list(optionQuery)
             .stream()
             .map(option -> new LabelValueResp<>(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
                 .getDefaultValue())))
-            .toList());
+            .toList();
     }
 }

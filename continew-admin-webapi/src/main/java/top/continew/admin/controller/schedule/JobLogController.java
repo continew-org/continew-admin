@@ -32,7 +32,6 @@ import top.continew.admin.job.model.resp.JobLogResp;
 import top.continew.admin.job.model.resp.JobInstanceResp;
 import top.continew.admin.job.service.JobLogService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.web.model.R;
 
 import java.util.List;
 
@@ -55,37 +54,37 @@ public class JobLogController {
     @Operation(summary = "分页查询任务日志列表", description = "分页查询任务日志列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping
-    public R<PageResp<JobLogResp>> page(JobLogQuery query) {
-        return R.ok(baseService.page(query));
+    public PageResp<JobLogResp> page(JobLogQuery query) {
+        return baseService.page(query);
     }
 
     @Operation(summary = "停止任务", description = "停止任务")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:log:stop")
     @PostMapping("/stop/{id}")
-    public R<Void> stop(@PathVariable Long id) {
-        return baseService.stop(id) ? R.ok() : R.fail();
+    public void stop(@PathVariable Long id) {
+        baseService.stop(id);
     }
 
     @Operation(summary = "重试任务", description = "重试任务")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:log:retry")
     @PostMapping("/retry/{id}")
-    public R<Void> retry(@PathVariable Long id) {
-        return baseService.retry(id) ? R.ok() : R.fail();
+    public void retry(@PathVariable Long id) {
+        baseService.retry(id);
     }
 
     @Operation(summary = "查询任务实例列表", description = "查询任务实例列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping("/instance")
-    public R<List<JobInstanceResp>> listInstance(JobInstanceQuery query) {
-        return R.ok(baseService.listInstance(query));
+    public List<JobInstanceResp> listInstance(JobInstanceQuery query) {
+        return baseService.listInstance(query);
     }
 
     @Operation(summary = "分页查询任务实例日志列表", description = "分页查询任务实例日志列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping("/instance/log")
-    public R<JobInstanceLogPageResult> pageInstanceLog(JobInstanceLogQuery query) {
-        return R.ok(baseService.pageInstanceLog(query));
+    public JobInstanceLogPageResult pageInstanceLog(JobInstanceLogQuery query) {
+        return baseService.pageInstanceLog(query);
     }
 }

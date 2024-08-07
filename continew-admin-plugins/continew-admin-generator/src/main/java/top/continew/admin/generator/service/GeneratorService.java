@@ -16,7 +16,6 @@
 
 package top.continew.admin.generator.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import top.continew.admin.generator.model.entity.FieldConfigDO;
 import top.continew.admin.generator.model.entity.GenConfigDO;
@@ -86,8 +85,7 @@ public interface GeneratorService {
      * 生成代码
      *
      * @param tableNames 表明层
-     * @param request    请求对象
      * @param response   响应对象
      */
-    void generate(List<String> tableNames, HttpServletRequest request, HttpServletResponse response);
+    void generate(List<String> tableNames, HttpServletResponse response);
 }

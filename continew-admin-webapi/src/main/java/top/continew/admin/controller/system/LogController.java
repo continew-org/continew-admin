@@ -17,6 +17,7 @@
 package top.continew.admin.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -35,7 +36,6 @@ import top.continew.admin.system.service.LogService;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.web.model.R;
 
 /**
  * 系统日志 API
@@ -54,18 +54,19 @@ public class LogController {
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:log:list")
     @GetMapping
-    public R<PageResp<LogResp>> page(LogQuery query, @Validated PageQuery pageQuery) {
-        return R.ok(baseService.page(query, pageQuery));
+    public PageResp<LogResp> page(LogQuery query, @Validated PageQuery pageQuery) {
+        return baseService.page(query, pageQuery);
     }
 
     @Operation(summary = "查询详情", description = "查询详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("monitor:log:list")
     @GetMapping("/{id}")
-    public R<LogDetailResp> get(@PathVariable Long id) {
-        return R.ok(baseService.get(id));
+    public LogDetailResp get(@PathVariable Long id) {
+        return baseService.get(id);
     }
 
+    @ExcludeFromGracefulResponse
     @Operation(summary = "导出登录日志", description = "导出登录日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/login")
@@ -73,6 +74,7 @@ public class LogController {
         baseService.exportLoginLog(query, sortQuery, response);
     }
 
+    @ExcludeFromGracefulResponse
     @Operation(summary = "导出操作日志", description = "导出操作日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/operation")

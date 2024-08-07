@@ -36,7 +36,6 @@ import top.continew.admin.auth.service.LoginService;
 import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.log.core.annotation.Log;
-import top.continew.starter.web.model.R;
 
 /**
  * 三方账号认证 API
@@ -58,17 +57,17 @@ public class SocialAuthController {
     @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @GetMapping("/{source}")
-    public R<SocialAuthAuthorizeResp> authorize(@PathVariable String source) {
+    public SocialAuthAuthorizeResp authorize(@PathVariable String source) {
         AuthRequest authRequest = this.getAuthRequest(source);
-        return R.ok(SocialAuthAuthorizeResp.builder()
+        return SocialAuthAuthorizeResp.builder()
             .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
-            .build());
+            .build();
     }
 
     @Operation(summary = "三方账号登录", description = "三方账号登录")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @PostMapping("/{source}")
-    public R<LoginResp> login(@PathVariable String source, @RequestBody AuthCallback callback) {
+    public LoginResp login(@PathVariable String source, @RequestBody AuthCallback callback) {
         if (StpUtil.isLogin()) {
             StpUtil.logout();
         }
@@ -77,7 +76,7 @@ public class SocialAuthController {
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
         AuthUser authUser = response.getData();
         String token = loginService.socialLogin(authUser);
-        return R.ok(LoginResp.builder().token(token).build());
+        return LoginResp.builder().token(token).build();
     }
 
     private AuthRequest getAuthRequest(String source) {

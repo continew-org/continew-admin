@@ -33,8 +33,8 @@ import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.model.resp.BaseIdResp;
 import top.continew.starter.extension.crud.util.ValidateGroup;
-import top.continew.starter.web.model.R;
 
 /**
  * 菜单管理 API
@@ -48,15 +48,15 @@ import top.continew.starter.web.model.R;
 public class MenuController extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     @Override
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuReq req) {
+    public BaseIdResp<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody MenuReq req) {
         this.checkPath(req);
         return super.add(req);
     }
 
     @Override
-    public R<Void> update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
+    public void update(@Validated(ValidateGroup.Crud.Update.class) @RequestBody MenuReq req, @PathVariable Long id) {
         this.checkPath(req);
-        return super.update(req, id);
+        super.update(req, id);
     }
 
     /**

@@ -25,10 +25,10 @@
     </properties>
 
     <dependencies>
-        <!-- ContiNew Starter 日志模块 - HttpTracePro（Spring Boot Actuator HttpTrace 定制增强版） -->
+        <!-- ContiNew Starter 日志模块 - 拦截器版（Spring Boot Actuator HttpTrace 增强版） -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-log-httptrace-pro</artifactId>
+            <artifactId>continew-starter-log-interceptor</artifactId>
         </dependency>
 
         <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->

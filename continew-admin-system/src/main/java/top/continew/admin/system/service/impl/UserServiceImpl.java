@@ -20,12 +20,14 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.img.ImgUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.validation.ValidationUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
@@ -77,6 +79,7 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
+import top.continew.starter.web.util.FileUploadUtils;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -129,13 +132,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void downloadImportUserTemplate(HttpServletResponse response) throws IOException {
         try {
-            byte[] bytes = ResourceUtil.readBytes("templates/import/userImportTemplate.xlsx");
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLUtil.encode("用户导入模板.xlsx"));
-            response.addHeader("Content-Length", String.valueOf(bytes.length));
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            IoUtil.write(response.getOutputStream(), true, bytes);
+            FileUploadUtils.download(response, ResourceUtil
+                .getStream("templates/import/userImportTemplate.xlsx"), "用户导入模板.xlsx");
         } catch (Exception e) {
             log.error("下载用户导入模板失败：", e);
             response.setCharacterEncoding(CharsetUtil.UTF_8);

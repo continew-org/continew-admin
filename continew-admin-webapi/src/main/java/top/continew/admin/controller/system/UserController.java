@@ -43,8 +43,8 @@ import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.model.resp.BaseIdResp;
 import top.continew.starter.extension.crud.util.ValidateGroup;
-import top.continew.starter.web.model.R;
 
 import java.io.IOException;
 
@@ -64,7 +64,7 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     private final UserService userService;
 
     @Override
-    public R<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
+    public BaseIdResp<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {
         String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getPassword()));
         ValidationUtils.throwIfNull(rawPassword, "密码解密失败");
         ValidationUtils.throwIf(!ReUtil
@@ -83,38 +83,36 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     @Operation(summary = "解析用户导入数据", description = "解析用户导入数据")
     @SaCheckPermission("system:user:import")
     @PostMapping(value = "parseImportUser")
-    public R<UserImportParseResp> parseImportUser(@NotNull(message = "文件不能为空") MultipartFile file) {
+    public UserImportParseResp parseImportUser(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
-        return R.ok(userService.parseImportUser(file));
+        return userService.parseImportUser(file);
     }
 
     @Operation(summary = "导入用户", description = "导入用户")
     @SaCheckPermission("system:user:import")
     @PostMapping(value = "import")
-    public R<UserImportResp> importUser(@Validated @RequestBody UserImportReq req) {
-        return R.ok(userService.importUser(req));
+    public UserImportResp importUser(@Validated @RequestBody UserImportReq req) {
+        return userService.importUser(req);
     }
 
     @Operation(summary = "重置密码", description = "重置用户登录密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:resetPwd")
     @PatchMapping("/{id}/password")
-    public R<Void> resetPassword(@Validated @RequestBody UserPasswordResetReq req, @PathVariable Long id) {
+    public void resetPassword(@Validated @RequestBody UserPasswordResetReq req, @PathVariable Long id) {
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(req.getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
         ValidationUtils.throwIf(!ReUtil
             .isMatch(RegexConstants.PASSWORD, rawNewPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         req.setNewPassword(rawNewPassword);
         baseService.resetPassword(req, id);
-        return R.ok("重置密码成功");
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:updateRole")
     @PatchMapping("/{id}/role")
-    public R<Void> updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
+    public void updateRole(@Validated @RequestBody UserRoleUpdateReq updateReq, @PathVariable Long id) {
         baseService.updateRole(updateReq, id);
-        return R.ok("分配成功");
     }
 }

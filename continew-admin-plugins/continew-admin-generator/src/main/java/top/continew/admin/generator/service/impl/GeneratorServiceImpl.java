@@ -27,7 +27,6 @@ import cn.hutool.core.util.ZipUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.system.SystemUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -281,7 +280,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     @Override
-    public void generate(List<String> tableNames, HttpServletRequest request, HttpServletResponse response) {
+    public void generate(List<String> tableNames, HttpServletResponse response) {
         try {
             String tempDir = SystemUtil.getUserInfo().getTempDir();
             // 删除旧代码
@@ -296,7 +295,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             File tempDirFile = new File(tempDir, projectProperties.getAppName());
             String zipFilePath = tempDirFile.getPath() + jodd.io.ZipUtil.ZIP_EXT;
             ZipUtil.zip(tempDirFile.getPath(), zipFilePath);
-            FileUploadUtils.download(request, response, new File(zipFilePath), true);
+            FileUploadUtils.download(response, new File(zipFilePath));
         } catch (Exception e) {
             log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");

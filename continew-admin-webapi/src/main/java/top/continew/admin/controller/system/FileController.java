@@ -30,7 +30,6 @@ import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.log.core.annotation.Log;
-import top.continew.starter.web.model.R;
 
 /**
  * 文件管理 API
@@ -48,7 +47,7 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
     @Operation(summary = "查询文件资源统计", description = "查询文件资源统计")
     @SaCheckPermission("system:file:list")
     @GetMapping("/statistics")
-    public R<FileStatisticsResp> statistics() {
-        return R.ok(baseService.statistics());
+    public FileStatisticsResp statistics() {
+        return baseService.statistics();
     }
 }
