@@ -58,7 +58,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     public List<DeptDO> listChildren(Long id) {
         DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
             .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
-        return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
+        return baseMapper.lambdaQuery().apply(databaseType.findInSet(), id, "ancestors").list();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
             .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
         return ids.stream()
-            .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).count())
+            .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(), id, "ancestors").count())
             .sum();
     }
 
