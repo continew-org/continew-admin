@@ -21,6 +21,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ import top.continew.admin.system.model.resp.MessageResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.MessageUserService;
 import top.continew.starter.core.util.validate.CheckUtils;
-import top.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
+import top.continew.starter.data.mybatis.plus.util.QueryWrapperHelper;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -54,10 +55,11 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @AutoOperate(type = MessageResp.class, on = "list")
     public PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
-        QueryWrapper<MessageDO> queryWrapper = QueryWrapperHelper.build(query);
+        QueryWrapper<MessageDO> queryWrapper = QueryWrapperHelper.build(query, pageQuery.getSort());
         queryWrapper.apply(null != query.getUserId(), "t2.user_id={0}", query.getUserId())
             .apply(null != query.getIsRead(), "t2.is_read={0}", query.getIsRead());
-        IPage<MessageResp> page = baseMapper.selectPageByUserId(pageQuery.toPage(), queryWrapper);
+        IPage<MessageResp> page = baseMapper.selectPageByUserId(new Page<>(pageQuery.getPage(), pageQuery
+            .getSize()), queryWrapper);
         return PageResp.build(page);
     }
 

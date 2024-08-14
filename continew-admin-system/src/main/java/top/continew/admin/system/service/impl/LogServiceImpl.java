@@ -19,11 +19,11 @@ package top.continew.admin.system.service.impl;
 import cn.crane4j.annotation.AutoOperate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Opt;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,8 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageResp<LogResp> page(LogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
-        IPage<LogResp> page = baseMapper.selectLogPage(pageQuery.toPage(), queryWrapper);
+        IPage<LogResp> page = baseMapper.selectLogPage(new Page<>(pageQuery.getPage(), pageQuery
+            .getSize()), queryWrapper);
         return PageResp.build(page);
     }
 
@@ -132,12 +133,12 @@ public class LogServiceImpl implements LogService {
      * @param sortQuery    排序查询条件
      */
     private void sort(QueryWrapper<LogDO> queryWrapper, SortQuery sortQuery) {
-        Sort sort = Opt.ofNullable(sortQuery).orElseGet(SortQuery::new).getSort();
-        for (Sort.Order order : sort) {
-            if (null != order) {
-                String property = order.getProperty();
-                queryWrapper.orderBy(true, order.isAscending(), CharSequenceUtil.toUnderlineCase(property));
-            }
+        if (sortQuery == null || sortQuery.getSort().isUnsorted()) {
+            return;
+        }
+        for (Sort.Order order : sortQuery.getSort()) {
+            String property = order.getProperty();
+            queryWrapper.orderBy(true, order.isAscending(), CharSequenceUtil.toUnderlineCase(property));
         }
     }
 

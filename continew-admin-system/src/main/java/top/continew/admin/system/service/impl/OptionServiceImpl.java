@@ -38,7 +38,7 @@ import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.core.util.validate.ValidationUtils;
-import top.continew.starter.data.mybatis.plus.query.QueryWrapperHelper;
+import top.continew.starter.data.mybatis.plus.util.QueryWrapperHelper;
 
 import java.util.List;
 import java.util.Map;
