@@ -173,10 +173,13 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveConfig(GenConfigReq req, String tableName) {
-        // 保存字段配置
+        // 保存字段配置（先删除再保存）
         fieldConfigMapper.delete(Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
         List<FieldConfigDO> fieldConfigList = req.getFieldConfigs();
-        for (FieldConfigDO fieldConfig : fieldConfigList) {
+        for (int i = 0; i < fieldConfigList.size(); i++) {
+            FieldConfigDO fieldConfig = fieldConfigList.get(i);
+            // 重新设置排序
+            fieldConfig.setFieldSort(i + 1);
             if (Boolean.TRUE.equals(fieldConfig.getShowInForm())) {
                 CheckUtils.throwIfNull(fieldConfig.getFormType(), "字段 [{}] 的表单类型不能为空", fieldConfig.getFieldName());
             } else {

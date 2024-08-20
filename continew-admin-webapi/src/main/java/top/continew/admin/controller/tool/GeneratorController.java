@@ -60,6 +60,14 @@ public class GeneratorController {
         return baseService.pageTable(query, pageQuery);
     }
 
+    @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("tool:generator:list")
+    @GetMapping("/config/{tableName}")
+    public GenConfigDO getGenConfig(@PathVariable String tableName) throws SQLException {
+        return baseService.getGenConfig(tableName);
+    }
+
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @Parameter(name = "requireSync", description = "是否需要同步", example = "false", in = ParameterIn.QUERY)
@@ -68,14 +76,6 @@ public class GeneratorController {
     public List<FieldConfigDO> listFieldConfig(@PathVariable String tableName,
                                                @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
         return baseService.listFieldConfig(tableName, requireSync);
-    }
-
-    @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
-    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
-    @SaCheckPermission("tool:generator:list")
-    @GetMapping("/config/{tableName}")
-    public GenConfigDO getGenConfig(@PathVariable String tableName) throws SQLException {
-        return baseService.getGenConfig(tableName);
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")
