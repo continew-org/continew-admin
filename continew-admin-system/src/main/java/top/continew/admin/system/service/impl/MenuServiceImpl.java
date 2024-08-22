@@ -52,7 +52,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     @Override
     public Long add(MenuReq req) {
         String title = req.getTitle();
-        CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), null), "新增失败，[{}] 已存在", title);
+        CheckUtils.throwIf(this.isTitleExists(title, req.getParentId(), null), "新增失败，标题 [{}] 已存在", title);
+        // 目录和菜单的组件名称不能重复
+        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
+            String name = req.getName();
+            CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，组件名称 [{}] 已存在", name);
+        }
         // 目录类型菜单，默认为 Layout
         if (MenuTypeEnum.DIR.equals(req.getType())) {
             req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
@@ -64,7 +69,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     @Override
     public void update(MenuReq req, Long id) {
         String title = req.getTitle();
-        CheckUtils.throwIf(this.isNameExists(title, req.getParentId(), id), "修改失败，[{}] 已存在", title);
+        CheckUtils.throwIf(this.isTitleExists(title, req.getParentId(), id), "修改失败，标题 [{}] 已存在", title);
+        // 目录和菜单的组件名称不能重复
+        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
+            String name = req.getName();
+            CheckUtils.throwIf(this.isNameExists(name, id), "修改失败，组件名称 [{}] 已存在", name);
+        }
         MenuDO oldMenu = super.getById(id);
         CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
         super.update(req, id);
@@ -100,17 +110,32 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     /**
-     * 名称是否存在
+     * 标题是否存在
      *
-     * @param name     名称
+     * @param title    标题
      * @param parentId 上级 ID
      * @param id       ID
-     * @return 是否存在
+     * @return true：存在；false：不存在
      */
-    private boolean isNameExists(String name, Long parentId, Long id) {
+    private boolean isTitleExists(String title, Long parentId, Long id) {
         return baseMapper.lambdaQuery()
-            .eq(MenuDO::getTitle, name)
+            .eq(MenuDO::getTitle, title)
             .eq(MenuDO::getParentId, parentId)
+            .ne(null != id, MenuDO::getId, id)
+            .exists();
+    }
+
+    /**
+     * 名称是否存在
+     *
+     * @param name 标题
+     * @param id   ID
+     * @return true：存在；false：不存在
+     */
+    private boolean isNameExists(String name, Long id) {
+        return baseMapper.lambdaQuery()
+            .eq(MenuDO::getName, name)
+            .ne(MenuDO::getType, MenuTypeEnum.BUTTON)
             .ne(null != id, MenuDO::getId, id)
             .exists();
     }
