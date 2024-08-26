@@ -61,6 +61,8 @@ continew-starter.web:
     default-error-code: 1
     # 自定义失败提示（默认：error）
     default-error-msg: error
+    # 是否将原生异常错误信息填充到状态信息中
+    origin-exception-using-detail-message: false
 
 --- ### 接口文档配置
 springdoc:
