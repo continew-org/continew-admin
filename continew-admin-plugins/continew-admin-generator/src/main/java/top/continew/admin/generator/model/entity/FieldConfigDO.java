@@ -142,6 +142,12 @@ public class FieldConfigDO implements Serializable {
     private QueryTypeEnum queryType;
 
     /**
+     * 字典编码
+     */
+    @Schema(description = "字典编码", example = "notice_type")
+    private String dictCode;
+
+    /**
      * 创建时间
      */
     @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")

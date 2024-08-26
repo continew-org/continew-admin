@@ -26,6 +26,7 @@ import top.continew.admin.system.model.resp.DictResp;
 import top.continew.admin.system.service.DictItemService;
 import top.continew.admin.system.service.DictService;
 import top.continew.starter.core.util.validate.CheckUtils;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
 import java.util.List;
@@ -69,6 +70,12 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
         CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除", isSystemData.orElseGet(DictDO::new)
             .getName());
         dictItemService.deleteByDictIds(ids);
+    }
+
+    @Override
+    public List<LabelValueResp> listEnumDict() {
+        List<String> enumDictNameList = dictItemService.listEnumDictNames();
+        return enumDictNameList.stream().map(name -> new LabelValueResp(name, name)).toList();
     }
 
     /**

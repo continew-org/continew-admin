@@ -2,13 +2,13 @@ package ${packageName}.${subPackageName};
 
 import java.io.Serial;
 import java.io.Serializable;
-<#if hasLocalDateTime>
+<#if hasLocalDateTimeField>
 import java.time.LocalDateTime;
 </#if>
-<#if hasBigDecimal>
+<#if hasBigDecimalField>
 import java.math.BigDecimal;
 </#if>
-<#if hasListQueryField>
+<#if hasListField>
 import java.util.List;
 </#if>
 

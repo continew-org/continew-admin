@@ -1,10 +1,10 @@
 package ${packageName}.${subPackageName};
 
 import java.io.Serial;
-<#if hasLocalDateTime>
+<#if hasLocalDateTimeField>
 import java.time.LocalDateTime;
 </#if>
-<#if hasBigDecimal>
+<#if hasBigDecimalField>
 import java.math.BigDecimal;
 </#if>
 

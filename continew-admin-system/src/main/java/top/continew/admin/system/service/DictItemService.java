@@ -48,4 +48,11 @@ public interface DictItemService extends BaseService<DictItemResp, DictItemResp,
      * @param dictIds 字典 ID 列表
      */
     void deleteByDictIds(List<Long> dictIds);
+
+    /**
+     * 查询枚举字典名称列表
+     *
+     * @return 枚举字典名称列表
+     */
+    List<String> listEnumDictNames();
 }

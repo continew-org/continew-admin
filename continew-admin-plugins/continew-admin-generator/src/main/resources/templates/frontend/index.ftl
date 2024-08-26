@@ -12,62 +12,51 @@
       :disabled-column-keys="['name']"
       @refresh="search"
     >
+      <#-- 查询字段配置 -->
       <template #custom-left>
-        <#list fieldConfigs as fieldConfig>
-        <#if fieldConfig.showInQuery>
-	        <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
-	        <a-select
-	          v-model="queryForm.${fieldConfig.fieldName}"
-	          :options="${fieldConfig.columnName}_enum"
-	          placeholder="请选择${fieldConfig.comment}"
-	          allow-clear
-	          style="width: 150px"
-	          @change="search"
-	        />	        
-	        <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
-			<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.columnName}_enum" @change="search"/>	        
-	        <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
-            <#if fieldConfig.queryType == "BETWEEN">
-            <a-range-picker
-                    v-model="queryForm.${fieldConfig.fieldName}"
-                    :placeholder="['请选择开始${fieldConfig.comment}','请选择结束${fieldConfig.comment}']"
-                    format="YYYY-MM-DD"
-                    style="width: 100%"
-            />
-            <#else>
-            <a-date-picker
-                    v-model="queryForm.${fieldConfig.fieldName}"
-                    placeholder="请选择${fieldConfig.comment}"
-                    format="YYYY-MM-DD"
-                    style="width: 100%"
-            />
-            </#if>
-
-        <#elseif fieldConfig.formType == "DATE_TIME"><#-- 日期时间框 -->
-            <#if fieldConfig.queryType == "BETWEEN">
-          <a-range-picker
-                  v-model="queryForm.${fieldConfig.fieldName}"
-                  :placeholder="['请选择开始${fieldConfig.comment}','请选择结束${fieldConfig.comment}']"
-                  show-time
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style="width: 100%"
-            />
-            <#else>
-          <a-date-picker
-                  v-model="queryForm.${fieldConfig.fieldName}"
-                  placeholder="请选择${fieldConfig.comment}"
-                  show-time
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style="width: 100%"
-            />
-            </#if>
-	        <#else>
-	        <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
-	          <template #prefix><icon-search /></template>
-	        </a-input>
-        	</#if>
+      <#list fieldConfigs as fieldConfig>
+      <#if fieldConfig.showInQuery>
+	  <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
+        <a-select
+          v-model="queryForm.${fieldConfig.fieldName}"
+          :options="${fieldConfig.columnName}_enum"
+          placeholder="请选择${fieldConfig.comment}"
+          allow-clear
+          style="width: 150px"
+          @change="search"
+        />
+	  <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
+		<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.dictCode}" @change="search"/>
+	  <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
+        <#if fieldConfig.queryType == "BETWEEN">
+        <DateRangePicker v-model="queryForm.${fieldConfig.fieldName}" format="YYYY-MM-DD" @change="search" />
+        <#else>
+        <a-date-picker
+          v-model="queryForm.${fieldConfig.fieldName}"
+          placeholder="请选择${fieldConfig.comment}"
+          format="YYYY-MM-DD"
+          style="height: 32px"
+        />
         </#if>
-        </#list>
+      <#elseif fieldConfig.formType == "DATE_TIME"><#-- 日期时间框 -->
+        <#if fieldConfig.queryType == "BETWEEN">
+        <DateRangePicker v-model="queryForm.${fieldConfig.fieldName}" @change="search" />
+        <#else>
+        <a-date-picker
+          v-model="queryForm.${fieldConfig.fieldName}"
+          placeholder="请选择${fieldConfig.comment}"
+          show-time
+          format="YYYY-MM-DD HH:mm:ss"
+          style="height: 32px"
+        />
+        </#if>
+	  <#else>
+	    <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
+	      <template #prefix><icon-search /></template>
+	    </a-input>
+      </#if>
+      </#if>
+      </#list>
         <a-button @click="reset">重置</a-button>
       </template>
       <template #custom-right>
@@ -83,9 +72,19 @@
           </a-button>
         </a-tooltip>
       </template>
+      <#-- 列字段配置 -->
       <template #name="{ record }">
         <a-link @click="onDetail(record)">{{ record.name }}</a-link>
       </template>
+      <#list fieldConfigs as fieldConfig>
+      <#if fieldConfig.showInList>
+      <#if fieldConfig.dictCode?? && fieldConfig.dictCode != "">
+      <template #${fieldConfig.fieldName}="{ record }">
+        <GiCellTag :value="record.${fieldConfig.fieldName}" :dict="${fieldConfig.dictCode}" />
+      </template>
+      </#if>
+      </#if>
+      </#list>
       <template #action="{ record }">
         <a-space>
           <a-link v-permission="['${apiModuleName}:${apiName}:update']" @click="onUpdate(record)">修改</a-link>
@@ -118,6 +117,10 @@ import { useDict } from '@/hooks/app'
 
 defineOptions({ name: '${classNamePrefix}' })
 
+<#if hasDictField>
+const { <#list dictCodes as dictCode>${dictCode}<#if dictCode_has_next>,</#if></#list> } = useDict(<#list dictCodes as dictCode>'${dictCode}'<#if dictCode_has_next>,</#if></#list>)
+</#if>
+
 const queryForm = reactive<${classNamePrefix}Query>({
 <#list fieldConfigs as fieldConfig>
 <#if fieldConfig.showInQuery>
@@ -126,14 +129,6 @@ const queryForm = reactive<${classNamePrefix}Query>({
 </#list>
   sort: ['createTime,desc']
 })
-
-<#list fieldConfigs as fieldConfig>
-<#if fieldConfig.showInQuery>
-<#if fieldConfig.formType == "SELECT" || fieldConfig.formType == "RADIO">
-const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
-</#if>
-</#if>
-</#list>
 
 const {
   tableData: dataList,

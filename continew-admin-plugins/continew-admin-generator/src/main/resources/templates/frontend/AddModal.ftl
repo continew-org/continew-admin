@@ -29,15 +29,9 @@ const isUpdate = computed(() => !!dataId.value)
 const title = computed(() => (isUpdate.value ? '修改${businessName}' : '新增${businessName}'))
 const formRef = ref<InstanceType<typeof GiForm>>()
 
-<#list fieldConfigs as fieldConfig>
-<#if fieldConfig.showInForm>
-<#-- SELECT/RADIO/CHECK_BOX/TREE_SELECT控件从服务器端获取数据 -->
-<#if fieldConfig.formType = 'SELECT' || fieldConfig.formType = 'RADIO'
-	|| fieldConfig.formType = 'CHECK_BOX' || fieldConfig.formType = 'TREE_SELECT'>
-const { ${fieldConfig.columnName}_enum } = useDict('${fieldConfig.columnName}_enum')
+<#if hasDictField>
+const { <#list dictCodes as dictCode>${dictCode}<#if dictCode_has_next>,</#if></#list> } = useDict(<#list dictCodes as dictCode>'${dictCode}'<#if dictCode_has_next>,</#if></#list>)
 </#if>
-</#if>
-</#list>
 
 const options: Options = {
   form: {},
@@ -67,16 +61,15 @@ const columns: Columns = reactive([
     type: 'switch',
     <#elseif fieldConfig.formType = 'CHECK_BOX'>
     type: 'check-group',
-    options: ${fieldConfig.columnName}_enum,
    	<#elseif fieldConfig.formType = 'TREE_SELECT'>
     type: 'tree-select',
-    data: '${fieldConfig.columnName}_enum',
     <#elseif fieldConfig.formType = 'SELECT'>
     type: 'select', 
-    options: ${fieldConfig.columnName}_enum,
     <#elseif fieldConfig.formType = 'RADIO'>
-    type: 'radio-group',   
-    options: ${fieldConfig.columnName}_enum,
+    type: 'radio-group'
+    </#if>
+    <#if fieldConfig.dictCode?? && fieldConfig.dictCode != ''>
+    options: ${fieldConfig.dictCode},
     </#if>
     <#if fieldConfig.isRequired>
     rules: [{ required: true, message: '请输入${fieldConfig.comment}' }]

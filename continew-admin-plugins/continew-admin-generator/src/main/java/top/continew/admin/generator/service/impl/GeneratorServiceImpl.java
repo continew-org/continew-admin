@@ -366,27 +366,35 @@ public class GeneratorServiceImpl implements GeneratorService {
             .toList();
         genConfigMap.put("fieldConfigs", fieldConfigList);
         // 统计部分特殊字段特征
-        genConfigMap.put("hasLocalDateTime", false);
-        genConfigMap.put("hasBigDecimal", false);
+        genConfigMap.put("hasLocalDateTimeField", false);
+        genConfigMap.put("hasBigDecimalField", false);
         genConfigMap.put("hasRequiredField", false);
-        genConfigMap.put("hasListQueryField", false);
+        genConfigMap.put("hasListField", false);
+        Set<String> dictCodeSet = new HashSet<>();
         for (FieldConfigDO fieldConfig : fieldConfigList) {
             String fieldType = fieldConfig.getFieldType();
             if ("LocalDateTime".equals(fieldType)) {
-                genConfigMap.put("hasLocalDateTime", true);
+                genConfigMap.put("hasLocalDateTimeField", true);
             }
             if ("BigDecimal".equals(fieldType)) {
-                genConfigMap.put("hasBigDecimal", true);
+                genConfigMap.put("hasBigDecimalField", true);
             }
+            // 必填项
             if (Boolean.TRUE.equals(fieldConfig.getIsRequired())) {
                 genConfigMap.put("hasRequiredField", true);
+            }
+            // 字典码
+            if (StrUtil.isNotBlank(fieldConfig.getDictCode())) {
+                genConfigMap.put("hasDictField", true);
+                dictCodeSet.add(fieldConfig.getDictCode());
             }
             QueryTypeEnum queryType = fieldConfig.getQueryType();
             if (null != queryType && StrUtil.equalsAny(queryType.name(), QueryTypeEnum.IN.name(), QueryTypeEnum.NOT_IN
                 .name(), QueryTypeEnum.BETWEEN.name())) {
-                genConfigMap.put("hasListQueryField", true);
+                genConfigMap.put("hasListField", true);
             }
         }
+        genConfigMap.put("dictCodes", dictCodeSet);
         String subPackageName = templateConfig.getPackageName();
         genConfigMap.put("subPackageName", subPackageName);
     }
