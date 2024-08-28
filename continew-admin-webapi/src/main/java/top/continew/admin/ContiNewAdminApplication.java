@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.extension.crud.annotation.EnableCrudRestController;
 import top.continew.starter.web.annotation.EnableGlobalResponse;
+import top.continew.starter.web.model.R;
 
 /**
  * 启动程序
@@ -60,16 +61,11 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         SpringApplication.run(ContiNewAdminApplication.class, args);
     }
 
-    /**
-     * 访问首页提示
-     *
-     * @return /
-     */
     @Hidden
     @SaIgnore
     @GetMapping("/")
-    public String index() {
-        return "%s service started successfully.".formatted(projectProperties.getName());
+    public R index() {
+        return R.ok("%s service started successfully.".formatted(projectProperties.getName()), null);
     }
 
     @Override
