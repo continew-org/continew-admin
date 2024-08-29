@@ -9,12 +9,6 @@ generator:
   ## 类型映射
   typeMappings:
     MYSQL:
-      Integer:
-        - int
-        - tinyint
-        - smallint
-        - mediumint
-        - integer
       String:
         - varchar
         - char
@@ -23,21 +17,27 @@ generator:
         - longtext
         - tinytext
         - json
-      LocalDate:
-        - date
-      LocalDateTime:
-        - datetime
-        - timestamp
+      Integer:
+        - int
+        - tinyint
+        - smallint
+        - mediumint
+        - integer
       Long:
         - bigint
       Float:
         - float
       Double:
         - double
-      BigDecimal:
-        - decimal
       Boolean:
         - bit
+      BigDecimal:
+        - decimal
+      LocalDate:
+        - date
+      LocalDateTime:
+        - datetime
+        - timestamp
   ## 模板配置
   templateConfigs:
     DO:
