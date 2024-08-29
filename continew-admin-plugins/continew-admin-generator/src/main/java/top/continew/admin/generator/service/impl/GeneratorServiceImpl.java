@@ -370,6 +370,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         genConfigMap.put("hasBigDecimalField", false);
         genConfigMap.put("hasRequiredField", false);
         genConfigMap.put("hasListField", false);
+        genConfigMap.put("hasDictField", false);
         Set<String> dictCodeSet = new HashSet<>();
         for (FieldConfigDO fieldConfig : fieldConfigList) {
             String fieldType = fieldConfig.getFieldType();
