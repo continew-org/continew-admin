@@ -161,7 +161,8 @@ continew-starter.log:
 ## 项目日志配置（配置重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
   level:
-    top.continew: DEBUG
+    top.continew.admin: DEBUG
+    top.continew.starter: DEBUG
   file:
     path: ./logs
 
