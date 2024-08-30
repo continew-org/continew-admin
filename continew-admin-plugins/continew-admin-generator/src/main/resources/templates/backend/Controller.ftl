@@ -18,7 +18,7 @@ import ${packageName}.service.${classNamePrefix}Service;
  * ${businessName}管理 API
  *
  * @author ${author}
- * @since ${date}
+ * @since ${datetime}
  */
 @Tag(name = "${businessName}管理 API")
 @RestController

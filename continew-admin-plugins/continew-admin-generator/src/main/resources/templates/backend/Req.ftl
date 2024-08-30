@@ -1,8 +1,8 @@
 package ${packageName}.${subPackageName};
 
 import java.io.Serial;
-<#if hasLocalDateTimeField>
-import java.time.LocalDateTime;
+<#if hasTimeField>
+import java.time.*;
 </#if>
 <#if hasBigDecimalField>
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ import top.continew.starter.extension.crud.model.req.BaseReq;
  * 创建或修改${businessName}信息
  *
  * @author ${author}
- * @since ${date}
+ * @since ${datetime}
  */
 @Data
 @Schema(description = "创建或修改${businessName}信息")

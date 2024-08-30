@@ -157,19 +157,22 @@ public class FieldConfigDO implements Serializable {
     public FieldConfigDO(@NonNull Column column) {
         this.setTableName(column.getTableName());
         this.setColumnName(column.getName());
-        this.setColumnType(StrUtil.splitToArray(column.getTypeName(), StringConstants.SPACE)[0].toLowerCase());
+        this.setColumnType(column.getTypeName());
         this.setColumnSize(Convert.toStr(column.getSize()));
         this.setComment(column.getComment());
         this.setIsRequired(!column.isPk() && !column.isNullable());
         this.setShowInList(true);
         this.setShowInForm(this.getIsRequired());
         this.setShowInQuery(this.getIsRequired());
-        this.setFormType(FormTypeEnum.INPUT);
-        this.setQueryType("String".equals(this.getFieldType()) ? QueryTypeEnum.LIKE : QueryTypeEnum.EQ);
     }
 
     public void setColumnName(String columnName) {
         this.columnName = columnName;
         this.fieldName = StrUtil.toCamelCase(this.columnName);
+    }
+
+    public void setColumnType(String columnType) {
+        String[] arr = StrUtil.splitToArray(columnType, StringConstants.SPACE);
+        this.columnType = arr.length > 1 ? arr[0].toLowerCase() : columnType.toLowerCase();
     }
 }

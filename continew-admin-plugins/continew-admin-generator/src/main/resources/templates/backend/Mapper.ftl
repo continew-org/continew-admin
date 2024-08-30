@@ -7,6 +7,6 @@ import ${packageName}.model.entity.${classNamePrefix}DO;
 * ${businessName} Mapper
 *
 * @author ${author}
-* @since ${date}
+* @since ${datetime}
 */
 public interface ${className} extends BaseMapper<${classNamePrefix}DO> {}

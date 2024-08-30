@@ -16,20 +16,15 @@
 
 package top.continew.admin.generator.model.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
-import top.continew.starter.core.util.StrUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -118,21 +113,7 @@ public class GenConfigDO implements Serializable {
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime updateTime;
 
-    /**
-     * 类名前缀
-     */
-    @Setter(AccessLevel.NONE)
-    @JsonIgnore
-    @TableField(exist = false)
-    private String classNamePrefix;
-
     public GenConfigDO(String tableName) {
         this.tableName = tableName;
-    }
-
-    public String getClassNamePrefix() {
-        String rawClassName = StrUtils.blankToDefault(this.tablePrefix, this.tableName, prefix -> StrUtil
-            .removePrefix(this.tableName, prefix));
-        return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }

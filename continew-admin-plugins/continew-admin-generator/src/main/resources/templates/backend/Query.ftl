@@ -2,8 +2,8 @@ package ${packageName}.${subPackageName};
 
 import java.io.Serial;
 import java.io.Serializable;
-<#if hasLocalDateTimeField>
-import java.time.LocalDateTime;
+<#if hasTimeField>
+import java.time.*;
 </#if>
 <#if hasBigDecimalField>
 import java.math.BigDecimal;
@@ -23,7 +23,7 @@ import top.continew.starter.data.core.enums.QueryType;
  * ${businessName}查询条件
  *
  * @author ${author}
- * @since ${date}
+ * @since ${datetime}
  */
 @Data
 @Schema(description = "${businessName}查询条件")

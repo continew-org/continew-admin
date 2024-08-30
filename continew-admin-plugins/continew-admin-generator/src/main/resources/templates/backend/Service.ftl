@@ -10,6 +10,6 @@ import ${packageName}.model.resp.${classNamePrefix}Resp;
  * ${businessName}业务接口
  *
  * @author ${author}
- * @since ${date}
+ * @since ${datetime}
  */
 public interface ${className} extends BaseService<${classNamePrefix}Resp, ${classNamePrefix}DetailResp, ${classNamePrefix}Query, ${classNamePrefix}Req> {}
