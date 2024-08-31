@@ -51,4 +51,16 @@ public class OnlineUserQuery implements Serializable {
     @Schema(description = "登录时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
     @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
     private List<Date> loginTime;
+
+    /**
+     * 用户 ID
+     */
+    @Schema(hidden = true)
+    private Long userId;
+
+    /**
+     * 角色 ID
+     */
+    @Schema(hidden = true)
+    private Long roleId;
 }

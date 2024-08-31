@@ -36,18 +36,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.service.LoginService;
-import top.continew.admin.auth.service.PermissionService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.system.enums.MenuTypeEnum;
-import top.continew.admin.system.enums.MessageTypeEnum;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.model.dto.RoleDTO;
 import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.admin.system.enums.MessageTemplateEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
 import top.continew.admin.system.enums.PasswordPolicyEnum;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
@@ -81,17 +80,16 @@ import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRA
 public class LoginServiceImpl implements LoginService {
 
     private final ProjectProperties projectProperties;
+    private final PasswordEncoder passwordEncoder;
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final UserService userService;
     private final DeptService deptService;
     private final RoleService roleService;
     private final MenuService menuService;
-    private final PermissionService permissionService;
     private final UserRoleService userRoleService;
     private final UserSocialService userSocialService;
-    private final MessageService messageService;
-    private final PasswordEncoder passwordEncoder;
     private final OptionService optionService;
-    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    private final MessageService messageService;
 
     @Override
     public String accountLogin(String username, String password, HttpServletRequest request) {
@@ -163,7 +161,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public List<RouteResp> buildRouteTree(Long userId) {
-        Set<String> roleCodeSet = permissionService.listRoleCodeByUserId(userId);
+        Set<String> roleCodeSet = roleService.listCodeByUserId(userId);
         if (CollUtil.isEmpty(roleCodeSet)) {
             return new ArrayList<>(0);
         }
@@ -205,17 +203,15 @@ public class LoginServiceImpl implements LoginService {
      */
     private String login(UserDO user) {
         Long userId = user.getId();
-        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> permissionService
+        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> roleService
             .listPermissionByUserId(userId), threadPoolTaskExecutor);
-        CompletableFuture<Set<String>> roleCodeFuture = CompletableFuture.supplyAsync(() -> permissionService
-            .listRoleCodeByUserId(userId), threadPoolTaskExecutor);
         CompletableFuture<Set<RoleDTO>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
             .listByUserId(userId), threadPoolTaskExecutor);
         CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
             .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
-        CompletableFuture.allOf(permissionFuture, roleCodeFuture, roleFuture);
-        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleCodeFuture.join(), roleFuture
-            .join(), passwordExpirationDaysFuture.join());
+        CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);
+        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleFuture.join(), passwordExpirationDaysFuture
+            .join());
         BeanUtil.copyProperties(user, loginUser);
         return LoginHelper.login(loginUser);
     }

@@ -37,6 +37,14 @@ import java.util.Set;
 public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
 
     /**
+     * 根据用户 ID 查询权限码
+     *
+     * @param userId 用户 ID
+     * @return 权限码集合
+     */
+    Set<String> listPermissionByUserId(Long userId);
+
+    /**
      * 根据 ID 列表查询
      *
      * @param ids ID 列表

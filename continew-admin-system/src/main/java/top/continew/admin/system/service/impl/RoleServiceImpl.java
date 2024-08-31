@@ -26,12 +26,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
+import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.model.dto.RoleDTO;
+import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.RoleMapper;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
@@ -57,10 +60,10 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq> implements RoleService {
 
     private final MenuService menuService;
-    private final OnlineUserService onlineUserService;
     private final RoleMenuService roleMenuService;
     private final RoleDeptService roleDeptService;
     private final UserRoleService userRoleService;
+    private final OnlineUserService onlineUserService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -92,16 +95,23 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         }
         // 更新信息
         super.update(req, id);
-        // 更新关联信息
-        if (!SysConstants.ADMIN_ROLE_CODE.equals(oldRole.getCode())) {
-            // 保存角色和菜单关联
-            boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
-            // 保存角色和部门关联
-            boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
-            // 如果功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
-            if (ObjectUtil.notEqual(req.getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
-                onlineUserService.cleanByRoleId(id);
-            }
+        if (SysConstants.ADMIN_ROLE_CODE.equals(req.getCode())) {
+            return;
+        }
+        // 保存角色和菜单关联
+        boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
+        // 保存角色和部门关联
+        boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
+        // 如果功能权限或数据权限有变更，则更新在线用户权限信息
+        if (ObjectUtil.notEqual(req.getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
+            OnlineUserQuery query = new OnlineUserQuery();
+            query.setRoleId(id);
+            List<LoginUser> loginUserList = onlineUserService.list(query);
+            loginUserList.parallelStream().forEach(loginUser -> {
+                loginUser.setRoles(this.listByUserId(loginUser.getId()));
+                loginUser.setPermissions(this.listPermissionByUserId(loginUser.getId()));
+                LoginHelper.updateLoginUser(loginUser, loginUser.getToken());
+            });
         }
     }
 
@@ -134,6 +144,16 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
                 detail.setMenuIds(roleMenuService.listMenuIdByRoleIds(CollUtil.newArrayList(roleId)));
             }
         }
+    }
+
+    @Override
+    public Set<String> listPermissionByUserId(Long userId) {
+        Set<String> roleCodeSet = this.listCodeByUserId(userId);
+        // 超级管理员赋予全部权限
+        if (roleCodeSet.contains(SysConstants.ADMIN_ROLE_CODE)) {
+            return CollUtil.newHashSet(SysConstants.ALL_PERMISSION);
+        }
+        return menuService.listPermissionByUserId(userId);
     }
 
     @Override

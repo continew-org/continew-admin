@@ -52,11 +52,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
+import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.UserMapper;
@@ -102,11 +104,11 @@ import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 @RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService, CommonUserService {
 
-    private final OnlineUserService onlineUserService;
-    private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
-    private final OptionService optionService;
     private final UserPasswordHistoryService userPasswordHistoryService;
+    private final OnlineUserService onlineUserService;
+    private final OptionService optionService;
+    private final UserRoleService userRoleService;
     private final RoleService roleService;
 
     @Resource
@@ -324,9 +326,21 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         baseMapper.updateById(newUser);
         // 保存用户和角色关联
         boolean isSaveUserRoleSuccess = userRoleService.add(req.getRoleIds(), id);
-        // 如果功能权限或数据权限有变更，则清除关联的在线用户（重新登录以获取最新角色权限）
-        if (DisEnableStatusEnum.DISABLE.equals(newStatus) || isSaveUserRoleSuccess) {
-            onlineUserService.cleanByUserId(id);
+        // 如果禁用用户，则踢出在线用户
+        if (DisEnableStatusEnum.DISABLE.equals(newStatus)) {
+            onlineUserService.kickOut(id);
+            return;
+        }
+        // 如果角色有变更，则更新在线用户权限信息
+        if (isSaveUserRoleSuccess) {
+            OnlineUserQuery query = new OnlineUserQuery();
+            query.setUserId(id);
+            List<LoginUser> loginUserList = onlineUserService.list(query);
+            loginUserList.parallelStream().forEach(loginUser -> {
+                loginUser.setRoles(roleService.listByUserId(loginUser.getId()));
+                loginUser.setPermissions(roleService.listPermissionByUserId(loginUser.getId()));
+                LoginHelper.updateLoginUser(loginUser, loginUser.getToken());
+            });
         }
     }
 

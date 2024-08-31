@@ -18,12 +18,12 @@ package top.continew.admin.auth.service.impl;
 
 import cn.crane4j.annotation.AutoOperate;
 import cn.dev33.satoken.dao.SaTokenDao;
-import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
@@ -44,10 +44,10 @@ import java.util.List;
  * 在线用户业务实现
  *
  * @author Charles7c
- * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @since 2023/3/25 22:49
  */
 @Service
+@RequiredArgsConstructor
 public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
@@ -63,18 +63,18 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         List<LoginUser> loginUserList = new ArrayList<>();
         // 查询所有登录用户
         List<String> tokenKeyList = StpUtil.searchTokenValue(StringConstants.EMPTY, 0, -1, false);
-        for (String tokenKey : tokenKeyList) {
+        tokenKeyList.parallelStream().forEach(tokenKey -> {
             String token = StrUtil.subAfter(tokenKey, StringConstants.COLON, true);
             // 忽略已过期或失效 Token
             if (StpUtil.stpLogic.getTokenActiveTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
-                continue;
+                return;
             }
             // 检查是否符合查询条件
             LoginUser loginUser = LoginHelper.getLoginUser(token);
             if (this.isMatchQuery(query, loginUser)) {
                 loginUserList.add(loginUser);
             }
-        }
+        });
         // 设置排序
         CollUtil.sort(loginUserList, Comparator.comparing(LoginUser::getLoginTime).reversed());
         return loginUserList;
@@ -87,20 +87,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     @Override
-    public void cleanByRoleId(Long roleId) {
-        List<LoginUser> loginUserList = this.list(new OnlineUserQuery());
-        loginUserList.parallelStream().forEach(u -> {
-            if (u.getRoles().stream().anyMatch(r -> r.getId().equals(roleId))) {
-                try {
-                    StpUtil.logoutByTokenValue(u.getToken());
-                } catch (NotLoginException ignored) {
-                }
-            }
-        });
-    }
-
-    @Override
-    public void cleanByUserId(Long userId) {
+    public void kickOut(Long userId) {
         if (!StpUtil.isLogin(userId)) {
             return;
         }
@@ -121,13 +108,22 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             flag1 = StrUtil.contains(loginUser.getUsername(), nickname) || StrUtil.contains(LoginHelper
                 .getNickname(loginUser.getId()), nickname);
         }
-
         boolean flag2 = true;
         List<Date> loginTime = query.getLoginTime();
         if (CollUtil.isNotEmpty(loginTime)) {
             flag2 = DateUtil.isIn(DateUtil.date(loginUser.getLoginTime()).toJdkDate(), loginTime.get(0), loginTime
                 .get(1));
         }
-        return flag1 && flag2;
+        boolean flag3 = true;
+        Long userId = query.getUserId();
+        if (null != userId) {
+            flag3 = userId.equals(loginUser.getId());
+        }
+        boolean flag4 = true;
+        Long roleId = query.getRoleId();
+        if (null != roleId) {
+            flag4 = loginUser.getRoles().stream().anyMatch(r -> r.getId().equals(roleId));
+        }
+        return flag1 && flag2 && flag3 && flag4;
     }
 }

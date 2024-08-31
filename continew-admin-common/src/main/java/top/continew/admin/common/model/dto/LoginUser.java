@@ -25,6 +25,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 登录用户信息
@@ -109,14 +110,15 @@ public class LoginUser implements Serializable {
      */
     private Integer passwordExpirationDays;
 
-    public LoginUser(Set<String> permissions,
-                     Set<String> roleCodes,
-                     Set<RoleDTO> roles,
-                     Integer passwordExpirationDays) {
+    public LoginUser(Set<String> permissions, Set<RoleDTO> roles, Integer passwordExpirationDays) {
         this.permissions = permissions;
-        this.roleCodes = roleCodes;
-        this.roles = roles;
+        this.setRoles(roles);
         this.passwordExpirationDays = passwordExpirationDays;
+    }
+
+    public void setRoles(Set<RoleDTO> roles) {
+        this.roles = roles;
+        this.roleCodes = roles.stream().map(RoleDTO::getCode).collect(Collectors.toSet());
     }
 
     /**

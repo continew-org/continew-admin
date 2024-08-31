@@ -59,16 +59,9 @@ public interface OnlineUserService {
     LocalDateTime getLastActiveTime(String token);
 
     /**
-     * 根据角色 ID 清除
-     *
-     * @param roleId 角色 ID
-     */
-    void cleanByRoleId(Long roleId);
-
-    /**
-     * 根据用户 ID 清除登录
+     * 踢出用户
      *
      * @param userId 用户 ID
      */
-    void cleanByUserId(Long userId);
+    void kickOut(Long userId);
 }
