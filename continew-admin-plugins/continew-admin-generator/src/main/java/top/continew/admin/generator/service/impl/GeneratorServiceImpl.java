@@ -125,11 +125,6 @@ public class GeneratorServiceImpl implements GeneratorService {
             if (null != lastGenConfig) {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
-            // 默认表前缀（sys_user -> sys_）
-            int underLineIndex = StrUtil.indexOf(tableName, StringConstants.C_UNDERLINE);
-            if (-1 != underLineIndex) {
-                genConfig.setTablePrefix(StrUtil.subPre(tableName, underLineIndex + 1));
-            }
         }
         return genConfig;
     }
@@ -245,19 +240,16 @@ public class GeneratorServiceImpl implements GeneratorService {
             GeneratePreviewResp generatePreview = new GeneratePreviewResp();
             generatePreview.setBackend(isBackend);
             generatePreviewList.add(generatePreview);
-            if (isBackend) {
-                generatePreview.setFileName(className + extension);
-                generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), BeanUtil
-                    .beanToMap(innerGenConfig)));
-            } else {
-                generatePreview.setFileName(".vue".equals(extension) && "index".equals(classNameSuffix)
+            String fileName = className + extension;
+            if (!isBackend) {
+                fileName = ".vue".equals(extension) && "index".equals(classNameSuffix)
                     ? "index.vue"
-                    : this.getFrontendFileName(classNamePrefix, className, extension));
-                innerGenConfig.setFieldConfigs(fieldConfigList);
-                generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), BeanUtil
-                    .beanToMap(innerGenConfig)));
+                    : this.getFrontendFileName(classNamePrefix, className, extension);
             }
-            setPreviewPath(generatePreview, innerGenConfig, templateConfig);
+            generatePreview.setFileName(fileName);
+            generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), BeanUtil
+                .beanToMap(innerGenConfig)));
+            this.setPreviewPath(generatePreview, innerGenConfig, templateConfig);
         }
         return generatePreviewList;
     }

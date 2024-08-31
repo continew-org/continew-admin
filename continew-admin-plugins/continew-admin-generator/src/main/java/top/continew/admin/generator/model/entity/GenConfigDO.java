@@ -16,6 +16,7 @@
 
 package top.continew.admin.generator.model.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +26,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
+import top.continew.starter.core.constant.StringConstants;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -114,6 +116,15 @@ public class GenConfigDO implements Serializable {
     private LocalDateTime updateTime;
 
     public GenConfigDO(String tableName) {
+        this.setTableName(tableName);
+    }
+
+    public void setTableName(String tableName) {
         this.tableName = tableName;
+        // 默认表前缀（sys_user -> sys_）
+        int underLineIndex = StrUtil.indexOf(tableName, StringConstants.C_UNDERLINE);
+        if (-1 != underLineIndex) {
+            this.tablePrefix = StrUtil.subPre(tableName, underLineIndex + 1);
+        }
     }
 }
