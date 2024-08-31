@@ -24,7 +24,7 @@ spring.datasource:
     datasource:
       # 主库配置（可配多个，构成多主）
       master:
-        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
         username: ${DB_USER:root}
         password: ${DB_PWD:123456}
         driver-class-name: com.mysql.cj.jdbc.Driver
