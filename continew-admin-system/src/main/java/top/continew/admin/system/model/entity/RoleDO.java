@@ -67,4 +67,14 @@ public class RoleDO extends BaseDO {
      * 是否为系统内置数据
      */
     private Boolean isSystem;
+
+    /**
+     * 菜单选择是否父子节点关联
+     */
+    private Boolean menuCheckStrictly;
+
+    /**
+     * 部门选择是否父子节点关联
+     */
+    private Boolean deptCheckStrictly;
 }

@@ -90,4 +90,16 @@ public class RoleReq extends BaseReq {
      */
     @Schema(description = "权限范围：部门 ID 列表", example = "5")
     private List<Long> deptIds = new ArrayList<>();
+
+    /**
+     * 菜单选择是否父子节点关联
+     */
+    @Schema(description = "菜单选择是否父子节点关联", example = "false")
+    private Boolean menuCheckStrictly;
+
+    /**
+     * 部门选择是否父子节点关联
+     */
+    @Schema(description = "部门选择是否父子节点关联", example = "false")
+    private Boolean deptCheckStrictly;
 }

@@ -82,6 +82,18 @@ public class RoleDetailResp extends BaseDetailResp {
     private Boolean isSystem;
 
     /**
+     * 菜单选择是否父子节点关联
+     */
+    @Schema(description = "菜单选择是否父子节点关联", example = "false")
+    private Boolean menuCheckStrictly;
+
+    /**
+     * 部门选择是否父子节点关联
+     */
+    @Schema(description = "部门选择是否父子节点关联", example = "false")
+    private Boolean deptCheckStrictly;
+
+    /**
      * 描述
      */
     @Schema(description = "描述", example = "测试人员描述信息")
