@@ -366,10 +366,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     public void resetPassword(UserPasswordResetReq req, Long id) {
-        UserDO user = super.getById(id);
-        user.setPassword(req.getNewPassword());
-        user.setPwdResetTime(LocalDateTime.now());
-        baseMapper.updateById(user);
+        super.getById(id);
+        baseMapper.lambdaUpdate()
+            .set(UserDO::getPassword, req.getNewPassword())
+            .set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .eq(UserDO::getId, id)
+            .update();
     }
 
     @Override
@@ -414,9 +416,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
-        user.setPassword(newPassword);
-        user.setPwdResetTime(LocalDateTime.now());
-        baseMapper.updateById(user);
+        baseMapper.lambdaUpdate()
+            .set(UserDO::getPassword, newPassword)
+            .set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .eq(UserDO::getId, id)
+            .update();
         // 保存历史密码
         userPasswordHistoryService.add(id, password, passwordRepetitionTimes);
         // 修改后登出
