@@ -185,7 +185,7 @@ continew-starter.web.cors:
 ## 接口文档增强配置
 knife4j:
   # 开启生产环境屏蔽
-  production: true
+  production: ${project.production}
 
 --- ### WebSocket 配置
 continew-starter.messaging.websocket:

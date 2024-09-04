@@ -193,7 +193,7 @@ cosid:
       friendly: true
     provider:
       safe-js:
-        machine-bit: 3
+        machine-bit: 7
         sequence-bit: 9
 
 --- ### 认证配置
