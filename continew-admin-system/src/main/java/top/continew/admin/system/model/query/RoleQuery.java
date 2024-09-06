@@ -42,5 +42,5 @@ public class RoleQuery implements Serializable {
      */
     @Schema(description = "关键词", example = "测试人员")
     @Query(columns = {"name", "code", "description"}, type = QueryType.LIKE)
-    private String name;
+    private String description;
 }
