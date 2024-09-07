@@ -20,7 +20,7 @@ import top.continew.admin.system.model.entity.DictDO;
 import top.continew.admin.system.model.query.DictQuery;
 import top.continew.admin.system.model.req.DictReq;
 import top.continew.admin.system.model.resp.DictResp;
-import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.BaseService;
 

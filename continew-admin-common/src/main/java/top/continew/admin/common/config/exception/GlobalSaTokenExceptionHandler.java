@@ -43,7 +43,7 @@ public class GlobalSaTokenExceptionHandler {
      */
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，认证失败，无法访问系统资源。", request.getRequestURI(), e);
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         String errorMsg = switch (e.getType()) {
             case NotLoginException.KICK_OUT -> "您已被踢下线";
             case NotLoginException.BE_REPLACED_MESSAGE -> "您已被顶下线";
@@ -57,7 +57,7 @@ public class GlobalSaTokenExceptionHandler {
      */
     @ExceptionHandler(NotPermissionException.class)
     public R handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，权限码校验失败。", request.getRequestURI(), e);
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), "没有访问权限，请联系管理员授权");
     }
 
@@ -66,7 +66,7 @@ public class GlobalSaTokenExceptionHandler {
      */
     @ExceptionHandler(NotRoleException.class)
     public R handleNotRoleException(NotRoleException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，角色权限校验失败。", request.getRequestURI(), e);
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), "没有访问权限，请联系管理员授权");
     }
 }

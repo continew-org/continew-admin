@@ -25,7 +25,7 @@ import top.continew.admin.system.model.resp.DashboardAccessTrendResp;
 import top.continew.admin.system.model.resp.DashboardPopularModuleResp;
 import top.continew.admin.system.model.resp.DashboardTotalResp;
 import top.continew.admin.system.model.resp.log.LogResp;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 
 import java.util.List;
 import java.util.Map;

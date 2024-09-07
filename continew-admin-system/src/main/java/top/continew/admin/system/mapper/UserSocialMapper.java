@@ -18,7 +18,7 @@ package top.continew.admin.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.UserSocialDO;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 
 /**
  * 用户社会化关联 Mapper

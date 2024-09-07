@@ -23,7 +23,7 @@ import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
 import top.continew.admin.system.model.resp.FileResp;
 import top.continew.admin.system.model.resp.FileStatisticsResp;
-import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.util.List;

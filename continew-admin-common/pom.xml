@@ -67,7 +67,7 @@
         <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-data-mybatis-plus</artifactId>
+            <artifactId>continew-starter-data-mp</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 缓存模块 - JetCache -->

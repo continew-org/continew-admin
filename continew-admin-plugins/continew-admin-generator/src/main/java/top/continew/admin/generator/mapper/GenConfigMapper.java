@@ -17,7 +17,7 @@
 package top.continew.admin.generator.mapper;
 
 import top.continew.admin.generator.model.entity.GenConfigDO;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 
 /**
  * 生成配置 Mapper

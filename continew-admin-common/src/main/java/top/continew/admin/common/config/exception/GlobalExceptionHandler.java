@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public R handleBusinessException(BusinessException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，发生业务异常。", request.getRequestURI(), e);
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), e.getMessage());
     }
 
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
-        log.error("请求地址 [{}]，自定义验证失败。", request.getRequestURI(), e);
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
     }
 
@@ -63,6 +63,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MultipartException.class)
     public R handleRequestTooBigException(MultipartException e, HttpServletRequest request) {
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         String msg = e.getMessage();
         R defaultFail = R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), msg);
         if (CharSequenceUtil.isBlank(msg)) {
@@ -81,7 +82,6 @@ public class GlobalExceptionHandler {
             return defaultFail;
         }
         String errorMsg = "请上传小于 %sKB 的文件".formatted(NumberUtil.parseLong(sizeLimit) / 1024);
-        log.error("请求地址 [{}]，上传文件失败，文件大小超过限制。", request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), errorMsg);
     }
 }

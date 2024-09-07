@@ -23,7 +23,7 @@ import top.continew.admin.system.model.resp.NoticeDetailResp;
 import top.continew.admin.system.model.resp.NoticeResp;
 import top.continew.admin.system.model.resp.DashboardNoticeResp;
 import top.continew.starter.extension.crud.service.BaseService;
-import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.data.mp.service.IService;
 
 import java.util.List;
 

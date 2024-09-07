@@ -17,7 +17,7 @@
 package top.continew.admin.system.mapper;
 
 import top.continew.admin.system.model.entity.StorageDO;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 
 /**
  * 存储 Mapper

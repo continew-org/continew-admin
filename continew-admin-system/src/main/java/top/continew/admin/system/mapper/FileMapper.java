@@ -19,7 +19,7 @@ package top.continew.admin.system.mapper;
 import org.apache.ibatis.annotations.Select;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.resp.FileStatisticsResp;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 
 import java.util.List;
 

@@ -22,7 +22,7 @@ import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.resp.RoleDetailResp;
 import top.continew.admin.system.model.resp.RoleResp;
-import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.util.List;

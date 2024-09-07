@@ -53,6 +53,8 @@ continew-starter.web:
   response:
     # 是否开启国际化（默认：false）
     i18n: false
+    # 自定义失败 HTTP 状态码（默认：200，建议业务和通信状态码区分）
+    default-http-status-code-on-error: 200
     # 自定义成功响应码（默认：0）
     default-success-code: 0
     # 自定义成功提示（默认：ok）

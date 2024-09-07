@@ -1,6 +1,6 @@
 package ${packageName}.${subPackageName};
 
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 import ${packageName}.model.entity.${classNamePrefix}DO;
 
 /**

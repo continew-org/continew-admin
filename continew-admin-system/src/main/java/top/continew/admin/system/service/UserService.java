@@ -25,7 +25,7 @@ import top.continew.admin.system.model.resp.UserDetailResp;
 import top.continew.admin.system.model.resp.UserImportParseResp;
 import top.continew.admin.system.model.resp.UserImportResp;
 import top.continew.admin.system.model.resp.UserResp;
-import top.continew.starter.data.mybatis.plus.service.IService;
+import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.io.IOException;

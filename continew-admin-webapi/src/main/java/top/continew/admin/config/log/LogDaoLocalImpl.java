@@ -110,7 +110,7 @@ public class LogDaoLocalImpl implements LogDao {
     private void setResponse(LogDO logDO, LogResponse logResponse) {
         Map<String, String> responseHeaders = logResponse.getHeaders();
         logDO.setResponseHeaders(JSONUtil.toJsonStr(responseHeaders));
-        logDO.setTraceId(responseHeaders.get(traceProperties.getHeaderName()));
+        logDO.setTraceId(responseHeaders.get(traceProperties.getTraceIdName()));
         String responseBody = logResponse.getBody();
         logDO.setResponseBody(responseBody);
         // 状态

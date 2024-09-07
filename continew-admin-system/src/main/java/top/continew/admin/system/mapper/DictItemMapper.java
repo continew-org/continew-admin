@@ -18,7 +18,7 @@ package top.continew.admin.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.DictItemDO;
-import top.continew.starter.data.mybatis.plus.base.BaseMapper;
+import top.continew.starter.data.mp.base.BaseMapper;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 
 import java.util.List;
