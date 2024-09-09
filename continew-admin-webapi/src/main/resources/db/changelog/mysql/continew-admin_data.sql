@@ -192,3 +192,10 @@ VALUES
 -- changeset Charles7c:3.2-2
 UPDATE `sys_menu` SET `type` = 2, `path` = '/system/notice/detail', name = 'SystemNoticeDetail', component = 'system/notice/page/detail', `is_external` = b'0', `is_cache` = b'0', `is_hidden` = b'1' WHERE `id` = 1091;
 UPDATE `sys_menu` SET `type` = 2, `path` = '/system/notice/add', name = 'SystemNoticeAdd', component = 'system/notice/page/add', `is_external` = b'0', `is_cache` = b'0', `is_hidden` = b'1' WHERE `id` = 1092;
+
+-- changeset Charles7c:3.3-1
+UPDATE `sys_menu` SET `parent_id` = 4010 WHERE `id` = 4015;
+INSERT INTO `sys_menu`
+(`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `redirect`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
+VALUES
+(1017, '导入', 1010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:user:import', 7, 1, 1, NOW(), NULL, NULL);

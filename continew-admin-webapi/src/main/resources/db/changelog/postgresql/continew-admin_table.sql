@@ -90,6 +90,8 @@ CREATE TABLE IF NOT EXISTS "sys_role" (
     "description" varchar(200) DEFAULT NULL,
     "sort"        int4         NOT NULL DEFAULT 999,
     "is_system"   bool         NOT NULL DEFAULT false,
+    "menu_check_strictly" bool DEFAULT false,
+    "dept_check_strictly" bool DEFAULT false,
     "create_user" int8         NOT NULL,
     "create_time" timestamp    NOT NULL,
     "update_user" int8         DEFAULT NULL,
@@ -107,6 +109,8 @@ COMMENT ON COLUMN "sys_role"."data_scope"  IS '数据权限（1：全部数据�
 COMMENT ON COLUMN "sys_role"."description" IS '描述';
 COMMENT ON COLUMN "sys_role"."sort"        IS '排序';
 COMMENT ON COLUMN "sys_role"."is_system"   IS '是否为系统内置数据';
+COMMENT ON COLUMN "sys_role"."menu_check_strictly" IS '菜单选择是否父子节点关联';
+COMMENT ON COLUMN "sys_role"."dept_check_strictly" IS '部门选择是否父子节点关联';
 COMMENT ON COLUMN "sys_role"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_role"."create_time" IS '创建时间';
 COMMENT ON COLUMN "sys_role"."update_user" IS '修改人';
@@ -520,6 +524,7 @@ CREATE TABLE IF NOT EXISTS "gen_field_config" (
     "show_in_query" bool         NOT NULL DEFAULT true,
     "form_type"     int2         DEFAULT NULL,
     "query_type"    int2         DEFAULT NULL,
+    "dict_code"     varchar(30)  DEFAULT NULL,
     "create_time"   timestamp    NOT NULL
 );
 CREATE INDEX "idx_field_config_table_name" ON "gen_field_config" ("table_name");
@@ -537,5 +542,6 @@ COMMENT ON COLUMN "gen_field_config"."show_in_form"  IS '是否在表单中显�
 COMMENT ON COLUMN "gen_field_config"."show_in_query" IS '是否在查询中显示';
 COMMENT ON COLUMN "gen_field_config"."form_type"     IS '表单类型';
 COMMENT ON COLUMN "gen_field_config"."query_type"    IS '查询方式';
+COMMENT ON COLUMN "gen_field_config"."dict_code"     IS '字典编码';
 COMMENT ON COLUMN "gen_field_config"."create_time"   IS '创建时间';
 COMMENT ON TABLE  "gen_field_config"                 IS '字段配置表';
