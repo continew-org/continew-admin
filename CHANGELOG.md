@@ -1,3 +1,40 @@
+## [v3.3.0](https://github.com/continew-org/continew-admin/compare/v3.2.0...v3.3.0) (2024-09-09)
+
+### ✨ 新特性
+
+* 重构全局响应处理及异常拦截，自定义异常拦截从 Starter 调整到 Admin 项目 ([d7621c6](https://github.com/continew-org/continew-admin/commit/d7621c6b26bfd253d9295444ea144f5dabf67f44))
+* 重构 Controller 接口方法返回值写法，接口文档也已适配处理 ([d7621c6](https://github.com/continew-org/continew-admin/commit/d7621c6b26bfd253d9295444ea144f5dabf67f44)) ([0f1479f](https://github.com/continew-org/continew-admin/commit/0f1479f40deef83a5f5d64cbc24a7691b274b112))
+* 代码生成字段配置时支持指定排序 ([d56b9aa](https://github.com/continew-org/continew-admin/commit/d56b9aa35ee2502804f487487d7bac02f4edc9b0))
+* 代码生成字段配置时支持选择关联字典 ([fdd21a0](https://github.com/continew-org/continew-admin/commit/fdd21a01c106e12321d0d1886ff643c72a09943b)) ([ecc98b1](https://github.com/continew-org/continew-admin/commit/ecc98b1999d90c1a7a29af94dc8705283f34dada))
+* 修改角色功能权限、数据权限支持衔接新增角色时的父子联动选项 ([387fb19](https://github.com/continew-org/continew-admin/commit/387fb194640d4a288f053c3eba1bf5b314d64da7))
+
+### 💎 功能优化
+
+- 移除 WebMvcConfiguration 配置（已迁移到 Starter 项目）([d7621c6](https://github.com/continew-org/continew-admin/commit/d7621c6b26bfd253d9295444ea144f5dabf67f44))
+- 重构日志持久层接口本地实现类 ([2c1eb56](https://github.com/continew-org/continew-admin/commit/2c1eb5660f69a9ab702d503944a11e47edac1142))
+- 优化打包配置，模板等配置文件提取到 jar 包外部 ([75cef77](https://github.com/continew-org/continew-admin/commit/75cef773187e5b5060a10a12e7c9912002376d7a))
+- 优化健康监测接口响应信息 ([bb5a92e](https://github.com/continew-org/continew-admin/commit/bb5a92e5ca238ed677d9ac3589fdf8009d2ac232))
+- 优化代码生成列配置代码，取消后端部分默认值 ([f5ee2b5](https://github.com/continew-org/continew-admin/commit/f5ee2b5beb9572d3fcd5b7c2f6db0627dedb31aa)) ([ca9f34d](https://github.com/continew-org/continew-admin/commit/ca9f34d3d5a3f96c6df537036a5fd876cae2e89a))
+- 重构权限变更逻辑，修改角色、变更用户角色不再下线用户 ([ad9a600](https://github.com/continew-org/continew-admin/commit/ad9a6000fcb5d64b04cf230caa3cbacc8c3ac8d7))
+
+### 🐛 问题修复
+
+- 修复打包部署后，下载用户导入模板异常问题 (Gitee#25) ([c7ffc67](https://github.com/continew-org/continew-admin/commit/c7ffc67cdc9139a4398c7dc819ca453880bd100a))
+- 修复日志记录仅支持获取 JSON 结构响应体的问题 ([d7621c6](https://github.com/continew-org/continew-admin/commit/d7621c6b26bfd253d9295444ea144f5dabf67f44))
+- 修复并增强 SQL 注入防御 ([0f1479f](https://github.com/continew-org/continew-admin/commit/0f1479f40deef83a5f5d64cbc24a7691b274b112))
+- 修复目录、菜单的组件名称重复的错误问题 ([9e91f56](https://github.com/continew-org/continew-admin/commit/9e91f563e2a263ce302dc3bf17c89e37c2b56285))
+- 修复 DataPermission 注解表别名配置无效的问题 ([6c4e252](https://github.com/continew-org/continew-admin/commit/6c4e2522df3f44ba0f5a21228e805b8ac98f8e6b))
+- 临时移除 MyBatis Plus saveBatch 不兼容的 rewriteBatchedStatements 配置 ([25240fa](https://github.com/continew-org/continew-admin/commit/25240fa81957a1677deda294ce8f2b0af5413315))
+- 修复更新会导致原加密失效的问题 ([8903195](https://github.com/continew-org/continew-admin/commit/89031954c0b7daee1c08e1a10fd50139301cd6ab)) ([c87317d](https://github.com/continew-org/continew-admin/commit/c87317d19946989e86dfbc5f24b155b2ea5abdc9))
+- 修复角色查询参数与前端不一致的问题 ([098571f](https://github.com/continew-org/continew-admin/commit/098571ffb2febc6163d2b9e5b18c4796ea80cbfa))
+- 修复特殊校验异常不打印堆栈 ([c87317d](https://github.com/continew-org/continew-admin/commit/c87317d19946989e86dfbc5f24b155b2ea5abdc9))
+- 修复日志全局 includes 配置会被局部修改的问题 ([c87317d](https://github.com/continew-org/continew-admin/commit/c87317d19946989e86dfbc5f24b155b2ea5abdc9))
+- 修复初始数据错误 ([403c72a](https://github.com/continew-org/continew-admin/commit/403c72aa52a0f0852208f15fa1c7117ee26414f0))
+
+### 📦 依赖升级
+
+- ContiNew Starter 2.4.0 => 2.6.0 (更多特性及依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/continew-org/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v3.2.0](https://github.com/continew-org/continew-admin/compare/v3.1.0...v3.2.0) (2024-08-05)
 
 ### ✨ 新特性
