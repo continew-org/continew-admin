@@ -57,6 +57,5 @@ public class OptionReq extends BaseReq {
      * 值
      */
     @Schema(description = "值", example = "ContiNew Admin")
-    @NotBlank(message = "值不能为空")
     private String value;
 }

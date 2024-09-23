@@ -199,3 +199,6 @@ INSERT INTO `sys_menu`
 (`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `redirect`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`)
 VALUES
 (1017, '导入', 1010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:user:import', 7, 1, 1, NOW(), NULL, NULL);
+
+-- changeset Charles7c:3.4-1
+UPDATE `sys_option` SET `default_value` = NULL WHERE `code` = 'SITE_BEIAN';

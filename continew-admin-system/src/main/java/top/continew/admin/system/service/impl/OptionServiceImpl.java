@@ -73,11 +73,23 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public void update(List<OptionReq> options) {
+        // 非空校验
+        List<Long> idList = options.stream().map(OptionReq::getId).toList();
+        List<OptionDO> optionList = baseMapper.selectBatchIds(idList);
+        Map<String, OptionDO> optionMap = optionList.stream()
+            .collect(Collectors.toMap(OptionDO::getCode, Function.identity(), (existing, replacement) -> existing));
+        for (OptionReq req : options) {
+            OptionDO option = optionMap.get(req.getCode());
+            ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", req.getCode());
+            if (StrUtil.isNotBlank(option.getDefaultValue())) {
+                ValidationUtils.throwIfBlank(req.getValue(), "参数 [{}] 的值不能为空", option.getName());
+            }
+        }
+        // 校验密码策略参数取值范围
         Map<String, String> passwordPolicyOptionMap = options.stream()
             .filter(option -> StrUtil.startWith(option
                 .getCode(), PasswordPolicyEnum.CATEGORY + StringConstants.UNDERLINE))
             .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue, (oldVal, newVal) -> oldVal));
-        // 校验密码策略参数取值范围
         for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap.entrySet()) {
             String code = passwordPolicyOptionEntry.getKey();
             String value = passwordPolicyOptionEntry.getValue();
@@ -95,13 +107,13 @@ public class OptionServiceImpl implements OptionService {
         String category = req.getCategory();
         List<String> codeList = req.getCode();
         ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codeList), "键列表不能为空");
-        LambdaUpdateChainWrapper<OptionDO> chainWrapper = baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
+        LambdaUpdateChainWrapper<OptionDO> updateWrapper = baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
         if (StrUtil.isNotBlank(category)) {
-            chainWrapper.eq(OptionDO::getCategory, category);
+            updateWrapper.eq(OptionDO::getCategory, category);
         } else {
-            chainWrapper.in(OptionDO::getCode, req.getCode());
+            updateWrapper.in(OptionDO::getCode, req.getCode());
         }
-        chainWrapper.update();
+        updateWrapper.update();
     }
 
     @Override
