@@ -83,6 +83,11 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
         this.decodeSecretKey(req, oldStorage);
         DisEnableStatusEnum oldStatus = oldStorage.getStatus();
+        if (Boolean.TRUE.equals(req.getIsDefault())) {
+            CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储");
+            CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus) && !DisEnableStatusEnum.ENABLE
+                .equals(newStatus), "请先启用该存储");
+        }
         // 先卸载
         if (DisEnableStatusEnum.ENABLE.equals(oldStatus)) {
             this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
@@ -90,10 +95,6 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         // 再加载
         if (DisEnableStatusEnum.ENABLE.equals(newStatus)) {
             this.load(req);
-        }
-        if (Boolean.TRUE.equals(req.getIsDefault())) {
-            CheckUtils.throwIf(!DisEnableStatusEnum.ENABLE.equals(oldStatus), "请先启用该存储");
-            CheckUtils.throwIf(this.isDefaultExists(id), "请先取消原有默认存储");
         }
     }
 
