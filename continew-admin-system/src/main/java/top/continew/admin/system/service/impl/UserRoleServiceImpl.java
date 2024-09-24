@@ -69,7 +69,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void saveBatch(List<UserRoleDO> list) {
-        baseMapper.insertBatch(list);
+        baseMapper.insert(list);
     }
 
     @Override

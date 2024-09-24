@@ -210,6 +210,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
             dept.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
             list.add(dept);
         }
-        baseMapper.updateBatchById(list);
+        baseMapper.updateById(list);
     }
 }

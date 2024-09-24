@@ -75,7 +75,7 @@ public class MessageUserServiceImpl implements MessageUserService {
             messageUser.setIsRead(false);
             return messageUser;
         }).toList();
-        baseMapper.insertBatch(messageUserList);
+        baseMapper.insert(messageUserList);
     }
 
     @Override

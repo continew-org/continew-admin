@@ -197,7 +197,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             fieldConfig.setTableName(tableName);
         }
-        fieldConfigMapper.insertBatch(fieldConfigList);
+        fieldConfigMapper.insert(fieldConfigList);
         // 保存或更新生成配置信息
         GenConfigDO newGenConfig = req.getGenConfig();
         GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);

@@ -98,7 +98,7 @@ public class OptionServiceImpl implements OptionService {
             passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyOptionMap);
         }
         RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
-        baseMapper.updateBatchById(BeanUtil.copyToList(options, OptionDO.class));
+        baseMapper.updateById(BeanUtil.copyToList(options, OptionDO.class));
     }
 
     @Override

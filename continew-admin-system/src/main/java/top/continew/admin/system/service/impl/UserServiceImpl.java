@@ -287,7 +287,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     public void doImportUser(List<UserDO> insertList, List<UserDO> updateList, List<UserRoleDO> userRoleDOList) {
         if (CollUtil.isNotEmpty(insertList)) {
-            baseMapper.insertBatch(insertList);
+            baseMapper.insert(insertList);
         }
         if (CollUtil.isNotEmpty(updateList)) {
             this.updateBatchById(updateList);
