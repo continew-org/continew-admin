@@ -49,6 +49,12 @@ public class JobInstanceLogPageResult implements Serializable {
     private List message;
 
     /**
+     * 异常信息
+     */
+    @Schema(description = "异常信息")
+    private String throwable;
+
+    /**
      * 是否结束
      */
     @Schema(description = "是否结束", example = "true")
