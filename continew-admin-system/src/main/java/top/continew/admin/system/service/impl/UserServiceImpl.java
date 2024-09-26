@@ -336,7 +336,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             OnlineUserQuery query = new OnlineUserQuery();
             query.setUserId(id);
             List<LoginUser> loginUserList = onlineUserService.list(query);
-            loginUserList.parallelStream().forEach(loginUser -> {
+            loginUserList.forEach(loginUser -> {
                 loginUser.setRoles(roleService.listByUserId(loginUser.getId()));
                 loginUser.setPermissions(roleService.listPermissionByUserId(loginUser.getId()));
                 LoginHelper.updateLoginUser(loginUser, loginUser.getToken());

@@ -103,11 +103,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         // 保存角色和部门关联
         boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
         // 如果功能权限或数据权限有变更，则更新在线用户权限信息
-        if (ObjectUtil.notEqual(req.getDataScope(), oldDataScope) || isSaveMenuSuccess || isSaveDeptSuccess) {
+        if (isSaveMenuSuccess || isSaveDeptSuccess || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)) {
             OnlineUserQuery query = new OnlineUserQuery();
             query.setRoleId(id);
             List<LoginUser> loginUserList = onlineUserService.list(query);
-            loginUserList.parallelStream().forEach(loginUser -> {
+            loginUserList.forEach(loginUser -> {
                 loginUser.setRoles(this.listByUserId(loginUser.getId()));
                 loginUser.setPermissions(this.listPermissionByUserId(loginUser.getId()));
                 LoginHelper.updateLoginUser(loginUser, loginUser.getToken());
