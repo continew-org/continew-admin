@@ -96,11 +96,11 @@ public class GeneratorServiceImpl implements GeneratorService {
             .reversed());
         List<TableResp> tableRespList = BeanUtil.copyToList(tableList, TableResp.class);
         PageResp<TableResp> pageResp = PageResp.build(pageQuery.getPage(), pageQuery.getSize(), tableRespList);
-        for (TableResp tableResp : pageResp.getList()) {
+        pageResp.getList().parallelStream().forEach(tableResp -> {
             long count = genConfigMapper.selectCount(Wrappers.lambdaQuery(GenConfigDO.class)
                 .eq(GenConfigDO::getTableName, tableResp.getTableName()));
             tableResp.setIsConfiged(count > 0);
-        }
+        });
         return pageResp;
     }
 
