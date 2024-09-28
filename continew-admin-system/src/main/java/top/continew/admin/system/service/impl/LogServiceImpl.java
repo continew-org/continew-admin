@@ -67,6 +67,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageResp<LogResp> page(LogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
+        this.sort(queryWrapper, pageQuery);
         IPage<LogResp> page = baseMapper.selectLogPage(new Page<>(pageQuery.getPage(), pageQuery
             .getSize()), queryWrapper);
         return PageResp.build(page);
