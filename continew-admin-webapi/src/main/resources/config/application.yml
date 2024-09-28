@@ -41,7 +41,7 @@ logging:
 continew-starter.web:
   trace:
     enabled: true
-    header-name: traceId
+    trace-id-name: traceId
     ## TLog 配置
     tlog:
       enable-invoke-time-print: false
@@ -166,9 +166,6 @@ mybatis-plus:
     # ID 生成器配置
     id-generator:
       type: COSID
-    # 数据权限配置
-    data-permission:
-      enabled: true
     # 分页插件配置
     pagination:
       enabled: true

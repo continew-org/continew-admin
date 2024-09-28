@@ -13,50 +13,29 @@ server:
 --- ### 数据源配置
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
-  ## 动态数据源配置（可配多主多从：m1、s1...；纯粹多库：mysql、oracle...；混合配置：m1、s1、oracle...）
-  dynamic:
-    # 是否启用 P6Spy（SQL 性能分析组件，该插件有性能损耗，不建议生产环境使用）
-    p6spy: false
-    # 设置默认的数据源或者数据源组（默认：master）
-    primary: master
-    # 严格匹配数据源（true：未匹配到指定数据源时抛异常；false：使用默认数据源；默认 false）
-    strict: false
-    datasource:
-      # 主库配置（可配多个，构成多主）
-      master:
-        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-        username: ${DB_USER:root}
-        password: ${DB_PWD:123456}
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        type: ${spring.datasource.type}
-#      # 从库配置（可配多个，构成多从）
-#      slave_1:
-#        url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-#        username:
-#        password:
-#        lazy: true
-#        driver-class-name: com.mysql.cj.jdbc.Driver
-#        type: ${spring.datasource.type}
-#      # PostgreSQL 库配置
-#      postgresql:
-#        url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
-#        username: ${DB_USER:root}
-#        password: ${DB_PWD:123456}
-#        driver-class-name: org.postgresql.Driver
-#        type: ${spring.datasource.type}
-    # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
-    hikari:
-      # 最大连接数量（默认 10，根据实际环境调整）
-      # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
-      max-pool-size: 20
-      # 获取连接超时时间（默认 30000 毫秒，30 秒）
-      connection-timeout: 30000
-      # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
-      idle-timeout: 600000
-      # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
-      keepaliveTime: 30000
-      # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
-      max-lifetime: 1800000
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+  username: ${DB_USER:root}
+  password: ${DB_PWD:123456}
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  # PostgreSQL 配置
+#  postgresql:
+#    url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+#    username: ${DB_USER:root}
+#    password: ${DB_PWD:123456}
+#    driver-class-name: org.postgresql.Driver
+  # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
+  hikari:
+    # 最大连接数量（默认 10，根据实际环境调整）
+    # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
+    maximum-pool-size: 20
+    # 获取连接超时时间（默认 30000 毫秒，30 秒）
+    connection-timeout: 30000
+    # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
+    idle-timeout: 600000
+    # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
+    keepaliveTime: 30000
+    # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
+    max-lifetime: 1800000
 ## Liquibase 配置
 spring.liquibase:
   # 是否启用

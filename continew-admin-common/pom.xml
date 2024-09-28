@@ -64,6 +64,12 @@
             <artifactId>continew-starter-auth-justauth</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 数据权限模块 - MyBatis Plus -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-extension-datapermission-mp</artifactId>
+        </dependency>
+
         <!-- ContiNew Starter 数据访问模块 - MyBatis Plus -->
         <dependency>
             <groupId>top.continew</groupId>

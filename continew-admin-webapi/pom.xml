@@ -74,7 +74,7 @@
                 <configuration>
                     <!-- 排除配置文件 -->
                     <excludes>
-                        <exclude>${config-path}/</exclude>
+                        <exclude>${config-path}</exclude>
                         <exclude>db/</exclude>
                         <exclude>templates/</exclude>
                         <exclude>logback-spring.xml</exclude>

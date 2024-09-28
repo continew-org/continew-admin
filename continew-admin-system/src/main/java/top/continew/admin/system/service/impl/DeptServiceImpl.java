@@ -18,8 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +36,11 @@ import top.continew.starter.data.core.enums.DatabaseType;
 import top.continew.starter.data.core.util.MetaUtils;
 import top.continew.starter.extension.crud.service.impl.BaseServiceImpl;
 
-import java.util.*;
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 部门业务实现
@@ -53,11 +55,12 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     @Resource
     private UserService userService;
     private final RoleDeptService roleDeptService;
+    @Resource
+    private DataSource dataSource;
 
     @Override
     public List<DeptDO> listChildren(Long id) {
-        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
-            .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
+        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
         return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
     }
 
@@ -184,8 +187,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         if (CollUtil.isEmpty(ids)) {
             return 0L;
         }
-        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(SpringUtil
-            .getBean(DynamicRoutingDataSource.class), DatabaseType.MYSQL);
+        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
         return ids.stream()
             .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).count())
             .sum();

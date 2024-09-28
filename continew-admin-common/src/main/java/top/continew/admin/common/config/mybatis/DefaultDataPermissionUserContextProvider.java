@@ -19,19 +19,20 @@ package top.continew.admin.common.config.mybatis;
 import cn.hutool.core.convert.Convert;
 import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.helper.LoginHelper;
-import top.continew.starter.data.mp.datapermission.DataPermissionCurrentUser;
-import top.continew.starter.data.mp.datapermission.DataPermissionFilter;
-import top.continew.starter.data.mp.datapermission.DataScope;
+import top.continew.starter.extension.datapermission.enums.DataScope;
+import top.continew.starter.extension.datapermission.filter.DataPermissionUserContextProvider;
+import top.continew.starter.extension.datapermission.model.RoleContext;
+import top.continew.starter.extension.datapermission.model.UserContext;
 
 import java.util.stream.Collectors;
 
 /**
- * 数据权限过滤器实现类
+ * 数据权限用户上下文提供者
  *
  * @author Charles7c
  * @since 2023/12/21 21:19
  */
-public class DataPermissionFilterImpl implements DataPermissionFilter {
+public class DefaultDataPermissionUserContextProvider implements DataPermissionUserContextProvider {
 
     @Override
     public boolean isFilter() {
@@ -40,17 +41,15 @@ public class DataPermissionFilterImpl implements DataPermissionFilter {
     }
 
     @Override
-    public DataPermissionCurrentUser getCurrentUser() {
+    public UserContext getUserContext() {
         LoginUser loginUser = LoginHelper.getLoginUser();
-        DataPermissionCurrentUser currentUser = new DataPermissionCurrentUser();
-        currentUser.setUserId(Convert.toStr(loginUser.getId()));
-        currentUser.setDeptId(Convert.toStr(loginUser.getDeptId()));
-        currentUser.setRoles(loginUser.getRoles()
+        UserContext userContext = new UserContext();
+        userContext.setUserId(Convert.toStr(loginUser.getId()));
+        userContext.setDeptId(Convert.toStr(loginUser.getDeptId()));
+        userContext.setRoles(loginUser.getRoles()
             .stream()
-            .map(r -> new DataPermissionCurrentUser.CurrentUserRole(Convert.toStr(r.getId()), DataScope.valueOf(r
-                .getDataScope()
-                .name())))
+            .map(r -> new RoleContext(Convert.toStr(r.getId()), DataScope.valueOf(r.getDataScope().name())))
             .collect(Collectors.toSet()));
-        return currentUser;
+        return userContext;
     }
 }
