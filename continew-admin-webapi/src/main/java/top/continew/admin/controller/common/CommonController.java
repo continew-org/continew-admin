@@ -38,7 +38,6 @@ import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.resp.FileUploadResp;
 import top.continew.admin.system.service.*;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
@@ -60,7 +59,6 @@ import java.util.List;
 @RequestMapping("/common")
 public class CommonController {
 
-    private final ProjectProperties projectProperties;
     private final FileService fileService;
     private final DeptService deptService;
     private final MenuService menuService;
@@ -71,8 +69,6 @@ public class CommonController {
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
     public FileUploadResp upload(@NotNull(message = "文件不能为空") MultipartFile file) {
-        // TODO 实际开发时请删除本条校验
-        ValidationUtils.throwIf(projectProperties.isProduction(), "演示环境不支持上传文件");
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file);
         return FileUploadResp.builder().url(fileInfo.getUrl()).build();
