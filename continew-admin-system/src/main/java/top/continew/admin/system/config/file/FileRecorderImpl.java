@@ -26,7 +26,7 @@ import org.dromara.x.file.storage.core.FileInfo;
 import org.dromara.x.file.storage.core.recorder.FileRecorder;
 import org.dromara.x.file.storage.core.upload.FilePartInfo;
 import org.springframework.stereotype.Component;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.mapper.StorageMapper;
@@ -66,7 +66,7 @@ public class FileRecorderImpl implements FileRecorder {
         StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         file.setStorageId(storage.getId());
         file.setCreateTime(DateUtil.toLocalDateTime(fileInfo.getCreateTime()));
-        file.setUpdateUser(LoginHelper.getUserId());
+        file.setUpdateUser(UserContextHolder.getUserId());
         file.setUpdateTime(file.getCreateTime());
         fileMapper.insert(file);
         return true;

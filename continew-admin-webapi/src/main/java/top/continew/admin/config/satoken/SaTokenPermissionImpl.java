@@ -17,8 +17,8 @@
 package top.continew.admin.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +33,13 @@ public class SaTokenPermissionImpl implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        return new ArrayList<>(loginUser.getPermissions());
+        UserContext userContext = UserContextHolder.getContext();
+        return new ArrayList<>(userContext.getPermissions());
     }
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        return new ArrayList<>(loginUser.getRoleCodes());
+        UserContext userContext = UserContextHolder.getContext();
+        return new ArrayList<>(userContext.getRoleCodes());
     }
 }

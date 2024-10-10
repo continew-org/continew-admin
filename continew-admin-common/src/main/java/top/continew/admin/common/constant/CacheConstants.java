@@ -32,11 +32,6 @@ public class CacheConstants {
     public static final String DELIMITER = StringConstants.COLON;
 
     /**
-     * 登录用户键
-     */
-    public static final String LOGIN_USER_KEY = "LOGIN_USER";
-
-    /**
      * 验证码键前缀
      */
     public static final String CAPTCHA_KEY_PREFIX = "CAPTCHA" + DELIMITER;

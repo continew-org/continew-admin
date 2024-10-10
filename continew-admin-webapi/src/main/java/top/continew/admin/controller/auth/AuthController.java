@@ -35,9 +35,9 @@ import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.model.resp.UserInfoResp;
 import top.continew.admin.auth.service.LoginService;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.model.dto.LoginUser;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.util.SecureUtils;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.model.resp.UserDetailResp;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
@@ -122,12 +122,12 @@ public class AuthController {
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")
     public UserInfoResp getUserInfo() {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        UserDetailResp userDetailResp = userService.get(loginUser.getId());
+        UserContext userContext = UserContextHolder.getContext();
+        UserDetailResp userDetailResp = userService.get(userContext.getId());
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
-        userInfoResp.setPermissions(loginUser.getPermissions());
-        userInfoResp.setRoles(loginUser.getRoleCodes());
-        userInfoResp.setPwdExpired(loginUser.isPasswordExpired());
+        userInfoResp.setPermissions(userContext.getPermissions());
+        userInfoResp.setRoles(userContext.getRoleCodes());
+        userInfoResp.setPwdExpired(userContext.isPasswordExpired());
         return userInfoResp;
     }
 
@@ -135,6 +135,6 @@ public class AuthController {
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
     @GetMapping("/route")
     public List<RouteResp> listRoute() {
-        return loginService.buildRouteTree(LoginHelper.getUserId());
+        return loginService.buildRouteTree(UserContextHolder.getUserId());
     }
 }

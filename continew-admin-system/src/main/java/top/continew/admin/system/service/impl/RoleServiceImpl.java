@@ -26,15 +26,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.constant.SysConstants;
+import top.continew.admin.common.context.RoleContext;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.model.dto.RoleDTO;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.RoleMapper;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
@@ -104,13 +103,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
         // 如果功能权限或数据权限有变更，则更新在线用户权限信息
         if (isSaveMenuSuccess || isSaveDeptSuccess || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)) {
-            OnlineUserQuery query = new OnlineUserQuery();
-            query.setRoleId(id);
-            List<LoginUser> loginUserList = onlineUserService.list(query);
-            loginUserList.forEach(loginUser -> {
-                loginUser.setRoles(this.listByUserId(loginUser.getId()));
-                loginUser.setPermissions(this.listPermissionByUserId(loginUser.getId()));
-                LoginHelper.updateLoginUser(loginUser, loginUser.getToken());
+            List<Long> userIdList = userRoleService.listUserIdByRoleId(id);
+            userIdList.parallelStream().forEach(userId -> {
+                UserContext userContext = UserContextHolder.getContext(userId);
+                if (null != userContext) {
+                    userContext.setRoles(this.listByUserId(userId));
+                    userContext.setPermissions(this.listPermissionByUserId(userId));
+                    UserContextHolder.setContext(userContext);
+                }
             });
         }
     }
@@ -171,10 +171,10 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    public Set<RoleDTO> listByUserId(Long userId) {
+    public Set<RoleContext> listByUserId(Long userId) {
         List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
         List<RoleDO> roleList = baseMapper.lambdaQuery().in(RoleDO::getId, roleIdList).list();
-        return new HashSet<>(BeanUtil.copyToList(roleList, RoleDTO.class));
+        return new HashSet<>(BeanUtil.copyToList(roleList, RoleContext.class));
     }
 
     @Override

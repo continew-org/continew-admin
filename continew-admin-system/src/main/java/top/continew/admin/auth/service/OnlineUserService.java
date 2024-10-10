@@ -18,7 +18,6 @@ package top.continew.admin.auth.service;
 
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
-import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -48,7 +47,7 @@ public interface OnlineUserService {
      * @param query 查询条件
      * @return 列表信息
      */
-    List<LoginUser> list(OnlineUserQuery query);
+    List<OnlineUserResp> list(OnlineUserQuery query);
 
     /**
      * 查询 Token 最后活跃时间

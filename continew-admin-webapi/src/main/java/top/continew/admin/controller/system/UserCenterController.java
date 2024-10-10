@@ -31,8 +31,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.util.SecureUtils;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.model.entity.UserSocialDO;
 import top.continew.admin.system.model.req.UserBasicInfoUpdateReq;
@@ -73,14 +73,14 @@ public class UserCenterController {
     @PostMapping("/avatar")
     public AvatarResp updateAvatar(@NotNull(message = "头像不能为空") MultipartFile avatarFile) throws IOException {
         ValidationUtils.throwIf(avatarFile::isEmpty, "头像不能为空");
-        String newAvatar = userService.updateAvatar(avatarFile, LoginHelper.getUserId());
+        String newAvatar = userService.updateAvatar(avatarFile, UserContextHolder.getUserId());
         return AvatarResp.builder().avatar(newAvatar).build();
     }
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
     public void updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq req) {
-        userService.updateBasicInfo(req, LoginHelper.getUserId());
+        userService.updateBasicInfo(req, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "修改密码", description = "修改用户登录密码")
@@ -92,7 +92,7 @@ public class UserCenterController {
         String rawNewPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getNewPassword()));
         ValidationUtils.throwIfNull(rawNewPassword, "新密码解密失败");
-        userService.updatePassword(rawOldPassword, rawNewPassword, LoginHelper.getUserId());
+        userService.updatePassword(rawOldPassword, rawNewPassword, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "修改手机号", description = "修改手机号")
@@ -106,7 +106,7 @@ public class UserCenterController {
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.delete(captchaKey);
-        userService.updatePhone(updateReq.getPhone(), rawOldPassword, LoginHelper.getUserId());
+        userService.updatePhone(updateReq.getPhone(), rawOldPassword, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
@@ -120,13 +120,13 @@ public class UserCenterController {
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
         ValidationUtils.throwIfNotEqualIgnoreCase(updateReq.getCaptcha(), captcha, "验证码错误");
         RedisUtils.delete(captchaKey);
-        userService.updateEmail(updateReq.getEmail(), rawOldPassword, LoginHelper.getUserId());
+        userService.updateEmail(updateReq.getEmail(), rawOldPassword, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "查询绑定的三方账号", description = "查询绑定的三方账号")
     @GetMapping("/social")
     public List<UserSocialBindResp> listSocialBind() {
-        List<UserSocialDO> userSocialList = userSocialService.listByUserId(LoginHelper.getUserId());
+        List<UserSocialDO> userSocialList = userSocialService.listByUserId(UserContextHolder.getUserId());
         return userSocialList.stream().map(userSocial -> {
             String source = userSocial.getSource();
             UserSocialBindResp userSocialBind = new UserSocialBindResp();
@@ -144,13 +144,13 @@ public class UserCenterController {
         AuthResponse<AuthUser> response = authRequest.login(callback);
         ValidationUtils.throwIf(!response.ok(), response.getMsg());
         AuthUser authUser = response.getData();
-        userSocialService.bind(authUser, LoginHelper.getUserId());
+        userSocialService.bind(authUser, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "解绑三方账号", description = "解绑三方账号")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @DeleteMapping("/social/{source}")
     public void unbindSocial(@PathVariable String source) {
-        userSocialService.deleteBySourceAndUserId(source, LoginHelper.getUserId());
+        userSocialService.deleteBySourceAndUserId(source, UserContextHolder.getUserId());
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.model.dto;
+package top.continew.admin.common.context;
 
 import cn.hutool.core.collection.CollUtil;
 import lombok.Data;
@@ -28,14 +28,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 登录用户信息
+ * 用户上下文
  *
  * @author Charles7c
- * @since 2022/12/24 13:01
+ * @since 2024/10/9 20:29
  */
 @Data
 @NoArgsConstructor
-public class LoginUser implements Serializable {
+public class UserContext implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -56,6 +56,16 @@ public class LoginUser implements Serializable {
     private Long deptId;
 
     /**
+     * 最后一次修改密码时间
+     */
+    private LocalDateTime pwdResetTime;
+
+    /**
+     * 登录时系统设置的密码过期天数
+     */
+    private Integer passwordExpirationDays;
+
+    /**
      * 权限码集合
      */
     private Set<String> permissions;
@@ -68,57 +78,17 @@ public class LoginUser implements Serializable {
     /**
      * 角色集合
      */
-    private Set<RoleDTO> roles;
+    private Set<RoleContext> roles;
 
-    /**
-     * 令牌
-     */
-    private String token;
-
-    /**
-     * IP
-     */
-    private String ip;
-
-    /**
-     * IP 归属地
-     */
-    private String address;
-
-    /**
-     * 浏览器
-     */
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    private String os;
-
-    /**
-     * 登录时间
-     */
-    private LocalDateTime loginTime;
-
-    /**
-     * 最后一次修改密码时间
-     */
-    private LocalDateTime pwdResetTime;
-
-    /**
-     * 登录时系统设置的密码过期天数
-     */
-    private Integer passwordExpirationDays;
-
-    public LoginUser(Set<String> permissions, Set<RoleDTO> roles, Integer passwordExpirationDays) {
+    public UserContext(Set<String> permissions, Set<RoleContext> roles, Integer passwordExpirationDays) {
         this.permissions = permissions;
         this.setRoles(roles);
         this.passwordExpirationDays = passwordExpirationDays;
     }
 
-    public void setRoles(Set<RoleDTO> roles) {
+    public void setRoles(Set<RoleContext> roles) {
         this.roles = roles;
-        this.roleCodes = roles.stream().map(RoleDTO::getCode).collect(Collectors.toSet());
+        this.roleCodes = roles.stream().map(RoleContext::getCode).collect(Collectors.toSet());
     }
 
     /**

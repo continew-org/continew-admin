@@ -17,8 +17,7 @@
 package top.continew.admin.common.config.mybatis;
 
 import cn.hutool.core.convert.Convert;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.starter.extension.datapermission.enums.DataScope;
 import top.continew.starter.extension.datapermission.filter.DataPermissionUserContextProvider;
 import top.continew.starter.extension.datapermission.model.RoleContext;
@@ -36,17 +35,16 @@ public class DefaultDataPermissionUserContextProvider implements DataPermissionU
 
     @Override
     public boolean isFilter() {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        return !loginUser.isAdmin();
+        return !UserContextHolder.isAdmin();
     }
 
     @Override
     public UserContext getUserContext() {
-        LoginUser loginUser = LoginHelper.getLoginUser();
+        top.continew.admin.common.context.UserContext context = UserContextHolder.getContext();
         UserContext userContext = new UserContext();
-        userContext.setUserId(Convert.toStr(loginUser.getId()));
-        userContext.setDeptId(Convert.toStr(loginUser.getDeptId()));
-        userContext.setRoles(loginUser.getRoles()
+        userContext.setUserId(Convert.toStr(context.getId()));
+        userContext.setDeptId(Convert.toStr(context.getDeptId()));
+        userContext.setRoles(context.getRoles()
             .stream()
             .map(r -> new RoleContext(Convert.toStr(r.getId()), DataScope.valueOf(r.getDataScope().name())))
             .collect(Collectors.toSet()));

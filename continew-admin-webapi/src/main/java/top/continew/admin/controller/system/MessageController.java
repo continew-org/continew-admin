@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.model.query.MessageQuery;
 import top.continew.admin.system.model.resp.MessageResp;
 import top.continew.admin.system.model.resp.MessageUnreadResp;
@@ -53,7 +53,7 @@ public class MessageController {
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @GetMapping
     public PageResp<MessageResp> page(MessageQuery query, @Validated PageQuery pageQuery) {
-        query.setUserId(LoginHelper.getUserId());
+        query.setUserId(UserContextHolder.getUserId());
         return baseService.page(query, pageQuery);
     }
 
@@ -76,6 +76,6 @@ public class MessageController {
     @Parameter(name = "isDetail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
     @GetMapping("/unread")
     public MessageUnreadResp countUnreadMessage(@RequestParam(required = false) Boolean detail) {
-        return messageUserService.countUnreadMessageByUserId(LoginHelper.getUserId(), detail);
+        return messageUserService.countUnreadMessageByUserId(UserContextHolder.getUserId(), detail);
     }
 }

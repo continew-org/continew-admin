@@ -21,9 +21,9 @@ import cn.crane4j.core.executor.handler.ManyToManyAssembleOperationHandler;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.constant.ContainerConstants;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.continew.starter.security.mask.annotation.JsonMask;
 import top.continew.starter.security.mask.enums.MaskType;
@@ -129,6 +129,6 @@ public class UserResp extends BaseDetailResp {
 
     @Override
     public Boolean getDisabled() {
-        return this.getIsSystem() || Objects.equals(this.getId(), LoginHelper.getUserId());
+        return this.getIsSystem() || Objects.equals(this.getId(), UserContextHolder.getUserId());
     }
 }

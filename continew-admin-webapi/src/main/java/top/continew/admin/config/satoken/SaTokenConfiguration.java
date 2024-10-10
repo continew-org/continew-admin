@@ -19,11 +19,12 @@ package top.continew.admin.config.satoken;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpInterface;
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.starter.auth.satoken.autoconfigure.SaTokenExtensionProperties;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validate.CheckUtils;
@@ -54,14 +55,15 @@ public class SaTokenConfiguration {
      */
     @Bean
     public SaInterceptor saInterceptor() {
-        return new SaInterceptor(handle -> SaRouter.match(StringConstants.PATH_PATTERN)
+        return new SaExtensionInterceptor(handle -> SaRouter.match(StringConstants.PATH_PATTERN)
             .notMatch(properties.getSecurity().getExcludes())
             .check(r -> {
-                LoginUser loginUser = LoginHelper.getLoginUser();
+                StpUtil.checkLogin();
                 if (SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes())) {
                     return;
                 }
-                CheckUtils.throwIf(loginUser.isPasswordExpired(), "密码已过期，请修改密码");
+                UserContext userContext = UserContextHolder.getContext();
+                CheckUtils.throwIf(userContext.isPasswordExpired(), "密码已过期，请修改密码");
             }));
     }
 }

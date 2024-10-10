@@ -60,6 +60,14 @@ public interface UserRoleService {
     List<Long> listRoleIdByUserId(Long userId);
 
     /**
+     * 根据角色 ID 查询
+     *
+     * @param roleId 角色 ID
+     * @return 用户 ID 列表
+     */
+    List<Long> listUserIdByRoleId(Long roleId);
+
+    /**
      * 根据角色 ID 判断是否已被用户关联
      *
      * @param roleIds 角色 ID 列表

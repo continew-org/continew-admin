@@ -21,6 +21,7 @@ import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,16 @@ import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.common.context.UserExtraContext;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 在线用户业务实现
@@ -53,31 +53,43 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Override
     @AutoOperate(type = OnlineUserResp.class, on = "list")
     public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
-        List<LoginUser> loginUserList = this.list(query);
-        List<OnlineUserResp> list = BeanUtil.copyToList(loginUserList, OnlineUserResp.class);
+        List<OnlineUserResp> list = this.list(query);
         return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
     }
 
     @Override
-    public List<LoginUser> list(OnlineUserQuery query) {
-        List<LoginUser> loginUserList = new ArrayList<>();
-        // 查询所有登录用户
+    public List<OnlineUserResp> list(OnlineUserQuery query) {
+        List<OnlineUserResp> list = new ArrayList<>();
+        // 查询所有在线 Token
         List<String> tokenKeyList = StpUtil.searchTokenValue(StringConstants.EMPTY, 0, -1, false);
-        tokenKeyList.parallelStream().forEach(tokenKey -> {
+        Map<Long, List<String>> tokenMap = tokenKeyList.stream().filter(tokenKey -> {
             String token = StrUtil.subAfter(tokenKey, StringConstants.COLON, true);
             // 忽略已过期或失效 Token
-            if (StpUtil.stpLogic.getTokenActiveTimeoutByToken(token) < SaTokenDao.NEVER_EXPIRE) {
-                return;
+            return StpUtil.getStpLogic().getTokenActiveTimeoutByToken(token) >= SaTokenDao.NEVER_EXPIRE;
+        })
+            .map(tokenKey -> StrUtil.subAfter(tokenKey, StringConstants.COLON, true))
+            .collect(Collectors.groupingBy(token -> Convert.toLong(StpUtil.getLoginIdByToken(token))));
+        // 过滤 Token
+        for (Map.Entry<Long, List<String>> entry : tokenMap.entrySet()) {
+            Long userId = entry.getKey();
+            UserContext userContext = UserContextHolder.getContext(userId);
+            if (null == userContext || !this.isMatchNickname(query.getNickname(), userContext)) {
+                continue;
             }
-            // 检查是否符合查询条件
-            LoginUser loginUser = LoginHelper.getLoginUser(token);
-            if (this.isMatchQuery(query, loginUser)) {
-                loginUserList.add(loginUser);
-            }
-        });
+            List<Date> loginTimeList = query.getLoginTime();
+            entry.getValue().parallelStream().forEach(token -> {
+                UserExtraContext extraContext = UserContextHolder.getExtraContext(token);
+                if (this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
+                    OnlineUserResp resp = BeanUtil.copyProperties(userContext, OnlineUserResp.class);
+                    BeanUtil.copyProperties(extraContext, resp);
+                    resp.setToken(token);
+                    list.add(resp);
+                }
+            });
+        }
         // 设置排序
-        CollUtil.sort(loginUserList, Comparator.comparing(LoginUser::getLoginTime).reversed());
-        return loginUserList;
+        CollUtil.sort(list, Comparator.comparing(OnlineUserResp::getLoginTime).reversed());
+        return list;
     }
 
     @Override
@@ -95,35 +107,31 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     /**
-     * 是否符合查询条件
+     * 是否匹配昵称
      *
-     * @param query     查询条件
-     * @param loginUser 登录用户信息
-     * @return 是否符合查询条件
+     * @param nickname    昵称
+     * @param userContext 用户上下文信息
+     * @return 是否匹配昵称
      */
-    private boolean isMatchQuery(OnlineUserQuery query, LoginUser loginUser) {
-        boolean flag1 = true;
-        String nickname = query.getNickname();
-        if (StrUtil.isNotBlank(nickname)) {
-            flag1 = StrUtil.contains(loginUser.getUsername(), nickname) || StrUtil.contains(LoginHelper
-                .getNickname(loginUser.getId()), nickname);
+    private boolean isMatchNickname(String nickname, UserContext userContext) {
+        if (StrUtil.isBlank(nickname)) {
+            return true;
         }
-        boolean flag2 = true;
-        List<Date> loginTime = query.getLoginTime();
-        if (CollUtil.isNotEmpty(loginTime)) {
-            flag2 = DateUtil.isIn(DateUtil.date(loginUser.getLoginTime()).toJdkDate(), loginTime.get(0), loginTime
-                .get(1));
+        return StrUtil.contains(userContext.getUsername(), nickname) || StrUtil.contains(UserContextHolder
+            .getNickname(userContext.getId()), nickname);
+    }
+
+    /**
+     * 是否匹配登录时间
+     *
+     * @param loginTimeList 登录时间列表
+     * @param loginTime     登录时间
+     * @return 是否匹配登录时间
+     */
+    private boolean isMatchLoginTime(List<Date> loginTimeList, LocalDateTime loginTime) {
+        if (CollUtil.isEmpty(loginTimeList)) {
+            return true;
         }
-        boolean flag3 = true;
-        Long userId = query.getUserId();
-        if (null != userId) {
-            flag3 = userId.equals(loginUser.getId());
-        }
-        boolean flag4 = true;
-        Long roleId = query.getRoleId();
-        if (null != roleId) {
-            flag4 = loginUser.getRoles().stream().anyMatch(r -> r.getId().equals(roleId));
-        }
-        return flag1 && flag2 && flag3 && flag4;
+        return DateUtil.isIn(DateUtil.date(loginTime).toJdkDate(), loginTimeList.get(0), loginTimeList.get(1));
     }
 }

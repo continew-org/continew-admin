@@ -16,12 +16,8 @@
 
 package top.continew.admin.system.mapper;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.starter.data.mp.base.BaseMapper;
-
-import java.util.List;
 
 /**
  * 用户和角色 Mapper
@@ -30,13 +26,4 @@ import java.util.List;
  * @since 2023/2/13 23:13
  */
 public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
-
-    /**
-     * 根据用户 ID 查询
-     *
-     * @param userId 用户 ID
-     * @return 角色 ID 列表
-     */
-    @Select("SELECT role_id FROM sys_user_role WHERE user_id = #{userId}")
-    List<Long> selectRoleIdByUserId(@Param("userId") Long userId);
 }

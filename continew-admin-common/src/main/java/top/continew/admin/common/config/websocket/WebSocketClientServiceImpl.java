@@ -16,11 +16,11 @@
 
 package top.continew.admin.common.config.websocket;
 
+import cn.dev33.satoken.stp.StpUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.util.helper.LoginHelper;
+import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.messaging.websocket.core.WebSocketClientService;
 
 /**
@@ -36,7 +36,9 @@ public class WebSocketClientServiceImpl implements WebSocketClientService {
     public String getClientId(ServletServerHttpRequest request) {
         HttpServletRequest servletRequest = request.getServletRequest();
         String token = servletRequest.getParameter("token");
-        LoginUser loginUser = LoginHelper.getLoginUser(token);
-        return loginUser.getToken();
+        if (null == StpUtil.getLoginIdByToken(token)) {
+            throw new BusinessException("登录已过期，请重新登录");
+        }
+        return token;
     }
 }

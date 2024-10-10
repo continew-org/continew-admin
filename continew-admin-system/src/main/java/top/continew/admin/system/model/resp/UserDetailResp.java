@@ -27,12 +27,12 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.constant.ContainerConstants;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.service.DeptService;
-import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
+import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.file.excel.converter.ExcelListConverter;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
@@ -160,6 +160,6 @@ public class UserDetailResp extends BaseDetailResp {
 
     @Override
     public Boolean getDisabled() {
-        return this.getIsSystem() || Objects.equals(this.getId(), LoginHelper.getUserId());
+        return this.getIsSystem() || Objects.equals(this.getId(), UserContextHolder.getUserId());
     }
 }

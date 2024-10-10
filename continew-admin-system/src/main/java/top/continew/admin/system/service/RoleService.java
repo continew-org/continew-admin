@@ -16,7 +16,7 @@
 
 package top.continew.admin.system.service;
 
-import top.continew.admin.common.model.dto.RoleDTO;
+import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.req.RoleReq;
@@ -66,7 +66,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * @param userId 用户 ID
      * @return 角色集合
      */
-    Set<RoleDTO> listByUserId(Long userId);
+    Set<RoleContext> listByUserId(Long userId);
 
     /**
      * 根据角色编码查询

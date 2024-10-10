@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.model.dto;
+package top.continew.admin.common.context;
 
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
@@ -23,13 +23,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 角色信息
+ * 角色上下文
  *
  * @author Charles7c
  * @since 2023/3/7 22:08
  */
 @Data
-public class RoleDTO implements Serializable {
+public class RoleContext implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

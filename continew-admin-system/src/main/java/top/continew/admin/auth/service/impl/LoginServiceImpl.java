@@ -16,6 +16,7 @@
 
 package top.continew.admin.auth.service.impl;
 
+import cn.dev33.satoken.stp.SaLoginConfig;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -39,11 +40,12 @@ import top.continew.admin.auth.service.LoginService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
+import top.continew.admin.common.context.RoleContext;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.common.context.UserExtraContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.common.model.dto.LoginUser;
-import top.continew.admin.common.model.dto.RoleDTO;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.admin.system.enums.MessageTemplateEnum;
 import top.continew.admin.system.enums.MessageTypeEnum;
@@ -61,6 +63,7 @@ import top.continew.starter.core.util.validate.CheckUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.util.TreeUtils;
 import top.continew.starter.messaging.websocket.util.WebSocketUtils;
+import top.continew.starter.web.util.SpringWebUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -205,15 +208,19 @@ public class LoginServiceImpl implements LoginService {
         Long userId = user.getId();
         CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> roleService
             .listPermissionByUserId(userId), threadPoolTaskExecutor);
-        CompletableFuture<Set<RoleDTO>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
+        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
             .listByUserId(userId), threadPoolTaskExecutor);
         CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
             .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
         CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);
-        LoginUser loginUser = new LoginUser(permissionFuture.join(), roleFuture.join(), passwordExpirationDaysFuture
-            .join());
-        BeanUtil.copyProperties(user, loginUser);
-        return LoginHelper.login(loginUser);
+        UserContext userContext = new UserContext(permissionFuture.join(), roleFuture
+            .join(), passwordExpirationDaysFuture.join());
+        BeanUtil.copyProperties(user, userContext);
+        // 登录并缓存用户信息
+        StpUtil.login(userContext.getId(), SaLoginConfig.setExtraData(BeanUtil
+            .beanToMap(new UserExtraContext(SpringWebUtils.getRequest()))));
+        UserContextHolder.setContext(userContext);
+        return StpUtil.getTokenValue();
     }
 
     /**

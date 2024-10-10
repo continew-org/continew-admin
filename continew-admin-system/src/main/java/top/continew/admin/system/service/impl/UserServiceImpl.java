@@ -52,15 +52,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.SysConstants;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.common.model.dto.LoginUser;
 import top.continew.admin.common.util.SecureUtils;
-import top.continew.admin.common.util.helper.LoginHelper;
 import top.continew.admin.system.mapper.UserMapper;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
@@ -310,7 +309,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String phone = req.getPhone();
         CheckUtils.throwIf(StrUtil.isNotBlank(phone) && this.isPhoneExists(phone, id), errorMsgTemplate, phone);
         DisEnableStatusEnum newStatus = req.getStatus();
-        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, LoginHelper
+        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, UserContextHolder
             .getUserId()), "不允许禁用当前用户");
         UserDO oldUser = super.getById(id);
         if (Boolean.TRUE.equals(oldUser.getIsSystem())) {
@@ -333,14 +332,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         }
         // 如果角色有变更，则更新在线用户权限信息
         if (isSaveUserRoleSuccess) {
-            OnlineUserQuery query = new OnlineUserQuery();
-            query.setUserId(id);
-            List<LoginUser> loginUserList = onlineUserService.list(query);
-            loginUserList.forEach(loginUser -> {
-                loginUser.setRoles(roleService.listByUserId(loginUser.getId()));
-                loginUser.setPermissions(roleService.listPermissionByUserId(loginUser.getId()));
-                LoginHelper.updateLoginUser(loginUser, loginUser.getToken());
-            });
+            UserContext userContext = UserContextHolder.getContext(id);
+            if (null != userContext) {
+                userContext.setRoles(roleService.listByUserId(id));
+                userContext.setPermissions(roleService.listPermissionByUserId(id));
+                UserContextHolder.setContext(userContext);
+            }
         }
     }
 
@@ -348,7 +345,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Transactional(rollbackFor = Exception.class)
     @CacheInvalidate(key = "#ids", name = CacheConstants.USER_KEY_PREFIX, multi = true)
     public void delete(List<Long> ids) {
-        CheckUtils.throwIf(CollUtil.contains(ids, LoginHelper.getUserId()), "不允许删除当前用户");
+        CheckUtils.throwIf(CollUtil.contains(ids, UserContextHolder.getUserId()), "不允许删除当前用户");
         List<UserDO> list = baseMapper.lambdaQuery()
             .select(UserDO::getNickname, UserDO::getIsSystem)
             .in(UserDO::getId, ids)
