@@ -75,7 +75,7 @@ public class OptionServiceImpl implements OptionService {
     public void update(List<OptionReq> options) {
         // 非空校验
         List<Long> idList = options.stream().map(OptionReq::getId).toList();
-        List<OptionDO> optionList = baseMapper.selectBatchIds(idList);
+        List<OptionDO> optionList = baseMapper.selectByIds(idList);
         Map<String, OptionDO> optionMap = optionList.stream()
             .collect(Collectors.toMap(OptionDO::getCode, Function.identity(), (existing, replacement) -> existing));
         for (OptionReq req : options) {

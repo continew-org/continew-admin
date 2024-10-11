@@ -100,6 +100,8 @@ public interface JobBatchApi {
      *
      * @param jobId       任务 ID
      * @param taskBatchId 任务批次 ID
+     * @param taskId      任务实例ID
+     * @param startId     起始 ID
      * @param fromIndex   起始索引
      * @param size        每页条数
      * @return 响应信息
