@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.model.resp;
+package top.continew.admin.auth.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
