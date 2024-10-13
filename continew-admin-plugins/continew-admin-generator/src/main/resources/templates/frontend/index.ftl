@@ -13,7 +13,7 @@
       @refresh="search"
     >
       <#-- 查询字段配置 -->
-      <template #custom-left>
+      <template #toolbar-left>
       <#list fieldConfigs as fieldConfig>
       <#if fieldConfig.showInQuery>
 	  <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
@@ -57,20 +57,20 @@
       </#if>
       </#if>
       </#list>
-        <a-button @click="reset">重置</a-button>
+        <a-button @click="reset">
+          <template #icon><icon-refresh /></template>
+          <template #default>重置</template>
+        </a-button>
       </template>
-      <template #custom-right>
+      <template #toolbar-right>
         <a-button v-permission="['${apiModuleName}:${apiName}:add']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
-          <span>新增</span>
+          <template #default>新增</template>
         </a-button>
-        <a-tooltip content="导出">
-          <a-button v-permission="['${apiModuleName}:${apiName}:export']" class="gi_hover_btn-border" @click="onExport">
-            <template #icon>
-              <icon-download />
-            </template>
-          </a-button>
-        </a-tooltip>
+        <a-button v-permission="['${apiModuleName}:${apiName}:export']" @click="onExport">
+          <template #icon><icon-download /></template>
+          <template #default>导出</template>
+        </a-button>
       </template>
       <#-- 列字段配置 -->
       <template #name="{ record }">
