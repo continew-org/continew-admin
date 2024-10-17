@@ -14,38 +14,40 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.resp.dashboard;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
- * 仪表盘-访客地域分布信息
+ * 仪表盘-通用图表信息
  *
  * @author Charles7c
- * @since 2023/9/9 12:07
+ * @since 2024/10/17 21:37
  */
 @Data
-@Schema(description = "仪表盘-访客地域分布信息")
-public class DashboardGeoDistributionResp implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "仪表盘-通用图表信息")
+public class DashboardChartCommonResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 地点列表
+     * 名称
      */
-    @Schema(description = "地点列表", example = "[\"中国北京北京市\",\"中国广东省深圳市\"]")
-    private List<String> locations;
+    @Schema(description = "名称", example = "Windows 10")
+    private String name;
 
     /**
-     * 地点 IP 统计信息
+     * 数量
      */
-    @Schema(description = "地点 IP 统计信息", example = "[{\"name\":\"中国北京北京市\",\"value\":1000},{\"name\":\"中国广东省深圳市\",\"value\": 500}]")
-    private List<Map<String, Object>> locationIpStatistics;
+    @Schema(description = "数量", example = "1234")
+    private Long value;
 }

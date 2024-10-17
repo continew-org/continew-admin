@@ -3,7 +3,7 @@
 <mapper namespace="top.continew.admin.system.mapper.NoticeMapper">
 
     <select id="selectDashboardList"
-            resultType="top.continew.admin.system.model.resp.DashboardNoticeResp">
+            resultType="top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp">
         SELECT
             id, title, type
         FROM sys_notice

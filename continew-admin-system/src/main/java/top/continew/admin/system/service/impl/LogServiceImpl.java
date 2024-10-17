@@ -33,9 +33,9 @@ import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.model.entity.LogDO;
 import top.continew.admin.system.model.query.LogQuery;
-import top.continew.admin.system.model.resp.DashboardAccessTrendResp;
-import top.continew.admin.system.model.resp.DashboardPopularModuleResp;
-import top.continew.admin.system.model.resp.DashboardTotalResp;
+import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
+import top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp;
+import top.continew.admin.system.model.resp.dashboard.DashboardTotalResp;
 import top.continew.admin.system.model.resp.log.LogDetailResp;
 import top.continew.admin.system.model.resp.log.LogResp;
 import top.continew.admin.system.model.resp.log.LoginLogExportResp;
@@ -47,9 +47,10 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.file.excel.util.ExcelUtils;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 系统日志业务实现
@@ -105,13 +106,62 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public List<DashboardPopularModuleResp> listDashboardPopularModule() {
-        return baseMapper.selectListDashboardPopularModule();
+    public List<DashboardChartCommonResp> listDashboardAnalysisTimeslot() {
+        List<DashboardChartCommonResp> list = baseMapper.selectListDashboardAnalysisTimeslot();
+        if (list.size() < 12) {
+            // 获取所有时间段
+            List<String> allTimeSlots = new ArrayList<>();
+            for (int hour = 0; hour < 24; hour += 2) {
+                String timeSlot = String.format("%02d:00", hour);
+                allTimeSlots.add(timeSlot);
+            }
+            // 补充缺失的时间段
+            List<String> missingTimeSlots = allTimeSlots.stream()
+                .filter(timeSlot -> list.stream().noneMatch(item -> item.getName().equals(timeSlot)))
+                .toList();
+            list.addAll(missingTimeSlots.stream().map(timeSlot -> new DashboardChartCommonResp(timeSlot, 0L)).toList());
+            list.sort(Comparator.comparing(DashboardChartCommonResp::getName));
+        }
+        return list;
     }
 
     @Override
-    public List<Map<String, Object>> listDashboardGeoDistribution() {
-        return baseMapper.selectListDashboardGeoDistribution();
+    public List<DashboardChartCommonResp> listDashboardAnalysisGeo(int top) {
+        List<DashboardChartCommonResp> list = baseMapper.selectListDashboardAnalysisGeo(top > 1 ? top - 1 : top);
+        return this.buildOtherPieChartData(list);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> listDashboardAnalysisModule(int top) {
+        List<DashboardChartCommonResp> list = baseMapper.selectListDashboardAnalysisModule(top > 1 ? top - 1 : top);
+        return this.buildOtherPieChartData(list);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> listDashboardAnalysisOs(int top) {
+        List<DashboardChartCommonResp> list = baseMapper.selectListDashboardAnalysisOs(top > 1 ? top - 1 : top);
+        return this.buildOtherPieChartData(list);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> listDashboardAnalysisBrowser(int top) {
+        List<DashboardChartCommonResp> list = baseMapper.selectListDashboardAnalysisBrowser(top > 1 ? top - 1 : top);
+        return this.buildOtherPieChartData(list);
+    }
+
+    /**
+     * 构建其他饼图数据
+     *
+     * @param list 饼图数据列表
+     * @return 饼图数据列表
+     */
+    private List<DashboardChartCommonResp> buildOtherPieChartData(List<DashboardChartCommonResp> list) {
+        Long totalCount = baseMapper.lambdaQuery().count();
+        long sumCount = list.stream().mapToLong(DashboardChartCommonResp::getValue).sum();
+        if (sumCount < totalCount) {
+            list.add(new DashboardChartCommonResp("其他", totalCount - sumCount));
+        }
+        return list;
     }
 
     /**

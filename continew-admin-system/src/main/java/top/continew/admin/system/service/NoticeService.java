@@ -21,7 +21,7 @@ import top.continew.admin.system.model.query.NoticeQuery;
 import top.continew.admin.system.model.req.NoticeReq;
 import top.continew.admin.system.model.resp.NoticeDetailResp;
 import top.continew.admin.system.model.resp.NoticeResp;
-import top.continew.admin.system.model.resp.DashboardNoticeResp;
+import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.starter.extension.crud.service.BaseService;
 import top.continew.starter.data.mp.service.IService;
 

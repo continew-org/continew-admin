@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.resp;
+package top.continew.admin.system.model.resp.dashboard;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

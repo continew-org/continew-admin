@@ -16,7 +16,7 @@
 
 package top.continew.admin.system.service;
 
-import top.continew.admin.system.model.resp.*;
+import top.continew.admin.system.model.resp.dashboard.*;
 
 import java.util.List;
 
@@ -44,23 +44,44 @@ public interface DashboardService {
     List<DashboardAccessTrendResp> listAccessTrend(Integer days);
 
     /**
-     * 查询热门模块列表
-     *
-     * @return 热门模块列表
-     */
-    List<DashboardPopularModuleResp> listPopularModule();
-
-    /**
-     * 查询访客地域分布信息
-     *
-     * @return 访客地域分布信息
-     */
-    DashboardGeoDistributionResp getGeoDistribution();
-
-    /**
      * 查询公告列表
      *
      * @return 公告列表
      */
     List<DashboardNoticeResp> listNotice();
+
+    /**
+     * 查询访问时段分析信息
+     *
+     * @return 访问时段分析信息
+     */
+    List<DashboardChartCommonResp> getAnalysisTimeslot();
+
+    /**
+     * 查询地域分析信息
+     *
+     * @return 地域分析信息
+     */
+    List<DashboardChartCommonResp> getAnalysisGeo();
+
+    /**
+     * 查询模块分析信息
+     *
+     * @return 模块分析信息
+     */
+    List<DashboardChartCommonResp> getAnalysisModule();
+
+    /**
+     * 查询终端分析信息
+     *
+     * @return 终端分析信息
+     */
+    List<DashboardChartCommonResp> getAnalysisOs();
+
+    /**
+     * 查询浏览器分析信息
+     *
+     * @return 浏览器分析信息
+     */
+    List<DashboardChartCommonResp> getAnalysisBrowser();
 }

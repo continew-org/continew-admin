@@ -16,18 +16,16 @@
 
 package top.continew.admin.system.service.impl;
 
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import top.continew.admin.system.service.NoticeService;
+import top.continew.admin.system.model.resp.dashboard.*;
 import top.continew.admin.system.service.DashboardService;
 import top.continew.admin.system.service.LogService;
-import top.continew.admin.system.model.resp.*;
+import top.continew.admin.system.service.NoticeService;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 仪表盘业务实现
@@ -61,31 +59,32 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DashboardPopularModuleResp> listPopularModule() {
-        List<DashboardPopularModuleResp> popularModuleList = logService.listDashboardPopularModule();
-        for (DashboardPopularModuleResp popularModule : popularModuleList) {
-            Long todayPvCount = popularModule.getTodayPvCount();
-            Long yesterdayPvCount = popularModule.getYesterdayPvCount();
-            BigDecimal newPvCountFromYesterday = NumberUtil.sub(todayPvCount, yesterdayPvCount);
-            BigDecimal newPvFromYesterday = (0 == yesterdayPvCount)
-                ? BigDecimal.valueOf(100)
-                : NumberUtil.round(NumberUtil.mul(NumberUtil.div(newPvCountFromYesterday, yesterdayPvCount), 100), 1);
-            popularModule.setNewPvFromYesterday(newPvFromYesterday);
-        }
-        return popularModuleList;
-    }
-
-    @Override
-    public DashboardGeoDistributionResp getGeoDistribution() {
-        List<Map<String, Object>> locationIpStatistics = logService.listDashboardGeoDistribution();
-        DashboardGeoDistributionResp geoDistribution = new DashboardGeoDistributionResp();
-        geoDistribution.setLocationIpStatistics(locationIpStatistics);
-        geoDistribution.setLocations(locationIpStatistics.stream().map(m -> Convert.toStr(m.get("name"))).toList());
-        return geoDistribution;
-    }
-
-    @Override
     public List<DashboardNoticeResp> listNotice() {
         return noticeService.listDashboard();
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> getAnalysisTimeslot() {
+        return logService.listDashboardAnalysisTimeslot();
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> getAnalysisGeo() {
+        return logService.listDashboardAnalysisGeo(10);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> getAnalysisModule() {
+        return logService.listDashboardAnalysisModule(5);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> getAnalysisOs() {
+        return logService.listDashboardAnalysisOs(5);
+    }
+
+    @Override
+    public List<DashboardChartCommonResp> getAnalysisBrowser() {
+        return logService.listDashboardAnalysisBrowser(5);
     }
 }
