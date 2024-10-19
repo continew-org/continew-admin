@@ -18,16 +18,11 @@ package top.continew.admin.system.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import top.continew.admin.system.model.query.LogQuery;
-import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
-import top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp;
-import top.continew.admin.system.model.resp.dashboard.DashboardTotalResp;
 import top.continew.admin.system.model.resp.log.LogDetailResp;
 import top.continew.admin.system.model.resp.log.LogResp;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-
-import java.util.List;
 
 /**
  * 系统日志业务接口
@@ -71,58 +66,4 @@ public interface LogService {
      * @param response  响应对象
      */
     void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response);
-
-    /**
-     * 查询仪表盘总计信息
-     *
-     * @return 仪表盘总计信息
-     */
-    DashboardTotalResp getDashboardTotal();
-
-    /**
-     * 查询仪表盘访问趋势信息
-     *
-     * @param days 日期数
-     * @return 仪表盘访问趋势信息
-     */
-    List<DashboardAccessTrendResp> listDashboardAccessTrend(Integer days);
-
-    /**
-     * 查询仪表盘访问时段分析信息
-     *
-     * @return 仪表盘访问时段分析信息
-     */
-    List<DashboardChartCommonResp> listDashboardAnalysisTimeslot();
-
-    /**
-     * 查询仪表盘地域分析信息
-     * 
-     * @param top 显示数量
-     * @return 仪表盘地域分析信息
-     */
-    List<DashboardChartCommonResp> listDashboardAnalysisGeo(int top);
-
-    /**
-     * 查询仪表盘模块分析信息
-     * 
-     * @param top 显示数量
-     * @return 仪表盘模块分析信息
-     */
-    List<DashboardChartCommonResp> listDashboardAnalysisModule(int top);
-
-    /**
-     * 查询仪表盘终端分析信息
-     *
-     * @param top 显示数量
-     * @return 仪表盘终端分析信息
-     */
-    List<DashboardChartCommonResp> listDashboardAnalysisOs(int top);
-
-    /**
-     * 查询仪表盘浏览器分析信息
-     *
-     * @param top 显示数量
-     * @return 仪表盘浏览器分析信息
-     */
-    List<DashboardChartCommonResp> listDashboardAnalysisBrowser(int top);
 }

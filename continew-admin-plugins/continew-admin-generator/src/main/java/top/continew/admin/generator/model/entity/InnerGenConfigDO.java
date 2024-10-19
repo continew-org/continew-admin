@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * 内部生成配置信息
  *
- * @author zhangqcc
+ * @author Charles7c
  * @since 2024/8/30 19:35
  */
 @Data

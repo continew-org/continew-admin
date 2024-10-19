@@ -54,16 +54,22 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    @Operation(summary = "查询总计信息", description = "查询总计信息")
-    @GetMapping("/total")
-    public DashboardTotalResp getTotal() {
-        return dashboardService.getTotal();
-    }
-
     @Operation(summary = "查询公告列表", description = "查询公告列表")
     @GetMapping("/notice")
     public List<DashboardNoticeResp> listNotice() {
         return dashboardService.listNotice();
+    }
+
+    @Operation(summary = "查询PV总览", description = "查询PV总览")
+    @GetMapping("/analysis/overview/pv")
+    public DashboardOverviewCommonResp getOverviewPv() {
+        return dashboardService.getOverviewPv();
+    }
+
+    @Operation(summary = "查询IP总览", description = "查询IP总览")
+    @GetMapping("/analysis/overview/ip")
+    public DashboardOverviewCommonResp getOverviewIp() {
+        return dashboardService.getOverviewIp();
     }
 
     @Operation(summary = "查询访问趋势信息", description = "查询访问趋势信息")

@@ -29,11 +29,25 @@ import java.util.List;
 public interface DashboardService {
 
     /**
-     * 查询总计信息
+     * 查询公告列表
      *
-     * @return 总计信息
+     * @return 公告列表
      */
-    DashboardTotalResp getTotal();
+    List<DashboardNoticeResp> listNotice();
+
+    /**
+     * 查询 PV 总览
+     *
+     * @return PV 总览
+     */
+    DashboardOverviewCommonResp getOverviewPv();
+
+    /**
+     * 查询 IP 总览
+     *
+     * @return IP 总览
+     */
+    DashboardOverviewCommonResp getOverviewIp();
 
     /**
      * 查询访问趋势信息
@@ -42,13 +56,6 @@ public interface DashboardService {
      * @return 访问趋势信息
      */
     List<DashboardAccessTrendResp> listAccessTrend(Integer days);
-
-    /**
-     * 查询公告列表
-     *
-     * @return 公告列表
-     */
-    List<DashboardNoticeResp> listNotice();
 
     /**
      * 查询访问时段分析信息

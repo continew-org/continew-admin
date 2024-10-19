@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.model.resp.dashboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,37 +24,51 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
- * 仪表盘-访问趋势信息
+ * 仪表盘-通用总览信息
  *
  * @author Charles7c
- * @since 2023/9/9 20:20
+ * @since 2024/10/19 12:19
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "仪表盘-访问趋势信息")
-public class DashboardAccessTrendResp implements Serializable {
+@Schema(description = "仪表盘-通用总览信息")
+public class DashboardOverviewCommonResp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 日期
+     * 总数
      */
-    @Schema(description = "日期", example = "2023-08-08")
-    private String date;
+    @Schema(description = "总数", example = "888888")
+    private Long total;
 
     /**
-     * 浏览量（PV）
+     * 今日数量
      */
-    @Schema(description = "浏览量（PV）", example = "1000")
-    private Long pvCount;
+    @Schema(description = "今日数量", example = "888")
+    private Long today;
 
     /**
-     * IP 数
+     * 较昨日新增（百分比）
      */
-    @Schema(description = "IP 数", example = "500")
-    private Long ipCount;
+    @Schema(description = "较昨日新增（百分比）", example = "23.4")
+    private BigDecimal growth;
+
+    /**
+     * 图表数据
+     */
+    @Schema(description = "图表数据")
+    private List<DashboardChartCommonResp> dataList;
+
+    /**
+     * 昨日数量
+     */
+    @JsonIgnore
+    private Long yesterday;
 }

@@ -41,12 +41,46 @@
         ${ew.customSqlSegment}
     </select>
 
-    <select id="selectDashboardTotal" resultType="top.continew.admin.system.model.resp.dashboard.DashboardTotalResp">
+    <select id="selectDashboardOverviewPv" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
-            (SELECT COUNT(*) FROM sys_log) AS pvCount,
-            (SELECT COUNT(DISTINCT ip) FROM sys_log) AS ipCount,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS todayPvCount,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterdayPvCount
+            (SELECT COUNT(*) FROM sys_log) AS total,
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS today,
+            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterday
+    </select>
+
+    <select id="selectDashboardOverviewIp" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
+        SELECT
+            (SELECT COUNT(DISTINCT ip) FROM sys_log) AS total,
+            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS today,
+            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterday
+    </select>
+
+    <select id="selectListDashboardAnalysisPv"
+            resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS name,
+            COUNT(*) AS value
+        FROM sys_log
+        WHERE DATE_FORMAT(create_time, '%Y-%m' ) IN
+        <foreach collection="months" item="month" separator="," open="(" close=")">
+            #{month}
+        </foreach>
+        GROUP BY name
+        ORDER BY name
+    </select>
+
+    <select id="selectListDashboardAnalysisIp"
+            resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m') AS name,
+            COUNT(DISTINCT ip) AS value
+        FROM sys_log
+        WHERE DATE_FORMAT(create_time, '%Y-%m' ) IN
+        <foreach collection="months" item="month" separator="," open="(" close=")">
+            #{month}
+        </foreach>
+        GROUP BY name
+        ORDER BY name
     </select>
 
     <select id="selectListDashboardAccessTrend"
@@ -56,10 +90,9 @@
             COUNT(*) AS pvCount,
             COUNT(DISTINCT ip) AS ipCount
         FROM sys_log
-        WHERE DATE(create_time) != CURRENT_DATE
-        GROUP BY DATE(create_time)
-        ORDER BY DATE(create_time) DESC
-        LIMIT #{days}
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+        GROUP BY date
+        ORDER BY date
     </select>
 
     <select id="selectListDashboardAnalysisTimeslot"
