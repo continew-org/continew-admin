@@ -18,6 +18,7 @@ package top.continew.admin.system.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.mapper.NoticeMapper;
 import top.continew.admin.system.model.entity.NoticeDO;
 import top.continew.admin.system.model.query.NoticeQuery;
@@ -42,6 +43,7 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
 
     @Override
     public List<DashboardNoticeResp> listDashboard() {
-        return baseMapper.selectDashboardList();
+        Long userId =  UserContextHolder.isAdmin()? null: UserContextHolder.getUserId();
+        return baseMapper.selectDashboardList(userId);
     }
 }

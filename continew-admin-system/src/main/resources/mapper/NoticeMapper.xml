@@ -5,11 +5,27 @@
     <select id="selectDashboardList"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp">
         SELECT
-            id, title, type
-        FROM sys_notice
-        WHERE (effective_time IS NULL OR NOW() > effective_time)
-          AND (terminate_time IS NULL OR terminate_time > NOW())
-        ORDER BY sort ASC, effective_time DESC
-        LIMIT 5
+        id,
+        title,
+        type
+        FROM
+        sys_notice
+        WHERE
+        ( effective_time IS NULL OR NOW() > effective_time )
+        AND (
+        terminate_time IS NULL
+        OR terminate_time > NOW())
+        <if test="userId != null">
+            AND ( notice_scope = 1
+            OR (
+            notice_scope = 2 AND
+            <!--转化为字符串类型,因为存储的也是字符串类型-->
+            JSON_EXTRACT(notice_users, "$[0]") = CAST(#{userId} AS CHAR)
+            ))
+        </if>
+        ORDER BY
+        sort ASC,
+        effective_time DESC
+        LIMIT 5;
     </select>
 </mapper>
