@@ -72,10 +72,6 @@
           <template #default>导出</template>
         </a-button>
       </template>
-      <#-- 列字段配置 -->
-      <template #name="{ record }">
-        <a-link @click="onDetail(record)">{{ record.name }}</a-link>
-      </template>
       <#list fieldConfigs as fieldConfig>
       <#if fieldConfig.showInList>
       <#if fieldConfig.dictCode?? && fieldConfig.dictCode != "">
@@ -87,6 +83,7 @@
       </#list>
       <template #action="{ record }">
         <a-space>
+          <a-link v-permission="['${apiModuleName}:${apiName}:list']" @click="onDetail(record)">查看</a-link>
           <a-link v-permission="['${apiModuleName}:${apiName}:update']" @click="onUpdate(record)">修改</a-link>
           <a-link
             v-permission="['${apiModuleName}:${apiName}:delete']"
