@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.NoticeDO;
 import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.starter.data.mp.base.BaseMapper;
@@ -35,5 +36,5 @@ public interface NoticeMapper extends BaseMapper<NoticeDO> {
      *
      * @return 仪表盘公告列表
      */
-    List<DashboardNoticeResp> selectDashboardList();
+    List<DashboardNoticeResp> selectDashboardList(@Param("userId") Long userId);
 }

@@ -43,10 +43,12 @@ import top.continew.starter.core.util.validate.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.BaseIdResp;
 import top.continew.starter.extension.crud.util.ValidateGroup;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 用户管理 API
@@ -62,6 +64,11 @@ import java.io.IOException;
 public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     private final UserService userService;
+
+    @Override
+    public List<UserResp> list(UserQuery query, SortQuery sortQuery) {
+        return super.list(query, sortQuery);
+    }
 
     @Override
     public BaseIdResp<Long> add(@Validated(ValidateGroup.Crud.Add.class) @RequestBody UserReq req) {

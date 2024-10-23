@@ -5,6 +5,8 @@ databaseChangeLog:
       file: db/changelog/mysql/continew-admin_column.sql
   - include:
       file: db/changelog/mysql/continew-admin_data.sql
+  - include:
+      file: db/changelog/mysql/continew-admin_change_v3.4.0.sql
 # PostgreSQL
 #  - include:
 #      file: db/changelog/postgresql/continew-admin_table.sql

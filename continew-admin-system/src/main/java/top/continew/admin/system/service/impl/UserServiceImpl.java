@@ -127,6 +127,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
+    public List<UserResp> list(UserQuery query, SortQuery sortQuery) {
+        QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
+        List<UserDetailResp> entityList = baseMapper.selectUserList(queryWrapper);
+        return BeanUtil.copyToList(entityList, UserResp.class);
+    }
+
+    @Override
     public Long add(UserDO user) {
         user.setStatus(DisEnableStatusEnum.ENABLE);
         baseMapper.insert(user);
@@ -488,6 +495,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         DisEnableStatusEnum status = query.getStatus();
         List<Date> createTimeList = query.getCreateTime();
         Long deptId = query.getDeptId();
+        List<Long> userIdList = query.getUserIds();
         return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
             .or()
             .like("t1.nickname", description)
@@ -503,7 +511,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
                     .collect(Collectors.toList());
                 deptIdList.add(deptId);
                 q.in("t1.dept_id", deptIdList);
-            });
+            }).in(CollUtil.isNotEmpty(userIdList),"t1.id", userIdList);
     }
 
     @Override

@@ -19,12 +19,14 @@ package top.continew.admin.system.model.req;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 创建或修改公告信息
@@ -74,4 +76,17 @@ public class NoticeReq extends BaseReq {
     @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
     @Future(message = "终止时间必须是未来时间")
     private LocalDateTime terminateTime;
+
+    /**
+     * 通知范围
+     */
+    @Schema(description = "通知范围(1.所有人 2.指定用户)",example = "1")
+    @NotNull(message = "通知范围不能为空")
+    private Integer noticeScope;
+
+    /**
+     * 指定用户
+     */
+    @Schema(description = "指定用户",example = "[1,2,3]")
+    private List<String> noticeUsers;
 }

@@ -24,6 +24,7 @@ import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 公告详情信息
@@ -73,4 +74,16 @@ public class NoticeDetailResp extends BaseDetailResp {
     @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
     @ExcelProperty(value = "终止时间")
     private LocalDateTime terminateTime;
+
+    /**
+     * 通知范围
+     */
+    @Schema(description = "通知范围(1.所有人 2.指定用户)",example = "1")
+    private Integer noticeScope;
+
+    /**
+     * 指定用户
+     */
+    @Schema(description = "指定用户",example = "[1,2,3]")
+    private List<String> noticeUsers;
 }

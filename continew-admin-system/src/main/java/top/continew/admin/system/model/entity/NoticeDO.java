@@ -16,12 +16,15 @@
 
 package top.continew.admin.system.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 公告实体
@@ -30,7 +33,7 @@ import java.time.LocalDateTime;
  * @since 2023/8/20 10:55
  */
 @Data
-@TableName("sys_notice")
+@TableName(value = "sys_notice",autoResultMap = true)
 public class NoticeDO extends BaseDO {
 
     @Serial
@@ -60,4 +63,15 @@ public class NoticeDO extends BaseDO {
      * 终止时间
      */
     private LocalDateTime terminateTime;
+
+    /**
+     * 通知范围
+     */
+    private Integer noticeScope;
+
+    /**
+     * 通知用户
+     */
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private List<String> noticeUsers;
 }

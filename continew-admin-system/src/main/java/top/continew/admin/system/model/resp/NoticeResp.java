@@ -23,6 +23,7 @@ import top.continew.starter.extension.crud.model.resp.BaseResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 公告信息
@@ -70,4 +71,17 @@ public class NoticeResp extends BaseResp {
     public NoticeStatusEnum getStatus() {
         return NoticeStatusEnum.getStatus(effectiveTime, terminateTime);
     }
+
+
+    /**
+     * 通知范围
+     */
+    @Schema(description = "通知范围(1.所有人 2.指定用户)",example = "1")
+    private Integer noticeScope;
+
+    /**
+     * 指定用户
+     */
+    @Schema(description = "指定用户",example = "[1,2,3]")
+    private List<String> noticeUsers;
 }
