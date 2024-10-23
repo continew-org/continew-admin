@@ -25,6 +25,7 @@ import top.continew.admin.system.service.DictItemService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.log.core.annotation.Log;
 
 /**
  * 字典项管理 API
@@ -32,6 +33,7 @@ import top.continew.starter.extension.crud.enums.Api;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
+@Log(module = "字典管理")
 @Tag(name = "字典项管理 API")
 @RestController
 @CrudRequestMapping(value = "/system/dict/item", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
