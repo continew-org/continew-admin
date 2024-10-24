@@ -80,6 +80,12 @@ public class CommonController {
         return deptService.tree(query, sortQuery, true);
     }
 
+    @Operation(summary = "查询部门用户树", description = "查询树结构的部门列表")
+    @GetMapping("/tree/deptWithUsers")
+    public List<Tree<String>> listDeptWithUsersTree(DeptQuery query, SortQuery sortQuery) {
+        return deptService.treeWithUsers(query, sortQuery, true);
+    }
+
     @Operation(summary = "查询菜单树", description = "查询树结构的菜单列表")
     @GetMapping("/tree/menu")
     public List<Tree<Long>> listMenuTree(MenuQuery query, SortQuery sortQuery) {

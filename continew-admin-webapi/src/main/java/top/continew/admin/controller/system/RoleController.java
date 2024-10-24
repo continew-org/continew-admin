@@ -16,18 +16,27 @@
 
 package top.continew.admin.controller.system;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.lang.tree.Tree;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
+import top.continew.admin.system.model.query.DeptQuery;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.resp.RoleDetailResp;
 import top.continew.admin.system.model.resp.RoleResp;
 import top.continew.admin.system.service.RoleService;
+import top.continew.admin.system.service.UserRoleService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.model.query.SortQuery;
+
+import java.util.List;
 
 /**
  * 角色管理 API
@@ -37,6 +46,22 @@ import top.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "角色管理 API")
 @RestController
+@RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/role", api = {Api.PAGE, Api.GET, Api.ADD, Api.UPDATE, Api.DELETE})
 public class RoleController extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
+
+    private final UserRoleService userRoleService;
+
+    @Operation(summary = "查询角色关联用户", description = "查询角色组绑定的关联用户")
+    @GetMapping("/listRoleUsers/{id}")
+    public List<Long> listUsers(@PathVariable("id") Long roleId) {
+        return userRoleService.listUserIdByRoleId(roleId);
+    }
+
+    @Operation(summary = "关联用户", description = "批量关联用户")
+    @SaCheckPermission("system:role:bindUsers")
+    @PostMapping("/bindUsers/{id}")
+    public void bindUsers(@PathVariable("id") Long roleId,@RequestBody List<Long> userIds) {
+        userRoleService.bindUserIds(roleId, userIds);
+    }
 }

@@ -38,6 +38,14 @@ public class SysConstants {
      * 管理员角色编码
      */
     public static final String ADMIN_ROLE_CODE = "admin";
+    /**
+     * 超管角色组ID
+     */
+    public static final Long SUPER_ROLE_ID = 1L;
+    /**
+     * 超管账号ID
+     */
+    public static final Long SUPER_ADMIN_ID = 1L;
 
     /**
      * 顶级部门 ID
