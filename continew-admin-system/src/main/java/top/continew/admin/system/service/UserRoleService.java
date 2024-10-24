@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.system.model.entity.UserDO;
 import top.continew.admin.system.model.entity.UserRoleDO;
 
 import java.util.List;
@@ -38,6 +39,14 @@ public interface UserRoleService {
     boolean add(List<Long> roleIds, Long userId);
 
     /**
+     * 关联用户
+     *
+     * @param roleId 角色id
+     * @param userIds 用户id列表
+     * @return 是否新增成功（true：成功；false：无变更/失败）
+     */
+    boolean bindUserIds(Long roleId,List<Long> userIds);
+    /**
      * 根据用户 ID 删除
      *
      * @param userIds 用户 ID 列表
@@ -50,6 +59,8 @@ public interface UserRoleService {
      * @param list 数据集
      */
     void saveBatch(List<UserRoleDO> list);
+
+
 
     /**
      * 根据用户 ID 查询
@@ -74,4 +85,5 @@ public interface UserRoleService {
      * @return 是否已关联（true：已关联；false：未关联）
      */
     boolean isRoleIdExists(List<Long> roleIds);
+
 }

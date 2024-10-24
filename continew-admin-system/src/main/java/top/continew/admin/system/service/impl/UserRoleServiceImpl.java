@@ -23,9 +23,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.ContainerConstants;
+import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.mapper.UserRoleMapper;
 import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.admin.system.service.UserRoleService;
+import top.continew.starter.core.util.validate.CheckUtils;
 
 import java.util.List;
 
@@ -61,7 +63,28 @@ public class UserRoleServiceImpl implements UserRoleService {
         List<UserRoleDO> userRoleList = roleIds.stream().map(roleId -> new UserRoleDO(userId, roleId)).toList();
         return baseMapper.insertBatch(userRoleList);
     }
-
+    @Override
+    public boolean bindUserIds(Long roleId, List<Long> userIds) {
+        // 检查是否有变更
+        List<Long> oldRoleIdList = baseMapper.lambdaQuery()
+                .select(UserRoleDO::getUserId)
+                .eq(UserRoleDO::getRoleId, roleId)
+                .list()
+                .stream()
+                .map(UserRoleDO::getRoleId)
+                .toList();
+        if (CollUtil.isEmpty(CollUtil.disjunction(userIds, oldRoleIdList))) {
+            return false;
+        }
+        if (SysConstants.SUPER_ROLE_ID.equals(roleId) && !userIds.contains(SysConstants.SUPER_ADMIN_ID)){
+            CheckUtils.throwIf(true,"不能移除管理员默认超管角色组");
+        }
+        // 删除原有关联
+        baseMapper.lambdaUpdate().eq(UserRoleDO::getRoleId, roleId).remove();
+        // 保存最新关联
+        List<UserRoleDO> userRoleList = userIds.stream().map(userId -> new UserRoleDO(userId, roleId)).toList();
+        return baseMapper.insertBatch(userRoleList);
+    }
     @Override
     public void deleteByUserIds(List<Long> userIds) {
         baseMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
@@ -71,6 +94,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     public void saveBatch(List<UserRoleDO> list) {
         baseMapper.insert(list);
     }
+
+
 
     @Override
     @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, type = MappingType.ORDER_OF_KEYS)

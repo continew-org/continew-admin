@@ -16,11 +16,13 @@
 
 package top.continew.admin.system.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.query.DeptQuery;
 import top.continew.admin.system.model.req.DeptReq;
 import top.continew.admin.system.model.resp.DeptResp;
 import top.continew.starter.data.mp.service.IService;
+import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.util.List;
@@ -56,4 +58,14 @@ public interface DeptService extends BaseService<DeptResp, DeptResp, DeptQuery, 
      * @return 部门数量
      */
     int countByNames(List<String> deptNames);
+
+    /**
+     * 部门用户树
+     *
+     * @param query 部门查询条件
+     * @param sortQuery 排序条件
+     * @param isSimple 是否只返回简单部门树
+     * @return 部门数量
+     */
+    List<Tree<String>> treeWithUsers(DeptQuery query, SortQuery sortQuery, boolean isSimple);
 }
