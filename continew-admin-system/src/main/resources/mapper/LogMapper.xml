@@ -44,15 +44,15 @@
     <select id="selectDashboardOverviewPv" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(*) FROM sys_log) AS total,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS today,
-            (SELECT COUNT(*) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterday
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday
     </select>
 
     <select id="selectDashboardOverviewIp" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(DISTINCT ip) FROM sys_log) AS total,
-            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE) AS today,
-            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE DATE(create_time) = CURRENT_DATE - 1) AS yesterday
+            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
+            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday
     </select>
 
     <select id="selectListDashboardAnalysisPv"
