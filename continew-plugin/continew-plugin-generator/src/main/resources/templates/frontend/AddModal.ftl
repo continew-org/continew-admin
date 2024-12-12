@@ -45,7 +45,7 @@ const [form, resetForm] = useResetReactive({
   // todo 待补充
 })
 
-const columns: Columns = reactive([
+const columns: Columns = reactive<Columns>([
 <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInForm>
   {
@@ -55,9 +55,17 @@ const columns: Columns = reactive([
     type: 'input',
     <#elseif fieldConfig.formType = 'TEXT_AREA'>
     type: 'textarea',
+    props: {
+      autoSize: true
+    },
     <#elseif fieldConfig.formType = 'DATE'>
     type: 'date-picker',
     <#elseif fieldConfig.formType = 'DATE_TIME'>
+    type: 'date-picker',
+    props: {
+      showTime: true,
+    },
+    <#elseif fieldConfig.formType = 'TIME'>
     type: 'time-picker',
     <#elseif fieldConfig.formType = 'INPUT_NUMBER'>
     type: 'input-number', 
@@ -66,7 +74,7 @@ const columns: Columns = reactive([
     <#elseif fieldConfig.formType = 'SWITCH'>
     type: 'switch',
     <#elseif fieldConfig.formType = 'CHECK_BOX'>
-    type: 'check-group',
+    type: 'checkbox-group',
    	<#elseif fieldConfig.formType = 'TREE_SELECT'>
     type: 'tree-select',
     <#elseif fieldConfig.formType = 'SELECT'>

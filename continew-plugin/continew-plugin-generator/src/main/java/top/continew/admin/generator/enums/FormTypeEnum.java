@@ -18,7 +18,6 @@ package top.continew.admin.generator.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import top.continew.starter.core.enums.BaseEnum;
 
 /**
@@ -72,9 +71,9 @@ public enum FormTypeEnum implements BaseEnum<Integer> {
     TEXT_AREA(8, "文本域"),
 
     /**
-     * 日期时间框
+     * 时间框
      */
-    DATE_TIME(9, "日期时间框"),
+    TIME(9, "时间框"),
 
     /**
      * 日期框
@@ -84,7 +83,13 @@ public enum FormTypeEnum implements BaseEnum<Integer> {
     /**
      * 树形选择
      */
-    TREE_SELECT(11, "树选择"),;
+    TREE_SELECT(11, "树选择"),
+
+    /**
+     * 时间框
+     */
+    DATE_TIME(12, "日期时间框"),
+    ;
 
     private final Integer value;
     private final String description;

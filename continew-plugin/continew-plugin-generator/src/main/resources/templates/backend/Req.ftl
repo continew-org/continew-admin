@@ -48,7 +48,7 @@ public class ${className} extends BaseReq {
     </#if>
     </#if>
     <#if fieldConfig.fieldType = 'String' && fieldConfig.columnSize??>
-    @Length(max = ${fieldConfig.columnSize}, message = "${fieldConfig.comment}长度不能超过 {max} 个字符")
+    @Length(max = ${fieldConfig.columnSize?c}, message = "${fieldConfig.comment}长度不能超过 {max} 个字符")
     </#if>
     private ${fieldConfig.fieldType} ${fieldConfig.fieldName};
     </#if>
