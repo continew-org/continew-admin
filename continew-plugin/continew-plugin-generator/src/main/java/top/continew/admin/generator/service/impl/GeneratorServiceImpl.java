@@ -25,8 +25,13 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.db.meta.Column;
 import cn.hutool.db.meta.Table;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.TemplateUtil;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.system.SystemUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import freemarker.ext.beans.BeansWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +52,6 @@ import top.continew.admin.generator.service.GeneratorService;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
-import top.continew.starter.core.util.TemplateUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.data.core.enums.DatabaseType;
 import top.continew.starter.data.core.util.MetaUtils;
@@ -224,6 +228,12 @@ public class GeneratorServiceImpl implements GeneratorService {
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
         Map<String, GeneratorProperties.TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
+
+        TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
+        if (engine instanceof FreemarkerEngine) {
+            ((FreemarkerEngine) engine).getConfiguration().setSharedVariable("statics", BeansWrapper.getDefaultInstance().getStaticModels());
+        }
+
         for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
             GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段
@@ -250,8 +260,8 @@ public class GeneratorServiceImpl implements GeneratorService {
                     : this.getFrontendFileName(classNamePrefix, className, extension);
             }
             generatePreview.setFileName(fileName);
-            generatePreview.setContent(TemplateUtils.render(templateConfig.getTemplatePath(), BeanUtil
-                .beanToMap(innerGenConfig)));
+            generatePreview.setContent(engine.getTemplate(templateConfig.getTemplatePath())
+                    .render(BeanUtil.beanToMap(innerGenConfig)));
             this.setPreviewPath(generatePreview, innerGenConfig, templateConfig);
         }
         return generatePreviewList;
