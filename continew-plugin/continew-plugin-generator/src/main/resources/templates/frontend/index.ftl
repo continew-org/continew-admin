@@ -26,7 +26,7 @@
           @change="search"
         />
 	  <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
-		<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.dictCode}" @change="search"/>
+		<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.dictCode!'dictKey 或者自定义数组'}" @change="search"/>
 	  <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
         <#if fieldConfig.queryType == "BETWEEN">
         <DateRangePicker v-model="queryForm.${fieldConfig.fieldName}" format="YYYY-MM-DD" @change="search" />
@@ -135,13 +135,19 @@ const {
   search,
   handleDelete
 } = useTable((page) => list${classNamePrefix}({ ...queryForm, ...page }), { immediate: true })
-const columns: TableInstanceColumns[] = [
+const columns = ref<TableInstanceColumns[]>([
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInList>
+   <#if fieldConfig.fieldName=="createUser" >
+  { title: '${fieldConfig.comment}', dataIndex: 'createUserString', slotName: '${fieldConfig.fieldName}' },
+   <#elseif fieldConfig.fieldName=="updateUser"  >
+  { title: '${fieldConfig.comment}', dataIndex: 'updateUserString', slotName: '${fieldConfig.fieldName}' },
+  <#else>
   { title: '${fieldConfig.comment}', dataIndex: '${fieldConfig.fieldName}', slotName: '${fieldConfig.fieldName}' },
   </#if>
-  </#list>
+</#if>
+</#list>
 </#if>
   {
     title: '操作',
@@ -152,7 +158,7 @@ const columns: TableInstanceColumns[] = [
     fixed: !isMobile() ? 'right' : undefined,
     show: has.hasPermOr(['${apiModuleName}:${apiName}:detail', '${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
   }
-]
+]);
 
 // 重置
 const reset = () => {

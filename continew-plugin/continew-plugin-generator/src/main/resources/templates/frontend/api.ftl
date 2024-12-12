@@ -11,6 +11,7 @@ export interface ${classNamePrefix}Resp {
 </#list>
   createUserString: string
   updateUserString: string
+  disabled: boolean
 </#if>
 }
 export interface ${classNamePrefix}DetailResp {
@@ -26,7 +27,7 @@ export interface ${classNamePrefix}Query {
 <#if fieldConfigs??>
 <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInQuery>
-  ${fieldConfig.fieldName}: string
+  ${fieldConfig.fieldName}: string | undefined
   </#if>
 </#list>
 </#if>
@@ -61,5 +62,5 @@ export function delete${classNamePrefix}(id: string) {
 
 /** @desc 导出${businessName} */
 export function export${classNamePrefix}(query: ${classNamePrefix}Query) {
-  return http.download<any>(`${'$'}{BASE_URL}/export`, query)
+  return http.download(`${'$'}{BASE_URL}/export`, query)
 }
