@@ -51,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.common.service.CommonUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
@@ -81,9 +82,9 @@ import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.extension.crud.service.CommonUserService;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 import top.continew.starter.web.util.FileUploadUtils;
+import top.continew.starter.core.util.SpringUtils;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -207,6 +208,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         super.delete(ids);
         // 踢出在线用户
         ids.forEach(onlineUserService::kickOut);
+    }
+
+    @Override
+    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    public String getNicknameById(Long id) {
+        return baseMapper.selectNicknameById(id);
     }
 
     @Override
@@ -440,13 +447,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public Long add(UserDO user) {
-        user.setStatus(DisEnableStatusEnum.ENABLE);
-        baseMapper.insert(user);
-        return user.getId();
-    }
-
-    @Override
     public UserDO getByUsername(String username) {
         return baseMapper.selectByUsername(username);
     }
@@ -467,12 +467,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             return 0L;
         }
         return baseMapper.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
-    }
-
-    @Override
-    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
-    public String getNicknameById(Long id) {
-        return baseMapper.selectNicknameById(id);
     }
 
     @Override
@@ -525,7 +519,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             baseMapper.insert(insertList);
         }
         if (CollUtil.isNotEmpty(updateList)) {
-            this.updateBatchById(updateList);
+            SpringUtils.getProxy(this).updateBatchById(updateList);
             userRoleService.deleteByUserIds(updateList.stream().map(UserDO::getId).toList());
         }
         if (CollUtil.isNotEmpty(userRoleDOList)) {

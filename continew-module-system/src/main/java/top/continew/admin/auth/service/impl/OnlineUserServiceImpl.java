@@ -77,7 +77,8 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         for (Map.Entry<Long, List<String>> entry : tokenMap.entrySet()) {
             Long userId = entry.getKey();
             UserContext userContext = UserContextHolder.getContext(userId);
-            if (null == userContext || !this.isMatchNickname(query.getNickname(), userContext)) {
+            if (null == userContext || !this.isMatchNickname(query.getNickname(), userContext) || !this
+                .isMatchClientId(query.getClientId(), userContext)) {
                 continue;
             }
             //租户数据过滤
@@ -89,12 +90,13 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             List<Date> loginTimeList = query.getLoginTime();
             entry.getValue().parallelStream().forEach(token -> {
                 UserExtraContext extraContext = UserContextHolder.getExtraContext(token);
-                if (this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
-                    OnlineUserResp resp = BeanUtil.copyProperties(userContext, OnlineUserResp.class);
-                    BeanUtil.copyProperties(extraContext, resp);
-                    resp.setToken(token);
-                    list.add(resp);
+                if (!this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
+                    return;
                 }
+                OnlineUserResp resp = BeanUtil.copyProperties(userContext, OnlineUserResp.class);
+                BeanUtil.copyProperties(extraContext, resp);
+                resp.setToken(token);
+                list.add(resp);
             });
         }
         // 设置排序
@@ -129,6 +131,20 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         }
         return StrUtil.contains(userContext.getUsername(), nickname) || StrUtil.contains(UserContextHolder
             .getNickname(userContext.getId()), nickname);
+    }
+
+    /**
+     * 是否匹配客户端 ID
+     *
+     * @param clientId    客户端 ID
+     * @param userContext 用户上下文信息
+     * @return 是否匹配客户端 ID
+     */
+    private boolean isMatchClientId(String clientId, UserContext userContext) {
+        if (StrUtil.isBlank(clientId)) {
+            return true;
+        }
+        return Objects.equals(userContext.getClientId(), clientId);
     }
 
     /**

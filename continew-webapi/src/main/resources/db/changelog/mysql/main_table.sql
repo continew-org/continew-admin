@@ -232,19 +232,19 @@ CREATE TABLE IF NOT EXISTS `sys_message_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息和用户关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_notice` (
-    `id`             bigint(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
-    `title`          varchar(150) NOT NULL                COMMENT '标题',
-    `content`        mediumtext   NOT NULL                COMMENT '内容',
-    `type`           varchar(30)  NOT NULL                COMMENT '类型',
-    `effective_time` datetime     DEFAULT NULL            COMMENT '生效时间',
-    `terminate_time` datetime     DEFAULT NULL            COMMENT '终止时间',
-    `notice_scope`   int          NOT NULL                COMMENT '通知范围',
-    `notice_users`   json         DEFAULT NULL            COMMENT '通知用户',
-    `sort`           int          NOT NULL DEFAULT 999    COMMENT '排序',
-    `create_user`    bigint(20)   NOT NULL                COMMENT '创建人',
-    `create_time`    datetime     NOT NULL                COMMENT '创建时间',
-    `update_user`    bigint(20)   DEFAULT NULL            COMMENT '修改人',
-    `update_time`    datetime     DEFAULT NULL            COMMENT '修改时间',
+    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+    `title`          varchar(150) NOT NULL                    COMMENT '标题',
+    `content`        mediumtext   NOT NULL                    COMMENT '内容',
+    `type`           varchar(30)  NOT NULL                    COMMENT '类型',
+    `effective_time` datetime     DEFAULT NULL                COMMENT '生效时间',
+    `terminate_time` datetime     DEFAULT NULL                COMMENT '终止时间',
+    `notice_scope`   tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '通知范围（1：所有人；2：指定用户）',
+    `notice_users`   json         DEFAULT NULL                COMMENT '通知用户',
+    `sort`           int          NOT NULL DEFAULT 999        COMMENT '排序',
+    `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
+    `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
+    `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
+    `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',
     PRIMARY KEY (`id`),
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`)
@@ -294,3 +294,21 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文件表';
+
+CREATE TABLE IF NOT EXISTS `sys_client` (
+    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+    `client_id`      varchar(50)  NOT NULL                    COMMENT '客户端ID',
+    `client_key`     varchar(255) NOT NULL                    COMMENT '客户端Key',
+    `client_secret`  varchar(255) NOT NULL                    COMMENT '客户端秘钥',
+    `auth_type`      json         NOT NULL                    COMMENT '认证类型',
+    `client_type`    varchar(50)  NOT NULL                    COMMENT '客户端类型',
+    `active_timeout` bigint(20)   DEFAULT -1                  COMMENT 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）',
+    `timeout`        bigint(20)   DEFAULT 2592000             COMMENT 'Token有效期（单位：秒，-1：永不过期）',
+    `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+    `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
+    `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
+    `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
+    `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `uk_client_id`(`client_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端表';

@@ -85,7 +85,7 @@ public interface JobService {
 
     /**
      * 查询分组列表
-     * 
+     *
      * @return 分组列表
      */
     List<String> listGroup();

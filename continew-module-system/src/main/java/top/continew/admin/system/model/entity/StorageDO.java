@@ -20,7 +20,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.admin.common.model.entity.BaseDO;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;

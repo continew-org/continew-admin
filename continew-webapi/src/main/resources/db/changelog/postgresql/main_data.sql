@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset Charles7c:1
+-- changeset charles7c:1
 -- comment 初始化表数据
 -- 初始化默认菜单
 INSERT INTO "sys_menu"
@@ -76,6 +76,13 @@ VALUES
 (1114, '修改', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:update', 4, 1, 1, NOW()),
 (1115, '删除', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:delete', 5, 1, 1, NOW()),
 
+( 1180, '客户端管理', 1000, 2, '/system/client', 'SystemClient', 'system/client/index', NULL, 'mobile', false, false, false, NULL, 9, 1, 1, NOW()),
+(1181, '列表', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:list', 1, 1, 1, NOW()),
+(1182, '详情', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:detail', 2, 1, 1, NOW()),
+(1183, '新增', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:add', 3, 1, 1, NOW()),
+(1184, '修改', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:update', 4, 1, 1, NOW()),
+(1185, '删除', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:delete', 5, 1, 1, NOW()),
+
 (1190, '系统配置', 1000, 2, '/system/config', 'SystemConfig', 'system/config/index', NULL, 'config', false, false, false, NULL, 999, 1, 1, NOW()),
 (1191, '查看', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:list', 1, 1, 1, NOW()),
 (1192, '修改', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:update', 2, 1, 1, NOW()),
@@ -96,27 +103,57 @@ INSERT INTO "sys_dept"
 ("id", "name", "parent_id", "ancestors", "description", "sort", "status", "is_system", "create_user", "create_time")
 VALUES
 (1, 'Xxx科技有限公司', 0, '0', '系统初始部门', 1, 1, true, 1, NOW()),
-(547887852587843590, '天津总部', 1, '0,1', NULL, 1, 1, false, 1, NOW()),
-(547888008188133385, '研发部', 547887852587843590, '0,1,547887852587843590', NULL, 1, 1, false, 1, NOW()),
-(547888460711591948, 'UI部', 547887852587843590, '0,1,547887852587843590', NULL, 2, 1, false, 1, NOW()),
-(547888483713155087, '测试部', 547887852587843590, '0,1,547887852587843590', NULL, 3, 1, false, 1, NOW()),
-(547888505959743506, '运维部', 547887852587843590, '0,1,547887852587843590', NULL, 4, 1, false, 1, NOW()),
-(547888556819873814, '研发一组', 547888008188133385, '0,1,547887852587843590,547888008188133385', NULL, 1, 1, false, 1, NOW()),
-(547888580614160409, '研发二组', 547888008188133385, '0,1,547887852587843590,547888008188133385', NULL, 2, 2, false, 1, NOW());
+(547887852587843590, 'Xxx（天津）科技有限公司', 1, '0,1', NULL, 1, 1, false, 1, NOW()),
+(547887852587843591, '研发部', 547887852587843590, '0,1,547887852587843590', NULL, 1, 1, false, 1, NOW()),
+(547887852587843592, 'UI部', 547887852587843590, '0,1,547887852587843590', NULL, 2, 1, false, 1, NOW()),
+(547887852587843593, '测试部', 547887852587843590, '0,1,547887852587843590', NULL, 3, 1, false, 1, NOW()),
+(547887852587843594, '运维部', 547887852587843590, '0,1,547887852587843590', NULL, 4, 1, false, 1, NOW()),
+(547887852587843595, '研发一组', 547887852587843591, '0,1,547887852587843590,547887852587843591', NULL, 1, 1, false, 1, NOW()),
+(547887852587843596, '研发二组', 547887852587843591, '0,1,547887852587843590,547887852587843591', NULL, 2, 2, false, 1, NOW()),
+
+(547887852587843597, 'Xxx（四川）科技有限公司', 1, '0,1', NULL, 2, 1, false, 1, NOW()),
+(547887852587843598, '研发部', 547887852587843597, '0,1,547887852587843597', NULL, 1, 1, false, 1, NOW()),
+(547887852587843599, '研发一组', 547887852587843598, '0,1,547887852587843597,547887852587843598', NULL, 1, 1, false, 1, NOW()),
+
+(547887852587843600, 'Xxx（江西）科技有限公司', 1, '0,1', NULL, 3, 1, false, 1, NOW()),
+(547887852587843601, '研发部', 547887852587843600, '0,1,547887852587843600', NULL, 1, 1, false, 1, NOW()),
+(547887852587843602, '研发一组', 547887852587843601, '0,1,547887852587843600,547887852587843601', NULL, 1, 1, false, 1, NOW()),
+
+(547887852587843603, 'Xxx（江苏）科技有限公司', 1, '0,1', NULL, 4, 1, false, 1, NOW()),
+(547887852587843604, '研发部', 547887852587843603, '0,1,547887852587843603', NULL, 1, 1, false, 1, NOW()),
+(547887852587843605, '研发一组', 547887852587843604, '0,1,547887852587843603,547887852587843604', NULL, 1, 1, false, 1, NOW()),
+
+(547887852587843606, 'Xxx（浙江）科技有限公司', 1, '0,1', NULL, 5, 1, false, 1, NOW()),
+(547887852587843607, '研发部', 547887852587843606, '0,1,547887852587843606', NULL, 1, 1, false, 1, NOW()),
+(547887852587843608, '研发一组', 547887852587843607, '0,1,547887852587843606,547887852587843607', NULL, 1, 1, false, 1, NOW()),
+
+(547887852587843609, 'Xxx（湖南）科技有限公司', 1, '0,1', NULL, 6, 1, false, 1, NOW()),
+(547887852587843610, '研发部', 547887852587843609, '0,1,547887852587843609', NULL, 1, 1, false, 1, NOW()),
+(547887852587843611, '研发一组', 547887852587843610, '0,1,547887852587843609,547887852587843610', NULL, 1, 1, false, 1, NOW());
 
 -- 初始化默认角色
 INSERT INTO "sys_role"
 ("id", "name", "code", "data_scope", "description", "sort", "is_system", "create_user", "create_time")
 VALUES
 (1, '系统管理员', 'admin', 1, '系统初始角色', 1, true, 1, NOW()),
-(547888897925840928, '测试人员', 'test', 5, NULL, 2, false, 1, NOW());
+(547888897925840927, '测试人员', 'tester', 5, NULL, 2, false, 1, NOW()),
+(547888897925840928, '研发人员', 'developer', 4, NULL, 3, false, 1, NOW());
 
 -- 初始化默认用户：admin/admin123；test/test123
 INSERT INTO "sys_user"
 ("id", "username", "nickname", "password", "gender", "email", "phone", "avatar", "description", "status", "is_system", "pwd_reset_time", "dept_id", "create_user", "create_time")
 VALUES
 (1, 'admin', '系统管理员', '{bcrypt}$2a$10$4jGwK2BMJ7FgVR.mgwGodey8.xR8FLoU1XSXpxJ9nZQt.pufhasSa', 1, '42190c6c5639d2ca4edb4150a35e058559ccf8270361a23745a2fd285a273c28', '5bda89a4609a65546422ea56bfe5eab4', NULL, '系统初始用户', 1, true, NOW(), 1, 1, NOW()),
-(547889293968801831, 'test', '测试员', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 2, NULL, NULL, NULL, NULL, 1, false, NOW(), 547888483713155087, 1, NOW());
+(547889293968801822, 'test', '测试员', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 2, NULL, NULL, NULL, NULL, 1, false, NOW(), 547887852587843593, 1, NOW()),
+(547889293968801823, 'Charles', 'Charles', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '代码写到极致，就是艺术。', 1, false, NOW(), 547887852587843595, 1, NOW()),
+(547889293968801824, 'Yoofff', 'Yoofff', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '弱小和无知不是生存的障碍，傲慢才是。', 1, false, NOW(), 1, 1, NOW()),
+(547889293968801825, 'Jasmine', 'Jasmine', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '干就完事了！', 1, false, NOW(), 547887852587843605, 1, NOW()),
+(547889293968801826, 'AutumnSail', '秋登', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '只有追求完美，才能创造奇迹。', 1, false, NOW(), 547887852587843602, 1, NOW()),
+(547889293968801827, 'Kils', 'Kils', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '可以摆烂，但不能真的菜。', 1, false, NOW(), 547887852587843599, 1, NOW()),
+(547889293968801828, 'mochou', '莫愁', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '万事莫愁，皆得所愿。', 1, false, NOW(), 547887852587843602, 1, NOW()),
+(547889293968801829, 'Jing', 'MS-Jing', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '路虽远，行则将至。', 2, false, NOW(), 547887852587843599, 1, NOW()),
+(547889293968801830, 'domw', '梓陌', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '胜利是奖赏，挫折是常态。', 1, false, NOW(), 547887852587843608, 1, NOW()),
+(547889293968801831, 'xtanyu', '小熊', '{bcrypt}$2a$10$xAsoeMJ.jc/kSxhviLAg7.j2iFrhi6yYAdniNdjLiIUWU/BRZl2Ti', 1, NULL, NULL, NULL, '不想上班。', 1, false, NOW(), 547887852587843611, 1, NOW());
 
 -- 初始化默认参数
 INSERT INTO "sys_option"
@@ -150,7 +187,8 @@ INSERT INTO "sys_dict"
 ("id", "name", "code", "description", "is_system", "create_user", "create_time")
 VALUES
 (1, '公告类型', 'notice_type', NULL, true, 1, NOW()),
-(2, '消息类型', 'message_type', NULL, true, 1, NOW());
+(2, '消息类型', 'message_type', NULL, true, 1, NOW()),
+(3, '客户端类型', 'client_type', NULL, true, 1, NOW());
 
 INSERT INTO "sys_dict_item"
 ("id", "label", "value", "color", "sort", "description", "status", "dict_id", "create_user", "create_time")
@@ -158,28 +196,47 @@ VALUES
 (1, '通知', '1', 'blue', 1, NULL, 1, 1, 1, NOW()),
 (2, '活动', '2', 'orangered', 2, NULL, 1, 1, 1, NOW()),
 (3, '安全消息', '1', 'blue', 1, NULL, 1, 2, 1, NOW()),
-(4, '活动消息', '2', 'orangered', 2, NULL, 1, 2, 1, NOW());
+(4, '活动消息', '2', 'orangered', 2, NULL, 1, 2, 1, NOW()),
+(5, '桌面端', 'PC', 'blue', 1, NULL, 1, 3, 1, NOW()),
+(6, '安卓', 'ANDROID', '#148628', 2, NULL, 1, 3, 1, NOW()),
+(7, '小程序', 'XCX', '#7930AD', 3, NULL, 1, 3, 1, NOW());
 
 -- 初始化默认用户和角色关联数据
 INSERT INTO "sys_user_role"
 ("user_id", "role_id")
 VALUES
 (1, 1),
+(547889293968801822, 547888897925840927),
+(547889293968801823, 547888897925840928),
+(547889293968801824, 547888897925840928),
+(547889293968801825, 547888897925840928),
+(547889293968801826, 547888897925840928),
+(547889293968801827, 547888897925840928),
+(547889293968801828, 547888897925840928),
+(547889293968801829, 547888897925840928),
+(547889293968801830, 547888897925840928),
 (547889293968801831, 547888897925840928);
 
 -- 初始化默认角色和菜单关联数据
 INSERT INTO "sys_role_menu"
 ("role_id", "menu_id")
 VALUES
-(547888897925840928, 1000),
-(547888897925840928, 1010),
-(547888897925840928, 1011),
-(547888897925840928, 1012),
-(547888897925840928, 1013),
-(547888897925840928, 1014);
+(547888897925840927, 1000),
+(547888897925840927, 1010),
+(547888897925840927, 1011),
+(547888897925840927, 1012),
+(547888897925840927, 1013),
+(547888897925840927, 1014),
+(547888897925840928, 2000),
+(547888897925840928, 2010),
+(547888897925840928, 2011),
+(547888897925840928, 2020),
+(547888897925840928, 2021),
+(547888897925840928, 2022),
+(547888897925840928, 2023);
 
 -- 初始化默认角色和部门关联数据
-INSERT INTO "sys_role_dept" ("role_id", "dept_id") VALUES (547888897925840928, 547888483713155087);
+INSERT INTO "sys_role_dept" ("role_id", "dept_id") VALUES (547888897925840927, 547887852587843593);
 
 -- 初始化默认存储
 INSERT INTO "sys_storage"
@@ -187,3 +244,9 @@ INSERT INTO "sys_storage"
 VALUES
 (1, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', true, 1, 1, 1, NOW()),
 (2, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', false, 2, 2, 1, NOW());
+
+-- 初始化客户端数据
+INSERT INTO "sys_client"
+("id", "client_id", "client_key", "client_secret", "auth_type", "client_type", "active_timeout", "timeout", "status", "create_user", "create_time")
+VALUES
+(1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'pc', 'dd77ab1e353a027e0d60ce3b151e8642', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 'PC', 1800, 86400, 1, 1, NOW());

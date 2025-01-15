@@ -18,7 +18,7 @@ package top.continew.admin.controller.tenant;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.base.BaseController;
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.tenant.model.query.TenantDbConnectQuery;
 import top.continew.admin.tenant.model.req.TenantDbConnectReq;
 import top.continew.admin.tenant.model.resp.TenantDbConnectDetailResp;

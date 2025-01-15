@@ -125,14 +125,6 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     void updateEmail(String newEmail, String oldPassword, Long id);
 
     /**
-     * 新增
-     *
-     * @param user 用户信息
-     * @return ID
-     */
-    Long add(UserDO user);
-
-    /**
      * 根据用户名查询
      *
      * @param username 用户名

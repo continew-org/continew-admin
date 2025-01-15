@@ -21,7 +21,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * 账号登录参数
@@ -31,7 +30,7 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "账号登录参数")
-public class AccountLoginReq implements Serializable {
+public class AccountLoginReq extends LoginReq {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.base;
+package top.continew.admin.common.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.context.SaHolder;

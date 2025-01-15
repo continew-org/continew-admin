@@ -4,8 +4,8 @@
     :title="title"
     :mask-closable="false"
     :esc-to-close="false"
-    draggable
     :width="width >= 600 ? 600 : '100%'"
+    draggable
     @before-ok="save"
     @close="reset"
   >

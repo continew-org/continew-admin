@@ -18,9 +18,9 @@ package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
-import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 import top.continew.starter.security.mask.annotation.JsonMask;
 
 import java.io.Serial;

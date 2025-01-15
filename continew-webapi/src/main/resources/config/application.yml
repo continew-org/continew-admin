@@ -127,17 +127,17 @@ knife4j:
 
 --- ### Sa-Token 配置
 sa-token:
-  # token 名称（同时也是 cookie 名称）
+  # Token 名称（同时也是 cookie 名称）
   token-name: Authorization
-  # token 有效期（单位：秒，默认 30 天，-1 代表永不过期）
+  # Token 有效期（单位：秒，默认 30 天，-1 代表永不过期）
   timeout: 86400
-  # token 最低活跃频率（单位：秒，默认 -1，代表不限制，永不冻结。如果 token 超过此时间没有访问系统就会被冻结）
+  # Token 最低活跃频率（单位：秒，默认 -1，代表不限制，永不冻结。如果 token 超过此时间没有访问系统就会被冻结）
   active-timeout: 1800
   # 是否打开自动续签（如果此值为 true，框架会在每次直接或间接调用 getLoginId() 时进行一次过期检查与续签操作）
   auto-renew: true
   # 是否允许同一账号多地同时登录（为 true 时允许一起登录，为 false 时新登录挤掉旧登录）
   is-concurrent: true
-  # 在多人登录同一账号时，是否共用一个 token（为 true 时所有登录共用一个 token，为 false 时每次登录新建一个 token）
+  # 在多人登录同一账号时，是否共用一个 Token（为 true 时所有登录共用一个 Token，为 false 时每次登录新建一个 Token）
   is-share: false
   # 是否输出操作日志
   is-log: false
@@ -215,7 +215,7 @@ auth:
   ## 密码配置
   password:
     excludes:
-      - /auth/route
+      - /auth/user/route
       - /auth/user/info
       - /auth/logout
       - /system/user/password
@@ -303,6 +303,7 @@ continew-starter.tenant:
     - sys_tenant_package
     - sys_tenant_db_connect
     - sys_app #应用
+    - sys_client #客户端管理
   #租户不能使用的菜单
   ignore-menus:
     - 1050 #菜单
@@ -314,3 +315,4 @@ continew-starter.tenant:
     - 9000 #代码生成
     - 10010 #租户管理
     - 7000 #能力开放
+    - 1180 #客户端管理

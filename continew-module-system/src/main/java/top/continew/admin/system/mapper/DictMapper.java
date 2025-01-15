@@ -16,8 +16,6 @@
 
 package top.continew.admin.system.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.model.entity.DictDO;
 import top.continew.starter.data.mp.base.BaseMapper;
 
@@ -27,6 +25,5 @@ import top.continew.starter.data.mp.base.BaseMapper;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-@DS(SysConstants.DEFAULT_DATASOURCE)
 public interface DictMapper extends BaseMapper<DictDO> {
 }

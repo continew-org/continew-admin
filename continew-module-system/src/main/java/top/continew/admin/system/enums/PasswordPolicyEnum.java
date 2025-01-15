@@ -18,7 +18,7 @@ package top.continew.admin.system.enums;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -69,8 +69,9 @@ public enum PasswordPolicyEnum {
                 super.validateRange(value, policyMap);
                 return;
             }
-            Integer passwordExpirationDays = ObjUtil.defaultIfNull(Convert.toInt(policyMap.get(PASSWORD_EXPIRATION_DAYS
-                .name())), SpringUtil.getBean(OptionService.class).getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
+            Integer passwordExpirationDays = ObjectUtil.defaultIfNull(Convert.toInt(policyMap
+                .get(PASSWORD_EXPIRATION_DAYS.name())), SpringUtil.getBean(OptionService.class)
+                    .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
             if (passwordExpirationDays > SysConstants.NO) {
                 ValidationUtils.throwIf(value >= passwordExpirationDays, "密码到期前的提示时间应小于密码有效期");
                 return;

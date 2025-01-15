@@ -1,5 +1,5 @@
 <template>
-  <div class="table-page">
+  <div class="gi_table_page">
     <GiTable
       title="${businessName}管理"
       row-key="id"
@@ -51,9 +51,7 @@
         />
         </#if>
 	  <#else>
-	    <a-input v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @change="search">
-	      <template #prefix><icon-search /></template>
-	    </a-input>
+	    <a-input-search v-model="queryForm.${fieldConfig.fieldName}" placeholder="请输入${fieldConfig.comment}" allow-clear @search="search" />
       </#if>
       </#if>
       </#list>

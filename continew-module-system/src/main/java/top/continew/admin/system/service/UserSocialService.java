@@ -16,11 +16,10 @@
 
 package top.continew.admin.system.service;
 
-import java.util.List;
-
+import me.zhyd.oauth.model.AuthUser;
 import top.continew.admin.system.model.entity.UserSocialDO;
 
-import me.zhyd.oauth.model.AuthUser;
+import java.util.List;
 
 /**
  * 用户社会化关联业务接口

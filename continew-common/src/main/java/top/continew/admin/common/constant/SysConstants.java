@@ -65,12 +65,12 @@ public class SysConstants {
     public static final String ALL_PERMISSION = "*:*:*";
 
     /**
-     * 账号登录 URI
+     * 登录 URI
      */
-    public static final String LOGIN_URI = "/auth/account";
+    public static final String LOGIN_URI = "/auth/login";
 
     /**
-     * 退出 URI
+     * 登出 URI
      */
     public static final String LOGOUT_URI = "/auth/logout";
 

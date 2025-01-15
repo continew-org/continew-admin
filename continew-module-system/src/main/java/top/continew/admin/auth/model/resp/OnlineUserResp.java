@@ -16,7 +16,10 @@
 
 package top.continew.admin.auth.model.resp;
 
-import cn.crane4j.annotation.*;
+import cn.crane4j.annotation.Assemble;
+import cn.crane4j.annotation.AssembleMethod;
+import cn.crane4j.annotation.ContainerMethod;
+import cn.crane4j.annotation.MappingType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.auth.service.OnlineUserService;
@@ -64,6 +67,18 @@ public class OnlineUserResp implements Serializable {
      */
     @Schema(description = "昵称", example = "张三")
     private String nickname;
+
+    /**
+     * 客户端类型
+     */
+    @Schema(description = "客户端类型", example = "PC")
+    private String clientType;
+
+    /**
+     * 客户端 ID
+     */
+    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    private String clientId;
 
     /**
      * 登录 IP

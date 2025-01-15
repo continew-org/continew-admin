@@ -25,10 +25,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.open.mapper.AppMapper;
+import top.continew.admin.open.model.entity.AppDO;
 import top.continew.admin.system.mapper.*;
 import top.continew.admin.system.model.entity.*;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -56,15 +59,15 @@ public class DemoEnvironmentJob {
     private final MenuMapper menuMapper;
     private final DeptMapper deptMapper;
 
-    private static final Long DICT_ITEM_FLAG = 4L;
-    private static final Long DICT_FLAG = 2L;
-    private static final Long STORAGE_FLAG = 2L;
-    private static final Long NOTICE_FLAG = 7L;
+    private final AppMapper appMapper;
+    private final ClientMapper clientsMapper;
+
+    private static final Long DELETE_FLAG = 10000L;
     private static final Long MESSAGE_FLAG = 0L;
-    private static final Long[] USER_FLAG = {1L, 547889293968801831L};
-    private static final Long ROLE_FLAG = 547888897925840928L;
-    private static final Long MENU_FLAG = 10000L;
-    private static final Long DEPT_FLAG = 547888580614160409L;
+    private static final List<Long> USER_FLAG = List
+        .of(1L, 547889293968801822L, 547889293968801823L, 547889293968801824L, 547889293968801825L, 547889293968801826L, 547889293968801827L, 547889293968801828L, 547889293968801829L, 547889293968801830L, 547889293968801831L);
+    private static final List<Long> ROLE_FLAG = List.of(1L, 547888897925840927L, 547888897925840928L);
+    private static final Long DEPT_FLAG = 547887852587843611L;
 
     /**
      * 重置演示环境数据
@@ -76,36 +79,42 @@ public class DemoEnvironmentJob {
             SnailJobLog.REMOTE.info("定时任务 [重置演示环境数据] 开始执行。");
             // 检测待清理数据
             SnailJobLog.REMOTE.info("开始检测演示环境待清理数据项，请稍候...");
-            Long dictItemCount = dictItemMapper.lambdaQuery().gt(DictItemDO::getId, DICT_ITEM_FLAG).count();
+            Long dictItemCount = dictItemMapper.lambdaQuery().gt(DictItemDO::getId, DELETE_FLAG).count();
             this.log(dictItemCount, "字典项");
-            Long dictCount = dictMapper.lambdaQuery().gt(DictDO::getId, DICT_FLAG).count();
+            Long dictCount = dictMapper.lambdaQuery().gt(DictDO::getId, DELETE_FLAG).count();
             this.log(dictCount, "字典");
-            Long storageCount = storageMapper.lambdaQuery().gt(StorageDO::getId, STORAGE_FLAG).count();
+            Long storageCount = storageMapper.lambdaQuery().gt(StorageDO::getId, DELETE_FLAG).count();
             this.log(storageCount, "存储");
-            Long noticeCount = noticeMapper.lambdaQuery().gt(NoticeDO::getId, NOTICE_FLAG).count();
+            Long noticeCount = noticeMapper.lambdaQuery().gt(NoticeDO::getId, DELETE_FLAG).count();
             this.log(noticeCount, "公告");
             Long messageCount = messageMapper.lambdaQuery().count();
             this.log(messageCount, "通知");
             Long userCount = userMapper.lambdaQuery().notIn(UserDO::getId, USER_FLAG).count();
             this.log(userCount, "用户");
-            Long roleCount = roleMapper.lambdaQuery().gt(RoleDO::getId, ROLE_FLAG).count();
+            Long roleCount = roleMapper.lambdaQuery().notIn(RoleDO::getId, ROLE_FLAG).count();
             this.log(roleCount, "角色");
-            Long menuCount = menuMapper.lambdaQuery().gt(MenuDO::getId, MENU_FLAG).count();
+            Long menuCount = menuMapper.lambdaQuery().gt(MenuDO::getId, DELETE_FLAG).count();
             this.log(menuCount, "菜单");
             Long deptCount = deptMapper.lambdaQuery().gt(DeptDO::getId, DEPT_FLAG).count();
             this.log(deptCount, "部门");
+            Long appCount = appMapper.lambdaQuery().gt(AppDO::getId, DELETE_FLAG).count();
+            this.log(appCount, "应用");
+            Long clientCount = clientsMapper.lambdaQuery().gt(ClientDO::getId, DELETE_FLAG).count();
+            this.log(clientCount, "客户端");
             // 清理数据
             InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().blockAttack(true).build());
             SnailJobLog.REMOTE.info("演示环境待清理数据项检测完成，开始执行清理。");
             this.clean(dictItemCount, "字典项", null, () -> dictItemMapper.lambdaUpdate()
-                .gt(DictItemDO::getId, DICT_ITEM_FLAG)
+                .gt(DictItemDO::getId, DELETE_FLAG)
                 .remove());
-            this.clean(dictCount, "字典", null, () -> dictMapper.lambdaUpdate().gt(DictDO::getId, DICT_FLAG).remove());
+            this.clean(dictCount, "字典", CacheConstants.DICT_KEY_PREFIX, () -> dictMapper.lambdaUpdate()
+                .gt(DictDO::getId, DELETE_FLAG)
+                .remove());
             this.clean(storageCount, "存储", null, () -> storageMapper.lambdaUpdate()
-                .gt(StorageDO::getId, STORAGE_FLAG)
+                .gt(StorageDO::getId, DELETE_FLAG)
                 .remove());
             this.clean(noticeCount, "公告", null, () -> noticeMapper.lambdaUpdate()
-                .gt(NoticeDO::getId, NOTICE_FLAG)
+                .gt(NoticeDO::getId, DELETE_FLAG)
                 .remove());
             this.clean(messageCount, "通知", null, () -> {
                 messageUserMapper.lambdaUpdate().gt(MessageUserDO::getMessageId, MESSAGE_FLAG).remove();
@@ -117,14 +126,18 @@ public class DemoEnvironmentJob {
                 return userMapper.lambdaUpdate().notIn(UserDO::getId, USER_FLAG).remove();
             });
             this.clean(roleCount, "角色", null, () -> {
-                roleDeptMapper.lambdaUpdate().ne(RoleDeptDO::getRoleId, ROLE_FLAG).remove();
-                roleMenuMapper.lambdaUpdate().ne(RoleMenuDO::getRoleId, ROLE_FLAG).remove();
-                return roleMapper.lambdaUpdate().gt(RoleDO::getId, ROLE_FLAG).remove();
+                roleDeptMapper.lambdaUpdate().notIn(RoleDeptDO::getRoleId, ROLE_FLAG).remove();
+                roleMenuMapper.lambdaUpdate().notIn(RoleMenuDO::getRoleId, ROLE_FLAG).remove();
+                return roleMapper.lambdaUpdate().notIn(RoleDO::getId, ROLE_FLAG).remove();
             });
             this.clean(menuCount, "菜单", CacheConstants.MENU_KEY_PREFIX, () -> menuMapper.lambdaUpdate()
-                .gt(MenuDO::getId, MENU_FLAG)
+                .gt(MenuDO::getId, DELETE_FLAG)
                 .remove());
             this.clean(deptCount, "部门", null, () -> deptMapper.lambdaUpdate().gt(DeptDO::getId, DEPT_FLAG).remove());
+            this.clean(appCount, "应用", null, () -> appMapper.lambdaUpdate().gt(AppDO::getId, DEPT_FLAG).remove());
+            this.clean(clientCount, "客户端", null, () -> clientsMapper.lambdaUpdate()
+                .gt(ClientDO::getId, DEPT_FLAG)
+                .remove());
             SnailJobLog.REMOTE.info("演示环境数据已清理完成。");
             SnailJobLog.REMOTE.info("定时任务 [重置演示环境数据] 执行结束。");
         } finally {

@@ -16,9 +16,7 @@
 
 package top.continew.admin.system.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import org.apache.ibatis.annotations.Param;
-import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.model.entity.DictItemDO;
 import top.continew.starter.data.mp.base.BaseMapper;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
@@ -31,7 +29,6 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-@DS(SysConstants.DEFAULT_DATASOURCE)
 public interface DictItemMapper extends BaseMapper<DictItemDO> {
 
     /**

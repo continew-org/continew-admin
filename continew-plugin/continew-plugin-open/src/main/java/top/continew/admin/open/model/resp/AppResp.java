@@ -18,8 +18,8 @@ package top.continew.admin.open.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.extension.crud.model.resp.BaseDetailResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

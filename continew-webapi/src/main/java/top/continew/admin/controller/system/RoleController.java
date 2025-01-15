@@ -21,12 +21,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.resp.RoleDetailResp;
@@ -34,7 +33,6 @@ import top.continew.admin.system.model.resp.RoleResp;
 import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.continew.admin.common.base.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 
 import java.util.List;

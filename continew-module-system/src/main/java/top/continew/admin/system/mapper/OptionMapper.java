@@ -16,10 +16,8 @@
 
 package top.continew.admin.system.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.starter.data.mp.base.BaseMapper;
 
@@ -31,7 +29,6 @@ import java.util.List;
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
-@DS(SysConstants.DEFAULT_DATASOURCE)
 public interface OptionMapper extends BaseMapper<OptionDO> {
 
     /**

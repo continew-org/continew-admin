@@ -31,7 +31,9 @@ import cn.hutool.extra.template.TemplateUtil;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.system.SystemUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -250,7 +252,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     @Override
-    public void generate(List<String> tableNames, HttpServletResponse response) {
+    public void downloadCode(List<String> tableNames, HttpServletResponse response) {
         try {
             String tempDir = SystemUtil.getUserInfo().getTempDir();
             // 删除旧代码
@@ -266,6 +268,32 @@ public class GeneratorServiceImpl implements GeneratorService {
             String zipFilePath = tempDirFile.getPath() + jodd.io.ZipUtil.ZIP_EXT;
             ZipUtil.zip(tempDirFile.getPath(), zipFilePath);
             FileUploadUtils.download(response, new File(zipFilePath));
+        } catch (Exception e) {
+            log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
+            throw new BusinessException("代码生成失败，请手动清理生成文件");
+        }
+    }
+
+    @Override
+    public void generateCode(List<String> tableNames) {
+        try {
+            String projectPath = System.getProperty("user.dir");
+            tableNames.forEach(tableName -> {
+                // 初始化配置及数据
+                List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
+                // 生成代码
+                for (GeneratePreviewResp generatePreview : generatePreviewList) {
+                    // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
+                    // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
+                    File file = new File(projectPath + generatePreview.getPath()
+                        .replace("continew-admin\\continew-admin", ""), generatePreview.getFileName());
+                    // 如果已经存在，且不允许覆盖，则跳过
+                    if (!file.exists() || Boolean.TRUE.equals(genConfigMapper.selectById(tableName).getIsOverride())) {
+                        FileUtil.writeUtf8String(generatePreview.getContent(), file);
+                    }
+                }
+            });
+
         } catch (Exception e) {
             log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");
@@ -291,9 +319,10 @@ public class GeneratorServiceImpl implements GeneratorService {
         Map<String, GeneratorProperties.TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
+        // 在模板中允许使用静态方法
         if (engine instanceof FreemarkerEngine freemarkerEngine) {
-            freemarkerEngine.getConfiguration()
-                .setSharedVariable("statics", BeansWrapper.getDefaultInstance().getStaticModels());
+            DefaultObjectWrapper wrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_33).build();
+            freemarkerEngine.getConfiguration().setSharedVariable("statics", wrapper.getStaticModels());
         }
         for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
             GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();

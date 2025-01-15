@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset Charles7c:1
+-- changeset charles7c:1
 -- comment 初始化表结构
 CREATE TABLE IF NOT EXISTS "sys_menu" (
     "id"          int8         NOT NULL,
@@ -391,6 +391,8 @@ CREATE TABLE IF NOT EXISTS "sys_notice" (
     "type"           varchar(30)  NOT NULL,
     "effective_time" timestamp    DEFAULT NULL,
     "terminate_time" timestamp    DEFAULT NULL,
+    "notice_scope"   int2         NOT NULL DEFAULT 1,
+    "notice_users"   json         DEFAULT NULL,
     "sort"           int4         NOT NULL DEFAULT 999,
     "create_user"    int8         NOT NULL,
     "create_time"    timestamp    NOT NULL,
@@ -406,6 +408,8 @@ COMMENT ON COLUMN "sys_notice"."content"        IS '内容';
 COMMENT ON COLUMN "sys_notice"."type"           IS '类型';
 COMMENT ON COLUMN "sys_notice"."effective_time" IS '生效时间';
 COMMENT ON COLUMN "sys_notice"."terminate_time" IS '终止时间';
+COMMENT ON COLUMN "sys_notice"."notice_scope"   IS '通知范围（1：所有人；2：指定用户）';
+COMMENT ON COLUMN "sys_notice"."notice_users"   IS '通知用户';
 COMMENT ON COLUMN "sys_notice"."sort"           IS '排序';
 COMMENT ON COLUMN "sys_notice"."create_user"    IS '创建人';
 COMMENT ON COLUMN "sys_notice"."create_time"    IS '创建时间';
@@ -490,3 +494,34 @@ COMMENT ON COLUMN "sys_file"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_file"."update_time"    IS '修改时间';
 COMMENT ON TABLE  "sys_file"                  IS '文件表';
 
+CREATE TABLE IF NOT EXISTS "sys_client" (
+    "id"             int8         NOT NULL,
+    "client_id"      varchar(50)  NOT NULL,
+    "client_key"     varchar(255) NOT NULL,
+    "client_secret"  varchar(255) NOT NULL,
+    "auth_type"      json         NOT NULL,
+    "client_type"    varchar(50)  NOT NULL,
+    "active_timeout" int8         NOT NULL DEFAULT -1,
+    "timeout"        int8         NOT NULL DEFAULT 2592000,
+    "status"         int2         NOT NULL DEFAULT 1,
+    "create_user"    int8         NOT NULL,
+    "create_time"    timestamp    NOT NULL,
+    "update_user"    int8         DEFAULT NULL,
+    "update_time"    timestamp    DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+CREATE UNIQUE INDEX "uk_client_client_id"  ON "sys_client" ("client_id");
+COMMENT ON COLUMN "sys_client"."id"             IS 'ID';
+COMMENT ON COLUMN "sys_client"."client_id"      IS '客户端ID';
+COMMENT ON COLUMN "sys_client"."client_key"     IS '客户端Key';
+COMMENT ON COLUMN "sys_client"."client_secret"  IS '客户端秘钥';
+COMMENT ON COLUMN "sys_client"."auth_type"      IS '认证类型';
+COMMENT ON COLUMN "sys_client"."client_type"    IS '客户端类型';
+COMMENT ON COLUMN "sys_client"."active_timeout" IS 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）';
+COMMENT ON COLUMN "sys_client"."timeout"        IS 'Token有效期（单位：秒，-1：永不过期）';
+COMMENT ON COLUMN "sys_client"."status"         IS '状态（1：启用；2：禁用）';
+COMMENT ON COLUMN "sys_client"."create_user"    IS '创建人';
+COMMENT ON COLUMN "sys_client"."create_time"    IS '创建时间';
+COMMENT ON COLUMN "sys_client"."update_user"    IS '修改人';
+COMMENT ON COLUMN "sys_client"."update_time"    IS '修改时间';
+COMMENT ON TABLE  "sys_client"                  IS '客户端表';

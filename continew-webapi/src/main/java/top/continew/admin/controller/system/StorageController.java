@@ -18,12 +18,12 @@ package top.continew.admin.controller.system;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.system.model.query.StorageQuery;
 import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.model.resp.StorageResp;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.continew.admin.common.base.BaseController;
 import top.continew.starter.extension.crud.enums.Api;
 
 /**

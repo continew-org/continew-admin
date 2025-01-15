@@ -24,7 +24,6 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * 邮箱登录参数
@@ -34,7 +33,7 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "邮箱登录参数")
-public class EmailLoginReq implements Serializable {
+public class EmailLoginReq extends LoginReq {
 
     @Serial
     private static final long serialVersionUID = 1L;

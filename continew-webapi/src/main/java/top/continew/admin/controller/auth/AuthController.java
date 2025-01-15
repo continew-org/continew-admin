@@ -19,33 +19,28 @@ package top.continew.admin.controller.auth;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import com.xkcoding.justauth.AuthRequestFactory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.request.AuthRequest;
+import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.continew.admin.auth.model.req.AccountLoginReq;
-import top.continew.admin.auth.model.req.EmailLoginReq;
-import top.continew.admin.auth.model.req.PhoneLoginReq;
+import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
+import top.continew.admin.auth.model.resp.SocialAuthAuthorizeResp;
 import top.continew.admin.auth.model.resp.UserInfoResp;
-import top.continew.admin.auth.service.LoginService;
-import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.common.constant.SysConstants;
+import top.continew.admin.auth.service.AuthService;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
-import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
-import top.continew.admin.system.service.OptionService;
 import top.continew.admin.system.service.UserService;
-import top.continew.admin.tenant.service.TenantService;
-import top.continew.starter.cache.redisson.util.RedisUtils;
-import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.log.annotation.Log;
 
 import java.util.List;
@@ -56,77 +51,43 @@ import java.util.List;
  * @author Charles7c
  * @since 2022/12/21 20:37
  */
-@Log(module = "登录")
 @Tag(name = "认证 API")
+@Log(module = "登录")
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
-    private static final String CAPTCHA_EXPIRED = "验证码已失效";
-    private static final String CAPTCHA_ERROR = "验证码错误";
-    private final OptionService optionService;
-    private final LoginService loginService;
+    private final AuthService authService;
     private final UserService userService;
-    private final TenantService tenantService;
+    private final AuthRequestFactory authRequestFactory;
 
     @SaIgnore
-    @Operation(summary = "账号登录", description = "根据账号和密码进行登录认证")
-    @PostMapping("/account")
-    public LoginResp accountLogin(@Validated @RequestBody AccountLoginReq loginReq, HttpServletRequest request) {
-        // 校验验证码
-        int loginCaptchaEnabled = optionService.getValueByCode2Int("LOGIN_CAPTCHA_ENABLED");
-        if (SysConstants.YES.equals(loginCaptchaEnabled)) {
-            ValidationUtils.throwIfBlank(loginReq.getCaptcha(), "验证码不能为空");
-            ValidationUtils.throwIfBlank(loginReq.getUuid(), "验证码标识不能为空");
-            String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + loginReq.getUuid();
-            String captcha = RedisUtils.get(captchaKey);
-            ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-            RedisUtils.delete(captchaKey);
-            ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
-        }
-        // 用户登录
-        String rawPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(loginReq.getPassword()));
-        ValidationUtils.throwIfBlank(rawPassword, "密码解密失败");
-        String token = loginService.accountLogin(loginReq.getUsername(), rawPassword, request);
-        return LoginResp.builder().token(token).build();
+    @Operation(summary = "登录", description = "用户登录")
+    @PostMapping("/login")
+    public LoginResp login(@Validated @RequestBody LoginReq req, HttpServletRequest request) {
+        return authService.login(req, request);
     }
 
-    @SaIgnore
-    @Operation(summary = "手机号登录", description = "根据手机号和验证码进行登录认证")
-    @PostMapping("/phone")
-    public LoginResp phoneLogin(@Validated @RequestBody PhoneLoginReq loginReq) {
-        String phone = loginReq.getPhone();
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
-        String captcha = RedisUtils.get(captchaKey);
-        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
-        RedisUtils.delete(captchaKey);
-        String token = loginService.phoneLogin(phone);
-        return LoginResp.builder().token(token).build();
-    }
-
-    @SaIgnore
-    @Operation(summary = "邮箱登录", description = "根据邮箱和验证码进行登录认证")
-    @PostMapping("/email")
-    public LoginResp emailLogin(@Validated @RequestBody EmailLoginReq loginReq) {
-        String email = loginReq.getEmail();
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
-        String captcha = RedisUtils.get(captchaKey);
-        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha, CAPTCHA_ERROR);
-        RedisUtils.delete(captchaKey);
-        String token = loginService.emailLogin(email);
-        return LoginResp.builder().token(token).build();
-    }
-
-    @Operation(summary = "用户退出", description = "注销用户的当前登录")
+    @Operation(summary = "登出", description = "注销用户的当前登录")
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
     public Object logout() {
         Object loginId = StpUtil.getLoginId(-1L);
         StpUtil.logout();
         return loginId;
+    }
+
+    @SaIgnore
+    @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
+    @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
+    @GetMapping("/{source}")
+    public SocialAuthAuthorizeResp authorize(@PathVariable String source) {
+        AuthRequest authRequest = this.getAuthRequest(source);
+        return SocialAuthAuthorizeResp.builder()
+            .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
+            .build();
     }
 
     @Log(ignore = true)
@@ -144,8 +105,16 @@ public class AuthController {
 
     @Log(ignore = true)
     @Operation(summary = "获取路由信息", description = "获取登录用户的路由信息")
-    @GetMapping("/route")
+    @GetMapping("/user/route")
     public List<RouteResp> listRoute() {
-        return loginService.buildRouteTree(UserContextHolder.getUserId());
+        return authService.buildRouteTree(UserContextHolder.getUserId());
+    }
+
+    private AuthRequest getAuthRequest(String source) {
+        try {
+            return authRequestFactory.get(source);
+        } catch (Exception e) {
+            throw new BadRequestException("暂不支持 [%s] 平台账号登录".formatted(source));
+        }
     }
 }

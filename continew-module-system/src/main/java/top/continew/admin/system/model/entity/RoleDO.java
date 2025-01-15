@@ -20,7 +20,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
 import top.continew.starter.extension.crud.annotation.DictField;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
 

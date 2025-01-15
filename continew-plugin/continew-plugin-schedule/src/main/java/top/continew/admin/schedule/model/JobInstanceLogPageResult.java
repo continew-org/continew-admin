@@ -18,10 +18,10 @@ package top.continew.admin.schedule.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import java.util.List;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 任务实例日志分页信息

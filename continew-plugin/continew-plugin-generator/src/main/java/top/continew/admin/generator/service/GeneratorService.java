@@ -80,10 +80,17 @@ public interface GeneratorService {
     List<GeneratePreviewResp> preview(List<String> tableNames);
 
     /**
-     * 生成代码
+     * 生成下载代码
      *
      * @param tableNames 表名称列表
      * @param response   响应对象
      */
-    void generate(List<String> tableNames, HttpServletResponse response);
+    void downloadCode(List<String> tableNames, HttpServletResponse response);
+
+    /**
+     * 生成下载代码
+     *
+     * @param tableNames 表名称列表
+     */
+    void generateCode(List<String> tableNames);
 }

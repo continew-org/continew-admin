@@ -46,6 +46,12 @@ public class OnlineUserQuery implements Serializable {
     private String nickname;
 
     /**
+     * 客户端 ID
+     */
+    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    private String clientId;
+
+    /**
      * 登录时间
      */
     @Schema(description = "登录时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")

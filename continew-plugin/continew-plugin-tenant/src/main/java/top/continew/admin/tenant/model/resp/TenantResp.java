@@ -18,7 +18,7 @@ package top.continew.admin.tenant.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.starter.extension.crud.model.resp.BaseResp;
+import top.continew.admin.common.model.resp.BaseResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

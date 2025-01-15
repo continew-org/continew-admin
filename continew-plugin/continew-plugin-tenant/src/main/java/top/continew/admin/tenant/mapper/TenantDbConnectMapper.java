@@ -16,8 +16,6 @@
 
 package top.continew.admin.tenant.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import top.continew.admin.common.constant.SysConstants;
 import top.continew.starter.data.mp.base.BaseMapper;
 import top.continew.admin.tenant.model.entity.TenantDbConnectDO;
 
@@ -27,5 +25,4 @@ import top.continew.admin.tenant.model.entity.TenantDbConnectDO;
  * @author 小熊
  * @since 2024/12/12 19:13
  */
-@DS(SysConstants.DEFAULT_DATASOURCE)
 public interface TenantDbConnectMapper extends BaseMapper<TenantDbConnectDO> {}

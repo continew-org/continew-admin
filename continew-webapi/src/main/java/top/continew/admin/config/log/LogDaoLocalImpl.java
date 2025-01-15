@@ -29,8 +29,9 @@ import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
-import top.continew.admin.auth.model.req.AccountLoginReq;
 import top.continew.admin.common.config.properties.TenantProperties;
+import top.continew.admin.auth.enums.AuthTypeEnum;
+import top.continew.admin.auth.model.req.*;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.enums.LogStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
@@ -160,10 +161,22 @@ public class LogDaoLocalImpl implements LogDao {
         // 解析登录接口信息
         if (requestUri.startsWith(SysConstants.LOGIN_URI) && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
             String requestBody = logRequest.getBody();
-            AccountLoginReq loginReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-            logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(loginReq.getUsername())
-                .getId()));
-            return;
+            logDO.setDescription(JSONUtil.toBean(requestBody, LoginReq.class).getAuthType().getDescription() + "登录");
+            // 解析账号登录用户为操作人
+            if (requestBody.contains(AuthTypeEnum.ACCOUNT.getValue())) {
+                AccountLoginReq authReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
+                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(authReq.getUsername())
+                    .getId()));
+                return;
+            } else if (requestBody.contains(AuthTypeEnum.EMAIL.getValue())) {
+                EmailLoginReq authReq = JSONUtil.toBean(requestBody, EmailLoginReq.class);
+                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByEmail(authReq.getEmail()).getId()));
+                return;
+            } else if (requestBody.contains(AuthTypeEnum.PHONE.getValue())) {
+                PhoneLoginReq authReq = JSONUtil.toBean(requestBody, PhoneLoginReq.class);
+                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByPhone(authReq.getPhone()).getId()));
+                return;
+            }
         }
         // 解析 Token 信息
         Map<String, String> requestHeaders = logRequest.getHeaders();

@@ -16,24 +16,20 @@
 
 package top.continew.admin.system.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import cn.hutool.json.JSONUtil;
-
+import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.model.AuthUser;
+import org.springframework.stereotype.Service;
 import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.mapper.UserSocialMapper;
 import top.continew.admin.system.model.entity.UserSocialDO;
 import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.core.validation.CheckUtils;
 
-import me.zhyd.oauth.model.AuthUser;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用户社会化关联业务实现

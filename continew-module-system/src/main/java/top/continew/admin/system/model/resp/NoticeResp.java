@@ -18,9 +18,9 @@ package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.model.resp.BaseResp;
 import top.continew.admin.system.enums.NoticeScopeEnum;
 import top.continew.admin.system.enums.NoticeStatusEnum;
-import top.continew.starter.extension.crud.model.resp.BaseResp;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

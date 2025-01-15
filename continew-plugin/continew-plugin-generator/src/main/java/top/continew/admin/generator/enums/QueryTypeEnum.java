@@ -18,7 +18,6 @@ package top.continew.admin.generator.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import top.continew.starter.core.enums.BaseEnum;
 
 /**

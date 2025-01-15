@@ -103,7 +103,7 @@ public class TenantReq extends BaseReq {
      * 隔离级别
      */
     @Schema(description = "隔离级别")
-    @NotNull(message = "隔离级别不能为空")
+    @NotNull(message = "隔离级别不能为空", groups = CrudValidationGroup.Add.class)
     private Integer isolationLevel;
 
     /**

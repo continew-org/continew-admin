@@ -96,12 +96,20 @@ public class GeneratorController {
         return baseService.preview(tableNames);
     }
 
+    @Operation(summary = "生成下载代码", description = "生成下载代码")
+    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @SaCheckPermission("code:generator:generate")
+    @PostMapping("/{tableNames}/download")
+    public void downloadCode(@PathVariable List<String> tableNames, HttpServletResponse response) {
+        baseService.downloadCode(tableNames, response);
+    }
+
     @Operation(summary = "生成代码", description = "生成代码")
     @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:generate")
     @PostMapping("/{tableNames}")
-    public void generate(@PathVariable List<String> tableNames, HttpServletResponse response) {
-        baseService.generate(tableNames, response);
+    public void generateCode(@PathVariable List<String> tableNames) {
+        baseService.generateCode(tableNames);
     }
 
     @Operation(summary = "查询字典", description = "查询字典列表")

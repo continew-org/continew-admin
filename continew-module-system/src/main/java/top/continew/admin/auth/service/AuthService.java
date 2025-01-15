@@ -17,52 +17,28 @@
 package top.continew.admin.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import me.zhyd.oauth.model.AuthUser;
+import top.continew.admin.auth.model.req.LoginReq;
+import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
 
 import java.util.List;
 
 /**
- * 登录业务接口
+ * 认证业务接口
  *
  * @author Charles7c
  * @since 2022/12/21 21:48
  */
-public interface LoginService {
+public interface AuthService {
 
     /**
-     * 账号登录
+     * 登录
      *
-     * @param username 用户名
-     * @param password 密码
-     * @param request  请求对象
-     * @return 令牌
+     * @param req     登录请求参数
+     * @param request 请求对象
+     * @return 登录响应参数
      */
-    String accountLogin(String username, String password, HttpServletRequest request);
-
-    /**
-     * 手机号登录
-     *
-     * @param phone 手机号
-     * @return 令牌
-     */
-    String phoneLogin(String phone);
-
-    /**
-     * 邮箱登录
-     *
-     * @param email 邮箱
-     * @return 令牌
-     */
-    String emailLogin(String email);
-
-    /**
-     * 三方账号登录
-     *
-     * @param authUser 三方账号信息
-     * @return 令牌
-     */
-    String socialLogin(AuthUser authUser);
+    LoginResp login(LoginReq req, HttpServletRequest request);
 
     /**
      * 构建路由树

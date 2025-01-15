@@ -141,9 +141,8 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "类名前缀", example = "User")
     public String getClassNamePrefix() {
-        String tableName = this.getTableName();
-        String rawClassName = StrUtils.blankToDefault(this.getTablePrefix(), tableName, prefix -> StrUtil
-            .removePrefix(tableName, prefix));
+        String rawClassName = StrUtils.blankToDefault(this.getTablePrefix(), this.getTableName(), prefix -> StrUtil
+            .removePrefix(this.getTableName(), prefix));
         return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }

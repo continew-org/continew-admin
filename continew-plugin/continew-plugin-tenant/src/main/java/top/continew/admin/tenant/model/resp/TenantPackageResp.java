@@ -24,7 +24,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.continew.starter.extension.crud.model.resp.BaseResp;
+import top.continew.admin.common.model.resp.BaseResp;
 
 /**
  * 租户套餐信息
