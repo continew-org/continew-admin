@@ -11,15 +11,15 @@ server:
 --- ### 数据源配置
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
-  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
   driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-#  # PostgreSQL 配置
-#  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false&stringtype=unspecified
-#  username: ${DB_USER:root}
-#  password: ${DB_PWD:123456}
-#  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  #  # PostgreSQL 配置
+  #  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false&stringtype=unspecified
+  #  username: ${DB_USER:root}
+  #  password: ${DB_PWD:123456}
+  #  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
   # Hikari 连接池配置（完整配置请参阅：https://github.com/brettwooldridge/HikariCP）
   hikari:
     # 最大连接数量（默认 10，根据实际环境调整）
