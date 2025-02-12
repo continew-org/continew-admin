@@ -287,9 +287,9 @@ snail-job:
       # URL
       url: http://127.0.0.1:8001/snail-job
       # 用户名
-      username: admin
+      username:  ${SCHEDULE_USERNAME:admin}
       # 密码
-      password: admin
+      password:  ${SCHEDULE_PASSWORD:admin}
   ## 重试数据批量上报滑动窗口配置
   retry:
     reportSlidingWindow:
