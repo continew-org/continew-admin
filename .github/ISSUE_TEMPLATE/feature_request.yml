@@ -13,10 +13,12 @@ body:
       label: 请您确认
       description: 在提交 Feature 之前，请确保执行过以下操作。
       options:
-        - label: 阅读[使用指南](https://continew.top/admin/intro/what-is.html)
+        - label: 阅读[使用指南](https://continew.top/admin/backend/structure.html)
           required: true
         - label: 查找[常见问题](https://continew.top/faq.html)
           required: true
+        - label: 尝试最新 dev 分支代码，仍没有该功能
+          required: false
         - label: 查看[需求墙](https://continew.top/require.html)计划
           required: true
         - label: 搜索是否有其他人提交过类似的 Feature，如果对应 Feature 尚未完成，您可以先订阅关注该 Feature（为了方便后来者查找问题解决方法，请尽量避免创建重复的 Feature）

@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.base;
+package top.continew.admin.common.model.req;
 
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.MappingType;
-import top.continew.admin.common.constant.ContainerConstants;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
+
+import java.io.Serializable;
 
 /**
- * 公共用户业务接口
+ * 修改状态请求参数
  *
  * @author Charles7c
- * @since 2025/1/9 20:17
+ * @since 2025/3/4 20:09
  */
-public interface CommonUserService {
+@Data
+@Schema(description = "修改状态请求参数")
+public class CommonStatusUpdateReq implements Serializable {
 
     /**
-     * 根据 ID 查询昵称
-     *
-     * <p>
-     * 数据填充容器 {@link ContainerConstants#USER_NICKNAME}
-     * </p>
-     * 
-     * @param id ID
-     * @return 昵称
+     * 状态
      */
-    @ContainerMethod(namespace = ContainerConstants.USER_NICKNAME, type = MappingType.ORDER_OF_KEYS)
-    String getNicknameById(Long id);
+    @Schema(description = "状态", example = "1")
+    @NotNull(message = "状态非法")
+    private DisEnableStatusEnum status;
 }

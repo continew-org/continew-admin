@@ -119,9 +119,11 @@ CREATE TABLE IF NOT EXISTS `sys_user_social` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户社会化关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_user_role` (
+    `id`      bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `user_id` bigint(20) NOT NULL COMMENT '用户ID',
     `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-    PRIMARY KEY (`user_id`, `role_id`)
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `uk_user_id_role_id`(`user_id`, `role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户和角色关联表';
 
 CREATE TABLE IF NOT EXISTS `sys_role_menu` (
@@ -189,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     `id`               bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `trace_id`         varchar(255) DEFAULT NULL                COMMENT '链路ID',
     `description`      varchar(255) NOT NULL                    COMMENT '日志描述',
-    `module`           varchar(50)  NOT NULL                    COMMENT '所属模块',
+    `module`           varchar(100) NOT NULL                    COMMENT '所属模块',
     `request_url`      varchar(512) NOT NULL                    COMMENT '请求URL',
     `request_method`   varchar(10)  NOT NULL                    COMMENT '请求方式',
     `request_headers`  text         DEFAULT NULL                COMMENT '请求头',
@@ -254,11 +256,11 @@ CREATE TABLE IF NOT EXISTS `sys_storage` (
     `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `name`        varchar(100) NOT NULL                    COMMENT '名称',
     `code`        varchar(30)  NOT NULL                    COMMENT '编码',
-    `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：兼容S3协议存储；2：本地存储）',
-    `access_key`  varchar(255) DEFAULT NULL                COMMENT 'Access Key（访问密钥）',
-    `secret_key`  varchar(255) DEFAULT NULL                COMMENT 'Secret Key（私有密钥）',
-    `endpoint`    varchar(255) DEFAULT NULL                COMMENT 'Endpoint（终端节点）',
-    `bucket_name` varchar(255) DEFAULT NULL                COMMENT '桶名称',
+    `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：本地存储；2：对象存储）',
+    `access_key`  varchar(255) DEFAULT NULL                COMMENT 'Access Key',
+    `secret_key`  varchar(255) DEFAULT NULL                COMMENT 'Secret Key',
+    `endpoint`    varchar(255) DEFAULT NULL                COMMENT 'Endpoint',
+    `bucket_name` varchar(255) DEFAULT NULL                COMMENT 'Bucket',
     `domain`      varchar(255) NOT NULL DEFAULT ''         COMMENT '域名',
     `description` varchar(200) DEFAULT NULL                COMMENT '描述',
     `is_default`  bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否为默认存储',
@@ -297,11 +299,11 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
 
 CREATE TABLE IF NOT EXISTS `sys_client` (
     `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
-    `client_id`      varchar(50)  NOT NULL                    COMMENT '客户端ID',
-    `client_key`     varchar(255) NOT NULL                    COMMENT '客户端Key',
-    `client_secret`  varchar(255) NOT NULL                    COMMENT '客户端秘钥',
+    `client_id`      varchar(50)  NOT NULL                    COMMENT '终端ID',
+    `client_key`     varchar(255) NOT NULL                    COMMENT '终端Key',
+    `client_secret`  varchar(255) NOT NULL                    COMMENT '终端秘钥',
     `auth_type`      json         NOT NULL                    COMMENT '认证类型',
-    `client_type`    varchar(50)  NOT NULL                    COMMENT '客户端类型',
+    `client_type`    varchar(50)  NOT NULL                    COMMENT '终端类型',
     `active_timeout` bigint(20)   DEFAULT -1                  COMMENT 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）',
     `timeout`        bigint(20)   DEFAULT 2592000             COMMENT 'Token有效期（单位：秒，-1：永不过期）',
     `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
@@ -311,4 +313,4 @@ CREATE TABLE IF NOT EXISTS `sys_client` (
     `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uk_client_id`(`client_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='终端表';

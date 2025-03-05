@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.base;
+package top.continew.admin.common.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.context.SaHolder;
@@ -28,7 +28,6 @@ import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.AbstractBaseController;
 import top.continew.starter.extension.crud.enums.Api;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 import top.continew.starter.extension.crud.service.BaseService;
 
 import java.lang.reflect.Method;
@@ -45,7 +44,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2024/12/6 20:30
  */
-public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C extends BaseReq> extends AbstractBaseController<S, L, D, Q, C> {
+public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> extends AbstractBaseController<S, L, D, Q, C> {
 
     @Override
     public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {

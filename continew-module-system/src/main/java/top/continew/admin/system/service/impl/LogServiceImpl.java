@@ -19,7 +19,6 @@ package top.continew.admin.system.service.impl;
 import cn.crane4j.annotation.AutoOperate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -27,7 +26,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
@@ -39,6 +37,7 @@ import top.continew.admin.system.model.resp.log.LoginLogExportResp;
 import top.continew.admin.system.model.resp.log.OperationLogExportResp;
 import top.continew.admin.system.service.LogService;
 import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.data.mp.util.QueryWrapperHelper;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
@@ -63,7 +62,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageResp<LogResp> page(LogQuery query, PageQuery pageQuery) {
         QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
-        this.sort(queryWrapper, pageQuery);
+        QueryWrapperHelper.sort(queryWrapper, pageQuery.getSort());
         IPage<LogResp> page = baseMapper.selectLogPage(new Page<>(pageQuery.getPage(), pageQuery
             .getSize()), queryWrapper);
         return PageResp.build(page);
@@ -99,24 +98,8 @@ public class LogServiceImpl implements LogService {
      */
     private List<LogResp> list(LogQuery query, SortQuery sortQuery) {
         QueryWrapper<LogDO> queryWrapper = this.buildQueryWrapper(query);
-        this.sort(queryWrapper, sortQuery);
+        QueryWrapperHelper.sort(queryWrapper, sortQuery.getSort());
         return baseMapper.selectLogList(queryWrapper);
-    }
-
-    /**
-     * 设置排序
-     *
-     * @param queryWrapper 查询条件封装对象
-     * @param sortQuery    排序查询条件
-     */
-    private void sort(QueryWrapper<LogDO> queryWrapper, SortQuery sortQuery) {
-        if (sortQuery == null || sortQuery.getSort().isUnsorted()) {
-            return;
-        }
-        for (Sort.Order order : sortQuery.getSort()) {
-            String property = order.getProperty();
-            queryWrapper.orderBy(true, order.isAscending(), CharSequenceUtil.toUnderlineCase(property));
-        }
     }
 
     /**

@@ -20,9 +20,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 修改文件参数
@@ -32,7 +32,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "修改文件参数")
-public class FileReq extends BaseReq {
+public class FileReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

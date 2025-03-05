@@ -29,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.common.base.BaseController;
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.query.UserQuery;

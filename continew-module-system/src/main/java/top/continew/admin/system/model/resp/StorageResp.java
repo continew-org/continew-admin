@@ -18,7 +18,7 @@ package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.base.BaseDetailResp;
+import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.security.mask.annotation.JsonMask;
@@ -63,32 +63,32 @@ public class StorageResp extends BaseDetailResp {
     private StorageTypeEnum type;
 
     /**
-     * 访问密钥
+     * Access Key
      */
-    @Schema(description = "访问密钥", example = "")
+    @Schema(description = "Access Key", example = "")
     private String accessKey;
 
     /**
-     * 私有密钥
+     * Secret Key
      */
-    @Schema(description = "私有密钥", example = "")
+    @Schema(description = "Secret Key", example = "")
     @JsonMask(left = 4, right = 3)
     private String secretKey;
 
     /**
-     * 终端节点
+     * Endpoint
      */
-    @Schema(description = "终端节点", example = "")
+    @Schema(description = "Endpoint", example = "")
     private String endpoint;
 
     /**
-     * 桶名称
+     * Bucket/存储路径
      */
-    @Schema(description = "桶名称", example = "C:/continew-admin/data/file/")
+    @Schema(description = "Bucket/存储路径", example = "C:/continew-admin/data/file/")
     private String bucketName;
 
     /**
-     * 域名
+     * 域名/访问路径
      */
     @Schema(description = "域名", example = "http://localhost:8000/file")
     private String domain;

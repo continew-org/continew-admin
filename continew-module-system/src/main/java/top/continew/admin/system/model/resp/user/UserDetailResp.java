@@ -26,7 +26,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.base.BaseDetailResp;
+import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;

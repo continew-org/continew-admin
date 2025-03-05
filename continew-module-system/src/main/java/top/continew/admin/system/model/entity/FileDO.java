@@ -25,7 +25,7 @@ import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.StrUtils;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.net.URL;

@@ -13,11 +13,13 @@ body:
       label: 请您确认
       description: 在提交 Issue 之前，请确保执行过以下操作。
       options:
-        - label: 尝试最新 dev 分支代码，仍有相同问题
+        - label: 重启项目后，仍然能够复现此问题
           required: true
-        - label: 阅读[使用指南](https://continew.top/admin/intro/what-is.html)
+        - label: 阅读[使用指南](https://continew.top/admin/backend/structure.html)
           required: true
         - label: 查找[常见问题](https://continew.top/faq.html)
+          required: true
+        - label: 尝试最新 dev 分支代码，仍有相同问题
           required: true
         - label: 根据报错信息（自行翻译英文）百度或 Google 一下
           required: true
@@ -39,7 +41,7 @@ body:
     id: reproduction
     attributes:
       label: 复现步骤
-      description: 条理清晰的步骤或演示视频可以帮助快速定位问题。
+      description: 条理清晰的步骤及图片或演示视频可以帮助快速定位问题。
       placeholder: 例如：1、xxx; 2、xxx;
     validations:
       required: true
@@ -54,12 +56,12 @@ body:
   - type: textarea
     id: environment-info
     attributes:
-      label: 环境信息
-      description: |
-        examples:
-          - **ContiNew Admin version(s)**: v3.0.1
-      value: "ContiNew Admin version(s):"
-      render: markdown
+      label: 版本信息
+      description: 请务必填写版本信息（项目启动后在控制台可以查看到），否则视为无效 Issue。
+      value: |
+        JDK 版本：
+        ContiNew Starter 版本：
+        ContiNew Admin 版本：
     validations:
       required: true
   - type: textarea

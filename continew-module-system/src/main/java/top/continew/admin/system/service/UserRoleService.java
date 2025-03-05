@@ -17,6 +17,10 @@
 package top.continew.admin.system.service;
 
 import top.continew.admin.system.model.entity.UserRoleDO;
+import top.continew.admin.system.model.query.RoleUserQuery;
+import top.continew.admin.system.model.resp.role.RoleUserResp;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.util.List;
 
@@ -27,6 +31,15 @@ import java.util.List;
  * @since 2023/2/20 21:30
  */
 public interface UserRoleService {
+
+    /**
+     * 分页查询角色关联用户列表
+     *
+     * @param query     查询条件
+     * @param pageQuery 分页查询条件
+     * @return 分页信息
+     */
+    PageResp<RoleUserResp> pageUser(RoleUserQuery query, PageQuery pageQuery);
 
     /**
      * 批量分配角色给指定用户
@@ -45,6 +58,13 @@ public interface UserRoleService {
      * @return 是否成功（true：成功；false：无变更/失败）
      */
     boolean assignRoleToUsers(Long roleId, List<Long> userIds);
+
+    /**
+     * 根据 ID 删除
+     *
+     * @param ids ID 列表
+     */
+    void deleteByIds(List<Long> ids);
 
     /**
      * 根据用户 ID 删除

@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.model.req;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,9 +27,9 @@ import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.admin.system.validation.ValidationGroup;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 存储请求参数
@@ -38,7 +39,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "存储请求参数")
-public class StorageReq extends BaseReq {
+public class StorageReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -67,43 +68,45 @@ public class StorageReq extends BaseReq {
     private StorageTypeEnum type;
 
     /**
-     * 访问密钥
+     * Access Key
      */
-    @Schema(description = "访问密钥", example = "")
-    @Length(max = 255, message = "访问密钥长度不能超过 {max} 个字符")
-    @NotBlank(message = "访问密钥不能为空", groups = ValidationGroup.Storage.S3.class)
+    @Schema(description = "Access Key", example = "")
+    @Length(max = 255, message = "Access Key长度不能超过 {max} 个字符")
+    @NotBlank(message = "Access Key不能为空", groups = ValidationGroup.Storage.OSS.class)
     private String accessKey;
 
     /**
-     * 私有密钥
+     * Secret Key
      */
-    @Schema(description = "私有密钥", example = "")
-    @NotBlank(message = "私有密钥不能为空", groups = ValidationGroup.Storage.S3.class)
+    @Schema(description = "Secret Key", example = "")
+    @NotBlank(message = "Secret Key不能为空", groups = ValidationGroup.Storage.OSS.class)
     private String secretKey;
 
     /**
-     * 终端节点
+     * Endpoint
      */
-    @Schema(description = "终端节点", example = "")
-    @Length(max = 255, message = "终端节点长度不能超过 {max} 个字符")
-    @NotBlank(message = "终端节点不能为空", groups = ValidationGroup.Storage.S3.class)
+    @Schema(description = "Endpoint", example = "")
+    @Length(max = 255, message = "Endpoint长度不能超过 {max} 个字符")
+    @NotBlank(message = "Endpoint不能为空", groups = ValidationGroup.Storage.OSS.class)
     private String endpoint;
 
     /**
-     * 桶名称
+     * Bucket/存储路径
      */
-    @Schema(description = "桶名称", example = "C:/continew-admin/data/file/")
-    @Length(max = 255, message = "桶名称长度不能超过 {max} 个字符")
-    @NotBlank(message = "桶名称不能为空", groups = ValidationGroup.Storage.S3.class)
+    @Schema(description = "Bucket/存储路径", example = "C:/continew-admin/data/file/")
+    @Length(max = 255, message = "Bucket长度不能超过 {max} 个字符", groups = ValidationGroup.Storage.OSS.class)
+    @Length(max = 255, message = "存储路径长度不能超过 {max} 个字符", groups = ValidationGroup.Storage.Local.class)
+    @NotBlank(message = "Bucket不能为空", groups = ValidationGroup.Storage.OSS.class)
     @NotBlank(message = "存储路径不能为空", groups = ValidationGroup.Storage.Local.class)
     private String bucketName;
 
     /**
-     * 域名
+     * 域名/访问路径
      */
-    @Schema(description = "域名", example = "http://localhost:8000/file")
-    @Length(max = 255, message = "域名长度不能超过 {max} 个字符")
-    @NotBlank(message = "域名不能为空")
+    @Schema(description = "域名/访问路径", example = "http://localhost:8000/file")
+    @Length(max = 255, message = "域名长度不能超过 {max} 个字符", groups = ValidationGroup.Storage.OSS.class)
+    @Length(max = 255, message = "访问路径长度不能超过 {max} 个字符", groups = ValidationGroup.Storage.Local.class)
+    @NotBlank(message = "访问路径不能为空", groups = ValidationGroup.Storage.Local.class)
     private String domain;
 
     /**
@@ -120,15 +123,14 @@ public class StorageReq extends BaseReq {
     private String description;
 
     /**
-     * 是否为默认存储
-     */
-    @Schema(description = "是否为默认存储", example = "true")
-    @NotNull(message = "是否为默认存储不能为空")
-    private Boolean isDefault;
-
-    /**
      * 状态
      */
     @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
+
+    /**
+     * 是否为默认存储
+     */
+    @JsonIgnore
+    private Boolean isDefault;
 }

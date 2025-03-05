@@ -197,10 +197,13 @@ COMMENT ON COLUMN "sys_user_social"."create_time"     IS '创建时间';
 COMMENT ON TABLE  "sys_user_social"                   IS '用户社会化关联表';
 
 CREATE TABLE IF NOT EXISTS "sys_user_role" (
+    "id"      int8 NOT NULL,
     "user_id" int8 NOT NULL,
     "role_id" int8 NOT NULL,
-    PRIMARY KEY ("user_id", "role_id")
+    PRIMARY KEY ("id")
 );
+CREATE UNIQUE INDEX "uk_user_id_role_id" ON "sys_user_role" ("user_id", "role_id");
+COMMENT ON COLUMN "sys_user_role"."id"      IS 'ID';
 COMMENT ON COLUMN "sys_user_role"."user_id" IS '用户ID';
 COMMENT ON COLUMN "sys_user_role"."role_id" IS '角色ID';
 COMMENT ON TABLE  "sys_user_role"           IS '用户和角色关联表';
@@ -309,7 +312,7 @@ CREATE TABLE IF NOT EXISTS "sys_log" (
     "id"               int8         NOT NULL,
     "trace_id"         varchar(255) DEFAULT NULL,
     "description"      varchar(255) NOT NULL,
-    "module"           varchar(50)  NOT NULL,
+    "module"           varchar(100) NOT NULL,
     "request_url"      varchar(512) NOT NULL,
     "request_method"   varchar(10)  NOT NULL,
     "request_headers"  text         DEFAULT NULL,
@@ -443,11 +446,11 @@ CREATE INDEX "idx_storage_update_user" ON "sys_storage" ("update_user");
 COMMENT ON COLUMN "sys_storage"."id"          IS 'ID';
 COMMENT ON COLUMN "sys_storage"."name"        IS '名称';
 COMMENT ON COLUMN "sys_storage"."code"        IS '编码';
-COMMENT ON COLUMN "sys_storage"."type"        IS '类型（1：兼容S3协议存储；2：本地存储）';
-COMMENT ON COLUMN "sys_storage"."access_key"  IS 'Access Key（访问密钥）';
-COMMENT ON COLUMN "sys_storage"."secret_key"  IS 'Secret Key（私有密钥）';
-COMMENT ON COLUMN "sys_storage"."endpoint"    IS 'Endpoint（终端节点）';
-COMMENT ON COLUMN "sys_storage"."bucket_name" IS '桶名称';
+COMMENT ON COLUMN "sys_storage"."type"        IS '类型（1：本地存储；2：对象存储）';
+COMMENT ON COLUMN "sys_storage"."access_key"  IS 'Access Key';
+COMMENT ON COLUMN "sys_storage"."secret_key"  IS 'Secret Key';
+COMMENT ON COLUMN "sys_storage"."endpoint"    IS 'Endpoint';
+COMMENT ON COLUMN "sys_storage"."bucket_name" IS 'Bucket';
 COMMENT ON COLUMN "sys_storage"."domain"      IS '域名';
 COMMENT ON COLUMN "sys_storage"."description" IS '描述';
 COMMENT ON COLUMN "sys_storage"."is_default"  IS '是否为默认存储';
@@ -512,11 +515,11 @@ CREATE TABLE IF NOT EXISTS "sys_client" (
 );
 CREATE UNIQUE INDEX "uk_client_client_id"  ON "sys_client" ("client_id");
 COMMENT ON COLUMN "sys_client"."id"             IS 'ID';
-COMMENT ON COLUMN "sys_client"."client_id"      IS '客户端ID';
-COMMENT ON COLUMN "sys_client"."client_key"     IS '客户端Key';
-COMMENT ON COLUMN "sys_client"."client_secret"  IS '客户端秘钥';
+COMMENT ON COLUMN "sys_client"."client_id"      IS '终端ID';
+COMMENT ON COLUMN "sys_client"."client_key"     IS '终端Key';
+COMMENT ON COLUMN "sys_client"."client_secret"  IS '终端秘钥';
 COMMENT ON COLUMN "sys_client"."auth_type"      IS '认证类型';
-COMMENT ON COLUMN "sys_client"."client_type"    IS '客户端类型';
+COMMENT ON COLUMN "sys_client"."client_type"    IS '终端类型';
 COMMENT ON COLUMN "sys_client"."active_timeout" IS 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）';
 COMMENT ON COLUMN "sys_client"."timeout"        IS 'Token有效期（单位：秒，-1：永不过期）';
 COMMENT ON COLUMN "sys_client"."status"         IS '状态（1：启用；2：禁用）';
@@ -524,4 +527,4 @@ COMMENT ON COLUMN "sys_client"."create_user"    IS '创建人';
 COMMENT ON COLUMN "sys_client"."create_time"    IS '创建时间';
 COMMENT ON COLUMN "sys_client"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_client"."update_time"    IS '修改时间';
-COMMENT ON TABLE  "sys_client"                  IS '客户端表';
+COMMENT ON TABLE  "sys_client"                  IS '终端表';

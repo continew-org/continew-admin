@@ -37,9 +37,9 @@ public interface ValidationGroup extends Default {
         }
 
         /**
-         * 兼容S3协议存储
+         * 对象存储
          */
-        interface S3 extends Storage {
+        interface OSS extends Storage {
         }
     }
 }

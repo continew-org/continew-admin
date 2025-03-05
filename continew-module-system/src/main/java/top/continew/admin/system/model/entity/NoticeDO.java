@@ -20,8 +20,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
+import top.continew.admin.common.model.entity.BaseDO;
 import top.continew.admin.system.enums.NoticeScopeEnum;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.time.LocalDateTime;

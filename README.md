@@ -1,10 +1,10 @@
 # ContiNew Admin 中后台管理框架
 
 <a href="https://github.com/continew-org/continew-admin" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v3.4.1-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v3.5.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-2.8.2-%236CB52D.svg" alt="ContiNew Starter" />
+<img src="https://img.shields.io/badge/ContiNew Starter-2.8.3-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" title="Spring Boot" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-3.2.12-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
@@ -229,7 +229,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a>                                                      | 2.56.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://vite.dev/" target="_blank">Vite</a>                                                                         | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 2.8.2        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 2.8.3        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 3.2.12       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>                                                                       | 2.3.17.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.39.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |

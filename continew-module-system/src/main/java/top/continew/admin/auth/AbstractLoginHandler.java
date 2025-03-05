@@ -84,7 +84,7 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
      * 认证
      *
      * @param user   用户信息
-     * @param client 客户端信息
+     * @param client 终端信息
      * @return token 令牌信息
      */
     protected String authenticate(UserDO user, ClientResp client) {

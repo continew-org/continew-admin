@@ -20,7 +20,7 @@ import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.extra.spring.SpringUtil;
-import top.continew.admin.common.base.CommonUserService;
+import top.continew.admin.common.service.CommonUserService;
 import top.continew.starter.core.util.ExceptionUtils;
 
 /**

@@ -110,7 +110,8 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
             .getClientIP(request));
         int lockMinutes = optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.name());
         Integer currentErrorCount = ObjectUtil.defaultIfNull(RedisUtils.get(key), 0);
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "账号锁定 {} 分钟，请稍后再试", lockMinutes);
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.getMsg()
+            .formatted(lockMinutes));
         // 登录成功清除计数
         if (!isError) {
             RedisUtils.delete(key);
@@ -119,6 +120,7 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         // 登录失败递增计数
         currentErrorCount++;
         RedisUtils.set(key, currentErrorCount, Duration.ofMinutes(lockMinutes));
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "密码错误已达 {} 次，账号锁定 {} 分钟", maxErrorCount, lockMinutes);
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.getMsg()
+            .formatted(maxErrorCount, lockMinutes));
     }
 }

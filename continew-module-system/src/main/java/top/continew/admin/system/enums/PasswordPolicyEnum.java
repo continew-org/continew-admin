@@ -45,14 +45,14 @@ import java.util.Map;
 public enum PasswordPolicyEnum {
 
     /**
-     * 登录密码错误锁定账号的次数
+     * 密码错误锁定阈值
      */
-    PASSWORD_ERROR_LOCK_COUNT("登录密码错误锁定账号的次数取值范围为 %d-%d", SysConstants.NO, 10, null),
+    PASSWORD_ERROR_LOCK_COUNT("密码错误锁定阈值取值范围为 %d-%d", SysConstants.NO, 10, "密码错误已达 %d 次，账号锁定 %d 分钟"),
 
     /**
-     * 登录密码错误锁定账号的时间（min）
+     * 账号锁定时长（分钟）
      */
-    PASSWORD_ERROR_LOCK_MINUTES("登录密码错误锁定账号的时间取值范围为 %d-%d 分钟", 1, 1440, null),
+    PASSWORD_ERROR_LOCK_MINUTES("账号锁定时长取值范围为 %d-%d 分钟", 1, 1440, "账号锁定 %d 分钟，请稍后再试"),
 
     /**
      * 密码有效期（天）
@@ -60,9 +60,9 @@ public enum PasswordPolicyEnum {
     PASSWORD_EXPIRATION_DAYS("密码有效期取值范围为 %d-%d 天", SysConstants.NO, 999, null),
 
     /**
-     * 密码到期提前提示（天）
+     * 密码到期提醒（天）
      */
-    PASSWORD_EXPIRATION_WARNING_DAYS("密码到期提前提示取值范围为 %d-%d 天", SysConstants.NO, 998, null) {
+    PASSWORD_EXPIRATION_WARNING_DAYS("密码到期提醒取值范围为 %d-%d 天", SysConstants.NO, 998, null) {
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
             if (CollUtil.isEmpty(policyMap)) {
@@ -73,7 +73,7 @@ public enum PasswordPolicyEnum {
                 .get(PASSWORD_EXPIRATION_DAYS.name())), SpringUtil.getBean(OptionService.class)
                     .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
             if (passwordExpirationDays > SysConstants.NO) {
-                ValidationUtils.throwIf(value >= passwordExpirationDays, "密码到期前的提示时间应小于密码有效期");
+                ValidationUtils.throwIf(value >= passwordExpirationDays, "密码到期提醒时间应小于密码有效期");
                 return;
             }
             super.validateRange(value, policyMap);
@@ -113,9 +113,9 @@ public enum PasswordPolicyEnum {
     },
 
     /**
-     * 密码是否允许包含正反序账号名
+     * 密码是否允许包含用户名
      */
-    PASSWORD_ALLOW_CONTAIN_USERNAME("密码是否允许包含正反序账号名取值只能为是（%d）或否（%d）", SysConstants.NO, SysConstants.YES, "密码不允许包含正反序账号名") {
+    PASSWORD_ALLOW_CONTAIN_USERNAME("密码是否允许包含用户名取值只能为是（%d）或否（%d）", SysConstants.NO, SysConstants.YES, "密码不允许包含正反序用户名") {
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
             ValidationUtils.throwIf(value != SysConstants.YES && value != SysConstants.NO, this.getDescription()
@@ -133,9 +133,9 @@ public enum PasswordPolicyEnum {
     },
 
     /**
-     * 密码重复使用次数
+     * 历史密码重复校验次数
      */
-    PASSWORD_REPETITION_TIMES("密码重复使用规则取值范围为 %d-%d", 3, 32, "新密码不得与历史前 %d 次密码重复") {
+    PASSWORD_REPETITION_TIMES("历史密码重复校验次数取值范围为 %d-%d", 3, 32, "新密码不得与历史前 %d 次密码重复") {
         @Override
         public void validate(String password, int value, UserDO user) {
             UserPasswordHistoryService userPasswordHistoryService = SpringUtil

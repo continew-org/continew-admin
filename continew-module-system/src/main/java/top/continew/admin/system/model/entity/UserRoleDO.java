@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,12 @@ public class UserRoleDO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @TableId
+    private Long id;
 
     /**
      * 用户 ID

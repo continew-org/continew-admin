@@ -72,4 +72,11 @@ public class UserQuery implements Serializable {
      */
     @Schema(description = "用户 ID 列表", example = "[1,2,3]")
     private List<Long> userIds;
+
+    /**
+     * 角色 ID
+     * <p>用于在角色授权用户时，过滤掉已经分配给该角色的用户</p>
+     */
+    @Schema(description = "角色 ID", example = "1")
+    private Long roleId;
 }

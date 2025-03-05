@@ -35,7 +35,7 @@ import top.continew.starter.extension.crud.service.BaseServiceImpl;
 import java.util.List;
 
 /**
- * 客户端业务实现
+ * 终端业务实现
  *
  * @author KAI
  * @author Charles7c
@@ -60,7 +60,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, ClientDO, C
         for (Long id : ids) {
             ClientDO client = this.getById(id);
             query.setClientId(client.getClientId());
-            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "客户端 [{}] 还存在在线用户，不能删除", client.getClientKey());
+            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "终端 [{}] 还存在在线用户，不能删除", client.getClientKey());
         }
     }
 

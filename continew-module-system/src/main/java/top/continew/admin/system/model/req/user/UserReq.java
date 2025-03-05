@@ -27,10 +27,10 @@ import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -41,7 +41,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "创建或修改用户参数")
-public class UserReq extends BaseReq {
+public class UserReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -42,9 +42,9 @@ public class CacheConstants {
     public static final String USER_KEY_PREFIX = "USER" + DELIMITER;
 
     /**
-     * 菜单缓存键前缀
+     * 角色菜单缓存键前缀
      */
-    public static final String MENU_KEY_PREFIX = "MENU" + DELIMITER;
+    public static final String ROLE_MENU_KEY_PREFIX = "ROLE_MENU" + DELIMITER;
 
     /**
      * 字典缓存键前缀

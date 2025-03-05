@@ -9,7 +9,7 @@
     @before-ok="save"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :options="options" :columns="columns" />
+    <GiForm ref="formRef" v-model="form" :columns="columns" />
   </a-modal>
 </template>
 
@@ -17,7 +17,7 @@
 import { Message } from '@arco-design/web-vue'
 import { useWindowSize } from '@vueuse/core'
 import { get${classNamePrefix}, add${classNamePrefix}, update${classNamePrefix} } from '@/apis/${apiModuleName}/${apiName}'
-import { type Columns, GiForm, type Options } from '@/components/GiForm'
+import { type ColumnItem, GiForm } from '@/components/GiForm'
 import { useResetReactive } from '@/hooks'
 import { useDict } from '@/hooks/app'
 
@@ -36,16 +36,11 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 const { <#list dictCodes as dictCode>${dictCode}<#if dictCode_has_next>,</#if></#list> } = useDict(<#list dictCodes as dictCode>'${dictCode}'<#if dictCode_has_next>,</#if></#list>)
 </#if>
 
-const options: Options = {
-  form: { size: 'large' },
-  btns: { hide: true },
-}
-
 const [form, resetForm] = useResetReactive({
   // todo 待补充
 })
 
-const columns: Columns = reactive<Columns>([
+const columns: ColumnItem[] = reactive([
 <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInForm>
   {
@@ -63,6 +58,9 @@ const columns: Columns = reactive<Columns>([
     <#elseif fieldConfig.formType = 'DATE_TIME'>
     type: 'date-picker',
     props: {
+      <#if fieldConfig.dictCode?? && fieldConfig.dictCode != ''>
+      options: ${fieldConfig.dictCode},
+      </#if>
       showTime: true,
     },
     <#elseif fieldConfig.formType = 'TIME'>
@@ -83,8 +81,11 @@ const columns: Columns = reactive<Columns>([
     type: 'radio-group',
     </#if>
     <#if fieldConfig.dictCode?? && fieldConfig.dictCode != ''>
-    options: ${fieldConfig.dictCode},
+    props: {
+      options: ${fieldConfig.dictCode},
+    },
     </#if>
+    span: 24,
     <#if fieldConfig.isRequired>
     rules: [{ required: true, message: '请输入${fieldConfig.comment}' }]
     </#if>

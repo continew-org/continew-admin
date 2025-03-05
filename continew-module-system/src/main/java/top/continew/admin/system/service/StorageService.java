@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.model.req.CommonStatusUpdateReq;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.StorageQuery;
 import top.continew.admin.system.model.req.StorageReq;
@@ -30,6 +31,21 @@ import top.continew.starter.extension.crud.service.BaseService;
  * @since 2023/12/26 22:09
  */
 public interface StorageService extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {
+
+    /**
+     * 修改状态
+     *
+     * @param req 状态信息
+     * @param id  ID
+     */
+    void updateStatus(CommonStatusUpdateReq req, Long id);
+
+    /**
+     * 设置默认存储
+     *
+     * @param id ID
+     */
+    void setDefault(Long id);
 
     /**
      * 查询默认存储

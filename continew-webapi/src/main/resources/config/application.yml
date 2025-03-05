@@ -5,7 +5,7 @@ project:
   # 应用名称
   app-name: continew-admin
   # 版本
-  version: 3.4.1
+  version: 3.5.0-SNAPSHOT
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 基本包
@@ -65,6 +65,8 @@ continew-starter.web:
     default-error-msg: error
     # 是否将原生异常错误信息填充到状态信息中
     origin-exception-using-detail-message: false
+    # 响应类全名（配置后 response-style 将不再生效）
+    response-class-full-name: top.continew.starter.web.model.R
 
 --- ### 全局树结构配置（简单树，对应前端 UI）
 continew-starter.crud:
@@ -141,6 +143,8 @@ sa-token:
   is-share: false
   # 是否输出操作日志
   is-log: false
+  # 是否启用动态 activeTimeout 功能
+  dynamic-active-timeout: true
   # JWT 秘钥
   jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
   ## 扩展配置

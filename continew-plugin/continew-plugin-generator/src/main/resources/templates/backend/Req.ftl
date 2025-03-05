@@ -1,13 +1,5 @@
 package ${packageName}.${subPackageName};
 
-import java.io.Serial;
-<#if hasTimeField>
-import java.time.*;
-</#if>
-<#if hasBigDecimalField>
-import java.math.BigDecimal;
-</#if>
-
 <#if hasRequiredField>
 import jakarta.validation.constraints.*;
 </#if>
@@ -18,7 +10,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.continew.starter.extension.crud.model.req.BaseReq;
+import java.io.Serial;
+import java.io.Serializable;
+<#if hasTimeField>
+import java.time.*;
+</#if>
+<#if hasBigDecimalField>
+import java.math.BigDecimal;
+</#if>
 
 /**
  * 创建或修改${businessName}参数
@@ -28,7 +27,7 @@ import top.continew.starter.extension.crud.model.req.BaseReq;
  */
 @Data
 @Schema(description = "创建或修改${businessName}参数")
-public class ${className} extends BaseReq {
+public class ${className} implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

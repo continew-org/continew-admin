@@ -1,5 +1,5 @@
 <template>
-  <div class="table-page">
+  <div class="gi_table_page">
     <GiTable
       title="${businessName}管理"
       row-key="id"

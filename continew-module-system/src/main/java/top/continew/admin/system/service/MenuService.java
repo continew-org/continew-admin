@@ -35,13 +35,6 @@ import java.util.Set;
 public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {
 
     /**
-     * 查询全部菜单
-     *
-     * @return 菜单列表
-     */
-    List<MenuResp> listAll();
-
-    /**
      * 根据用户 ID 查询
      *
      * @param userId 用户 ID
@@ -50,10 +43,10 @@ public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, 
     Set<String> listPermissionByUserId(Long userId);
 
     /**
-     * 根据角色编码查询
+     * 根据角色 ID 查询
      *
-     * @param roleCode 角色编码
+     * @param roleId 角色 ID
      * @return 菜单列表
      */
-    List<MenuResp> listByRoleCode(String roleCode);
+    List<MenuResp> listByRoleId(Long roleId);
 }

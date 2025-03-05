@@ -13,12 +13,12 @@
           AND t1.permission IS NOT NULL
     </select>
 
-    <select id="selectListByRoleCode" resultType="top.continew.admin.system.model.entity.MenuDO">
+    <select id="selectListByRoleId" resultType="top.continew.admin.system.model.entity.MenuDO">
         SELECT t1.*
         FROM sys_menu AS t1
             LEFT JOIN sys_role_menu AS t2 ON t2.menu_id = t1.id
             LEFT JOIN sys_role AS t3 ON t3.id = t2.role_id
-        WHERE t3.code = #{roleCode}
+        WHERE t3.id = #{roleId}
           AND t1.status = 1
     </select>
 </mapper>

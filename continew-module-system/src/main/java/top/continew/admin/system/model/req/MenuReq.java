@@ -24,9 +24,9 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.MenuTypeEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 创建或修改菜单参数
@@ -36,7 +36,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "创建或修改菜单参数")
-public class MenuReq extends BaseReq {
+public class MenuReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -65,7 +65,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @SaIgnore
     @GetMapping("/")
     public R index() {
-        return R.ok("%s service started successfully.".formatted(projectProperties.getName()), null);
+        return R.ok(projectProperties);
     }
 
     @Override

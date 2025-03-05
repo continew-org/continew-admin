@@ -24,7 +24,9 @@ VALUES
 (1033, '新增', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:add', 3, 1, 1, NOW()),
 (1034, '修改', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:update', 4, 1, 1, NOW()),
 (1035, '删除', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:delete', 5, 1, 1, NOW()),
-(1036, '分配', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:assign', 6, 1, 1, NOW()),
+(1036, '修改权限', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:updatePermission', 6, 1, 1, NOW()),
+(1037, '分配', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:assign', 7, 1, 1, NOW()),
+(1038, '取消分配', 1030, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:role:unassign', 8, 1, 1, NOW()),
 
 (1050, '菜单管理', 1000, 2, '/system/menu', 'SystemMenu', 'system/menu/index', NULL, 'menu', false, false, false, NULL, 3, 1, 1, NOW()),
 (1051, '列表', 1050, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:menu:list', 1, 1, 1, NOW()),
@@ -75,8 +77,10 @@ VALUES
 (1113, '新增', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:add', 3, 1, 1, NOW()),
 (1114, '修改', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:update', 4, 1, 1, NOW()),
 (1115, '删除', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:delete', 5, 1, 1, NOW()),
+(1116, '修改状态', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:updateStatus', 6, 1, 1, NOW()),
+(1117, '设为默认存储', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:setDefault', 7, 1, 1, NOW()),
 
-( 1180, '客户端管理', 1000, 2, '/system/client', 'SystemClient', 'system/client/index', NULL, 'mobile', false, false, false, NULL, 9, 1, 1, NOW()),
+( 1180, '终端管理', 1000, 2, '/system/client', 'SystemClient', 'system/client/index', NULL, 'mobile', false, false, false, NULL, 9, 1, 1, NOW()),
 (1181, '列表', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:list', 1, 1, 1, NOW()),
 (1182, '详情', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:detail', 2, 1, 1, NOW()),
 (1183, '新增', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:add', 3, 1, 1, NOW()),
@@ -159,28 +163,28 @@ VALUES
 INSERT INTO "sys_option"
 ("id", "category", "name", "code", "value", "default_value", "description")
 VALUES
-(1, 'SITE', '系统标题', 'SITE_TITLE', NULL, 'ContiNew Admin', '用于显示登录页面的系统标题。'),
-(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '持续迭代优化的前后端分离中后台管理系统框架', NULL),
-(3, 'SITE', '版权信息', 'SITE_COPYRIGHT', NULL, 'Copyright © 2022 - present ContiNew Admin 版权所有', '用于显示登录页面的底部版权信息。'),
-(4, 'SITE', '备案号', 'SITE_BEIAN', NULL, '津ICP备2022005864号-3', 'ICP备案号'),
-(5, 'SITE', 'favicon', 'SITE_FAVICON', NULL, '/favicon.ico', '用于显示浏览器地址栏的系统LOGO。'),
-(6, 'SITE', '系统LOGO', 'SITE_LOGO', NULL, '/logo.svg', '用于显示登录页面的系统LOGO。'),
-(7, 'PASSWORD', '登录密码错误锁定账号的次数', 'PASSWORD_ERROR_LOCK_COUNT', NULL, '5', '取值范围为 0-10（0 表示不锁定）。'),
-(8, 'PASSWORD', '登录密码错误锁定账号的时间（min）', 'PASSWORD_ERROR_LOCK_MINUTES', NULL, '5', '取值范围为 1-1440（一天）。'),
-(9, 'PASSWORD', '密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '取值范围为 0-999（0 表示永久有效）。'),
-(10, 'PASSWORD', '密码到期提前提示（天）', 'PASSWORD_EXPIRATION_WARNING_DAYS', NULL, '0', '密码到期 N 天前进行提示（0 表示不提示）。'),
-(11, 'PASSWORD', '密码重复使用次数', 'PASSWORD_REPETITION_TIMES', NULL, '3', '不允许使用最近 N 次密码，取值范围为 3-32。'),
-(12, 'PASSWORD', '密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '取值范围为 8-32。'),
-(13, 'PASSWORD', '密码是否允许包含正反序账号名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', NULL),
-(14, 'PASSWORD', '密码是否必须包含特殊字符', 'PASSWORD_REQUIRE_SYMBOLS', NULL, '0', NULL),
-(15, 'MAIL', '发送协议', 'MAIL_PROTOCOL', NULL, 'smtp', NULL),
-(16, 'MAIL', '服务器地址', 'MAIL_HOST', NULL, 'smtp.126.com', NULL),
-(17, 'MAIL', '服务器端口', 'MAIL_PORT', NULL, '465', NULL),
-(18, 'MAIL', '用户名', 'MAIL_USERNAME', NULL, 'charles7c@126.com', NULL),
-(19, 'MAIL', '密码', 'MAIL_PASSWORD', NULL, NULL, NULL),
-(20, 'MAIL', '是否启用SSL', 'MAIL_SSL_ENABLED', NULL, '1', NULL),
-(21, 'MAIL', 'SSL端口', 'MAIL_SSL_PORT', NULL, '465', NULL),
-(22, 'LOGIN', '是否启用验证码', 'LOGIN_CAPTCHA_ENABLED', NULL, '1', '是否启用验证码（1：是；0：否）');
+(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'ContiNew Admin', '显示在浏览器标题栏和登录界面的系统名称'),
+(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '持续迭代优化的前后端分离中后台管理系统框架', '用于 SEO 的网站元描述'),
+(3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2022 - present ContiNew Admin 版权所有', '显示在页面底部的版权声明文本'),
+(4, 'SITE', '备案号', 'SITE_BEIAN', NULL, NULL, '工信部 ICP 备案编号（如：京ICP备12345678号）'),
+(5, 'SITE', '系统图标', 'SITE_FAVICON', NULL, '/favicon.ico', '浏览器标签页显示的网站图标（建议 .ico 格式）'),
+(6, 'SITE', '系统LOGO', 'SITE_LOGO', NULL, '/logo.svg', '显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）'),
+(10, 'PASSWORD', '密码错误锁定阈值', 'PASSWORD_ERROR_LOCK_COUNT', NULL, '5', '连续登录失败次数达到该值将锁定账号（0-10次，0表示禁用锁定）'),
+(11, 'PASSWORD', '账号锁定时长（分钟）', 'PASSWORD_ERROR_LOCK_MINUTES', NULL, '5', '账号锁定后自动解锁的时间（1-1440分钟，即24小时）'),
+(12, 'PASSWORD', '密码有效期（天）', 'PASSWORD_EXPIRATION_DAYS', NULL, '0', '密码强制修改周期（0-999天，0表示永不过期）'),
+(13, 'PASSWORD', '密码到期提醒（天）', 'PASSWORD_EXPIRATION_WARNING_DAYS', NULL, '0', '密码过期前的提前提醒天数（0表示不提醒）'),
+(14, 'PASSWORD', '历史密码重复校验次数', 'PASSWORD_REPETITION_TIMES', NULL, '3', '禁止使用最近 N 次的历史密码（3-32次）'),
+(15, 'PASSWORD', '密码最小长度', 'PASSWORD_MIN_LENGTH', NULL, '8', '密码最小字符长度要求（8-32个字符）'),
+(16, 'PASSWORD', '是否允许密码包含用户名', 'PASSWORD_ALLOW_CONTAIN_USERNAME', NULL, '1', '是否允许密码包含正序或倒序的用户名字符'),
+(17, 'PASSWORD', '密码是否必须包含特殊字符', 'PASSWORD_REQUIRE_SYMBOLS', NULL, '0', '是否要求密码必须包含特殊字符（如：!@#$%）'),
+(20, 'MAIL', '邮件协议', 'MAIL_PROTOCOL', NULL, 'smtp', '邮件发送协议类型'),
+(21, 'MAIL', '服务器地址', 'MAIL_HOST', NULL, 'smtp.126.com', '邮件服务器地址'),
+(22, 'MAIL', '服务器端口', 'MAIL_PORT', NULL, '465', '邮件服务器连接端口'),
+(23, 'MAIL', '邮箱账号', 'MAIL_USERNAME', NULL, 'charles7c@126.com', '发件人邮箱地址'),
+(24, 'MAIL', '邮箱密码', 'MAIL_PASSWORD', NULL, NULL, '服务授权密码/客户端专用密码'),
+(25, 'MAIL', '启用SSL加密', 'MAIL_SSL_ENABLED', NULL, '1', '是否启用SSL/TLS加密连接'),
+(26, 'MAIL', 'SSL端口号', 'MAIL_SSL_PORT', NULL, '465', 'SSL加密连接的备用端口（通常与主端口一致）'),
+(27, 'LOGIN', '是否启用验证码', 'LOGIN_CAPTCHA_ENABLED', NULL, '1', NULL);
 
 -- 初始化默认字典
 INSERT INTO "sys_dict"
@@ -188,7 +192,7 @@ INSERT INTO "sys_dict"
 VALUES
 (1, '公告类型', 'notice_type', NULL, true, 1, NOW()),
 (2, '消息类型', 'message_type', NULL, true, 1, NOW()),
-(3, '客户端类型', 'client_type', NULL, true, 1, NOW());
+(3, '终端类型', 'client_type', NULL, true, 1, NOW());
 
 INSERT INTO "sys_dict_item"
 ("id", "label", "value", "color", "sort", "description", "status", "dict_id", "create_user", "create_time")
@@ -203,19 +207,19 @@ VALUES
 
 -- 初始化默认用户和角色关联数据
 INSERT INTO "sys_user_role"
-("user_id", "role_id")
+("id", "user_id", "role_id")
 VALUES
-(1, 1),
-(547889293968801822, 547888897925840927),
-(547889293968801823, 547888897925840928),
-(547889293968801824, 547888897925840928),
-(547889293968801825, 547888897925840928),
-(547889293968801826, 547888897925840928),
-(547889293968801827, 547888897925840928),
-(547889293968801828, 547888897925840928),
-(547889293968801829, 547888897925840928),
-(547889293968801830, 547888897925840928),
-(547889293968801831, 547888897925840928);
+(1, 1, 1),
+(2, 547889293968801822, 547888897925840927),
+(3, 547889293968801823, 547888897925840928),
+(4, 547889293968801824, 547888897925840928),
+(5, 547889293968801825, 547888897925840928),
+(6, 547889293968801826, 547888897925840928),
+(7, 547889293968801827, 547888897925840928),
+(8, 547889293968801828, 547888897925840928),
+(9, 547889293968801829, 547888897925840928),
+(10, 547889293968801830, 547888897925840928),
+(11, 547889293968801831, 547888897925840928);
 
 -- 初始化默认角色和菜单关联数据
 INSERT INTO "sys_role_menu"
@@ -242,10 +246,10 @@ INSERT INTO "sys_role_dept" ("role_id", "dept_id") VALUES (547888897925840927, 5
 INSERT INTO "sys_storage"
 ("id", "name", "code", "type", "access_key", "secret_key", "endpoint", "bucket_name", "domain", "description", "is_default", "sort", "status", "create_user", "create_time")
 VALUES
-(1, '开发环境', 'local_dev', 2, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', true, 1, 1, 1, NOW()),
-(2, '生产环境', 'local_prod', 2, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', false, 2, 2, 1, NOW());
+(1, '开发环境', 'local_dev', 1, NULL, NULL, NULL, 'C:/continew-admin/data/file/', 'http://localhost:8000/file', '本地存储', true, 1, 1, 1, NOW()),
+(2, '生产环境', 'local_prod', 1, NULL, NULL, NULL, '../data/file/', 'http://api.continew.top/file', '本地存储', false, 2, 2, 1, NOW());
 
--- 初始化客户端数据
+-- 初始化终端数据
 INSERT INTO "sys_client"
 ("id", "client_id", "client_key", "client_secret", "auth_type", "client_type", "active_timeout", "timeout", "status", "create_user", "create_time")
 VALUES

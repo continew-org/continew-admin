@@ -40,10 +40,10 @@ public interface MenuMapper extends BaseMapper<MenuDO> {
     Set<String> selectPermissionByUserId(@Param("userId") Long userId);
 
     /**
-     * 根据角色编码查询
+     * 根据角色 ID 查询
      *
-     * @param roleCode 角色编码
+     * @param roleId 角色 ID
      * @return 菜单列表
      */
-    List<MenuDO> selectListByRoleCode(@Param("roleCode") String roleCode);
+    List<MenuDO> selectListByRoleId(@Param("roleId") Long roleId);
 }

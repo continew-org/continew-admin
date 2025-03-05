@@ -1,5 +1,12 @@
 package ${packageName}.${subPackageName};
 
+import lombok.Data;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import top.continew.starter.data.core.annotation.Query;
+import top.continew.starter.data.core.enums.QueryType;
+
 import java.io.Serial;
 import java.io.Serializable;
 <#if hasTimeField>
@@ -8,13 +15,6 @@ import java.time.*;
 <#if hasBigDecimalField>
 import java.math.BigDecimal;
 </#if>
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import top.continew.starter.data.core.annotation.Query;
-import top.continew.starter.data.core.enums.QueryType;
 
 /**
  * ${businessName}查询条件

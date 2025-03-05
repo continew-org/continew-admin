@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.base.BaseController;
+import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.open.model.query.AppQuery;
 import top.continew.admin.open.model.req.AppReq;
 import top.continew.admin.open.model.resp.AppDetailResp;

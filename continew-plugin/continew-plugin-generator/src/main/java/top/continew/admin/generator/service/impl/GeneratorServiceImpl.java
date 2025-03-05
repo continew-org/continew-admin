@@ -19,6 +19,7 @@ package top.continew.admin.generator.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -227,30 +228,6 @@ public class GeneratorServiceImpl implements GeneratorService {
         return generatePreviewList;
     }
 
-    private void setPreviewPath(GeneratePreviewResp generatePreview,
-                                InnerGenConfigDO genConfig,
-                                GeneratorProperties.TemplateConfig templateConfig) {
-        // 获取前后端基础路径
-        String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig);
-        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties
-            .getAppName() + "-ui");
-        String packagePath;
-        if (generatePreview.isBackend()) {
-            // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
-            packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
-        } else {
-            // 例如：continew-admin/continew-admin-ui/src/views/system
-            packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.SLASH, File.separator), genConfig.getApiModuleName());
-            // 例如：continew-admin/continew-admin-ui/src/views/system/user
-            packagePath = ".vue".equals(templateConfig.getExtension())
-                ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
-                : packagePath;
-        }
-        generatePreview.setPath(packagePath);
-    }
-
     @Override
     public void downloadCode(List<String> tableNames, HttpServletResponse response) {
         try {
@@ -358,6 +335,37 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     /**
+     * 设置预览路径
+     *
+     * @param generatePreview 预览信息
+     * @param genConfig       生成配置
+     * @param templateConfig  模板配置
+     */
+    private void setPreviewPath(GeneratePreviewResp generatePreview,
+                                InnerGenConfigDO genConfig,
+                                GeneratorProperties.TemplateConfig templateConfig) {
+        // 获取前后端基础路径
+        String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig, templateConfig);
+        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties
+            .getAppName() + "-ui");
+        String packagePath;
+        if (generatePreview.isBackend()) {
+            // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
+            packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
+                .replace(StringConstants.DOT, File.separator));
+        } else {
+            // 例如：continew-admin/continew-admin-ui/src/views/system
+            packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
+                .replace(StringConstants.SLASH, File.separator), genConfig.getApiModuleName());
+            // 例如：continew-admin/continew-admin-ui/src/views/system/user
+            packagePath = ".vue".equals(templateConfig.getExtension())
+                ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
+                : packagePath;
+        }
+        generatePreview.setPath(packagePath);
+    }
+
+    /**
      * 生成代码
      *
      * @param generatePreviewList 生成预览列表
@@ -379,14 +387,20 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 构建后端包路径
      *
-     * @param genConfig 生成配置
+     * @param genConfig      生成配置
+     * @param templateConfig 模板配置
      * @return 后端包路径
      */
-    private String buildBackendBasicPackagePath(GenConfigDO genConfig) {
+    private String buildBackendBasicPackagePath(GenConfigDO genConfig,
+                                                GeneratorProperties.TemplateConfig templateConfig) {
+        String extension = templateConfig.getExtension();
         // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
         return String.join(File.separator, projectProperties.getAppName(), projectProperties.getAppName(), genConfig
-            .getModuleName(), "src", "main", "java", genConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
+            .getModuleName(), "src", "main", FileNameUtil.EXT_JAVA.equals(extension)
+                ? "java"
+                : "resources") + (FileNameUtil.EXT_JAVA.equals(extension)
+                    ? File.separator + genConfig.getPackageName().replace(StringConstants.DOT, File.separator)
+                    : StringConstants.EMPTY);
     }
 
     /**

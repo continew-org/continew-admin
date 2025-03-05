@@ -22,9 +22,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.system.enums.MessageTypeEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 创建消息参数
@@ -34,7 +34,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "创建消息参数")
-public class MessageReq extends BaseReq {
+public class MessageReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.admin.system.mapper.MenuMapper;
@@ -62,7 +63,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
         if (MenuTypeEnum.DIR.equals(req.getType())) {
             req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
         }
-        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
         return super.add(req);
     }
 
@@ -78,7 +79,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
         MenuDO oldMenu = super.getById(id);
         CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
         super.update(req, id);
-        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
@@ -86,13 +87,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     public void delete(List<Long> ids) {
         baseMapper.lambdaUpdate().in(MenuDO::getParentId, ids).remove();
         super.delete(ids);
-        RedisUtils.deleteByPattern(CacheConstants.MENU_KEY_PREFIX + StringConstants.ASTERISK);
-    }
-
-    @Override
-    @Cached(key = "'ALL'", name = CacheConstants.MENU_KEY_PREFIX)
-    public List<MenuResp> listAll() {
-        return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
+        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
@@ -101,9 +96,12 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    @Cached(key = "#roleCode", name = CacheConstants.MENU_KEY_PREFIX)
-    public List<MenuResp> listByRoleCode(String roleCode) {
-        List<MenuDO> menuList = baseMapper.selectListByRoleCode(roleCode);
+    @Cached(key = "#roleId", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
+    public List<MenuResp> listByRoleId(Long roleId) {
+        if (SysConstants.SUPER_ROLE_ID.equals(roleId)) {
+            return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
+        }
+        List<MenuDO> menuList = baseMapper.selectListByRoleId(roleId);
         List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
         list.forEach(super::fill);
         return list;

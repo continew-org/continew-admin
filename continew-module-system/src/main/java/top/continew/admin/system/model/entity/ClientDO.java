@@ -21,13 +21,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.extension.crud.model.entity.BaseDO;
+import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.util.List;
 
 /**
- * 客户端实体
+ * 终端实体
  *
  * @author KAI
  * @author Charles7c
@@ -41,17 +41,17 @@ public class ClientDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
     private String clientId;
 
     /**
-     * 客户端 Key
+     * 终端 Key
      */
     private String clientKey;
 
     /**
-     * 客户端秘钥
+     * 终端秘钥
      */
     private String clientSecret;
 
@@ -62,7 +62,7 @@ public class ClientDO extends BaseDO {
     private List<String> authType;
 
     /**
-     * 客户端类型
+     * 终端类型
      */
     private String clientType;
 

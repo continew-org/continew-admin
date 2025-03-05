@@ -19,7 +19,7 @@ package top.continew.admin.system.model.resp;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.base.BaseDetailResp;
+import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.system.enums.FileTypeEnum;
 
 import java.io.Serial;
