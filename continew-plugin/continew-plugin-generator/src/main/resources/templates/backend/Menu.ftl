@@ -31,11 +31,11 @@ VALUES
 <#--    INSERT INTO "sys_menu"-->
 <#--        ("id", "title", "parent_id", "type", "permission", "sort", "status", "create_user", "create_time")-->
 <#--    VALUES-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '列表', sys_menu_id_seq, 3, 'club:activityCharge:list', 1, 1, 1, NOW()),-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '详情', sys_menu_id_seq, 3, 'club:activityCharge:detail', 2, 1, 1, NOW()),-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '新增', sys_menu_id_seq, 3, 'club:activityCharge:add', 3, 1, 1, NOW()),-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '修改', sys_menu_id_seq, 3, 'club:activityCharge:update', 4, 1, 1, NOW()),-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '删除', sys_menu_id_seq, 3, 'club:activityCharge:delete', 5, 1, 1, NOW()),-->
-<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '导出', sys_menu_id_seq, 3, 'club:activityCharge:export', 6, 1, 1, NOW());-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '列表', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:list', 1, 1, 1, NOW()),-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '详情', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:detail', 2, 1, 1, NOW()),-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '新增', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:add', 3, 1, 1, NOW()),-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '修改', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:update', 4, 1, 1, NOW()),-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '删除', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:delete', 5, 1, 1, NOW()),-->
+<#--        (${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c}, '导出', sys_menu_id_seq, 3, '${apiModuleName}:${apiName}:export', 6, 1, 1, NOW());-->
 
 <#--END $$;-->
