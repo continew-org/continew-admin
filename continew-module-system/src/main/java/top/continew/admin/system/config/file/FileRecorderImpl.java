@@ -20,6 +20,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.core.FileInfo;
@@ -49,10 +50,14 @@ public class FileRecorderImpl implements FileRecorder {
 
     private final FileMapper fileMapper;
     private final StorageMapper storageMapper;
+    private final IdentifierGenerator identifierGenerator;
 
     @Override
     public boolean save(FileInfo fileInfo) {
         FileDO file = new FileDO();
+        Number id = identifierGenerator.nextId(fileInfo);
+        file.setId(id.longValue());
+        fileInfo.setId(id.longValue() + "");
         String originalFilename = EscapeUtil.unescape(fileInfo.getOriginalFilename());
         file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
             ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
