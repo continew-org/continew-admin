@@ -57,6 +57,36 @@ public class FileResp extends BaseDetailResp {
     private String url;
 
     /**
+     * 上级目录
+     */
+    @Schema(description = "上级目录", example = "25")
+    private String parentPath;
+
+    /**
+     * 绝对路径
+     */
+    @Schema(description = "绝对路径", example = "/2025/2/25")
+    private String absPath;
+
+    /**
+     * 文件元数据
+     */
+    @Schema(description = "文件元数据", example = "{width:1024,height:1024}")
+    private String metadata;
+
+    /**
+     * 文件md5值
+     */
+    @Schema(description = "文件md5值", example = "abcdefghijklmnopqrstuvwxyz0123456789")
+    private String md5;
+
+    /**
+     * 文件类型
+     */
+    @Schema(description = "文件md5值", example = "abcdefghijklmnopqrstuvwxyz0123456789")
+    private String contentType;
+
+    /**
      * 扩展名
      */
     @Schema(description = "扩展名", example = "jpg")
@@ -79,6 +109,12 @@ public class FileResp extends BaseDetailResp {
      */
     @Schema(description = "缩略图 URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/example/example.jpg.min.jpg")
     private String thumbnailUrl;
+
+    /**
+     * 缩略图文件元数据
+     */
+    @Schema(description = "缩略图文件元数据", example = "{width:100,height:100}")
+    private String thumbnailMetadata;
 
     /**
      * 存储 ID

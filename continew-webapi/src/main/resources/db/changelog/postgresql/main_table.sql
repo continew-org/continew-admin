@@ -467,9 +467,15 @@ CREATE TABLE IF NOT EXISTS "sys_file" (
     "name"           varchar(255) NOT NULL,
     "size"           int8         NOT NULL,
     "url"            varchar(512) NOT NULL,
+    "parent_path"    varchar(512) NOT NULL default '/',
+    "abs_path"       varchar(512) NOT NULL,
     "extension"      varchar(100) DEFAULT NULL,
+    "metadata"       varchar(10000)  NOT NULL DEFAULT '',
+    "content_type"   varchar(64)  NOT NULL,
+    "md5"       		 varchar(128)  NOT NULL DEFAULT '',
     "thumbnail_size" int8         DEFAULT NULL,
     "thumbnail_url"  varchar(512) DEFAULT NULL,
+    "thumbnail_metadata"  varchar(10000) DEFAULT NULL,
     "type"           int2         NOT NULL DEFAULT 1,
     "storage_id"     int8         NOT NULL,
     "create_user"    int8         NOT NULL,
@@ -482,14 +488,20 @@ CREATE INDEX "idx_file_url"  ON "sys_file" ("url");
 CREATE INDEX "idx_file_type" ON "sys_file" ("type");
 CREATE INDEX "idx_file_create_user" ON "sys_file" ("create_user");
 CREATE INDEX "idx_file_update_user" ON "sys_file" ("update_user");
+CREATE INDEX "idx_sys_file_md5" ON "sys_file" ("md5");
 COMMENT ON COLUMN "sys_file"."id"             IS 'ID';
 COMMENT ON COLUMN "sys_file"."name"           IS '名称';
 COMMENT ON COLUMN "sys_file"."size"           IS '大小（字节）';
 COMMENT ON COLUMN "sys_file"."url"            IS 'URL';
+COMMENT ON COLUMN "sys_file"."parent_path"    IS '上级目录';
+COMMENT ON COLUMN "sys_file"."abs_path"       IS '绝对路径';
 COMMENT ON COLUMN "sys_file"."extension"      IS '扩展名';
 COMMENT ON COLUMN "sys_file"."thumbnail_size" IS '缩略图大小（字节)';
 COMMENT ON COLUMN "sys_file"."thumbnail_url"  IS '缩略图URL';
-COMMENT ON COLUMN "sys_file"."type"           IS '类型（1：其他；2：图片；3：文档；4：视频；5：音频）';
+COMMENT ON COLUMN "sys_file"."type"           IS '类型（0: 目录；1：其他；2：图片；3：文档；4：视频；5：音频）';
+COMMENT ON COLUMN "sys_file"."metadata"       IS '元数据';
+COMMENT ON COLUMN "sys_file"."content_type"   IS '文件类型';
+COMMENT ON COLUMN "sys_file"."md5"      		  IS '文件md5值';
 COMMENT ON COLUMN "sys_file"."storage_id"     IS '存储ID';
 COMMENT ON COLUMN "sys_file"."create_user"    IS '创建人';
 COMMENT ON COLUMN "sys_file"."create_time"    IS '创建时间';

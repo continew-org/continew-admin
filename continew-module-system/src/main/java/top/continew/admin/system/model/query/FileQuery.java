@@ -46,6 +46,13 @@ public class FileQuery implements Serializable {
     private String name;
 
     /**
+     * 绝对路径
+     */
+    @Schema(description = "绝对路径", example = "/2025")
+    @Query(type = QueryType.EQ)
+    private String absPath;
+
+    /**
      * 类型
      */
     @Schema(description = "类型", example = "2")

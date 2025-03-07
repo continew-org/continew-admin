@@ -17,18 +17,20 @@
 package top.continew.admin.system.model.entity;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.dromara.x.file.storage.core.FileInfo;
+import top.continew.admin.common.model.entity.BaseDO;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.StrUtils;
-import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * 文件实体
@@ -59,6 +61,31 @@ public class FileDO extends BaseDO {
     private String url;
 
     /**
+     * 上级目录
+     */
+    private String parentPath;
+
+    /**
+     * 绝对路径
+     */
+    private String absPath;
+
+    /**
+     * 文件元数据
+     */
+    private String metadata;
+
+    /**
+     * 文件类型
+     */
+    private String contentType;
+
+    /**
+     * 文件md5值
+     */
+    private String md5;
+
+    /**
      * 扩展名
      */
     private String extension;
@@ -79,6 +106,11 @@ public class FileDO extends BaseDO {
     private String thumbnailUrl;
 
     /**
+     * 文件元数据
+     */
+    private String thumbnailMetadata;
+
+    /**
      * 存储 ID
      */
     private Long storageId;
@@ -94,10 +126,10 @@ public class FileDO extends BaseDO {
         fileInfo.setUrl(this.url);
         fileInfo.setSize(this.size);
         fileInfo.setFilename(StrUtil.contains(this.url, StringConstants.SLASH)
-            ? StrUtil.subAfter(this.url, StringConstants.SLASH, true)
-            : this.url);
+                ? StrUtil.subAfter(this.url, StringConstants.SLASH, true)
+                : this.url);
         fileInfo.setOriginalFilename(StrUtils
-            .blankToDefault(this.extension, this.name, ex -> this.name + StringConstants.DOT + ex));
+                .blankToDefault(this.extension, this.name, ex -> this.name + StringConstants.DOT + ex));
         fileInfo.setBasePath(StringConstants.EMPTY);
         // 优化 path 处理
         fileInfo.setPath(extractRelativePath(this.url, storageDO));
@@ -106,9 +138,15 @@ public class FileDO extends BaseDO {
         fileInfo.setPlatform(storageDO.getCode());
         fileInfo.setThUrl(this.thumbnailUrl);
         fileInfo.setThFilename(StrUtil.contains(this.thumbnailUrl, StringConstants.SLASH)
-            ? StrUtil.subAfter(this.thumbnailUrl, StringConstants.SLASH, true)
-            : this.thumbnailUrl);
+                ? StrUtil.subAfter(this.thumbnailUrl, StringConstants.SLASH, true)
+                : this.thumbnailUrl);
         fileInfo.setThSize(this.thumbnailSize);
+        if (StrUtil.isNotBlank(this.thumbnailMetadata)) {
+            fileInfo.setThMetadata(JSONUtil.toBean(this.thumbnailMetadata, Map.class));
+        }
+        if (StrUtil.isNotBlank(this.metadata)) {
+            fileInfo.setMetadata(JSONUtil.toBean(this.metadata, Map.class));
+        }
         return fileInfo;
     }
 

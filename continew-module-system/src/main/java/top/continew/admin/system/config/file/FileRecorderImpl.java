@@ -20,6 +20,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EscapeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,19 +61,34 @@ public class FileRecorderImpl implements FileRecorder {
         fileInfo.setId(id.longValue() + "");
         String originalFilename = EscapeUtil.unescape(fileInfo.getOriginalFilename());
         file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
-            ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
-            : originalFilename);
+                ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
+                : originalFilename);
         file.setUrl(fileInfo.getUrl());
         file.setSize(fileInfo.getSize());
         file.setExtension(fileInfo.getExt());
         file.setType(FileTypeEnum.getByExtension(file.getExtension()));
         file.setThumbnailUrl(fileInfo.getThUrl());
         file.setThumbnailSize(fileInfo.getThSize());
-        StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
+        StorageDO storage = (StorageDO) fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         file.setStorageId(storage.getId());
         file.setCreateTime(DateUtil.toLocalDateTime(fileInfo.getCreateTime()));
         file.setUpdateUser(UserContextHolder.getUserId());
         file.setUpdateTime(file.getCreateTime());
+        String absPath = fileInfo.getPath();
+        if (absPath.endsWith("/")) {
+            String tempAbsPath = absPath.substring(0, absPath.length() - 1);
+            String[] pathArr = tempAbsPath.split(StringConstants.SLASH);
+            if (pathArr.length > 1) {
+                file.setParentPath(pathArr[pathArr.length - 1]);
+            } else {
+                file.setParentPath(StringConstants.SLASH);
+            }
+        }
+        file.setMd5(fileInfo.getHashInfo().getMd5());
+        file.setAbsPath(fileInfo.getPath());
+        file.setMetadata(JSONUtil.toJsonStr(fileInfo.getMetadata()));
+        file.setThumbnailMetadata(JSONUtil.toJsonStr(fileInfo.getThMetadata()));
+        file.setContentType(fileInfo.getContentType());
         fileMapper.insert(file);
         return true;
     }
@@ -117,8 +133,8 @@ public class FileRecorderImpl implements FileRecorder {
     private FileDO getFileByUrl(String url) {
         Optional<FileDO> fileOptional = fileMapper.lambdaQuery().eq(FileDO::getUrl, url).oneOpt();
         return fileOptional.orElseGet(() -> fileMapper.lambdaQuery()
-            .likeLeft(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true))
-            .oneOpt()
-            .orElse(null));
+                .likeLeft(FileDO::getUrl, StrUtil.subAfter(url, StringConstants.SLASH, true))
+                .oneOpt()
+                .orElse(null));
     }
 }

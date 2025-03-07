@@ -36,6 +36,11 @@ import java.util.List;
 public enum FileTypeEnum implements BaseEnum<Integer> {
 
     /**
+     * 目录
+     */
+    DIR(0, "目录", Collections.emptyList()),
+
+    /**
      * 其他
      */
     UNKNOWN(1, "其他", Collections.emptyList()),
@@ -44,7 +49,7 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
      * 图片
      */
     IMAGE(2, "图片", List
-        .of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng", "xcf")),
+            .of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng", "xcf")),
 
     /**
      * 文档
@@ -59,7 +64,8 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
     /**
      * 音频
      */
-    AUDIO(5, "音频", List.of("mp3", "flac", "wav", "ogg", "midi", "m4a", "aac", "amr", "ac3", "aiff")),;
+    AUDIO(5, "音频", List.of("mp3", "flac", "wav", "ogg", "midi", "m4a", "aac", "amr", "ac3", "aiff")),
+    ;
 
     private final Integer value;
     private final String description;
@@ -73,8 +79,8 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
      */
     public static FileTypeEnum getByExtension(String extension) {
         return Arrays.stream(FileTypeEnum.values())
-            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase()))
-            .findFirst()
-            .orElse(FileTypeEnum.UNKNOWN);
+                .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase()))
+                .findFirst()
+                .orElse(FileTypeEnum.UNKNOWN);
     }
 }
