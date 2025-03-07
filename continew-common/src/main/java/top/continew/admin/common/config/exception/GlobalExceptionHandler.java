@@ -16,6 +16,7 @@
 
 package top.continew.admin.common.config.exception;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +95,8 @@ public class GlobalExceptionHandler {
         } else {
             return defaultFail;
         }
-        return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), "请上传小于 %s MB 的文件".formatted(Long.parseLong(sizeLimit) / 1024 / 1024));
+        return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), "请上传小于 %s 的文件".formatted(FileUtil
+            .readableFileSize(Long.parseLong(sizeLimit))));
     }
 
     /**

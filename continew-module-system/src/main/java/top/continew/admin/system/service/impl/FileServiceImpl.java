@@ -120,6 +120,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         FileInfo fileInfo = uploadPretreatment.upload();
         String domain = StrUtil.appendIfMissing(storage.getDomain(), StringConstants.SLASH);
         fileInfo.setUrl(URLUtil.normalize(domain + fileInfo.getPath() + fileInfo.getFilename()));
+        fileInfo.setThUrl(URLUtil.normalize(domain + fileInfo.getPath() + fileInfo.getThFilename()));
         return fileInfo;
     }
 
