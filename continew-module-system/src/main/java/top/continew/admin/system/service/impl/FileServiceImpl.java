@@ -46,7 +46,6 @@ import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,7 +79,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
-    public FileInfo upload(MultipartFile file, String storageCode) {
+    public FileInfo upload(MultipartFile file, String path, String storageCode) {
         StorageDO storage;
         if (StrUtil.isBlank(storageCode)) {
             storage = storageService.getDefaultStorage();
@@ -89,9 +88,6 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             storage = storageService.getByCode(storageCode);
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
-        LocalDate today = LocalDate.now();
-        String path = today.getYear() + StringConstants.SLASH + today.getMonthValue() + StringConstants.SLASH + today
-            .getDayOfMonth() + StringConstants.SLASH;
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .setPlatform(storage.getCode())
             .setHashCalculatorMd5(true)

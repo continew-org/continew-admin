@@ -19,7 +19,6 @@ package top.continew.admin.system.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.UUID;
@@ -48,19 +47,22 @@ import lombok.extern.slf4j.Slf4j;
 import me.ahoo.cosid.IdGenerator;
 import me.ahoo.cosid.provider.DefaultIdGeneratorProvider;
 import net.dreamlu.mica.core.result.R;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.common.service.CommonUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.SysConstants;
+import top.continew.admin.common.constant.SysFileConstants;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
+import top.continew.admin.common.service.CommonUserService;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.enums.OptionCategoryEnum;
 import top.continew.admin.system.mapper.UserMapper;
@@ -78,13 +80,13 @@ import top.continew.admin.system.service.*;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 import top.continew.starter.web.util.FileUploadUtils;
-import top.continew.starter.core.util.SpringUtils;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -113,6 +115,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final OptionService optionService;
     private final UserRoleService userRoleService;
     private final RoleService roleService;
+    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     @Resource
     private DeptService deptService;
@@ -385,11 +389,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
             .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
-        // 更新用户头像
-        String base64 = ImgUtil.toBase64DataUri(ImgUtil.scale(ImgUtil.toImage(avatarFile
-            .getBytes()), 100, 100, null), avatarImageType);
-        baseMapper.lambdaUpdate().set(UserDO::getAvatar, base64).eq(UserDO::getId, id).update();
-        return base64;
+        FileInfo fileInfo = fileService.upload(avatarFile, SysFileConstants.USER_AVATAR_PATH);
+        UserDO userInfo = getById(id);
+        fileStorageService.delete(userInfo.getAvatar());
+        baseMapper.lambdaUpdate().set(UserDO::getAvatar, fileInfo.getUrl()).eq(UserDO::getId, id).update();
+        return fileInfo.getUrl();
     }
 
     @Override

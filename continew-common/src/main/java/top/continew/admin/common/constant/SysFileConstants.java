@@ -16,34 +16,33 @@
 
 package top.continew.admin.common.constant;
 
+import top.continew.starter.core.constant.StringConstants;
+
+import java.time.LocalDate;
+
 /**
- * 数据源容器相关常量（Crane4j 数据填充组件使用）
+ * 系统文件相关常量
  *
- * @author Charles7c
- * @since 2024/1/20 12:33
+ * @author luoqiz
+ * @since 2025/3/12 18:11
  */
-public class ContainerConstants {
+public class SysFileConstants {
 
     /**
-     * 用户昵称
+     * 用户头像路径前缀
      */
-    public static final String USER_NICKNAME = "UserNickname";
+    public static final String USER_AVATAR_PATH = "user/avatar/";
 
     /**
-     * 文件信息
+     * 默认文件路径
      */
-    public static final String FILE_INFO = "FileInfo";
+    public static String getDefaultFilePath() {
+        LocalDate today = LocalDate.now();
+        String path = today.getYear() + StringConstants.SLASH + today.getMonthValue() + StringConstants.SLASH + today
+            .getDayOfMonth() + StringConstants.SLASH;
+        return path;
+    }
 
-    /**
-     * 用户角色 ID 列表
-     */
-    public static final String USER_ROLE_ID_LIST = "UserRoleIdList";
-
-    /**
-     * 用户角色名称列表
-     */
-    public static final String USER_ROLE_NAME_LIST = "UserRoleNameList";
-
-    private ContainerConstants() {
+    private SysFileConstants() {
     }
 }

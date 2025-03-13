@@ -18,6 +18,7 @@ package top.continew.admin.system.service;
 
 import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.admin.common.constant.SysFileConstants;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
@@ -43,17 +44,28 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      * @return 文件信息
      */
     default FileInfo upload(MultipartFile file) {
-        return upload(file, null);
+        return upload(file, SysFileConstants.getDefaultFilePath(), null);
+    }
+
+    /**
+     * 上传到默认存储
+     *
+     * @param file 文件信息
+     * @return 文件信息
+     */
+    default FileInfo upload(MultipartFile file, String path) {
+        return upload(file, path, null);
     }
 
     /**
      * 上传到指定存储
      *
      * @param file        文件信息
+     * @param path        文件路径
      * @param storageCode 存储编码
      * @return 文件信息
      */
-    FileInfo upload(MultipartFile file, String storageCode);
+    FileInfo upload(MultipartFile file, String path, String storageCode);
 
     /**
      * 根据存储 ID 列表查询
