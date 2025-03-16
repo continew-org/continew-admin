@@ -541,3 +541,71 @@ COMMENT ON COLUMN "sys_client"."create_time"    IS '创建时间';
 COMMENT ON COLUMN "sys_client"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_client"."update_time"    IS '修改时间';
 COMMENT ON TABLE  "sys_client"                  IS '终端表';
+
+CREATE TABLE "sys_sms_config" (
+    "id" int8 NOT NULL,
+    "name" varchar(255)  NOT NULL,
+    "supplier" varchar(50)  NOT NULL,
+    "access_key_id" varchar(255)  NOT NULL,
+    "access_key_secret" varchar(255)  NOT NULL,
+    "signature" varchar(100)  NOT NULL,
+    "template_id" varchar(50) ,
+    "weight" int4,
+    "retry_interval" int4,
+    "max_retries" int4,
+    "maximum" int4,
+    "supplier_config" varchar(10000) ,
+    "is_enable" bool  NOT NULL,
+    "create_user" int8 NOT NULL,
+    "create_time" timestamp(6) NOT NULL,
+    "update_user" int8,
+    "update_time" timestamp(6),
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_sys_sms_config_create_user" ON "sys_sms_config" USING btree ("create_user");
+CREATE INDEX "idx_sys_sms_config_update_user" ON "sys_sms_config" USING btree ("update_user");
+COMMENT ON COLUMN "sys_sms_config"."id" IS 'ID';
+COMMENT ON COLUMN "sys_sms_config"."name" IS '名称';
+COMMENT ON COLUMN "sys_sms_config"."supplier" IS '厂商名称标识';
+COMMENT ON COLUMN "sys_sms_config"."access_key_id" IS 'Access Key 或 API Key';
+COMMENT ON COLUMN "sys_sms_config"."access_key_secret" IS 'Access Secret 或 API Secret';
+COMMENT ON COLUMN "sys_sms_config"."signature" IS '短信签名';
+COMMENT ON COLUMN "sys_sms_config"."template_id" IS '模板 ID';
+COMMENT ON COLUMN "sys_sms_config"."weight" IS '负载均衡权重';
+COMMENT ON COLUMN "sys_sms_config"."retry_interval" IS '短信自动重试间隔时间（秒）';
+COMMENT ON COLUMN "sys_sms_config"."max_retries" IS '短信重试次数';
+COMMENT ON COLUMN "sys_sms_config"."maximum" IS '当前厂商的发送数量上限';
+COMMENT ON COLUMN "sys_sms_config"."supplier_config" IS '各个厂商独立配置';
+COMMENT ON COLUMN "sys_sms_config"."is_enable" IS '是否启用';
+COMMENT ON COLUMN "sys_sms_config"."create_user" IS '创建人';
+COMMENT ON COLUMN "sys_sms_config"."create_time" IS '创建时间';
+COMMENT ON COLUMN "sys_sms_config"."update_user" IS '修改人';
+COMMENT ON COLUMN "sys_sms_config"."update_time" IS '修改时间';
+COMMENT ON TABLE "sys_sms_config" IS '短信服务配置表';
+
+CREATE TABLE "sys_sms_record" (
+    "id" int8 NOT NULL,
+    "config_id" int8 NOT NULL,
+    "phone" varchar(25)  NOT NULL,
+    "params" varchar(2048),
+    "status" varchar(1),
+    "res_msg" varchar(2048),
+    "create_user" int8,
+    "create_time" timestamp(6) NOT NULL,
+    "update_user" int8,
+    "update_time" timestamp(6),
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_sys_sms_record_create_user" ON "sys_sms_record" USING btree ("create_user");
+CREATE INDEX "idx_sys_sms_record_update_user" ON "sys_sms_record" USING btree ( "update_user" );
+COMMENT ON COLUMN "sys_sms_record"."id" IS 'ID';
+COMMENT ON COLUMN "sys_sms_record"."config_id" IS '配置id';
+COMMENT ON COLUMN "sys_sms_record"."phone" IS '手机号';
+COMMENT ON COLUMN "sys_sms_record"."params" IS '参数配置';
+COMMENT ON COLUMN "sys_sms_record"."status" IS '发送状态';
+COMMENT ON COLUMN "sys_sms_record"."res_msg" IS '返回数据';
+COMMENT ON COLUMN "sys_sms_record"."create_user" IS '创建人';
+COMMENT ON COLUMN "sys_sms_record"."create_time" IS '创建时间';
+COMMENT ON COLUMN "sys_sms_record"."update_user" IS '修改人';
+COMMENT ON COLUMN "sys_sms_record"."update_time" IS '修改时间';
+COMMENT ON TABLE "sys_sms_record" IS '短信记录表';

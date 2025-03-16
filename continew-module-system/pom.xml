@@ -18,5 +18,12 @@
             <groupId>top.continew</groupId>
             <artifactId>continew-common</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
+            <version>3.3.4</version>
+        </dependency>
+
     </dependencies>
 </project>

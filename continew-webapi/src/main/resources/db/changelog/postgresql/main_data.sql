@@ -94,6 +94,18 @@ VALUES
 (1192, '修改', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:update', 2, 1, 1, NOW()),
 (1193, '重置', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:reset', 3, 1, 1, NOW()),
 
+(1194, '短信配置', 1000, 2, '/system/sms/config', 'SmsConfig', 'system/sms/config/index', NULL, 'message', false, false, false, NULL, 6, 1, 1, NOW()),
+(1195, '列表', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:list', 1, 1, 1, NOW()),
+(1196, '详情', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:detail', 2, 1, 1, NOW()),
+(1197, '新增', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:add', 3, 1, 1, NOW()),
+(1198, '修改', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:update', 4, 1, 1, NOW()),
+(1199, '删除', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:delete', 5, 1, 1, NOW()),
+(1200, '导出', 1194, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsConfig:export', 6, 1, 1, NOW()),
+(1201, '短信记录', 1000, 2, '/system/sms/record', 'SmsRecord', 'system/sms/record/index', NULL, NULL, false, false, false, NULL, 1, 1, 1, NOW()),
+(1202, '列表', 1201, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsRecord:list', 1, 1, 1, NOW()),
+(1203, '删除', 1201, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsRecord:delete', 5, 1, 1, NOW()),
+(1204, '导出', 1201, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:smsRecord:export', 6, 1, 1, NOW()),
+
 (2000, '系统监控', 0, 1, '/monitor', 'Monitor', 'Layout', '/monitor/online', 'computer', false, false, false, NULL, 2, 1, 1, NOW()),
 (2010, '在线用户', 2000, 2, '/monitor/online', 'MonitorOnline', 'monitor/online/index', NULL, 'user', false, false, false, NULL, 1, 1, 1, NOW()),
 (2011, '列表', 2010, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'monitor:online:list', 1, 1, 1, NOW()),

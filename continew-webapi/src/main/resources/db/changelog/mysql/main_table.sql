@@ -321,3 +321,42 @@ CREATE TABLE IF NOT EXISTS `sys_client` (
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uk_client_id`(`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='终端表';
+
+CREATE TABLE IF NOT EXISTS `sys_sms_config`  (
+    `id` bigint NOT NULL COMMENT 'ID',
+    `name` varchar(255)  NOT NULL COMMENT '名称',
+    `supplier` varchar(50)  NOT NULL COMMENT '厂商名称标识',
+    `access_key_id` varchar(255)  NOT NULL COMMENT 'Access Key 或 API Key',
+    `access_key_secret` varchar(255)  NOT NULL COMMENT 'Access Secret 或 API Secret',
+    `signature` varchar(100)  NOT NULL COMMENT '短信签名',
+    `template_id` varchar(50)  NULL DEFAULT NULL COMMENT '模板 ID',
+    `weight` int NULL DEFAULT 1 COMMENT '负载均衡权重',
+    `retry_interval` int NULL DEFAULT 5 COMMENT '短信自动重试间隔时间（秒）',
+    `max_retries` int NULL DEFAULT 0 COMMENT '短信重试次数',
+    `maximum` int NULL DEFAULT 10000 COMMENT '当前厂商的发送数量上限',
+    `supplier_config` varchar(10000)  NULL DEFAULT NULL COMMENT '各个厂商独立配置',
+    `is_enable` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否启用',
+    `create_user` bigint NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint COMMENT '修改人',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_sys_sms_config_create_user`(`create_user` ASC) USING BTREE,
+    INDEX `idx_sys_sms_config_update_user`(`update_user` ASC) USING BTREE
+) ENGINE = InnoDB  CHARACTER SET = utf8mb4 COMMENT = '短信服务配置表';
+
+CREATE TABLE IF NOT EXISTS `sys_sms_record`  (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `config_id` bigint NOT NULL COMMENT '配置id',
+    `phone` varchar(25)  NOT NULL COMMENT '手机号',
+    `params` varchar(2048)  NULL DEFAULT NULL COMMENT '参数配置',
+    `status` bit(1) NOT NULL COMMENT '发送状态',
+    `res_msg` varchar(2048)  NOT NULL COMMENT '返回数据',
+    `create_user` bigint NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_user` bigint  COMMENT '修改人',
+    `update_time` datetime COMMENT '修改时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_sys_sms_record_create_user`(`create_user` ASC) USING BTREE,
+    INDEX `idx_sys_sms_record_update_user`(`update_user` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT = '短信记录表';

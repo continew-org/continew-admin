@@ -82,7 +82,7 @@ VALUES
 (1116, '修改状态', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:updateStatus', 6, 1, 1, NOW()),
 (1117, '设为默认存储', 1110, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:storage:setDefault', 7, 1, 1, NOW()),
 
-( 1180, '终端管理', 1000, 2, '/system/client', 'SystemClient', 'system/client/index', NULL, 'mobile', b'0', b'0', b'0', NULL, 9, 1, 1, NOW()),
+(1180, '终端管理', 1000, 2, '/system/client', 'SystemClient', 'system/client/index', NULL, 'mobile', b'0', b'0', b'0', NULL, 9, 1, 1, NOW()),
 (1181, '列表', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:list', 1, 1, 1, NOW()),
 (1182, '详情', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:detail', 2, 1, 1, NOW()),
 (1183, '新增', 1180, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:client:add', 3, 1, 1, NOW()),
@@ -93,6 +93,18 @@ VALUES
 (1191, '查看', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:list', 1, 1, 1, NOW()),
 (1192, '修改', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:update', 2, 1, 1, NOW()),
 (1193, '重置', 1190, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'system:config:reset', 3, 1, 1, NOW()),
+
+(1194, '短信配置', 1000, 2, '/system/sms/config', 'SmsConfig', 'system/sms/config/index', NULL, 'message', b'0', b'0', b'0', NULL, 6, 1, 1, NOW()),
+(1195, '列表', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:list', 1, 1, 1, NOW()),
+(1196, '详情', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:detail', 2, 1, 1, NOW()),
+(1197, '新增', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:add', 3, 1, 1, NOW()),
+(1198, '修改', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:update', 4, 1, 1, NOW()),
+(1199, '删除', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:delete', 5, 1, 1, NOW()),
+(1200, '导出', 1194, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsConfig:export', 6, 1, 1, NOW()),
+(1201, '短信记录', 1000, 2, '/system/sms/record', 'SmsRecord', 'system/sms/record/index', NULL, NULL, b'0', b'0', b'0', NULL, 1, 1, 1, NOW()),
+(1202, '列表', 1201, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsRecord:list', 1, 1, 1, NOW()),
+(1203, '删除', 1201, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsRecord:delete', 5, 1, 1, NOW()),
+(1204, '导出', 1201, 3, NULL, NULL, NULL, NULL, NULL, b'0', b'0', b'0', 'system:smsRecord:export', 6, 1, 1, NOW()),
 
 (2000, '系统监控', 0, 1, '/monitor', 'Monitor', 'Layout', '/monitor/online', 'computer', b'0', b'0', b'0', NULL, 2, 1, 1, NOW()),
 (2010, '在线用户', 2000, 2, '/monitor/online', 'MonitorOnline', 'monitor/online/index', NULL, 'user', b'0', b'0', b'0', NULL, 1, 1, 1, NOW()),
