@@ -19,6 +19,7 @@ package top.continew.admin.system.model.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;
 
@@ -53,6 +54,7 @@ public class SmsConfigDO extends BaseDO {
     /**
      * Access Secret 或 API Secret
      */
+    @FieldEncrypt
     private String accessKeySecret;
 
     /**

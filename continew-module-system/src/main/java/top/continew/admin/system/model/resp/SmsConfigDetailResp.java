@@ -21,6 +21,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.model.resp.BaseDetailResp;
+import top.continew.starter.security.mask.annotation.JsonMask;
 
 import java.io.Serial;
 
@@ -64,6 +65,7 @@ public class SmsConfigDetailResp extends BaseDetailResp {
      */
     @Schema(description = "Access Secret 或 API Secret")
     @ExcelProperty(value = "Access Secret 或 API Secret")
+    @JsonMask(left = 4, right = 4, character = '*')
     private String accessKeySecret;
 
     /**

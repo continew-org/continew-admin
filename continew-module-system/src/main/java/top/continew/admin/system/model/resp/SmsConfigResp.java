@@ -19,6 +19,7 @@ package top.continew.admin.system.model.resp;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.model.resp.BaseResp;
+import top.continew.starter.security.mask.annotation.JsonMask;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -58,6 +59,7 @@ public class SmsConfigResp extends BaseResp {
      * Access Secret 或 API Secret
      */
     @Schema(description = "Access Secret 或 API Secret")
+    @JsonMask(left = 4, right = 4, character = '*')
     private String accessKeySecret;
 
     /**
