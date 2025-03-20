@@ -86,6 +86,10 @@ public class UserSocialServiceImpl implements UserSocialService {
         baseMapper.insert(userSocial);
     }
 
+    public void deleteByUserIds(List<Long> userIds) {
+        baseMapper.lambdaUpdate().in(UserSocialDO::getUserId, userIds).remove();
+    }
+
     @Override
     public void deleteBySourceAndUserId(String source, Long userId) {
         baseMapper.lambdaUpdate().eq(UserSocialDO::getSource, source).eq(UserSocialDO::getUserId, userId).remove();

@@ -116,6 +116,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     private final RoleService roleService;
     private final FileService fileService;
     private final FileStorageService fileStorageService;
+    private final UserSocialService userSocialService;
 
     @Resource
     private DeptService deptService;
@@ -209,6 +210,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         userRoleService.deleteByUserIds(ids);
         // 删除历史密码
         userPasswordHistoryService.deleteByUserIds(ids);
+        // 删除用户绑定第三方信息
+        userSocialService.deleteByUserIds(ids);
         // 删除用户
         super.delete(ids);
         // 踢出在线用户
@@ -418,11 +421,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
-        CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
         String password = user.getPassword();
-        if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
+        if (StrUtil.isNotBlank(oldPassword)) {
+            CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
+            if (StrUtil.isNotBlank(password)) {
+                CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
+            }
         }
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
@@ -440,10 +445,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     public void updatePhone(String newPhone, String oldPassword, Long id) {
-        UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码错误");
         CheckUtils.throwIf(this.isPhoneExists(newPhone, id), "手机号已绑定其他账号，请更换其他手机号");
-        CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
+        if (StrUtil.isNotBlank(oldPassword)) {
+            UserDO user = super.getById(id);
+            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码错误");
+            CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
+        }
         // 更新手机号
         baseMapper.lambdaUpdate().set(UserDO::getPhone, newPhone).eq(UserDO::getId, id).update();
     }

@@ -63,7 +63,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @param username 用户名
      * @return 用户信息
      */
-    @Select("SELECT * FROM sys_user WHERE username = #{username}")
+    @Select("SELECT * FROM sys_user WHERE username =#{username} OR nickname = #{username}")
     UserDO selectByUsername(@Param("username") String username);
 
     /**

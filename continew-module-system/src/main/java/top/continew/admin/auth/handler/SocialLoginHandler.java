@@ -110,7 +110,8 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             user.setStatus(DisEnableStatusEnum.ENABLE);
             userService.save(user);
             Long userId = user.getId();
-            RoleDO role = roleService.getByCode(SysConstants.SUPER_ROLE_CODE);
+//            RoleDO role = roleService.getByCode(SysConstants.SUPER_ROLE_CODE);
+            RoleDO role = roleService.getByCode(SysConstants.GENERAL_ROLE_CODE);
             userRoleService.assignRolesToUser(Collections.singletonList(role.getId()), userId);
             userSocial = new UserSocialDO();
             userSocial.setUserId(userId);

@@ -48,7 +48,8 @@ public class UserReq implements Serializable {
      */
     @Schema(description = "用户名", example = "zhangsan")
     @NotBlank(message = "用户名不能为空")
-    @Pattern(regexp = RegexConstants.USERNAME, message = "用户名长度为 4-64 个字符，支持大小写字母、数字、下划线，以字母开头")
+    //    @Pattern(regexp = RegexConstants.USERNAME, message = "用户名长度为 4-64 个字符，支持大小写字母、数字、下划线，以字母开头")
+    @Pattern(regexp = RegexConstants.GENERAL_NAME, message = "用户名长度为 2-30 个字符，支持中文、字母、数字、下划线，短横线")
     private String username;
 
     /**
@@ -115,4 +116,16 @@ public class UserReq implements Serializable {
      */
     @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
+
+    /**
+     * 验证码
+     */
+    @Schema(description = "验证码", example = "ABCD")
+    private String captcha;
+
+    /**
+     * 验证码标识
+     */
+    @Schema(description = "验证码标识", example = "090b9a2c-1691-4fca-99db-e4ed0cff362f")
+    private String uuid;
 }

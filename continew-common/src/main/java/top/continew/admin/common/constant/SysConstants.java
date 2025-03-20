@@ -55,6 +55,11 @@ public class SysConstants {
     public static final String SUPER_ROLE_CODE = "admin";
 
     /**
+     * 普通角色编码
+     */
+    public static final String GENERAL_ROLE_CODE = "general";
+
+    /**
      * 超管角色 ID
      */
     public static final Long SUPER_ROLE_ID = 1L;

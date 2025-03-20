@@ -12,7 +12,7 @@ server:
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
   # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
-  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&maxReconnects=10&failOverReadOnly=false
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
   driver-class-name: com.p6spy.engine.spy.P6SpyDriver
@@ -126,8 +126,10 @@ captcha:
     templatePath: mail/captcha.ftl
   ## 短信验证码配置
   sms:
+    # 万能验证码（限调试时使用）
+    code: 111111
     # 内容长度
-    length: 4
+    length: 6
     # 过期时间
     expirationInMinutes: 5
     # 模板 ID
@@ -232,6 +234,8 @@ sa-token.extension:
     - /swagger-ui/**
     - /swagger-resources/**
     - /*/api-docs/**
+    - /system/user/signup
+    - /system/user/password
     # 本地存储资源
     - /file/**
 

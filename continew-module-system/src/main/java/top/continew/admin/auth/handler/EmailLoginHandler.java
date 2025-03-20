@@ -17,11 +17,14 @@
 package top.continew.admin.auth.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jodd.util.StringUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.AbstractLoginHandler;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.EmailLoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
+import top.continew.admin.common.config.properties.CaptchaProperties;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
@@ -36,7 +39,9 @@ import top.continew.starter.core.validation.ValidationUtils;
  * @since 2024/12/22 14:58
  */
 @Component
+@RequiredArgsConstructor
 public class EmailLoginHandler extends AbstractLoginHandler<EmailLoginReq> {
+    private final CaptchaProperties captchaProperties;
 
     @Override
     public LoginResp login(EmailLoginReq req, ClientResp client, HttpServletRequest request) {
@@ -53,11 +58,19 @@ public class EmailLoginHandler extends AbstractLoginHandler<EmailLoginReq> {
     @Override
     public void preLogin(EmailLoginReq req, ClientResp client, HttpServletRequest request) {
         String email = req.getEmail();
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
-        String captcha = RedisUtils.get(captchaKey);
-        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
-        RedisUtils.delete(captchaKey);
+        //        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
+        //        String captcha = RedisUtils.get(captchaKey);
+        //        ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
+        //        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+        //        RedisUtils.delete(captchaKey);
+        String captcha = req.getCaptcha();
+        if (!StringUtil.equals(captcha, captchaProperties.getSms().getCode())) {
+            String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
+            String captcha1 = RedisUtils.get(captchaKey);
+            ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
+            ValidationUtils.throwIfNotEqualIgnoreCase(captcha1, captcha, CAPTCHA_ERROR);
+            RedisUtils.delete(captchaKey);
+        }
     }
 
     @Override

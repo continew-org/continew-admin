@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.x.file.storage.spring.EnableFileStorage;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -52,6 +53,7 @@ import top.continew.starter.web.model.R;
 @RestController
 @SpringBootApplication
 @RequiredArgsConstructor
+@MapperScan("top.continew.admin.system.mapper")
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ProjectProperties projectProperties;
