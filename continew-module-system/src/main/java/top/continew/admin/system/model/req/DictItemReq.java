@@ -23,9 +23,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 创建或修改字典项参数
@@ -35,7 +35,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "创建或修改字典项参数")
-public class DictItemReq extends BaseReq {
+public class DictItemReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

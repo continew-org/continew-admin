@@ -3,12 +3,12 @@ server:
 
 --- ### 数据源配置
 spring.datasource:
-  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
   driver-class-name: com.mysql.cj.jdbc.Driver
 #  # PostgreSQL 配置
-#  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true&autoReconnect=true&maxReconnects=10&failOverReadOnly=false
+#  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&stringtype=unspecified
 #  username: ${DB_USER:root}
 #  password: ${DB_PWD:123456}
 #  driver-class-name: org.postgresql.Driver

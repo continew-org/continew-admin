@@ -36,8 +36,8 @@ import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
-import top.continew.admin.system.model.resp.FileResp;
-import top.continew.admin.system.model.resp.FileStatisticsResp;
+import top.continew.admin.system.model.resp.file.FileResp;
+import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.constant.StringConstants;
@@ -46,7 +46,6 @@ import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,7 +79,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
-    public FileInfo upload(MultipartFile file, String storageCode) {
+    public FileInfo upload(MultipartFile file, String path, String storageCode) {
         StorageDO storage;
         if (StrUtil.isBlank(storageCode)) {
             storage = storageService.getDefaultStorage();
@@ -89,11 +88,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             storage = storageService.getByCode(storageCode);
             CheckUtils.throwIfNotExists(storage, "StorageDO", "Code", storageCode);
         }
-        LocalDate today = LocalDate.now();
-        String path = today.getYear() + StringConstants.SLASH + today.getMonthValue() + StringConstants.SLASH + today
-            .getDayOfMonth() + StringConstants.SLASH;
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .setPlatform(storage.getCode())
+            .setHashCalculatorMd5(true)
             .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
             .setPath(path);
         // 图片文件生成缩略图
@@ -116,11 +113,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
                 log.info("上传结束");
             }
         });
-        // 处理本地存储文件 URL
-        FileInfo fileInfo = uploadPretreatment.upload();
-        String domain = StrUtil.appendIfMissing(storage.getDomain(), StringConstants.SLASH);
-        fileInfo.setUrl(URLUtil.normalize(domain + fileInfo.getPath() + fileInfo.getFilename()));
-        return fileInfo;
+        return uploadPretreatment.upload();
+
     }
 
     @Override

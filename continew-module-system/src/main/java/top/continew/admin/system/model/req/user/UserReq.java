@@ -16,21 +16,18 @@
 
 package top.continew.admin.system.model.req.user;
 
-import cn.hutool.core.lang.RegexPool;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
+import top.continew.starter.core.validation.constraints.Mobile;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -41,7 +38,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "创建或修改用户参数")
-public class UserReq extends BaseReq {
+public class UserReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -66,29 +63,29 @@ public class UserReq extends BaseReq {
      * 密码（加密）
      */
     @Schema(description = "密码（加密）", example = "E7c72TH+LDxKTwavjM99W1MdI9Lljh79aPKiv3XB9MXcplhm7qJ1BJCj28yaflbdVbfc366klMtjLIWQGqb0qw==")
-    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Add.class)
+    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Create.class)
     private String password;
 
     /**
      * 邮箱
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
-    @Pattern(regexp = "^$|" + RegexPool.EMAIL, message = "邮箱格式错误")
     @Length(max = 255, message = "邮箱长度不能超过 {max} 个字符")
+    @Email(message = "邮箱格式不正确")
     private String email;
 
     /**
-     * 手机号码
+     * 手机号
      */
-    @Schema(description = "手机号码", example = "13811111111")
-    @Pattern(regexp = "^$|" + RegexPool.MOBILE, message = "手机号码格式错误")
+    @Schema(description = "手机号", example = "13811111111")
+    @Mobile
     private String phone;
 
     /**
      * 性别
      */
     @Schema(description = "性别", example = "1")
-    @NotNull(message = "性别非法")
+    @NotNull(message = "性别无效")
     private GenderEnum gender;
 
     /**

@@ -17,6 +17,7 @@
 package top.continew.admin.tenant.model.req;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.*;
 
 import jakarta.validation.constraints.*;
@@ -27,7 +28,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 /**
  * 创建或修改租户套餐参数
@@ -37,7 +37,7 @@ import top.continew.starter.extension.crud.model.req.BaseReq;
  */
 @Data
 @Schema(description = "创建或修改租户套餐参数")
-public class TenantPackageReq extends BaseReq {
+public class TenantPackageReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -68,4 +68,10 @@ public class TenantPackageReq extends BaseReq {
     @Schema(description = "状态")
     @NotNull(message = "状态不能为空")
     private Integer status;
+
+    /**
+     * ID
+     */
+    @Schema(hidden = true)
+    private Long id;
 }

@@ -47,16 +47,16 @@ public class LoginReq implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
-    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
-    @NotBlank(message = "客户端ID不能为空")
+    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @NotBlank(message = "终端ID不能为空")
     private String clientId;
 
     /**
      * 认证类型
      */
     @Schema(description = "认证类型", example = "ACCOUNT")
-    @NotNull(message = "认证类型非法")
+    @NotNull(message = "认证类型无效")
     private AuthTypeEnum authType;
 }

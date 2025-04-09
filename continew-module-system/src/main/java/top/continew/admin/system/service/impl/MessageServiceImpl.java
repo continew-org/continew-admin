@@ -29,7 +29,7 @@ import top.continew.admin.system.mapper.MessageMapper;
 import top.continew.admin.system.model.entity.MessageDO;
 import top.continew.admin.system.model.query.MessageQuery;
 import top.continew.admin.system.model.req.MessageReq;
-import top.continew.admin.system.model.resp.MessageResp;
+import top.continew.admin.system.model.resp.message.MessageResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.MessageUserService;
 import top.continew.starter.core.validation.CheckUtils;

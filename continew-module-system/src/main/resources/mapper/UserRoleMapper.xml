@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.continew.admin.system.mapper.UserRoleMapper">
+
+    <select id="selectUserPage" resultType="top.continew.admin.system.model.resp.role.RoleUserResp">
+        SELECT
+            t1.*,
+            t2.nickname,
+            t2.username,
+            t2.status,
+            t2.gender,
+            t2.dept_id,
+            t2.description,
+            t2.is_system,
+            t3.name AS deptName
+        FROM sys_user_role AS t1
+        LEFT JOIN sys_user AS t2 ON t2.id = t1.user_id
+        LEFT JOIN sys_dept AS t3 ON t3.id = t2.dept_id
+        ${ew.customSqlSegment}
+    </select>
+</mapper>

@@ -69,15 +69,15 @@ public class OnlineUserResp implements Serializable {
     private String nickname;
 
     /**
-     * 客户端类型
+     * 终端类型
      */
-    @Schema(description = "客户端类型", example = "PC")
+    @Schema(description = "终端类型", example = "PC")
     private String clientType;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
-    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
     private String clientId;
 
     /**

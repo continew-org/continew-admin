@@ -52,6 +52,6 @@ public class UserBasicInfoUpdateReq implements Serializable {
      * 性别
      */
     @Schema(description = "性别", example = "1")
-    @NotNull(message = "性别非法")
+    @NotNull(message = "性别无效")
     private GenderEnum gender;
 }

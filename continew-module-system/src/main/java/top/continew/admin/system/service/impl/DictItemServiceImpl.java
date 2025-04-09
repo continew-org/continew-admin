@@ -17,11 +17,12 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.Cached;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.mapper.DictItemMapper;
@@ -40,7 +41,6 @@ import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * 字典项业务实现
@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> implements DictItemService {
@@ -56,7 +57,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     private static final Map<String, List<LabelValueResp>> ENUM_DICT_CACHE = new ConcurrentHashMap<>();
 
     @Override
-    public void beforeAdd(DictItemReq req) {
+    public void beforeCreate(DictItemReq req) {
         String value = req.getValue();
         CheckUtils.throwIf(this.isValueExists(value, null, req.getDictId()), "新增失败，字典值 [{}] 已存在", value);
         RedisUtils.deleteByPattern(CacheConstants.DICT_KEY_PREFIX + StringConstants.ASTERISK);
@@ -70,7 +71,6 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     }
 
     @Override
-    @Cached(key = "#dictCode", name = CacheConstants.DICT_KEY_PREFIX)
     public List<LabelValueResp> listByDictCode(String dictCode) {
         return Optional.ofNullable(ENUM_DICT_CACHE.get(dictCode.toLowerCase()))
             .orElseGet(() -> baseMapper.listByDictCode(dictCode));
@@ -114,6 +114,9 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
      */
     private List<LabelValueResp> toEnumDict(Class<?> enumClass) {
         Object[] enumConstants = enumClass.getEnumConstants();
+        if (ArrayUtil.isEmpty(enumConstants)) {
+            return List.of();
+        }
         return Arrays.stream(enumConstants).map(e -> {
             BaseEnum baseEnum = (BaseEnum)e;
             return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
@@ -126,8 +129,14 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
     @PostConstruct
     public void init() {
         Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
-        ENUM_DICT_CACHE.putAll(classSet.stream()
-            .collect(Collectors.toMap(cls -> StrUtil.toUnderlineCase(cls.getSimpleName())
-                .toLowerCase(), this::toEnumDict)));
+        for (Class<?> cls : classSet) {
+            List<LabelValueResp> value = this.toEnumDict(cls);
+            if (CollUtil.isEmpty(value)) {
+                continue;
+            }
+            String key = StrUtil.toUnderlineCase(cls.getSimpleName()).toLowerCase();
+            ENUM_DICT_CACHE.put(key, value);
+        }
+        log.debug("枚举字典已缓存到内存：{}", ENUM_DICT_CACHE.keySet());
     }
 }

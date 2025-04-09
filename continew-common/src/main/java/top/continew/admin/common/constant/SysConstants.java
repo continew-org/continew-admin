@@ -55,9 +55,19 @@ public class SysConstants {
     public static final String SUPER_ROLE_CODE = "admin";
 
     /**
+     * 普通用户角色编码
+     */
+    public static final String GENERAL_ROLE_CODE = "general";
+
+    /**
      * 超管角色 ID
      */
     public static final Long SUPER_ROLE_ID = 1L;
+
+    /**
+     * 普通用户角色 ID
+     */
+    public static final Long GENERAL_ROLE_ID = 2L;
 
     /**
      * 全部权限标识
@@ -98,6 +108,7 @@ public class SysConstants {
      * 租户管理员角色编码
      */
     public static final String TENANT_ADMIN_CODE = "tenant_admin";
+
 
     private SysConstants() {
     }

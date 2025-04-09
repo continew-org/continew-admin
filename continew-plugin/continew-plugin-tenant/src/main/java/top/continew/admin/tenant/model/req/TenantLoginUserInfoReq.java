@@ -16,9 +16,12 @@
 
 package top.continew.admin.tenant.model.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * @description: 租户登录用户信息
@@ -26,7 +29,7 @@ import lombok.Data;
  * @create: 2024-12-02 20:41
  */
 @Data
-public class TenantLoginUserInfoReq {
+public class TenantLoginUserInfoReq implements Serializable {
 
     /**
      * 租户id
@@ -45,4 +48,9 @@ public class TenantLoginUserInfoReq {
      */
     private String password;
 
+    /**
+     * ID
+     */
+    @Schema(hidden = true)
+    private Long id;
 }

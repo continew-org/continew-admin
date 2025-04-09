@@ -35,5 +35,5 @@ import top.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "租户数据连接管理 API")
 @RestController
-@CrudRequestMapping(value = "/tenant/dbConnect", api = {Api.PAGE, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/tenant/dbConnect", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
 public class TenantDbConnectController extends BaseController<TenantDbConnectService, TenantDbConnectResp, TenantDbConnectDetailResp, TenantDbConnectQuery, TenantDbConnectReq> {}

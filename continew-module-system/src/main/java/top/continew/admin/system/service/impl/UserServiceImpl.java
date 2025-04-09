@@ -19,7 +19,6 @@ package top.continew.admin.system.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.UUID;
@@ -45,13 +44,14 @@ import lombok.extern.slf4j.Slf4j;
 import me.ahoo.cosid.IdGenerator;
 import me.ahoo.cosid.provider.DefaultIdGeneratorProvider;
 import net.dreamlu.mica.core.result.R;
+import org.dromara.x.file.storage.core.FileInfo;
+import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.common.service.CommonUserService;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
@@ -59,12 +59,13 @@ import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
+import top.continew.admin.common.service.CommonUserService;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.enums.OptionCategoryEnum;
-import top.continew.admin.system.mapper.UserMapper;
+import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.user.*;
@@ -77,6 +78,7 @@ import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.ExceptionUtils;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
@@ -84,7 +86,6 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 import top.continew.starter.web.util.FileUploadUtils;
-import top.continew.starter.core.util.SpringUtils;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -109,15 +110,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     private final PasswordEncoder passwordEncoder;
     private final UserPasswordHistoryService userPasswordHistoryService;
-    private final OnlineUserService onlineUserService;
-    private final OptionService optionService;
+    private final UserSocialService userSocialService;
     private final UserRoleService userRoleService;
+    private final OptionService optionService;
     private final RoleService roleService;
+    private final OnlineUserService onlineUserService;
+    private final FileService fileService;
+    private final FileStorageService fileStorageService;
 
     @Resource
     private DeptService deptService;
     @Value("${avatar.support-suffix}")
     private String[] avatarSupportSuffix;
+    @Value("${avatar.path}")
+    private String avatarPath;
 
     @Override
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
@@ -131,7 +137,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public void beforeAdd(UserReq req) {
+    public void beforeCreate(UserReq req) {
         final String errorMsgTemplate = "新增失败，[{}] 已存在";
         String username = req.getUsername();
         CheckUtils.throwIf(this.isNameExists(username, null), errorMsgTemplate, username);
@@ -142,7 +148,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     }
 
     @Override
-    public void afterAdd(UserReq req, UserDO user) {
+    public void afterCreate(UserReq req, UserDO user) {
         Long userId = user.getId();
         baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
@@ -204,6 +210,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         userRoleService.deleteByUserIds(ids);
         // 删除历史密码
         userPasswordHistoryService.deleteByUserIds(ids);
+        // 删除用户绑定的第三方账号信息
+        userSocialService.deleteByUserIds(ids);
         // 删除用户
         super.delete(ids);
         // 踢出在线用户
@@ -245,11 +253,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         }
         // 总计行数
         userImportResp.setTotalRows(importRowList.size());
-        CheckUtils.throwIfEmpty(importRowList, "数据文件格式错误");
+        CheckUtils.throwIfEmpty(importRowList, "数据文件格式不正确");
         // 有效行数：过滤无效数据
         List<UserImportRowReq> validRowList = this.filterImportData(importRowList);
         userImportResp.setValidRows(validRowList.size());
-        CheckUtils.throwIfEmpty(validRowList, "数据文件格式错误");
+        CheckUtils.throwIfEmpty(validRowList, "数据文件格式不正确");
 
         // 检测表格内数据是否合法
         Set<String> seenEmails = new HashSet<>();
@@ -263,14 +271,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .anyMatch(phone -> phone != null && !seenPhones.add(phone));
         CheckUtils.throwIf(hasDuplicatePhone, "存在重复手机，请检测数据");
 
-        // 校验是否存在错误角色
+        // 校验是否存在无效角色
         List<String> roleNames = validRowList.stream().map(UserImportRowReq::getRoleName).distinct().toList();
         int existRoleCount = roleService.countByNames(roleNames);
-        CheckUtils.throwIf(existRoleCount < roleNames.size(), "存在错误角色，请检查数据");
-        // 校验是否存在错误部门
+        CheckUtils.throwIf(existRoleCount < roleNames.size(), "存在无效角色，请检查数据");
+        // 校验是否存在无效部门
         List<String> deptNames = validRowList.stream().map(UserImportRowReq::getDeptName).distinct().toList();
         int existDeptCount = deptService.countByNames(deptNames);
-        CheckUtils.throwIf(existDeptCount < deptNames.size(), "存在错误部门，请检查数据");
+        CheckUtils.throwIf(existDeptCount < deptNames.size(), "存在无效部门，请检查数据");
 
         // 查询重复用户
         userImportResp
@@ -385,11 +393,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
             .join(StringConstants.CHINESE_COMMA, avatarSupportSuffix));
+        // 上传新头像
+        UserDO user = super.getById(id);
+        FileInfo fileInfo = fileService.upload(avatarFile, avatarPath);
         // 更新用户头像
-        String base64 = ImgUtil.toBase64DataUri(ImgUtil.scale(ImgUtil.toImage(avatarFile
-            .getBytes()), 100, 100, null), avatarImageType);
-        baseMapper.lambdaUpdate().set(UserDO::getAvatar, base64).eq(UserDO::getId, id).update();
-        return base64;
+        String newAvatar = fileInfo.getUrl();
+        baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
+        // 删除原头像
+        String oldAvatar = user.getAvatar();
+        if (StrUtil.isNotBlank(oldAvatar)) {
+            fileStorageService.delete(oldAvatar);
+        }
+        return newAvatar;
     }
 
     @Override
@@ -410,7 +425,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         UserDO user = super.getById(id);
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码错误");
+            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码不正确");
         }
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
@@ -429,7 +444,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updatePhone(String newPhone, String oldPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
         CheckUtils.throwIf(this.isPhoneExists(newPhone, id), "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
         // 更新手机号
@@ -439,7 +454,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateEmail(String newEmail, String oldPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码错误");
+        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
         CheckUtils.throwIf(this.isEmailExists(newEmail, id), "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
@@ -485,9 +500,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     protected QueryWrapper<UserDO> buildQueryWrapper(UserQuery query) {
         String description = query.getDescription();
         DisEnableStatusEnum status = query.getStatus();
-        List<Date> createTimeList = query.getCreateTime();
+        List<LocalDateTime> createTimeList = query.getCreateTime();
         Long deptId = query.getDeptId();
         List<Long> userIdList = query.getUserIds();
+        // 获取排除用户 ID 列表
+        List<Long> excludeUserIdList = null;
+        if (null != query.getRoleId()) {
+            excludeUserIdList = userRoleService.listUserIdByRoleId(query.getRoleId());
+        }
         return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
             .or()
             .like("t1.nickname", description)
@@ -504,7 +524,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
                 deptIdList.add(deptId);
                 q.in("t1.dept_id", deptIdList);
             })
-            .in(CollUtil.isNotEmpty(userIdList), "t1.id", userIdList);
+            .in(CollUtil.isNotEmpty(userIdList), "t1.id", userIdList)
+            .notIn(CollUtil.isNotEmpty(excludeUserIdList), "t1.id", excludeUserIdList);
     }
 
     /**

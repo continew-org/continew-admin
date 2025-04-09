@@ -19,20 +19,18 @@ package top.continew.admin.auth;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.model.req.LoginReq;
-import top.continew.admin.common.config.properties.TenantProperties;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.context.UserExtraContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.model.entity.DeptDO;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.service.DeptService;
 import top.continew.admin.system.service.OptionService;
@@ -40,11 +38,8 @@ import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.Validator;
-import top.continew.starter.extension.tenant.TenantHandler;
-import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.web.util.SpringWebUtils;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -70,11 +65,9 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
     private DeptService deptService;
     @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-    @Resource
-    protected TenantProperties tenantProperties;
 
     protected static final String CAPTCHA_EXPIRED = "验证码已失效";
-    protected static final String CAPTCHA_ERROR = "验证码错误";
+    protected static final String CAPTCHA_ERROR = "验证码不正确";
     protected static final String CLIENT_ID = "clientId";
 
     @Override
@@ -91,33 +84,16 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
      * 认证
      *
      * @param user   用户信息
-     * @param client 客户端信息
+     * @param client 终端信息
      * @return token 令牌信息
      */
     protected String authenticate(UserDO user, ClientResp client) {
         // 获取权限、角色、密码过期天数
         Long userId = user.getId();
-        Long tenantId = TenantContextHolder.getTenantId();
-        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> {
-            Set<String> permissionSet = new HashSet<>();
-            if (tenantProperties.isEnabled()) {
-                SpringUtil.getBean(TenantHandler.class)
-                    .execute(tenantId, () -> permissionSet.addAll(roleService.listPermissionByUserId(userId)));
-            } else {
-                permissionSet.addAll(roleService.listPermissionByUserId(userId));
-            }
-            return permissionSet;
-        }, threadPoolTaskExecutor);
-        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> {
-            Set<RoleContext> roleSet = new HashSet<>();
-            if (tenantProperties.isEnabled()) {
-                SpringUtil.getBean(TenantHandler.class)
-                    .execute(tenantId, () -> roleSet.addAll(roleService.listByUserId(userId)));
-            } else {
-                roleSet.addAll(roleService.listByUserId(userId));
-            }
-            return roleSet;
-        }, threadPoolTaskExecutor);
+        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> roleService
+            .listPermissionByUserId(userId), threadPoolTaskExecutor);
+        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
+            .listByUserId(userId), threadPoolTaskExecutor);
         CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
             .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
         CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);
@@ -132,7 +108,6 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         userContext.setClientType(client.getClientType());
         model.setExtra(CLIENT_ID, client.getClientId());
         userContext.setClientId(client.getClientId());
-        userContext.setTenantId(tenantId);
         // 登录并缓存用户信息
         StpUtil.login(userContext.getId(), model.setExtraData(BeanUtil.beanToMap(new UserExtraContext(SpringWebUtils
             .getRequest()))));

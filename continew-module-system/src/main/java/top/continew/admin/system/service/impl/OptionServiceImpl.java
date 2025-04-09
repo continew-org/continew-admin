@@ -134,7 +134,7 @@ public class OptionServiceImpl implements OptionService {
             .one();
         CheckUtils.throwIfNull(option, "参数 [{}] 不存在", code);
         value = StrUtil.nullToDefault(option.getValue(), option.getDefaultValue());
-        CheckUtils.throwIfBlank(value, "参数 [{}] 数据错误", code);
+        CheckUtils.throwIfBlank(value, "参数 [{}] 数据不正确", code);
         RedisUtils.set(CacheConstants.OPTION_KEY_PREFIX + code, value);
         return mapper.apply(value);
     }

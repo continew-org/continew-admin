@@ -23,15 +23,16 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
-import top.continew.admin.common.config.properties.TenantProperties;
 import top.continew.admin.auth.enums.AuthTypeEnum;
-import top.continew.admin.auth.model.req.*;
+import top.continew.admin.auth.model.req.AccountLoginReq;
+import top.continew.admin.auth.model.req.EmailLoginReq;
+import top.continew.admin.auth.model.req.LoginReq;
+import top.continew.admin.auth.model.req.PhoneLoginReq;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.enums.LogStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
@@ -40,13 +41,11 @@ import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.StrUtils;
-import top.continew.starter.extension.tenant.TenantHandler;
-import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.log.dao.LogDao;
 import top.continew.starter.log.model.LogRecord;
 import top.continew.starter.log.model.LogRequest;
 import top.continew.starter.log.model.LogResponse;
-import top.continew.starter.web.autoconfigure.trace.TraceProperties;
+import top.continew.starter.trace.autoconfigure.TraceProperties;
 import top.continew.starter.web.model.R;
 
 import java.time.LocalDateTime;
@@ -66,7 +65,6 @@ public class LogDaoLocalImpl implements LogDao {
     private final UserService userService;
     private final LogMapper logMapper;
     private final TraceProperties traceProperties;
-    private final TenantProperties tenantProperties;
 
     @Async
     @Override
@@ -85,19 +83,9 @@ public class LogDaoLocalImpl implements LogDao {
             .trim()));
         logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
         logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
-        if (tenantProperties.isEnabled()) {
-            Long tenantId = TenantContextHolder.getTenantId() != null
-                ? TenantContextHolder.getTenantId()
-                : Long.valueOf(SysConstants.DEFAULT_TENANT);
-            SpringUtil.getBean(TenantHandler.class).execute(tenantId, () -> {
-                // 设置操作人
-                this.setCreateUser(logDO, logRequest, logResponse);
-                logMapper.insert(logDO);
-            });
-        } else {
-            this.setCreateUser(logDO, logRequest, logResponse);
-            logMapper.insert(logDO);
-        }
+        // 设置操作人
+        this.setCreateUser(logDO, logRequest, logResponse);
+        logMapper.insert(logDO);
     }
 
     /**

@@ -45,7 +45,7 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
     private final DictItemService dictItemService;
 
     @Override
-    public void beforeAdd(DictReq req) {
+    public void beforeCreate(DictReq req) {
         String name = req.getName();
         CheckUtils.throwIf(this.isNameExists(name, null), "新增失败，[{}] 已存在", name);
         String code = req.getCode();

@@ -24,9 +24,9 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "创建或修改角色参数")
-public class RoleReq extends BaseReq {
+public class RoleReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -74,12 +74,6 @@ public class RoleReq extends BaseReq {
     private String description;
 
     /**
-     * 功能权限：菜单 ID 列表
-     */
-    @Schema(description = "功能权限：菜单 ID 列表", example = "1000,1010,1011,1012,1013,1014")
-    private List<Long> menuIds = new ArrayList<>();
-
-    /**
      * 数据权限
      */
     @Schema(description = "数据权限", example = "5")
@@ -90,12 +84,6 @@ public class RoleReq extends BaseReq {
      */
     @Schema(description = "权限范围：部门 ID 列表", example = "5")
     private List<Long> deptIds = new ArrayList<>();
-
-    /**
-     * 菜单选择是否父子节点关联
-     */
-    @Schema(description = "菜单选择是否父子节点关联", example = "false")
-    private Boolean menuCheckStrictly;
 
     /**
      * 部门选择是否父子节点关联

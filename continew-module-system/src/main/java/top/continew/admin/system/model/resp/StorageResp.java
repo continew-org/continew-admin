@@ -26,13 +26,13 @@ import top.continew.starter.security.mask.annotation.JsonMask;
 import java.io.Serial;
 
 /**
- * 存储响应信息
+ * 存储信息
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
 @Data
-@Schema(description = "存储响应信息")
+@Schema(description = "存储信息")
 public class StorageResp extends BaseDetailResp {
 
     @Serial
@@ -63,32 +63,32 @@ public class StorageResp extends BaseDetailResp {
     private StorageTypeEnum type;
 
     /**
-     * 访问密钥
+     * Access Key
      */
-    @Schema(description = "访问密钥", example = "")
+    @Schema(description = "Access Key", example = "")
     private String accessKey;
 
     /**
-     * 私有密钥
+     * Secret Key
      */
-    @Schema(description = "私有密钥", example = "")
+    @Schema(description = "Secret Key", example = "")
     @JsonMask(left = 4, right = 3)
     private String secretKey;
 
     /**
-     * 终端节点
+     * Endpoint
      */
-    @Schema(description = "终端节点", example = "")
+    @Schema(description = "Endpoint", example = "")
     private String endpoint;
 
     /**
-     * 桶名称
+     * Bucket/存储路径
      */
-    @Schema(description = "桶名称", example = "C:/continew-admin/data/file/")
+    @Schema(description = "Bucket/存储路径", example = "C:/continew-admin/data/file/")
     private String bucketName;
 
     /**
-     * 域名
+     * 域名/访问路径
      */
     @Schema(description = "域名", example = "http://localhost:8000/file")
     private String domain;

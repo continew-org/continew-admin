@@ -100,6 +100,11 @@ public class InnerGenConfigDO extends GenConfigDO {
      */
     private boolean hasTimeField;
 
+    /**
+     * 引入的包
+     */
+    private List<String> imports;
+
     public InnerGenConfigDO() {
     }
 

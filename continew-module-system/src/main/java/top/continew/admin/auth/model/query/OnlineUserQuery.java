@@ -16,14 +16,12 @@
 
 package top.continew.admin.auth.model.query;
 
-import cn.hutool.core.date.DatePattern;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -46,17 +44,16 @@ public class OnlineUserQuery implements Serializable {
     private String nickname;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
-    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
     private String clientId;
 
     /**
      * 登录时间
      */
     @Schema(description = "登录时间", example = "2023-08-08 00:00:00,2023-08-08 23:59:59")
-    @DateTimeFormat(pattern = DatePattern.NORM_DATETIME_PATTERN)
-    private List<Date> loginTime;
+    private List<LocalDateTime> loginTime;
 
     /**
      * 用户 ID

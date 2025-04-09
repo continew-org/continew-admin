@@ -58,7 +58,7 @@ public class TenantPackageServiceImpl extends BaseServiceImpl<TenantPackageMappe
     }
 
     @Override
-    protected void beforeAdd(TenantPackageReq req) {
+    protected void beforeCreate(TenantPackageReq req) {
         CheckUtils.throwIf(baseMapper.selectCount(Wrappers.lambdaQuery(TenantPackageDO.class)
             .eq(TenantPackageDO::getName, req.getName())) > 0, "租户套餐名称不能重复");
     }

@@ -16,9 +16,14 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.crane4j.annotation.AutoOperate;
 import cn.crane4j.annotation.ContainerMethod;
 import cn.crane4j.annotation.MappingType;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +31,13 @@ import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.mapper.UserRoleMapper;
 import top.continew.admin.system.model.entity.UserRoleDO;
+import top.continew.admin.system.model.query.RoleUserQuery;
+import top.continew.admin.system.model.resp.role.RoleUserResp;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.data.mp.util.QueryWrapperHelper;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.util.List;
 
@@ -42,6 +52,22 @@ import java.util.List;
 public class UserRoleServiceImpl implements UserRoleService {
 
     private final UserRoleMapper baseMapper;
+
+    @Override
+    @AutoOperate(type = RoleUserResp.class, on = "list")
+    public PageResp<RoleUserResp> pageUser(RoleUserQuery query, PageQuery pageQuery) {
+        String description = query.getDescription();
+        QueryWrapper<UserRoleDO> queryWrapper = new QueryWrapper<UserRoleDO>().eq("t1.role_id", query.getRoleId())
+            .and(StrUtil.isNotBlank(description), q -> q.like("t2.username", description)
+                .or()
+                .like("t2.nickname", description)
+                .or()
+                .like("t2.description", description));
+        QueryWrapperHelper.sort(queryWrapper, pageQuery.getSort());
+        IPage<RoleUserResp> page = baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
+            .getSize()), queryWrapper);
+        return PageResp.build(page);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -67,26 +93,14 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean assignRoleToUsers(Long roleId, List<Long> userIds) {
-        // 检查是否有变更
-        List<Long> oldUserIdList = baseMapper.lambdaQuery()
-            .select(UserRoleDO::getUserId)
-            .eq(UserRoleDO::getRoleId, roleId)
-            .list()
-            .stream()
-            .map(UserRoleDO::getUserId)
-            .toList();
-        if (CollUtil.isEmpty(CollUtil.disjunction(userIds, oldUserIdList))) {
-            return false;
-        }
-        CheckUtils.throwIf(SysConstants.SUPER_ROLE_ID.equals(roleId) && !userIds
-            .contains(SysConstants.SUPER_USER_ID), "不允许变更超管用户角色");
-        // 删除原有关联
-        baseMapper.lambdaUpdate().eq(UserRoleDO::getRoleId, roleId).remove();
-        // 保存最新关联
         List<UserRoleDO> userRoleList = userIds.stream().map(userId -> new UserRoleDO(userId, roleId)).toList();
         return baseMapper.insertBatch(userRoleList);
+    }
+
+    @Override
+    public void deleteByIds(List<Long> ids) {
+        baseMapper.deleteByIds(ids);
     }
 
     @Override

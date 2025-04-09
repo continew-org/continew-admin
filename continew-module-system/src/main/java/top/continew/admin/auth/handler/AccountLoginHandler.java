@@ -16,6 +16,9 @@
 
 package top.continew.admin.auth.handler;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +33,7 @@ import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.enums.PasswordPolicyEnum;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.util.ExceptionUtils;
@@ -63,7 +66,7 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         boolean isError = ObjectUtil.isNull(user) || !passwordEncoder.matches(rawPassword, user.getPassword());
         // 检查账号锁定状态
         this.checkUserLocked(req.getUsername(), request, isError);
-        ValidationUtils.throwIf(isError, "用户名或密码错误");
+        ValidationUtils.throwIf(isError, "用户名或密码不正确");
         // 检查用户状态
         super.checkUserStatus(user);
         // 执行认证
@@ -97,7 +100,7 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
      *
      * @param username 用户名
      * @param request  请求对象
-     * @param isError  是否登录错误
+     * @param isError  是否登录失败
      */
     private void checkUserLocked(String username, HttpServletRequest request, boolean isError) {
         // 不锁定
@@ -108,9 +111,9 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         // 检测是否已被锁定
         String key = CacheConstants.USER_PASSWORD_ERROR_KEY_PREFIX + RedisUtils.formatKey(username, JakartaServletUtil
             .getClientIP(request));
-        int lockMinutes = optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.name());
         Integer currentErrorCount = ObjectUtil.defaultIfNull(RedisUtils.get(key), 0);
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "账号锁定 {} 分钟，请稍后再试", lockMinutes);
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.getMsg()
+            .formatted(this.getUnlockTime(key)));
         // 登录成功清除计数
         if (!isError) {
             RedisUtils.delete(key);
@@ -118,7 +121,24 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         }
         // 登录失败递增计数
         currentErrorCount++;
+        int lockMinutes = optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.name());
         RedisUtils.set(key, currentErrorCount, Duration.ofMinutes(lockMinutes));
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, "密码错误已达 {} 次，账号锁定 {} 分钟", maxErrorCount, lockMinutes);
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.getMsg()
+            .formatted(maxErrorCount, lockMinutes, this.getUnlockTime(key)));
+    }
+
+    /**
+     * 获取解锁时间
+     *
+     * @param key 键
+     * @return 解锁时间
+     */
+    private String getUnlockTime(String key) {
+        long timeToLive = RedisUtils.getTimeToLive(key);
+        return timeToLive > 0
+            ? DateUtil.date()
+                .offset(DateField.MILLISECOND, (int)timeToLive)
+                .toString(DatePattern.CHINESE_DATE_TIME_FORMAT)
+            : "";
     }
 }

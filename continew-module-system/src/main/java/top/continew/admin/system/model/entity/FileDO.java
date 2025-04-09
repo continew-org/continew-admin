@@ -17,18 +17,20 @@
 package top.continew.admin.system.model.entity;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.SneakyThrows;
 import org.dromara.x.file.storage.core.FileInfo;
+import top.continew.admin.common.model.entity.BaseDO;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.StrUtils;
-import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * 文件实体
@@ -59,9 +61,24 @@ public class FileDO extends BaseDO {
     private String url;
 
     /**
+     * 上级目录
+     */
+    private String parentPath;
+
+    /**
+     * 绝对路径
+     */
+    private String absPath;
+
+    /**
      * 扩展名
      */
     private String extension;
+
+    /**
+     * 内容类型
+     */
+    private String contentType;
 
     /**
      * 类型
@@ -69,14 +86,29 @@ public class FileDO extends BaseDO {
     private FileTypeEnum type;
 
     /**
+     * MD5 值
+     */
+    private String md5;
+
+    /**
+     * 元数据
+     */
+    private String metadata;
+
+    /**
      * 缩略图大小（字节)
      */
     private Long thumbnailSize;
 
     /**
-     * 缩略图URL
+     * 缩略图 URL
      */
     private String thumbnailUrl;
+
+    /**
+     * 缩略图元数据
+     */
+    private String thumbnailMetadata;
 
     /**
      * 存储 ID
@@ -109,6 +141,12 @@ public class FileDO extends BaseDO {
             ? StrUtil.subAfter(this.thumbnailUrl, StringConstants.SLASH, true)
             : this.thumbnailUrl);
         fileInfo.setThSize(this.thumbnailSize);
+        if (StrUtil.isNotBlank(this.thumbnailMetadata)) {
+            fileInfo.setThMetadata(JSONUtil.toBean(this.thumbnailMetadata, Map.class));
+        }
+        if (StrUtil.isNotBlank(this.metadata)) {
+            fileInfo.setMetadata(JSONUtil.toBean(this.metadata, Map.class));
+        }
         return fileInfo;
     }
 
@@ -134,7 +172,7 @@ public class FileDO extends BaseDO {
         String relativePath = fullPath.startsWith(StringConstants.SLASH) ? fullPath.substring(1) : fullPath;
         // 如果路径以 bucketName 开头，则移除 bucketName 例如: bucketName/2024/11/27/ -> 2024/11/27/
         if (relativePath.startsWith(storageDO.getBucketName())) {
-            return StrUtil.split(relativePath, storageDO.getBucketName()).get(1);
+            return StrUtil.subAfter(relativePath, storageDO.getBucketName(), false);
         }
         return relativePath;
     }

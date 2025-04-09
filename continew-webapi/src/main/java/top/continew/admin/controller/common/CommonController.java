@@ -33,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.enums.OptionCategoryEnum;
 import top.continew.admin.system.model.query.*;
-import top.continew.admin.system.model.resp.FileUploadResp;
+import top.continew.admin.system.model.resp.file.FileUploadResp;
 import top.continew.admin.system.service.*;
 import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
@@ -69,7 +69,12 @@ public class CommonController {
     public FileUploadResp upload(@NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file);
-        return FileUploadResp.builder().url(fileInfo.getUrl()).build();
+        return FileUploadResp.builder()
+            .id(fileInfo.getId())
+            .url(fileInfo.getUrl())
+            .thUrl(fileInfo.getThUrl())
+            .metadata(fileInfo.getMetadata())
+            .build();
     }
 
     @Operation(summary = "查询部门树", description = "查询树结构的部门列表")

@@ -22,8 +22,8 @@ import org.springframework.stereotype.Service;
 import top.continew.admin.system.enums.MessageTypeEnum;
 import top.continew.admin.system.mapper.MessageUserMapper;
 import top.continew.admin.system.model.entity.MessageUserDO;
-import top.continew.admin.system.model.resp.MessageTypeUnreadResp;
-import top.continew.admin.system.model.resp.MessageUnreadResp;
+import top.continew.admin.system.model.resp.message.MessageTypeUnreadResp;
+import top.continew.admin.system.model.resp.message.MessageUnreadResp;
 import top.continew.admin.system.service.MessageUserService;
 import top.continew.starter.core.validation.CheckUtils;
 

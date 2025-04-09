@@ -23,7 +23,7 @@ import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.PhoneLoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.common.constant.CacheConstants;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.validation.ValidationUtils;

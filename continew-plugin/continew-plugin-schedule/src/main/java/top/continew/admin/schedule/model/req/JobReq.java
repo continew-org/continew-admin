@@ -65,7 +65,7 @@ public class JobReq implements Serializable {
      * 触发类型
      */
     @Schema(description = "触发类型", example = "2")
-    @NotNull(message = "触发类型非法")
+    @NotNull(message = "触发类型无效")
     private JobTriggerTypeEnum triggerType;
 
     /**
@@ -85,7 +85,7 @@ public class JobReq implements Serializable {
      * 任务类型
      */
     @Schema(description = "任务类型", example = "1")
-    @NotNull(message = "任务类型非法")
+    @NotNull(message = "任务类型无效")
     private JobTaskTypeEnum taskType;
 
     /**
@@ -111,14 +111,14 @@ public class JobReq implements Serializable {
      * 路由策略
      */
     @Schema(description = "路由策略", example = "4")
-    @NotNull(message = "路由策略非法")
+    @NotNull(message = "路由策略无效")
     private JobRouteStrategyEnum routeKey;
 
     /**
      * 阻塞策略
      */
     @Schema(description = "阻塞策略", example = "1")
-    @NotNull(message = "阻塞策略非法")
+    @NotNull(message = "阻塞策略无效")
     private JobBlockStrategyEnum blockStrategy;
 
     /**

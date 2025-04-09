@@ -23,9 +23,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.system.enums.NoticeScopeEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,7 +37,7 @@ import java.util.List;
  */
 @Data
 @Schema(description = "创建或修改公告参数")
-public class NoticeReq extends BaseReq {
+public class NoticeReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

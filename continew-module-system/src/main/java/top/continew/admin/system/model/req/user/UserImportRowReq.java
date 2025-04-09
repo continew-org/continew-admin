@@ -16,17 +16,18 @@
 
 package top.continew.admin.system.model.req.user;
 
-import cn.hutool.core.lang.RegexPool;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
-import top.continew.starter.extension.crud.model.req.BaseReq;
+import top.continew.starter.core.validation.constraints.Mobile;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 用户导入行数据
@@ -36,7 +37,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "用户导入行数据")
-public class UserImportRowReq extends BaseReq {
+public class UserImportRowReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -58,7 +59,7 @@ public class UserImportRowReq extends BaseReq {
     /**
      * 密码
      */
-    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Add.class)
+    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Create.class)
     private String password;
 
     /**
@@ -81,14 +82,14 @@ public class UserImportRowReq extends BaseReq {
     /**
      * 邮箱
      */
-    @Pattern(regexp = "^$|" + RegexPool.EMAIL, message = "邮箱格式错误")
     @Length(max = 255, message = "邮箱长度不能超过 {max} 个字符")
+    @Email(message = "邮箱格式不正确")
     private String email;
 
     /**
      * 手机号码
      */
-    @Pattern(regexp = "^$|" + RegexPool.MOBILE, message = "手机号码格式错误")
+    @Mobile
     private String phone;
 
     /**

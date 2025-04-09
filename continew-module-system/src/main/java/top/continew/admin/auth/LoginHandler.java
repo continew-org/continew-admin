@@ -35,7 +35,7 @@ public interface LoginHandler<T extends LoginReq> {
      * 登录
      *
      * @param req     登录请求参数
-     * @param client  客户端信息
+     * @param client  终端信息
      * @param request 请求对象
      * @return 登录响应参数
      */
@@ -45,7 +45,7 @@ public interface LoginHandler<T extends LoginReq> {
      * 登录前置处理
      *
      * @param req     登录请求参数
-     * @param client  客户端信息
+     * @param client  终端信息
      * @param request 请求对象
      */
     void preLogin(T req, ClientResp client, HttpServletRequest request);
@@ -54,7 +54,7 @@ public interface LoginHandler<T extends LoginReq> {
      * 登录后置处理
      *
      * @param req     登录请求参数
-     * @param client  客户端信息
+     * @param client  终端信息
      * @param request 请求对象
      */
     void postLogin(T req, ClientResp client, HttpServletRequest request);

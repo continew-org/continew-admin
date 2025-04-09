@@ -1,13 +1,5 @@
 package ${packageName}.${subPackageName};
 
-import java.io.Serial;
-<#if hasTimeField>
-import java.time.*;
-</#if>
-<#if hasBigDecimalField>
-import java.math.BigDecimal;
-</#if>
-
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +8,14 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.continew.admin.common.model.resp.BaseDetailResp;
+
+import java.io.Serial;
+<#if hasTimeField>
+import java.time.*;
+</#if>
+<#if hasBigDecimalField>
+import java.math.BigDecimal;
+</#if>
 
 /**
  * ${businessName}详情信息

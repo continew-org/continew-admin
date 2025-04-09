@@ -17,13 +17,11 @@
 package top.continew.admin.schedule.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 import top.continew.admin.schedule.enums.JobStatusEnum;
+import top.continew.starter.core.validation.constraints.EnumValue;
 
 import java.io.Serial;
-import java.io.Serializable;
 
 /**
  * 任务查询条件
@@ -33,7 +31,7 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "任务查询条件")
-public class JobQuery implements Serializable {
+public class JobQuery extends JobPageQuery {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -54,19 +52,6 @@ public class JobQuery implements Serializable {
      * 任务状态
      */
     @Schema(description = "任务状态", example = "1")
-    private JobStatusEnum jobStatus;
-
-    /**
-     * 页码
-     */
-    @Schema(description = "页码", example = "1")
-    @Min(value = 1, message = "页码最小值为 {value}")
-    private Integer page = 1;
-
-    /**
-     * 每页条数
-     */
-    @Schema(description = "每页条数", example = "10")
-    @Range(min = 1, max = 1000, message = "每页条数（取值范围 {min}-{max}）")
-    private Integer size = 10;
+    @EnumValue(value = JobStatusEnum.class, message = "任务状态无效")
+    private Integer jobStatus;
 }

@@ -1,5 +1,11 @@
 package ${packageName}.${subPackageName};
 
+import lombok.Data;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import top.continew.admin.common.model.resp.BaseResp;
+
 import java.io.Serial;
 <#if hasTimeField>
 import java.time.*;
@@ -7,12 +13,6 @@ import java.time.*;
 <#if hasBigDecimalField>
 import java.math.BigDecimal;
 </#if>
-
-import lombok.Data;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import top.continew.admin.common.model.resp.BaseResp;
 
 /**
  * ${businessName}信息

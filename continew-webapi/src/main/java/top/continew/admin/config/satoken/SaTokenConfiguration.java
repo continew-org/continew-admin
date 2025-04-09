@@ -36,7 +36,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.validation.CheckUtils;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Sa-Token 配置
@@ -72,7 +72,7 @@ public class SaTokenConfiguration {
             .check(r -> {
                 // 如果包含 sign，进行 API 接口参数签名验证
                 SaRequest saRequest = SaHolder.getRequest();
-                List<String> paramNames = saRequest.getParamNames();
+                Collection<String> paramNames = saRequest.getParamNames();
                 if (paramNames.stream().anyMatch(SaSignTemplate.sign::equals)) {
                     try {
                         SaSignUtil.checkRequest(saRequest);

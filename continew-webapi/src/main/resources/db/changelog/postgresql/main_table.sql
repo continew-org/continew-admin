@@ -197,10 +197,13 @@ COMMENT ON COLUMN "sys_user_social"."create_time"     IS '创建时间';
 COMMENT ON TABLE  "sys_user_social"                   IS '用户社会化关联表';
 
 CREATE TABLE IF NOT EXISTS "sys_user_role" (
+    "id"      int8 NOT NULL,
     "user_id" int8 NOT NULL,
     "role_id" int8 NOT NULL,
-    PRIMARY KEY ("user_id", "role_id")
+    PRIMARY KEY ("id")
 );
+CREATE UNIQUE INDEX "uk_user_id_role_id" ON "sys_user_role" ("user_id", "role_id");
+COMMENT ON COLUMN "sys_user_role"."id"      IS 'ID';
 COMMENT ON COLUMN "sys_user_role"."user_id" IS '用户ID';
 COMMENT ON COLUMN "sys_user_role"."role_id" IS '角色ID';
 COMMENT ON TABLE  "sys_user_role"           IS '用户和角色关联表';
@@ -309,7 +312,7 @@ CREATE TABLE IF NOT EXISTS "sys_log" (
     "id"               int8         NOT NULL,
     "trace_id"         varchar(255) DEFAULT NULL,
     "description"      varchar(255) NOT NULL,
-    "module"           varchar(50)  NOT NULL,
+    "module"           varchar(100) NOT NULL,
     "request_url"      varchar(512) NOT NULL,
     "request_method"   varchar(10)  NOT NULL,
     "request_headers"  text         DEFAULT NULL,
@@ -443,11 +446,11 @@ CREATE INDEX "idx_storage_update_user" ON "sys_storage" ("update_user");
 COMMENT ON COLUMN "sys_storage"."id"          IS 'ID';
 COMMENT ON COLUMN "sys_storage"."name"        IS '名称';
 COMMENT ON COLUMN "sys_storage"."code"        IS '编码';
-COMMENT ON COLUMN "sys_storage"."type"        IS '类型（1：兼容S3协议存储；2：本地存储）';
-COMMENT ON COLUMN "sys_storage"."access_key"  IS 'Access Key（访问密钥）';
-COMMENT ON COLUMN "sys_storage"."secret_key"  IS 'Secret Key（私有密钥）';
-COMMENT ON COLUMN "sys_storage"."endpoint"    IS 'Endpoint（终端节点）';
-COMMENT ON COLUMN "sys_storage"."bucket_name" IS '桶名称';
+COMMENT ON COLUMN "sys_storage"."type"        IS '类型（1：本地存储；2：对象存储）';
+COMMENT ON COLUMN "sys_storage"."access_key"  IS 'Access Key';
+COMMENT ON COLUMN "sys_storage"."secret_key"  IS 'Secret Key';
+COMMENT ON COLUMN "sys_storage"."endpoint"    IS 'Endpoint';
+COMMENT ON COLUMN "sys_storage"."bucket_name" IS 'Bucket';
 COMMENT ON COLUMN "sys_storage"."domain"      IS '域名';
 COMMENT ON COLUMN "sys_storage"."description" IS '描述';
 COMMENT ON COLUMN "sys_storage"."is_default"  IS '是否为默认存储';
@@ -460,39 +463,53 @@ COMMENT ON COLUMN "sys_storage"."update_time" IS '修改时间';
 COMMENT ON TABLE  "sys_storage"               IS '存储表';
 
 CREATE TABLE IF NOT EXISTS "sys_file" (
-    "id"             int8         NOT NULL,
-    "name"           varchar(255) NOT NULL,
-    "size"           int8         NOT NULL,
-    "url"            varchar(512) NOT NULL,
-    "extension"      varchar(100) DEFAULT NULL,
-    "thumbnail_size" int8         DEFAULT NULL,
-    "thumbnail_url"  varchar(512) DEFAULT NULL,
-    "type"           int2         NOT NULL DEFAULT 1,
-    "storage_id"     int8         NOT NULL,
-    "create_user"    int8         NOT NULL,
-    "create_time"    timestamp    NOT NULL,
-    "update_user"    int8         NOT NULL,
-    "update_time"    timestamp    NOT NULL,
+    "id"                 int8         NOT NULL,
+    "name"               varchar(255) NOT NULL,
+    "size"               int8         NOT NULL,
+    "url"                varchar(512) NOT NULL,
+    "parent_path"        varchar(512) NOT NULL DEFAULT '/',
+    "abs_path"           varchar(512) NOT NULL,
+    "extension"          varchar(100) DEFAULT NULL,
+    "content_type"       varchar(64)  NOT NULL,
+    "type"               int2         NOT NULL DEFAULT 1,
+    "md5"       		 varchar(128) NOT NULL,
+    "metadata"           text         DEFAULT NULL,
+    "thumbnail_size"     int8         DEFAULT NULL,
+    "thumbnail_url"      varchar(512) DEFAULT NULL,
+    "thumbnail_metadata" text         DEFAULT NULL,
+    "storage_id"         int8         NOT NULL,
+    "create_user"        int8         NOT NULL,
+    "create_time"        timestamp    NOT NULL,
+    "update_user"        int8         NOT NULL,
+    "update_time"        timestamp    NOT NULL,
     PRIMARY KEY ("id")
 );
-CREATE INDEX "idx_file_url"  ON "sys_file" ("url");
+CREATE INDEX "idx_file_url" ON "sys_file" ("url");
 CREATE INDEX "idx_file_type" ON "sys_file" ("type");
+CREATE INDEX "idx_file_md5" ON "sys_file" ("md5");
+CREATE INDEX "idx_file_storage_id" ON "sys_file" ("storage_id");
 CREATE INDEX "idx_file_create_user" ON "sys_file" ("create_user");
 CREATE INDEX "idx_file_update_user" ON "sys_file" ("update_user");
-COMMENT ON COLUMN "sys_file"."id"             IS 'ID';
-COMMENT ON COLUMN "sys_file"."name"           IS '名称';
-COMMENT ON COLUMN "sys_file"."size"           IS '大小（字节）';
-COMMENT ON COLUMN "sys_file"."url"            IS 'URL';
-COMMENT ON COLUMN "sys_file"."extension"      IS '扩展名';
-COMMENT ON COLUMN "sys_file"."thumbnail_size" IS '缩略图大小（字节)';
-COMMENT ON COLUMN "sys_file"."thumbnail_url"  IS '缩略图URL';
-COMMENT ON COLUMN "sys_file"."type"           IS '类型（1：其他；2：图片；3：文档；4：视频；5：音频）';
-COMMENT ON COLUMN "sys_file"."storage_id"     IS '存储ID';
-COMMENT ON COLUMN "sys_file"."create_user"    IS '创建人';
-COMMENT ON COLUMN "sys_file"."create_time"    IS '创建时间';
-COMMENT ON COLUMN "sys_file"."update_user"    IS '修改人';
-COMMENT ON COLUMN "sys_file"."update_time"    IS '修改时间';
-COMMENT ON TABLE  "sys_file"                  IS '文件表';
+COMMENT ON COLUMN "sys_file"."id"                 IS 'ID';
+COMMENT ON COLUMN "sys_file"."name"               IS '名称';
+COMMENT ON COLUMN "sys_file"."size"               IS '大小（字节）';
+COMMENT ON COLUMN "sys_file"."url"                IS 'URL';
+COMMENT ON COLUMN "sys_file"."parent_path"        IS '上级目录';
+COMMENT ON COLUMN "sys_file"."abs_path"           IS '绝对路径';
+COMMENT ON COLUMN "sys_file"."extension"          IS '扩展名';
+COMMENT ON COLUMN "sys_file"."content_type"       IS '内容类型';
+COMMENT ON COLUMN "sys_file"."type"               IS '类型（0: 目录；1：其他；2：图片；3：文档；4：视频；5：音频）';
+COMMENT ON COLUMN "sys_file"."md5"                IS 'MD5值';
+COMMENT ON COLUMN "sys_file"."metadata"           IS '元数据';
+COMMENT ON COLUMN "sys_file"."thumbnail_size"     IS '缩略图大小（字节)';
+COMMENT ON COLUMN "sys_file"."thumbnail_url"      IS '缩略图URL';
+COMMENT ON COLUMN "sys_file"."thumbnail_metadata" IS '缩略图元数据';
+COMMENT ON COLUMN "sys_file"."storage_id"         IS '存储ID';
+COMMENT ON COLUMN "sys_file"."create_user"        IS '创建人';
+COMMENT ON COLUMN "sys_file"."create_time"        IS '创建时间';
+COMMENT ON COLUMN "sys_file"."update_user"        IS '修改人';
+COMMENT ON COLUMN "sys_file"."update_time"        IS '修改时间';
+COMMENT ON TABLE  "sys_file"                      IS '文件表';
 
 CREATE TABLE IF NOT EXISTS "sys_client" (
     "id"             int8         NOT NULL,
@@ -510,13 +527,15 @@ CREATE TABLE IF NOT EXISTS "sys_client" (
     "update_time"    timestamp    DEFAULT NULL,
     PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "uk_client_client_id"  ON "sys_client" ("client_id");
+CREATE UNIQUE INDEX "uk_client_client_id" ON "sys_client" ("client_id");
+CREATE INDEX "idx_client_create_user" ON "sys_client" ("create_user");
+CREATE INDEX "idx_client_update_user" ON "sys_client" ("update_user");
 COMMENT ON COLUMN "sys_client"."id"             IS 'ID';
-COMMENT ON COLUMN "sys_client"."client_id"      IS '客户端ID';
-COMMENT ON COLUMN "sys_client"."client_key"     IS '客户端Key';
-COMMENT ON COLUMN "sys_client"."client_secret"  IS '客户端秘钥';
+COMMENT ON COLUMN "sys_client"."client_id"      IS '终端ID';
+COMMENT ON COLUMN "sys_client"."client_key"     IS '终端Key';
+COMMENT ON COLUMN "sys_client"."client_secret"  IS '终端秘钥';
 COMMENT ON COLUMN "sys_client"."auth_type"      IS '认证类型';
-COMMENT ON COLUMN "sys_client"."client_type"    IS '客户端类型';
+COMMENT ON COLUMN "sys_client"."client_type"    IS '终端类型';
 COMMENT ON COLUMN "sys_client"."active_timeout" IS 'Token最低活跃频率（单位：秒，-1：不限制，永不冻结）';
 COMMENT ON COLUMN "sys_client"."timeout"        IS 'Token有效期（单位：秒，-1：永不过期）';
 COMMENT ON COLUMN "sys_client"."status"         IS '状态（1：启用；2：禁用）';
@@ -524,4 +543,68 @@ COMMENT ON COLUMN "sys_client"."create_user"    IS '创建人';
 COMMENT ON COLUMN "sys_client"."create_time"    IS '创建时间';
 COMMENT ON COLUMN "sys_client"."update_user"    IS '修改人';
 COMMENT ON COLUMN "sys_client"."update_time"    IS '修改时间';
-COMMENT ON TABLE  "sys_client"                  IS '客户端表';
+COMMENT ON TABLE  "sys_client"                  IS '终端表';
+
+CREATE TABLE IF NOT EXISTS "sys_sms_config" (
+    "id"              int8         NOT NULL,
+    "name"            varchar(100) NOT NULL,
+    "supplier"        varchar(50)  NOT NULL,
+    "access_key"      varchar(255) NOT NULL,
+    "secret_key"      varchar(255) NOT NULL,
+    "signature"       varchar(100) DEFAULT NULL,
+    "template_id"     varchar(50)  DEFAULT NULL,
+    "weight"          int4         DEFAULT NULL,
+    "retry_interval"  int4         DEFAULT NULL,
+    "max_retries"     int4         DEFAULT NULL,
+    "maximum"         int4         DEFAULT NULL,
+    "supplier_config" text         DEFAULT NULL ,
+    "status"          int2         NOT NULL DEFAULT 1,
+    "create_user"     int8         NOT NULL,
+    "create_time"     timestamp    NOT NULL,
+    "update_user"     int8         DEFAULT NULL,
+    "update_time"     timestamp    DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_sms_config_create_user" ON "sys_sms_config" ("create_user");
+CREATE INDEX "idx_sms_config_update_user" ON "sys_sms_config" ("update_user");
+COMMENT ON COLUMN "sys_sms_config"."id"              IS 'ID';
+COMMENT ON COLUMN "sys_sms_config"."name"            IS '名称';
+COMMENT ON COLUMN "sys_sms_config"."supplier"        IS '厂商';
+COMMENT ON COLUMN "sys_sms_config"."access_key"      IS 'Access Key';
+COMMENT ON COLUMN "sys_sms_config"."secret_key"      IS 'Secret Key';
+COMMENT ON COLUMN "sys_sms_config"."signature"       IS '短信签名';
+COMMENT ON COLUMN "sys_sms_config"."template_id"     IS '模板ID';
+COMMENT ON COLUMN "sys_sms_config"."weight"          IS '负载均衡权重';
+COMMENT ON COLUMN "sys_sms_config"."retry_interval"  IS '重试间隔（单位：秒）';
+COMMENT ON COLUMN "sys_sms_config"."max_retries"     IS '重试次数';
+COMMENT ON COLUMN "sys_sms_config"."maximum"         IS '发送上限';
+COMMENT ON COLUMN "sys_sms_config"."supplier_config" IS '各个厂商独立配置';
+COMMENT ON COLUMN "sys_sms_config"."status"          IS '状态（1：启用；2：禁用）';
+COMMENT ON COLUMN "sys_sms_config"."create_user"     IS '创建人';
+COMMENT ON COLUMN "sys_sms_config"."create_time"     IS '创建时间';
+COMMENT ON COLUMN "sys_sms_config"."update_user"     IS '修改人';
+COMMENT ON COLUMN "sys_sms_config"."update_time"     IS '修改时间';
+COMMENT ON TABLE "sys_sms_config" IS '短信配置表';
+
+CREATE TABLE IF NOT EXISTS "sys_sms_log" (
+    "id"          int8        NOT NULL,
+    "config_id"   int8        NOT NULL,
+    "phone"       varchar(25) NOT NULL,
+    "params"      text        DEFAULT NULL,
+    "status"      int2        NOT NULL DEFAULT 1,
+    "res_msg"     text        DEFAULT NULL,
+    "create_user" int8        NOT NULL,
+    "create_time" timestamp   NOT NULL,
+    PRIMARY KEY ("id")
+);
+CREATE INDEX "idx_sms_log_config_id" ON "sys_sms_log" ("config_id");
+CREATE INDEX "idx_sms_log_create_user" ON "sys_sms_log" ("create_user");
+COMMENT ON COLUMN "sys_sms_log"."id"          IS 'ID';
+COMMENT ON COLUMN "sys_sms_log"."config_id"   IS '配置ID';
+COMMENT ON COLUMN "sys_sms_log"."phone"       IS '手机号';
+COMMENT ON COLUMN "sys_sms_log"."params"      IS '参数配置';
+COMMENT ON COLUMN "sys_sms_log"."status"      IS '发送状态（1：成功；2：失败）';
+COMMENT ON COLUMN "sys_sms_log"."res_msg"     IS '返回数据';
+COMMENT ON COLUMN "sys_sms_log"."create_user" IS '创建人';
+COMMENT ON COLUMN "sys_sms_log"."create_time" IS '创建时间';
+COMMENT ON TABLE "sys_sms_log" IS '短信日志表';

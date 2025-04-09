@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import top.continew.admin.schedule.model.query.JobQuery;
 import top.continew.admin.schedule.model.req.JobReq;
 import top.continew.admin.schedule.model.req.JobStatusReq;
+import top.continew.admin.schedule.model.req.JobTriggerReq;
 import top.continew.admin.schedule.model.resp.JobResp;
 import top.continew.admin.schedule.service.JobService;
 import top.continew.starter.extension.crud.model.resp.PageResp;
@@ -59,10 +60,10 @@ public class JobController {
     }
 
     @Operation(summary = "新增任务", description = "新增任务")
-    @SaCheckPermission("schedule:job:add")
+    @SaCheckPermission("schedule:job:create")
     @PostMapping
-    public void add(@Validated(CrudValidationGroup.Add.class) @RequestBody JobReq req) {
-        baseService.add(req);
+    public void create(@Validated(CrudValidationGroup.Create.class) @RequestBody JobReq req) {
+        baseService.create(req);
     }
 
     @Operation(summary = "修改任务", description = "修改任务")
@@ -93,7 +94,9 @@ public class JobController {
     @SaCheckPermission("schedule:job:trigger")
     @PostMapping("/trigger/{id}")
     public void trigger(@PathVariable Long id) {
-        baseService.trigger(id);
+        JobTriggerReq req = new JobTriggerReq();
+        req.setJobId(id);
+        baseService.trigger(req);
     }
 
     @Log(ignore = true)

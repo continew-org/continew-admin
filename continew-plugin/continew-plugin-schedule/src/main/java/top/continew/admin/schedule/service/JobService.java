@@ -19,6 +19,7 @@ package top.continew.admin.schedule.service;
 import top.continew.admin.schedule.model.query.JobQuery;
 import top.continew.admin.schedule.model.req.JobReq;
 import top.continew.admin.schedule.model.req.JobStatusReq;
+import top.continew.admin.schedule.model.req.JobTriggerReq;
 import top.continew.admin.schedule.model.resp.JobResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
@@ -47,7 +48,7 @@ public interface JobService {
      * @param req 创建信息
      * @return 新增结果
      */
-    boolean add(JobReq req);
+    boolean create(JobReq req);
 
     /**
      * 修改
@@ -78,10 +79,10 @@ public interface JobService {
     /**
      * 执行
      *
-     * @param id ID
+     * @param req 参数
      * @return 执行结果
      */
-    boolean trigger(Long id);
+    boolean trigger(JobTriggerReq req);
 
     /**
      * 查询分组列表

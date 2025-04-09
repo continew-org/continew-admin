@@ -87,7 +87,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
                     continue;
                 }
             }
-            List<Date> loginTimeList = query.getLoginTime();
+            List<LocalDateTime> loginTimeList = query.getLoginTime();
             entry.getValue().parallelStream().forEach(token -> {
                 UserExtraContext extraContext = UserContextHolder.getExtraContext(token);
                 if (!this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
@@ -134,11 +134,11 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     /**
-     * 是否匹配客户端 ID
+     * 是否匹配终端 ID
      *
-     * @param clientId    客户端 ID
+     * @param clientId    终端 ID
      * @param userContext 用户上下文信息
-     * @return 是否匹配客户端 ID
+     * @return 是否匹配终端 ID
      */
     private boolean isMatchClientId(String clientId, UserContext userContext) {
         if (StrUtil.isBlank(clientId)) {
@@ -154,10 +154,10 @@ public class OnlineUserServiceImpl implements OnlineUserService {
      * @param loginTime     登录时间
      * @return 是否匹配登录时间
      */
-    private boolean isMatchLoginTime(List<Date> loginTimeList, LocalDateTime loginTime) {
+    private boolean isMatchLoginTime(List<LocalDateTime> loginTimeList, LocalDateTime loginTime) {
         if (CollUtil.isEmpty(loginTimeList)) {
             return true;
         }
-        return DateUtil.isIn(DateUtil.date(loginTime).toJdkDate(), loginTimeList.get(0), loginTimeList.get(1));
+        return loginTime.isAfter(loginTimeList.get(0)) && loginTime.isBefore(loginTimeList.get(1));
     }
 }

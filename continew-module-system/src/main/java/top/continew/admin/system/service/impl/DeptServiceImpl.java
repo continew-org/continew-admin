@@ -59,7 +59,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
     private DataSource dataSource;
 
     @Override
-    public void beforeAdd(DeptReq req) {
+    public void beforeCreate(DeptReq req) {
         String name = req.getName();
         boolean isExists = this.isNameExists(name, req.getParentId(), null);
         CheckUtils.throwIf(isExists, "新增失败，[{}] 已存在", name);

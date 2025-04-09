@@ -21,9 +21,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 创建或修改租户数据连接参数
@@ -33,7 +33,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "创建或修改租户数据连接参数")
-public class TenantDbConnectReq extends BaseReq {
+public class TenantDbConnectReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -84,4 +84,9 @@ public class TenantDbConnectReq extends BaseReq {
     @Length(max = 128, message = "连接密码长度不能超过 {max} 个字符")
     private String password;
 
+    /**
+     * ID
+     */
+    @Schema(hidden = true)
+    private Long id;
 }

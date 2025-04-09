@@ -19,7 +19,7 @@
 	  <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
         <a-select
           v-model="queryForm.${fieldConfig.fieldName}"
-          :options="${fieldConfig.columnName}_enum"
+          :options="${fieldConfig.dictCode}"
           placeholder="请选择${fieldConfig.comment}"
           allow-clear
           style="width: 150px"
@@ -61,7 +61,7 @@
         </a-button>
       </template>
       <template #toolbar-right>
-        <a-button v-permission="['${apiModuleName}:${apiName}:add']" type="primary" @click="onAdd">
+        <a-button v-permission="['${apiModuleName}:${apiName}:create']" type="primary" @click="onAdd">
           <template #icon><icon-plus /></template>
           <template #default>新增</template>
         </a-button>
@@ -81,7 +81,7 @@
       </#list>
       <template #action="{ record }">
         <a-space>
-          <a-link v-permission="['${apiModuleName}:${apiName}:detail']" title="详情" @click="onDetail(record)">详情</a-link>
+          <a-link v-permission="['${apiModuleName}:${apiName}:get']" title="详情" @click="onDetail(record)">详情</a-link>
           <a-link v-permission="['${apiModuleName}:${apiName}:update']" title="修改" @click="onUpdate(record)">修改</a-link>
           <a-link
             v-permission="['${apiModuleName}:${apiName}:delete']"
@@ -102,10 +102,10 @@
 </template>
 
 <script setup lang="ts">
+import type { TableInstance } from '@arco-design/web-vue'
 import ${classNamePrefix}AddModal from './${classNamePrefix}AddModal.vue'
 import ${classNamePrefix}DetailDrawer from './${classNamePrefix}DetailDrawer.vue'
 import { type ${classNamePrefix}Resp, type ${classNamePrefix}Query, delete${classNamePrefix}, export${classNamePrefix}, list${classNamePrefix} } from '@/apis/${apiModuleName}/${apiName}'
-import type { TableInstanceColumns } from '@/components/GiTable/type'
 import { useDownload, useTable } from '@/hooks'
 import { useDict } from '@/hooks/app'
 import { isMobile } from '@/utils'
@@ -133,7 +133,7 @@ const {
   search,
   handleDelete
 } = useTable((page) => list${classNamePrefix}({ ...queryForm, ...page }), { immediate: true })
-const columns = ref<TableInstanceColumns[]>([
+const columns: TableInstance['columns'] = [
 <#if fieldConfigs??>
   <#list fieldConfigs as fieldConfig>
   <#if fieldConfig.showInList>
@@ -154,9 +154,9 @@ const columns = ref<TableInstanceColumns[]>([
     width: 160,
     align: 'center',
     fixed: !isMobile() ? 'right' : undefined,
-    show: has.hasPermOr(['${apiModuleName}:${apiName}:detail', '${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
+    show: has.hasPermOr(['${apiModuleName}:${apiName}:get', '${apiModuleName}:${apiName}:update', '${apiModuleName}:${apiName}:delete'])
   }
-]);
+]
 
 // 重置
 const reset = () => {

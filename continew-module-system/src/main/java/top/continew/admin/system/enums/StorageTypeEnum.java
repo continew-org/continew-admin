@@ -31,14 +31,14 @@ import top.continew.starter.core.enums.BaseEnum;
 public enum StorageTypeEnum implements BaseEnum<Integer> {
 
     /**
-     * 兼容S3协议存储
-     */
-    S3(1, "兼容S3协议存储"),
-
-    /**
      * 本地存储
      */
-    LOCAL(2, "本地存储"),;
+    LOCAL(1, "本地存储"),
+
+    /**
+     * 对象存储
+     */
+    OSS(2, "对象存储");
 
     private final Integer value;
     private final String description;

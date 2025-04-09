@@ -74,7 +74,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
     private final TenantDbConnectService dbConnectService;
 
     @Override
-    protected void beforeAdd(TenantReq req) {
+    protected void beforeCreate(TenantReq req) {
         //租户名称不能重复
         ValidationUtils.throwIf(baseMapper.exists(Wrappers.lambdaQuery(TenantDO.class)
             .eq(TenantDO::getName, req.getName())), "重复的租户名称");
@@ -94,7 +94,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
     }
 
     @Override
-    protected void afterAdd(TenantReq req, TenantDO entity) {
+    protected void afterCreate(TenantReq req, TenantDO entity) {
         //数据源级别的租户需要创建数据库
         if (entity.getIsolationLevel().equals(TenantIsolationLevel.DATASOURCE.ordinal())) {
             JdbcTemplate jdbcTemplate = dbConnectService.getConnectJdbcTemplateById(entity.getDbConnectId());

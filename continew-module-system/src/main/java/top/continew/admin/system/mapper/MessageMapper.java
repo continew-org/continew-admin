@@ -21,7 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.MessageDO;
-import top.continew.admin.system.model.resp.MessageResp;
+import top.continew.admin.system.model.resp.message.MessageResp;
 import top.continew.starter.data.mp.base.BaseMapper;
 
 /**

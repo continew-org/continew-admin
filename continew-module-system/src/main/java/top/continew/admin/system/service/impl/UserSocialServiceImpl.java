@@ -16,13 +16,14 @@
 
 package top.continew.admin.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
 import org.springframework.stereotype.Service;
 import top.continew.admin.system.enums.SocialSourceEnum;
-import top.continew.admin.system.mapper.UserSocialMapper;
-import top.continew.admin.system.model.entity.UserSocialDO;
+import top.continew.admin.system.mapper.user.UserSocialMapper;
+import top.continew.admin.system.model.entity.user.UserSocialDO;
 import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.core.validation.CheckUtils;
 
@@ -89,5 +90,13 @@ public class UserSocialServiceImpl implements UserSocialService {
     @Override
     public void deleteBySourceAndUserId(String source, Long userId) {
         baseMapper.lambdaUpdate().eq(UserSocialDO::getSource, source).eq(UserSocialDO::getUserId, userId).remove();
+    }
+
+    @Override
+    public void deleteByUserIds(List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return;
+        }
+        baseMapper.lambdaUpdate().in(UserSocialDO::getUserId, userIds).remove();
     }
 }

@@ -36,6 +36,11 @@ import java.util.List;
 public enum FileTypeEnum implements BaseEnum<Integer> {
 
     /**
+     * 目录
+     */
+    DIR(0, "目录", Collections.emptyList()),
+
+    /**
      * 其他
      */
     UNKNOWN(1, "其他", Collections.emptyList()),

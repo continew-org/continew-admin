@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.continew.admin.system.mapper.user.UserSocialMapper">
+    <select id="selectBySourceAndOpenId"
+            resultType="top.continew.admin.system.model.entity.user.UserSocialDO">
+        SELECT t1.*
+        FROM sys_user_social AS t1
+            LEFT JOIN sys_user AS t2 ON t2.id = t1.user_id
+        WHERE t1.source = #{source} AND t1.open_id = #{openId}
+    </select>
+</mapper>

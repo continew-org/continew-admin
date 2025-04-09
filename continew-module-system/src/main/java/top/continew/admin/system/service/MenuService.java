@@ -50,12 +50,12 @@ public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, 
     Set<String> listPermissionByUserId(Long userId);
 
     /**
-     * 根据角色编码查询
+     * 根据角色id查询
      *
-     * @param roleCode 角色编码
+     * @param roleId 角色id
      * @return 菜单列表
      */
-    List<MenuResp> listByRoleCode(String roleCode, Long tenantId);
+    List<MenuResp> listByRoleId(Long roleId, Long tenantId);
 
     /**
      * 递归初始化菜单

@@ -18,7 +18,7 @@ package top.continew.admin.system.service;
 
 import top.continew.admin.system.model.query.MessageQuery;
 import top.continew.admin.system.model.req.MessageReq;
-import top.continew.admin.system.model.resp.MessageResp;
+import top.continew.admin.system.model.resp.message.MessageResp;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 

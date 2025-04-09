@@ -5,7 +5,7 @@ project:
   # 应用名称
   app-name: continew-admin
   # 版本
-  version: 3.4.1
+  version: 3.6.0-SNAPSHOT
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 基本包
@@ -21,8 +21,9 @@ project:
     url: https://github.com/continew-org/continew-admin/blob/dev/LICENSE
 
 --- ### 日志配置
+## API 请求/响应日志配置
 continew-starter.log:
-  # 包含信息
+  # 记录信息
   includes:
     - DESCRIPTION
     - MODULE
@@ -37,16 +38,15 @@ continew-starter.log:
 logging:
   config: classpath:logback-spring.xml
 
---- ### 链路跟踪配置
-continew-starter.web:
-  trace:
-    enabled: true
-    trace-id-name: traceId
-    ## TLog 配置
-    tlog:
-      enable-invoke-time-print: false
-      pattern: '[$spanId][$traceId]'
-      mdc-enable: false
+--- ### 链路追踪配置
+continew-starter.trace:
+  enabled: true
+  trace-id-name: traceId
+  ## TLog 配置
+  tlog:
+    enable-invoke-time-print: false
+    pattern: '[$spanId][$traceId]'
+    mdc-enable: false
 
 --- ### 全局响应配置
 continew-starter.web:
@@ -65,6 +65,8 @@ continew-starter.web:
     default-error-msg: error
     # 是否将原生异常错误信息填充到状态信息中
     origin-exception-using-detail-message: false
+    # 响应类全名（配置后 response-style 将不再生效）
+    response-class-full-name: top.continew.starter.web.model.R
 
 --- ### 全局树结构配置（简单树，对应前端 UI）
 continew-starter.crud:
@@ -141,6 +143,8 @@ sa-token:
   is-share: false
   # 是否输出操作日志
   is-log: false
+  # 是否启用动态 activeTimeout 功能
+  dynamic-active-timeout: true
   # JWT 秘钥
   jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
   ## 扩展配置
@@ -168,12 +172,6 @@ mybatis-plus:
       # 主键类型（默认 assign_id，表示自行赋值）
       # auto 代表使用数据库自增策略（需要在表中设置好自增约束）
       id-type: ASSIGN_ID
-      # 逻辑删除字段
-      logic-delete-field: isDeleted
-      # 逻辑删除全局值（默认 1，表示已删除）
-      logic-delete-value: 1
-      # 逻辑未删除全局值（默认 0，表示未删除）
-      logic-not-delete-value: 0
   ## 扩展配置
   extension:
     enabled: true
@@ -204,7 +202,9 @@ cosid:
     share:
       # 开启时钟回拨同步
       clock-sync: true
-      friendly: true
+      converter:
+        friendly:
+          pad-start: true
     provider:
       safe-js:
         machine-bit: 7
@@ -304,6 +304,7 @@ continew-starter.tenant:
     - sys_tenant_db_connect
     - sys_app #应用
     - sys_client #客户端管理
+    - sys_sms_config
   #租户不能使用的菜单
   ignore-menus:
     - 1050 #菜单

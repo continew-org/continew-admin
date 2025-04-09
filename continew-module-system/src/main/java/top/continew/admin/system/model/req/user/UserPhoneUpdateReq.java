@@ -16,12 +16,11 @@
 
 package top.continew.admin.system.model.req.user;
 
-import cn.hutool.core.lang.RegexPool;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import top.continew.starter.core.validation.constraints.Mobile;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -44,15 +43,15 @@ public class UserPhoneUpdateReq implements Serializable {
      */
     @Schema(description = "新手机号", example = "13811111111")
     @NotBlank(message = "新手机号不能为空")
-    @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误")
+    @Mobile(message = "新手机号格式不正确")
     private String phone;
 
     /**
      * 验证码
      */
-    @Schema(description = "验证码", example = "8888")
+    @Schema(description = "验证码", example = "888888")
     @NotBlank(message = "验证码不能为空")
-    @Length(max = 4, message = "验证码非法")
+    @Length(max = 6, message = "验证码无效")
     private String captcha;
 
     /**

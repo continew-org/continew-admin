@@ -81,16 +81,16 @@ public class JobResp implements Serializable {
     private Integer executorType;
 
     /**
-     * 任务类型
-     */
-    @Schema(description = "任务类型", example = "1")
-    private JobTaskTypeEnum taskType;
-
-    /**
      * 执行器名称
      */
     @Schema(description = "执行器名称", example = "test")
     private String executorInfo;
+
+    /**
+     * 任务类型
+     */
+    @Schema(description = "任务类型", example = "1")
+    private JobTaskTypeEnum taskType;
 
     /**
      * 任务参数

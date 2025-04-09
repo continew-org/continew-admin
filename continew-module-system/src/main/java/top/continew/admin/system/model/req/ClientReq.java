@@ -22,39 +22,39 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 /**
- * 创建或修改客户端参数
+ * 创建或修改终端参数
  *
  * @author KAI
  * @author Charles7c
  * @since 2024/12/03 16:04
  */
 @Data
-@Schema(description = "创建或修改客户端参数")
-public class ClientReq extends BaseReq {
+@Schema(description = "创建或修改终端参数")
+public class ClientReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端 Key
+     * 终端 Key
      */
-    @Schema(description = "客户端 Key", example = "PC")
-    @NotBlank(message = "客户端Key不能为空")
-    @Length(max = 32, message = "客户端Key长度不能超过 {max} 个字符")
+    @Schema(description = "终端 Key", example = "PC")
+    @NotBlank(message = "终端Key不能为空")
+    @Length(max = 32, message = "终端Key长度不能超过 {max} 个字符")
     private String clientKey;
 
     /**
-     * 客户端秘钥
+     * 终端秘钥
      */
-    @Schema(description = "客户端秘钥", example = "dd77ab1e353a027e0d60ce3b151e8642")
-    @NotBlank(message = "客户端秘钥不能为空")
-    @Length(max = 255, message = "客户端秘钥长度不能超过 {max} 个字符")
+    @Schema(description = "终端秘钥", example = "dd77ab1e353a027e0d60ce3b151e8642")
+    @NotBlank(message = "终端秘钥不能为空")
+    @Length(max = 255, message = "终端秘钥长度不能超过 {max} 个字符")
     private String clientSecret;
 
     /**
@@ -65,11 +65,11 @@ public class ClientReq extends BaseReq {
     private List<String> authType;
 
     /**
-     * 客户端类型
+     * 终端类型
      */
-    @Schema(description = "客户端类型", example = "PC")
-    @NotBlank(message = "客户端类型不能为空")
-    @Length(max = 32, message = "客户端类型长度不能超过 {max} 个字符")
+    @Schema(description = "终端类型", example = "PC")
+    @NotBlank(message = "终端类型不能为空")
+    @Length(max = 32, message = "终端类型长度不能超过 {max} 个字符")
     private String clientType;
 
     /**
@@ -91,7 +91,7 @@ public class ClientReq extends BaseReq {
     private DisEnableStatusEnum status;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
     @Schema(hidden = true)
     private String clientId;

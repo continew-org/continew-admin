@@ -19,6 +19,7 @@ package top.continew.admin.system.model.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.enums.QueryType;
 
@@ -50,4 +51,10 @@ public class StorageQuery implements Serializable {
      */
     @Schema(description = "状态", example = "1")
     private DisEnableStatusEnum status;
+
+    /**
+     * 类型
+     */
+    @Schema(description = "类型", example = "2")
+    private StorageTypeEnum type;
 }

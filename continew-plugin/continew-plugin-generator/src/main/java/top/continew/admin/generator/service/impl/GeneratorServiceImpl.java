@@ -19,6 +19,7 @@ package top.continew.admin.generator.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -37,6 +38,7 @@ import freemarker.template.DefaultObjectWrapperBuilder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.generator.config.properties.GeneratorProperties;
@@ -53,6 +55,7 @@ import top.continew.admin.generator.model.resp.GeneratePreviewResp;
 import top.continew.admin.generator.service.GeneratorService;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.data.core.enums.DatabaseType;
@@ -227,30 +230,6 @@ public class GeneratorServiceImpl implements GeneratorService {
         return generatePreviewList;
     }
 
-    private void setPreviewPath(GeneratePreviewResp generatePreview,
-                                InnerGenConfigDO genConfig,
-                                GeneratorProperties.TemplateConfig templateConfig) {
-        // 获取前后端基础路径
-        String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig);
-        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties
-            .getAppName() + "-ui");
-        String packagePath;
-        if (generatePreview.isBackend()) {
-            // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
-            packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
-        } else {
-            // 例如：continew-admin/continew-admin-ui/src/views/system
-            packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.SLASH, File.separator), genConfig.getApiModuleName());
-            // 例如：continew-admin/continew-admin-ui/src/views/system/user
-            packagePath = ".vue".equals(templateConfig.getExtension())
-                ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
-                : packagePath;
-        }
-        generatePreview.setPath(packagePath);
-    }
-
     @Override
     public void downloadCode(List<String> tableNames, HttpServletResponse response) {
         try {
@@ -313,7 +292,15 @@ public class GeneratorServiceImpl implements GeneratorService {
         CheckUtils.throwIfNull(genConfig, "请先进行数据表 [{}] 生成配置", tableName);
         List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
         CheckUtils.throwIfEmpty(fieldConfigList, "请先进行数据表 [{}] 字段配置", tableName);
+
         InnerGenConfigDO innerGenConfig = new InnerGenConfigDO(genConfig);
+        List<String> imports = new ArrayList<>();
+        // 处理枚举字段
+        List<FieldConfigDO> fieldConfigRecords = fieldConfigList.stream()
+            .map(s -> convertToFieldConfigDO(s, imports))
+            .toList();
+        innerGenConfig.setImports(imports);
+
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
         Map<String, GeneratorProperties.TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
@@ -327,7 +314,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
             GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段
-            innerGenConfig.setFieldConfigs(fieldConfigList.stream()
+            innerGenConfig.setFieldConfigs(fieldConfigRecords.stream()
                 .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig
                     .getExcludeFields()))
                 .toList());
@@ -358,6 +345,64 @@ public class GeneratorServiceImpl implements GeneratorService {
     }
 
     /**
+     * 添加枚举类型的属性，生成对应的import
+     *
+     * @param fieldConfigDO 属性配置信息
+     * @param imports       待导入包集合
+     * @return 新的属性配置信息
+     */
+    private FieldConfigDO convertToFieldConfigDO(FieldConfigDO fieldConfigDO, List<String> imports) {
+        FieldConfigDO fieldConfig = new FieldConfigDO();
+        BeanUtil.copyProperties(fieldConfigDO, fieldConfig);
+        String dictCode = fieldConfig.getDictCode();
+        if (StringUtils.isBlank(dictCode)) {
+            return fieldConfig;
+        }
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
+        Optional<Class<?>> clazzOptional = classSet.stream()
+            .filter(s -> StrUtil.toUnderlineCase(s.getSimpleName()).toLowerCase().equals(dictCode))
+            .findFirst();
+        if (clazzOptional.isEmpty()) {
+            return fieldConfig;
+        }
+        Class<?> clazz = clazzOptional.get();
+        imports.add(clazz.getName());
+        fieldConfig.setFieldType(clazz.getSimpleName());
+        return fieldConfig;
+    }
+
+    /**
+     * 设置预览路径
+     *
+     * @param generatePreview 预览信息
+     * @param genConfig       生成配置
+     * @param templateConfig  模板配置
+     */
+    private void setPreviewPath(GeneratePreviewResp generatePreview,
+                                InnerGenConfigDO genConfig,
+                                GeneratorProperties.TemplateConfig templateConfig) {
+        // 获取前后端基础路径
+        String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig, templateConfig);
+        String frontendBasicPackagePath = String.join(File.separator, projectProperties.getAppName(), projectProperties
+            .getAppName() + "-ui");
+        String packagePath;
+        if (generatePreview.isBackend()) {
+            // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
+            packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
+                .replace(StringConstants.DOT, File.separator));
+        } else {
+            // 例如：continew-admin/continew-admin-ui/src/views/system
+            packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
+                .replace(StringConstants.SLASH, File.separator), genConfig.getApiModuleName());
+            // 例如：continew-admin/continew-admin-ui/src/views/system/user
+            packagePath = ".vue".equals(templateConfig.getExtension())
+                ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
+                : packagePath;
+        }
+        generatePreview.setPath(packagePath);
+    }
+
+    /**
      * 生成代码
      *
      * @param generatePreviewList 生成预览列表
@@ -379,14 +424,20 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 构建后端包路径
      *
-     * @param genConfig 生成配置
+     * @param genConfig      生成配置
+     * @param templateConfig 模板配置
      * @return 后端包路径
      */
-    private String buildBackendBasicPackagePath(GenConfigDO genConfig) {
+    private String buildBackendBasicPackagePath(GenConfigDO genConfig,
+                                                GeneratorProperties.TemplateConfig templateConfig) {
+        String extension = templateConfig.getExtension();
         // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
         return String.join(File.separator, projectProperties.getAppName(), projectProperties.getAppName(), genConfig
-            .getModuleName(), "src", "main", "java", genConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
+            .getModuleName(), "src", "main", FileNameUtil.EXT_JAVA.equals(extension)
+                ? "java"
+                : "resources") + (FileNameUtil.EXT_JAVA.equals(extension)
+                    ? File.separator + genConfig.getPackageName().replace(StringConstants.DOT, File.separator)
+                    : StringConstants.EMPTY);
     }
 
     /**

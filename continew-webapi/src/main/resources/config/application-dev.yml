@@ -135,16 +135,18 @@ captcha:
   ## 短信验证码配置
   sms:
     # 内容长度
-    length: 4
+    length: 6
     # 过期时间
     expirationInMinutes: 5
     # 模板 ID
     templateId: 1
 
 --- ### 日志配置
+## API 请求/响应日志配置
 continew-starter.log:
-  # 是否打印日志，开启后可打印访问日志（类似于 Nginx access log）
-  is-print: true
+  access-log:
+    # 是否打印访问日志（类似于 Nginx access log）
+    enabled: true
 ## 项目日志配置（配置重叠部分，优先级高于 logback-spring.xml 中的配置）
 logging:
   level:
@@ -178,34 +180,36 @@ continew-starter.messaging.websocket:
   allowed-origins: '*'
 
 --- ### 短信配置
+# 配置文件方式和 [短信配置] 功能可任选其一方式使用，也可共同使用，但实际开发时建议选择一种，注释或删除另一方
 sms:
-  # 从 YAML 读取配置
-  config-type: YAML
   http-log: true
   is-print: false
-  blends:
-    cloopen:
-      # 短信厂商
-      supplier: cloopen
-      base-url: https://app.cloopen.com:8883/2013-12-26
-      access-key-id: 你的Access Key
-      access-key-secret: 你的Access Key Secret
-      sdk-app-id: 你的应用ID
+#  # 从 YAML 读取配置
+#  config-type: YAML
+#  blends:
+#    cloopen:
+#      # 短信厂商
+#      supplier: cloopen
+#      base-url: https://app.cloopen.com:8883/2013-12-26
+#      access-key-id: 你的Access Key
+#      access-key-secret: 你的Secret Key
+#      sdk-app-id: 你的应用ID
 
 --- ### 邮件配置
-spring.mail:
-  # 根据需要更换
-  host: smtp.126.com
-  port: 465
-  username: 你的邮箱
-  password: 你的邮箱授权码
-  properties:
-    mail:
-      smtp:
-        auth: true
-        socketFactory:
-          class: javax.net.ssl.SSLSocketFactory
-          port: 465
+# 配置文件方式和 [邮件配置] 功能可任选其一方式使用，实际开发时请注释或删除另一方
+#spring.mail:
+#  # 根据需要更换
+#  host: smtp.126.com
+#  port: 465
+#  username: 你的邮箱
+#  password: 你的邮箱授权码
+#  properties:
+#    mail:
+#      smtp:
+#        auth: true
+#        socketFactory:
+#          class: javax.net.ssl.SSLSocketFactory
+#          port: 465
 
 --- ### Just Auth 配置
 justauth:
@@ -258,8 +262,10 @@ continew-starter.security:
     enabled: true
     # BCryptPasswordEncoder
     encoding-id: bcrypt
-  ## 限流器配置
-  limiter:
+
+--- ### 限流器配置
+continew-starter:
+  rate-limiter:
     enabled: true
     key-prefix: RateLimiter
 
@@ -271,8 +277,11 @@ spring.servlet:
     max-file-size: 10MB
     # 单次总上传文件大小限制
     max-request-size: 20MB
-## 头像支持格式配置
+## 头像配置
 avatar:
+  # 存储路径
+  path: user/avatar/
+  # 支持的后缀
   support-suffix: jpg,jpeg,png,gif
 
 --- ### Snail Job 配置
@@ -299,29 +308,6 @@ snail-job:
       # URL
       url: http://127.0.0.1:8001/snail-job
       # 用户名
-      username: admin
+      username: ${SCHEDULE_USERNAME:admin}
       # 密码
-      password: admin
-  ## 重试数据批量上报滑动窗口配置
-  retry:
-    reportSlidingWindow:
-      # 窗口期单位
-      chrono-unit: SECONDS
-      # 窗口期时间长度
-      duration: 10
-      # 总量窗口期阈值
-      total-threshold: 50
-      # 窗口数量预警
-      window-total-threshold: 150
-  ## 调度线程池配置
-  dispatcherThreadPool:
-    # 核心线程数
-    corePoolSize: 16
-    # 最大线程数
-    maximumPoolSize: 16
-    # 线程存活时间
-    keepAliveTime: 1
-    # 时间单位
-    timeUnit: SECONDS
-    # 队列容量
-    queueCapacity: 10000
+      password: ${SCHEDULE_PASSWORD:admin}

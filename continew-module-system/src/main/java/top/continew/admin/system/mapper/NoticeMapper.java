@@ -16,8 +16,12 @@
 
 package top.continew.admin.system.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.NoticeDO;
+import top.continew.admin.system.model.query.NoticeQuery;
+import top.continew.admin.system.model.resp.NoticeDetailResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.starter.data.mp.base.BaseMapper;
 
@@ -38,4 +42,13 @@ public interface NoticeMapper extends BaseMapper<NoticeDO> {
      * @return 仪表盘公告列表
      */
     List<DashboardNoticeResp> selectDashboardList(@Param("userId") Long userId);
+
+    /**
+     * 分页查询公告列表
+     *
+     * @param page  分页条件
+     * @param query 查询条件
+     * @return 公告列表
+     */
+    IPage<NoticeDetailResp> selectNoticePage(@Param("page") Page<NoticeDO> page, @Param("query") NoticeQuery query);
 }

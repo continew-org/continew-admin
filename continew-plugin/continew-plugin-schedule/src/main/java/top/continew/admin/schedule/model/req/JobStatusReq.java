@@ -42,7 +42,7 @@ public class JobStatusReq implements Serializable {
      * 任务状态
      */
     @Schema(description = "任务状态", example = "1")
-    @NotNull(message = "任务状态非法")
+    @NotNull(message = "任务状态无效")
     private JobStatusEnum jobStatus;
 
     /**

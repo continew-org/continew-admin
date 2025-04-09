@@ -41,14 +41,14 @@ import java.time.LocalDateTime;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
 public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
 
     @Override
     public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {
         super.preHandle(crudApi, args, targetMethod, targetClass);
         Api api = crudApi.value();
-        if (!(Api.ADD.equals(api) || Api.UPDATE.equals(api))) {
+        if (!(Api.CREATE.equals(api) || Api.UPDATE.equals(api))) {
             return;
         }
         NoticeReq req = (NoticeReq)args[0];

@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.model.query;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.starter.data.core.annotation.Query;
@@ -49,4 +50,10 @@ public class NoticeQuery implements Serializable {
      */
     @Schema(description = "类型", example = "1")
     private String type;
+
+    /**
+     * 用户 ID
+     */
+    @JsonIgnore
+    private Long userId;
 }

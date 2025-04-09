@@ -25,15 +25,10 @@
             <artifactId>snail-job-client-job-core</artifactId>
         </dependency>
 
-        <!-- Spring WebFlux（异步非阻塞 Web 框架） -->
+        <!-- OpenFeign（一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程） -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webflux</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty-http</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
 </project>

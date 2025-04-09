@@ -1,13 +1,13 @@
 # ContiNew Admin 中后台管理框架
 
 <a href="https://github.com/continew-org/continew-admin" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/RELEASE-v3.4.1-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v3.6.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-2.8.2-%236CB52D.svg" alt="ContiNew Starter" />
+<img src="https://img.shields.io/badge/ContiNew Starter-2.10.0-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" title="Spring Boot" target="_blank">
-<img src="https://img.shields.io/badge/Spring Boot-3.2.12-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
+<img src="https://img.shields.io/badge/Spring Boot-3.3.9-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
 </a>
 <a href="https://github.com/continew-org/continew-admin" title="Open JDK" target="_blank">
 <img src="https://img.shields.io/badge/Open JDK-17-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
@@ -85,7 +85,7 @@ ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后
 ```java
 @Tag(name = "部门管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT})
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
@@ -135,7 +135,9 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
   
 - 文件管理：管理系统文件，支持上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
   
-- 存储管理：管理文件存储配置，支持本地存储、兼容 S3 协议存储
+- 存储管理：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
+
+- 终端管理：多端认证管理，可设置不同的 token 有效期
   
 - 系统配置：
   - 基础配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
@@ -223,39 +225,40 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 ## 核心技术栈
 
-| 名称                                                                                                                                | 版本           | 简介                                                         |
-|:----------------------------------------------------------------------------------------------------------------------------------|:-------------| :----------------------------------------------------------- |
-| <a href="https://vuejs.org/" target="_blank">Vue</a>                                                                              | 3.5.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a>                                                      | 2.56.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://vite.dev/" target="_blank">Vite</a>                                                                         | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 2.8.2        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 3.2.12       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
-| <a href="https://undertow.io/" target="_blank">Undertow</a>                                                                       | 2.3.17.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
-| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.39.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
-| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a>                                                                  | 3.5.8        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
+| 名称                                                         | 版本         | 简介                                                         |
+| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
+| <a href="https://vuejs.org/" target="_blank">Vue</a>         | 3.5.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
+| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.57.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://vite.dev/" target="_blank">Vite</a>         | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter) | 2.10.0       | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.3.9        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
+| <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.18.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
+| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.40.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.8        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.3.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                                                                                            | 5.0.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a>                                                        | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
-| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a>                                     | 8.3.0        | MySQL Java 驱动。                                            |
-| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a>                                                                | 3.9.1        | SQL 性能分析组件。                                           |
-| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a>                                                    | 4.24.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
-| [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md)                                                     | 2.7.7        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 3.41.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
-| <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 7.2.3        | 高性能的 key-value 数据库。                                  |
-| [Snail Job](https://snailjob.opensnail.com/)                                                                                      | 1.2.0        | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
-| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)                                                                            | 2.2.1        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
-| <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.3.3        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
-| <a href="https://justauth.cn/" target="_blank">Just Auth</a>                                                                      | 1.16.7       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
-| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a>                                                | 3.3.4        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)                                                                        | 1.3.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
-| Easy Captcha                                                                                                                      | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)                                                                         | 2.9.0        | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
-| [CosID](https://cosid.ahoo.me/guide/getting-started.html)                                                                         | 2.10.1       | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
-| [Graceful Response](https://doc.feiniaojin.com/graceful-response/home.html)                                                       | 5.0.4-boot3  | 一个Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量。 |
-| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a>                                                                  | 4.5.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.34       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| <a href="https://projectlombok.org/" target="_blank">Lombok</a>                                                                   | 1.18.36      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+| Hikari                                                       | 5.1.0        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
+| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.3.0        | MySQL Java 驱动。                                            |
+| <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
+| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.27.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
+| [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md) | 2.7.7        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.45.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
+| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
+| [Snail Job](https://snailjob.opensnail.com/)                 | 1.4.0        | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
+| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.2.1        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
+| <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.3.4        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
+| <a href="https://justauth.cn/" target="_blank">Just Auth</a> | 1.16.7       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
+| <a href="https://easyexcel.opensource.alibaba.com/" target="_blank">Easy Excel</a> | 3.3.4        | 一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
+| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)   | 1.3.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
+| Easy Captcha                                                 | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
+| [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)    | 2.9.0        | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
+| [CosID](https://cosid.ahoo.me/guide/getting-started.html)    | 2.11.0       | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
+| [Graceful Response](https://doc.feiniaojin.com/graceful-response/home.html) | 5.0.4-boot3  | 一个Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量。 |
+| <a href="https://doc.xiaominfo.com/" target="_blank">Knife4j</a> | 4.5.0        | 前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案。 |
+| [OpenFeign](https://springdoc.cn/spring-cloud-openfeign/)    | 13.5         | Spring Cloud OpenFeign 是一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程。 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>  | 5.8.36       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| <a href="https://projectlombok.org/" target="_blank">Lombok</a> | 1.18.36      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 快速开始
 

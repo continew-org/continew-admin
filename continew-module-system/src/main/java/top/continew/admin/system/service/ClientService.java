@@ -22,7 +22,7 @@ import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.starter.extension.crud.service.BaseService;
 
 /**
- * 客户端业务接口
+ * 终端业务接口
  *
  * @author KAI
  * @author Charles7c
@@ -31,10 +31,10 @@ import top.continew.starter.extension.crud.service.BaseService;
 public interface ClientService extends BaseService<ClientResp, ClientResp, ClientQuery, ClientReq> {
 
     /**
-     * 根据客户端 ID 查詢
+     * 根据终端 ID 查詢
      *
-     * @param clientId 客戶端 ID
-     * @return 客户端信息
+     * @param clientId 终端 ID
+     * @return 终端信息
      */
     ClientResp getByClientId(String clientId);
 }

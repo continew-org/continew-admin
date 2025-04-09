@@ -1,5 +1,5 @@
 name: "\U0001F680 新 Feature 建议"
-description: Suggest an idea for this project
+description: 我希望增加 xxx 功能；现有的 xxx 功能不好用...
 title: "[Feature] "
 labels: ["feature"]
 body:
@@ -11,17 +11,21 @@ body:
     id: checkboxes
     attributes:
       label: 请您确认
-      description: 在提交 Feature 之前，请确保执行过以下操作。
+      description: 在提交 Feature 之前，请确认执行过以下操作。
       options:
-        - label: 阅读[使用指南](https://continew.top/admin/intro/what-is.html)
+        - label: 尝试了最新 dev 分支代码（演示环境），仍没有该功能
           required: true
-        - label: 查找[常见问题](https://continew.top/faq.html)
+        - label: 查阅过 [使用指南](https://continew.top/admin/backend/structure.html) 和 [常见问题](https://continew.top/faq.html) ，仍然认为很有必要
           required: true
-        - label: 查看[需求墙](https://continew.top/require.html)计划
+        - label: 查阅过 [需求墙](https://continew.top/require.html)，仍没有该功能计划
           required: true
-        - label: 搜索是否有其他人提交过类似的 Feature，如果对应 Feature 尚未完成，您可以先订阅关注该 Feature（为了方便后来者查找问题解决方法，请尽量避免创建重复的 Feature）
+        - label: 搜索了项目 Issues，没有其他人提交过类似的 Feature（如果对应 Feature 尚未实现，您可以先订阅关注该 Issue，为了方便后来者查找问题解决方法，请避免创建重复的 Issue）
           required: true
-        - label: 您是否愿意为您提出的 Feature 提交 PR？
+        - label: 【后端】确认不是依赖组件相关的需求，例如：sa-token、mybatis-plus、snail-job、crane4j、cosid等（如有此类组件相关的需求，请提交至对应组件仓库）
+          required: true
+        - label: 【前端】确认不是基础组件类需求，例如：GiTable、GiForm、基础布局、纯前端组件（锁屏、引导）等（如有此类组件相关的需求，请提交至 [gi-demo](https://gitee.com/lin0716/gi-demo) 或对应组件仓库）
+          required: true
+        - label: 是否愿意为您提出的 Feature 提交 PR？
           required: false
     validations:
       required: true

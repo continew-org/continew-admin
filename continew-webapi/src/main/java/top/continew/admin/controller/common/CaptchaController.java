@@ -19,7 +19,6 @@ package top.continew.admin.controller.common;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.RegexPool;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -34,8 +33,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
@@ -56,11 +55,12 @@ import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 import top.continew.starter.core.util.TemplateUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.validation.constraints.Mobile;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.messaging.mail.util.MailUtils;
-import top.continew.starter.security.limiter.annotation.RateLimiter;
-import top.continew.starter.security.limiter.annotation.RateLimiters;
-import top.continew.starter.security.limiter.enums.LimitType;
+import top.continew.starter.ratelimiter.annotation.RateLimiter;
+import top.continew.starter.ratelimiter.annotation.RateLimiters;
+import top.continew.starter.ratelimiter.enums.LimitType;
 import top.continew.starter.web.model.R;
 
 import java.time.Duration;
@@ -146,7 +146,7 @@ public class CaptchaController {
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'", key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')", rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 100, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 30, interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP, message = "获取验证码操作太频繁，请稍后再试")})
-    public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误") String email,
+    public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Email(message = "邮箱格式不正确") String email,
                             CaptchaVO captchaReq) throws MessagingException {
         // 行为验证码校验
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
@@ -193,8 +193,7 @@ public class CaptchaController {
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'", key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')", rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 100, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 30, interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP, message = "获取验证码操作太频繁，请稍后再试")})
-    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Pattern(regexp = RegexPool.MOBILE, message = "手机号格式错误") String phone,
-                           CaptchaVO captchaReq) {
+    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone, CaptchaVO captchaReq) {
         // 行为验证码校验
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes

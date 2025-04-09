@@ -33,7 +33,7 @@ import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.common.config.properties.TenantProperties;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.entity.MenuDO;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.req.user.UserPasswordResetReq;
 import top.continew.admin.system.service.*;
 import top.continew.admin.tenant.model.entity.TenantDO;
@@ -65,7 +65,7 @@ import java.util.List;
 @Tag(name = "租户管理 API")
 @RestController
 @AllArgsConstructor
-@CrudRequestMapping(value = "/tenant/user", api = {Api.PAGE, Api.DETAIL, Api.ADD, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/tenant/user", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
 public class TenantController extends BaseController<TenantService, TenantResp, TenantDetailResp, TenantQuery, TenantReq> {
 
     private final TenantProperties tenantProperties;
@@ -90,13 +90,13 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
 
     @Override
     @DSTransactional
-    public BaseIdResp<Long> add(TenantReq req) {
+    public BaseIdResp<Long> create(TenantReq req) {
         //套餐菜单
         TenantPackageDetailResp detailResp = packageService.get(req.getPackageId());
         CheckUtils.throwIf(detailResp.getMenuIds().isEmpty(), "该套餐无可用菜单");
         List<MenuDO> menuRespList = menuService.listByIds(detailResp.getMenuIds());
         //租户添加
-        BaseIdResp<Long> baseIdResp = super.add(req);
+        BaseIdResp<Long> baseIdResp = super.create(req);
         //在租户中执行数据插入
         SpringUtil.getBean(TenantHandler.class).execute(baseIdResp.getId(), () -> {
             //租户部门初始化

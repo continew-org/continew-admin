@@ -86,12 +86,12 @@ public class UserContext implements Serializable {
     private Long tenantId;
 
     /*
-     * 客户端类型
+     * 终端类型
      */
     private String clientType;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
     private String clientId;
 

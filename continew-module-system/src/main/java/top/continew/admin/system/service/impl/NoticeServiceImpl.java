@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.context.UserContextHolder;
@@ -27,6 +29,8 @@ import top.continew.admin.system.model.resp.NoticeDetailResp;
 import top.continew.admin.system.model.resp.NoticeResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.admin.system.service.NoticeService;
+import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.List;
@@ -42,8 +46,17 @@ import java.util.List;
 public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> implements NoticeService {
 
     @Override
+    public PageResp<NoticeResp> page(NoticeQuery query, PageQuery pageQuery) {
+        IPage<NoticeDetailResp> page = baseMapper.selectNoticePage(new Page<>(pageQuery.getPage(), pageQuery
+            .getSize()), query);
+        PageResp<NoticeResp> pageResp = PageResp.build(page, super.getListClass());
+        pageResp.getList().forEach(this::fill);
+        return pageResp;
+    }
+
+    @Override
     public List<DashboardNoticeResp> listDashboard() {
-        Long userId = UserContextHolder.isAdmin() ? null : UserContextHolder.getUserId();
+        Long userId = UserContextHolder.getUserId();
         return baseMapper.selectDashboardList(userId);
     }
 }

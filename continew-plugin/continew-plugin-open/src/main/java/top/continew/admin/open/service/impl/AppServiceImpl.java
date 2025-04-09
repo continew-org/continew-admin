@@ -44,7 +44,7 @@ import top.continew.starter.extension.crud.service.BaseServiceImpl;
 public class AppServiceImpl extends BaseServiceImpl<AppMapper, AppDO, AppResp, AppDetailResp, AppQuery, AppReq> implements AppService {
 
     @Override
-    public void beforeAdd(AppReq req) {
+    public void beforeCreate(AppReq req) {
         req.setAccessKey(Base64.encode(IdUtil.fastSimpleUUID())
             .replace(StringConstants.SLASH, StringConstants.EMPTY)
             .replace(StringConstants.PLUS, StringConstants.EMPTY)

@@ -17,15 +17,17 @@
 package top.continew.admin.schedule.api;
 
 import com.aizuda.snailjob.common.core.model.Result;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.service.annotation.GetExchange;
-import org.springframework.web.service.annotation.HttpExchange;
-import org.springframework.web.service.annotation.PostExchange;
+import org.springframework.web.bind.annotation.PostMapping;
+import top.continew.admin.schedule.config.FeignRequestInterceptor;
 import top.continew.admin.schedule.model.JobInstanceLogPageResult;
 import top.continew.admin.schedule.model.JobPageResult;
+import top.continew.admin.schedule.model.query.JobInstanceLogQuery;
+import top.continew.admin.schedule.model.query.JobInstanceQuery;
+import top.continew.admin.schedule.model.query.JobLogQuery;
 import top.continew.admin.schedule.model.resp.JobInstanceResp;
 import top.continew.admin.schedule.model.resp.JobLogResp;
 
@@ -38,29 +40,17 @@ import java.util.List;
  * @author Charles7c
  * @since 2024/6/27 23:03
  */
-@HttpExchange(value = "/job", accept = MediaType.APPLICATION_JSON_VALUE)
+@FeignClient(value = "job-batch", url = "${snail-job.server.api.url}", path = "/job", configuration = FeignRequestInterceptor.class)
 public interface JobBatchApi {
 
     /**
      * 分页查询列表
      *
-     * @param jobId           任务 ID
-     * @param jobName         任务名称
-     * @param groupName       组名称
-     * @param taskBatchStatus 任务批次状态
-     * @param datetimeRange   时间范围
-     * @param page            页码
-     * @param size            每页条数
+     * @param query 查询条件
      * @return 响应信息
      */
-    @GetExchange("/batch/list")
-    ResponseEntity<JobPageResult<List<JobLogResp>>> page(@RequestParam(value = "jobId", required = false) Long jobId,
-                                                         @RequestParam(value = "jobName", required = false) String jobName,
-                                                         @RequestParam(value = "groupName", required = false) String groupName,
-                                                         @RequestParam(value = "taskBatchStatus", required = false) Integer taskBatchStatus,
-                                                         @RequestParam(value = "datetimeRange", required = false) String[] datetimeRange,
-                                                         @RequestParam(value = "page") Integer page,
-                                                         @RequestParam(value = "size") Integer size);
+    @GetMapping("/batch/list")
+    JobPageResult<List<JobLogResp>> page(@SpringQueryMap JobLogQuery query);
 
     /**
      * 停止
@@ -68,8 +58,8 @@ public interface JobBatchApi {
      * @param id ID
      * @return 响应信息
      */
-    @PostExchange("/batch/stop/{id}")
-    ResponseEntity<Result<Boolean>> stop(@PathVariable("id") Long id);
+    @PostMapping("/batch/stop/{id}")
+    Result<Boolean> stop(@PathVariable("id") Long id);
 
     /**
      * 重试
@@ -77,40 +67,24 @@ public interface JobBatchApi {
      * @param id ID
      * @return 响应信息
      */
-    @PostExchange("/batch/retry/{id}")
-    ResponseEntity<Result<Boolean>> retry(@PathVariable("id") Long id);
+    @PostMapping("/batch/retry/{id}")
+    Result<Boolean> retry(@PathVariable("id") Long id);
 
     /**
      * 分页查询任务实例列表
      *
-     * @param jobId       任务 ID
-     * @param taskBatchId 任务批次 ID
-     * @param page        页码
-     * @param size        每页条数
+     * @param query 查询条件
      * @return 响应信息
      */
-    @GetExchange("/task/list")
-    ResponseEntity<JobPageResult<List<JobInstanceResp>>> pageTask(@RequestParam(value = "jobId", required = false) Long jobId,
-                                                                  @RequestParam(value = "taskBatchId") Long taskBatchId,
-                                                                  @RequestParam(value = "page") Integer page,
-                                                                  @RequestParam(value = "size") Integer size);
+    @GetMapping("/task/list")
+    JobPageResult<List<JobInstanceResp>> pageTask(@SpringQueryMap JobInstanceQuery query);
 
     /**
      * 分页查询任务实例日志列表
      *
-     * @param jobId       任务 ID
-     * @param taskBatchId 任务批次 ID
-     * @param taskId      任务实例ID
-     * @param startId     起始 ID
-     * @param fromIndex   起始索引
-     * @param size        每页条数
+     * @param query 查询条件
      * @return 响应信息
      */
-    @GetExchange("/log/list")
-    ResponseEntity<Result<JobInstanceLogPageResult>> pageLog(@RequestParam(value = "jobId", required = false) Long jobId,
-                                                             @RequestParam(value = "taskBatchId") Long taskBatchId,
-                                                             @RequestParam(value = "taskId") Long taskId,
-                                                             @RequestParam(value = "startId") Integer startId,
-                                                             @RequestParam(value = "fromIndex") Integer fromIndex,
-                                                             @RequestParam(value = "size") Integer size);
+    @GetMapping("/log/list")
+    Result<JobInstanceLogPageResult> pageLog(@SpringQueryMap JobInstanceLogQuery query);
 }

@@ -59,7 +59,7 @@ public class TenantDbConnectServiceImpl extends BaseServiceImpl<TenantDbConnectM
     }
 
     @Override
-    protected void beforeAdd(TenantDbConnectReq req) {
+    protected void beforeCreate(TenantDbConnectReq req) {
         TenantConnectTypeEnum connectTypeEnum = TenantConnectTypeEnum.getByOrdinal(req.getType());
         if (TenantConnectTypeEnum.MYSQL.equals(connectTypeEnum)) {
             DbConnectUtil.getMysqlDataSource(req.getHost(), req.getPort(), req.getUsername(), req

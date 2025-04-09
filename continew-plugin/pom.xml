@@ -21,7 +21,7 @@
     </modules>
 
     <dependencies>
-        <!-- 公共模块（存放公共工具类，公共配置等） -->
+        <!-- 公共模块 -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-common</artifactId>

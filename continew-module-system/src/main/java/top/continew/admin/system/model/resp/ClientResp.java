@@ -25,35 +25,35 @@ import java.io.Serial;
 import java.util.List;
 
 /**
- * 客户端信息
+ * 终端信息
  *
  * @author KAI
  * @author Charles7c
  * @since 2024/12/03 16:04
  */
 @Data
-@Schema(description = "客户端信息")
+@Schema(description = "终端信息")
 public class ClientResp extends BaseDetailResp {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端 ID
+     * 终端 ID
      */
-    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
     private String clientId;
 
     /**
-     * 客户端 Key
+     * 终端 Key
      */
-    @Schema(description = "客户端 Key", example = "PC")
+    @Schema(description = "终端 Key", example = "PC")
     private String clientKey;
 
     /**
-     * 客户端秘钥
+     * 终端秘钥
      */
-    @Schema(description = "客户端秘钥", example = "dd77ab1e353a027e0d60ce3b151e8642")
+    @Schema(description = "终端秘钥", example = "dd77ab1e353a027e0d60ce3b151e8642")
     private String clientSecret;
 
     /**
@@ -63,9 +63,9 @@ public class ClientResp extends BaseDetailResp {
     private List<String> authType;
 
     /**
-     * 客户端类型
+     * 终端类型
      */
-    @Schema(description = "客户端类型", example = "PC")
+    @Schema(description = "终端类型", example = "PC")
     private String clientType;
 
     /**

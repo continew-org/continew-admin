@@ -20,8 +20,9 @@ import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.req.RoleReq;
-import top.continew.admin.system.model.resp.RoleDetailResp;
-import top.continew.admin.system.model.resp.RoleResp;
+import top.continew.admin.system.model.req.RoleUpdatePermissionReq;
+import top.continew.admin.system.model.resp.role.RoleDetailResp;
+import top.continew.admin.system.model.resp.role.RoleResp;
 import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
@@ -35,6 +36,14 @@ import java.util.Set;
  * @since 2023/2/8 23:15
  */
 public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
+
+    /**
+     * 修改角色权限
+     *
+     * @param id  角色 ID
+     * @param req 参数
+     */
+    void updatePermission(Long id, RoleUpdatePermissionReq req);
 
     /**
      * 分配角色给用户

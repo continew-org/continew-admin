@@ -18,7 +18,7 @@ package top.continew.admin.system.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.system.model.entity.UserDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.user.*;
 import top.continew.admin.system.model.resp.user.UserDetailResp;

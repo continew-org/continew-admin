@@ -24,10 +24,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -38,7 +38,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Schema(description = "创建或修改租户参数")
-public class TenantReq extends BaseReq {
+public class TenantReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -83,7 +83,7 @@ public class TenantReq extends BaseReq {
      * 用户名
      */
     @Schema(description = "用户名", example = "zhangsan")
-    @NotBlank(message = "用户名不能为空", groups = CrudValidationGroup.Add.class)
+    @NotBlank(message = "用户名不能为空", groups = CrudValidationGroup.Create.class)
     @Pattern(regexp = RegexConstants.USERNAME, message = "用户名长度为 4-64 个字符，支持大小写字母、数字、下划线，以字母开头")
     private String username;
 
@@ -91,7 +91,7 @@ public class TenantReq extends BaseReq {
      * 密码（加密）
      */
     @Schema(description = "密码（加密）", example = "E7c72TH+LDxKTwavjM99W1MdI9Lljh79aPKiv3XB9MXcplhm7qJ1BJCj28yaflbdVbfc366klMtjLIWQGqb0qw==")
-    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Add.class)
+    @NotBlank(message = "密码不能为空", groups = CrudValidationGroup.Create.class)
     private String password;
 
     /**
@@ -103,7 +103,7 @@ public class TenantReq extends BaseReq {
      * 隔离级别
      */
     @Schema(description = "隔离级别")
-    @NotNull(message = "隔离级别不能为空", groups = CrudValidationGroup.Add.class)
+    @NotNull(message = "隔离级别不能为空", groups = CrudValidationGroup.Create.class)
     private Integer isolationLevel;
 
     /**
@@ -112,4 +112,9 @@ public class TenantReq extends BaseReq {
     @Schema(description = "数据连接ID")
     private Long dbConnectId;
 
+    /**
+     * ID
+     */
+    @Schema(hidden = true)
+    private Long id;
 }

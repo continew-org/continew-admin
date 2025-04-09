@@ -30,7 +30,6 @@ CREATE TABLE `sj_group_config`
     `group_partition`   int(11)             NOT NULL COMMENT '分区',
     `id_generator_mode` tinyint(4)          NOT NULL DEFAULT 1 COMMENT '唯一id生成模式 默认号段模式',
     `init_scene`        tinyint(4)          NOT NULL DEFAULT 0 COMMENT '是否初始化场景 0:否 1:是',
-    `bucket_index`      int(11)             NOT NULL DEFAULT 0 COMMENT 'bucket',
     `create_dt`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
@@ -45,7 +44,7 @@ CREATE TABLE `sj_notify_config`
     `id`                     bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
     `namespace_id`           varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
     `group_name`             varchar(64)         NOT NULL COMMENT '组名称',
-    `business_id`            varchar(64)         NOT NULL COMMENT '业务id (job_id或workflow_id或scene_name)',
+    `notify_name`            varchar(64)         NOT NULL DEFAULT '' COMMENT '通知名称',
     `system_task_type`       tinyint(4)          NOT NULL DEFAULT 3 COMMENT '任务类型 1. 重试任务 2. 重试回调 3、JOB任务 4、WORKFLOW任务',
     `notify_status`          tinyint(4)          NOT NULL DEFAULT 0 COMMENT '通知状态 0、未启用 1、启用',
     `recipient_ids`          varchar(128)        NOT NULL COMMENT '接收人id列表',
@@ -57,7 +56,7 @@ CREATE TABLE `sj_notify_config`
     `create_dt`              datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`              datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
-    KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`, `business_id`)
+    KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4 COMMENT ='通知配置'
@@ -80,12 +79,10 @@ CREATE TABLE `sj_notify_recipient`
   DEFAULT CHARSET = utf8mb4 COMMENT ='告警通知接收人'
 ;
 
-
-CREATE TABLE `sj_retry_dead_letter_0`
+CREATE TABLE `sj_retry_dead_letter`
 (
     `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
     `namespace_id`  varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
-    `unique_id`     varchar(64)         NOT NULL COMMENT '同组下id唯一',
     `group_name`    varchar(64)         NOT NULL COMMENT '组名称',
     `scene_name`    varchar(64)         NOT NULL COMMENT '场景名称',
     `idempotent_id` varchar(64)         NOT NULL COMMENT '幂等id',
@@ -93,24 +90,21 @@ CREATE TABLE `sj_retry_dead_letter_0`
     `executor_name` varchar(512)        NOT NULL DEFAULT '' COMMENT '执行器名称',
     `args_str`      text                NOT NULL COMMENT '执行方法参数',
     `ext_attrs`     text                NOT NULL COMMENT '扩展字段',
-    `task_type`     tinyint(4)          NOT NULL DEFAULT 1 COMMENT '任务类型 1、重试数据 2、回调数据',
     `create_dt`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
     KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`, `scene_name`),
     KEY `idx_idempotent_id` (`idempotent_id`),
     KEY `idx_biz_no` (`biz_no`),
-    KEY `idx_create_dt` (`create_dt`),
-    UNIQUE KEY `uk_namespace_id_group_name_unique_id` (`namespace_id`, `group_name`, `unique_id`)
+    KEY `idx_create_dt` (`create_dt`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4 COMMENT ='死信队列表'
 ;
 
-CREATE TABLE `sj_retry_task_0`
+CREATE TABLE `sj_retry`
 (
     `id`              bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
     `namespace_id`    varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
-    `unique_id`       varchar(64)         NOT NULL COMMENT '同组下id唯一',
     `group_name`      varchar(64)         NOT NULL COMMENT '组名称',
     `scene_name`      varchar(64)         NOT NULL COMMENT '场景名称',
     `idempotent_id`   varchar(64)         NOT NULL COMMENT '幂等id',
@@ -118,65 +112,65 @@ CREATE TABLE `sj_retry_task_0`
     `executor_name`   varchar(512)        NOT NULL DEFAULT '' COMMENT '执行器名称',
     `args_str`        text                NOT NULL COMMENT '执行方法参数',
     `ext_attrs`       text                NOT NULL COMMENT '扩展字段',
-    `next_trigger_at` datetime            NOT NULL COMMENT '下次触发时间',
+    `next_trigger_at` bigint(13)          NOT NULL COMMENT '下次触发时间',
     `retry_count`     int(11)             NOT NULL DEFAULT 0 COMMENT '重试次数',
     `retry_status`    tinyint(4)          NOT NULL DEFAULT 0 COMMENT '重试状态 0、重试中 1、成功 2、最大重试次数',
     `task_type`       tinyint(4)          NOT NULL DEFAULT 1 COMMENT '任务类型 1、重试数据 2、回调数据',
+    `bucket_index`    int(11)             NOT NULL DEFAULT 0 COMMENT 'bucket',
+    `parent_id`       bigint(20)          NOT NULL DEFAULT 0 COMMENT '父节点id',
+    `deleted`         bigint(20)          NOT NULL DEFAULT 0 COMMENT '逻辑删除',
     `create_dt`       datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_dt`       datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
     KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`, `scene_name`),
-    KEY `idx_namespace_id_group_name_task_type` (`namespace_id`, `group_name`, `task_type`),
     KEY `idx_namespace_id_group_name_retry_status` (`namespace_id`, `group_name`, `retry_status`),
     KEY `idx_idempotent_id` (`idempotent_id`),
     KEY `idx_biz_no` (`biz_no`),
+    KEY `idx_parent_id` (`parent_id`),
     KEY `idx_create_dt` (`create_dt`),
-    UNIQUE KEY `uk_name_unique_id` (`namespace_id`, `group_name`, `unique_id`)
+    UNIQUE KEY `uk_name_task_type_idempotent_id_deleted` (`namespace_id`, `group_name`, `task_type`, `idempotent_id`, `deleted`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
-  DEFAULT CHARSET = utf8mb4 COMMENT ='任务表'
+  DEFAULT CHARSET = utf8mb4 COMMENT ='重试信息表'
 ;
 
-CREATE TABLE `sj_retry_task_log`
+CREATE TABLE `sj_retry_task`
 (
-    `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `namespace_id`  varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
-    `unique_id`     varchar(64)         NOT NULL COMMENT '同组下id唯一',
-    `group_name`    varchar(64)         NOT NULL COMMENT '组名称',
-    `scene_name`    varchar(64)         NOT NULL COMMENT '场景名称',
-    `idempotent_id` varchar(64)         NOT NULL COMMENT '幂等id',
-    `biz_no`        varchar(64)         NOT NULL DEFAULT '' COMMENT '业务编号',
-    `executor_name` varchar(512)        NOT NULL DEFAULT '' COMMENT '执行器名称',
-    `args_str`      text                NOT NULL COMMENT '执行方法参数',
-    `ext_attrs`     text                NOT NULL COMMENT '扩展字段',
-    `retry_status`  tinyint(4)          NOT NULL DEFAULT 0 COMMENT '重试状态 0、重试中 1、成功 2、最大次数',
-    `task_type`     tinyint(4)          NOT NULL DEFAULT 1 COMMENT '任务类型 1、重试数据 2、回调数据',
-    `create_dt`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_dt`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `id`               bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `namespace_id`     varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+    `group_name`       varchar(64)         NOT NULL COMMENT '组名称',
+    `scene_name`       varchar(64)         NOT NULL COMMENT '场景名称',
+    `retry_id`         bigint(20)          NOT NULL COMMENT '重试信息Id',
+    `ext_attrs`        text                NOT NULL COMMENT '扩展字段',
+    `task_status`      tinyint(4)          NOT NULL DEFAULT 1 COMMENT '重试状态',
+    `task_type`        tinyint(4)          NOT NULL DEFAULT 1 COMMENT '任务类型 1、重试数据 2、回调数据',
+    `operation_reason` tinyint(4)          NOT NULL DEFAULT 0 COMMENT '操作原因',
+    `client_info`      varchar(128)        DEFAULT NULL COMMENT '客户端地址 clientId#ip:port',
+    `create_dt`        datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_dt`        datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
     KEY `idx_group_name_scene_name` (`namespace_id`, `group_name`, `scene_name`),
-    KEY `idx_retry_status` (`retry_status`),
-    KEY `idx_idempotent_id` (`idempotent_id`),
-    KEY `idx_unique_id` (`unique_id`),
-    KEY `idx_biz_no` (`biz_no`),
-    KEY `idx_create_dt` (`create_dt`)
+    KEY `task_status` (`task_status`),
+    KEY `idx_create_dt` (`create_dt`),
+    KEY `idx_retry_id` (`retry_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
-  DEFAULT CHARSET = utf8mb4 COMMENT ='任务日志基础信息表'
+  DEFAULT CHARSET = utf8mb4 COMMENT ='重试任务表'
 ;
 
 CREATE TABLE `sj_retry_task_log_message`
 (
-    `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `namespace_id` varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
-    `group_name`   varchar(64)         NOT NULL COMMENT '组名称',
-    `unique_id`    varchar(64)         NOT NULL COMMENT '同组下id唯一',
-    `message`      longtext            NOT NULL COMMENT '异常信息',
-    `log_num`      int(11)             NOT NULL DEFAULT 1 COMMENT '日志数量',
-    `real_time`    bigint(13)          NOT NULL DEFAULT 0 COMMENT '上报时间',
-    `create_dt`    datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `id`            bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `namespace_id`  varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+    `group_name`    varchar(64)         NOT NULL COMMENT '组名称',
+    `retry_id`      bigint(20)          NOT NULL COMMENT '重试信息Id',
+    `retry_task_id` bigint(20)          NOT NULL COMMENT '重试任务Id',
+    `message`       longtext            NOT NULL COMMENT '异常信息',
+    `log_num`       int(11)             NOT NULL DEFAULT 1 COMMENT '日志数量',
+    `real_time`     bigint(13)          NOT NULL DEFAULT 0 COMMENT '上报时间',
+    `create_dt`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
-    KEY `idx_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`, `unique_id`),
+    KEY `idx_namespace_id_group_name_retry_task_id` (`namespace_id`, `group_name`, `retry_task_id`),
     KEY `idx_create_dt` (`create_dt`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
@@ -185,20 +179,26 @@ CREATE TABLE `sj_retry_task_log_message`
 
 CREATE TABLE `sj_retry_scene_config`
 (
-    `id`               bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `namespace_id`     varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
-    `scene_name`       varchar(64)         NOT NULL COMMENT '场景名称',
-    `group_name`       varchar(64)         NOT NULL COMMENT '组名称',
-    `scene_status`     tinyint(4)          NOT NULL DEFAULT 0 COMMENT '组状态 0、未启用 1、启用',
-    `max_retry_count`  int(11)             NOT NULL DEFAULT 5 COMMENT '最大重试次数',
-    `back_off`         tinyint(4)          NOT NULL DEFAULT 1 COMMENT '1、默认等级 2、固定间隔时间 3、CRON 表达式',
-    `trigger_interval` varchar(16)         NOT NULL DEFAULT '' COMMENT '间隔时长',
-    `deadline_request` bigint(20) unsigned NOT NULL DEFAULT 60000 COMMENT 'Deadline Request 调用链超时 单位毫秒',
-    `executor_timeout` int(11) unsigned    NOT NULL DEFAULT 5 COMMENT '任务执行超时时间，单位秒',
-    `route_key`        tinyint(4)          NOT NULL DEFAULT 4 COMMENT '路由策略',
-    `description`      varchar(256)        NOT NULL DEFAULT '' COMMENT '描述',
-    `create_dt`        datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_dt`        datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `id`                  bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `namespace_id`        varchar(64)         NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a' COMMENT '命名空间id',
+    `scene_name`          varchar(64)         NOT NULL COMMENT '场景名称',
+    `group_name`          varchar(64)         NOT NULL COMMENT '组名称',
+    `scene_status`        tinyint(4)          NOT NULL DEFAULT 0 COMMENT '组状态 0、未启用 1、启用',
+    `max_retry_count`     int(11)             NOT NULL DEFAULT 5 COMMENT '最大重试次数',
+    `back_off`            tinyint(4)          NOT NULL DEFAULT 1 COMMENT '1、默认等级 2、固定间隔时间 3、CRON 表达式',
+    `trigger_interval`    varchar(16)         NOT NULL DEFAULT '' COMMENT '间隔时长',
+    `notify_ids`          varchar(128)        NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
+    `deadline_request`    bigint(20) unsigned NOT NULL DEFAULT 60000 COMMENT 'Deadline Request 调用链超时 单位毫秒',
+    `executor_timeout`    int(11) unsigned    NOT NULL DEFAULT 5 COMMENT '任务执行超时时间，单位秒',
+    `route_key`           tinyint(4)          NOT NULL DEFAULT 4 COMMENT '路由策略',
+    `block_strategy`      tinyint(4)          NOT NULL DEFAULT 1 COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行',
+    `cb_status`           tinyint(4)          NOT NULL DEFAULT 0 COMMENT '回调状态 0、不开启 1、开启',
+    `cb_trigger_type`     tinyint(4)          NOT NULL DEFAULT 1 COMMENT '1、默认等级 2、固定间隔时间 3、CRON 表达式',
+    `cb_max_count`        int(11)             NOT NULL DEFAULT 16 COMMENT '回调的最大执行次数',
+    `cb_trigger_interval` varchar(16)         NOT NULL DEFAULT '' COMMENT '回调的最大执行次数',
+    `description`         varchar(256)        NOT NULL DEFAULT '' COMMENT '描述',
+    `create_dt`           datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_dt`           datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_namespace_id_group_name_scene_name` (`namespace_id`, `group_name`, `scene_name`)
 ) ENGINE = InnoDB
@@ -298,13 +298,15 @@ CREATE TABLE `sj_job`
     `executor_info`    varchar(255)                 DEFAULT NULL COMMENT '执行器名称',
     `trigger_type`     tinyint(4)          NOT NULL COMMENT '触发类型 1.CRON 表达式 2. 固定时间',
     `trigger_interval` varchar(255)        NOT NULL COMMENT '间隔时长',
-    `block_strategy`   tinyint(4)          NOT NULL DEFAULT 1 COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行',
+    `block_strategy`   tinyint(4)          NOT NULL DEFAULT 1 COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行 4、恢复',
     `executor_timeout` int(11)             NOT NULL DEFAULT 0 COMMENT '任务执行超时时间，单位秒',
     `max_retry_times`  int(11)             NOT NULL DEFAULT 0 COMMENT '最大重试次数',
     `parallel_num`     int(11)             NOT NULL DEFAULT 1 COMMENT '并行数',
     `retry_interval`   int(11)             NOT NULL DEFAULT 0 COMMENT '重试间隔(s)',
     `bucket_index`     int(11)             NOT NULL DEFAULT 0 COMMENT 'bucket',
     `resident`         tinyint(4)          NOT NULL DEFAULT 0 COMMENT '是否是常驻任务',
+    `notify_ids`       varchar(128)        NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
+    `owner_id`         bigint(20)          NULL                 COMMENT '负责人id',
     `description`      varchar(256)        NOT NULL DEFAULT '' COMMENT '描述',
     `ext_attrs`        varchar(256)        NULL     DEFAULT '' COMMENT '扩展字段',
     `deleted`          tinyint(4)          NOT NULL DEFAULT 0 COMMENT '逻辑删除 1、删除',
@@ -448,12 +450,13 @@ CREATE TABLE `sj_workflow`
     `workflow_status`  tinyint(4)          NOT NULL DEFAULT 1 COMMENT '工作流状态 0、关闭、1、开启',
     `trigger_type`     tinyint(4)          NOT NULL COMMENT '触发类型 1.CRON 表达式 2. 固定时间',
     `trigger_interval` varchar(255)        NOT NULL COMMENT '间隔时长',
-    `next_trigger_at`  bigint(13)          NOT NULL COMMENT '下次触发时间',
+    `next_trigger_at`  bigint              NOT NULL COMMENT '下次触发时间',
     `block_strategy`   tinyint(4)          NOT NULL DEFAULT 1 COMMENT '阻塞策略 1、丢弃 2、覆盖 3、并行',
     `executor_timeout` int(11)             NOT NULL DEFAULT 0 COMMENT '任务执行超时时间，单位秒',
     `description`      varchar(256)        NOT NULL DEFAULT '' COMMENT '描述',
     `flow_info`        text                         DEFAULT NULL COMMENT '流程信息',
     `wf_context`       text                         DEFAULT NULL COMMENT '上下文',
+    `notify_ids`       varchar(128)        NOT NULL DEFAULT '' COMMENT '通知告警场景配置id列表',
     `bucket_index`     int(11)             NOT NULL DEFAULT 0 COMMENT 'bucket',
     `version`          int(11)             NOT NULL COMMENT '版本号',
     `ext_attrs`        varchar(256)        NULL     DEFAULT '' COMMENT '扩展字段',

@@ -17,6 +17,7 @@
 package top.continew.admin.common.context;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import top.continew.admin.common.enums.DataScopeEnum;
 
 import java.io.Serial;
@@ -29,6 +30,7 @@ import java.io.Serializable;
  * @since 2023/3/7 22:08
  */
 @Data
+@NoArgsConstructor
 public class RoleContext implements Serializable {
 
     @Serial
@@ -48,4 +50,10 @@ public class RoleContext implements Serializable {
      * 数据权限
      */
     private DataScopeEnum dataScope;
+
+    public RoleContext(Long id, String code, DataScopeEnum dataScope) {
+        this.id = id;
+        this.code = code;
+        this.dataScope = dataScope;
+    }
 }

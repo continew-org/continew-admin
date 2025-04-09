@@ -22,9 +22,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.ImportPolicyEnum;
-import top.continew.starter.extension.crud.model.req.BaseReq;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 用户导入参数
@@ -34,7 +34,7 @@ import java.io.Serial;
  */
 @Data
 @Schema(description = "用户导入参数")
-public class UserImportReq extends BaseReq {
+public class UserImportReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

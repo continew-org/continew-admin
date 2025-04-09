@@ -16,10 +16,9 @@
 
 package top.continew.admin.auth.model.req;
 
-import cn.hutool.core.lang.RegexPool;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -43,7 +42,7 @@ public class EmailLoginReq extends LoginReq {
      */
     @Schema(description = "邮箱", example = "123456789@qq.com")
     @NotBlank(message = "邮箱不能为空")
-    @Pattern(regexp = RegexPool.EMAIL, message = "邮箱格式错误")
+    @Email(message = "邮箱格式不正确")
     private String email;
 
     /**
@@ -51,6 +50,6 @@ public class EmailLoginReq extends LoginReq {
      */
     @Schema(description = "验证码", example = "888888")
     @NotBlank(message = "验证码不能为空")
-    @Length(max = 6, message = "验证码非法")
+    @Length(max = 6, message = "验证码无效")
     private String captcha;
 }
