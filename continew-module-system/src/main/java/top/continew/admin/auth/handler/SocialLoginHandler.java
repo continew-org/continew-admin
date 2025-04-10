@@ -24,8 +24,12 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.json.JSONUtil;
 import com.xkcoding.justauth.AuthRequestFactory;
+import com.xkcoding.justauth.autoconfigure.JustAuthProperties;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.AuthRequestBuilder;
+import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
@@ -56,6 +60,7 @@ import top.continew.starter.messaging.websocket.util.WebSocketUtils;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 第三方账号登录处理器
@@ -68,7 +73,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
-    private final AuthRequestFactory authRequestFactory;
+    private final JustAuthProperties authProperties;
     private final UserSocialService userSocialService;
     private final UserRoleService userRoleService;
     private final MessageService messageService;
@@ -103,7 +108,9 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             user = new UserDO();
             user.setUsername(username);
             user.setNickname(nickname);
-            user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
+            if(Objects.nonNull(authUser.getGender())) {
+                user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
+            }
             user.setAvatar(authUser.getAvatar());
             user.setDeptId(SysConstants.SUPER_DEPT_ID);
             user.setStatus(DisEnableStatusEnum.ENABLE);
@@ -149,7 +156,12 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
      */
     private AuthRequest getAuthRequest(String source) {
         try {
-            return authRequestFactory.get(source);
+            AuthConfig authConfig = authProperties.getType().get(source.toUpperCase());
+            return AuthRequestBuilder
+                .builder()
+                .source(source)
+                .authConfig(authConfig)
+                .build();
         } catch (Exception e) {
             throw new BadRequestException("暂不支持 [%s] 平台账号登录".formatted(source));
         }

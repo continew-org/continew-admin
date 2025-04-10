@@ -19,13 +19,16 @@ package top.continew.admin.controller.auth;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
-import com.xkcoding.justauth.AuthRequestFactory;
+import com.xkcoding.justauth.autoconfigure.JustAuthProperties;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import me.zhyd.oauth.AuthRequestBuilder;
+import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.validation.annotation.Validated;
@@ -61,7 +64,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final AuthRequestFactory authRequestFactory;
+    private final JustAuthProperties authProperties;
 
     @SaIgnore
     @Operation(summary = "登录", description = "用户登录")
@@ -112,7 +115,12 @@ public class AuthController {
 
     private AuthRequest getAuthRequest(String source) {
         try {
-            return authRequestFactory.get(source);
+            AuthConfig authConfig = authProperties.getType().get(source.toUpperCase());
+            return AuthRequestBuilder
+                .builder()
+                .source(source)
+                .authConfig(authConfig)
+                .build();
         } catch (Exception e) {
             throw new BadRequestException("暂不支持 [%s] 平台账号登录".formatted(source));
         }
