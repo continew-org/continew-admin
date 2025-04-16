@@ -86,9 +86,9 @@ public class FileDO extends BaseDO {
     private FileTypeEnum type;
 
     /**
-     * MD5 值
+     * SHA256值
      */
-    private String md5;
+    private String sha256;
 
     /**
      * 元数据

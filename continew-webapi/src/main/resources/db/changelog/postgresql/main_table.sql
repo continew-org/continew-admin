@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS "sys_file" (
     "extension"          varchar(100) DEFAULT NULL,
     "content_type"       varchar(64)  NOT NULL,
     "type"               int2         NOT NULL DEFAULT 1,
-    "md5"       		 varchar(128) NOT NULL,
+    "sha256"       		 varchar(256) NOT NULL,
     "metadata"           text         DEFAULT NULL,
     "thumbnail_size"     int8         DEFAULT NULL,
     "thumbnail_url"      varchar(512) DEFAULT NULL,
@@ -480,16 +480,15 @@ CREATE TABLE IF NOT EXISTS "sys_file" (
     "storage_id"         int8         NOT NULL,
     "create_user"        int8         NOT NULL,
     "create_time"        timestamp    NOT NULL,
-    "update_user"        int8         NOT NULL,
-    "update_time"        timestamp    NOT NULL,
+    "update_user"        int8         DEFAULT NULL,
+    "update_time"        timestamp    DEFAULT NULL,
     PRIMARY KEY ("id")
 );
 CREATE INDEX "idx_file_url" ON "sys_file" ("url");
 CREATE INDEX "idx_file_type" ON "sys_file" ("type");
-CREATE INDEX "idx_file_md5" ON "sys_file" ("md5");
+CREATE INDEX "idx_file_sha256" ON "sys_file" ("sha256");
 CREATE INDEX "idx_file_storage_id" ON "sys_file" ("storage_id");
 CREATE INDEX "idx_file_create_user" ON "sys_file" ("create_user");
-CREATE INDEX "idx_file_update_user" ON "sys_file" ("update_user");
 COMMENT ON COLUMN "sys_file"."id"                 IS 'ID';
 COMMENT ON COLUMN "sys_file"."name"               IS '名称';
 COMMENT ON COLUMN "sys_file"."size"               IS '大小（字节）';
@@ -499,7 +498,7 @@ COMMENT ON COLUMN "sys_file"."abs_path"           IS '绝对路径';
 COMMENT ON COLUMN "sys_file"."extension"          IS '扩展名';
 COMMENT ON COLUMN "sys_file"."content_type"       IS '内容类型';
 COMMENT ON COLUMN "sys_file"."type"               IS '类型（0: 目录；1：其他；2：图片；3：文档；4：视频；5：音频）';
-COMMENT ON COLUMN "sys_file"."md5"                IS 'MD5值';
+COMMENT ON COLUMN "sys_file"."sha256"             IS 'SHA256值';
 COMMENT ON COLUMN "sys_file"."metadata"           IS '元数据';
 COMMENT ON COLUMN "sys_file"."thumbnail_size"     IS '缩略图大小（字节)';
 COMMENT ON COLUMN "sys_file"."thumbnail_url"      IS '缩略图URL';

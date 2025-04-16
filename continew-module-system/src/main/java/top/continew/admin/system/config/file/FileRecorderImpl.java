@@ -89,7 +89,7 @@ public class FileRecorderImpl implements FileRecorder {
         file.setExtension(fileInfo.getExt());
         file.setType(FileTypeEnum.getByExtension(file.getExtension()));
         file.setContentType(fileInfo.getContentType());
-        file.setMd5(fileInfo.getHashInfo().getSha256());
+        file.setSha256(fileInfo.getHashInfo().getSha256());
         file.setMetadata(JSONUtil.toJsonStr(fileInfo.getMetadata()));
         file.setThumbnailUrl(fileInfo.getThUrl());
         file.setThumbnailSize(fileInfo.getThSize());

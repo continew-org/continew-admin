@@ -96,7 +96,17 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
             .getDayOfMonth() + StringConstants.SLASH;
     }
 
+    /**
+     * 检查文件是否存在
+     * @param fileHash
+     * @return
+     */
     FileResp check(String fileHash);
 
+    /**
+     * 创建目录
+     * @param req
+     * @return
+     */
     IdResp<Long> createDir(FileReq req);
 }
