@@ -20,8 +20,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.continew.admin.common.controller.BaseController;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
@@ -30,6 +29,7 @@ import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
+import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.log.annotation.Log;
 
 /**
@@ -50,5 +50,20 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
     @GetMapping("/statistics")
     public FileStatisticsResp statistics() {
         return baseService.statistics();
+    }
+
+    @Log(ignore = true)
+    @Operation(summary = "检测文件是否存在", description = "检测文件是否存在")
+    @SaCheckPermission("system:file:check")
+    @GetMapping("/check")
+    public FileResp checkFile(String fileHash) {
+        return baseService.check(fileHash);
+    }
+
+    @Operation(summary = "创建文件夹", description = "创建文件夹")
+    @ResponseBody
+    @PostMapping("/createDir")
+    public IdResp<Long> createDir(@RequestBody FileReq req) {
+        return baseService.createDir(req);
     }
 }

@@ -44,6 +44,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.StrUtils;
 import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.List;
@@ -91,7 +92,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .setPlatform(storage.getCode())
             .setHashCalculatorMd5(true)
+            .setHashCalculatorSha256(true)
             .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
+            //                .setPath(StrUtil.removePrefix(path, StringConstants.SLASH));
             .setPath(path);
         // 图片文件生成缩略图
         if (FileTypeEnum.IMAGE.getExtensions().contains(FileNameUtil.extName(file.getOriginalFilename()))) {
@@ -136,6 +139,40 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         resp.setSize(statisticsList.stream().mapToLong(FileStatisticsResp::getSize).sum());
         resp.setNumber(statisticsList.stream().mapToLong(FileStatisticsResp::getNumber).sum());
         return resp;
+    }
+
+    @Override
+    public FileResp check(String fileHash) {
+        FileDO file = baseMapper.lambdaQuery().eq(FileDO::getMd5, fileHash).one();
+        if (file != null) {
+            return get(file.getId());
+        }
+        return null;
+    }
+
+    @Override
+    public IdResp<Long> createDir(FileReq req) {
+        StorageDO storage = storageService.getDefaultStorage();
+        FileDO fileDo = new FileDO();
+        fileDo.setName(req.getName());
+        fileDo.setSize(0L);
+        fileDo.setUrl(storage.getDomain() + req.getParentPath() + req.getName());
+        String absPath = req.getParentPath();
+        String tempAbsPath = absPath.length() > 1 ? StrUtil.removeSuffix(absPath, StringConstants.SLASH) : absPath;
+        String[] pathArr = tempAbsPath.split(StringConstants.SLASH);
+        if (pathArr.length > 1) {
+            fileDo.setParentPath(pathArr[pathArr.length - 1]);
+        } else {
+            fileDo.setParentPath(StringConstants.SLASH);
+        }
+        fileDo.setAbsPath(tempAbsPath);
+        fileDo.setExtension("dir");
+        fileDo.setContentType("");
+        fileDo.setType(FileTypeEnum.DIR);
+        fileDo.setMd5("");
+        fileDo.setStorageId(storage.getId());
+        baseMapper.insert(fileDo);
+        return new IdResp<>(fileDo.getId());
     }
 
     @Override
