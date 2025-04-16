@@ -286,7 +286,7 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
     `extension`          varchar(100)  DEFAULT NULL                COMMENT '扩展名',
     `content_type`       varchar(64)   NOT NULL                    COMMENT '内容类型',
     `type`               tinyint(1)    UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（0: 目录；1：其他；2：图片；3：文档；4：视频；5：音频）',
-    `md5`                varchar(128)  NOT NULL                    COMMENT 'MD5值',
+    `sha256`             varchar(256)  NOT NULL                    COMMENT 'SHA256值',
     `metadata`           text          DEFAULT NULL                COMMENT '元数据',
     `thumbnail_size`     bigint(20)    DEFAULT NULL                COMMENT '缩略图大小（字节)',
     `thumbnail_url`      varchar(512)  DEFAULT NULL                COMMENT '缩略图URL',
@@ -294,15 +294,14 @@ CREATE TABLE IF NOT EXISTS `sys_file` (
     `storage_id`         bigint(20)    NOT NULL                    COMMENT '存储ID',
     `create_user`        bigint(20)    NOT NULL                    COMMENT '创建人',
     `create_time`        datetime      NOT NULL                    COMMENT '创建时间',
-    `update_user`        bigint(20)    NOT NULL                    COMMENT '修改人',
-    `update_time`        datetime      NOT NULL                    COMMENT '修改时间',
+    `update_user`        bigint(20)    DEFAULT NULL                    COMMENT '修改人',
+    `update_time`        datetime      DEFAULT NULL                    COMMENT '修改时间',
     PRIMARY KEY (`id`),
     INDEX `idx_url`(`url`),
-    INDEX `idx_md5`(`md5`),
+    INDEX `idx_sha256`(`sha256`),
     INDEX `idx_type`(`type`),
     INDEX `idx_storage_id`(`storage_id`),
-    INDEX `idx_create_user`(`create_user`),
-    INDEX `idx_update_user`(`update_user`)
+    INDEX `idx_create_user`(`create_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文件表';
 
 CREATE TABLE IF NOT EXISTS `sys_client` (

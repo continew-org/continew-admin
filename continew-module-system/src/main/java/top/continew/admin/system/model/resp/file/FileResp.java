@@ -87,10 +87,10 @@ public class FileResp extends BaseDetailResp {
     private FileTypeEnum type;
 
     /**
-     * MD5 值
+     * SHA256 值
      */
-    @Schema(description = "MD5值", example = "193572f83684128a0d0f993e97100f8a")
-    private String md5;
+    @Schema(description = "SHA256值", example = "722f185c48bed892d6fa12e2b8bf1e5f8200d4a70f522fb62112b6caf13cb74e")
+    private String sha256;
 
     /**
      * 元数据
