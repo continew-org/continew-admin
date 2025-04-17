@@ -57,7 +57,7 @@ export function update${classNamePrefix}(data: any, id: string) {
 
 /** @desc 删除${businessName} */
 export function delete${classNamePrefix}(id: string) {
-  return http.del(`${'$'}{BASE_URL}/`, { ids: [id] })
+  return http.del(`${'$'}{BASE_URL}`, { ids: [id] })
 }
 
 /** @desc 导出${businessName} */
