@@ -32,7 +32,10 @@ import top.continew.starter.core.enums.BaseEnum;
  * @author luoqiz
  * @author Charles7c
  * @since 2025/03/15 22:15
+ * 
+ * @deprecated 使用数据字典`sms_supplier_type`动态维护
  */
+@Deprecated
 @Getter
 @RequiredArgsConstructor
 public enum SmsSupplierEnum implements BaseEnum<String> {
