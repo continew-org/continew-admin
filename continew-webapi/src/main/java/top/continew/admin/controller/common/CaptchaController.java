@@ -38,7 +38,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
-import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -204,12 +203,16 @@ public class CaptchaController {
         String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
         // 发送验证码
         Long expirationInMinutes = captchaSms.getExpirationInMinutes();
-        SmsBlend smsBlend = SmsFactory.getBySupplier(SupplierConstant.CLOOPEN);
+
+        SmsBlend smsBlend = SmsFactory.getBySupplier(captchaSms.getSupplier());
+
         Map<String, String> messageMap = MapUtil.newHashMap(2, true);
-        messageMap.put("captcha", captcha);
-        messageMap.put("expirationInMinutes", String.valueOf(expirationInMinutes));
+        messageMap.put(captchaSms.getCodeKey(), captcha);
+        messageMap.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
+
         SmsResponse smsResponse = smsBlend.sendMessage(phone, captchaSms
             .getTemplateId(), (LinkedHashMap<String, String>)messageMap);
+
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;

@@ -24,7 +24,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.system.enums.SmsSupplierEnum;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -56,7 +55,7 @@ public class SmsConfigReq implements Serializable {
      */
     @Schema(description = "厂商", example = "cloopen")
     @NotNull(message = "厂商无效")
-    private SmsSupplierEnum supplier;
+    private String supplier;
 
     /**
      * Access Key
