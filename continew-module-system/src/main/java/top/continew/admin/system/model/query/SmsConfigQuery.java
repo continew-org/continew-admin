@@ -19,6 +19,7 @@ package top.continew.admin.system.model.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.enums.SmsSupplierEnum;
 import top.continew.starter.data.core.annotation.Query;
 import top.continew.starter.data.core.enums.QueryType;
 
@@ -51,7 +52,7 @@ public class SmsConfigQuery implements Serializable {
      */
     @Schema(description = "厂商", example = "cloopen")
     @Query
-    private String supplier;
+    private SmsSupplierEnum supplier;
 
     /**
      * Access Key

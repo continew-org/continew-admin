@@ -11,8 +11,6 @@ databaseChangeLog:
       file: db/changelog/mysql/plugin/plugin_open.sql
   - include:
       file: db/changelog/mysql/plugin/plugin_generator.sql
-  - include:
-      file: db/changelog/mysql/sms_dict_data.sql
 # PostgreSQL
 #  - include:
 #      file: db/changelog/postgresql/main_table.sql
@@ -26,5 +24,3 @@ databaseChangeLog:
 #      file: db/changelog/postgresql/plugin/plugin_open.sql
 #  - include:
 #      file: db/changelog/postgresql/plugin/plugin_generator.sql
-#   - include:
-#       file: db/changelog/postgresql/sms_dict_data.sql

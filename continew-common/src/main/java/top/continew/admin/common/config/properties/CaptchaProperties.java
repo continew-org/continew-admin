@@ -88,22 +88,5 @@ public class CaptchaProperties {
          * 模板 ID
          */
         private String templateId;
-
-        /**
-         * 供应商渠道
-         *
-         * @see top.continew.admin.system.model.resp.SmsConfigResp#supplier
-         */
-        private String supplier;
-
-        /**
-         * 验证码字段模版键名
-         */
-        private String codeKey = "code";
-
-        /**
-         * 失效时间字段模版键名
-         */
-        private String timeKey = "expirationInMinutes";
     }
 }
