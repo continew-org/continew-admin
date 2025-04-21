@@ -20,16 +20,17 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.config.excel.DictExcelProperty;
+import top.continew.admin.common.config.excel.ExcelDictConverter;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.model.resp.BaseDetailResp;
-import top.continew.admin.system.enums.SmsSupplierEnum;
 import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.security.mask.annotation.JsonMask;
 
 import java.io.Serial;
 
 /**
- * 短信配置响应参数
+ * 短信配置信息
  *
  * @author luoqiz
  * @author Charles7c
@@ -37,7 +38,7 @@ import java.io.Serial;
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "短信配置响应参数")
+@Schema(description = "短信配置信息")
 public class SmsConfigResp extends BaseDetailResp {
 
     @Serial
@@ -52,10 +53,14 @@ public class SmsConfigResp extends BaseDetailResp {
 
     /**
      * 厂商
+     * 对齐 sms4j 短信服务商常量类
+     * 
+     * @see org.dromara.sms4j.comm.constant.SupplierConstant
      */
     @Schema(description = "厂商", example = "cloopen")
-    @ExcelProperty(value = "厂商")
-    private SmsSupplierEnum supplier;
+    @ExcelProperty(value = "厂商", converter = ExcelDictConverter.class)
+    @DictExcelProperty("sms_supplier_type")
+    private String supplier;
 
     /**
      * Access Key

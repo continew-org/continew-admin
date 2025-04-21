@@ -18,9 +18,11 @@ package top.continew.admin.system.config.sms;
 
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
+
 import org.dromara.sms4j.core.datainterface.SmsReadConfig;
 import org.dromara.sms4j.provider.config.BaseConfig;
 import org.springframework.stereotype.Component;
+
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.model.query.SmsConfigQuery;
 import top.continew.admin.system.model.resp.SmsConfigResp;
@@ -48,7 +50,7 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
         if (DisEnableStatusEnum.DISABLE.equals(smsConfig.getStatus())) {
             return null;
         }
-        return smsConfig.getSupplier().toBaseConfig(smsConfig);
+        return SmsConfigUtil.from(smsConfig);
     }
 
     @Override
@@ -59,6 +61,6 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
         if (CollUtil.isEmpty(list)) {
             return List.of();
         }
-        return list.stream().map(smsConfig -> smsConfig.getSupplier().toBaseConfig(smsConfig)).toList();
+        return list.stream().map(smsConfig -> SmsConfigUtil.from(smsConfig)).toList();
     }
 }
