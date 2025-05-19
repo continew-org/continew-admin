@@ -109,7 +109,6 @@ public class SysConstants {
      */
     public static final String TENANT_ADMIN_CODE = "tenant_admin";
 
-
     private SysConstants() {
     }
 }

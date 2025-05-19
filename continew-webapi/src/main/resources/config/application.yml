@@ -305,6 +305,7 @@ continew-starter.tenant:
     - sys_app #应用
     - sys_client #客户端管理
     - sys_sms_config
+    - sys_sms_log
   #租户不能使用的菜单
   ignore-menus:
     - 1050 #菜单
@@ -317,3 +318,4 @@ continew-starter.tenant:
     - 10010 #租户管理
     - 7000 #能力开放
     - 1180 #客户端管理
+    - 1200 #短信配置

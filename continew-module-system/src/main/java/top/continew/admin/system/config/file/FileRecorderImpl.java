@@ -56,6 +56,7 @@ public class FileRecorderImpl implements FileRecorder {
 
     /**
      * 文件信息存储
+     * 
      * @param fileInfo 文件信息对象
      * @return 是否保存成功
      */
@@ -67,8 +68,8 @@ public class FileRecorderImpl implements FileRecorder {
         fileInfo.setId(String.valueOf(id.longValue()));
         String originalFilename = EscapeUtil.unescape(fileInfo.getOriginalFilename());
         file.setName(StrUtil.contains(originalFilename, StringConstants.DOT)
-                ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
-                : originalFilename);
+            ? StrUtil.subBefore(originalFilename, StringConstants.DOT, true)
+            : originalFilename);
         StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         String domain = StrUtil.appendIfMissing(storage.getDomain(), StringConstants.SLASH);
         // 处理fileInfo中存储的地址

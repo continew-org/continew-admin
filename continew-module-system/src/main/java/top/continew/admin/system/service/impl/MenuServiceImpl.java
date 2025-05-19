@@ -110,9 +110,8 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
         return baseMapper.selectPermissionByUserId(userId);
     }
 
-
-    @Cached(key = "#roleId + '_' + #tenantId", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
-    public List<MenuResp> listByRoleId(Long roleId, Long tenantId) {
+    @Cached(key = "#roleId", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
+    public List<MenuResp> listByRoleId(Long roleId) {
         if (SysConstants.SUPER_ROLE_ID.equals(roleId)) {
             return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
         }
@@ -157,7 +156,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     }
 
     @Override
-    public void  addTenantMenu(MenuDO menu, MenuDO pMenu) {
+    public void addTenantMenu(MenuDO menu, MenuDO pMenu) {
         Long pId = 0l;
         if (pMenu != null) {
             MenuDO tPMenu = getOne(Wrappers.query(MenuDO.class)

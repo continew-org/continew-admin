@@ -67,7 +67,7 @@ public class TenantPackageController extends BaseController<TenantPackageService
     private final TenantService tenantService;
 
     @GetMapping("/menuTree")
-    @SaCheckPermission("tenant:package:detail")
+    @SaCheckPermission("tenant:package:get")
     @Operation(summary = "获取租户套餐菜单", description = "获取租户套餐菜单")
     public List<Tree<Long>> menuTree() {
         MenuQuery query = new MenuQuery();

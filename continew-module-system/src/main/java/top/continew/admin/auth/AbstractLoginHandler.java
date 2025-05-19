@@ -19,6 +19,7 @@ package top.continew.admin.auth;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -38,8 +39,11 @@ import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.Validator;
+import top.continew.starter.extension.tenant.TenantHandler;
+import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.web.util.SpringWebUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -90,10 +94,21 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
     protected String authenticate(UserDO user, ClientResp client) {
         // 获取权限、角色、密码过期天数
         Long userId = user.getId();
-        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> roleService
-            .listPermissionByUserId(userId), threadPoolTaskExecutor);
-        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> roleService
-            .listByUserId(userId), threadPoolTaskExecutor);
+        Long tenantId = TenantContextHolder.getTenantId();
+        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> {
+            Set<String> permissions = new HashSet<>();
+            SpringUtil.getBean(TenantHandler.class).execute(tenantId, () -> {
+                permissions.addAll(roleService.listPermissionByUserId(userId));
+            });
+            return permissions;
+        }, threadPoolTaskExecutor);
+        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> {
+            Set<RoleContext> roles = new HashSet<>();
+            SpringUtil.getBean(TenantHandler.class).execute(tenantId, () -> {
+                roles.addAll(roleService.listByUserId(userId));
+            });
+            return roles;
+        }, threadPoolTaskExecutor);
         CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
             .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
         CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);

@@ -32,7 +32,6 @@ import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.service.AuthService;
 import top.continew.admin.common.constant.SysConstants;
-import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.MenuTypeEnum;
@@ -95,9 +94,9 @@ public class AuthServiceImpl implements AuthService {
         // 查询菜单列表
         Set<MenuResp> menuSet = new LinkedHashSet<>();
         if (roleSet.stream().anyMatch(r -> SysConstants.SUPER_ROLE_ID.equals(r.getId()))) {
-            menuSet.addAll(menuService.listByRoleId(SysConstants.SUPER_ROLE_ID,UserContextHolder.getTenantId()));
+            menuSet.addAll(menuService.listByRoleId(SysConstants.SUPER_ROLE_ID));
         } else {
-            roleSet.forEach(r -> menuSet.addAll(menuService.listByRoleId(r.getId(),UserContextHolder.getTenantId())));
+            roleSet.forEach(r -> menuSet.addAll(menuService.listByRoleId(r.getId())));
         }
         List<MenuResp> menuList = menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).toList();
         if (CollUtil.isEmpty(menuList)) {

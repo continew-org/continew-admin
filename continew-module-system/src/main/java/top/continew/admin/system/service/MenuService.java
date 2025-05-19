@@ -55,7 +55,7 @@ public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, 
      * @param roleId 角色id
      * @return 菜单列表
      */
-    List<MenuResp> listByRoleId(Long roleId, Long tenantId);
+    List<MenuResp> listByRoleId(Long roleId);
 
     /**
      * 递归初始化菜单
