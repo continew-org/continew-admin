@@ -26,13 +26,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 文件资源统计信息
+ * 文件资源统计响应参数
  *
  * @author Kils
  * @since 2024/4/30 14:30
  */
 @Data
-@Schema(description = "文件资源统计信息")
+@Schema(description = "文件资源统计响应参数")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FileStatisticsResp implements Serializable {
 

@@ -27,7 +27,7 @@ import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import java.io.Serial;
 
 /**
- * 短信日志信息
+ * 短信日志响应参数
  *
  * @author luoqiz
  * @author Charles7c
@@ -35,7 +35,7 @@ import java.io.Serial;
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "短信日志信息")
+@Schema(description = "短信日志响应参数")
 public class SmsLogResp extends BaseResp {
 
     @Serial

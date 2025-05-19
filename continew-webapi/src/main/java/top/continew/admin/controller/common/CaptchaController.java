@@ -38,7 +38,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
-import org.dromara.sms4j.comm.constant.SupplierConstant;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +47,9 @@ import top.continew.admin.common.config.properties.CaptchaProperties;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.SysConstants;
 import top.continew.admin.system.enums.OptionCategoryEnum;
+import top.continew.admin.system.model.entity.SmsConfigDO;
 import top.continew.admin.system.service.OptionService;
+import top.continew.admin.system.service.SmsConfigService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.captcha.graphic.core.GraphicCaptchaService;
 import top.continew.starter.core.autoconfigure.project.ProjectProperties;
@@ -88,6 +89,7 @@ public class CaptchaController {
     private final CaptchaService behaviorCaptchaService;
     private final GraphicCaptchaService graphicCaptchaService;
     private final OptionService optionService;
+    private final SmsConfigService smsConfigService;
 
     @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
@@ -131,12 +133,13 @@ public class CaptchaController {
      * <p>
      * 限流规则：<br>
      * 1.同一邮箱同一模板，1分钟2条，1小时8条，24小时20条 <br>
-     * 2、同一邮箱所有模板 24 小时 100 条 <br>
-     * 3、同一 IP 每分钟限制发送 30 条
+     * 2.同一邮箱所有模板 24 小时 100 条 <br>
+     * 3.同一 IP 每分钟限制发送 30 条
      * </p>
      *
-     * @param email 邮箱
-     * @return /
+     * @param email      邮箱
+     * @param captchaReq 行为验证码请求参数
+     * @return {@link R }
      */
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
@@ -177,13 +180,13 @@ public class CaptchaController {
      * <p>
      * 限流规则：<br>
      * 1.同一号码同一模板，1分钟2条，1小时8条，24小时20条 <br>
-     * 2、同一号码所有模板 24 小时 100 条 <br>
-     * 3、同一 IP 每分钟限制发送 30 条
+     * 2.同一号码所有模板 24 小时 100 条 <br>
+     * 3.同一 IP 每分钟限制发送 30 条
      * </p>
      *
      * @param phone      手机号
-     * @param captchaReq 行为验证码信息
-     * @return /
+     * @param captchaReq 行为验证码请求参数
+     * @return {@link R }
      */
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
@@ -201,14 +204,17 @@ public class CaptchaController {
         CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
         // 生成验证码
         String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
-        // 发送验证码
         Long expirationInMinutes = captchaSms.getExpirationInMinutes();
-        SmsBlend smsBlend = SmsFactory.getBySupplier(SupplierConstant.CLOOPEN);
+        // 获取短信配置
+        SmsConfigDO smsConfig = smsConfigService.getDefaultConfig();
+        SmsBlend smsBlend = smsConfig != null
+            ? SmsFactory.getBySupplier(smsConfig.getSupplier())
+            : SmsFactory.getSmsBlend();
         Map<String, String> messageMap = MapUtil.newHashMap(2, true);
-        messageMap.put("captcha", captcha);
-        messageMap.put("expirationInMinutes", String.valueOf(expirationInMinutes));
-        SmsResponse smsResponse = smsBlend.sendMessage(phone, captchaSms
-            .getTemplateId(), (LinkedHashMap<String, String>)messageMap);
+        messageMap.put(captchaSms.getCodeKey(), captcha);
+        messageMap.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
+        // 发送验证码
+        SmsResponse smsResponse = smsBlend.sendMessage(phone, (LinkedHashMap<String, String>)messageMap);
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;

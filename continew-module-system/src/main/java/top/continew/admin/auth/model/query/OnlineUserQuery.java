@@ -44,9 +44,9 @@ public class OnlineUserQuery implements Serializable {
     private String nickname;
 
     /**
-     * 终端 ID
+     * 客户端 ID
      */
-    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
     private String clientId;
 
     /**

@@ -26,14 +26,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 用户邮箱修改参数
+ * 用户邮箱修改请求参数
  *
  * @author Charles7c
  * @since 2023/1/12 20:18
  */
 @Data
-@Schema(description = "用户邮箱修改参数")
-public class UserEmailUpdateRequest implements Serializable {
+@Schema(description = "用户邮箱修改请求参数")
+public class UserEmailUpdateReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

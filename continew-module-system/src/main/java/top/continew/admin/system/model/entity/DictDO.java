@@ -18,7 +18,7 @@ package top.continew.admin.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import top.continew.starter.extension.crud.annotation.DictField;
+import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.admin.common.model.entity.BaseDO;
 
 import java.io.Serial;
@@ -30,7 +30,7 @@ import java.io.Serial;
  * @since 2023/9/11 21:29
  */
 @Data
-@DictField(valueKey = "code")
+@DictModel(valueKey = "code")
 @TableName("sys_dict")
 public class DictDO extends BaseDO {
 

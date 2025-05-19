@@ -20,7 +20,7 @@ import com.aizuda.snailjob.common.core.model.Result;
 import lombok.Data;
 
 /**
- * 任务调度服务端分页返回对象
+ * 任务调度服务端分页响应参数
  *
  * @author KAI
  * @author Charles7c

@@ -17,7 +17,9 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.crypto.SecureUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
@@ -35,7 +37,7 @@ import top.continew.starter.extension.crud.service.BaseServiceImpl;
 import java.util.List;
 
 /**
- * 终端业务实现
+ * 客户端业务实现
  *
  * @author KAI
  * @author Charles7c
@@ -49,8 +51,9 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, ClientDO, C
 
     @Override
     public void beforeCreate(ClientReq req) {
-        String clientId = DigestUtil.md5Hex(req.getClientKey() + StringConstants.COLON + req.getClientSecret());
-        req.setClientId(clientId);
+        req.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())
+            .replace(StringConstants.SLASH, StringConstants.EMPTY)
+            .replace(StringConstants.PLUS, StringConstants.EMPTY)));
     }
 
     @Override
@@ -60,7 +63,7 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, ClientDO, C
         for (Long id : ids) {
             ClientDO client = this.getById(id);
             query.setClientId(client.getClientId());
-            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "终端 [{}] 还存在在线用户，不能删除", client.getClientKey());
+            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "客户端 [{}] 还存在在线用户，不能删除", client.getClientId());
         }
     }
 

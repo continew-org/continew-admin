@@ -21,18 +21,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * 用户导入结果
+ * 用户导入结果响应参数
  *
  * @author kils
  * @since 2024-06-18 14:37
  */
 @Data
-@Schema(description = "用户导入结果")
+@Schema(description = "用户导入结果响应参数")
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserImportResp {
+public class UserImportResp implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

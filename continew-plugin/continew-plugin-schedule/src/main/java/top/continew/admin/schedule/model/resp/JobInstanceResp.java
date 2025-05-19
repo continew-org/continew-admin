@@ -23,14 +23,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 任务实例信息
+ * 任务实例响应参数
  *
  * @author KAI
  * @author Charles7c
  * @since 2024/6/28 16:58
  */
 @Data
-@Schema(description = "任务实例信息")
+@Schema(description = "任务实例响应参数")
 public class JobInstanceResp implements Serializable {
 
     @Serial

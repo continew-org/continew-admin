@@ -28,7 +28,7 @@ import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import java.io.Serial;
 
 /**
- * 部门信息
+ * 部门响应参数
  *
  * @author Charles7c
  * @since 2023/1/22 13:53
@@ -36,7 +36,7 @@ import java.io.Serial;
 @Data
 @ExcelIgnoreUnannotated
 @TreeField(value = "id", nameKey = "name")
-@Schema(description = "部门信息")
+@Schema(description = "部门响应参数")
 public class DeptResp extends BaseDetailResp {
 
     @Serial

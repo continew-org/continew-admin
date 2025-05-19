@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
  * 实体类基类
  *
  * <p>
- * 通用字段：创建人、创建时间
+ * 通用字段：ID、创建人、创建时间
  * </p>
  *
  * @author Charles7c

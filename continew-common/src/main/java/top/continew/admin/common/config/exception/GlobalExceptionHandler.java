@@ -25,6 +25,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,8 +33,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import top.continew.starter.core.exception.BadRequestException;
+import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.core.exception.BusinessException;
+import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.web.model.R;
+
+import java.util.Objects;
 
 /**
  * 全局异常处理器
@@ -46,6 +51,15 @@ import top.continew.starter.web.model.R;
 @Order(99)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 自定义基类异常
+     */
+    @ExceptionHandler(BaseException.class)
+    public R handleBaseException(BaseException e, HttpServletRequest request) {
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
+        return R.fail(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), e.getMessage());
+    }
 
     /**
      * 业务异常
@@ -79,6 +93,20 @@ public class GlobalExceptionHandler {
                                                        HttpServletRequest request) {
         log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), "参数 '%s' 缺失".formatted(e.getParameterName()));
+    }
+
+    /**
+     * 方法参数无效异常
+     * <p>
+     * {@code @NotBlank}、{@code @NotNull} 等参数验证不通过
+     * </p>
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
+        String errorMsg = ExceptionUtils.exToNull(() -> Objects.requireNonNull(e.getBindingResult().getFieldError())
+            .getDefaultMessage());
+        return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), errorMsg);
     }
 
     /**

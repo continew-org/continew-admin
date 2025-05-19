@@ -34,7 +34,7 @@ public interface AuthService {
     /**
      * 登录
      *
-     * @param req     登录请求参数
+     * @param req     请求参数
      * @param request 请求对象
      * @return 登录响应参数
      */

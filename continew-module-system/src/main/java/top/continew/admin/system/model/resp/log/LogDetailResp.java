@@ -29,13 +29,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 日志详情信息
+ * 日志详情响应参数
  *
  * @author Charles7c
  * @since 2023/1/18 20:19
  */
 @Data
-@Schema(description = "日志详情信息")
+@Schema(description = "日志详情响应参数")
 public class LogDetailResp implements Serializable {
 
     @Serial

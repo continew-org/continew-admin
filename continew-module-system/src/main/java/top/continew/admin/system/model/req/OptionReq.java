@@ -26,13 +26,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 修改参数参数
+ * 参数修改请求参数
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
 @Data
-@Schema(description = "修改参数参数")
+@Schema(description = "参数修改请求参数")
 public class OptionReq implements Serializable {
 
     @Serial

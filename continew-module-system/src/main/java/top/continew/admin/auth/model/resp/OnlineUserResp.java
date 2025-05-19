@@ -30,13 +30,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 在线用户信息
+ * 在线用户响应参数
  *
  * @author Charles7c
  * @since 2023/1/20 21:54
  */
 @Data
-@Schema(description = "在线用户信息")
+@Schema(description = "在线用户响应参数")
 public class OnlineUserResp implements Serializable {
 
     @Serial
@@ -69,15 +69,15 @@ public class OnlineUserResp implements Serializable {
     private String nickname;
 
     /**
-     * 终端类型
+     * 客户端类型
      */
-    @Schema(description = "终端类型", example = "PC")
+    @Schema(description = "客户端类型", example = "PC")
     private String clientType;
 
     /**
-     * 终端 ID
+     * 客户端 ID
      */
-    @Schema(description = "终端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
+    @Schema(description = "客户端 ID", example = "ef51c9a3e9046c4f2ea45142c8a8344a")
     private String clientId;
 
     /**

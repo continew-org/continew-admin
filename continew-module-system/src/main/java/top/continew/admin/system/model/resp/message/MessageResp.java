@@ -28,13 +28,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 消息信息
+ * 消息响应参数
  *
  * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Data
-@Schema(description = "消息信息")
+@Schema(description = "消息响应参数")
 public class MessageResp implements Serializable {
 
     @Serial

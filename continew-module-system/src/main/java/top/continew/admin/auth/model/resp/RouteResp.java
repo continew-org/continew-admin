@@ -25,13 +25,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 路由信息
+ * 路由响应参数
  *
  * @author Charles7c
  * @since 2023/2/26 22:51
  */
 @Data
-@Schema(description = "路由信息")
+@Schema(description = "路由响应参数")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RouteResp implements Serializable {
 

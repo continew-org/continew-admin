@@ -9,7 +9,11 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.hibernate.validator.constraints.Length;
-
+<#if imports??>
+    <#list imports as className>
+import ${className};
+    </#list>
+</#if>
 import java.io.Serial;
 import java.io.Serializable;
 <#if hasTimeField>
@@ -20,13 +24,13 @@ import java.math.BigDecimal;
 </#if>
 
 /**
- * 创建或修改${businessName}参数
+ * ${businessName}创建或修改参数
  *
  * @author ${author}
  * @since ${datetime}
  */
 @Data
-@Schema(description = "创建或修改${businessName}参数")
+@Schema(description = "${businessName}创建或修改参数")
 public class ${className} implements Serializable {
 
     @Serial

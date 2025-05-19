@@ -84,7 +84,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
             log.info("API文档：{}/doc.html", baseUrl);
         }
         log.info("在线文档：https://continew.top");
-        log.info("常见问题：https://continew.top/faq.html");
+        log.info("常见问题：https://continew.top/admin/faq.html");
         log.info("----------------------------------------------");
     }
 }

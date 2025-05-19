@@ -25,7 +25,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 仪表盘-访问趋势信息
+ * 仪表盘-访问趋势响应参数
  *
  * @author Charles7c
  * @since 2023/9/9 20:20
@@ -33,7 +33,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "仪表盘-访问趋势信息")
+@Schema(description = "仪表盘-访问趋势响应参数")
 public class DashboardAccessTrendResp implements Serializable {
 
     @Serial

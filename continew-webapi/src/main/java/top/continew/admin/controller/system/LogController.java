@@ -36,6 +36,7 @@ import top.continew.admin.system.service.LogService;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
+import top.continew.starter.log.annotation.Log;
 
 /**
  * 系统日志 API
@@ -51,6 +52,7 @@ public class LogController {
 
     private final LogService baseService;
 
+    @Log(ignore = true)
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:log:list")
     @GetMapping
@@ -58,6 +60,7 @@ public class LogController {
         return baseService.page(query, pageQuery);
     }
 
+    @Log(ignore = true)
     @Operation(summary = "查询详情", description = "查询详情")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("monitor:log:get")

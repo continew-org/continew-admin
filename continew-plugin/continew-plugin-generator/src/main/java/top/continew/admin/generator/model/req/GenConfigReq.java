@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 代码生成配置信息
+ * 代码生成配置请求参数
  *
  * @author Charles7c
  * @since 2023/8/8 20:40
  */
 @Data
-@Schema(description = "代码生成配置信息")
+@Schema(description = "代码生成配置请求参数")
 public class GenConfigReq implements Serializable {
 
     @Serial

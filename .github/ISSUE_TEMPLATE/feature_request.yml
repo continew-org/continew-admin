@@ -15,9 +15,9 @@ body:
       options:
         - label: 尝试了最新 dev 分支代码（演示环境），仍没有该功能
           required: true
-        - label: 查阅过 [使用指南](https://continew.top/admin/backend/structure.html) 和 [常见问题](https://continew.top/faq.html) ，仍然认为很有必要
+        - label: 查阅过 [使用指南](https://continew.top/admin/backend/structure.html) 和 [常见问题](https://continew.top/admin/faq.html) ，仍然认为很有必要
           required: true
-        - label: 查阅过 [需求墙](https://continew.top/require.html)，仍没有该功能计划
+        - label: 查阅过 [需求墙](https://continew.top/admin/other/feature.html)，仍没有该功能计划
           required: true
         - label: 搜索了项目 Issues，没有其他人提交过类似的 Feature（如果对应 Feature 尚未实现，您可以先订阅关注该 Issue，为了方便后来者查找问题解决方法，请避免创建重复的 Issue）
           required: true

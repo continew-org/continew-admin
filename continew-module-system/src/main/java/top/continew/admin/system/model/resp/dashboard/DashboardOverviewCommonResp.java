@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * 仪表盘-通用总览信息
+ * 仪表盘-通用总览响应参数
  *
  * @author Charles7c
  * @since 2024/10/19 12:19
@@ -36,7 +36,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "仪表盘-通用总览信息")
+@Schema(description = "仪表盘-通用总览响应参数")
 public class DashboardOverviewCommonResp implements Serializable {
 
     @Serial

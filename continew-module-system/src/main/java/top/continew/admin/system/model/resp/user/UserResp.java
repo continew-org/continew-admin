@@ -33,13 +33,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 用户信息
+ * 用户响应参数
  *
  * @author Charles7c
  * @since 2023/2/20 21:08
  */
 @Data
-@Schema(description = "用户信息")
+@Schema(description = "用户响应参数")
 @Assemble(key = "id", prop = ":roleIds", sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST)
 public class UserResp extends BaseDetailResp {
 

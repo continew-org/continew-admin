@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 修改角色功能权限参数
+ * 角色功能权限修改请求参数
  *
  * @author Charles7c
  * @since 2025/2/5 21:00
  */
 @Data
-@Schema(description = "修改角色功能权限参数")
+@Schema(description = "角色功能权限修改请求参数")
 public class RoleUpdatePermissionReq implements Serializable {
 
     @Serial

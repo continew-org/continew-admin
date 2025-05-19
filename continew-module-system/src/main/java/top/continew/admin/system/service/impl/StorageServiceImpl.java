@@ -39,10 +39,8 @@ import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.model.resp.StorageResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
-import top.continew.admin.system.validation.ValidationGroup;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
@@ -68,46 +66,59 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     public void beforeCreate(StorageReq req) {
-        this.decodeSecretKey(req, null);
+        // 解密密钥
+        if (StorageTypeEnum.OSS.equals(req.getType())) {
+            req.setSecretKey(this.decryptSecretKey(req.getSecretKey(), null));
+        }
+        // 指定配置参数校验及预处理
+        StorageTypeEnum storageType = req.getType();
+        storageType.validate(req);
+        storageType.pretreatment(req);
+        // 校验存储编码
         String code = req.getCode();
         CheckUtils.throwIf(this.isCodeExists(code, null), "新增失败，[{}] 已存在", code);
-        // 单独指定默认存储
+        // 需要独立操作来指定默认存储
         req.setIsDefault(false);
+        // 加载存储引擎
         if (DisEnableStatusEnum.ENABLE.equals(req.getStatus())) {
-            this.load(req);
+            this.load(BeanUtil.copyProperties(req, StorageDO.class));
         }
     }
 
     @Override
     public void beforeUpdate(StorageReq req, Long id) {
+        // 解密密钥
         StorageDO oldStorage = super.getById(id);
-        CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
+        if (StorageTypeEnum.OSS.equals(req.getType())) {
+            req.setSecretKey(this.decryptSecretKey(req.getSecretKey(), oldStorage));
+        }
+        // 校验存储编码、存储类型、状态
         CheckUtils.throwIfNotEqual(req.getType(), oldStorage.getType(), "不允许修改存储类型");
-        this.decodeSecretKey(req, oldStorage);
+        CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
         DisEnableStatusEnum newStatus = req.getStatus();
         CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
             .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
-        // 重新加载配置
-        // 先卸载
-        if (fileStorageService.getFileStorage(req.getCode()) != null) {
-            this.unload(BeanUtil.copyProperties(oldStorage, StorageReq.class));
-        }
-        // 再加载
+        // 指定配置参数校验及预处理
+        StorageTypeEnum storageType = req.getType();
+        storageType.validate(req);
+        storageType.pretreatment(req);
+        // 卸载存储引擎
+        this.unload(oldStorage);
+        // 加载存储引擎
         if (DisEnableStatusEnum.ENABLE.equals(newStatus)) {
-            this.load(req);
+            BeanUtil.copyProperties(req, oldStorage);
+            this.load(oldStorage);
         }
     }
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件关联，请删除文件后重试");
+        CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件或文件夹关联，请删除后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(s -> {
-            CheckUtils.throwIfEqual(Boolean.TRUE, s.getIsDefault(), "[{}] 是默认存储，不允许删除", s.getName());
-            // 卸载启用状态的存储
-            if (DisEnableStatusEnum.ENABLE.equals(s.getStatus())) {
-                this.unload(BeanUtil.copyProperties(s, StorageReq.class));
-            }
+        storageList.forEach(storage -> {
+            CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许删除", storage.getName());
+            // 卸载存储引擎
+            this.unload(storage);
         });
     }
 
@@ -123,14 +134,13 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         // 修改状态
         baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getStatus, newStatus).update();
         // 加载、卸载存储引擎
-        StorageReq storageReq = BeanUtil.copyProperties(storage, StorageReq.class);
         switch (newStatus) {
             case ENABLE:
-                this.load(storageReq);
+                this.load(storage);
                 break;
             case DISABLE:
                 CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许禁用", storage.getName());
-                this.unload(storageReq);
+                this.unload(storage);
                 break;
             default:
                 break;
@@ -139,7 +149,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void setDefault(Long id) {
+    public void setDefaultStorage(Long id) {
         StorageDO storage = super.getById(id);
         if (Boolean.TRUE.equals(storage.getIsDefault())) {
             return;
@@ -152,87 +162,87 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     public StorageDO getDefaultStorage() {
-        return baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, true).one();
+        StorageDO storage = baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, true).one();
+        CheckUtils.throwIfNull(storage, "请先指定默认存储");
+        return storage;
     }
 
     @Override
     public StorageDO getByCode(String code) {
-        return baseMapper.lambdaQuery().eq(StorageDO::getCode, code).one();
+        if (StrUtil.isBlank(code)) {
+            return this.getDefaultStorage();
+        }
+        StorageDO storage = baseMapper.lambdaQuery().eq(StorageDO::getCode, code).one();
+        CheckUtils.throwIfNotExists(storage, "存储", "code", code);
+        return storage;
     }
 
     @Override
-    public void load(StorageReq req) {
+    public void load(StorageDO storage) {
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
-        String domain = req.getDomain();
-        ValidationUtils.throwIf(!URLUtils.isHttpUrl(domain), "域名格式不正确");
-        String bucketName = req.getBucketName();
-        StorageTypeEnum type = req.getType();
-        if (StorageTypeEnum.LOCAL.equals(type)) {
-            ValidationUtils.validate(req, ValidationGroup.Storage.Local.class);
-            req.setBucketName(StrUtil.appendIfMissing(bucketName
-                .replace(StringConstants.BACKSLASH, StringConstants.SLASH), StringConstants.SLASH));
-            FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
-            config.setPlatform(req.getCode());
-            config.setStoragePath(bucketName);
-            fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
-                .singletonList(config)));
-            SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), bucketName));
-        } else if (StorageTypeEnum.OSS.equals(type)) {
-            ValidationUtils.validate(req, ValidationGroup.Storage.OSS.class);
-            FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
-            config.setPlatform(req.getCode());
-            config.setAccessKey(req.getAccessKey());
-            config.setSecretKey(req.getSecretKey());
-            config.setEndPoint(req.getEndpoint());
-            config.setBucketName(bucketName);
-            config.setDomain(domain);
-            fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
-                .singletonList(config), null));
+        switch (storage.getType()) {
+            case LOCAL -> {
+                FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
+                config.setPlatform(storage.getCode());
+                config.setStoragePath(storage.getBucketName());
+                fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
+                    .singletonList(config)));
+                // 注册资源映射
+                SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(storage.getDomain()).getPath(), storage
+                    .getBucketName()));
+            }
+            case OSS -> {
+                FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
+                config.setPlatform(storage.getCode());
+                config.setAccessKey(storage.getAccessKey());
+                config.setSecretKey(storage.getSecretKey());
+                config.setEndPoint(storage.getEndpoint());
+                config.setBucketName(storage.getBucketName());
+                config.setDomain(StrUtil.emptyIfNull(storage.getDomain()));
+                fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
+                    .singletonList(config), null));
+            }
+            default -> throw new IllegalArgumentException("不支持的存储类型：%s".formatted(storage.getType()));
         }
     }
 
     @Override
-    public void unload(StorageReq req) {
+    public void unload(StorageDO storage) {
+        FileStorage fileStorage = fileStorageService.getFileStorage(storage.getCode());
+        if (fileStorage == null) {
+            return;
+        }
         CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
-        FileStorage fileStorage = fileStorageService.getFileStorage(req.getCode());
         fileStorageList.remove(fileStorage);
         fileStorage.close();
-        SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(req.getDomain()).getPath(), req
-            .getBucketName()));
+        // 本地存储引擎需要移除资源映射
+        if (StorageTypeEnum.LOCAL.equals(storage.getType())) {
+            SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(storage.getDomain()).getPath(), storage
+                .getBucketName()));
+        }
     }
 
     /**
      * 解密 SecretKey
      *
-     * @param req     请求参数
-     * @param storage 存储信息
+     * @param encryptSecretKey 加密的 SecretKey
+     * @param storage          存储信息
+     * @return 解密后的 SecretKey
      */
-    private void decodeSecretKey(StorageReq req, StorageDO storage) {
-        if (!StorageTypeEnum.OSS.equals(req.getType())) {
-            return;
-        }
+    private String decryptSecretKey(String encryptSecretKey, StorageDO storage) {
         // 修改时，如果 SecretKey 不修改，需要手动修正
-        String newSecretKey = req.getSecretKey();
-        boolean isSecretKeyNotUpdate = StrUtil.isBlank(newSecretKey) || newSecretKey.contains(StringConstants.ASTERISK);
-        if (null != storage && isSecretKeyNotUpdate) {
-            req.setSecretKey(storage.getSecretKey());
-            return;
+        if (null != storage) {
+            boolean isSecretKeyNotUpdate = StrUtil.isBlank(encryptSecretKey) || encryptSecretKey
+                .contains(StringConstants.ASTERISK);
+            if (isSecretKeyNotUpdate) {
+                return storage.getSecretKey();
+            }
         }
-        // 新增时或修改了 SecretKey
-        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(newSecretKey));
+        // 新增场景，直接解密 SecretKey
+        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(encryptSecretKey));
         ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
         ValidationUtils.throwIf(secretKey.length() > 255, "私有密钥长度不能超过 255 个字符");
-        req.setSecretKey(secretKey);
-    }
-
-    /**
-     * 默认存储是否存在
-     *
-     * @param id ID
-     * @return 是否存在
-     */
-    private boolean isDefaultExists(Long id) {
-        return baseMapper.lambdaQuery().eq(StorageDO::getIsDefault, true).ne(null != id, StorageDO::getId, id).exists();
+        return secretKey;
     }
 
     /**

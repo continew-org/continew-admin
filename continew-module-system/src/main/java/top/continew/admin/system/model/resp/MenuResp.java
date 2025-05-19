@@ -26,14 +26,14 @@ import top.continew.starter.extension.crud.annotation.TreeField;
 import java.io.Serial;
 
 /**
- * 菜单信息
+ * 菜单响应参数
  *
  * @author Charles7c
  * @since 2023/2/15 20:23
  */
 @Data
 @TreeField(value = "id")
-@Schema(description = "菜单信息")
+@Schema(description = "菜单响应参数")
 public class MenuResp extends BaseResp {
 
     @Serial

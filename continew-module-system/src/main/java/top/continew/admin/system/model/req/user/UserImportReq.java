@@ -27,13 +27,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 用户导入参数
+ * 用户导入请求参数
  *
  * @author Kils
  * @since 2024-6-17 16:42
  */
 @Data
-@Schema(description = "用户导入参数")
+@Schema(description = "用户导入请求参数")
 public class UserImportReq implements Serializable {
 
     @Serial

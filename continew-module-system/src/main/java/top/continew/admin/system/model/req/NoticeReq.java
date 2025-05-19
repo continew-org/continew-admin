@@ -30,13 +30,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 创建或修改公告参数
+ * 公告创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
-@Schema(description = "创建或修改公告参数")
+@Schema(description = "公告创建或修改请求参数")
 public class NoticeReq implements Serializable {
 
     @Serial

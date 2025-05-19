@@ -32,13 +32,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 创建或修改存储参数
+ * 存储创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
 @Data
-@Schema(description = "创建或修改存储参数")
+@Schema(description = "存储创建或修改请求参数")
 public class StorageReq implements Serializable {
 
     @Serial

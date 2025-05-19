@@ -17,6 +17,7 @@
 package top.continew.admin.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,21 +48,24 @@ public class OptionController {
     private final OptionService baseService;
 
     @Operation(summary = "查询参数列表", description = "查询参数列表")
-    @SaCheckPermission("system:config:list")
+    @SaCheckPermission(value = {"system:siteConfig:get", "system:securityConfig:get", "system:loginConfig:get",
+        "system:mailConfig:get"}, mode = SaMode.OR)
     @GetMapping
     public List<OptionResp> list(@Validated OptionQuery query) {
         return baseService.list(query);
     }
 
     @Operation(summary = "修改参数", description = "修改参数")
-    @SaCheckPermission("system:config:update")
+    @SaCheckPermission(value = {"system:siteConfig:update", "system:securityConfig:update", "system:loginConfig:update",
+        "system:mailConfig:update"}, mode = SaMode.OR)
     @PutMapping
     public void update(@Valid @RequestBody List<OptionReq> options) {
         baseService.update(options);
     }
 
     @Operation(summary = "重置参数", description = "重置参数")
-    @SaCheckPermission("system:config:reset")
+    @SaCheckPermission(value = {"system:siteConfig:update", "system:securityConfig:update", "system:loginConfig:update",
+        "system:mailConfig:update"}, mode = SaMode.OR)
     @PatchMapping("/value")
     public void resetValue(@Validated @RequestBody OptionResetValueReq req) {
         baseService.resetValue(req);

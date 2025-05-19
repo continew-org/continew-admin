@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.system.model.entity.SmsConfigDO;
 import top.continew.admin.system.model.query.SmsConfigQuery;
 import top.continew.admin.system.model.req.SmsConfigReq;
 import top.continew.admin.system.model.resp.SmsConfigResp;
@@ -27,4 +28,19 @@ import top.continew.starter.extension.crud.service.BaseService;
  * @author luoqiz
  * @since 2025/03/15 18:41
  */
-public interface SmsConfigService extends BaseService<SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> {}
+public interface SmsConfigService extends BaseService<SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> {
+
+    /**
+     * 设置默认配置
+     *
+     * @param id ID
+     */
+    void setDefaultConfig(Long id);
+
+    /**
+     * 获取默认短信配置
+     *
+     * @return 默认短信配置
+     */
+    SmsConfigDO getDefaultConfig();
+}

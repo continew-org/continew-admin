@@ -16,6 +16,7 @@
 
 package top.continew.admin.open.sign;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.sign.SaSignTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,6 @@ public class OpenApiSignTemplate extends SaSignTemplate {
         // 移除 sign 参数
         paramMap.remove(sign);
         // 计算签名
-        return super.abstractStr(super.joinParamsDictSort(paramMap));
+        return SaSecureUtil.md5(super.joinParamsDictSort(paramMap));
     }
 }

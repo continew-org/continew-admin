@@ -14,7 +14,7 @@
         <div style="height: 29px; line-height: 25px; padding: 15px 30px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: #307AF2; background: #00308f; border-radius: 5px 5px 0 0;">
             <div style="font-size: 24px; font-weight: bolder; color: #fff; display: inline-flex; align-items: center;">
                 <a href="${siteUrl}">
-                    <img src="https://admin.continew.top/logo.svg" alt="${siteTitle}" style="vertical-align: middle;">
+                    <img src="https://continew.top/logo.svg" alt="${siteTitle}" style="vertical-align: middle;">
                 </a>
                 <a href="${siteUrl}" style="margin-left: 4px; text-decoration: none; color: #fff;">${siteTitle}</a>
             </div>

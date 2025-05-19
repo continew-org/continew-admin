@@ -58,7 +58,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 导入数据
      *
-     * @param req 导入信息
+     * @param req 请求参数
      * @return 导入结果
      */
     UserImportResp importUser(UserImportReq req);
@@ -66,7 +66,7 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
     /**
      * 重置密码
      *
-     * @param req 重置信息
+     * @param req 请求参数
      * @param id  ID
      */
     void resetPassword(UserPasswordResetReq req, Long id);
@@ -164,12 +164,4 @@ public interface UserService extends BaseService<UserResp, UserDetailResp, UserQ
      * @return 管理员id
      */
     Long initTenantUser(String username, String password, Long deptId);
-
-    /**
-     * 根据用户ID查询DO
-     *
-     * @param userId
-     * @return
-     */
-    UserDO getById(Long userId);
 }

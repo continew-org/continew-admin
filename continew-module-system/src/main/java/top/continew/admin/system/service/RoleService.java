@@ -41,7 +41,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * 修改角色权限
      *
      * @param id  角色 ID
-     * @param req 参数
+     * @param req 请求参数
      */
     void updatePermission(Long id, RoleUpdatePermissionReq req);
 

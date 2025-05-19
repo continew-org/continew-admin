@@ -24,13 +24,13 @@ import top.continew.admin.common.enums.DisEnableStatusEnum;
 import java.io.Serializable;
 
 /**
- * 修改状态请求参数
+ * 状态修改请求参数
  *
  * @author Charles7c
  * @since 2025/3/4 20:09
  */
 @Data
-@Schema(description = "修改状态请求参数")
+@Schema(description = "状态修改请求参数")
 public class CommonStatusUpdateReq implements Serializable {
 
     /**

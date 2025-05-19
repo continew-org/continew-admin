@@ -32,14 +32,14 @@ import java.io.Serial;
 import java.util.List;
 
 /**
- * 角色详情信息
+ * 角色详情响应参数
  *
  * @author Charles7c
  * @since 2023/2/1 22:19
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "角色详情信息")
+@Schema(description = "角色详情响应参数")
 @AssembleMethod(key = "id", prop = ":deptIds", targetType = RoleDeptService.class, method = @ContainerMethod(bindMethod = "listDeptIdByRoleId", type = MappingType.ORDER_OF_KEYS))
 public class RoleDetailResp extends BaseDetailResp {
 

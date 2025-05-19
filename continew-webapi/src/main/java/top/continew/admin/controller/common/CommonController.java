@@ -40,6 +40,7 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.log.annotation.Log;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -66,9 +67,10 @@ public class CommonController {
 
     @Operation(summary = "上传文件", description = "上传文件")
     @PostMapping("/file")
-    public FileUploadResp upload(@NotNull(message = "文件不能为空") MultipartFile file) {
+    public FileUploadResp upload(@NotNull(message = "文件不能为空") MultipartFile file,
+                                 String parentPath) throws IOException {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
-        FileInfo fileInfo = fileService.upload(file);
+        FileInfo fileInfo = fileService.upload(file, parentPath);
         return FileUploadResp.builder()
             .id(fileInfo.getId())
             .url(fileInfo.getUrl())

@@ -20,22 +20,26 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import top.continew.admin.common.config.excel.DictExcelProperty;
+import top.continew.admin.common.config.excel.ExcelDictConverter;
 import top.continew.admin.common.model.resp.BaseDetailResp;
 import top.continew.admin.system.enums.NoticeScopeEnum;
+import top.continew.admin.system.enums.NoticeStatusEnum;
+import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 公告详情信息
+ * 公告详情响应参数
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "公告详情信息")
+@Schema(description = "公告详情响应参数")
 public class NoticeDetailResp extends BaseDetailResp {
 
     @Serial
@@ -45,35 +49,42 @@ public class NoticeDetailResp extends BaseDetailResp {
      * 标题
      */
     @Schema(description = "标题", example = "这是公告标题")
-    @ExcelProperty(value = "标题")
+    @ExcelProperty(value = "标题", order = 2)
     private String title;
 
     /**
      * 内容
      */
     @Schema(description = "内容", example = "这是公告内容")
-    @ExcelProperty(value = "内容")
     private String content;
 
     /**
      * 类型（取值于字典 notice_type）
      */
     @Schema(description = "类型（取值于字典 notice_type）", example = "1")
-    @ExcelProperty(value = "类型")
+    @ExcelProperty(value = "类型", converter = ExcelDictConverter.class, order = 3)
+    @DictExcelProperty("notice_type")
     private String type;
+
+    /**
+     * 状态
+     */
+    @Schema(description = "状态", example = "1")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 4)
+    private NoticeStatusEnum status;
 
     /**
      * 生效时间
      */
     @Schema(description = "生效时间", example = "2023-08-08 00:00:00", type = "string")
-    @ExcelProperty(value = "生效时间")
+    @ExcelProperty(value = "生效时间", order = 5)
     private LocalDateTime effectiveTime;
 
     /**
      * 终止时间
      */
     @Schema(description = "终止时间", example = "2023-08-08 23:59:59", type = "string")
-    @ExcelProperty(value = "终止时间")
+    @ExcelProperty(value = "终止时间", order = 6)
     private LocalDateTime terminateTime;
 
     /**
@@ -87,4 +98,8 @@ public class NoticeDetailResp extends BaseDetailResp {
      */
     @Schema(description = "指定用户", example = "[1,2,3]")
     private List<String> noticeUsers;
+
+    public NoticeStatusEnum getStatus() {
+        return NoticeStatusEnum.getStatus(effectiveTime, terminateTime);
+    }
 }

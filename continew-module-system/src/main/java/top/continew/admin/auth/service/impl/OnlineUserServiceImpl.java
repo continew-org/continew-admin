@@ -134,11 +134,11 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     /**
-     * 是否匹配终端 ID
+     * 是否匹配客户端 ID
      *
-     * @param clientId    终端 ID
+     * @param clientId    客户端 ID
      * @param userContext 用户上下文信息
-     * @return 是否匹配终端 ID
+     * @return 是否匹配客户端 ID
      */
     private boolean isMatchClientId(String clientId, UserContext userContext) {
         if (StrUtil.isBlank(clientId)) {

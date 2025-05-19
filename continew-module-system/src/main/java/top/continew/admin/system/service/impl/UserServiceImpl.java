@@ -169,7 +169,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         DisEnableStatusEnum newStatus = req.getStatus();
         CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, UserContextHolder
             .getUserId()), "不允许禁用当前用户");
-        UserDO oldUser = super.getById(id);
+        UserDO oldUser = this.getById(id);
         if (Boolean.TRUE.equals(oldUser.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用", oldUser
                 .getNickname());
@@ -370,7 +370,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     public void resetPassword(UserPasswordResetReq req, Long id) {
-        super.getById(id);
+        this.getById(id);
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, req.getNewPassword())
             .set(UserDO::getPwdResetTime, LocalDateTime.now())
@@ -380,7 +380,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     public void updateRole(UserRoleUpdateReq updateReq, Long id) {
-        super.getById(id);
+        this.getById(id);
         List<Long> roleIds = updateReq.getRoleIds();
         // 保存用户和角色关联
         userRoleService.assignRolesToUser(roleIds, id);
@@ -752,8 +752,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         return userDO.getId();
     }
 
-    @Override
-    public UserDO getById(Long userId) {
-        return baseMapper.selectById(userId);
+
+    /**
+     * 根据 ID 获取用户信息（数据权限）
+     *
+     * @param id ID
+     * @return 用户信息
+     */
+    private UserDO getById(Long id) {
+        UserDO user = baseMapper.lambdaQuery().eq(UserDO::getId, id).one();
+        CheckUtils.throwIfNull(user, "用户不存在");
+        return user;
     }
 }

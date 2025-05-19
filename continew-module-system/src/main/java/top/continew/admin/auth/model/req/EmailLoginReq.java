@@ -25,13 +25,13 @@ import org.hibernate.validator.constraints.Length;
 import java.io.Serial;
 
 /**
- * 邮箱登录参数
+ * 邮箱登录请求参数
  *
  * @author Charles7c
  * @since 2023/10/23 20:15
  */
 @Data
-@Schema(description = "邮箱登录参数")
+@Schema(description = "邮箱登录请求参数")
 public class EmailLoginReq extends LoginReq {
 
     @Serial

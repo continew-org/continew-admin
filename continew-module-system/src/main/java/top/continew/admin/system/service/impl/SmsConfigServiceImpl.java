@@ -16,18 +16,20 @@
 
 package top.continew.admin.system.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import lombok.RequiredArgsConstructor;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.dromara.sms4j.provider.config.BaseConfig;
 import org.springframework.stereotype.Service;
-import top.continew.admin.system.enums.SmsSupplierEnum;
+import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.config.sms.SmsConfigUtil;
 import top.continew.admin.system.mapper.SmsConfigMapper;
 import top.continew.admin.system.model.entity.SmsConfigDO;
 import top.continew.admin.system.model.query.SmsConfigQuery;
 import top.continew.admin.system.model.req.SmsConfigReq;
 import top.continew.admin.system.model.resp.SmsConfigResp;
 import top.continew.admin.system.service.SmsConfigService;
+import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.List;
@@ -63,15 +65,35 @@ public class SmsConfigServiceImpl extends BaseServiceImpl<SmsConfigMapper, SmsCo
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void setDefaultConfig(Long id) {
+        SmsConfigDO smsConfig = super.getById(id);
+        if (Boolean.TRUE.equals(smsConfig.getIsDefault())) {
+            return;
+        }
+        // 启用状态才能设为默认配置
+        CheckUtils.throwIfNotEqual(DisEnableStatusEnum.ENABLE, smsConfig.getStatus(), "请先启用所选配置");
+        baseMapper.lambdaUpdate().eq(SmsConfigDO::getIsDefault, true).set(SmsConfigDO::getIsDefault, false).update();
+        baseMapper.lambdaUpdate().eq(SmsConfigDO::getId, id).set(SmsConfigDO::getIsDefault, true).update();
+    }
+
+    @Override
+    public SmsConfigDO getDefaultConfig() {
+        return baseMapper.lambdaQuery().eq(SmsConfigDO::getIsDefault, true).eq(SmsConfigDO::getStatus, DisEnableStatusEnum.ENABLE).one();
+    }
+
     /**
      * 加载配置
      *
      * @param entity 配置信息
      */
     private void load(SmsConfigDO entity) {
-        SmsSupplierEnum supplier = entity.getSupplier();
-        BaseConfig config = supplier.toBaseConfig(BeanUtil.toBean(entity, SmsConfigResp.class));
-        SmsFactory.createSmsBlend(config);
+        SmsConfigResp smsConfig = this.get(entity.getId());
+        BaseConfig config = SmsConfigUtil.from(smsConfig);
+        if (config != null) {
+            SmsFactory.createSmsBlend(config);
+        }
     }
 
     /**

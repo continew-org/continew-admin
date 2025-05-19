@@ -68,11 +68,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResp login(LoginReq req, HttpServletRequest request) {
         AuthTypeEnum authType = req.getAuthType();
-        // 校验终端
+        // 校验客户端
         ClientResp client = clientService.getByClientId(req.getClientId());
-        ValidationUtils.throwIfNull(client, "终端不存在");
-        ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()), "终端已禁用");
-        ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()), "该终端暂未授权 [{}] 认证", authType
+        ValidationUtils.throwIfNull(client, "客户端不存在");
+        ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()), "客户端已禁用");
+        ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()), "该客户端暂未授权 [{}] 认证", authType
             .getDescription());
         // 获取处理器
         LoginHandler<LoginReq> loginHandler = loginHandlerFactory.getHandler(authType);

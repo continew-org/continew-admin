@@ -5,7 +5,11 @@ import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import top.continew.admin.common.model.resp.BaseResp;
-
+<#if imports??>
+    <#list imports as className>
+import ${className};
+    </#list>
+</#if>
 import java.io.Serial;
 <#if hasTimeField>
 import java.time.*;

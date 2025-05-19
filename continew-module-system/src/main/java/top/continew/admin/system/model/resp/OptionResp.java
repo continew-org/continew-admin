@@ -25,13 +25,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 参数信息
+ * 参数响应参数
  *
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
 @Data
-@Schema(description = "参数信息")
+@Schema(description = "参数响应参数")
 public class OptionResp implements Serializable {
 
     @Serial

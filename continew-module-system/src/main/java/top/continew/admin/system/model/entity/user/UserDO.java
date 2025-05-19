@@ -23,7 +23,7 @@ import lombok.Data;
 import top.continew.admin.common.config.mybatis.BCryptEncryptor;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.starter.extension.crud.annotation.DictField;
+import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.admin.common.model.entity.BaseDO;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
@@ -37,7 +37,7 @@ import java.time.LocalDateTime;
  * @since 2022/12/21 20:42
  */
 @Data
-@DictField(labelKey = "nickname", extraKeys = {"username"})
+@DictModel(labelKey = "nickname", extraKeys = {"username"})
 @TableName("sys_user")
 public class UserDO extends BaseDO {
 

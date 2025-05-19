@@ -25,13 +25,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 未读消息信息
+ * 未读消息响应参数
  *
  * @author Charles7c
  * @since 2023/11/2 23:00
  */
 @Data
-@Schema(description = "未读消息信息")
+@Schema(description = "未读消息响应参数")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageUnreadResp implements Serializable {
 

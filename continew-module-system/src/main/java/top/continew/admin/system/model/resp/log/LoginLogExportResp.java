@@ -28,14 +28,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 登录日志导出信息
+ * 登录日志导出响应参数
  *
  * @author Charles7c
  * @since 2023/1/14 18:27
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "登录日志导出信息")
+@Schema(description = "登录日志导出响应参数")
 public class LoginLogExportResp implements Serializable {
 
     @Serial

@@ -25,14 +25,14 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 文件上传响应信息
+ * 文件上传响应参数
  *
  * @author Charles7c
  * @since 2024/3/6 22:26
  */
 @Data
 @Builder
-@Schema(description = "文件上传响应信息")
+@Schema(description = "文件上传响应参数")
 public class FileUploadResp implements Serializable {
 
     @Serial

@@ -25,7 +25,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 仪表盘-通用图表信息
+ * 仪表盘-通用图表响应参数
  *
  * @author Charles7c
  * @since 2024/10/17 21:37
@@ -33,7 +33,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "仪表盘-通用图表信息")
+@Schema(description = "仪表盘-通用图表响应参数")
 public class DashboardChartCommonResp implements Serializable {
 
     @Serial

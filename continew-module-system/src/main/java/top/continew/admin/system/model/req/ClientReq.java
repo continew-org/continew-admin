@@ -28,34 +28,26 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 创建或修改终端参数
+ * 客户端创建或修改请求参数
  *
  * @author KAI
  * @author Charles7c
  * @since 2024/12/03 16:04
  */
 @Data
-@Schema(description = "创建或修改终端参数")
+@Schema(description = "客户端创建或修改请求参数")
 public class ClientReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * 终端 Key
+     * 客户端类型
      */
-    @Schema(description = "终端 Key", example = "PC")
-    @NotBlank(message = "终端Key不能为空")
-    @Length(max = 32, message = "终端Key长度不能超过 {max} 个字符")
-    private String clientKey;
-
-    /**
-     * 终端秘钥
-     */
-    @Schema(description = "终端秘钥", example = "dd77ab1e353a027e0d60ce3b151e8642")
-    @NotBlank(message = "终端秘钥不能为空")
-    @Length(max = 255, message = "终端秘钥长度不能超过 {max} 个字符")
-    private String clientSecret;
+    @Schema(description = "客户端类型", example = "PC")
+    @NotBlank(message = "客户端类型不能为空")
+    @Length(max = 32, message = "客户端类型长度不能超过 {max} 个字符")
+    private String clientType;
 
     /**
      * 认证类型
@@ -63,14 +55,6 @@ public class ClientReq implements Serializable {
     @Schema(description = "认证类型", example = "ACCOUNT")
     @NotEmpty(message = "认证类型不能为空")
     private List<String> authType;
-
-    /**
-     * 终端类型
-     */
-    @Schema(description = "终端类型", example = "PC")
-    @NotBlank(message = "终端类型不能为空")
-    @Length(max = 32, message = "终端类型长度不能超过 {max} 个字符")
-    private String clientType;
 
     /**
      * Token 最低活跃频率（单位：秒，-1：不限制，永不冻结）
@@ -91,7 +75,7 @@ public class ClientReq implements Serializable {
     private DisEnableStatusEnum status;
 
     /**
-     * 终端 ID
+     * 客户端 ID
      */
     @Schema(hidden = true)
     private String clientId;

@@ -24,13 +24,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 执行任务参数
+ * 任务执行请求参数
  *
  * @author Charles7c
  * @since 2025/3/26 21:50
  */
 @Data
-@Schema(description = "执行任务参数")
+@Schema(description = "任务执行请求参数")
 public class JobTriggerReq implements Serializable {
 
     @Serial

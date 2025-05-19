@@ -29,7 +29,7 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 详情响应基类
+ * 详情响应参数基类
  *
  * @author Charles7c
  * @since 2024/12/27 20:32

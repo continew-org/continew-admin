@@ -25,14 +25,14 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 应用信息
+ * 应用响应参数
  *
  * @author chengzi
  * @author Charles7c
  * @since 2024/10/17 16:03
  */
 @Data
-@Schema(description = "应用信息")
+@Schema(description = "应用响应参数")
 public class AppResp extends BaseDetailResp {
 
     @Serial

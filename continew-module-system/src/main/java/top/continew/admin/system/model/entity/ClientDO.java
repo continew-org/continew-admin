@@ -27,7 +27,7 @@ import java.io.Serial;
 import java.util.List;
 
 /**
- * 终端实体
+ * 客户端实体
  *
  * @author KAI
  * @author Charles7c
@@ -41,30 +41,20 @@ public class ClientDO extends BaseDO {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 终端 ID
+     * 客户端 ID
      */
     private String clientId;
 
     /**
-     * 终端 Key
+     * 客户端类型
      */
-    private String clientKey;
-
-    /**
-     * 终端秘钥
-     */
-    private String clientSecret;
+    private String clientType;
 
     /**
      * 登录类型
      */
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> authType;
-
-    /**
-     * 终端类型
-     */
-    private String clientType;
 
     /**
      * Token 最低活跃频率（单位：秒，-1：不限制，永不冻结）

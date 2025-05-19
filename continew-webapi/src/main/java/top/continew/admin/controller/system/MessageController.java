@@ -30,10 +30,9 @@ import top.continew.admin.system.model.resp.message.MessageUnreadResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.MessageUserService;
 import top.continew.starter.extension.crud.model.query.PageQuery;
+import top.continew.starter.extension.crud.model.req.IdsReq;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.log.annotation.Log;
-
-import java.util.List;
 
 /**
  * 消息管理 API
@@ -58,24 +57,28 @@ public class MessageController {
     }
 
     @Operation(summary = "删除数据", description = "删除数据")
-    @Parameter(name = "ids", description = "ID 列表", example = "1,2", in = ParameterIn.PATH)
-    @DeleteMapping("/{ids}")
-    public void delete(@PathVariable List<Long> ids) {
-        baseService.delete(ids);
+    @DeleteMapping
+    public void delete(@Validated @RequestBody IdsReq req) {
+        baseService.delete(req.getIds());
     }
 
     @Operation(summary = "标记已读", description = "将消息标记为已读状态")
-    @Parameter(name = "ids", description = "消息ID列表", example = "1,2", in = ParameterIn.QUERY)
     @PatchMapping("/read")
-    public void readMessage(@RequestParam(required = false) List<Long> ids) {
-        messageUserService.readMessage(ids);
+    public void read(@Validated @RequestBody IdsReq req) {
+        messageUserService.readMessage(req.getIds());
+    }
+
+    @Operation(summary = "全部已读", description = "将所有消息标记为已读状态")
+    @PatchMapping("/readAll")
+    public void readAll() {
+        messageUserService.readMessage(null);
     }
 
     @Log(ignore = true)
     @Operation(summary = "查询未读消息数量", description = "查询当前用户的未读消息数量")
     @Parameter(name = "isDetail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
     @GetMapping("/unread")
-    public MessageUnreadResp countUnreadMessage(@RequestParam(required = false) Boolean detail) {
+    public MessageUnreadResp countUnread(@RequestParam(required = false) Boolean detail) {
         return messageUserService.countUnreadMessageByUserId(UserContextHolder.getUserId(), detail);
     }
 }

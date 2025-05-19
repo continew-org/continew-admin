@@ -15,7 +15,7 @@ body:
       options:
         - label: 重启项目和 IDE 后，仍然能够复现此问题
           required: true
-        - label: 查阅过 [使用指南](https://continew.top/admin/backend/structure.html) 和 [常见问题](https://continew.top/faq.html) ，仍无解决方法
+        - label: 查阅过 [使用指南](https://continew.top/admin/backend/structure.html) 和 [常见问题](https://continew.top/admin/faq.html) ，仍无解决方法
           required: true
         - label: 根据报错信息（自行翻译英文）百度或 Google 后，仍无法解决
           required: true

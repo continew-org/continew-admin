@@ -25,7 +25,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 用户导入解析结果
+ * 用户导入解析响应参数
  *
  * @author kils
  * @since 2024/6/18 14:37
@@ -33,7 +33,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "用户导入解析结果")
+@Schema(description = "用户导入解析响应参数")
 public class UserImportParseResp implements Serializable {
 
     @Serial

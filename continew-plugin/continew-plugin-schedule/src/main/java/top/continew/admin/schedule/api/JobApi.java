@@ -53,7 +53,7 @@ public interface JobApi {
     /**
      * 新增
      *
-     * @param req 新增信息
+     * @param req 请求参数
      * @return 响应信息
      */
     @PostMapping
@@ -62,7 +62,7 @@ public interface JobApi {
     /**
      * 修改
      *
-     * @param req 修改信息
+     * @param req 请求参数
      * @return 响应信息
      */
     @PutMapping
@@ -71,7 +71,7 @@ public interface JobApi {
     /**
      * 修改状态
      *
-     * @param req 修改信息
+     * @param req 请求参数
      * @return 响应信息
      */
     @PutMapping("/status")
@@ -89,7 +89,7 @@ public interface JobApi {
     /**
      * 执行
      *
-     * @param req 参数
+     * @param req 请求参数
      * @return 响应信息
      */
     @PostMapping("/trigger")

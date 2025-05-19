@@ -24,13 +24,13 @@ import top.continew.admin.common.enums.DataScopeEnum;
 import java.io.Serial;
 
 /**
- * 角色信息
+ * 角色响应参数
  *
  * @author Charles7c
  * @since 2023/2/8 23:05
  */
 @Data
-@Schema(description = "角色信息")
+@Schema(description = "角色响应参数")
 public class RoleResp extends BaseDetailResp {
 
     @Serial

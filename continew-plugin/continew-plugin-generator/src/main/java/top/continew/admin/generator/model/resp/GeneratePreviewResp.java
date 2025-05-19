@@ -24,13 +24,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 生成预览信息
+ * 生成预览响应参数
  *
  * @author Charles7c
  * @since 2023/12/19 21:34
  */
 @Data
-@Schema(description = "生成预览信息")
+@Schema(description = "生成预览响应参数")
 public class GeneratePreviewResp implements Serializable {
 
     @Serial

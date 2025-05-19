@@ -31,13 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 创建或修改角色参数
+ * 角色创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/2/8 23:12
  */
 @Data
-@Schema(description = "创建或修改角色参数")
+@Schema(description = "角色创建或修改请求参数")
 public class RoleReq implements Serializable {
 
     @Serial

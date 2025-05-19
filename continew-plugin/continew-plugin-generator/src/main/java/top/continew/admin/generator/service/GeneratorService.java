@@ -66,7 +66,7 @@ public interface GeneratorService {
     /**
      * 保存代码生成配置信息
      *
-     * @param req       代码生成配置信息
+     * @param req       请求参数
      * @param tableName 表名称
      */
     void saveConfig(GenConfigReq req, String tableName);

@@ -19,17 +19,16 @@ package top.continew.admin.common.model.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
+import top.continew.starter.extension.crud.model.entity.BaseIdDO;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
-
-import top.continew.starter.extension.crud.model.entity.BaseIdDO;
 
 /**
  * 实体类基类
  *
  * <p>
- * 通用字段：创建人、创建时间
+ * 通用字段：ID、修改人、修改时间
  * </p>
  *
  * @author Charles7c

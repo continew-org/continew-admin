@@ -28,14 +28,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 创建或修改应用参数
+ * 应用创建或修改请求参数
  *
  * @author chengzi
  * @author Charles7c
  * @since 2024/10/17 16:03
  */
 @Data
-@Schema(description = "创建或修改应用参数")
+@Schema(description = "应用创建或修改请求参数")
 public class AppReq implements Serializable {
 
     @Serial

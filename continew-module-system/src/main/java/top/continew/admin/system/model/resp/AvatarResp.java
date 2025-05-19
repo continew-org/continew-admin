@@ -24,14 +24,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 头像信息
+ * 头像上传响应参数
  *
  * @author Charles7c
  * @since 2023/1/2 16:29
  */
 @Data
 @Builder
-@Schema(description = "头像信息")
+@Schema(description = "头像上传响应参数")
 public class AvatarResp implements Serializable {
 
     @Serial

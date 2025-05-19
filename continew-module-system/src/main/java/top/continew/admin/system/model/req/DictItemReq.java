@@ -28,13 +28,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 创建或修改字典项参数
+ * 字典项创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
 @Data
-@Schema(description = "创建或修改字典项参数")
+@Schema(description = "字典项创建或修改请求参数")
 public class DictItemReq implements Serializable {
 
     @Serial

@@ -26,13 +26,13 @@ import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import java.io.Serial;
 
 /**
- * 字典项信息
+ * 字典项响应参数
  *
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
 @Data
-@Schema(description = "字典项信息")
+@Schema(description = "字典项响应参数")
 public class DictItemResp extends BaseDetailResp {
 
     @Serial

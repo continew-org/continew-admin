@@ -85,8 +85,13 @@ public class CaptchaProperties {
         private long expirationInMinutes;
 
         /**
-         * 模板 ID
+         * 验证码字段模板键名
          */
-        private String templateId;
+        private String codeKey = "code";
+
+        /**
+         * 失效时间字段模板键名
+         */
+        private String timeKey = "expirationInMinutes";
     }
 }

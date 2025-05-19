@@ -60,6 +60,6 @@ public class StorageController extends BaseController<StorageService, StorageRes
     @SaCheckPermission("system:storage:setDefault")
     @PutMapping({"/{id}/default"})
     public void setDefault(@PathVariable("id") Long id) {
-        baseService.setDefault(id);
+        baseService.setDefaultStorage(id);
     }
 }

@@ -28,13 +28,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 创建或修改部门参数
+ * 部门创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/1/24 00:21
  */
 @Data
-@Schema(description = "创建或修改部门参数")
+@Schema(description = "部门创建或修改请求参数")
 public class DeptReq implements Serializable {
 
     @Serial

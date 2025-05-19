@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.config.file;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.system.model.query.StorageQuery;
-import top.continew.admin.system.model.req.StorageReq;
-import top.continew.admin.system.model.resp.StorageResp;
+import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.service.StorageService;
 
 import java.util.List;
@@ -46,12 +43,10 @@ public class FileStorageConfigLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        StorageQuery query = new StorageQuery();
-        query.setStatus(DisEnableStatusEnum.ENABLE);
-        List<StorageResp> storageList = storageService.list(query, null);
-        if (CollUtil.isEmpty(storageList)) {
+        List<StorageDO> list = storageService.lambdaQuery().eq(StorageDO::getStatus, DisEnableStatusEnum.ENABLE).list();
+        if (CollUtil.isEmpty(list)) {
             return;
         }
-        storageList.forEach(s -> storageService.load(BeanUtil.copyProperties(s, StorageReq.class)));
+        list.forEach(storageService::load);
     }
 }

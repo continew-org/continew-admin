@@ -24,13 +24,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 用户密码重置参数
+ * 用户密码重置请求参数
  *
  * @author Charles7c
  * @since 2024/2/2 22:50
  */
 @Data
-@Schema(description = "用户密码重置参数")
+@Schema(description = "用户密码重置请求参数")
 public class UserPasswordResetReq implements Serializable {
 
     @Serial

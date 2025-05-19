@@ -28,7 +28,7 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 应用详情信息
+ * 应用详情响应参数
  *
  * @author chengzi
  * @author Charles7c
@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @ExcelIgnoreUnannotated
-@Schema(description = "应用详情信息")
+@Schema(description = "应用详情响应参数")
 public class AppDetailResp extends BaseDetailResp {
 
     @Serial

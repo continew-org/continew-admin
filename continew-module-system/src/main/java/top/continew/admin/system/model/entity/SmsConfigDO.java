@@ -20,7 +20,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.model.entity.BaseDO;
-import top.continew.admin.system.enums.SmsSupplierEnum;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;
@@ -47,7 +46,7 @@ public class SmsConfigDO extends BaseDO {
     /**
      * 厂商
      */
-    private SmsSupplierEnum supplier;
+    private String supplier;
 
     /**
      * Access Key
@@ -94,6 +93,11 @@ public class SmsConfigDO extends BaseDO {
      * 各个厂商独立配置
      */
     private String supplierConfig;
+
+    /**
+     * 是否为默认存储
+     */
+    private Boolean isDefault;
 
     /**
      * 状态

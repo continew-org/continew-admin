@@ -27,13 +27,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 公告信息
+ * 公告响应参数
  *
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
 @Data
-@Schema(description = "公告信息")
+@Schema(description = "公告响应参数")
 public class NoticeResp extends BaseResp {
 
     @Serial

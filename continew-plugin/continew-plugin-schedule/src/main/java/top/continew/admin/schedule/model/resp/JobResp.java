@@ -25,14 +25,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 任务信息
+ * 任务响应参数
  *
  * @author KAI
  * @author Charles7c
  * @since 2024/6/25 17:15
  */
 @Data
-@Schema(description = "任务信息")
+@Schema(description = "任务响应参数")
 public class JobResp implements Serializable {
 
     @Serial

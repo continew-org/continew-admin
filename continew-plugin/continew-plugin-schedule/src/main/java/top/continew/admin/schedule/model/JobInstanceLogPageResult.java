@@ -24,13 +24,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 任务实例日志分页信息
+ * 任务实例日志分页响应参数
  *
  * @author Charles7c
  * @since 2024/7/14 21:51
  */
 @Data
-@Schema(description = "任务实例日志分页信息")
+@Schema(description = "任务实例日志分页响应参数")
 public class JobInstanceLogPageResult implements Serializable {
 
     @Serial

@@ -25,13 +25,13 @@ import top.continew.starter.core.validation.constraints.Mobile;
 import java.io.Serial;
 
 /**
- * 手机号登录参数
+ * 手机号登录请求参数
  *
  * @author Charles7c
  * @since 2023/10/26 22:37
  */
 @Data
-@Schema(description = "手机号登录参数")
+@Schema(description = "手机号登录请求参数")
 public class PhoneLoginReq extends LoginReq {
 
     @Serial

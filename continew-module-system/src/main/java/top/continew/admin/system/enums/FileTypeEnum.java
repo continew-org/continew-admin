@@ -82,4 +82,13 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
             .findFirst()
             .orElse(FileTypeEnum.UNKNOWN);
     }
+
+    /**
+     * 获取所有扩展名
+     *
+     * @return 所有扩展名
+     */
+    public static List<String> getAllExtensions() {
+        return Arrays.stream(FileTypeEnum.values()).flatMap(t -> t.getExtensions().stream()).toList();
+    }
 }

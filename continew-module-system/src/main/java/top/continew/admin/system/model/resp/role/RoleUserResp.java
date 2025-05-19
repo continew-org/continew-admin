@@ -31,13 +31,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 角色关联用户信息
+ * 角色关联用户响应参数
  *
  * @author Charles7c
  * @since 2025/2/5 22:01
  */
 @Data
-@Schema(description = "角色关联用户信息")
+@Schema(description = "角色关联用户响应参数")
 public class RoleUserResp implements Serializable {
 
     @Serial

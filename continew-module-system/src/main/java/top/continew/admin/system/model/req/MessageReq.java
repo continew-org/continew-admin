@@ -27,13 +27,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 创建消息参数
+ * 消息创建请求参数
  *
  * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
 @Data
-@Schema(description = "创建消息参数")
+@Schema(description = "消息创建请求参数")
 public class MessageReq implements Serializable {
 
     @Serial

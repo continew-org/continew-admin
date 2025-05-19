@@ -5,7 +5,7 @@ project:
   # 应用名称
   app-name: continew-admin
   # 版本
-  version: 3.6.0-SNAPSHOT
+  version: 3.7.0-SNAPSHOT
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 基本包
@@ -14,69 +14,98 @@ project:
   contact:
     name: Charles7c
     email: charles7c@126.com
-    url: https://blog.charles7c.top/about/me
+    url: https://charles7c.top
   ## 许可协议信息配置
   license:
     name: Apache-2.0
     url: https://github.com/continew-org/continew-admin/blob/dev/LICENSE
 
---- ### 日志配置
-## API 请求/响应日志配置
-continew-starter.log:
-  # 记录信息
-  includes:
-    - DESCRIPTION
-    - MODULE
-    - REQUEST_HEADERS
-    - REQUEST_BODY
-    - IP_ADDRESS
-    - BROWSER
-    - OS
-    - RESPONSE_HEADERS
-    - RESPONSE_BODY
-## 项目日志配置
-logging:
-  config: classpath:logback-spring.xml
+--- ### 服务器配置
+server:
+  servlet:
+    # 应用访问路径
+    context-path: /
+  ## Undertow 服务器配置
+  undertow:
+    # HTTP POST 请求内容的大小上限（默认 -1，不限制）
+    max-http-post-size: -1
+    # 以下的配置会影响 buffer，这些 buffer 会用于服务器连接的 IO 操作，有点类似 Netty 的池化内存管理
+    # 每块 buffer的空间大小（越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可）
+    buffer-size: 512
+    # 是否分配的直接内存（NIO 直接分配的堆外内存）
+    direct-buffers: true
+    threads:
+      # 设置 IO 线程数，它主要执行非阻塞的任务，它们会负责多个连接（默认每个 CPU 核心一个线程）
+      io: 8
+      # 阻塞任务线程池，当执行类似 Servlet 请求阻塞操作，Undertow 会从这个线程池中取得线程（它的值设置取决于系统的负载）
+      worker: 256
 
---- ### 链路追踪配置
-continew-starter.trace:
-  enabled: true
-  trace-id-name: traceId
-  ## TLog 配置
-  tlog:
-    enable-invoke-time-print: false
-    pattern: '[$spanId][$traceId]'
-    mdc-enable: false
+--- ### Spring 项目配置
+spring:
+  application:
+    name: ${project.app-name}
+  ## 环境配置
+  profiles:
+    # 启用的环境
+    active: dev
+    include:
+      - generator
+  main:
+    # 允许定义重名的 bean 对象覆盖原有的 bean
+    allow-bean-definition-overriding: true
+    # 允许循环依赖
+    allow-circular-references: true
 
---- ### 全局响应配置
-continew-starter.web:
-  response:
-    # 是否开启国际化（默认：false）
-    i18n: false
-    # 自定义失败 HTTP 状态码（默认：200，建议业务和通信状态码区分）
-    default-http-status-code-on-error: 200
-    # 自定义成功响应码（默认：0）
-    default-success-code: 0
-    # 自定义成功提示（默认：ok）
-    default-success-msg: ok
-    # 自定义失败响应码（默认：1）
-    default-error-code: 1
-    # 自定义失败提示（默认：error）
-    default-error-msg: error
-    # 是否将原生异常错误信息填充到状态信息中
-    origin-exception-using-detail-message: false
-    # 响应类全名（配置后 response-style 将不再生效）
-    response-class-full-name: top.continew.starter.web.model.R
+--- ## 线程池配置（默认启用扩展配置，如未指定 corePoolSize、maxPoolSize 则根据机器配置自动设置）
+spring.task:
+  # 异步任务
+  execution:
+    thread-name-prefix: task-pool
+    # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
+    # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
+    rejected-policy: CALLER_RUNS
+    pool:
+      keep-alive: 300s
+    shutdown:
+      # 是否等待任务执行完成再关闭线程池（默认 false）
+      await-termination: true
+      # 等待时间
+      await-termination-period: 30s
+  # 定时任务
+  scheduling:
+    thread-name-prefix: schedule-pool
+    # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
+    # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
+    rejected-policy: CALLER_RUNS
+    shutdown:
+      # 是否等待任务执行完成再关闭线程池（默认 false）
+      await-termination: true
+      # 等待时间
+      await-termination-period: 30s
 
---- ### 全局树结构配置（简单树，对应前端 UI）
-continew-starter.crud:
-  tree:
-    id-key: key
-    name-key: title
-    weight-key: sort
+--- ### 文件上传配置
+spring.servlet:
+  multipart:
+    enabled: true
+    # 单文件上传大小限制
+    max-file-size: 10MB
+    # 单次总上传文件大小限制
+    max-request-size: 20MB
+## 头像配置
+avatar:
+  # 存储路径
+  path: user/avatar/
+  # 支持的后缀
+  support-suffix: jpg,jpeg,png,gif
 
 --- ### 接口文档配置
 springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
   # 设置对象型参数的展示形式（设为 true 表示将对象型参数平展开，即对象内的属性直接作为参数展示而不是嵌套在对象内，默认 false）
   # 如果不添加该全局配置，可以在需要如此处理的对象参数类上使用 @ParameterObject
   default-flat-param-object: true
@@ -127,14 +156,85 @@ knife4j:
     # 自定义 footer 内容，支持 Markdown 语法
     footer-custom-content: 'Copyright © 2022-present [${project.contact.name}](${project.contact.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
 
+--- ### 全局响应配置
+continew-starter.web:
+  response:
+    # 是否开启国际化（默认：false）
+    i18n: false
+    # 自定义失败 HTTP 状态码（默认：200，建议业务和通信状态码区分）
+    default-http-status-code-on-error: 200
+    # 自定义成功响应码（默认：0）
+    default-success-code: 0
+    # 自定义成功提示（默认：ok）
+    default-success-msg: ok
+    # 自定义失败响应码（默认：1）
+    default-error-code: 1
+    # 自定义失败提示（默认：error）
+    default-error-msg: error
+    # 是否将原生异常错误信息填充到状态信息中
+    origin-exception-using-detail-message: false
+    # 响应类全名（配置后 response-style 将不再生效）
+    response-class-full-name: top.continew.starter.web.model.R
+
+--- ### 日志配置
+## API 请求/响应日志配置
+continew-starter.log:
+  # 记录信息
+  includes:
+    - DESCRIPTION
+    - MODULE
+    - REQUEST_HEADERS
+    - REQUEST_BODY
+    - IP_ADDRESS
+    - BROWSER
+    - OS
+    - RESPONSE_HEADERS
+    - RESPONSE_BODY
+## 项目日志配置
+logging:
+  config: classpath:logback-spring.xml
+
+--- ### 链路追踪配置
+continew-starter.trace:
+  enabled: true
+  trace-id-name: traceId
+  ## TLog 配置
+  tlog:
+    enable-invoke-time-print: false
+    pattern: '[$spanId][$traceId]'
+    mdc-enable: false
+
+--- ### 全局树结构配置（简单树，对应前端 UI）
+continew-starter.crud:
+  tree:
+    id-key: key
+    name-key: title
+    weight-key: sort
+
+--- ### 安全配置：密码编码器配置
+continew-starter.security:
+  password:
+    enabled: true
+    # BCryptPasswordEncoder（如有改动，需同步调整 top.continew.admin.common.config.mybatis.BCryptEncryptor）
+    encoding-id: bcrypt
+
+--- ### 限流器配置
+continew-starter:
+  rate-limiter:
+    enabled: true
+    key-prefix: RateLimiter
+
 --- ### Sa-Token 配置
 sa-token:
   # Token 名称（同时也是 cookie 名称）
   token-name: Authorization
-  # Token 有效期（单位：秒，默认 30 天，-1 代表永不过期）
-  timeout: 86400
-  # Token 最低活跃频率（单位：秒，默认 -1，代表不限制，永不冻结。如果 token 超过此时间没有访问系统就会被冻结）
-  active-timeout: 1800
+  ## 提示：通过 [系统管理/系统配置/客户端配置]功能 动态维护，如果不需要可移除相关配置代码，放开下方注释
+  # 是否启用动态 activeTimeout 功能
+  dynamic-active-timeout: true
+#  # Token 有效期（单位：秒，默认 30 天，-1 代表永不过期）
+#  timeout: 86400
+#  # Token 最低活跃频率（单位：秒，默认 -1，代表不限制，永不冻结。如果 token 超过此时间没有访问系统就会被冻结）
+#  active-timeout: 1800
   # 是否打开自动续签（如果此值为 true，框架会在每次直接或间接调用 getLoginId() 时进行一次过期检查与续签操作）
   auto-renew: true
   # 是否允许同一账号多地同时登录（为 true 时允许一起登录，为 false 时新登录挤掉旧登录）
@@ -143,8 +243,6 @@ sa-token:
   is-share: false
   # 是否输出操作日志
   is-log: false
-  # 是否启用动态 activeTimeout 功能
-  dynamic-active-timeout: true
   # JWT 秘钥
   jwt-secret-key: asdasdasifhueuiwyurfewbfjsdafjk
   ## 扩展配置
@@ -220,74 +318,6 @@ auth:
       - /auth/logout
       - /system/user/password
 
---- ### 服务器配置
-server:
-  servlet:
-    # 应用访问路径
-    context-path: /
-  ## Undertow 服务器配置
-  undertow:
-    # HTTP POST 请求内容的大小上限（默认 -1，不限制）
-    max-http-post-size: -1
-    # 以下的配置会影响 buffer，这些 buffer 会用于服务器连接的 IO 操作，有点类似 Netty 的池化内存管理
-    # 每块 buffer的空间大小（越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可）
-    buffer-size: 512
-    # 是否分配的直接内存（NIO 直接分配的堆外内存）
-    direct-buffers: true
-    threads:
-      # 设置 IO 线程数，它主要执行非阻塞的任务，它们会负责多个连接（默认每个 CPU 核心一个线程）
-      io: 8
-      # 阻塞任务线程池，当执行类似 Servlet 请求阻塞操作，Undertow 会从这个线程池中取得线程（它的值设置取决于系统的负载）
-      worker: 256
-
---- ### Spring 配置
-spring:
-  application:
-    name: ${project.app-name}
-  main:
-    # 允许定义重名的 bean 对象覆盖原有的 bean
-    allow-bean-definition-overriding: true
-    # 允许循环依赖
-    allow-circular-references: true
-  ## 环境配置
-  profiles:
-    # 启用的环境
-    active: dev
-    include:
-      - generator
-  ## 线程池配置（默认启用扩展配置，如未指定 corePoolSize、maxPoolSize 则根据机器配置自动设置）
-  task:
-    # 异步任务
-    execution:
-      thread-name-prefix: task-pool
-      # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
-      # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
-      rejected-policy: CALLER_RUNS
-      pool:
-        keep-alive: 300s
-      shutdown:
-        # 是否等待任务执行完成再关闭线程池（默认 false）
-        await-termination: true
-        # 等待时间
-        await-termination-period: 30s
-    # 定时任务
-    scheduling:
-      thread-name-prefix: schedule-pool
-      # 任务拒绝策略（默认 ABORT，不执行新任务，直接抛出 RejectedExecutionException 异常）
-      # CALLER_RUNS：提交的任务在执行被拒绝时，会由提交任务的线程去执行
-      rejected-policy: CALLER_RUNS
-      shutdown:
-        # 是否等待任务执行完成再关闭线程池（默认 false）
-        await-termination: true
-        # 等待时间
-        await-termination-period: 30s
-
---- ### 健康检查配置
-management.health:
-  mail:
-    # 关闭邮箱健康检查（邮箱配置错误或邮箱服务器不可用时，健康检查会报错）
-    enabled: false
-
 #多租户配置
 continew-starter.tenant:
   enabled: true
@@ -308,14 +338,12 @@ continew-starter.tenant:
     - sys_sms_log
   #租户不能使用的菜单
   ignore-menus:
-    - 1050 #菜单
-    - 1070 #字典
-    - 1080
-    - 1110 #储存配置和系统配置
-    - 1190
+    - 1130 #字典管理
+    - 1140
+    - 1150 #系统配置
+    - 2050 #短信日志
     - 3000 #任务调度
     - 9000 #代码生成
-    - 10010 #租户管理
     - 7000 #能力开放
-    - 1180 #客户端管理
-    - 1200 #短信配置
+    - 7010 #应用管理
+    - 10010 #租户管理

@@ -25,13 +25,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 用户角色修改参数
+ * 用户角色修改请求参数
  *
  * @author Charles7c
  * @since 2023/2/24 23:05
  */
 @Data
-@Schema(description = "用户角色修改参数")
+@Schema(description = "用户角色修改请求参数")
 public class UserRoleUpdateReq implements Serializable {
 
     @Serial

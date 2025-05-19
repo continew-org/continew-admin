@@ -30,11 +30,6 @@ public class ContainerConstants {
     public static final String USER_NICKNAME = "UserNickname";
 
     /**
-     * 文件信息
-     */
-    public static final String FILE_INFO = "FileInfo";
-
-    /**
      * 用户角色 ID 列表
      */
     public static final String USER_ROLE_ID_LIST = "UserRoleIdList";

@@ -23,13 +23,13 @@ import top.continew.admin.common.model.resp.BaseDetailResp;
 import java.io.Serial;
 
 /**
- * 字典信息
+ * 字典响应参数
  *
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
 @Data
-@Schema(description = "字典信息")
+@Schema(description = "字典响应参数")
 public class DictResp extends BaseDetailResp {
 
     @Serial

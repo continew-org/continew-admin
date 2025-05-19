@@ -30,13 +30,13 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
- * 用户信息
+ * 登录用户响应参数
  *
  * @author Charles7c
  * @since 2022/12/29 20:15
  */
 @Data
-@Schema(description = "用户信息")
+@Schema(description = "登录用户响应参数")
 public class UserInfoResp implements Serializable {
 
     @Serial

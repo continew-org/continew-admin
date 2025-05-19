@@ -8,7 +8,11 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 import top.continew.admin.common.model.resp.BaseDetailResp;
-
+<#if imports??>
+    <#list imports as className>
+import ${className};
+    </#list>
+</#if>
 import java.io.Serial;
 <#if hasTimeField>
 import java.time.*;

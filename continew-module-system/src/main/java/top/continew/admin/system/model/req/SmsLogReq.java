@@ -23,7 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 创建或修改短信日志参数
+ * 短信日志创建或修改请求参数
  *
  * @author luoqiz
  * @author Charles7c

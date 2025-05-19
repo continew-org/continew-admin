@@ -50,8 +50,9 @@ import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.model.entity.BaseIdDO;
-import top.continew.starter.extension.crud.model.resp.BaseIdResp;
 import top.continew.admin.common.model.resp.BaseResp;
+import top.continew.starter.extension.crud.model.req.IdsReq;
+import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.tenant.TenantHandler;
 
 import java.util.List;
@@ -90,13 +91,13 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
 
     @Override
     @DSTransactional
-    public BaseIdResp<Long> create(TenantReq req) {
+    public IdResp<Long> create(TenantReq req) {
         //套餐菜单
         TenantPackageDetailResp detailResp = packageService.get(req.getPackageId());
         CheckUtils.throwIf(detailResp.getMenuIds().isEmpty(), "该套餐无可用菜单");
         List<MenuDO> menuRespList = menuService.listByIds(detailResp.getMenuIds());
         //租户添加
-        BaseIdResp<Long> baseIdResp = super.create(req);
+        IdResp<Long> baseIdResp = super.create(req);
         //在租户中执行数据插入
         SpringUtil.getBean(TenantHandler.class).execute(baseIdResp.getId(), () -> {
             //租户部门初始化
@@ -117,10 +118,11 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
         return baseIdResp;
     }
 
+
     @Override
-    public void delete(List<Long> ids) {
+    public void delete(IdsReq ids) {
         if (false) {
-            for (Long id : ids) {
+            for (Long id : ids.getIds()) {
                 //在租户中执行数据清除
                 SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
                     //系统数据清除

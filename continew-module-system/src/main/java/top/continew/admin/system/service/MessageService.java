@@ -44,7 +44,7 @@ public interface MessageService {
     /**
      * 新增
      *
-     * @param req        新增信息
+     * @param req        请求参数
      * @param userIdList 接收人列表
      */
     void add(MessageReq req, List<Long> userIdList);

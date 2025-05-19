@@ -1,3 +1,61 @@
+## [v3.6.0](https://github.com/continew-org/continew-admin/compare/v3.5.0...v3.6.0) (2025-04-13)
+
+### ✨ 新特性
+
+- 添加字典和菜单缓存清除接口，并优化字典的缓存逻辑 ([093d2d3](https://github.com/continew-org/continew-admin/commit/093d2d3c8aad5c2aa27d1d0d59b584a2a881b643)) ([a300d36](https://github.com/continew-org/continew-admin/commit/a300d36d719d6e828d9736619260dd2ddde08f10))
+- 新增短信配置 (GitHub#144@luoqiz) ([1a4716f](https://github.com/continew-org/continew-admin/commit/1a4716f3ba614a2278bcba7b937b1af62d84e02e)) ([394b93e](https://github.com/continew-org/continew-admin/commit/394b93ead55c7be1d5b99bc3090ee9f51c4f95a6)) ([78b8c70](https://github.com/continew-org/continew-admin/commit/78b8c7000b92b447b61e85ad0b365894518efc03))
+- 新增普通用户角色并调整第三方登录用户默认角色 ([594ea32](https://github.com/continew-org/continew-admin/commit/594ea3208d6cca33b50394f81fa69c38b6046ec5))
+- 新增 MissingServletRequestParameterException、HttpMessageNotReadableException 异常处理 ([754ef06](https://github.com/continew-org/continew-admin/commit/754ef0639baf097fb67f59bedc7c1a7e11714c5b))
+- 【generator】支持生成枚举类型属性 (Gitee#53@lcyearn) ([1de7b20](https://github.com/continew-org/continew-admin/commit/1de7b20fb0845e1d9ac1db553cbbf7ee98678b4f))
+- 新增个人消息接口，调整个人信息接口地址 ([e8aa739](https://github.com/continew-org/continew-admin/commit/e8aa739860a9e01b9bf63a55ffae37ee92df4c44))
+- 新增 Excel 字典数据转换器 ([449478b](https://github.com/continew-org/continew-admin/commit/449478b188d15fa10069fe5ad7784e436387b9e0))
+
+### 💎 功能优化
+
+- 上传文件后返回id及缩略图 (GitHub#137@luoqiz) ([d83fd0d](https://github.com/continew-org/continew-admin/commit/d83fd0d5cb93fc4ba617e110bbaaff3a867a90f6))
+- 优化文件大小限制的错误提示信息 ([b6f01bc](https://github.com/continew-org/continew-admin/commit/b6f01bc2d061dac5a09ca712144ab9de41382b9b))
+- 文件添加路径和md5值 (GitHub#138@luoqiz) ([42970d9](https://github.com/continew-org/continew-admin/commit/42970d91ebde56436586c99737aa141cc5a7f2af))
+- 优化文件相关类的属性顺序和注释，增强代码可读性 ([a75c2cc](https://github.com/continew-org/continew-admin/commit/a75c2cc4536fd81c8676916c7e79d925750779c1))
+- 优化数据库配置文件 ([de9c9c5](https://github.com/continew-org/continew-admin/commit/de9c9c5abd52e0f7b03873da55b1df13259d0c6b))
+- 优化文件相关代码 ([74c4270](https://github.com/continew-org/continew-admin/commit/74c4270323782f37947214c43024258831a26006))
+- 【generator】更新代码生成列表模板 ([6b17742](https://github.com/continew-org/continew-admin/commit/6b17742a1b8f83212c6a3df51a9192f7aa51dc8b))
+- 调整用户相关类到 user 包下 ([b879f02](https://github.com/continew-org/continew-admin/commit/b879f02c682e5eb7be5bb8e60b5646c7c157e2c9))
+- 将短信验证码长度从 4 位增加到 6 位 (PR by Gitee@hagyao520) ([611c3d8](https://github.com/continew-org/continew-admin/commit/611c3d8a0a9914ac911129b33f25462bab38eb11))
+- 优化字典项颜色 ([1861a80](https://github.com/continew-org/continew-admin/commit/1861a809795804d4ac380e3f433b3b5df94370a4))
+- 移除 DateTimeFormat 注解的使用，日期类型统一改为 LocalDateTime ([7d4ae0b](https://github.com/continew-org/continew-admin/commit/7d4ae0b35a9180022b87e64bc85165270f6fe404))
+- 用 @Email 和 @Mobile 注解替换了部分验证，提高了代码可读性，修改了多处错误提示信息，使其更加友好 ([19639c9](https://github.com/continew-org/continew-admin/commit/19639c946a0117a1efed2aad764f766d08e0a73a))
+- 重构任务调度模块，使用 OpenFeign 替代 WebClient ([c041496](https://github.com/continew-org/continew-admin/commit/c041496f65e73f7d513cf9ecdce9c324a8c6c5de))
+- 账号锁定提示增加解锁时间显示 ([eef9232](https://github.com/continew-org/continew-admin/commit/eef92326902fd207e22e20a9cacd0f3892e59d3a))
+- 修改头像接口调整为 Patch 请求方式 (Gitee#56@httpsjt) ([aed2753](https://github.com/continew-org/continew-admin/commit/aed27533a64ff80a45c4ba4964e8d4db0f1d56dc))
+- 完善系统配置菜单及权限配置 ([36f975c](https://github.com/continew-org/continew-admin/commit/36f975c30bd5b2462d856365f88bf3dbb03525ed))
+- 移除终端部分配置字段 ([240d6fc](https://github.com/continew-org/continew-admin/commit/240d6fcb01f5cf254a9e6230f5b6e9b25432e7d1))
+- 优化演示环境数据清理定时任务逻辑 ([715b950](https://github.com/continew-org/continew-admin/commit/715b950fa4382ab3a5a9109424759952786d0b2e))
+- 完善配置文件部分配置说明 ([01ef348](https://github.com/continew-org/continew-admin/commit/01ef34845a17690e0010f38845adf7b3d0c0f067))
+- 优化 Nginx 配置文件 ([ca022cf](https://github.com/continew-org/continew-admin/commit/ca022cfcd5fbfab88f41019b96ba6ce2da1dcce9))
+- 从 application.yml 中删除了逻辑删除相关的配置项（4.x版本回收站功能会再增加回来） ([3854040](https://github.com/continew-org/continew-admin/commit/3854040d111ce2cd668c6e2b30def0cdd40a50f8))
+- 优化通知公告菜单名称 ([9ce4ec5](https://github.com/continew-org/continew-admin/commit/9ce4ec538c4c31114a65f4d1b8e3890ce071097c))
+- 头像不再存储为 base64，而是存储到文件管理中 (GitHub#142@luoqiz) ([27cf464](https://github.com/continew-org/continew-admin/commit/27cf46409ac755878f0128d5c4828503068a237e))
+- 重构删除接口，由 URL 传参重构为请求体传参
+
+### 🐛 问题修复
+
+- 修复访问日志配置参数错误 (Gitee#48@dom-w) ([c130f9c](https://github.com/continew-org/continew-admin/commit/c130f9c0bbec5e388f0a292797631479a24bfbf8))
+
+- 【generator】修复前端模板字典码使用错误 ([2e76caa](https://github.com/continew-org/continew-admin/commit/2e76caa35ed39dc5bb7aec242557af67ce98337b))
+- 修复枚举字典初始化时可能存在空字典的问题 ([1ce636f](https://github.com/continew-org/continew-admin/commit/1ce636feec02d585b6a3fd83adf8402c91281121))
+- 增加设置默认存储前的状态检查 ([603b12d](https://github.com/continew-org/continew-admin/commit/603b12d10dfa0453c9596615932673d17995bf05))
+- 修复删除用户时未及时清除第三方账号信息的错误 (PR by Gitee@hagyao520) ([2ec0b34](https://github.com/continew-org/continew-admin/commit/2ec0b343e0286b2f31caa3def4dffac6cdd0915f))
+- 修复文件路径中存在bucketName返回错误relativePath的问题 (Gitee#51@limin04551) ([da67487](https://github.com/continew-org/continew-admin/commit/da674879a37d6c4c5a7209c92ce4893f9f946fcf))
+- 修复文件管理域名未配置斜杠未后缀无法正常显示的问题 ([6d58a3b](https://github.com/continew-org/continew-admin/commit/6d58a3b7ddc4523567602efb5d49a64681f88618))
+- 通知列表查询的数据不准确的问题 (Gitee#54@kiki1373639299) ([7cb34b3](https://github.com/continew-org/continew-admin/commit/7cb34b3aa54a019ff57a57ddf2146d4b781e0f4f))
+- 修复 JustAuth 部分三方用户授权登录问题 (GitHub#148@Top2Hub) ([e2bac69](https://github.com/continew-org/continew-admin/commit/e2bac69de5a3efbc769214c2d56ea8380be2719a))
+
+### 📦 依赖升级
+
+- 使用 BellSoft Liberica JDK 17 替代 OpenJDK (Gitee#55@dom-w) ([67e6507](https://github.com/continew-org/continew-admin/commit/67e65072407b50c1c2a35828ec988e83878a0f9a))
+
+- 🔥ContiNew Starter 2.9.0 => 2.11.0 (更多特性及依赖升级详情，请查看 ContiNew Starter [更新日志](https://github.com/continew-org/continew-starter/blob/dev/CHANGELOG.md))
+
 ## [v3.5.0](https://github.com/continew-org/continew-admin/compare/v3.4.1...v3.5.0) (2025-03-05)
 
 ### ✨ 新特性

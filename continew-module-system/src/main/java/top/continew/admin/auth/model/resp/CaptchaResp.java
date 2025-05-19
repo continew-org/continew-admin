@@ -24,14 +24,14 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 验证码信息
+ * 验证码响应参数
  *
  * @author Charles7c
  * @since 2022/12/11 13:55
  */
 @Data
 @Builder
-@Schema(description = "验证码信息")
+@Schema(description = "验证码响应参数")
 public class CaptchaResp implements Serializable {
 
     @Serial

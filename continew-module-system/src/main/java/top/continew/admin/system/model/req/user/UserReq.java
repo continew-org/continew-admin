@@ -31,13 +31,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 创建或修改用户参数
+ * 用户创建或修改请求参数
  *
  * @author Charles7c
  * @since 2023/2/20 21:03
  */
 @Data
-@Schema(description = "创建或修改用户参数")
+@Schema(description = "用户创建或修改请求参数")
 public class UserReq implements Serializable {
 
     @Serial
