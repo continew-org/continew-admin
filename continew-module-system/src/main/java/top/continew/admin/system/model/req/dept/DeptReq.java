@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.system.model.req;
+package top.continew.admin.system.model.req.dept;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
