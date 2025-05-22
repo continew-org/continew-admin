@@ -24,7 +24,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.validation.ValidationUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import jakarta.annotation.Resource;
@@ -181,7 +181,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         DeptImportParseResp deptImportResp = new DeptImportParseResp();
         List<DeptImportRowReq> importRowList = Collections.emptyList();
         try {
-            importRowList = EasyExcel.read(file.getInputStream())
+            importRowList = EasyExcelFactory.read(file.getInputStream())
                     .head(DeptImportRowReq.class)
                     .sheet()
                     .headRowNumber(1)
@@ -235,7 +235,6 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
 
         List<DeptDO> addList = new ArrayList<>();
 
-        a:
         for (DeptImportRowReq row : importDeptList) {
             String[] parentDeptArr = row.getParentDeptName().split(StringConstants.DASHED);
             DeptDO parentDept = null;
@@ -326,10 +325,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
      */
     private List<DeptImportRowReq> filterImportData(List<DeptImportRowReq> importRowList) {
         // 校验过滤
-        List<DeptImportRowReq> list = importRowList.stream()
+        return importRowList.stream()
                 .filter(row -> ValidationUtil.validate(row).isEmpty())
                 .toList();
-        return list;
     }
 
     private int countExistParentList(List<DeptImportRowReq> importRowList) {
