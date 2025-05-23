@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2022-present Charles7c Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package top.continew.admin.system.model.req.dept;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.enums.ImportPolicyEnum;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+/**
+ * 部门导入请求参数
+ *
+ * @author edric
+ * @since 2025-5-22 10:42
+ */
+@Data
+@Schema(description = "部门导入请求参数")
+public class DeptImportReq implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 导入会话KEY
+     */
+    @Schema(description = "导入会话KEY", example = "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed")
+    @NotBlank(message = "导入已过期，请重新上传")
+    private String importKey;
+
+    /**
+     * 重复邮箱策略
+     */
+    @Schema(description = "重复上级部门策略", example = "1")
+    @NotNull(message = "重复上级部门不能为空")
+    private ImportPolicyEnum deficiencyParentDeptRows;
+
+    /**
+     * 重复部门策略
+     */
+    @Schema(description = "重复部门策略", example = "1")
+    @NotNull(message = "重复部门策略不能为空")
+    private ImportPolicyEnum duplicateDeptRows;
+
+    /**
+     * 默认状态
+     */
+    @Schema(description = "默认状态", example = "1")
+    private DisEnableStatusEnum defaultStatus;
+}

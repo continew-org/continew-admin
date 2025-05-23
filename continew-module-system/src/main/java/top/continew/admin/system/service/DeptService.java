@@ -16,13 +16,19 @@
 
 package top.continew.admin.system.service;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.query.DeptQuery;
-import top.continew.admin.system.model.req.DeptReq;
-import top.continew.admin.system.model.resp.DeptResp;
+import top.continew.admin.system.model.req.dept.DeptImportReq;
+import top.continew.admin.system.model.req.dept.DeptReq;
+import top.continew.admin.system.model.resp.dept.DeptResp;
+import top.continew.admin.system.model.resp.dept.DeptImportParseResp;
+import top.continew.admin.system.model.resp.dept.DeptImportResp;
 import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -56,4 +62,29 @@ public interface DeptService extends BaseService<DeptResp, DeptResp, DeptQuery, 
      * @return 部门数量
      */
     int countByNames(List<String> deptNames);
+
+    /**
+     * 下载导入模板
+     *
+     * @param response 响应对象
+     * @throws IOException /
+     */
+    void downloadImportTemplate(HttpServletResponse response) throws IOException;
+
+
+    /**
+     * 解析导入数据
+     *
+     * @param file 导入文件
+     * @return 解析结果
+     */
+    DeptImportParseResp parseImport(MultipartFile file);
+
+    /**
+     * 导入数据
+     *
+     * @param req 请求参数
+     * @return 导入结果
+     */
+    DeptImportResp importDept(DeptImportReq req);
 }

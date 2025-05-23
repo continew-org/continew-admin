@@ -31,7 +31,7 @@ import top.continew.admin.common.constant.ContainerConstants;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.admin.system.model.resp.DeptResp;
+import top.continew.admin.system.model.resp.dept.DeptResp;
 import top.continew.admin.system.service.DeptService;
 import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.file.excel.converter.ExcelListConverter;
