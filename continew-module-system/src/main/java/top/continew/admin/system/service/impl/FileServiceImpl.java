@@ -47,6 +47,7 @@ import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,19 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     public FileInfo upload(MultipartFile file, String parentPath, String storageCode) throws IOException {
         // 校验文件格式
         String extName = FileNameUtil.extName(file.getOriginalFilename());
+        return getFileInfo(file, parentPath, storageCode, extName);
+    }
+
+    /**
+     * 上传文件并返回上传后的文件信息
+     * 
+     * @param file
+     * @param parentPath
+     * @param storageCode
+     * @param extName
+     * @return
+     */
+    private FileInfo getFileInfo(Object file, String parentPath, String storageCode, String extName) {
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
@@ -129,6 +143,13 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         this.createParentDir(parentPath, storage);
         // 上传
         return uploadPretreatment.upload();
+    }
+
+    @Override
+    public FileInfo upload(File file, String parentPath, String storageCode) throws IOException {
+        // 校验文件格式
+        String extName = FileNameUtil.extName(file.getName());
+        return getFileInfo(file, parentPath, storageCode, extName);
     }
 
     @Override

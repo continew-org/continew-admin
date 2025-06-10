@@ -27,6 +27,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.data.mp.service.IService;
 import top.continew.starter.extension.crud.service.BaseService;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -72,6 +73,40 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      * @throws IOException /
      */
     FileInfo upload(MultipartFile file, String parentPath, String storageCode) throws IOException;
+
+    /**
+     * 上传到默认存储
+     *
+     * @param file 文件信息
+     * @return 文件信息
+     * @throws IOException /
+     */
+    default FileInfo upload(File file) throws IOException {
+        return upload(file, getDefaultParentPath(), null);
+    }
+
+    /**
+     * 上传到默认存储
+     *
+     * @param file       文件信息
+     * @param parentPath 上级目录
+     * @return 文件信息
+     * @throws IOException /
+     */
+    default FileInfo upload(File file, String parentPath) throws IOException {
+        return upload(file, parentPath, null);
+    }
+
+    /**
+     * 上传到指定存储
+     *
+     * @param file        文件信息
+     * @param parentPath  上级目录
+     * @param storageCode 存储编码
+     * @return 文件信息
+     * @throws IOException /
+     */
+    FileInfo upload(File file, String parentPath, String storageCode) throws IOException;
 
     /**
      * 创建目录
