@@ -19,9 +19,9 @@ services:
       #MYSQL_USER: 你的数据库用户名
       #MYSQL_PASSWORD: 你的数据库密码
     volumes:
-      - /docker/mysql/conf/:/etc/mysql/conf.d/
-      - /docker/mysql/data/:/var/lib/mysql/
-      - /docker/mysql/log:/var/log/mysql # mysql 日志目录
+      - ./mysql/conf/:/etc/mysql/conf.d/
+      - ./mysql/data/:/var/lib/mysql/
+      - ./mysql/logs:/var/log/mysql # mysql 日志目录
       #- ../sql/mysql8:/docker-entrypoint-initdb.d # 初始化 SQL 脚本目录
     command:
       --default-authentication-plugin=mysql_native_password
@@ -53,27 +53,10 @@ services:
     environment:
       TZ: Asia/Shanghai
     volumes:
-      - /docker/redis/conf/redis.conf:/usr/local/redis/config/redis.conf
-      - /docker/redis/data/:/data/
-      - /docker/redis/logs/:/logs/
+      - ./redis/conf/redis.conf:/usr/local/redis/config/redis.conf
+      - ./redis/data/:/data/
+      - ./redis/logs/:/logs/
     command: redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 123456
     networks:
       - continew  # 加入 continew 网络
 
-  nginx:
-    image: nginx:1.25.3
-    restart: always
-    container_name: nginx
-    ports:
-      - '80:80'
-      - '443:443'
-    environment:
-      TZ: Asia/Shanghai
-    volumes:
-      - /docker/nginx/conf/:/etc/nginx/
-      - /docker/nginx/cert/:/etc/nginx/cert/
-      - /docker/nginx/logs/:/var/log/nginx/
-      # 前端页面目录
-      - /docker/continew-admin/html/:/usr/share/nginx/html/
-    networks:
-      - continew  # 加入 continew 网络
