@@ -44,3 +44,6 @@ build/
 *.diff
 *.patch
 *.tmp
+# mysql和redis的持久化文件、日志文件
+data
+log
