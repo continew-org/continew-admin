@@ -1,0 +1,79 @@
+# 创建一个continew的桥接网络
+networks:
+  continew:
+    driver: bridge
+
+services:
+  mysql:
+    image: mysql:8.0.33
+    restart: always
+    container_name: mysql8.0.33
+    ports:
+      - '3306:3306'
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+      MYSQL_ROOT_PASSWORD: 123456  # 你的 root 用户密码
+      # 初始化数据库（后续的初始化 SQL 会在这个库执行）
+      MYSQL_DATABASE: continew_admin
+      #MYSQL_USER: 你的数据库用户名
+      #MYSQL_PASSWORD: 你的数据库密码
+    volumes:
+      - /docker/mysql/conf/:/etc/mysql/conf.d/
+      - /docker/mysql/data/:/var/lib/mysql/
+      - /docker/mysql/log:/var/log/mysql # mysql 日志目录
+      #- ../sql/mysql8:/docker-entrypoint-initdb.d # 初始化 SQL 脚本目录
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    networks:
+        - continew  # 加入 continew 网络
+#  postgresql:
+#    image: postgres:14.2
+#    restart: always
+#    container_name: postgresql
+#    ports:
+#      - '5432:5432'
+#    environment:
+#      TZ: Asia/Shanghai
+#      POSTGRES_USER: 你的用户名
+#      POSTGRES_PASSWORD: 你的用户密码
+#      POSTGRES_DB: continew_admin
+#    volumes:
+#      - /docker/postgresql/data/:/var/lib/postgresql/data/
+  redis:
+    image: redis:7.2.3
+    restart: always
+    container_name: redis7.2.3
+    ports:
+      - '6379:6379'
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /docker/redis/conf/redis.conf:/usr/local/redis/config/redis.conf
+      - /docker/redis/data/:/data/
+      - /docker/redis/logs/:/logs/
+    command: redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 123456
+    networks:
+      - continew  # 加入 continew 网络
+
+  nginx:
+    image: nginx:1.25.3
+    restart: always
+    container_name: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /docker/nginx/conf/:/etc/nginx/
+      - /docker/nginx/cert/:/etc/nginx/cert/
+      - /docker/nginx/logs/:/var/log/nginx/
+      # 前端页面目录
+      - /docker/continew-admin/html/:/usr/share/nginx/html/
+    networks:
+      - continew  # 加入 continew 网络
