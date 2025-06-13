@@ -15,14 +15,14 @@ services:
       LANG: en_US.UTF-8
       MYSQL_ROOT_PASSWORD: 123456  # 你的 root 用户密码
       # 初始化数据库（后续的初始化 SQL 会在这个库执行）
-      MYSQL_DATABASE: continew_admin
+      # MYSQL_DATABASE: continew_admin
       #MYSQL_USER: 你的数据库用户名
       #MYSQL_PASSWORD: 你的数据库密码
     volumes:
       - ./mysql/conf/:/etc/mysql/conf.d/
       - ./mysql/data/:/var/lib/mysql/
       - ./mysql/logs:/var/log/mysql # mysql 日志目录
-      #- ../sql/mysql8:/docker-entrypoint-initdb.d # 初始化 SQL 脚本目录
+      - ./mysql/sql:/docker-entrypoint-initdb.d # 初始化 SQL 脚本目录
     command:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
