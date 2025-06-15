@@ -76,7 +76,9 @@ public class MessageServiceImpl implements MessageService {
         // 查询当前用户的未读消息
         List<MessageDO> list = baseMapper.selectUnreadListByUserId(userId);
         List<Long> unreadIds = list.stream().map(MessageDO::getId).toList();
-        messageLogService.addWithUserId(CollUtil.intersection(unreadIds, ids).stream().toList(), userId);
+        messageLogService.addWithUserId(CollUtil.isNotEmpty(ids)
+            ? CollUtil.intersection(unreadIds, ids).stream().toList()
+            : unreadIds, userId);
         WebSocketUtils.sendMessage(StpUtil.getTokenValueByLoginId(userId), String.valueOf(baseMapper
             .selectUnreadListByUserId(userId)
             .size()));
