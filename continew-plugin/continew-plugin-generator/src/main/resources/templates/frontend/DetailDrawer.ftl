@@ -2,7 +2,13 @@
   <a-drawer v-model:visible="visible" title="${businessName}详情" :width="width >= 600 ? 600 : '100%'" :footer="false">
     <a-descriptions :column="2" size="large" class="general-description">
       <#list fieldConfigs as fieldConfig>
+      <#if fieldConfig.dictCode?? && fieldConfig.dictCode != "">
+      <a-descriptions-item label="${fieldConfig.comment}">
+        <GiCellTag :value="dataDetail?.${fieldConfig.fieldName}" :dict="${fieldConfig.dictCode}" />
+      </a-descriptions-item>
+      <#else>
       <a-descriptions-item label="${fieldConfig.comment}">{{ dataDetail?.${fieldConfig.fieldName} }}</a-descriptions-item>
+      </#if>
       <#if fieldConfig.fieldName = 'createUser'>
       <a-descriptions-item label="创建人">{{ dataDetail?.createUserString }}</a-descriptions-item>
       <#elseif fieldConfig.fieldName = 'updateUser'>
@@ -16,6 +22,11 @@
 <script setup lang="ts">
 import { useWindowSize } from '@vueuse/core'
 import { type ${classNamePrefix}DetailResp, get${classNamePrefix} as getDetail } from '@/apis/${apiModuleName}/${apiName}'
+import { useDict } from '@/hooks/app'
+
+<#if hasDictField>
+const { <#list dictCodes as dictCode>${dictCode}<#if dictCode_has_next>,</#if></#list> } = useDict(<#list dictCodes as dictCode>'${dictCode}'<#if dictCode_has_next>,</#if></#list>)
+</#if>
 
 const { width } = useWindowSize()
 
