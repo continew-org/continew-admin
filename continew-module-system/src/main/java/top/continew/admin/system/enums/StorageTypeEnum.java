@@ -16,9 +16,11 @@
 
 package top.continew.admin.system.enums;
 
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.validation.ValidationGroup;
 import top.continew.starter.core.constant.StringConstants;
@@ -62,8 +64,8 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
         @Override
         public void validate(StorageReq req) {
             ValidationUtils.validate(req, ValidationGroup.Storage.OSS.class);
-            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !URLUtils.isHttpUrl(req
-                .getDomain()), "域名格式不正确");
+            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !ReUtil
+                .isMatch(RegexConstants.HTTP_DOMAIN_URL, req.getDomain()), "域名格式不正确");
         }
     };
 

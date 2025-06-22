@@ -198,7 +198,6 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
                 config.setSecretKey(storage.getSecretKey());
                 config.setEndPoint(storage.getEndpoint());
                 config.setBucketName(storage.getBucketName());
-                config.setDomain(StrUtil.emptyIfNull(storage.getDomain()));
                 fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
                     .singletonList(config), null));
             }

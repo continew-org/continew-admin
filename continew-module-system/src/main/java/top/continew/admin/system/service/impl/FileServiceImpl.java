@@ -48,7 +48,6 @@ import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,65 +90,13 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
-    public FileInfo upload(MultipartFile file, String parentPath, String storageCode) throws IOException {
-        // 校验文件格式
-        String extName = FileNameUtil.extName(file.getOriginalFilename());
-        return getFileInfo(file, parentPath, storageCode, extName);
-    }
-
-    /**
-     * 上传文件并返回上传后的文件信息
-     * 
-     * @param file
-     * @param parentPath
-     * @param storageCode
-     * @param extName
-     * @return
-     */
-    private FileInfo getFileInfo(Object file, String parentPath, String storageCode, String extName) {
-        List<String> allExtensions = FileTypeEnum.getAllExtensions();
-        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
-            .join(StringConstants.COMMA, allExtensions));
-        // 构建上传预处理对象
-        StorageDO storage = storageService.getByCode(storageCode);
-        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(storage.getStatus()), "请先启用存储 [{}]", storage.getCode());
-        UploadPretreatment uploadPretreatment = fileStorageService.of(file)
-            .setPlatform(storage.getCode())
-            .setHashCalculatorSha256(true)
-            .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
-            .setPath(this.pretreatmentPath(parentPath));
-        // 图片文件生成缩略图
-        if (FileTypeEnum.IMAGE.getExtensions().contains(extName)) {
-            uploadPretreatment.setIgnoreThumbnailException(true, true);
-            uploadPretreatment.thumbnail(img -> img.size(100, 100));
-        }
-        uploadPretreatment.setProgressMonitor(new ProgressListener() {
-            @Override
-            public void start() {
-                log.info("开始上传");
-            }
-
-            @Override
-            public void progress(long progressSize, Long allSize) {
-                log.info("已上传 [{}]，总大小 [{}]", progressSize, allSize);
-            }
-
-            @Override
-            public void finish() {
-                log.info("上传结束");
-            }
-        });
-        // 创建父级目录
-        this.createParentDir(parentPath, storage);
-        // 上传
-        return uploadPretreatment.upload();
+    public FileInfo upload(MultipartFile file, String parentPath, String storageCode) {
+        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getOriginalFilename()));
     }
 
     @Override
-    public FileInfo upload(File file, String parentPath, String storageCode) throws IOException {
-        // 校验文件格式
-        String extName = FileNameUtil.extName(file.getName());
-        return getFileInfo(file, parentPath, storageCode, extName);
+    public FileInfo upload(File file, String parentPath, String storageCode) {
+        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getName()));
     }
 
     @Override
@@ -249,6 +196,54 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             fileResp.setThumbnailUrl(thumbnailUrl);
             fileResp.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
         }
+    }
+
+    /**
+     * 上传文件并返回上传后的文件信息
+     *
+     * @param file        文件
+     * @param parentPath  上级目录
+     * @param storageCode 存储引擎编码
+     * @param extName     文件扩展名
+     * @return 文件信息
+     */
+    private FileInfo upload(Object file, String parentPath, String storageCode, String extName) {
+        List<String> allExtensions = FileTypeEnum.getAllExtensions();
+        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
+            .join(StringConstants.COMMA, allExtensions));
+        // 构建上传预处理对象
+        StorageDO storage = storageService.getByCode(storageCode);
+        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(storage.getStatus()), "请先启用存储 [{}]", storage.getCode());
+        UploadPretreatment uploadPretreatment = fileStorageService.of(file)
+            .setPlatform(storage.getCode())
+            .setHashCalculatorSha256(true)
+            .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
+            .setPath(this.pretreatmentPath(parentPath));
+        // 图片文件生成缩略图
+        if (FileTypeEnum.IMAGE.getExtensions().contains(extName)) {
+            uploadPretreatment.setIgnoreThumbnailException(true, true);
+            uploadPretreatment.thumbnail(img -> img.size(100, 100));
+        }
+        uploadPretreatment.setProgressMonitor(new ProgressListener() {
+            @Override
+            public void start() {
+                log.info("开始上传");
+            }
+
+            @Override
+            public void progress(long progressSize, Long allSize) {
+                log.info("已上传 [{}]，总大小 [{}]", progressSize, allSize);
+            }
+
+            @Override
+            public void finish() {
+                log.info("上传结束");
+            }
+        });
+        // 创建父级目录
+        this.createParentDir(parentPath, storage);
+        // 上传
+        return uploadPretreatment.upload();
     }
 
     /**

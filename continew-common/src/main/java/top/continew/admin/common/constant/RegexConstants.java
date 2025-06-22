@@ -59,6 +59,11 @@ public class RegexConstants {
      */
     public static final String PACKAGE_NAME = "^(?:[a-zA-Z_][a-zA-Z0-9_]*\\.)*[a-zA-Z_][a-zA-Z0-9_]*$";
 
+    /**
+     * HTTP 域名 URL 正则
+     */
+    public static final String HTTP_DOMAIN_URL = "^(https?:\\/\\/)([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}(\\/[^\\s]*)?$";
+
     private RegexConstants() {
     }
 }
