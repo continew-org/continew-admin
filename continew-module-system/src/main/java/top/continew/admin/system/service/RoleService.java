@@ -67,7 +67,7 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * @param ids ID 列表
      * @return 名称列表
      */
-    List<String> listNameByIds(List<Long> ids);
+    List<RoleDO> listNameByIds(List<Long> ids);
 
     /**
      * 根据用户 ID 查询角色编码

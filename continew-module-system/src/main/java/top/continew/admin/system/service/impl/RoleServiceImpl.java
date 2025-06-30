@@ -17,7 +17,6 @@
 package top.continew.admin.system.service.impl;
 
 import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.MappingType;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alicp.jetcache.anno.CacheInvalidate;
@@ -167,13 +166,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     }
 
     @Override
-    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_NAME_LIST, type = MappingType.ORDER_OF_KEYS)
-    public List<String> listNameByIds(List<Long> ids) {
+    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_NAME_LIST, resultType = RoleDO.class)
+    public List<RoleDO> listNameByIds(List<Long> ids) {
         if (CollUtil.isEmpty(ids)) {
             return Collections.emptyList();
         }
-        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getName).in(RoleDO::getId, ids).list();
-        return roleList.stream().map(RoleDO::getName).toList();
+        return baseMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getId).in(RoleDO::getId, ids).list();
     }
 
     @Override

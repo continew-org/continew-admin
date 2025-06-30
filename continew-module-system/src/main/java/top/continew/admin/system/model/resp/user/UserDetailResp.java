@@ -105,7 +105,7 @@ public class UserDetailResp extends BaseDetailResp {
      * 角色 ID 列表
      */
     @Schema(description = "角色 ID 列表", example = "2")
-    @Assemble(prop = ":roleNames", container = ContainerConstants.USER_ROLE_NAME_LIST, handlerType = ManyToManyAssembleOperationHandler.class)
+    @Assemble(props = @Mapping(src = "name", ref = "roleNames"), container = ContainerConstants.USER_ROLE_NAME_LIST, handlerType = ManyToManyAssembleOperationHandler.class)
     @ExcelProperty(value = "角色 ID 列表", converter = ExcelListConverter.class, order = 8)
     private List<Long> roleIds;
 
