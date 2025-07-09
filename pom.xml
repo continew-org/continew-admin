@@ -13,19 +13,21 @@
     <parent>
         <groupId>top.continew</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>2.12.0</version>
+        <version>2.12.2</version>
     </parent>
 
     <groupId>top.continew</groupId>
     <artifactId>continew-admin</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Admin（Continue New Admin）持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。</description>
     <url>https://github.com/continew-org/continew-admin</url>
 
     <modules>
-        <module>continew-webapi</module>
-        <module>continew-module-system</module>
+        <module>continew-server</module>
+        <module>continew-system</module>
         <module>continew-plugin</module>
         <module>continew-common</module>
         <module>continew-extension</module>
@@ -33,7 +35,7 @@
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>3.7.0-SNAPSHOT</revision>
+        <revision>4.0.0-SNAPSHOT</revision>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -42,14 +44,14 @@
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
                 <groupId>top.continew</groupId>
-                <artifactId>continew-webapi</artifactId>
+                <artifactId>continew-server</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
                 <groupId>top.continew</groupId>
-                <artifactId>continew-module-system</artifactId>
+                <artifactId>continew-system</artifactId>
                 <version>${revision}</version>
             </dependency>
 

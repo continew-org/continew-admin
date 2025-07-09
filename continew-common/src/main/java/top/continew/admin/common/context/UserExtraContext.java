@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.IpUtils;
-import top.continew.starter.web.util.ServletUtils;
+import top.continew.starter.core.util.ServletUtils;
 
 import java.io.Serial;
 import java.io.Serializable;

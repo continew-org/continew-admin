@@ -9,6 +9,8 @@
 
     <artifactId>continew-extension</artifactId>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>扩展模块（存放其他扩展模块）</description>
 
     <modules>

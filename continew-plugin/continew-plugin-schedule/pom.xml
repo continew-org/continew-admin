@@ -8,6 +8,9 @@
     </parent>
 
     <artifactId>continew-plugin-schedule</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>任务调度插件</description>
 
     <dependencies>

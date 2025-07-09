@@ -56,7 +56,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        if (null == metaObject) {
+        if (metaObject == null) {
             return;
         }
         Long createUser = UserContextHolder.getUserId();
@@ -79,7 +79,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        if (null == metaObject) {
+        if (metaObject == null) {
             return;
         }
         Long updateUser = UserContextHolder.getUserId();
@@ -106,7 +106,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
     private void fillFieldValue(MetaObject metaObject, String fieldName, Object fillFieldValue, boolean isOverride) {
         if (metaObject.hasSetter(fieldName)) {
             Object fieldValue = metaObject.getValue(fieldName);
-            setFieldValByName(fieldName, null != fieldValue && !isOverride ? fieldValue : fillFieldValue, metaObject);
+            setFieldValByName(fieldName, fieldValue != null && !isOverride ? fieldValue : fillFieldValue, metaObject);
         }
     }
 }

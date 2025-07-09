@@ -66,7 +66,7 @@ public class UserContextHolder {
      */
     public static UserContext getContext() {
         UserContext context = CONTEXT_HOLDER.get();
-        if (null == context) {
+        if (context == null) {
             context = StpUtil.getSession().getModel(SaSession.USER, UserContext.class);
             CONTEXT_HOLDER.set(context);
         }
@@ -81,7 +81,7 @@ public class UserContextHolder {
      */
     public static UserContext getContext(Long userId) {
         SaSession session = StpUtil.getSessionByLoginId(userId, false);
-        if (null == session) {
+        if (session == null) {
             return null;
         }
         return session.getModel(SaSession.USER, UserContext.class);
@@ -103,7 +103,7 @@ public class UserContextHolder {
      */
     public static UserExtraContext getExtraContext() {
         UserExtraContext context = EXTRA_CONTEXT_HOLDER.get();
-        if (null == context) {
+        if (context == null) {
             context = getExtraContext(StpUtil.getTokenValue());
             EXTRA_CONTEXT_HOLDER.set(context);
         }

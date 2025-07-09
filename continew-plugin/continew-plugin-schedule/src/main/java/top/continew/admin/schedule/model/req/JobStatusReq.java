@@ -44,10 +44,4 @@ public class JobStatusReq implements Serializable {
     @Schema(description = "任务状态", example = "1")
     @NotNull(message = "任务状态无效")
     private JobStatusEnum jobStatus;
-
-    /**
-     * ID
-     */
-    @Schema(hidden = true)
-    private Long id;
 }

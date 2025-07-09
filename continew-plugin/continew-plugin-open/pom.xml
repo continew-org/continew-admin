@@ -10,5 +10,8 @@
     </parent>
 
     <artifactId>continew-plugin-open</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>能力开放插件（包括应用管理、API开放授权、API开发等）</description>
 </project>

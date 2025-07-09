@@ -36,7 +36,7 @@ public class WebSocketClientServiceImpl implements WebSocketClientService {
     public String getClientId(ServletServerHttpRequest request) {
         HttpServletRequest servletRequest = request.getServletRequest();
         String token = servletRequest.getParameter("token");
-        if (null == StpUtil.getLoginIdByToken(token)) {
+        if (StpUtil.getLoginIdByToken(token) == null) {
             throw new BusinessException("登录已过期，请重新登录");
         }
         return token;

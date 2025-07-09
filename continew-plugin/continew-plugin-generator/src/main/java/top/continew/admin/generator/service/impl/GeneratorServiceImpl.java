@@ -62,7 +62,7 @@ import top.continew.starter.data.core.enums.DatabaseType;
 import top.continew.starter.data.core.util.MetaUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.web.util.FileUploadUtils;
+import top.continew.starter.core.util.FileUploadUtils;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -119,7 +119,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Override
     public GenConfigDO getGenConfig(String tableName) throws SQLException {
         GenConfigDO genConfig = genConfigMapper.selectById(tableName);
-        if (null == genConfig) {
+        if (genConfig == null) {
             genConfig = new GenConfigDO(tableName);
             // 默认包名（当前包名）
             String packageName = ClassUtil.getPackage(GeneratorService.class);
@@ -134,7 +134,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             GenConfigDO lastGenConfig = genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class)
                 .orderByDesc(GenConfigDO::getCreateTime)
                 .last("LIMIT 1"));
-            if (null != lastGenConfig) {
+            if (lastGenConfig != null) {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
         }
@@ -163,7 +163,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
                 .orElseGet(() -> new FieldConfigDO(column));
             // 更新已有字段配置
-            if (null != fieldConfig.getCreateTime()) {
+            if (fieldConfig.getCreateTime() != null) {
                 fieldConfig.setColumnType(column.getTypeName());
                 fieldConfig.setColumnSize(column.getSize());
             }
@@ -213,7 +213,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         // 保存或更新生成配置信息
         GenConfigDO newGenConfig = req.getGenConfig();
         GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);
-        if (null != oldGenConfig) {
+        if (oldGenConfig != null) {
             BeanUtil.copyProperties(newGenConfig, oldGenConfig);
             genConfigMapper.updateById(oldGenConfig);
         } else {

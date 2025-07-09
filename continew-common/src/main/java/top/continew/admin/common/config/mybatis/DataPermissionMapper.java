@@ -40,8 +40,8 @@ public interface DataPermissionMapper<T> extends BaseMapper<T> {
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      * @return 全部记录
      */
-    @Override
     @DataPermission
+    @Override
     List<T> selectList(@Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
 
     /**
@@ -51,7 +51,18 @@ public interface DataPermissionMapper<T> extends BaseMapper<T> {
      * @param queryWrapper 实体对象封装操作类（可以为 null）
      * @return 全部记录（并翻页）
      */
-    @Override
     @DataPermission
+    @Override
     List<T> selectList(IPage<T> page, @Param(Constants.WRAPPER) Wrapper<T> queryWrapper);
+
+    /**
+     * 根据 ID 删除
+     *
+     * @param obj     主键ID或实体
+     * @param useFill 是否填充
+     * @return 删除个数
+     */
+    @DataPermission
+    @Override
+    int deleteById(Object obj, boolean useFill);
 }

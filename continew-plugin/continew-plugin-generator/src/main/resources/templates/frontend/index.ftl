@@ -19,14 +19,18 @@
 	  <#if fieldConfig.formType == "SELECT"><#-- 下拉框 -->
         <a-select
           v-model="queryForm.${fieldConfig.fieldName}"
-          :options="${fieldConfig.dictCode}"
+          :options="${fieldConfig.dictCode!''}"
           placeholder="请选择${fieldConfig.comment}"
           allow-clear
           style="width: 150px"
           @change="search"
         />
 	  <#elseif fieldConfig.formType == "RADIO"><#-- 单选框 -->
-		<a-radio-group v-model="queryForm.${fieldConfig.fieldName}" :options="${fieldConfig.dictCode!'dictKey 或者自定义数组'}" @change="search"/>
+		<a-radio-group 
+          v-model="queryForm.${fieldConfig.fieldName}" 
+          :options="${fieldConfig.dictCode!'dictKey 或者自定义数组'}" 
+          @change="search"
+        />
 	  <#elseif fieldConfig.formType == "DATE"><#-- 日期框 -->
         <#if fieldConfig.queryType == "BETWEEN">
         <DateRangePicker v-model="queryForm.${fieldConfig.fieldName}" format="YYYY-MM-DD" @change="search" />

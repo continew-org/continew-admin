@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8.0.33
+    image: mysql:8.0.42
     restart: always
     container_name: mysql
     ports:
@@ -36,7 +36,7 @@ services:
 #    volumes:
 #      - /docker/postgresql/data/:/var/lib/postgresql/data/
   redis:
-    image: redis:7.2.3
+    image: redis:7.2.8
     restart: always
     container_name: redis
     ports:
@@ -48,10 +48,10 @@ services:
       - /docker/redis/data/:/data/
       - /docker/redis/logs/:/logs/
     command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes --requirepass 你的 Redis 密码'
-  continew-admin-server:
+  continew-server:
     build: ./continew-admin
     restart: always
-    container_name: continew-admin-server
+    container_name: continew-server
     ports:
       - '18000:18000'
       - '1789:1789'
@@ -77,10 +77,25 @@ services:
     depends_on:
       - redis
       - mysql
+  continew-web:
+    image: nginx:1.27.0
+    restart: always
+    container_name: continew-web
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - /docker/nginx/cert/:/etc/nginx/cert/
+      - /docker/nginx/logs/:/var/log/nginx/
+      # 前端页面目录
+      - /docker/continew-admin/web/:/usr/share/nginx/html/
   schedule-server:
     build: ./schedule-server
     restart: always
-    container_name: continew-admin-schedule-server
+    container_name: schedule-server
     ports:
       - '18001:18001'
       - '1788:1788'
@@ -95,18 +110,3 @@ services:
       - /docker/schedule-server/logs/:/app/logs/
     depends_on:
       - mysql
-  nginx:
-    image: nginx:1.25.3
-    restart: always
-    container_name: nginx
-    ports:
-      - '80:80'
-      - '443:443'
-    environment:
-      TZ: Asia/Shanghai
-    volumes:
-      - /docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
-      - /docker/nginx/cert/:/etc/nginx/cert/
-      - /docker/nginx/logs/:/var/log/nginx/
-      # 前端页面目录
-      - /docker/continew-admin/html/:/usr/share/nginx/html/

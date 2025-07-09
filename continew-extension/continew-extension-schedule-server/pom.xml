@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-extension-schedule-server</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>任务调度服务端</description>
 
     <properties>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.continew</groupId>
+        <artifactId>continew-admin</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>continew-system</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>系统管理模块（存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）</description>
+
+    <dependencies>
+        <!-- 公共模块 -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-common</artifactId>
+        </dependency>
+
+        <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
+        <dependency>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

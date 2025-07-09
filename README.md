@@ -1,10 +1,10 @@
 # ContiNew Admin 中后台管理框架
 
 <a href="https://github.com/continew-org/continew-admin" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v3.7.0-%23ff3f59.svg" alt="Release" />
+<img src="https://img.shields.io/badge/SNAPSHOT-v4.0.0-%23ff3f59.svg" alt="Release" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-2.12.0-%236CB52D.svg" alt="ContiNew Starter" />
+<img src="https://img.shields.io/badge/ContiNew Starter-2.12.2-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" title="Spring Boot" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-3.3.11-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
@@ -125,8 +125,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - 角色管理：管理系统用户的功能权限及数据权限，包含新增、修改、删除、分配角色等功能
 - 菜单管理：管理系统菜单及按钮权限，支持多级菜单，动态路由，包含新增、修改、删除等功能
 - 部门管理：管理系统组织架构，包含新增、修改、删除、导出等功能，以树形列表进行展示
-- 通知公告：管理系统公告，支持设置公告的生效时间、终止时间、通知范围（所有人、指定用户）
-- 文件管理：管理系统文件，支持上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
+- 通知公告：管理系统公告，支持通知范围（所有人、指定用户）、通知方式（系统消息、登录弹窗）、定时发送、置顶设置
+- 文件管理：管理系统文件及文件夹，支持上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
 - 字典管理：管理系统公用数据字典，例如：消息类型。支持字典标签背景色和排序等配置
 - 系统配置：
   - 网站配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
@@ -213,26 +213,26 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 ## 核心技术栈
 
-| 名称                                                         | 版本         | 简介                                                         |
-| :----------------------------------------------------------- | :----------- | :----------------------------------------------------------- |
+| 名称                                                         | 版本           | 简介                                                         |
+| :----------------------------------------------------------- |:-------------| :----------------------------------------------------------- |
 | <a href="https://vuejs.org/" target="_blank">Vue</a>         | 3.5.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a> | 2.57.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a> | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://vite.dev/" target="_blank">Vite</a>         | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/continew-org/continew-starter) | 2.12.0       | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter) | 2.12.2       | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a> | 3.3.11       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://undertow.io/" target="_blank">Undertow</a>  | 2.3.18.Final | 采用 Java 开发的灵活的高性能 Web 服务器，提供包括阻塞和基于 NIO 的非堵塞机制。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a> | 1.42.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a> | 3.5.8        | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.3.1        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
 | Hikari                                                       | 5.1.0        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.33       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a> | 8.0.42       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
 | <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a> | 8.3.0        | MySQL Java 驱动。                                            |
 | <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a> | 3.9.1        | SQL 性能分析组件。                                           |
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a> | 4.27.0       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | [JetCache](https://github.com/alibaba/jetcache/blob/master/docs/CN/Readme.md) | 2.7.8        | 一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作。 |
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a> | 3.46.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
-| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.3        | 高性能的 key-value 数据库。                                  |
+| <a href="https://redis.io/" target="_blank">Redis</a>        | 7.2.8        | 高性能的 key-value 数据库。                                  |
 | [Snail Job](https://snailjob.opensnail.com/)                 | 1.4.0        | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
 | [X File Storage](https://x-file-storage.xuyanwu.cn/#/)       | 2.2.1        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>       | 3.3.4        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
@@ -263,17 +263,8 @@ git clone https://github.com/continew-org/continew-admin.git
 # [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
 
 # 4.启动程序
-# 4.1 启动成功：访问 http://localhost:8000/，页面输出：Xxx started successfully.
-# 4.2 接口文档：http://localhost:8000/doc.html
-
-# 5.部署
-# 5.1 Docker 部署
-#   5.1.1 服务器安装好 docker 及 docker-compose（参考：https://blog.charles7c.top/categories/fragments/2022/10/31/CentOS%E5%AE%89%E8%A3%85Docker）
-#   5.1.2 执行 mvn package 进行项目打包，将 target/app 目录下的所有内容放到 /docker/continew-admin 目录下
-#   5.1.3 将 docker 目录上传到服务器 / 目录下，并授权（chmod -R 777 /docker）
-#   5.1.4 修改 docker-compose.yml 中的 MySQL 配置、Redis 配置、continew-admin-server 配置、Nginx 配置
-#   5.1.5 执行 docker-compose up -d 创建并后台运行所有容器
-# 5.2 其他方式部署
+# 启动成功，在控制台末尾会输出 ContiNew Admin service started successfully.
+# 并输出 API 地址及 API 接口文档地址
 ```
 
 ## 项目结构
@@ -283,17 +274,15 @@ git clone https://github.com/continew-org/continew-admin.git
 
 ```
 continew-admin
-├─ continew-webapi（API 及打包部署模块）
+├─ continew-server（打包部署模块）
 │  ├─ src
 │  │  ├─ main
 │  │  │  ├─ java/top/continew/admin
 │  │  │  │  ├─ config （配置）
 │  │  │  │  ├─ controller
-│  │  │  │  │  ├─ auth（系统认证相关 API）
 │  │  │  │  │  ├─ common（通用相关 API）
-│  │  │  │  │  ├─ monitor（系统监控相关 API）
-│  │  │  │  │  ├─ system（系统管理相关 API）
-│  │  │  │  │  └─ tool（系统工具相关 API）
+│  │  │  │  │  └─ monitor（系统监控相关 API）
+│  │  │  │  ├─ job （定时任务）
 │  │  │  │  └─ ContiNewAdminApplication.java（ContiNew Admin 启动程序）
 │  │  │  └─ resources
 │  │  │     ├─ config（核心配置目录）
@@ -309,27 +298,33 @@ continew-admin
 │  │  │     └─ logback-spring.xml（日志配置文件）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml（包含打包相关配置）
-├─ continew-module-system（系统管理模块，存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）
+├─ continew-system（系统管理模块，存放系统管理相关业务功能，例如：部门管理、角色管理、用户管理等）
 │  ├─ src
 │  │  ├─ main
 │  │  │  ├─ java/top/continew/admin
 │  │  │  │  ├─ auth（系统认证相关业务）
+│  │  │  │  │  ├─ controller（系统认证相关 API）
+│  │  │  │  │  ├─ service（系统认证相关业务接口及实现类）
 │  │  │  │  │  ├─ model（系统认证相关模型）
 │  │  │  │  │  │  ├─ query（系统认证相关查询条件）
 │  │  │  │  │  │  ├─ req（系统认证相关请求对象（Request））
 │  │  │  │  │  │  └─ resp（系统认证相关响应对象（Response））
-│  │  │  │  │  └─ service（系统认证相关业务接口及实现类）
+│  │  │  │  │  ├─ enums（系统认证相关枚举）
+│  │  │  │  │  ├─ handler（系统认证相关处理器）
+│  │  │  │  │  └─ config（系统认证相关配置）
 │  │  │  │  └─ system（系统管理相关业务）
-│  │  │  │     ├─ config（系统管理相关配置）
-│  │  │  │     ├─ enums（系统管理相关枚举）
+│  │  │  │     ├─ controller（系统管理相关 API）
+│  │  │  │     ├─ service（系统管理相关业务接口及实现类）
 │  │  │  │     ├─ mapper（系统管理相关 Mapper）
 │  │  │  │     ├─ model（系统管理相关模型）
 │  │  │  │     │  ├─ entity（系统管理相关实体对象）
 │  │  │  │     │  ├─ query（系统管理相关查询条件）
 │  │  │  │     │  ├─ req（系统管理相关请求对象（Request））
 │  │  │  │     │  └─ resp（系统管理相关响应对象（Response））
-│  │  │  │     ├─ service（系统管理相关业务接口及实现类）
-│  │  │  │     └─ util（系统管理相关工具类）
+│  │  │  │     ├─ enums（系统管理相关枚举）
+│  │  │  │     ├─ util（系统管理相关工具类）
+│  │  │  │     ├─ validation（系统管理相关参数校验工具类）
+│  │  │  │     └─ config（系统管理相关配置）
 │  │  │  └─ resources
 │  │  │     └─ mapper（系统管理相关 Mapper XML 文件目录）
 │  │  └─ test（测试相关代码目录）
@@ -338,60 +333,74 @@ continew-admin
 │  ├─ continew-plugin-schedule（任务调度插件模块）
 │  │  ├─ src
 │  │  │  ├─ main/java/top/continew/admin/schedule
+│  │  │  │  ├─ controller（任务调度相关 API）
+│  │  │  │  ├─ service（代码生成器相关业务接口及实现类）
 │  │  │  │  ├─ api（任务调度中心相关 API）
-│  │  │  │  ├─ config（任务调度相关配置）
-│  │  │  │  ├─ constant（任务调度相关常量）
-│  │  │  │  ├─ enums（任务调度相关枚举）
 │  │  │  │  ├─ model（任务调度相关模型）
 │  │  │  │  │  ├─ query（任务调度相关查询条件）
 │  │  │  │  │  ├─ req（任务调度相关请求对象（Request））
 │  │  │  │  │  └─ resp（任务调度相关响应对象（Response））
-│  │  │  │  └─ service（代码生成器相关业务接口及实现类）
+│  │  │  │  ├─ constant（任务调度相关常量）
+│  │  │  │  ├─ enums（任务调度相关枚举）
+│  │  │  │  ├─ exception（任务调度相关异常）
+│  │  │  │  └─ config（任务调度相关配置）
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  ├─ continew-plugin-open（能力开放插件模块）
 │  │  ├─ src
 │  │  │  ├─ main/java/top/continew/admin/open
-│  │  │  │  ├─ mapper（代码生成器相关 Mapper）
+│  │  │  │  ├─ controller（能力开放相关 API）
+│  │  │  │  ├─ service（能力开放相关业务接口及实现类）
+│  │  │  │  ├─ mapper（能力开放相关 Mapper）
 │  │  │  │  ├─ model（能力开放相关模型）
 │  │  │  │  │  ├─ entity（能力开放相关实体对象）
 │  │  │  │  │  ├─ query（能力开放相关查询条件）
 │  │  │  │  │  ├─ req（能力开放相关请求对象（Request））
 │  │  │  │  │  └─ resp（能力开放相关响应对象（Response））
-│  │  │  │  └─ service（能力开放相关业务接口及实现类）
+│  │  │  │  ├─ util（能力开放相关工具类）
+│  │  │  │  └─ config（能力开放相关配置）
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  ├─ continew-plugin-generator（代码生成器插件模块）
 │  │  ├─ src
 │  │  │  ├─ main
 │  │  │  │  ├─ java/top/continew/admin/generator
-│  │  │  │  │  ├─ config（代码生成器相关配置）
-│  │  │  │  │  ├─ enums（代码生成器相关枚举）
+│  │  │  │  │  ├─ controller（代码生成器相关 API）
+│  │  │  │  │  ├─ service（代码生成器相关业务接口及实现类）
 │  │  │  │  │  ├─ mapper（代码生成器相关 Mapper）
 │  │  │  │  │  ├─ model（代码生成器相关模型）
 │  │  │  │  │  │  ├─ entity（代码生成器相关实体对象）
 │  │  │  │  │  │  ├─ query（代码生成器相关查询条件）
 │  │  │  │  │  │  ├─ req（代码生成器相关请求对象（Request））
 │  │  │  │  │  │  └─ resp（代码生成器相关响应对象（Response））
-│  │  │  │  │  └─ service（代码生成器相关业务接口及实现类）
+│  │  │  │  │  ├─ enums（代码生成器相关枚举）
+│  │  │  │  │  └─ config（代码生成器相关配置）
 │  │  │  │  └─ resources
-│  │  │  │     ├─ templates/generator（代码生成相关模板目录）
-│  │  │  │     ├─ application.yml（代码生成配置文件）
-│  │  │  │     └─ generator.properties（代码生成类型映射配置文件）
+│  │  │  │     └─ templates（代码生成相关模板目录）
+│  │  │  │       ├─ backend（后端模板目录）
+│  │  │  │       └─ frontend（前端模板目录）
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  └─ pom.xml
 ├─ continew-common（公共模块，存放公共工具类，公共配置等）
 │  ├─ src
 │  │  ├─ main/java/top/continew/admin/common
-│  │  │  ├─ config（公共配置）
-│  │  │  ├─ constant（公共常量）
-│  │  │  ├─ enums（公共枚举）
+│  │  │  ├─ controller（控制器基类）
+│  │  │  ├─ service（公共服务接口）
 │  │  │  ├─ model（公共模型）
 │  │  │  │  ├─ dto（公共 DTO（Data Transfer Object））
 │  │  │  │  ├─ req（公共请求对象（Request））
 │  │  │  │  └─ resp（公共响应对象（Response））
-│  │  │  └─ util（公共工具类）
+│  │  │  ├─ context（公共上下文）
+│  │  │  ├─ constant（公共常量）
+│  │  │  ├─ enums（公共枚举）
+│  │  │  ├─ util（公共工具类）
+│  │  │  └─ config（公共配置）
+│  │  │    ├─ mybatis（MyBatis Plus 配置）
+│  │  │    ├─ websocket（Websocket 配置）
+│  │  │    ├─ doc（接口文档配置）
+│  │  │    ├─ excel（Excel 配置）
+│  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
 ├─ continew-extension（扩展模块）
@@ -417,7 +426,7 @@ continew-admin
 ├─ .idea
 │  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
 ├─ .image（截图目录，实际开发时直接删除）
-├─ .style（代码格式、License文件头相关配置目录，实际开发时根据需要取舍，删除时注意删除 spotless 插件配置）
+├─ .style（代码格式、License文件头相关配置目录，实际开发时根据需要取舍，删除时注意删除 /pom.xml 中的 spotless 插件配置）
 ├─ .gitignore（Git 忽略文件相关配置文件）
 ├─ docker（项目部署相关配置目录，实际开发时可备份后直接删除）
 ├─ LICENSE（开源协议文件）
