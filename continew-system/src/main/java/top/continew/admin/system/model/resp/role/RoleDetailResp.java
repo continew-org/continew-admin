@@ -19,14 +19,14 @@ package top.continew.admin.system.model.resp.role;
 import cn.crane4j.annotation.AssembleMethod;
 import cn.crane4j.annotation.ContainerMethod;
 import cn.crane4j.annotation.MappingType;
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
+import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.model.resp.BaseDetailResp;
+import top.continew.admin.common.base.model.resp.BaseDetailResp;
 import top.continew.admin.common.enums.DataScopeEnum;
 import top.continew.admin.system.service.RoleDeptService;
-import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
+import top.continew.starter.excel.converter.ExcelBaseEnumConverter;
 
 import java.io.Serial;
 import java.util.List;

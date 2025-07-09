@@ -16,13 +16,13 @@
 
 package top.continew.admin.system.model.resp;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
+import cn.idev.excel.annotation.ExcelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.common.enums.SuccessFailureStatusEnum;
-import top.continew.admin.common.model.resp.BaseResp;
-import top.continew.starter.file.excel.converter.ExcelBaseEnumConverter;
+import top.continew.admin.common.base.model.resp.BaseResp;
+import top.continew.starter.excel.converter.ExcelBaseEnumConverter;
 
 import java.io.Serial;
 

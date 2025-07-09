@@ -25,7 +25,7 @@ import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.mapper.user.UserSocialMapper;
 import top.continew.admin.system.model.entity.user.UserSocialDO;
 import top.continew.admin.system.service.UserSocialService;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;

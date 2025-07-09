@@ -19,7 +19,7 @@ package top.continew.admin.system.model.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DataScopeEnum;
-import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.starter.extension.crud.annotation.DictModel;
 
 import java.io.Serial;

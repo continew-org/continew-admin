@@ -20,6 +20,7 @@ import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import top.continew.admin.common.constant.CacheConstants;
@@ -28,7 +29,7 @@ import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp;
 import top.continew.admin.system.model.resp.log.LogResp;
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.starter.data.mapper.BaseMapper;
 
 import java.util.Date;
 import java.util.List;
@@ -39,6 +40,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
+@Mapper
 public interface LogMapper extends BaseMapper<LogDO> {
 
     /**

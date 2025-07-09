@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.tenant.mapper.TenantDbConnectMapper;
 import top.continew.admin.tenant.mapper.TenantMapper;
@@ -34,8 +35,7 @@ import top.continew.admin.tenant.model.resp.TenantDbConnectResp;
 import top.continew.admin.tenant.service.TenantDbConnectService;
 import top.continew.admin.tenant.util.DbConnectUtil;
 import top.continew.starter.cache.redisson.util.RedisUtils;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
+import top.continew.starter.core.util.validation.CheckUtils;
 
 import javax.sql.DataSource;
 import java.util.List;

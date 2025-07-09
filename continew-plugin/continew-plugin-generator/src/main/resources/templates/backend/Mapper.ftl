@@ -1,7 +1,8 @@
 package ${packageName}.${subPackageName};
 
-import top.continew.starter.data.mp.base.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 import ${packageName}.model.entity.${classNamePrefix}DO;
+import top.continew.starter.data.mapper.BaseMapper;
 
 /**
 * ${businessName} Mapper
@@ -9,4 +10,5 @@ import ${packageName}.model.entity.${classNamePrefix}DO;
 * @author ${author}
 * @since ${datetime}
 */
+@Mapper
 public interface ${className} extends BaseMapper<${classNamePrefix}DO> {}

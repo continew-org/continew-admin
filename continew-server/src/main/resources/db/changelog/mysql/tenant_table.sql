@@ -184,15 +184,17 @@ CREATE TABLE IF NOT EXISTS `sys_message_log` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息日志表';
 
 CREATE TABLE IF NOT EXISTS `sys_notice` (
-    `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+                                            `id`             bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `title`          varchar(150) NOT NULL                    COMMENT '标题',
     `content`        mediumtext   NOT NULL                    COMMENT '内容',
-    `type`           varchar(30)  NOT NULL                    COMMENT '类型',
-    `effective_time` datetime     DEFAULT NULL                COMMENT '生效时间',
-    `terminate_time` datetime     DEFAULT NULL                COMMENT '终止时间',
+    `type`           varchar(30)  NOT NULL                    COMMENT '分类',
     `notice_scope`   tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '通知范围（1：所有人；2：指定用户）',
     `notice_users`   json         DEFAULT NULL                COMMENT '通知用户',
-    `sort`           int          NOT NULL DEFAULT 999        COMMENT '排序',
+    `notice_methods` json         DEFAULT NULL                COMMENT '通知方式（1：系统消息；2：登录弹窗）',
+    `is_timing`      bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否定时',
+    `publish_time`   datetime     DEFAULT NULL                COMMENT '发布时间',
+    `is_top`         bit(1)       NOT NULL DEFAULT b'0'       COMMENT '是否置顶',
+    `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：草稿；2：待发布；3：已发布）',
     `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
     `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
     `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
@@ -201,6 +203,15 @@ CREATE TABLE IF NOT EXISTS `sys_notice` (
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公告表';
+
+CREATE TABLE IF NOT EXISTS `sys_notice_log` (
+                                                `notice_id` bigint(20) NOT NULL     COMMENT '公告ID',
+    `user_id`   bigint(20) NOT NULL     COMMENT '用户ID',
+    `read_time` datetime   DEFAULT NULL COMMENT '读取时间',
+    PRIMARY KEY (`notice_id`, `user_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公告日志表';
+
+
 
 CREATE TABLE IF NOT EXISTS `sys_file` (
     `id`                 bigint(20)    NOT NULL AUTO_INCREMENT     COMMENT 'ID',

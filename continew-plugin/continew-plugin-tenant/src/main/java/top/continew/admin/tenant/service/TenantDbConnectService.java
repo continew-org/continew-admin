@@ -17,11 +17,11 @@
 package top.continew.admin.tenant.service;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.tenant.model.query.TenantDbConnectQuery;
 import top.continew.admin.tenant.model.req.TenantDbConnectReq;
 import top.continew.admin.tenant.model.resp.TenantDbConnectDetailResp;
 import top.continew.admin.tenant.model.resp.TenantDbConnectResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 租户数据连接业务接口

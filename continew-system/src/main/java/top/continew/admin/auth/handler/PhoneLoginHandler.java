@@ -26,7 +26,7 @@ import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.starter.cache.redisson.util.RedisUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 
 /**
  * 手机号登录处理器

@@ -16,7 +16,7 @@
 
 package top.continew.admin.tenant.service;
 
-import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.tenant.model.query.TenantPackageQuery;
 import top.continew.admin.tenant.model.req.TenantPackageReq;
 import top.continew.admin.tenant.model.resp.TenantPackageDetailResp;

@@ -21,7 +21,7 @@ import java.io.Serial;
 import lombok.Data;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.admin.common.base.model.entity.BaseDO;
 
 /**
  * 租户套餐实体

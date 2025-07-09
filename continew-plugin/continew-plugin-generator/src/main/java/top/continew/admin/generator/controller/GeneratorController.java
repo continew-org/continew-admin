@@ -22,8 +22,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.continew.admin.generator.model.entity.FieldConfigDO;
 import top.continew.admin.generator.model.entity.GenConfigDO;
@@ -46,7 +46,6 @@ import java.util.List;
  * @since 2023/8/3 22:58
  */
 @Tag(name = "代码生成 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/code/generator")
@@ -58,7 +57,7 @@ public class GeneratorController {
     @Operation(summary = "分页查询生成配置", description = "分页查询生成配置列表")
     @SaCheckPermission("code:generator:list")
     @GetMapping("/config")
-    public PageResp<GenConfigDO> pageGenConfig(GenConfigQuery query, @Validated PageQuery pageQuery) {
+    public PageResp<GenConfigDO> pageGenConfig(@Valid GenConfigQuery query, @Valid PageQuery pageQuery) {
         return baseService.pageGenConfig(query, pageQuery);
     }
 
@@ -84,7 +83,7 @@ public class GeneratorController {
     @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:config")
     @PostMapping("/config/{tableName}")
-    public void saveConfig(@Validated @RequestBody GenConfigReq req, @PathVariable String tableName) {
+    public void saveConfig(@RequestBody @Valid GenConfigReq req, @PathVariable String tableName) {
         baseService.saveConfig(req, tableName);
     }
 

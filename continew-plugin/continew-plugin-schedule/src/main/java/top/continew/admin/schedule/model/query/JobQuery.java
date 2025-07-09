@@ -19,7 +19,7 @@ package top.continew.admin.schedule.model.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.schedule.enums.JobStatusEnum;
-import top.continew.starter.core.validation.constraints.EnumValue;
+import top.continew.starter.validation.constraints.EnumValue;
 
 import java.io.Serial;
 

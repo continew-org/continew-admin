@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.continew.admin.schedule.api.JobClient;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 
 /**
  * Feign 配置
@@ -34,7 +34,7 @@ import top.continew.starter.core.autoconfigure.project.ProjectProperties;
 @RequiredArgsConstructor
 public class FeignConfiguration {
 
-    private final ProjectProperties projectProperties;
+    private final ApplicationProperties applicationProperties;
 
     @Value("${snail-job.server.api.url}")
     private String baseUrl;
@@ -58,6 +58,6 @@ public class FeignConfiguration {
      */
     @Bean
     public Logger.Level feignLoggerLevel() {
-        return projectProperties.isProduction() ? Logger.Level.BASIC : Logger.Level.FULL;
+        return applicationProperties.isProduction() ? Logger.Level.BASIC : Logger.Level.FULL;
     }
 }

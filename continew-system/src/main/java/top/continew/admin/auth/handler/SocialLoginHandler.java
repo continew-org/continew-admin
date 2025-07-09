@@ -50,9 +50,9 @@ import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.admin.system.service.UserSocialService;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.exception.BadRequestException;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -72,7 +72,7 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
     private final UserSocialService userSocialService;
     private final UserRoleService userRoleService;
     private final MessageService messageService;
-    private final ProjectProperties projectProperties;
+    private final ApplicationProperties applicationProperties;
 
     @Override
     public LoginResp login(SocialLoginReq req, ClientResp client, HttpServletRequest request) {
@@ -166,7 +166,7 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
     private void sendSecurityMsg(UserDO user) {
         MessageTemplateEnum template = MessageTemplateEnum.SOCIAL_REGISTER;
         MessageReq req = new MessageReq(MessageTypeEnum.SECURITY);
-        req.setTitle(template.getTitle().formatted(projectProperties.getName()));
+        req.setTitle(template.getTitle().formatted(applicationProperties.getName()));
         req.setContent(template.getContent().formatted(user.getNickname()));
         messageService.add(req, CollUtil.toList(user.getId().toString()));
     }

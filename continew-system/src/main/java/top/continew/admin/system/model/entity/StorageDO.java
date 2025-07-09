@@ -23,7 +23,7 @@ import cn.hutool.core.util.URLUtil;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.system.enums.StorageTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;

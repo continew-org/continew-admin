@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.NoticeMethodEnum;
@@ -36,7 +36,7 @@ import top.continew.admin.system.model.resp.notice.NoticeResp;
 import top.continew.admin.system.model.resp.notice.NoticeUnreadCountResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.NoticeService;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.req.IdsReq;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
@@ -53,7 +53,6 @@ import java.util.List;
  * @since 2025/4/5 21:30
  */
 @Tag(name = "个人消息 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user/message")
@@ -72,7 +71,7 @@ public class UserMessageController {
 
     @Operation(summary = "分页查询消息列表", description = "分页查询消息列表")
     @GetMapping
-    public PageResp<MessageResp> page(MessageQuery query, @Validated PageQuery pageQuery) {
+    public PageResp<MessageResp> page(@Valid MessageQuery query, @Valid PageQuery pageQuery) {
         query.setUserId(UserContextHolder.getUserId());
         return messageService.page(query, pageQuery);
     }
@@ -91,13 +90,13 @@ public class UserMessageController {
 
     @Operation(summary = "删除消息", description = "删除消息")
     @DeleteMapping
-    public void delete(@Validated @RequestBody IdsReq req) {
+    public void delete(@RequestBody @Valid IdsReq req) {
         messageService.delete(req.getIds());
     }
 
     @Operation(summary = "消息标记为已读", description = "将消息标记为已读状态")
     @PatchMapping("/read")
-    public void read(@Validated @RequestBody IdsReq req) {
+    public void read(@RequestBody @Valid IdsReq req) {
         messageService.readMessage(req.getIds(), UserContextHolder.getUserId());
     }
 
@@ -125,7 +124,7 @@ public class UserMessageController {
 
     @Operation(summary = "分页查询公告列表", description = "分页查询公告列表")
     @GetMapping("/notice")
-    public BasePageResp<NoticeResp> pageNotice(@Validated NoticeQuery query, @Validated PageQuery pageQuery) {
+    public BasePageResp<NoticeResp> pageNotice(@Valid NoticeQuery query, @Valid PageQuery pageQuery) {
         query.setUserId(UserContextHolder.getUserId());
         return noticeService.page(query, pageQuery);
     }

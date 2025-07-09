@@ -16,7 +16,7 @@
 
 package top.continew.admin.tenant.mapper;
 
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.admin.tenant.model.entity.TenantPackageDO;
 
 /**

@@ -20,14 +20,14 @@ import java.io.Serial;
 import java.time.*;
 import java.util.List;
 
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
+import top.continew.admin.common.base.model.resp.BaseDetailResp;
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 
-import top.continew.admin.common.model.resp.BaseDetailResp;
 
 /**
  * 租户套餐详情信息

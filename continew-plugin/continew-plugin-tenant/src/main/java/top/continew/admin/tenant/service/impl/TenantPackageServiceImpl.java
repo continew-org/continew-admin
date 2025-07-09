@@ -21,6 +21,7 @@ import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.tenant.mapper.TenantMapper;
 import top.continew.admin.tenant.mapper.TenantPackageMapper;
 import top.continew.admin.tenant.model.entity.TenantDO;
@@ -30,8 +31,7 @@ import top.continew.admin.tenant.model.req.TenantPackageReq;
 import top.continew.admin.tenant.model.resp.TenantPackageDetailResp;
 import top.continew.admin.tenant.model.resp.TenantPackageResp;
 import top.continew.admin.tenant.service.TenantPackageService;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
+import top.continew.starter.core.util.validation.CheckUtils;
 
 import java.util.List;
 

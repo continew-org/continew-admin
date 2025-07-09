@@ -1,14 +1,13 @@
---- ### 项目配置
-project:
+--- ### 应用配置
+application:
+  id: continew-admin
   # 名称
   name: ContiNew Admin
-  # 应用名称
-  app-name: continew-admin
-  # 版本
-  version: 4.0.0-SNAPSHOT
-  starter: 2.12.2
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
+  # 版本
+  version: 4.0.0-SNAPSHOT
+  starter: 2.13.0
   # 基本包
   base-package: top.continew.admin
   ## 作者信息配置
@@ -44,7 +43,7 @@ server:
 --- ### Spring 项目配置
 spring:
   application:
-    name: ${project.app-name}
+    name: ${application.id}
   ## 环境配置
   profiles:
     # 启用的环境
@@ -133,7 +132,7 @@ knife4j:
     # 是否自定义 footer（默认 false，非自定义）
     enable-footer-custom: true
     # 自定义 footer 内容，支持 Markdown 语法
-    footer-custom-content: 'Copyright © 2022-present [${project.contact.name}](${project.contact.url})&nbsp;⋅&nbsp;[${project.name}](${project.url}) v${project.version}'
+    footer-custom-content: 'Copyright © 2022-present [${application.contact.name}](${application.contact.url})&nbsp;⋅&nbsp;[${application.name}](${application.url}) v${application.version}'
 
 --- ### 全局响应配置
 continew-starter.web:
@@ -236,12 +235,14 @@ mybatis-plus:
   # Mapper XML 文件目录配置
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
   # 类型别名扫描包配置
-  type-aliases-package: ${project.base-package}.**.model
+  type-aliases-package: ${application.base-package}.**.model
   ## MyBatis 配置
   configuration:
     # MyBatis 自动映射策略
     # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
     auto-mapping-behavior: PARTIAL
+    database-id: mysql
+    #database-id: pgsql
   ## 全局配置
   global-config:
     banner: true
@@ -253,7 +254,7 @@ mybatis-plus:
   extension:
     enabled: true
     # Mapper 接口扫描包配置
-    mapper-package: ${project.base-package}.**.mapper
+    mapper-package: ${application.base-package}.**.mapper
     # ID 生成器配置
     id-generator:
       type: COSID

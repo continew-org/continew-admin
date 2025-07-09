@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.system.mapper.RoleMenuMapper;
 import top.continew.admin.system.model.entity.RoleMenuDO;
 import top.continew.admin.system.service.RoleMenuService;
-import top.continew.starter.data.mp.service.impl.ServiceImpl;
+import top.continew.starter.data.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

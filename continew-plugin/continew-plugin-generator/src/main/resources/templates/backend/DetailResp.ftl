@@ -4,10 +4,11 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
+import cn.idev.excel.annotation.ExcelProperty;
 
-import top.continew.admin.common.model.resp.BaseDetailResp;
+import top.continew.admin.common.base.model.resp.BaseDetailResp;
+import top.continew.starter.excel.converter.ExcelBaseEnumConverter;
 <#if imports??>
     <#list imports as className>
 import ${className};
@@ -41,7 +42,11 @@ public class ${className} extends BaseDetailResp {
      * ${fieldConfig.comment}
      */
     @Schema(description = "${fieldConfig.comment}")
+    <#if fieldConfig.fieldType?ends_with("Enum")>
+    @ExcelProperty(value = "${fieldConfig.comment}", converter = ExcelBaseEnumConverter.class)
+    <#else>
     @ExcelProperty(value = "${fieldConfig.comment}")
+    </#if>
     private ${fieldConfig.fieldType} ${fieldConfig.fieldName};
   </#list>
 </#if>

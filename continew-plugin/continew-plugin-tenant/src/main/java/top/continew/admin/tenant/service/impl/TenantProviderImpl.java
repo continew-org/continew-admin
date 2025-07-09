@@ -27,7 +27,7 @@ import top.continew.admin.tenant.model.resp.TenantDbConnectDetailResp;
 import top.continew.admin.tenant.service.TenantDbConnectService;
 import top.continew.admin.tenant.service.TenantService;
 import top.continew.admin.tenant.util.DbConnectUtil;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.tenant.config.TenantDataSource;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.context.TenantContext;

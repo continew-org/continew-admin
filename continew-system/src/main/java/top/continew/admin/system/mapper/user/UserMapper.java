@@ -19,9 +19,10 @@ package top.continew.admin.system.mapper.user;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import top.continew.admin.common.config.mybatis.DataPermissionMapper;
+import top.continew.admin.common.base.mapper.DataPermissionMapper;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.starter.extension.datapermission.annotation.DataPermission;
@@ -35,6 +36,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2022/12/22 21:47
  */
+@Mapper
 public interface UserMapper extends DataPermissionMapper<UserDO> {
 
     /**

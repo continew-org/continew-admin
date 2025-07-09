@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.enums.NoticeMethodEnum;
 import top.continew.admin.system.model.entity.NoticeDO;
 import top.continew.admin.system.model.query.NoticeQuery;
@@ -23,8 +24,7 @@ import top.continew.admin.system.model.req.NoticeReq;
 import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.admin.system.model.resp.notice.NoticeDetailResp;
 import top.continew.admin.system.model.resp.notice.NoticeResp;
-import top.continew.starter.data.mp.service.IService;
-import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.service.IService;
 
 import java.util.List;
 

@@ -24,7 +24,7 @@ import top.continew.admin.common.config.mybatis.BCryptEncryptor;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
 import top.continew.starter.extension.crud.annotation.DictModel;
-import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 
 import java.io.Serial;

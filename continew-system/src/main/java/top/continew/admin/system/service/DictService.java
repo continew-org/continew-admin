@@ -16,13 +16,13 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.entity.DictDO;
 import top.continew.admin.system.model.query.DictQuery;
 import top.continew.admin.system.model.req.DictReq;
 import top.continew.admin.system.model.resp.DictResp;
-import top.continew.starter.data.mp.service.IService;
+import top.continew.starter.data.service.IService;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 import java.util.List;
 

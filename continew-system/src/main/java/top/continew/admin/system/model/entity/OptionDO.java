@@ -18,7 +18,7 @@ package top.continew.admin.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import top.continew.admin.common.model.entity.BaseUpdateDO;
+import top.continew.admin.common.base.model.entity.BaseUpdateDO;
 
 import java.io.Serial;
 

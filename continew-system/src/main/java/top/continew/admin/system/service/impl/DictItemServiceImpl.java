@@ -24,6 +24,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.mapper.DictItemMapper;
 import top.continew.admin.system.model.entity.DictItemDO;
@@ -32,12 +33,11 @@ import top.continew.admin.system.model.req.DictItemReq;
 import top.continew.admin.system.model.resp.DictItemResp;
 import top.continew.admin.system.service.DictItemService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.enums.BaseEnum;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> implements DictItemService {
 
-    private final ProjectProperties projectProperties;
+    private final ApplicationProperties applicationProperties;
     private static final Map<String, List<LabelValueResp>> ENUM_DICT_CACHE = new ConcurrentHashMap<>();
 
     @Override
@@ -128,7 +128,7 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
      */
     @PostConstruct
     public void init() {
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(projectProperties.getBasePackage(), BaseEnum.class);
+        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
         for (Class<?> cls : classSet) {
             List<LabelValueResp> value = this.toEnumDict(cls);
             if (CollUtil.isEmpty(value)) {

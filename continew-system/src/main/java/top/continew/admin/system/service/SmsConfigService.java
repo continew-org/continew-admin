@@ -16,11 +16,11 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.entity.SmsConfigDO;
 import top.continew.admin.system.model.query.SmsConfigQuery;
 import top.continew.admin.system.model.req.SmsConfigReq;
 import top.continew.admin.system.model.resp.SmsConfigResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 短信配置业务接口

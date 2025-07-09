@@ -20,18 +20,17 @@ import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import com.xkcoding.justauth.autoconfigure.JustAuthProperties;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.AuthRequestBuilder;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
@@ -56,7 +55,6 @@ import java.util.List;
  */
 @Tag(name = "认证 API")
 @Log(module = "登录")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -69,7 +67,7 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
-    public LoginResp login(@Validated @RequestBody LoginReq req, HttpServletRequest request) {
+    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request) {
         return authService.login(req, request);
     }
 

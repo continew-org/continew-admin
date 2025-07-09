@@ -18,6 +18,7 @@ package top.continew.admin.system.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.system.mapper.DictMapper;
 import top.continew.admin.system.model.entity.DictDO;
 import top.continew.admin.system.model.query.DictQuery;
@@ -25,9 +26,8 @@ import top.continew.admin.system.model.req.DictReq;
 import top.continew.admin.system.model.resp.DictResp;
 import top.continew.admin.system.service.DictItemService;
 import top.continew.admin.system.service.DictService;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

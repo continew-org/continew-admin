@@ -27,7 +27,7 @@ import cn.hutool.core.util.*;
 import cn.hutool.extra.validation.ValidationUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.excel.EasyExcel;
+import cn.idev.excel.EasyExcel;
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.CacheUpdate;
@@ -52,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.constant.SysConstants;
@@ -65,8 +66,8 @@ import top.continew.admin.system.enums.OptionCategoryEnum;
 import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
-import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.entity.UserRoleDO;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.user.*;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
@@ -78,14 +79,12 @@ import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.util.SpringUtils;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.FileUploadUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
-import top.continew.starter.core.util.FileUploadUtils;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -543,7 +542,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             baseMapper.insert(insertList);
         }
         if (CollUtil.isNotEmpty(updateList)) {
-            SpringUtils.getProxy(this).updateBatchById(updateList);
+            baseMapper.updateBatchById(updateList);
             userRoleService.deleteByUserIds(updateList.stream().map(UserDO::getId).toList());
         }
         if (CollUtil.isNotEmpty(userRoleDOList)) {

@@ -24,8 +24,8 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.continew.starter.data.core.annotation.Query;
-import top.continew.starter.data.core.enums.QueryType;
+import top.continew.starter.data.annotation.Query;
+import top.continew.starter.data.enums.QueryType;
 
 /**
  * 租户数据连接查询条件

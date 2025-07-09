@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.query.RoleQuery;
@@ -23,8 +24,7 @@ import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.req.RoleUpdatePermissionReq;
 import top.continew.admin.system.model.resp.role.RoleDetailResp;
 import top.continew.admin.system.model.resp.role.RoleResp;
-import top.continew.starter.data.mp.service.IService;
-import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.service.IService;
 
 import java.util.List;
 import java.util.Set;
@@ -60,14 +60,6 @@ public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQ
      * @return 权限码集合
      */
     Set<String> listPermissionByUserId(Long userId);
-
-    /**
-     * 根据 ID 列表查询
-     *
-     * @param ids ID 列表
-     * @return 名称列表
-     */
-    List<String> listNameByIds(List<Long> ids);
 
     /**
      * 根据用户 ID 查询角色编码

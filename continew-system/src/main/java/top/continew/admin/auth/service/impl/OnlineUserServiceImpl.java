@@ -66,13 +66,24 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         List<OnlineUserResp> list = new ArrayList<>();
         // 查询所有在线 Token
         List<String> tokenKeyList = StpUtil.searchTokenValue(StringConstants.EMPTY, 0, -1, false);
-        Map<Long, List<String>> tokenMap = tokenKeyList.stream().filter(tokenKey -> {
-            String token = StrUtil.subAfter(tokenKey, StringConstants.COLON, true);
-            // 忽略已过期或失效 Token
-            return StpUtil.getStpLogic().getTokenActiveTimeoutByToken(token) >= SaTokenDao.NEVER_EXPIRE;
-        })
+        Map<Long, List<String>> tokenMap = tokenKeyList.stream()
+            // 提前映射，避免重复调用
             .map(tokenKey -> StrUtil.subAfter(tokenKey, StringConstants.COLON, true))
-            .collect(Collectors.groupingBy(token -> Convert.toLong(StpUtil.getLoginIdByToken(token))));
+            .map(token -> {
+                Object loginIdObj = StpUtil.getLoginIdByToken(token);
+                long tokenTimeout = StpUtil.getStpLogic().getTokenActiveTimeoutByToken(token);
+                // 将相关信息打包成对象或简单的Entry对，便于后续过滤与归类
+                return new AbstractMap.SimpleEntry<>(token, new AbstractMap.SimpleEntry<>(loginIdObj, tokenTimeout));
+            })
+            // 过滤出未过期且loginId存在的Token
+            .filter(entry -> {
+                Object loginIdObj = entry.getValue().getKey();
+                long tokenTimeout = entry.getValue().getValue();
+                return loginIdObj != null && tokenTimeout >= SaTokenDao.NEVER_EXPIRE;
+            })
+            // 此时数据都有效，进行收集
+            .collect(Collectors.groupingBy(entry -> Convert.toLong(entry.getValue().getKey()), Collectors
+                .mapping(AbstractMap.SimpleEntry::getKey, Collectors.toList())));
         // 筛选数据
         for (Map.Entry<Long, List<String>> entry : tokenMap.entrySet()) {
             Long userId = entry.getKey();

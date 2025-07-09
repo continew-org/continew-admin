@@ -16,14 +16,14 @@
 
 package top.continew.admin.config.satoken;
 
-import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaRequest;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
-import cn.dev33.satoken.sign.SaSignTemplate;
-import cn.dev33.satoken.sign.SaSignUtil;
+import cn.dev33.satoken.sign.SaSignManager;
+import cn.dev33.satoken.sign.template.SaSignTemplate;
+import cn.dev33.satoken.sign.template.SaSignUtil;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ import top.continew.admin.open.sign.OpenApiSignTemplate;
 import top.continew.starter.auth.satoken.autoconfigure.SaTokenExtensionProperties;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
-import top.continew.starter.core.validation.CheckUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 
 import java.util.*;
@@ -75,7 +75,7 @@ public class SaTokenConfiguration {
      */
     @Bean
     public SaInterceptor saInterceptor() {
-        SaManager.setSaSignTemplate(signTemplate);
+        SaSignManager.setSaSignTemplate(signTemplate);
         return new SaExtensionInterceptor(handle -> SaRouter.match(StringConstants.PATH_PATTERN)
             .notMatch(properties.getSecurity().getExcludes())
             .check(r -> {
@@ -101,7 +101,7 @@ public class SaTokenConfiguration {
     }
 
     /**
-     * 配置 sa-token SaIgnore 注解排除路径
+     * 配置 sa-token {@link SaIgnore} 注解排除路径
      * <p>主要针对 @CrudRequestMapping 注解</p>
      */
     @EventListener(ApplicationReadyEvent.class)
@@ -113,11 +113,11 @@ public class SaTokenConfiguration {
             if (AopUtils.isAopProxy(bean)) {
                 clazz = AopProxyUtils.ultimateTargetClass(bean);
             }
+            // 使用 @CrudRequestMapping 的 Controller，如果使用了 @SaIgnore 注解，则表示忽略校验
             CrudRequestMapping crudRequestMapping = AnnotationUtils.findAnnotation(clazz, CrudRequestMapping.class);
             SaIgnore saIgnore = AnnotationUtils.findAnnotation(clazz, SaIgnore.class);
-
             if (crudRequestMapping != null && saIgnore != null) {
-                return crudRequestMapping.value() + "/**";
+                return crudRequestMapping.value() + StringConstants.PATH_PATTERN;
             }
             return null;
         }).filter(Objects::nonNull).toList();

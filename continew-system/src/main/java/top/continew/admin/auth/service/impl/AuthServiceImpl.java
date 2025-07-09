@@ -40,7 +40,7 @@ import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.ClientService;
 import top.continew.admin.system.service.MenuService;
 import top.continew.admin.system.service.RoleService;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
 

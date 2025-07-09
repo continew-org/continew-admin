@@ -23,7 +23,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
-import top.continew.admin.common.model.entity.BaseDO;
+import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 

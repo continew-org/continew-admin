@@ -18,7 +18,7 @@ package top.continew.admin.system.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.DictItemQuery;
 import top.continew.admin.system.model.req.DictItemReq;
 import top.continew.admin.system.model.resp.DictItemResp;
@@ -36,6 +36,6 @@ import top.continew.starter.log.annotation.Log;
 @Log(module = "字典管理")
 @Tag(name = "字典项管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/dict/item", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/dict/item", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
 public class DictItemController extends BaseController<DictItemService, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> {
 }

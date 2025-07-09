@@ -18,7 +18,7 @@ package top.continew.admin.open.util;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaRequest;
-import cn.dev33.satoken.sign.SaSignTemplate;
+import cn.dev33.satoken.sign.template.SaSignTemplate;
 
 import java.util.Collection;
 

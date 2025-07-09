@@ -18,7 +18,7 @@ package top.continew.admin.system.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.model.resp.BaseResp;
+import top.continew.admin.common.base.model.resp.BaseResp;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.starter.extension.crud.annotation.TreeField;

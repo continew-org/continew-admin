@@ -16,13 +16,13 @@
 
 package top.continew.admin.open.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.open.model.entity.AppDO;
 import top.continew.admin.open.model.query.AppQuery;
 import top.continew.admin.open.model.req.AppReq;
 import top.continew.admin.open.model.resp.AppDetailResp;
 import top.continew.admin.open.model.resp.AppResp;
 import top.continew.admin.open.model.resp.AppSecretResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 应用业务接口

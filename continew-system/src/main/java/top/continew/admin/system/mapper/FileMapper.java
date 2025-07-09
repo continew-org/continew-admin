@@ -16,10 +16,11 @@
 
 package top.continew.admin.system.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.starter.data.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -29,6 +30,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
+@Mapper
 public interface FileMapper extends BaseMapper<FileDO> {
 
     /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.controller.tenant;
+package top.continew.admin.tenant.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -26,10 +26,11 @@ import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.common.config.properties.TenantProperties;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.model.entity.MenuDO;
@@ -45,12 +46,12 @@ import top.continew.admin.tenant.service.TenantDbConnectService;
 import top.continew.admin.tenant.service.TenantPackageService;
 import top.continew.admin.tenant.service.TenantService;
 import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.model.entity.BaseIdDO;
-import top.continew.admin.common.model.resp.BaseResp;
+import top.continew.admin.common.base.model.resp.BaseResp;
 import top.continew.starter.extension.crud.model.req.IdsReq;
 import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.tenant.TenantHandler;
@@ -118,19 +119,25 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
         return baseIdResp;
     }
 
+    @Override
+    public void delete(Long id) {
+        super.delete(id);
+        SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
+            //系统数据清除
+            tenantSysDataService.clear();
+        });
+    }
 
     @Override
-    public void delete(IdsReq ids) {
-        if (false) {
-            for (Long id : ids.getIds()) {
-                //在租户中执行数据清除
-                SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
-                    //系统数据清除
-                    tenantSysDataService.clear();
-                });
-            }
+    public void batchDelete(@Valid IdsReq ids) {
+        super.batchDelete(ids);
+        for (Long id : ids.getIds()) {
+            //在租户中执行数据清除
+            SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
+                //系统数据清除
+                tenantSysDataService.clear();
+            });
         }
-        super.delete(ids);
     }
 
     /**

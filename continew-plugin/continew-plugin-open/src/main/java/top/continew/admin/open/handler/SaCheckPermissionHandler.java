@@ -21,7 +21,7 @@ import cn.dev33.satoken.annotation.handler.SaAnnotationHandlerInterface;
 import org.springframework.stereotype.Component;
 import top.continew.admin.open.util.OpenApiUtils;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AnnotatedElement;
 
 import static cn.dev33.satoken.annotation.handler.SaCheckPermissionHandler._checkMethod;
 
@@ -40,9 +40,10 @@ public class SaCheckPermissionHandler implements SaAnnotationHandlerInterface<Sa
     }
 
     @Override
-    public void checkMethod(SaCheckPermission at, Method method) {
+    public void checkMethod(SaCheckPermission saCheckPermission, AnnotatedElement annotatedElement) {
         if (!OpenApiUtils.isSignParamExists()) {
-            _checkMethod(at.type(), at.value(), at.mode(), at.orRole());
+            _checkMethod(saCheckPermission.type(), saCheckPermission.value(), saCheckPermission
+                .mode(), saCheckPermission.orRole());
         }
     }
 }

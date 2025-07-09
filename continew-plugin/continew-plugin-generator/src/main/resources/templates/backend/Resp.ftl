@@ -4,7 +4,7 @@ import lombok.Data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import top.continew.admin.common.model.resp.BaseResp;
+import top.continew.admin.common.base.model.resp.BaseResp;
 <#if imports??>
     <#list imports as className>
 import ${className};

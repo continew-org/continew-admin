@@ -21,10 +21,10 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.text.CharSequenceUtil;
 import org.springframework.web.method.HandlerMethod;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.continew.starter.extension.crud.enums.Api;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -164,17 +164,14 @@ public class OperationDescriptionCustomizer {
     private String getCrudPermissionInfo(HandlerMethod handlerMethod) {
         CrudRequestMapping crudRequestMapping = handlerMethod.getBeanType().getAnnotation(CrudRequestMapping.class);
         CrudApi crudApi = handlerMethod.getMethodAnnotation(CrudApi.class);
-
         if (crudRequestMapping == null || crudApi == null) {
-            return "";
+            return StringConstants.EMPTY;
         }
 
         String path = crudRequestMapping.value();
         String prefix = String.join(StringConstants.COLON, CharSequenceUtil.splitTrim(path, StringConstants.SLASH));
-        Api api = crudApi.value();
-        String apiName = Api.PAGE.equals(api) || Api.TREE.equals(api) ? Api.LIST.name() : api.name();
+        String apiName = BaseController.getApiName(crudApi.value());
         String permission = "%s:%s".formatted(prefix, apiName.toLowerCase());
-
-        return "<font style=\"color:red\" class=\"light-red\">Crud 权限校验：</font></br><font style=\"color:red\" class=\"light-red\">方法：</font><font style=\"color:red\" class=\"light-red\">" + permission + "</font>";
+        return "<font style=\"color:red\" class=\"light-red\">CRUD 权限校验：</font></br><font style=\"color:red\" class=\"light-red\">方法：</font><font style=\"color:red\" class=\"light-red\">" + permission + "</font>";
     }
 }

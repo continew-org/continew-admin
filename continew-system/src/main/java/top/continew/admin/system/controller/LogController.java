@@ -23,8 +23,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +56,7 @@ public class LogController {
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:log:list")
     @GetMapping
-    public PageResp<LogResp> page(LogQuery query, @Validated PageQuery pageQuery) {
+    public PageResp<LogResp> page(@Valid LogQuery query, @Valid PageQuery pageQuery) {
         return baseService.page(query, pageQuery);
     }
 
@@ -73,7 +73,7 @@ public class LogController {
     @Operation(summary = "导出登录日志", description = "导出登录日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/login")
-    public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+    public void exportLoginLog(@Valid LogQuery query, @Valid SortQuery sortQuery, HttpServletResponse response) {
         baseService.exportLoginLog(query, sortQuery, response);
     }
 
@@ -81,7 +81,7 @@ public class LogController {
     @Operation(summary = "导出操作日志", description = "导出操作日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/operation")
-    public void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+    public void exportOperationLog(@Valid LogQuery query, @Valid SortQuery sortQuery, HttpServletResponse response) {
         baseService.exportOperationLog(query, sortQuery, response);
     }
 }

@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,6 @@ import java.util.List;
  * @since 2024/6/25 22:24
  */
 @Tag(name = " 任务 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedule/job")
@@ -62,7 +62,8 @@ public class JobController {
     @Operation(summary = "新增任务", description = "新增任务")
     @SaCheckPermission("schedule:job:create")
     @PostMapping
-    public void create(@Validated(CrudValidationGroup.Create.class) @RequestBody JobReq req) {
+    @Validated(CrudValidationGroup.Create.class)
+    public void create(@RequestBody @Valid JobReq req) {
         baseService.create(req);
     }
 
@@ -70,14 +71,15 @@ public class JobController {
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("schedule:job:update")
     @PutMapping("/{id}")
-    public void update(@Validated(CrudValidationGroup.Update.class) @RequestBody JobReq req, @PathVariable Long id) {
+    @Validated(CrudValidationGroup.Update.class)
+    public void update(@RequestBody @Valid JobReq req, @PathVariable Long id) {
         baseService.update(req, id);
     }
 
     @Operation(summary = "修改任务状态", description = "修改任务状态")
     @SaCheckPermission("schedule:job:update")
     @PatchMapping("/{id}/status")
-    public void updateStatus(@Validated @RequestBody JobStatusReq req, @PathVariable Long id) {
+    public void updateStatus(@RequestBody @Valid JobStatusReq req, @PathVariable Long id) {
         baseService.updateStatus(req, id);
     }
 

@@ -21,12 +21,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.common.model.req.CommonStatusUpdateReq;
 import top.continew.admin.system.model.query.StorageQuery;
 import top.continew.admin.system.model.req.StorageReq;
@@ -42,16 +42,15 @@ import top.continew.starter.extension.crud.enums.Api;
  * @since 2023/12/26 22:09
  */
 @Tag(name = "存储管理 API")
-@Validated
 @RestController
-@CrudRequestMapping(value = "/system/storage", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/storage", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
 public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {
 
     @Operation(summary = "修改状态", description = "修改状态")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:storage:updateStatus")
     @PutMapping({"/{id}/status"})
-    public void updateStatus(@Validated @RequestBody CommonStatusUpdateReq req, @PathVariable("id") Long id) {
+    public void updateStatus(@RequestBody @Valid CommonStatusUpdateReq req, @PathVariable("id") Long id) {
         baseService.updateStatus(req, id);
     }
 

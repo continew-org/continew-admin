@@ -16,8 +16,9 @@
 
 package top.continew.admin.system.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import top.continew.admin.system.model.entity.RoleMenuDO;
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.starter.data.mapper.BaseMapper;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
+@Mapper
 public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
 
     /**

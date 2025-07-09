@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset snail-job-server:1.1.0
+-- changeset snail-job-server:1.5.0
 -- sj_namespace
 CREATE TABLE sj_namespace
 (
@@ -122,16 +122,19 @@ COMMENT ON TABLE sj_notify_recipient IS '告警通知接收人';
 -- sj_retry_dead_letter
 CREATE TABLE sj_retry_dead_letter
 (
-    id            bigserial PRIMARY KEY,
-    namespace_id  varchar(64)  NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a',
-    group_name    varchar(64)  NOT NULL,
-    scene_name    varchar(64)  NOT NULL,
-    idempotent_id varchar(64)  NOT NULL,
-    biz_no        varchar(64)  NOT NULL DEFAULT '',
-    executor_name varchar(512) NOT NULL DEFAULT '',
-    args_str      text         NOT NULL,
-    ext_attrs     text         NOT NULL,
-    create_dt     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id              bigserial PRIMARY KEY,
+    namespace_id    varchar(64)  NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a',
+    group_name      varchar(64)  NOT NULL,
+    group_id        bigint       NOT NULL,
+    scene_name      varchar(64)  NOT NULL,
+    scene_id        bigint       NOT NULL,
+    idempotent_id   varchar(64)  NOT NULL,
+    biz_no          varchar(64)  NOT NULL DEFAULT '',
+    executor_name   varchar(512) NOT NULL DEFAULT '',
+    serializer_name varchar(32)  NOT NULL DEFAULT 'jackson',
+    args_str        text         NOT NULL,
+    ext_attrs       text         NOT NULL,
+    create_dt       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_sj_retry_dead_letter_01 ON sj_retry_dead_letter (namespace_id, group_name, scene_name);
@@ -142,10 +145,13 @@ CREATE INDEX idx_sj_retry_dead_letter_04 ON sj_retry_dead_letter (create_dt);
 COMMENT ON COLUMN sj_retry_dead_letter.id IS '主键';
 COMMENT ON COLUMN sj_retry_dead_letter.namespace_id IS '命名空间id';
 COMMENT ON COLUMN sj_retry_dead_letter.group_name IS '组名称';
+COMMENT ON COLUMN sj_retry_dead_letter.group_id IS '组Id';
 COMMENT ON COLUMN sj_retry_dead_letter.scene_name IS '场景名称';
+COMMENT ON COLUMN sj_retry_dead_letter.scene_id IS '场景ID';
 COMMENT ON COLUMN sj_retry_dead_letter.idempotent_id IS '幂等id';
 COMMENT ON COLUMN sj_retry_dead_letter.biz_no IS '业务编号';
 COMMENT ON COLUMN sj_retry_dead_letter.executor_name IS '执行器名称';
+COMMENT ON COLUMN sj_retry_dead_letter.serializer_name IS '执行方法参数序列化器名称';
 COMMENT ON COLUMN sj_retry_dead_letter.args_str IS '执行方法参数';
 COMMENT ON COLUMN sj_retry_dead_letter.ext_attrs IS '扩展字段';
 COMMENT ON COLUMN sj_retry_dead_letter.create_dt IS '创建时间';
@@ -157,12 +163,15 @@ CREATE TABLE sj_retry
     id              bigserial PRIMARY KEY,
     namespace_id    varchar(64)  NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a',
     group_name      varchar(64)  NOT NULL,
+    group_id        bigint       NOT NULL,
     scene_name      varchar(64)  NOT NULL,
+    scene_id        bigint       NOT NULL,
     idempotent_id   varchar(64)  NOT NULL,
     biz_no          varchar(64)  NOT NULL DEFAULT '',
     executor_name   varchar(512) NOT NULL DEFAULT '',
     args_str        text         NOT NULL,
     ext_attrs       text         NOT NULL,
+    serializer_name varchar(32)  NOT NULL DEFAULT 'jackson',
     next_trigger_at bigint       NOT NULL,
     retry_count     int          NOT NULL DEFAULT 0,
     retry_status    smallint     NOT NULL DEFAULT 0,
@@ -174,24 +183,26 @@ CREATE TABLE sj_retry
     update_dt       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX uk_sj_retry_01 ON sj_retry (namespace_id, group_name, task_type, idempotent_id, deleted);
+CREATE UNIQUE INDEX uk_sj_retry_01 ON sj_retry (scene_id, task_type, idempotent_id, deleted);
 
-CREATE INDEX idx_sj_retry_01 ON sj_retry (namespace_id, group_name, scene_name);
-CREATE INDEX idx_sj_retry_02 ON sj_retry (namespace_id, group_name, retry_status);
-CREATE INDEX idx_sj_retry_03 ON sj_retry (idempotent_id);
-CREATE INDEX idx_sj_retry_04 ON sj_retry (biz_no);
-CREATE INDEX idx_sj_retry_05 ON sj_retry (parent_id);
-CREATE INDEX idx_sj_retry_06 ON sj_retry (create_dt);
+CREATE INDEX idx_sj_retry_01 ON sj_retry (biz_no);
+CREATE INDEX idx_sj_retry_02 ON sj_retry (idempotent_id);
+CREATE INDEX idx_sj_retry_03 ON sj_retry (retry_status, bucket_index);
+CREATE INDEX idx_sj_retry_04 ON sj_retry (parent_id);
+CREATE INDEX idx_sj_retry_05 ON sj_retry (create_dt);
 
 COMMENT ON COLUMN sj_retry.id IS '主键';
 COMMENT ON COLUMN sj_retry.namespace_id IS '命名空间id';
 COMMENT ON COLUMN sj_retry.group_name IS '组名称';
+COMMENT ON COLUMN sj_retry.group_id IS '组Id';
 COMMENT ON COLUMN sj_retry.scene_name IS '场景名称';
+COMMENT ON COLUMN sj_retry.scene_id IS '场景ID';
 COMMENT ON COLUMN sj_retry.idempotent_id IS '幂等id';
 COMMENT ON COLUMN sj_retry.biz_no IS '业务编号';
 COMMENT ON COLUMN sj_retry.executor_name IS '执行器名称';
 COMMENT ON COLUMN sj_retry.args_str IS '执行方法参数';
 COMMENT ON COLUMN sj_retry.ext_attrs IS '扩展字段';
+COMMENT ON COLUMN sj_retry.serializer_name IS '执行方法参数序列化器名称';
 COMMENT ON COLUMN sj_retry.next_trigger_at IS '下次触发时间';
 COMMENT ON COLUMN sj_retry.retry_count IS '重试次数';
 COMMENT ON COLUMN sj_retry.retry_status IS '重试状态 0、重试中 1、成功 2、最大重试次数';
@@ -287,6 +298,8 @@ CREATE TABLE sj_retry_scene_config
     cb_trigger_type     smallint     NOT NULL DEFAULT 1,
     cb_max_count        int          NOT NULL DEFAULT 16,
     cb_trigger_interval varchar(16)  NOT NULL DEFAULT '',
+    owner_id            bigint       NULL     DEFAULT NULL,
+    labels              varchar(512) NULL     DEFAULT '',
     description         varchar(256) NOT NULL DEFAULT '',
     create_dt           timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_dt           timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -311,6 +324,8 @@ COMMENT ON COLUMN sj_retry_scene_config.cb_status IS '回调状态 0、不开启
 COMMENT ON COLUMN sj_retry_scene_config.cb_trigger_type IS '1、默认等级 2、固定间隔时间 3、CRON 表达式';
 COMMENT ON COLUMN sj_retry_scene_config.cb_max_count IS '回调的最大执行次数';
 COMMENT ON COLUMN sj_retry_scene_config.cb_trigger_interval IS '回调的最大执行次数';
+COMMENT ON COLUMN sj_retry_scene_config.owner_id IS '负责人id';
+COMMENT ON COLUMN sj_retry_scene_config.labels IS '标签';
 COMMENT ON COLUMN sj_retry_scene_config.description IS '描述';
 COMMENT ON COLUMN sj_retry_scene_config.create_dt IS '创建时间';
 COMMENT ON COLUMN sj_retry_scene_config.update_dt IS '修改时间';
@@ -328,6 +343,7 @@ CREATE TABLE sj_server_node
     expire_at    timestamp    NOT NULL,
     node_type    smallint     NOT NULL,
     ext_attrs    varchar(256) NULL     DEFAULT '',
+    labels       varchar(512) NULL     DEFAULT '',
     create_dt    timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_dt    timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -346,6 +362,7 @@ COMMENT ON COLUMN sj_server_node.host_port IS '机器端口';
 COMMENT ON COLUMN sj_server_node.expire_at IS '过期时间';
 COMMENT ON COLUMN sj_server_node.node_type IS '节点类型 1、客户端 2、是服务端';
 COMMENT ON COLUMN sj_server_node.ext_attrs IS '扩展字段';
+COMMENT ON COLUMN sj_server_node.labels IS '标签';
 COMMENT ON COLUMN sj_server_node.create_dt IS '创建时间';
 COMMENT ON COLUMN sj_server_node.update_dt IS '修改时间';
 COMMENT ON TABLE sj_server_node IS '服务器节点';
@@ -353,7 +370,7 @@ COMMENT ON TABLE sj_server_node IS '服务器节点';
 -- sj_distributed_lock
 CREATE TABLE sj_distributed_lock
 (
-    name       varchar(64)  NOT NULL,
+    name       varchar(64)  NOT NULL PRIMARY KEY,
     lock_until timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     locked_at  timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     locked_by  varchar(255) NOT NULL,
@@ -409,27 +426,6 @@ COMMENT ON COLUMN sj_system_user_permission.create_dt IS '创建时间';
 COMMENT ON COLUMN sj_system_user_permission.update_dt IS '修改时间';
 COMMENT ON TABLE sj_system_user_permission IS '系统用户权限表';
 
--- sj_sequence_alloc
-CREATE TABLE sj_sequence_alloc
-(
-    id           bigserial PRIMARY KEY,
-    namespace_id varchar(64) NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a',
-    group_name   varchar(64) NOT NULL DEFAULT '',
-    max_id       bigint      NOT NULL DEFAULT 1,
-    step         int         NOT NULL DEFAULT 100,
-    update_dt    timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE UNIQUE INDEX uk_sj_sequence_alloc_01 ON sj_sequence_alloc (namespace_id, group_name);
-
-COMMENT ON COLUMN sj_sequence_alloc.id IS '主键';
-COMMENT ON COLUMN sj_sequence_alloc.namespace_id IS '命名空间id';
-COMMENT ON COLUMN sj_sequence_alloc.group_name IS '组名称';
-COMMENT ON COLUMN sj_sequence_alloc.max_id IS '最大id';
-COMMENT ON COLUMN sj_sequence_alloc.step IS '步长';
-COMMENT ON COLUMN sj_sequence_alloc.update_dt IS '更新时间';
-COMMENT ON TABLE sj_sequence_alloc IS '号段模式序号ID分配表';
-
 -- sj_job
 CREATE TABLE sj_job
 (
@@ -455,7 +451,8 @@ CREATE TABLE sj_job
     bucket_index     int          NOT NULL DEFAULT 0,
     resident         smallint     NOT NULL DEFAULT 0,
     notify_ids       varchar(128) NOT NULL DEFAULT '',
-    owner_id         bigint       NULL,
+    owner_id         bigint       NULL     DEFAULT NULL,
+    labels           varchar(512) NULL     DEFAULT '',
     description      varchar(256) NOT NULL DEFAULT '',
     ext_attrs        varchar(256) NULL     DEFAULT '',
     deleted          smallint     NOT NULL DEFAULT 0,
@@ -490,6 +487,7 @@ COMMENT ON COLUMN sj_job.bucket_index IS 'bucket';
 COMMENT ON COLUMN sj_job.resident IS '是否是常驻任务';
 COMMENT ON COLUMN sj_job.notify_ids IS '通知告警场景配置id列表';
 COMMENT ON COLUMN sj_job.owner_id IS '负责人id';
+COMMENT ON COLUMN sj_job.labels IS '标签';
 COMMENT ON COLUMN sj_job.description IS '描述';
 COMMENT ON COLUMN sj_job.ext_attrs IS '扩展字段';
 COMMENT ON COLUMN sj_job.deleted IS '逻辑删除 1、删除';
@@ -716,6 +714,7 @@ CREATE TABLE sj_workflow
     notify_ids       varchar(128) NOT NULL DEFAULT '',
     bucket_index     int          NOT NULL DEFAULT 0,
     version          int          NOT NULL,
+    owner_id         bigint       NULL     DEFAULT NULL,
     ext_attrs        varchar(256) NULL     DEFAULT '',
     deleted          smallint     NOT NULL DEFAULT 0,
     create_dt        timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -741,6 +740,7 @@ COMMENT ON COLUMN sj_workflow.wf_context IS '上下文';
 COMMENT ON COLUMN sj_workflow.notify_ids IS '通知告警场景配置id列表';
 COMMENT ON COLUMN sj_workflow.bucket_index IS 'bucket';
 COMMENT ON COLUMN sj_workflow.version IS '版本号';
+COMMENT ON COLUMN sj_workflow.owner_id IS '负责人id';
 COMMENT ON COLUMN sj_workflow.ext_attrs IS '扩展字段';
 COMMENT ON COLUMN sj_workflow.deleted IS '逻辑删除 1、删除';
 COMMENT ON COLUMN sj_workflow.create_dt IS '创建时间';
@@ -829,3 +829,27 @@ COMMENT ON COLUMN sj_workflow_task_batch.deleted IS '逻辑删除 1、删除';
 COMMENT ON COLUMN sj_workflow_task_batch.create_dt IS '创建时间';
 COMMENT ON COLUMN sj_workflow_task_batch.update_dt IS '修改时间';
 COMMENT ON TABLE sj_workflow_task_batch IS '工作流批次';
+
+-- sj_job_executor
+CREATE TABLE sj_job_executor
+(
+    id            bigserial PRIMARY KEY,
+    namespace_id  varchar(64)  NOT NULL DEFAULT '764d604ec6fc45f68cd92514c40e9e1a',
+    group_name    varchar(64)  NOT NULL,
+    executor_info varchar(256) NOT NULL,
+    executor_type varchar(3)   NOT NULL,
+    create_dt     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_dt     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_sj_job_executor_01 ON sj_job_executor (namespace_id, group_name);
+CREATE INDEX idx_sj_job_executor_02 ON sj_job_executor (create_dt);
+
+COMMENT ON COLUMN sj_job_executor.id IS '主键';
+COMMENT ON COLUMN sj_job_executor.namespace_id IS '命名空间id';
+COMMENT ON COLUMN sj_job_executor.group_name IS '组名称';
+COMMENT ON COLUMN sj_job_executor.executor_info IS '任务执行器名称';
+COMMENT ON COLUMN sj_job_executor.executor_type IS '1:java 2:python 3:go';
+COMMENT ON COLUMN sj_job_executor.create_dt IS '创建时间';
+COMMENT ON COLUMN sj_job_executor.update_dt IS '修改时间';
+COMMENT ON TABLE sj_job_executor IS '任务执行器信息';

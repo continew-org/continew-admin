@@ -16,7 +16,11 @@
 
 package top.continew.admin.system.model.req;
 
+import cn.sticki.spel.validator.constrain.SpelNotEmpty;
+import cn.sticki.spel.validator.constrain.SpelNotNull;
+import cn.sticki.spel.validator.jakarta.SpelValid;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -36,6 +40,7 @@ import java.util.List;
  * @since 2023/8/20 10:55
  */
 @Data
+@SpelValid
 @Schema(description = "公告创建或修改请求参数")
 public class NoticeReq implements Serializable {
 
@@ -76,6 +81,7 @@ public class NoticeReq implements Serializable {
      * 通知用户
      */
     @Schema(description = "通知用户", example = "[1,2,3]")
+    @SpelNotEmpty(condition = "#this.noticeScope == T(top.continew.admin.system.enums.NoticeScopeEnum).USER", message = "通知用户不能为空")
     private List<String> noticeUsers;
 
     /**
@@ -87,13 +93,16 @@ public class NoticeReq implements Serializable {
     /**
      * 是否定时
      */
-    @Schema(description = "是否定时", example = "false")
+    @Schema(description = "是否定时", example = "true")
+    @NotNull(message = "是否定时不能为空")
     private Boolean isTiming;
 
     /**
      * 发布时间
      */
     @Schema(description = "发布时间", example = "2023-08-08 00:00:00", type = "string")
+    @SpelNotNull(condition = "#this.isTiming == true", message = "定时发布时间不能为空")
+    @Future(message = "定时发布时间不能早于当前时间")
     private LocalDateTime publishTime;
 
     /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.model.entity;
+package top.continew.admin.common.base.model.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

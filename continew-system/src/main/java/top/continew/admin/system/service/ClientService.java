@@ -16,10 +16,10 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.query.ClientQuery;
 import top.continew.admin.system.model.req.ClientReq;
 import top.continew.admin.system.model.resp.ClientResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 客户端业务接口

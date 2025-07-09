@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import ${packageName}.mapper.${classNamePrefix}Mapper;
 import ${packageName}.model.entity.${classNamePrefix}DO;
 import ${packageName}.model.query.${classNamePrefix}Query;

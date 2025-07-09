@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.open.model.query.AppQuery;
 import top.continew.admin.open.model.req.AppReq;
 import top.continew.admin.open.model.resp.AppDetailResp;
@@ -46,7 +46,8 @@ import top.continew.starter.extension.crud.enums.Api;
 @Tag(name = "应用管理 API")
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/open/app", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/open/app", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
+    Api.EXPORT})
 public class AppController extends BaseController<AppService, AppResp, AppDetailResp, AppQuery, AppReq> {
 
     @Operation(summary = "获取密钥", description = "获取应用密钥")

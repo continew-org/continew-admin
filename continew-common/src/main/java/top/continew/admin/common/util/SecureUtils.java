@@ -22,7 +22,7 @@ import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.extra.spring.SpringUtil;
 import top.continew.admin.common.config.properties.RsaProperties;
 import top.continew.starter.core.exception.BusinessException;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.encryptor.AesEncryptor;
 import top.continew.starter.security.crypto.encryptor.IEncryptor;

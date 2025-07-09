@@ -17,13 +17,13 @@
 package top.continew.admin.open.sign;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.sign.SaSignTemplate;
+import cn.dev33.satoken.sign.template.SaSignTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.open.model.entity.AppDO;
 import top.continew.admin.open.service.AppService;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 
 import java.util.Map;
 

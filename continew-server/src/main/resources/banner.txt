@@ -4,6 +4,6 @@
  | |___| (_) || | | || |_ | || |\  ||  __/ \ V  V /|_____|/ ___ \| (_| || | | | | || || | | |
   \____|\___/ |_| |_| \__||_||_| \_| \___|  \_/\_/       /_/   \_\\__,_||_| |_| |_||_||_| |_|
 
- :: ${project.name}   ::                                               v${project.version}
- :: ContiNew Starter ::                                               v${project.starter}
+ :: ${application.name}   ::                                               v${application.version} (Profile: ${spring.profiles.active})
+ :: ContiNew Starter ::                                               v${application.starter}
  :: Spring Boot      ::                                               v${spring-boot.version}

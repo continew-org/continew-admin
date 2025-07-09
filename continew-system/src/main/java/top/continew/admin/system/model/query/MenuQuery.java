@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.data.core.annotation.Query;
-import top.continew.starter.data.core.enums.QueryType;
+import top.continew.starter.data.annotation.Query;
+import top.continew.starter.data.enums.QueryType;
 
 import java.io.Serial;
 import java.io.Serializable;

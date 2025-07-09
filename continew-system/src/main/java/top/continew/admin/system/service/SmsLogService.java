@@ -16,10 +16,10 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.query.SmsLogQuery;
 import top.continew.admin.system.model.req.SmsLogReq;
 import top.continew.admin.system.model.resp.SmsLogResp;
-import top.continew.starter.extension.crud.service.BaseService;
 
 /**
  * 短信日志业务接口

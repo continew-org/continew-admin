@@ -16,12 +16,12 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.query.DeptQuery;
 import top.continew.admin.system.model.req.DeptReq;
 import top.continew.admin.system.model.resp.DeptResp;
-import top.continew.starter.data.mp.service.IService;
-import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.data.service.IService;
 
 import java.util.List;
 

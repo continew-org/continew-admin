@@ -17,9 +17,8 @@
 package top.continew.admin.system.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.SmsLogQuery;
 import top.continew.admin.system.model.req.SmsLogReq;
 import top.continew.admin.system.model.resp.SmsLogResp;
@@ -35,8 +34,7 @@ import top.continew.starter.extension.crud.enums.Api;
  * @since 2025/03/15 22:15
  */
 @Tag(name = "短信日志管理 API")
-@Validated
 @RestController
-@CrudRequestMapping(value = "/system/smsLog", api = {Api.PAGE, Api.GET, Api.DELETE, Api.EXPORT})
+@CrudRequestMapping(value = "/system/smsLog", api = {Api.PAGE, Api.GET, Api.BATCH_DELETE, Api.EXPORT})
 public class SmsLogController extends BaseController<SmsLogService, SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> {
 }

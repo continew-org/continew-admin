@@ -14,54 +14,74 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.controller;
+package top.continew.admin.common.base.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaRequest;
-import cn.dev33.satoken.sign.SaSignTemplate;
+import cn.dev33.satoken.sign.template.SaSignTemplate;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import top.continew.admin.common.base.service.BaseService;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
-import top.continew.starter.extension.crud.controller.AbstractBaseController;
+import top.continew.starter.extension.crud.controller.AbstractCrudController;
 import top.continew.starter.extension.crud.enums.Api;
-import top.continew.starter.extension.crud.service.BaseService;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
  * 控制器基类
+ * 
+ * <p>
+ * 根据实际项目需要，自行重写 CRUD 接口或增加自定义通用业务接口
+ * </p>
  *
  * @param <S> 业务接口
  * @param <L> 列表类型
  * @param <D> 详情类型
- * @param <Q> 查询条件
- * @param <C> 创建或修改参数类型
+ * @param <Q> 查询条件类型
+ * @param <C> 创建或修改请求参数类型
  * @author Charles7c
  * @since 2024/12/6 20:30
  */
-public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> extends AbstractBaseController<S, L, D, Q, C> {
+public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> extends AbstractCrudController<S, L, D, Q, C> {
 
     @Override
     public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {
+        // 忽略带 sign 请求权限校验
         SaRequest saRequest = SaHolder.getRequest();
         Collection<String> paramNames = saRequest.getParamNames();
         if (paramNames.stream().anyMatch(SaSignTemplate.sign::equals)) {
             return;
         }
+        // 忽略接口类或接口方法上带 @SaIgnore 注解的权限校验
         if (AnnotationUtil.hasAnnotation(targetMethod, SaIgnore.class) || AnnotationUtil
             .hasAnnotation(targetClass, SaIgnore.class)) {
             return;
         }
+        // 校验权限，例如：创建用户接口（POST /system/user） => 校验 system:user:create 权限
         CrudRequestMapping crudRequestMapping = targetClass.getDeclaredAnnotation(CrudRequestMapping.class);
         String path = crudRequestMapping.value();
         String prefix = String.join(StringConstants.COLON, CharSequenceUtil.splitTrim(path, StringConstants.SLASH));
-        Api api = crudApi.value();
-        String apiName = Api.PAGE.equals(api) || Api.TREE.equals(api) ? Api.LIST.name() : api.name();
+        String apiName = getApiName(crudApi.value());
         StpUtil.checkPermission("%s:%s".formatted(prefix, apiName.toLowerCase()));
+    }
+
+    /**
+     * 获取 API 名称
+     *
+     * @param api API
+     * @return API 名称
+     */
+    public static String getApiName(Api api) {
+        return switch (api) {
+            case PAGE, TREE, LIST -> Api.LIST.name();
+            case DELETE, BATCH_DELETE -> Api.DELETE.name();
+            default -> api.name();
+        };
     }
 }

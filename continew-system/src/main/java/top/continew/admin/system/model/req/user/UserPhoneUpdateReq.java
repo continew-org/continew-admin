@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import top.continew.starter.core.validation.constraints.Mobile;
+import top.continew.starter.validation.constraints.Mobile;
 
 import java.io.Serial;
 import java.io.Serializable;

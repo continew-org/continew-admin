@@ -21,8 +21,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.continew.admin.schedule.model.JobInstanceLogPageResult;
 import top.continew.admin.schedule.model.query.JobInstanceLogQuery;
@@ -43,7 +43,6 @@ import java.util.List;
  * @since 2024/6/27 22:24
  */
 @Tag(name = " 任务日志 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedule/log")
@@ -54,7 +53,7 @@ public class JobLogController {
     @Operation(summary = "分页查询任务日志列表", description = "分页查询任务日志列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping
-    public PageResp<JobLogResp> page(JobLogQuery query) {
+    public PageResp<JobLogResp> page(@Valid JobLogQuery query) {
         return baseService.page(query);
     }
 
@@ -77,14 +76,14 @@ public class JobLogController {
     @Operation(summary = "查询任务实例列表", description = "查询任务实例列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping("/instance")
-    public List<JobInstanceResp> listInstance(JobInstanceQuery query) {
+    public List<JobInstanceResp> listInstance(@Valid JobInstanceQuery query) {
         return baseService.listInstance(query);
     }
 
     @Operation(summary = "分页查询任务实例日志列表", description = "分页查询任务实例日志列表")
     @SaCheckPermission("schedule:log:list")
     @GetMapping("/instance/log")
-    public JobInstanceLogPageResult pageInstanceLog(JobInstanceLogQuery query) {
+    public JobInstanceLogPageResult pageInstanceLog(@Valid JobInstanceLogQuery query) {
         return baseService.pageInstanceLog(query);
     }
 }

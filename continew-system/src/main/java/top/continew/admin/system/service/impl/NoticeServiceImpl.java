@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.*;
 import top.continew.admin.system.mapper.NoticeMapper;
@@ -34,11 +35,9 @@ import top.continew.admin.system.model.resp.notice.NoticeResp;
 import top.continew.admin.system.service.MessageService;
 import top.continew.admin.system.service.NoticeLogService;
 import top.continew.admin.system.service.NoticeService;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,11 +66,6 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
 
     @Override
     public void beforeCreate(NoticeReq req) {
-        // 校验定时发布
-        if (Boolean.TRUE.equals(req.getIsTiming())) {
-            ValidationUtils.throwIf(req.getPublishTime() == null, "定时发布时间不能为空");
-            ValidationUtils.throwIf(req.getPublishTime().isBefore(LocalDateTime.now()), "定时发布时间不能早于当前时间");
-        }
         if (!NoticeStatusEnum.DRAFT.equals(req.getStatus())) {
             if (Boolean.TRUE.equals(req.getIsTiming())) {
                 // 待发布
@@ -113,11 +107,6 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
                 req.setPublishTime(oldNotice.getPublishTime());
             }
             case DRAFT, PENDING -> {
-                // 校验定时发布
-                if (Boolean.TRUE.equals(req.getIsTiming())) {
-                    ValidationUtils.throwIf(req.getPublishTime() == null, "定时发布时间不能为空");
-                    ValidationUtils.throwIf(req.getPublishTime().isBefore(LocalDateTime.now()), "定时发布时间不能早于当前时间");
-                }
                 // 已发布
                 if (NoticeStatusEnum.PUBLISHED.equals(req.getStatus())) {
                     if (Boolean.TRUE.equals(req.getIsTiming())) {

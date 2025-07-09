@@ -4,12 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.continew</groupId>
+        <groupId>top.continew.admin</groupId>
         <artifactId>continew-plugin</artifactId>
         <version>${revision}</version>
     </parent>
 
     <artifactId>continew-plugin-tenant</artifactId>
     <description>多租户插件</description>
+    <dependencies>
+        <dependency>
+            <groupId>top.continew.admin</groupId>
+            <artifactId>continew-system</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

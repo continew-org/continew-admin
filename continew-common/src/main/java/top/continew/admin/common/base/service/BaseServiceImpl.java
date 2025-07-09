@@ -14,41 +14,28 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.model.entity;
+package top.continew.admin.common.base.service;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.Data;
+import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.starter.extension.crud.model.entity.BaseIdDO;
-
-import java.io.Serial;
-import java.time.LocalDateTime;
+import top.continew.starter.extension.crud.service.CrudServiceImpl;
 
 /**
- * 实体类基类
+ * 业务实现基类
+ *
  *
  * <p>
- * 通用字段：ID、修改人、修改时间
+ * 根据实际项目需要，自行重写 CRUD 接口或增加自定义通用业务方法实现
  * </p>
- *
+ * 
+ * @param <M> Mapper 接口
+ * @param <T> 实体类型
+ * @param <L> 列表类型
+ * @param <D> 详情类型
+ * @param <Q> 查询条件类型
+ * @param <C> 创建或修改请求参数类型
  * @author Charles7c
- * @since 2025/1/12 23:00
+ * @since 2024/12/6 20:30
  */
-@Data
-public class BaseUpdateDO extends BaseIdDO {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 修改人
-     */
-    @TableField(fill = FieldFill.UPDATE)
-    private Long updateUser;
-
-    /**
-     * 修改时间
-     */
-    @TableField(fill = FieldFill.UPDATE)
-    private LocalDateTime updateTime;
+public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends CrudServiceImpl<M, T, L, D, Q, C> implements BaseService<L, D, Q, C> {
 }

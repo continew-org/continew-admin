@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <!--
         下方 parent 为 ContiNew Starter（Continue New Starter）。
-        ContiNew Starter（Continue New Starter）基于"约定优于配置"的理念，
+        ContiNew Starter 基于"约定优于配置"的理念，
         再次精简常规配置，提供一个更为完整的配置解决方案，帮助开发人员更加快速的集成常用第三方库或工具到 Spring Boot Web 应用程序中。
         ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），
         可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。
     -->
     <parent>
-        <groupId>top.continew</groupId>
+        <groupId>top.continew.starter</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>2.12.2</version>
+        <version>2.13.0</version>
     </parent>
 
-    <groupId>top.continew</groupId>
+    <groupId>top.continew.admin</groupId>
     <artifactId>continew-admin</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -43,49 +43,49 @@
         <dependencies>
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-server</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-system</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 公共模块（存放公共工具类，公共配置等） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-common</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 任务调度插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-plugin-schedule</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 能力开放插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-plugin-open</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 多租户插件 -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-plugin-tenant</artifactId>
-                <version>${revision}</version>
+                <version>4.0.0-SNAPSHOT</version>
             </dependency>
 
             <!-- 代码生成器插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew</groupId>
+                <groupId>top.continew.admin</groupId>
                 <artifactId>continew-plugin-generator</artifactId>
                 <version>${revision}</version>
             </dependency>

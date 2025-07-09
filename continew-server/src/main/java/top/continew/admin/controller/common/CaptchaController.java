@@ -24,6 +24,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.anji.captcha.model.common.RepCodeEnum;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
@@ -52,16 +53,16 @@ import top.continew.admin.system.service.OptionService;
 import top.continew.admin.system.service.SmsConfigService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.captcha.graphic.core.GraphicCaptchaService;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.TemplateUtils;
-import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.core.validation.ValidationUtils;
-import top.continew.starter.core.validation.constraints.Mobile;
+import top.continew.starter.core.util.validation.CheckUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.messaging.mail.util.MailUtils;
 import top.continew.starter.ratelimiter.annotation.RateLimiter;
 import top.continew.starter.ratelimiter.annotation.RateLimiters;
 import top.continew.starter.ratelimiter.enums.LimitType;
+import top.continew.starter.validation.constraints.Mobile;
 import top.continew.starter.web.model.R;
 
 import java.time.Duration;
@@ -84,9 +85,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/captcha")
 public class CaptchaController {
 
-    private final ProjectProperties projectProperties;
+    private final ApplicationProperties applicationProperties;
     private final CaptchaProperties captchaProperties;
-    private final CaptchaService behaviorCaptchaService;
     private final GraphicCaptchaService graphicCaptchaService;
     private final OptionService optionService;
     private final SmsConfigService smsConfigService;
@@ -95,6 +95,7 @@ public class CaptchaController {
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
     @GetMapping("/behavior")
     public Object getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
+        CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
         ResponseModel responseModel = behaviorCaptchaService.get(captchaReq);
         CheckUtils.throwIf(() -> !StrUtil.equals(RepCodeEnum.SUCCESS.getCode(), responseModel
@@ -106,6 +107,7 @@ public class CaptchaController {
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
     public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq, HttpServletRequest request) {
+        CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
         return behaviorCaptchaService.check(captchaReq);
     }
@@ -152,6 +154,7 @@ public class CaptchaController {
     public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Email(message = "邮箱格式不正确") String email,
                             CaptchaVO captchaReq) throws MessagingException {
         // 行为验证码校验
+        CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes
             .getRepMsg());
@@ -162,12 +165,12 @@ public class CaptchaController {
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
         Map<String, String> siteConfig = optionService.getByCategory(OptionCategoryEnum.SITE);
         String content = TemplateUtils.render(captchaMail.getTemplatePath(), Dict.create()
-            .set("siteUrl", projectProperties.getUrl())
+            .set("siteUrl", applicationProperties.getUrl())
             .set("siteTitle", siteConfig.get("SITE_TITLE"))
             .set("siteCopyright", siteConfig.get("SITE_COPYRIGHT"))
             .set("captcha", captcha)
             .set("expiration", expirationInMinutes));
-        MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(projectProperties.getName()), content);
+        MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(applicationProperties.getName()), content);
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
         RedisUtils.set(captchaKey, captcha, Duration.ofMinutes(expirationInMinutes));
@@ -198,6 +201,7 @@ public class CaptchaController {
         @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 30, interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP, message = "获取验证码操作太频繁，请稍后再试")})
     public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone, CaptchaVO captchaReq) {
         // 行为验证码校验
+        CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes
             .getRepMsg());

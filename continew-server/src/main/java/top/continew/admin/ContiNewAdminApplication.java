@@ -29,12 +29,13 @@ import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.extension.crud.annotation.EnableCrudRestController;
 import top.continew.starter.web.annotation.EnableGlobalResponse;
 import top.continew.starter.web.model.R;
@@ -56,7 +57,7 @@ import top.continew.starter.web.model.R;
 @RequiredArgsConstructor
 public class ContiNewAdminApplication implements ApplicationRunner {
 
-    private final ProjectProperties projectProperties;
+    private final ApplicationProperties applicationProperties;
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
@@ -67,7 +68,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     @SaIgnore
     @GetMapping("/")
     public R index() {
-        return R.ok(projectProperties);
+        return R.ok(applicationProperties);
     }
 
     @Override
@@ -76,18 +77,19 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         Integer port = serverProperties.getPort();
         String contextPath = serverProperties.getServlet().getContextPath();
         String baseUrl = URLUtil.normalize("%s:%s%s".formatted(hostAddress, port, contextPath));
-        log.info("----------------------------------------------");
-        log.info("{} service started successfully.", projectProperties.getName());
-        log.info("Profile: {}", SpringUtil.getProperty("spring.profiles.active"));
-        log.info("项目版本: v{} (ContiNew Starter: v{})", projectProperties.getVersion(), SpringUtil
-            .getProperty("project.starter"));
-        log.info("API 地址: {}", baseUrl);
+        log.info("-----------------------------------------------------");
+        log.info("{} server started successfully.", applicationProperties.getName());
+        log.info("ContiNew Starter: v{} (Spring Boot: v{})", SpringUtil
+            .getProperty("application.starter"), SpringBootVersion.getVersion());
+        log.info("当前版本: v{} (Profile: {})", applicationProperties.getVersion(), SpringUtil
+            .getProperty("spring.profiles.active"));
+        log.info("服务地址: {}", baseUrl);
         Knife4jProperties knife4jProperties = SpringUtil.getBean(Knife4jProperties.class);
         if (!knife4jProperties.isProduction()) {
-            log.info("API 文档: {}/doc.html", baseUrl);
+            log.info("接口文档: {}/doc.html", baseUrl);
         }
         log.info("在线文档: https://continew.top");
         log.info("常见问题: https://continew.top/admin/faq.html");
-        log.info("----------------------------------------------");
+        log.info("-----------------------------------------------------");
     }
 }

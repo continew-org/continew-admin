@@ -49,7 +49,7 @@ import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -83,13 +83,13 @@ public class UserProfileController {
 
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public void updateBasicInfo(@Validated @RequestBody UserBasicInfoUpdateReq req) {
+    public void updateBasicInfo(@RequestBody @Valid UserBasicInfoUpdateReq req) {
         userService.updateBasicInfo(req, UserContextHolder.getUserId());
     }
 
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
-    public void updatePassword(@Validated @RequestBody UserPasswordUpdateReq updateReq) {
+    public void updatePassword(@RequestBody @Valid UserPasswordUpdateReq updateReq) {
         String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getOldPassword()));
         ValidationUtils.throwIfNull(rawOldPassword, DECRYPT_FAILED);
@@ -101,7 +101,7 @@ public class UserProfileController {
 
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
-    public void updatePhone(@Validated @RequestBody UserPhoneUpdateReq updateReq) {
+    public void updatePhone(@RequestBody @Valid UserPhoneUpdateReq updateReq) {
         String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getOldPassword()));
         ValidationUtils.throwIfBlank(rawOldPassword, DECRYPT_FAILED);
@@ -115,7 +115,7 @@ public class UserProfileController {
 
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
-    public void updateEmail(@Valid @RequestBody UserEmailUpdateReq updateReq) {
+    public void updateEmail(@RequestBody @Valid UserEmailUpdateReq updateReq) {
         String rawOldPassword = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(updateReq
             .getOldPassword()));
         ValidationUtils.throwIfBlank(rawOldPassword, DECRYPT_FAILED);

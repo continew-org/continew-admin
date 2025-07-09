@@ -79,6 +79,8 @@ ALTER TABLE sys_message_log ADD COLUMN tenant_id BIGINT NOT NULL DEFAULT 0;
 CREATE INDEX idx_sys_message_log_tenant_id ON sys_message_log(tenant_id);
 ALTER TABLE sys_notice ADD COLUMN tenant_id BIGINT NOT NULL DEFAULT 0;
 CREATE INDEX idx_sys_notice_tenant_id ON sys_notice(tenant_id);
+ALTER TABLE sys_notice_log ADD COLUMN tenant_id BIGINT NOT NULL DEFAULT 0;
+CREATE INDEX idx_sys_notice_log_tenant_id ON sys_notice_log(tenant_id);
 ALTER TABLE sys_role ADD COLUMN tenant_id BIGINT NOT NULL DEFAULT 0;
 CREATE INDEX idx_sys_role_tenant_id ON sys_role(tenant_id);
 ALTER TABLE sys_user ADD COLUMN tenant_id BIGINT NOT NULL DEFAULT 0;
@@ -118,7 +120,7 @@ ALTER TABLE sys_user ADD UNIQUE INDEX `uk_phone` (`phone`, `tenant_id`);
 INSERT INTO `sys_menu`
 (`id`, `title`, `parent_id`, `type`, `path`, `name`, `component`, `redirect`, `icon`, `is_external`, `is_cache`, `is_hidden`, `permission`, `sort`, `status`, `create_user`, `create_time`, `update_user`, `update_time`, `tenant_id`)
 VALUES
-(10010, '租户管理', 0, 1, '/tenant', 'Tenant', 'Layout', NULL, 'user-group', b'0', b'0', b'0', NULL, 6, 1, 1, NOW(), NULL, NULL, 0),
+(10010, '租户管理', 0, 1, '/tenant', 'Tenant', 'Layout', '/tenant/user', 'user-group', b'0', b'0', b'0', NULL, 6, 1, 1, NOW(), NULL, NULL, 0),
 (10015, '租户套餐', 10010, 2, '/tenant/package', 'TenantPackage', 'tenant/package/index', NULL, 'menu', b'0', b'0', b'0', NULL, 2, 1, 1, NOW(), NULL, NULL, 0),
 (10016, '列表', 10015, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:list', 1, 1, 1, NOW(), NULL, NULL, 0),
 (10017, '详情', 10015, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:detail', 2, 1, 1, NOW(), NULL, NULL, 0),

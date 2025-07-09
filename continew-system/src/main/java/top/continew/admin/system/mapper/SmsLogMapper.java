@@ -16,7 +16,8 @@
 
 package top.continew.admin.system.mapper;
 
-import top.continew.starter.data.mp.base.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.admin.system.model.entity.SmsLogDO;
 
 /**
@@ -25,4 +26,5 @@ import top.continew.admin.system.model.entity.SmsLogDO;
  * @author luoqiz
  * @since 2025/03/15 22:15
  */
+@Mapper
 public interface SmsLogMapper extends BaseMapper<SmsLogDO> {}

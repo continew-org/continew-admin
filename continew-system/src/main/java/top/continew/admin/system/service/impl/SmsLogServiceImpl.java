@@ -17,13 +17,13 @@
 package top.continew.admin.system.service.impl;
 
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.system.mapper.SmsLogMapper;
 import top.continew.admin.system.model.entity.SmsLogDO;
 import top.continew.admin.system.model.query.SmsLogQuery;
 import top.continew.admin.system.model.req.SmsLogReq;
 import top.continew.admin.system.model.resp.SmsLogResp;
 import top.continew.admin.system.service.SmsLogService;
-import top.continew.starter.extension.crud.service.BaseServiceImpl;
 
 /**
  * 短信日志业务实现

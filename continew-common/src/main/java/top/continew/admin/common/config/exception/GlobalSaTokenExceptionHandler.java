@@ -46,7 +46,7 @@ public class GlobalSaTokenExceptionHandler {
         log.error("[{}] {}", request.getMethod(), request.getRequestURI(), e);
         String errorMsg = switch (e.getType()) {
             case NotLoginException.KICK_OUT -> "您已被踢下线";
-            case NotLoginException.BE_REPLACED_MESSAGE -> "您已被顶下线";
+            case NotLoginException.BE_REPLACED -> "您已被顶下线";
             default -> "您的登录状态已过期，请重新登录";
         };
         return R.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), errorMsg);

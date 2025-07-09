@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.req.OptionReq;
@@ -39,7 +38,6 @@ import java.util.List;
  * @since 2023/8/26 19:38
  */
 @Tag(name = "参数管理 API")
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/option")
@@ -51,7 +49,7 @@ public class OptionController {
     @SaCheckPermission(value = {"system:siteConfig:get", "system:securityConfig:get", "system:loginConfig:get",
         "system:mailConfig:get"}, mode = SaMode.OR)
     @GetMapping
-    public List<OptionResp> list(@Validated OptionQuery query) {
+    public List<OptionResp> list(@Valid OptionQuery query) {
         return baseService.list(query);
     }
 
@@ -59,7 +57,7 @@ public class OptionController {
     @SaCheckPermission(value = {"system:siteConfig:update", "system:securityConfig:update", "system:loginConfig:update",
         "system:mailConfig:update"}, mode = SaMode.OR)
     @PutMapping
-    public void update(@Valid @RequestBody List<OptionReq> options) {
+    public void update(@RequestBody @Valid List<OptionReq> options) {
         baseService.update(options);
     }
 
@@ -67,7 +65,7 @@ public class OptionController {
     @SaCheckPermission(value = {"system:siteConfig:update", "system:securityConfig:update", "system:loginConfig:update",
         "system:mailConfig:update"}, mode = SaMode.OR)
     @PatchMapping("/value")
-    public void resetValue(@Validated @RequestBody OptionResetValueReq req) {
+    public void resetValue(@RequestBody @Valid OptionResetValueReq req) {
         baseService.resetValue(req);
     }
 }

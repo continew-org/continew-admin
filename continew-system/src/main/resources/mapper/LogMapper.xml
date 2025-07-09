@@ -41,21 +41,34 @@
         ${ew.customSqlSegment}
     </select>
 
-    <select id="selectDashboardOverviewPv" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
+    <select id="selectDashboardOverviewPv" databaseId="mysql" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(*) FROM sys_log) AS total,
-            (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
-            (SELECT COUNT(*) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURDATE() AND create_time <![CDATA[ < ]]> DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time <![CDATA[ < ]]> CURDATE()) AS yesterday
+
+    </select>
+    <select id="selectDashboardOverviewPv" databaseId="pgsql" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
+        SELECT
+            (SELECT COUNT(*) FROM sys_log) AS total,
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURRENT_DATE AND create_time <![CDATA[ < ]]> CURRENT_DATE + INTERVAL '1 day') AS today,
+            (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURRENT_DATE - INTERVAL '1 day' AND create_time <![CDATA[ < ]]> CURRENT_DATE) AS yesterday
     </select>
 
-    <select id="selectDashboardOverviewIp" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
+    <select id="selectDashboardOverviewIp" databaseId="mysql" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(DISTINCT ip) FROM sys_log) AS total,
             (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
             (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday
     </select>
+    <select id="selectDashboardOverviewIp" databaseId="pgsql" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
+        SELECT
+                (SELECT COUNT(DISTINCT ip) FROM sys_log) AS total,
+                (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURRENT_DATE AND create_time <![CDATA[ < ]]> CURRENT_DATE + INTERVAL '1 day') AS today,
+                (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURRENT_DATE - INTERVAL '1 day' AND create_time <![CDATA[ < ]]> CURRENT_DATE) AS yesterday
+    </select>
 
-    <select id="selectListDashboardAnalysisPv"
+    <select id="selectListDashboardAnalysisPv" databaseId="mysql"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
             DATE_FORMAT(create_time, '%Y-%m') AS name,
@@ -68,14 +81,40 @@
         GROUP BY name
         ORDER BY name
     </select>
+    <select id="selectListDashboardAnalysisPv" databaseId="pgsql"
+            resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
+        SELECT
+        TO_CHAR(create_time, 'YYYY-MM') AS name,
+        COUNT(*) AS value
+        FROM sys_log
+        WHERE TO_CHAR(create_time, 'YYYY-MM') IN
+        <foreach collection="months" item="month" separator="," open="(" close=")">
+            #{month}
+        </foreach>
+        GROUP BY name
+        ORDER BY name
+    </select>
 
-    <select id="selectListDashboardAnalysisIp"
+    <select id="selectListDashboardAnalysisIp" databaseId="mysql"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
             DATE_FORMAT(create_time, '%Y-%m') AS name,
             COUNT(DISTINCT ip) AS value
         FROM sys_log
         WHERE DATE_FORMAT(create_time, '%Y-%m' ) IN
+        <foreach collection="months" item="month" separator="," open="(" close=")">
+            #{month}
+        </foreach>
+        GROUP BY name
+        ORDER BY name
+    </select>
+    <select id="selectListDashboardAnalysisIp" databaseId="pgsql"
+            resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
+        SELECT
+        TO_CHAR(create_time, 'YYYY-MM') AS name,
+        COUNT(DISTINCT ip) AS value
+        FROM sys_log
+        WHERE TO_CHAR(create_time, 'YYYY-MM') IN
         <foreach collection="months" item="month" separator="," open="(" close=")">
             #{month}
         </foreach>
@@ -110,7 +149,14 @@
     <select id="selectListDashboardAnalysisTimeslot"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
-            LPAD(CONCAT(FLOOR(HOUR(create_time) / 2) * 2, ':00'), 5, '0') AS name,
+            <choose>
+                <when test="_databaseId =='mysql'">
+                    LPAD(CONCAT(FLOOR(HOUR(create_time) / 2) * 2, ':00'), 5, '0') AS name,
+                </when>
+                <when test="_databaseId =='pgsql'">
+                    LPAD((FLOOR(EXTRACT(HOUR FROM create_time) / 2) * 2)::text || ':00', 5, '0') AS name,
+                </when>
+            </choose>
             COUNT(*) AS value
         FROM sys_log
         GROUP BY name
@@ -144,7 +190,14 @@
     <select id="selectListDashboardAnalysisBrowser"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
-            SUBSTRING_INDEX(browser, ' ', 1) AS name,
+            <choose>
+                <when test="_databaseId =='mysql'">
+                    SUBSTRING_INDEX(browser, ' ', 1) AS name,
+                </when>
+                <when test="_databaseId =='pgsql'">
+                    SPLIT_PART(browser, ' ', 1) AS name,
+                </when>
+            </choose>
             COUNT(*) AS value
         FROM sys_log
         WHERE browser IS NOT NULL

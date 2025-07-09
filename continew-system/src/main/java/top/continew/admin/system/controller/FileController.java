@@ -25,9 +25,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.dromara.x.file.storage.core.FileInfo;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
 import top.continew.admin.system.model.resp.file.FileDirCalcSizeResp;
@@ -35,7 +36,7 @@ import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.admin.system.model.resp.file.FileUploadResp;
 import top.continew.admin.system.service.FileService;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.model.resp.IdResp;
@@ -50,9 +51,10 @@ import java.io.IOException;
  * @since 2023/12/23 10:38
  */
 @Tag(name = "文件管理 API")
+@Validated
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.BATCH_DELETE})
 public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
 
     /**
@@ -85,7 +87,7 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
     @Operation(summary = "创建文件夹", description = "创建文件夹")
     @SaCheckPermission("system:file:createDir")
     @PostMapping("/dir")
-    public IdResp<Long> createDir(@Valid @RequestBody FileReq req) {
+    public IdResp<Long> createDir(@RequestBody @Valid FileReq req) {
         ValidationUtils.throwIfBlank(req.getParentPath(), "上级目录不能为空");
         return new IdResp<>(baseService.createDir(req));
     }

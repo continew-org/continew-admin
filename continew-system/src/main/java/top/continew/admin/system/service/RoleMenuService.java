@@ -16,8 +16,8 @@
 
 package top.continew.admin.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import top.continew.admin.system.model.entity.RoleMenuDO;
-import top.continew.starter.data.mp.service.IService;
 
 import java.util.List;
 

@@ -19,15 +19,14 @@ package top.continew.admin.system.controller;
 import cn.hutool.core.collection.CollUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.admin.common.controller.BaseController;
+import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.enums.NoticeMethodEnum;
-import top.continew.admin.system.enums.NoticeScopeEnum;
 import top.continew.admin.system.model.query.NoticeQuery;
 import top.continew.admin.system.model.req.NoticeReq;
 import top.continew.admin.system.model.resp.notice.NoticeDetailResp;
 import top.continew.admin.system.model.resp.notice.NoticeResp;
 import top.continew.admin.system.service.NoticeService;
-import top.continew.starter.core.validation.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
@@ -44,7 +43,7 @@ import java.util.List;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
+@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
 public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
 
     @Override
@@ -55,10 +54,6 @@ public class NoticeController extends BaseController<NoticeService, NoticeResp, 
             return;
         }
         NoticeReq req = (NoticeReq)args[0];
-        // 校验通知范围
-        if (NoticeScopeEnum.USER.equals(req.getNoticeScope())) {
-            ValidationUtils.throwIfEmpty(req.getNoticeUsers(), "通知用户不能为空");
-        }
         // 校验通知方式
         List<Integer> noticeMethods = req.getNoticeMethods();
         if (CollUtil.isNotEmpty(noticeMethods)) {

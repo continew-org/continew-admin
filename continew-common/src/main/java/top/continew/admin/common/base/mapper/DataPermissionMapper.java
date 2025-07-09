@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.config.mybatis;
+package top.continew.admin.common.base.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
-import top.continew.starter.data.mp.base.BaseMapper;
+import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.starter.extension.datapermission.annotation.DataPermission;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -58,11 +59,10 @@ public interface DataPermissionMapper<T> extends BaseMapper<T> {
     /**
      * 根据 ID 删除
      *
-     * @param obj     主键ID或实体
-     * @param useFill 是否填充
+     * @param id id
      * @return 删除个数
      */
     @DataPermission
     @Override
-    int deleteById(Object obj, boolean useFill);
+    int deleteById(@Param("id") Serializable id);
 }

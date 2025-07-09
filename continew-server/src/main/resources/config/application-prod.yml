@@ -1,5 +1,5 @@
---- ### 项目配置
-project:
+--- ### 应用配置
+application:
   # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
   url: https://admin.continew.top
   # 是否为生产环境
@@ -106,14 +106,14 @@ jetcache:
 ## 接口文档增强配置
 knife4j:
   # 开启生产环境屏蔽
-  production: ${project.production}
+  production: ${application.production}
 
 --- ### 跨域配置
 continew-starter.web.cors:
   enabled: true
   # 配置允许跨域的域名
   allowed-origins:
-    - ${project.url}
+    - ${application.url}
   # 配置允许跨域的请求方式
   allowed-methods: '*'
   # 配置允许跨域的请求头
@@ -220,7 +220,7 @@ continew-starter.messaging.websocket:
   path: /websocket
   # 配置允许跨域的域名
   allowed-origins:
-    - ${project.url}
+    - ${application.url}
 
 --- ### Sa-Token 扩展配置
 sa-token.extension:
@@ -243,11 +243,11 @@ justauth:
     GITEE:
       client-id: 5d271b7f638941812aaf8bfc2e2f08f06d6235ef934e0e39537e2364eb8452c4
       client-secret: 1f7d08**********5b7**********29e
-      redirect-uri: ${project.url}/social/callback?source=gitee
+      redirect-uri: ${application.url}/social/callback?source=gitee
     GITHUB:
       client-id: 38080dad08cfbdfacca9
       client-secret: 1f7d08**********5b7**********29e
-      redirect-uri: ${project.url}/social/callback?source=github
+      redirect-uri: ${application.url}/social/callback?source=github
   cache:
     type: REDIS
 

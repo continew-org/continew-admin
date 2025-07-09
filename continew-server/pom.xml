@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.continew</groupId>
+        <groupId>top.continew.admin</groupId>
         <artifactId>continew-admin</artifactId>
         <version>${revision}</version>
     </parent>
@@ -30,31 +30,31 @@
     <dependencies>
         <!-- 系统管理模块 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.admin</groupId>
             <artifactId>continew-system</artifactId>
         </dependency>
 
         <!-- 任务调度插件 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.admin</groupId>
             <artifactId>continew-plugin-schedule</artifactId>
         </dependency>
 
         <!-- 能力开放插件 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.admin</groupId>
             <artifactId>continew-plugin-open</artifactId>
         </dependency>
 
         <!-- 代码生成器插件 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.admin</groupId>
             <artifactId>continew-plugin-generator</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 链路追踪模块 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-trace</artifactId>
         </dependency>
 
@@ -66,7 +66,7 @@
 
         <!-- 多租户插件 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.admin</groupId>
             <artifactId>continew-plugin-tenant</artifactId>
         </dependency>
 
