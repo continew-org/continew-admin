@@ -159,8 +159,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     public Set<String> listPermissionByUserId(Long userId) {
         Set<String> roleCodeSet = this.listCodeByUserId(userId);
         // 超级管理员赋予全部权限
-        if (roleCodeSet.contains(SysConstants.SUPER_ROLE_CODE) || roleCodeSet
-            .contains(SysConstants.TENANT_ADMIN_CODE)) {
+        if (roleCodeSet.contains(SysConstants.SUPER_ROLE_CODE)) {
             return CollUtil.newHashSet(SysConstants.ALL_PERMISSION);
         }
         return menuService.listPermissionByUserId(userId);

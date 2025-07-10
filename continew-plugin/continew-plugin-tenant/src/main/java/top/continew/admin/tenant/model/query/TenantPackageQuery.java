@@ -26,7 +26,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import top.continew.starter.data.annotation.Query;
 import top.continew.starter.data.enums.QueryType;
 
-
 /**
  * 租户套餐查询条件
  *

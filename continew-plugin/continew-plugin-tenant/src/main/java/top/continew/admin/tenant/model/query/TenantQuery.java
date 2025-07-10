@@ -21,7 +21,6 @@ import lombok.Data;
 import top.continew.starter.data.annotation.Query;
 import top.continew.starter.data.enums.QueryType;
 
-
 import java.io.Serial;
 import java.io.Serializable;
 

@@ -166,18 +166,19 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统日志表';
 
 CREATE TABLE IF NOT EXISTS `sys_message` (
-    `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
+                                             `id`          bigint(20)   NOT NULL AUTO_INCREMENT     COMMENT 'ID',
     `title`       varchar(50)  NOT NULL                    COMMENT '标题',
-    `content`     varchar(255) DEFAULT NULL                COMMENT '内容',
-    `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：系统消息）',
-    `create_user` bigint(20)   DEFAULT NULL                COMMENT '创建人',
+    `content`     text         DEFAULT NULL                COMMENT '内容',
+    `type`        tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '类型（1：系统消息；2：安全消息）',
+    `path`        varchar(255) DEFAULT NULL                COMMENT '跳转路径',
+    `scope`       tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '通知范围（1：所有人；2：指定用户）',
+    `users`       json         DEFAULT NULL                COMMENT '通知用户',
     `create_time` datetime     NOT NULL                    COMMENT '创建时间',
     PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
 
-
 CREATE TABLE IF NOT EXISTS `sys_message_log` (
-    `message_id` bigint(20) NOT NULL     COMMENT '消息ID',
+                                                 `message_id` bigint(20) NOT NULL     COMMENT '消息ID',
     `user_id`    bigint(20) NOT NULL     COMMENT '用户ID',
     `read_time`  datetime   DEFAULT NULL COMMENT '读取时间',
     PRIMARY KEY (`message_id`, `user_id`)

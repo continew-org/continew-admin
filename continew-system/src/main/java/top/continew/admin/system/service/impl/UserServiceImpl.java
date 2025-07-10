@@ -754,7 +754,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         return userDO.getId();
     }
 
-
     /**
      * 根据 ID 获取用户信息（数据权限）
      *

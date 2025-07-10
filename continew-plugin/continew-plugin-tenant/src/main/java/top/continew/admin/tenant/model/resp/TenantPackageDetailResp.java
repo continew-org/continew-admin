@@ -28,7 +28,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import top.continew.admin.common.base.model.resp.BaseDetailResp;
 import cn.idev.excel.annotation.ExcelIgnoreUnannotated;
 
-
 /**
  * 租户套餐详情信息
  *

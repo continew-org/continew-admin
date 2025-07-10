@@ -38,18 +38,7 @@ import top.continew.starter.extension.tenant.enums.TenantIsolationLevel;
 @ConditionalOnProperty(prefix = PropertiesConstants.TENANT, name = PropertiesConstants.ENABLED, havingValue = "true")
 public class DataSourceSwitchAspect {
 
-    @Pointcut("execution(* top.continew.admin.tenant.mapper..*(..)) || "
-            + "execution(* top.continew.admin.tenant.service..*(..)) || "
-            + "execution(* top.continew.admin.system.mapper.ClientMapper.*(..)) || "
-            + "execution(* top.continew.admin.system.service.ClientService.*(..)) || "
-            + "execution(* top.continew.admin.system.mapper.DictMapper.*(..)) || "
-            + "execution(* top.continew.admin.system.service.DictService.*(..)) || "
-            + "execution(* top.continew.admin.system.mapper.DictItemMapper.*(..)) || "
-            + "execution(* top.continew.admin.system.service.DictItemService.*(..)) || "
-            + "execution(* top.continew.admin.system.mapper.OptionMapper.*(..)) || "
-            + "execution(* top.continew.admin.system.service.OptionService.*(..)) || "
-            + "execution(* top.continew.admin.system.mapper.StorageMapper.*(..)) || "
-            + "execution(* top.continew.admin.system.service.StorageService.*(..))")
+    @Pointcut("execution(* top.continew.admin.tenant.mapper..*(..)) || " + "execution(* top.continew.admin.tenant.service..*(..)) || " + "execution(* top.continew.admin.system.mapper.ClientMapper.*(..)) || " + "execution(* top.continew.admin.system.service.ClientService.*(..)) || " + "execution(* top.continew.admin.system.mapper.DictMapper.*(..)) || " + "execution(* top.continew.admin.system.service.DictService.*(..)) || " + "execution(* top.continew.admin.system.mapper.DictItemMapper.*(..)) || " + "execution(* top.continew.admin.system.service.DictItemService.*(..)) || " + "execution(* top.continew.admin.system.mapper.OptionMapper.*(..)) || " + "execution(* top.continew.admin.system.service.OptionService.*(..)) || " + "execution(* top.continew.admin.system.mapper.StorageMapper.*(..)) || " + "execution(* top.continew.admin.system.service.StorageService.*(..))")
     public void MasterDataSourceMethods() {
     }
 
