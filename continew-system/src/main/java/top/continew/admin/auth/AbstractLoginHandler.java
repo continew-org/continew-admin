@@ -123,6 +123,7 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         userContext.setClientType(client.getClientType());
         loginParameter.setExtra(CLIENT_ID, client.getClientId());
         userContext.setClientId(client.getClientId());
+        userContext.setTenantId(tenantId);
         // 登录并缓存用户信息
         StpUtil.login(userContext.getId(), loginParameter.setExtraData(BeanUtil
             .beanToMap(new UserExtraContext(ServletUtils.getRequest()))));
