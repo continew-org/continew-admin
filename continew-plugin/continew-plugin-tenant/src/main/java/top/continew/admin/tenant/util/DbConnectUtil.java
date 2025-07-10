@@ -62,6 +62,7 @@ public class DbConnectUtil {
         configuration.setDriverClassName(driverClassName);
         configuration.setUsername(username);
         configuration.setPassword(password);
+        configuration.setConnectionTimeout(3000L);
         return configuration;
     }
 

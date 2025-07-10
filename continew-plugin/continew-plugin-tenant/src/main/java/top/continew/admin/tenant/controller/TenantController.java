@@ -121,16 +121,15 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
 
     @Override
     public void delete(Long id) {
-        super.delete(id);
         SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
             //系统数据清除
             tenantSysDataService.clear();
         });
+        super.delete(id);
     }
 
     @Override
     public void batchDelete(@Valid IdsReq ids) {
-        super.batchDelete(ids);
         for (Long id : ids.getIds()) {
             //在租户中执行数据清除
             SpringUtil.getBean(TenantHandler.class).execute(id, () -> {
@@ -138,6 +137,7 @@ public class TenantController extends BaseController<TenantService, TenantResp, 
                 tenantSysDataService.clear();
             });
         }
+        super.batchDelete(ids);
     }
 
     /**
