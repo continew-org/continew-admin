@@ -18,10 +18,14 @@
             t1.publish_time,
             t1.is_top,
             t1.status,
-            t1.create_user,
-            t2.read_time IS NOT NULL AS isRead
+            t1.create_user
+        <if test="query.userId != null">
+            ,t2.read_time IS NOT NULL AS isRead
+        </if>
         FROM sys_notice AS t1
-        LEFT JOIN sys_notice_log AS t2 ON t2.notice_id = t1.id
+        <if test="query.userId != null">
+            LEFT JOIN sys_notice_log AS t2 ON t2.notice_id = t1.id AND t2.user_id = #{query.userId}
+        </if>
         <where>
             <if test="query.userId != null">
                 <choose>
