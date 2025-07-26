@@ -137,22 +137,19 @@ COMMENT ON COLUMN "sys_app"."tenant_id" IS '租户ID';
 CREATE INDEX "idx_app_tenant_id" ON "sys_app" ("tenant_id");
 
 -- 调整唯一索引
-ALTER TABLE "sys_dept" DROP INDEX "uk_dept_name_parent_id";
+DROP INDEX IF EXISTS "uk_dept_name_parent_id";
 CREATE UNIQUE INDEX "uk_dept_name_parent_id" ON "sys_dept" ("name", "parent_id", "tenant_id");
 
-ALTER TABLE "sys_role" DROP INDEX "uk_role_name";
-ALTER TABLE "sys_role" DROP INDEX "uk_role_code";
+DROP INDEX IF EXISTS "uk_role_name", "uk_role_code";
 CREATE UNIQUE INDEX "uk_role_name" ON "sys_role" ("name", "tenant_id");
 CREATE UNIQUE INDEX "uk_role_code" ON "sys_role" ("code", "tenant_id");
 
-ALTER TABLE "sys_user" DROP INDEX "uk_user_username";
-ALTER TABLE "sys_user" DROP INDEX "uk_user_email";
-ALTER TABLE "sys_user" DROP INDEX "uk_user_phone";
+DROP INDEX IF EXISTS "uk_user_username", "uk_user_email", "uk_user_phone";
 CREATE UNIQUE INDEX "uk_user_username" ON "sys_user" ("username", "tenant_id");
 CREATE UNIQUE INDEX "uk_user_email" ON "sys_user" ("email", "tenant_id");
 CREATE UNIQUE INDEX "uk_user_phone" ON "sys_user" ("phone", "tenant_id");
 
-ALTER TABLE "sys_app" DROP INDEX "uk_app_access_key";
+DROP INDEX IF EXISTS "uk_app_access_key";
 CREATE UNIQUE INDEX "uk_app_access_key" ON "sys_app" ("access_key", "tenant_id");
 
 -- 初始化默认菜单

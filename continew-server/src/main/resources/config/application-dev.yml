@@ -17,7 +17,7 @@ spring.datasource:
   password: ${DB_PWD:123456}
   driver-class-name: com.p6spy.engine.spy.P6SpyDriver
   #  # PostgreSQL 配置
-  #  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&stringtype=unspecified
+  #  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=require&stringtype=unspecified
   #  username: ${DB_USER:postgres}
   #  password: ${DB_PWD:123456}
   #  driver-class-name: com.p6spy.engine.spy.P6SpyDriver

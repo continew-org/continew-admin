@@ -8,7 +8,7 @@ spring.datasource:
   password: ${DB_PWD:123456}
   driver-class-name: com.mysql.cj.jdbc.Driver
 #  # PostgreSQL 配置
-#  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&stringtype=unspecified
+#  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin_job}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=require&stringtype=unspecified
 #  username: ${DB_USER:root}
 #  password: ${DB_PWD:123456}
 #  driver-class-name: org.postgresql.Driver
