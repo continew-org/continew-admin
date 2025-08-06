@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.common.api.system.MenuApi;
 import top.continew.admin.common.base.controller.BaseController;
@@ -56,7 +57,7 @@ public class PackageController extends BaseController<PackageService, PackageRes
     @Operation(summary = "查询租户套餐菜单", description = "查询租户套餐菜单树列表")
     @SaCheckPermission("tenant:package:list")
     @GetMapping("/menu/tree")
-    public List<Tree<Long>> listMenuTree() {
-        return menuApi.listTree(tenantExtensionProperties.getIgnoreMenus());
+    public List<Tree<Long>> listMenuTree(@RequestParam(required = false, defaultValue = "true") Boolean isSimple) {
+        return menuApi.listTree(tenantExtensionProperties.getIgnoreMenus(), isSimple);
     }
 }

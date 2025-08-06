@@ -46,6 +46,20 @@ public class TenantQuery implements Serializable {
     private String description;
 
     /**
+     * 编码
+     */
+    @Schema(description = "编码", example = "T0stxiJK6RMH")
+    @Query(type = QueryType.EQ)
+    private String code;
+
+    /**
+     * 域名
+     */
+    @Schema(description = "域名", example = "admin.continew.top")
+    @Query(type = QueryType.LIKE)
+    private String domain;
+
+    /**
      * 套餐 ID
      */
     @Schema(description = "套餐 ID", example = "1")
