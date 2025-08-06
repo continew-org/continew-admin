@@ -305,7 +305,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
         Map<String, GeneratorProperties.TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
-            .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
+            .createEngine(new TemplateConfig("templates/arco", TemplateConfig.ResourceMode.CLASSPATH));
         // 在模板中允许使用静态方法
         if (engine instanceof FreemarkerEngine freemarkerEngine) {
             DefaultObjectWrapper wrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_33).build();
