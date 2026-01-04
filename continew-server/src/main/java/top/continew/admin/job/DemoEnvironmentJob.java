@@ -32,7 +32,6 @@ import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.mapper.user.UserSocialMapper;
 import top.continew.admin.system.model.entity.*;
 import top.continew.admin.system.model.entity.user.UserDO;
-import top.continew.admin.system.model.entity.user.UserSocialDO;
 import top.continew.admin.tenant.mapper.PackageMapper;
 import top.continew.admin.tenant.mapper.PackageMenuMapper;
 import top.continew.admin.tenant.mapper.TenantMapper;
@@ -80,6 +79,7 @@ public class DemoEnvironmentJob {
         .of(1L, 547889293968801822L, 547889293968801823L, 547889293968801824L, 547889293968801825L, 547889293968801826L, 547889293968801827L, 547889293968801828L, 547889293968801829L, 547889293968801830L, 547889293968801831L, 547889293968801832L, 547889293968801833L, 547889293968801834L);
     private static final List<Long> ROLE_FLAG = List.of(1L, 2L, 3L, 547888897925840927L, 547888897925840928L);
     private static final Long DEPT_FLAG = 547887852587843611L;
+    private static final Long USER_ROLE_FLAG = 14L;
 
     /**
      * 重置演示环境数据
@@ -123,12 +123,12 @@ public class DemoEnvironmentJob {
             // 清理关联数据
             noticeLogMapper.lambdaUpdate().gt(NoticeLogDO::getNoticeId, DELETE_FLAG).remove();
             messageLogMapper.lambdaUpdate().gt(MessageLogDO::getMessageId, MESSAGE_FLAG).remove();
-            userRoleMapper.lambdaUpdate().notIn(UserRoleDO::getRoleId, ROLE_FLAG).remove();
-            userRoleMapper.lambdaUpdate().notIn(UserRoleDO::getUserId, USER_FLAG).remove();
             roleDeptMapper.lambdaUpdate().notIn(RoleDeptDO::getRoleId, ROLE_FLAG).remove();
             roleMenuMapper.lambdaUpdate().notIn(RoleMenuDO::getRoleId, ROLE_FLAG).remove();
-            userSocialMapper.lambdaUpdate().notIn(UserSocialDO::getUserId, USER_FLAG).remove();
+            userRoleMapper.lambdaUpdate().gt(UserRoleDO::getId, USER_ROLE_FLAG).remove();
+            userSocialMapper.lambdaUpdate().remove();
             packageMenuMapper.lambdaUpdate().remove();
+            SnailJobLog.REMOTE.info("关联表数据项清理完成。");
             // 清理具体数据
             this.clean(dictItemCount, "字典项", null, () -> dictItemMapper.lambdaUpdate()
                 .gt(DictItemDO::getId, DELETE_FLAG)
