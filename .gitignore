@@ -44,3 +44,8 @@ build/
 *.diff
 *.patch
 *.tmp
+
+# 开发环境配置文件（包含敏感信息）
+**/application-dev.yml
+**/application-test.yml
+**/application-local.yml

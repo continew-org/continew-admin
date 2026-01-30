@@ -45,6 +45,7 @@ import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
+import top.continew.admin.system.util.FileNameGenerator;
 import top.continew.starter.cache.redisson.util.RedisLockUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
@@ -228,11 +229,21 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         // 构建上传预处理对象
         StorageDO storage = storageService.getByCode(storageCode);
         CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(storage.getStatus()), "请先启用存储 [{}]", storage.getCode());
+
+        // 创建父级目录
+        this.createParentDir(parentPath, storage);
+
+        // 生成唯一文件名（处理重名情况）
+        String originalFileName = getOriginalFileName(file);
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage.getId(), baseMapper);
+
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .setPlatform(storage.getCode())
             .setHashCalculatorSha256(true)
             .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
-            .setPath(this.pretreatmentPath(parentPath));
+            .setPath(this.pretreatmentPath(parentPath))
+            .setSaveFilename(uniqueFileName)
+            .setOriginalFilename(uniqueFileName);
         // 图片文件生成缩略图
         if (FileTypeEnum.IMAGE.getExtensions().contains(extName)) {
             uploadPretreatment.setIgnoreThumbnailException(true, true);
@@ -241,23 +252,36 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         uploadPretreatment.setProgressMonitor(new ProgressListener() {
             @Override
             public void start() {
-                log.info("开始上传");
+                log.info("开始上传文件: {}", uniqueFileName);
             }
 
             @Override
             public void progress(long progressSize, Long allSize) {
-                log.info("已上传 [{}]，总大小 [{}]", progressSize, allSize);
+                log.info("文件 [{}] 已上传 [{}]，总大小 [{}]", uniqueFileName, progressSize, allSize);
             }
 
             @Override
             public void finish() {
-                log.info("上传结束");
+                log.info("文件 [{}] 上传完成", uniqueFileName);
             }
         });
-        // 创建父级目录
-        this.createParentDir(parentPath, storage);
         // 上传
         return uploadPretreatment.upload();
+    }
+
+    /**
+     * 获取原始文件名
+     *
+     * @param file 文件对象（MultipartFile 或 File）
+     * @return 原始文件名
+     */
+    private String getOriginalFileName(Object file) {
+        if (file instanceof MultipartFile multipartFile) {
+            return multipartFile.getOriginalFilename();
+        } else if (file instanceof File ioFile) {
+            return ioFile.getName();
+        }
+        return "unknown";
     }
 
     /**
