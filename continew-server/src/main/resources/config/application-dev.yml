@@ -1,0 +1,288 @@
+--- ### 应用配置
+application:
+  # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
+  url: http://localhost:5173
+
+--- ### 服务器配置
+server:
+  # HTTP 端口（默认 8080）
+  port: 8000
+
+--- ### 数据源配置
+spring.datasource:
+  type: com.zaxxer.hikari.HikariDataSource
+  # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
+  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  username: ${DB_USER:root}
+  password: ${DB_PWD:123456}
+  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  #  # PostgreSQL 配置
+  #  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
+  #  username: ${DB_USER:postgres}
+  #  password: ${DB_PWD:123456}
+  #  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  # Hikari 连接池配置
+  hikari:
+    # 最大连接数量（默认 10，根据实际环境调整）
+    # 注意：当连接达到上限，并且没有空闲连接可用时，获取连接将在超时前阻塞最多 connectionTimeout 毫秒
+    maximum-pool-size: 20
+    # 获取连接超时时间（默认 30000 毫秒，30 秒）
+    connection-timeout: 30000
+    # 空闲连接最大存活时间（默认 600000 毫秒，10 分钟）
+    idle-timeout: 600000
+    # 保持连接活动的频率，以防止它被数据库或网络基础设施超时。该值必须小于 maxLifetime（默认 0，禁用）
+    keepaliveTime: 30000
+    # 连接最大生存时间（默认 1800000 毫秒，30 分钟）
+    max-lifetime: 1800000
+## Liquibase 配置
+spring.liquibase:
+  # 是否启用
+  enabled: true
+  # 配置文件路径
+  change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+--- ### 缓存配置
+spring.data:
+  ## Redis 配置（单机模式）
+  redis:
+    # 地址
+    host: ${REDIS_HOST:127.0.0.1}
+    # 端口（默认 6379）
+    port: ${REDIS_PORT:6379}
+    # 密码（未设置密码时请注释掉）
+    password: ${REDIS_PWD:123456}
+    # 数据库索引
+    database: ${REDIS_DB:0}
+    # 连接超时时间
+    timeout: 10s
+    # 是否开启 SSL
+    ssl:
+      enabled: false
+  ## Redisson 配置
+  redisson:
+    enabled: true
+    mode: SINGLE
+## JetCache 配置
+jetcache:
+  # 统计间隔（默认 0，表示不统计）
+  statIntervalMinutes: 15
+  ## 本地/进程级/一级缓存配置
+  local:
+    default:
+      # 缓存类型
+      type: caffeine
+      # key 转换器的全局配置
+      keyConvertor: jackson
+      # 以毫秒为单位指定超时时间的全局配置
+      expireAfterWriteInMillis: 7200000
+      # 每个缓存实例的最大元素的全局配置，仅 local 类型的缓存需要指定
+      limit: 1000
+  ## 远程/分布式/二级缓存配置
+  remote:
+    default:
+      # 缓存类型
+      type: redisson
+      # key 转换器的全局配置（用于将复杂的 KEY 类型转换为缓存实现可以接受的类型）
+      keyConvertor: jackson
+      # 以毫秒为单位指定超时时间的全局配置
+      expireAfterWriteInMillis: 7200000
+      # 2.7+ 支持两级缓存更新以后失效其他 JVM 中的 local cache，但多个服务共用 Redis 同一个 channel 可能会造成广播风暴，需要在这里指定channel。
+      # 你可以决定多个不同的服务是否共用同一个 channel，如果没有指定则不开启。
+      broadcastChannel: ${spring.application.name}
+      # 序列化器的全局配置，仅 remote 类型的缓存需要指定
+      valueEncoder: java
+      valueDecoder: java
+
+--- ### 跨域配置
+continew-starter.web.cors:
+  enabled: true
+  # 配置允许跨域的域名
+  allowed-origins: '*'
+  # 配置允许跨域的请求方式
+  allowed-methods: '*'
+  # 配置允许跨域的请求头
+  allowed-headers: '*'
+  # 配置允许跨域的响应头
+  exposed-headers: '*'
+
+--- ### 日志配置
+## API 请求/响应日志配置
+continew-starter.log:
+  access-log:
+    # 是否打印访问日志（类似于 Nginx access log）
+    enabled: true
+## 项目日志配置（配置重叠部分，优先级高于 logback-spring.xml 中的配置）
+logging:
+  level:
+    top.continew.admin: DEBUG
+    top.continew.starter: DEBUG
+  file:
+    path: ./logs
+
+--- ### 加密配置：密码编码器配置
+continew-starter.encrypt.password-encoder:
+  enabled: true
+  # 默认启用的编码器算法（默认：BCrypt 加密算法）
+  algorithm: BCRYPT
+
+--- ### 加密配置：字段加/解密配置
+continew-starter.encrypt.field:
+  enabled: true
+  # 默认算法，即 @FieldEncrypt 默认采用的算法（默认：AES 对称加密算法）
+  algorithm: AES
+  # 对称加密算法密钥
+  password: abcdefghijklmnop
+  # 非对称加密算法密钥（在线生成 RSA 密钥对：http://web.chacuo.net/netrsakeypair）
+  public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM51dgYtMyF+tTQt80sfFOpSV27a7t9uaUVeFrdGiVxscuizE7H8SMntYqfn9lp8a5GH5P1/GGehVjUD2gF/4kcCAwEAAQ==
+  private-key: MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325pRV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/KxzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0avXWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV
+
+--- ### 验证码配置
+continew-starter.captcha:
+  ## 行为验证码
+  behavior:
+    enabled: true
+    cache-type: REDIS
+    water-mark:
+    # 一分钟内接口请求次数限制开关（默认：0，关闭，开启后下方失败锁定配置才会生效）
+    req-frequency-limit-enable: 0
+    # 一分钟内验证码最多失败次数限制（默认：5次）
+    req-get-lock-limit: 5
+    # 一分钟内验证码最多失败次数限制达标后锁定时间（默认：300秒）
+    req-get-lock-seconds: 300
+  ## 图形验证码
+  graphic:
+    # 类型
+    type: SPEC
+    # 内容长度
+    length: 4
+    # 过期时间
+    expirationInMinutes: 2
+## 其他验证码配置
+captcha:
+  ## 邮箱验证码配置
+  mail:
+    # 内容长度
+    length: 6
+    # 过期时间
+    expirationInMinutes: 5
+    # 模板路径
+    templatePath: mail/captcha.ftl
+  ## 短信验证码配置
+  sms:
+    # 内容长度
+    length: 6
+    # 过期时间
+    expirationInMinutes: 5
+
+--- ### 短信配置
+## 提示：配置文件方式和 [系统管理/系统配置/短信配置] 功能可任选其一方式使用，也可共同使用，但实际开发时建议选择一种，注释或删除另一方
+sms:
+  http-log: true
+  is-print: true
+#  # 从 YAML 读取配置
+#  config-type: YAML
+#  blends:
+#    cloopen:
+#      # 短信厂商
+#      supplier: cloopen
+#      base-url: https://app.cloopen.com:8883/2013-12-26
+#      access-key-id: 你的Access Key
+#      access-key-secret: 你的Secret Key
+#      sdk-app-id: 你的应用ID
+
+--- ### 邮件配置
+## 提示：配置文件方式和 [系统管理/系统配置/邮件配置] 功能可任选其一方式使用，实际开发时请注释或删除另一方
+#spring.mail:
+#  # 根据需要更换
+#  host: smtp.126.com
+#  port: 465
+#  username: 你的邮箱
+#  password: 你的邮箱授权码
+#  properties:
+#    mail:
+#      smtp:
+#        auth: true
+#        socketFactory:
+#          class: javax.net.ssl.SSLSocketFactory
+#          port: 465
+
+--- ### WebSocket 配置
+continew-starter.messaging.websocket:
+  enabled: true
+  path: /websocket
+  # 配置允许跨域的域名
+  allowed-origins: '*'
+
+--- ### Just Auth 配置
+continew-starter.justauth:
+  enabled: true
+  type:
+    WECHAT_OPEN:
+      client-id: wx4a**********bcc2
+      client-secret: 32e5*************************1ef
+      redirect-uri: ${application.url}/social/callback?source=wechat_open
+    GITEE:
+      client-id: 5d271b7f638941812aaf8bfc2e2f08f06d6235ef934e0e39537e2364eb8452c4
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${application.url}/social/callback?source=gitee
+    GITHUB:
+      client-id: 38080dad08cfbdfacca9
+      client-secret: 1f7d08**********5b7**********29e
+      redirect-uri: ${application.url}/social/callback?source=github
+  cache:
+    type: REDIS
+
+--- ### Sa-Token 扩展配置
+sa-token.extension:
+  # 安全配置：排除（放行）路径配置
+  security.excludes:
+    - /error
+    # 静态资源
+    - /*.html
+    - /*/*.html
+    - /*/*.css
+    - /*/*.js
+    - /websocket/**
+    # 接口文档相关资源
+    - /favicon.ico
+    - /doc.html
+    - /nextdoc/**
+    - /webjars/**
+    - /swagger-ui/**
+    - /swagger-resources/**
+    - /*/api-docs/**
+    # 本地存储资源
+    - /file/**
+
+--- ### Snail Job 配置
+snail-job:
+  enabled: false
+  ## 服务端配置（任务调度中心）
+  server:
+    # 服务端地址
+    host: ${SCHEDULE_HOST:127.0.0.1}
+    # 服务端通讯端口
+    port: ${SCHEDULE_PORT:17888}
+    # API 配置
+    api:
+      # URL
+      url: http://127.0.0.1:8001/snail-job
+      # 用户名
+      username: ${SCHEDULE_USERNAME:admin}
+      # 密码
+      password: ${SCHEDULE_PASSWORD:admin}
+  ## OpenAPI 配置
+  openapi:
+    # 服务端 Web 端口（默认：8080，如果你部署的服务端改动了端口，这里也需要对应改动）
+    # continew-extension/continew-extension-schedule-server
+    port: 8001
+  # 客户端地址（默认：自动推断。必须确保服务端可以访问到，在服务端无法调度客户端时需要手动配置）
+  #host: 127.0.0.1
+  # 客户端端口（默认：17889）
+  port: 17889
+  # 命名空间
+  namespace: ${SCHEDULE_NAMESPACE:764d604ec6fc45f68cd92514c40e9e1a}
+  # 接入组名
+  group: ${SCHEDULE_GROUP:continew-admin}
+  # 接入组 token
+  token: ${SCHEDULE_TOKEN:SJ_Wyz3dmsdbDOkDujOTSSoBjGQP1BMsVnj}
