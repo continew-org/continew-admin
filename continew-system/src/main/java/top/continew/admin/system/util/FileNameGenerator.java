@@ -120,16 +120,26 @@ public class FileNameGenerator {
         boolean isHidden = fileName.startsWith(".");
         String nameWithoutDot = isHidden ? fileName.substring(1) : fileName;
 
+        // 处理空文件名（如只有"."的情况）
+        if (nameWithoutDot.isEmpty()) {
+            return new String[]{fileName, ""};
+        }
+
         // 查找最后一个点号位置
         int lastDotIndex = nameWithoutDot.lastIndexOf('.');
 
-        if (lastDotIndex == -1) {
-            // 无扩展名
+        // 点号不存在或在开头（如 ".bashrc"），视为无扩展名
+        if (lastDotIndex <= 0) {
             return new String[]{fileName, ""};
         }
 
         String baseName = isHidden ? "." + nameWithoutDot.substring(0, lastDotIndex) : nameWithoutDot.substring(0, lastDotIndex);
         String extension = nameWithoutDot.substring(lastDotIndex + 1);
+
+        // 扩展名不应包含路径分隔符（安全检查）
+        if (extension.contains("/") || extension.contains("\\")) {
+            return new String[]{fileName, ""};
+        }
 
         return new String[]{baseName, extension};
     }
@@ -189,7 +199,8 @@ public class FileNameGenerator {
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getStorageId, storageId)
             .ne(FileDO::getType, FileTypeEnum.DIR)
-            .select(FileDO::getName);
+            .select(FileDO::getName)
+            .last("LIMIT 10000"); // 限制最大查询数量，防止内存溢出
 
         if (StrUtil.isNotBlank(namePrefix)) {
             wrapper.likeRight(FileDO::getName, namePrefix);
