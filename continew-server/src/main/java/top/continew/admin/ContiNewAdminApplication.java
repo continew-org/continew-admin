@@ -63,6 +63,8 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
+        // 禁用 AWS SDK for Java 1.x 弃用提示（1.x 由 x-file-storage 等依赖引入，计划后续迁移至 2.x）
+        System.setProperty("aws.java.v1.disableDeprecationAnnouncement", "true");
         SpringApplication application = new SpringApplication(ContiNewAdminApplication.class);
         application.setDefaultProperties(MapUtil.of("continew-starter.version", ContiNewStarterVersion.getVersion()));
         application.run(args);
