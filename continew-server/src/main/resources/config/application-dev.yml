@@ -254,6 +254,12 @@ sa-token.extension:
     # 本地存储资源
     - /file/**
 
+--- ### OCR 服务配置
+ocr:
+  service:
+    # OCR 服务地址
+    url: ${OCR_SERVICE_URL:http://localhost:8080}
+
 --- ### Snail Job 配置
 snail-job:
   enabled: false
