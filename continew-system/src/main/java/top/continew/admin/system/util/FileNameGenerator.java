@@ -34,8 +34,8 @@ import top.continew.starter.core.util.CollUtils;
  * 提供文件重名检测和自动重命名功能。当文件名冲突时，自动添加序号后缀，如：file.txt → file(1).txt
  * </p>
  *
- * @author Charles7c
- * @since 2024/1/30
+ * @author fjwupeng
+ * @since 2026/2/06
  */
 @Slf4j
 public class FileNameGenerator {
