@@ -33,9 +33,11 @@ import top.continew.admin.system.model.req.MultipartUploadInitReq;
 import top.continew.admin.system.model.resp.file.FilePartInfo;
 import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
 import top.continew.admin.system.model.resp.file.MultipartUploadResp;
+import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
+import top.continew.admin.system.util.FileNameGenerator;
 import top.continew.starter.core.exception.BaseException;
 
 import java.time.LocalDateTime;
@@ -62,6 +64,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
     private final FileService fileService;
 
+    private final FileMapper fileMapper;
+
     @Override
     public MultipartUploadInitResp initMultipartUpload(MultipartUploadInitReq multiPartUploadInitReq) {
         // 后续可以增加storageCode参数 指定某个存储平台 当前设计是默认存储平台
@@ -85,6 +89,24 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
             //todo else 待定 更换存储平台 或分片大小有变更 是否需要删除原先分片
 
         }
+
+        // 检测文件名是否已存在（同一目录下文件名不能重复）
+        String originalFileName = multiPartUploadInitReq.getFileName();
+        String parentPath = multiPartUploadInitReq.getParentPath();
+        boolean exists = fileMapper.lambdaQuery()
+            .eq(FileDO::getParentPath, parentPath)
+            .eq(FileDO::getStorageId, storageDO.getId())
+            .eq(FileDO::getName, originalFileName)
+            .ne(FileDO::getType, FileTypeEnum.DIR)
+            .exists();
+        if (exists) {
+            throw new BaseException("文件名已存在：" + originalFileName);
+        }
+
+        // 生成唯一文件名（处理重名情况）
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO.getId(), fileMapper);
+        multiPartUploadInitReq.setFileName(uniqueFileName);
+
         StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
         //文件元信息
         Map<String, String> metaData = multiPartUploadInitReq.getMetaData();
@@ -147,16 +169,18 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
         // 完成上传
         storageHandler.completeMultipartUpload(storageDO, parts, initResp.getPath(), uploadId, needVerify);
+        // 文件名已在初始化阶段处理为唯一文件名
+        String uniqueFileName = initResp.getFileName().replaceFirst("^[/\\\\]+", "");
         FileDO file = new FileDO();
-        file.setName(initResp.getFileName().replaceFirst("^[/\\\\]+", ""));
-        file.setOriginalName(initResp.getFileName().replaceFirst("^[/\\\\]+", ""));
+        file.setName(uniqueFileName);
+        file.setOriginalName(uniqueFileName);
         file.setPath(initResp.getPath());
         file.setParentPath(initResp.getParentPath());
         file.setSize(initResp.getFileSize());
         file.setSha256(initResp.getFileMd5());
         file.setExtension(initResp.getExtension());
         file.setContentType(initResp.getContentType());
-        file.setType(FileTypeEnum.getByExtension(FileUtil.extName(initResp.getFileName())));
+        file.setType(FileTypeEnum.getByExtension(FileUtil.extName(uniqueFileName)));
         file.setStorageId(storageDO.getId());
         fileService.save(file);
         multipartUploadDao.deleteMultipartUpload(uploadId);
