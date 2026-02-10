@@ -179,8 +179,7 @@ public class UserRoleServiceImpl implements UserRoleService {
             .in(UserDO::getId, userIds)
             .eq(UserDO::getIsSystem, true)
             .list();
-        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许分配给非超级管理员角色", 
-            systemUsers.isEmpty() ? "" : systemUsers.get(0).getNickname());
+        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许分配给非超级管理员角色", systemUsers.get(0).getNickname());
     }
 
     @Override
@@ -197,17 +196,13 @@ public class UserRoleServiceImpl implements UserRoleService {
             return;
         }
         // 获取用户ID列表
-        List<Long> userIds = userRoleList.stream()
-            .map(UserRoleDO::getUserId)
-            .distinct()
-            .toList();
+        List<Long> userIds = userRoleList.stream().map(UserRoleDO::getUserId).distinct().toList();
         // 查询是否包含系统内置用户
         List<UserDO> systemUsers = userService.lambdaQuery()
             .select(UserDO::getId, UserDO::getNickname)
             .in(UserDO::getId, userIds)
             .eq(UserDO::getIsSystem, true)
             .list();
-        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许取消分配角色", 
-            systemUsers.isEmpty() ? "" : systemUsers.get(0).getNickname());
+        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许取消分配角色", systemUsers.get(0).getNickname());
     }
 }

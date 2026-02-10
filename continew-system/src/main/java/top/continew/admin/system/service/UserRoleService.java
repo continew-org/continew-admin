@@ -105,14 +105,14 @@ public interface UserRoleService {
     boolean isRoleIdExists(List<Long> roleIds);
 
     /**
-     * 检查系统内置用户是否在用户列表中
+     * 检查系统内置用户是否在用户列表中，如果存在则抛出异常
      *
      * @param userIds 用户 ID 列表
      */
     void checkSystemUserAssignment(List<Long> userIds);
 
     /**
-     * 检查系统内置用户是否在用户角色关联列表中
+     * 检查系统内置用户是否在用户角色关联列表中，如果存在则抛出异常
      *
      * @param userRoleIds 用户角色关联 ID 列表
      */

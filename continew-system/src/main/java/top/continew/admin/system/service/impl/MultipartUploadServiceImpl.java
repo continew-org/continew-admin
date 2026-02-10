@@ -104,7 +104,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         }
 
         // 生成唯一文件名（处理重名情况）
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO.getId(), fileMapper);
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
+            .getId(), fileMapper);
         multiPartUploadInitReq.setFileName(uniqueFileName);
 
         StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
