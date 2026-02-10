@@ -103,4 +103,18 @@ public interface UserRoleService {
      * @return 是否已关联（true：已关联；false：未关联）
      */
     boolean isRoleIdExists(List<Long> roleIds);
+
+    /**
+     * 检查系统内置用户是否在用户列表中
+     *
+     * @param userIds 用户 ID 列表
+     */
+    void checkSystemUserAssignment(List<Long> userIds);
+
+    /**
+     * 检查系统内置用户是否在用户角色关联列表中
+     *
+     * @param userRoleIds 用户角色关联 ID 列表
+     */
+    void checkSystemUserUnassignment(List<Long> userRoleIds);
 }
