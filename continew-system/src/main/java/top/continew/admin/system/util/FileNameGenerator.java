@@ -50,9 +50,9 @@ public class FileNameGenerator {
      * <p>
      * 当目标目录存在同名文件时，自动添加序号后缀：
      * <ul>
-     *   <li>file.txt → file(1).txt → file(2).txt → ...</li>
-     *   <li>无扩展名：README → README(1) → README(2) → ...</li>
-     *   <li>隐藏文件：.gitignore → .gitignore(1) → .gitignore(2) → ...</li>
+     * <li>file.txt → file(1).txt → file(2).txt → ...</li>
+     * <li>无扩展名：README → README(1) → README(2) → ...</li>
+     * <li>隐藏文件：.gitignore → .gitignore(1) → .gitignore(2) → ...</li>
      * </ul>
      * </p>
      *
@@ -90,7 +90,9 @@ public class FileNameGenerator {
             // 安全限制，防止无限循环
             if (counter > 9999) {
                 log.warn("文件名重命名超过最大限制，使用当前时间戳: {}", fileName);
-                return baseName + "_" + System.currentTimeMillis() + (StrUtil.isNotBlank(extension) ? "." + extension : "");
+                return baseName + "_" + System.currentTimeMillis() + (StrUtil.isNotBlank(extension)
+                    ? "." + extension
+                    : "");
             }
         }
     }
@@ -102,10 +104,10 @@ public class FileNameGenerator {
      * 示例：
      * </p>
      * <ul>
-     *   <li>"document.pdf" → ["document", "pdf"]</li>
-     *   <li>"README" → ["README", ""]</li>
-     *   <li>".gitignore" → [".gitignore", ""]</li>
-     *   <li>"archive.tar.gz" → ["archive.tar", "gz"]</li>
+     * <li>"document.pdf" → ["document", "pdf"]</li>
+     * <li>"README" → ["README", ""]</li>
+     * <li>".gitignore" → [".gitignore", ""]</li>
+     * <li>"archive.tar.gz" → ["archive.tar", "gz"]</li>
      * </ul>
      *
      * @param fileName 文件名
@@ -113,7 +115,7 @@ public class FileNameGenerator {
      */
     public static String[] parseFileName(String fileName) {
         if (StrUtil.isBlank(fileName)) {
-            return new String[]{"", ""};
+            return new String[] {"", ""};
         }
 
         // 处理隐藏文件（以.开头）
@@ -122,7 +124,7 @@ public class FileNameGenerator {
 
         // 处理空文件名（如只有"."的情况）
         if (nameWithoutDot.isEmpty()) {
-            return new String[]{fileName, ""};
+            return new String[] {fileName, ""};
         }
 
         // 查找最后一个点号位置
@@ -130,18 +132,20 @@ public class FileNameGenerator {
 
         // 点号不存在或在开头（如 ".bashrc"），视为无扩展名
         if (lastDotIndex <= 0) {
-            return new String[]{fileName, ""};
+            return new String[] {fileName, ""};
         }
 
-        String baseName = isHidden ? "." + nameWithoutDot.substring(0, lastDotIndex) : nameWithoutDot.substring(0, lastDotIndex);
+        String baseName = isHidden
+            ? "." + nameWithoutDot.substring(0, lastDotIndex)
+            : nameWithoutDot.substring(0, lastDotIndex);
         String extension = nameWithoutDot.substring(lastDotIndex + 1);
 
         // 扩展名不应包含路径分隔符（安全检查）
         if (extension.contains("/") || extension.contains("\\")) {
-            return new String[]{fileName, ""};
+            return new String[] {fileName, ""};
         }
 
-        return new String[]{baseName, extension};
+        return new String[] {baseName, extension};
     }
 
     /**
@@ -194,7 +198,10 @@ public class FileNameGenerator {
      * @param fileMapper 文件Mapper
      * @return 文件名列表
      */
-    private static List<String> selectNamesByParentPath(String parentPath, Long storageId, String namePrefix, FileMapper fileMapper) {
+    private static List<String> selectNamesByParentPath(String parentPath,
+                                                        Long storageId,
+                                                        String namePrefix,
+                                                        FileMapper fileMapper) {
         var wrapper = fileMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getStorageId, storageId)

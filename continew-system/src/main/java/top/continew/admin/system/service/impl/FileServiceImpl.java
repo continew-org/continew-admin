@@ -235,7 +235,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
 
         // 生成唯一文件名（处理重名情况）
         String originalFileName = getOriginalFileName(file);
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage.getId(), baseMapper);
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
+            .getId(), baseMapper);
 
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
             .setPlatform(storage.getCode())

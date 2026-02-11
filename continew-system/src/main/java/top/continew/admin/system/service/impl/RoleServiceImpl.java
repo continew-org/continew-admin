@@ -164,6 +164,10 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     public void assignToUsers(Long id, List<Long> userIds) {
         RoleDO role = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许分配角色给其他用户", role.getName());
+        // 防止将系统内置用户分配给非超级管理员角色
+        if (!SystemConstants.SUPER_ADMIN_ROLE_ID.equals(id)) {
+            userRoleService.checkSystemUserAssignment(userIds);
+        }
         // 保存用户和角色关联
         userRoleService.assignRoleToUsers(id, userIds);
         // 更新用户上下文

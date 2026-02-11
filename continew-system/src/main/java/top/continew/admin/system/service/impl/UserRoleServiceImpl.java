@@ -120,6 +120,8 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void deleteByIds(List<Long> ids) {
+        // 检查是否包含系统内置用户的角色关联
+        this.checkSystemUserUnassignment(ids);
         baseMapper.deleteByIds(ids);
     }
 
@@ -164,5 +166,43 @@ public class UserRoleServiceImpl implements UserRoleService {
             return false;
         }
         return baseMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).exists();
+    }
+
+    @Override
+    public void checkSystemUserAssignment(List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return;
+        }
+        // 查询用户列表中是否包含系统内置用户
+        List<UserDO> systemUsers = userService.lambdaQuery()
+            .select(UserDO::getId, UserDO::getNickname)
+            .in(UserDO::getId, userIds)
+            .eq(UserDO::getIsSystem, true)
+            .list();
+        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许分配给非超级管理员角色", systemUsers.get(0).getNickname());
+    }
+
+    @Override
+    public void checkSystemUserUnassignment(List<Long> userRoleIds) {
+        if (CollUtil.isEmpty(userRoleIds)) {
+            return;
+        }
+        // 查询用户角色关联列表
+        List<UserRoleDO> userRoleList = baseMapper.lambdaQuery()
+            .select(UserRoleDO::getUserId)
+            .in(UserRoleDO::getId, userRoleIds)
+            .list();
+        if (CollUtil.isEmpty(userRoleList)) {
+            return;
+        }
+        // 获取用户ID列表
+        List<Long> userIds = userRoleList.stream().map(UserRoleDO::getUserId).distinct().toList();
+        // 查询是否包含系统内置用户
+        List<UserDO> systemUsers = userService.lambdaQuery()
+            .select(UserDO::getId, UserDO::getNickname)
+            .in(UserDO::getId, userIds)
+            .eq(UserDO::getIsSystem, true)
+            .list();
+        CheckUtils.throwIfNotEmpty(systemUsers, "[{}] 是系统内置用户，不允许取消分配角色", systemUsers.get(0).getNickname());
     }
 }
