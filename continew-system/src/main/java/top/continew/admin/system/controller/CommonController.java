@@ -25,7 +25,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +38,7 @@ import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.tenant.annotation.TenantIgnore;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.log.annotation.Log;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.IOException;
 import java.util.List;
@@ -69,9 +69,9 @@ public class CommonController {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file, parentPath);
         return FileUploadResp.builder()
-            .id(fileInfo.getId())
+            .id(fileInfo.getFileId())
             .url(fileInfo.getUrl())
-            .thUrl(fileInfo.getThUrl())
+            .thUrl(fileInfo.getThumbnailPath())
             .metadata(fileInfo.getMetadata())
             .build();
     }

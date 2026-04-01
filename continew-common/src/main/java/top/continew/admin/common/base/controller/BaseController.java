@@ -27,7 +27,7 @@ import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.common.config.crud.CrudApiPermissionPrefixCache;
 import top.continew.starter.auth.satoken.autoconfigure.SaTokenExtensionProperties;
 import top.continew.starter.core.util.ServletUtils;
-import top.continew.starter.core.util.SpringWebUtils;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.controller.AbstractCrudController;
 import top.continew.starter.extension.crud.enums.Api;
@@ -69,7 +69,7 @@ public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> exten
         SaTokenExtensionProperties saTokenExtensionProperties = SpringUtil.getBean(SaTokenExtensionProperties.class);
         if (saTokenExtensionProperties.isEnabled()) {
             String[] excludePatterns = saTokenExtensionProperties.getSecurity().getExcludes();
-            if (SpringWebUtils.isMatch(ServletUtils.getRequestPath(), excludePatterns)) {
+            if (SpringUtils.isMatch(ServletUtils.getRequest().getServletPath(), excludePatterns)) {
                 return;
             }
         }

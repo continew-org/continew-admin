@@ -21,12 +21,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.FileStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
@@ -39,6 +39,7 @@ import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.data.util.QueryWrapperHelper;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
+import top.continew.starter.storage.core.FileStorageService;
 
 import java.util.List;
 import java.util.Map;
@@ -73,12 +74,15 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         FileDO file = this.getById(id);
         // 恢复记录
         fileMapper.restoreInRecycleBin(id, UserContextHolder.getUserId());
+        if (FileTypeEnum.DIR.equals(file.getType())) {
+            return;
+        }
         // 还原文件
         StorageDO storage = storageService.getById(file.getStorageId());
-        FileInfo fileInfo = file.toFileInfo(storage);
-        fileInfo.setPath(storage.getRecycleBinPath() + fileInfo.getPath());
-        String newPath = fileInfo.getPath().replace(storage.getRecycleBinPath(), StringConstants.EMPTY);
-        fileStorageService.move(fileInfo).setPath(newPath).move();
+        String targetPath = normalizeStoragePath(file.getPath());
+        String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
+        fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+            .getBucketName(), sourcePath, targetPath);
     }
 
     @Override
@@ -87,11 +91,13 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         FileDO file = this.getById(id);
         // 删除记录
         fileMapper.deleteWithoutRecycleBin(List.of(id), UserContextHolder.getUserId());
+        if (FileTypeEnum.DIR.equals(file.getType())) {
+            return;
+        }
         // 删除文件
         StorageDO storage = storageService.getById(file.getStorageId());
-        FileInfo fileInfo = file.toFileInfo(storage);
-        fileInfo.setPath(storage.getRecycleBinPath() + fileInfo.getPath());
-        fileStorageService.delete(fileInfo);
+        String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + normalizeStoragePath(file.getPath()));
+        fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
     }
 
     @Override
@@ -115,16 +121,24 @@ public class FileRecycleServiceImpl implements FileRecycleService {
             // 删除文件
             for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
                 StorageDO storage = storageGroup.get(entry.getKey());
-                // 清空回收站
-                FileInfo fileInfo = new FileInfo();
-                fileInfo.setPlatform(storage.getCode());
-                fileInfo.setBasePath(StringConstants.EMPTY);
-                fileInfo.setPath(storage.getRecycleBinPath());
-                fileStorageService.delete(fileInfo);
+                List<String> deletePaths = entry.getValue()
+                    .stream()
+                    .filter(file -> !FileTypeEnum.DIR.equals(file.getType()))
+                    .map(file -> normalizeStoragePath(storage.getRecycleBinPath() + normalizeStoragePath(file
+                        .getPath())))
+                    .toList();
+                if (CollUtil.isNotEmpty(deletePaths)) {
+                    fileStorageService.batchDelete(storage.getCode(), storage.getBucketName(), deletePaths);
+                }
             }
         } finally {
             InterceptorIgnoreHelper.clearIgnoreStrategy();
         }
+    }
+
+    private String normalizeStoragePath(String path) {
+        return StrUtil.removePrefix(path.replace("\\", StringConstants.SLASH)
+            .replaceAll("/+", StringConstants.SLASH), StringConstants.SLASH);
     }
 
     /**

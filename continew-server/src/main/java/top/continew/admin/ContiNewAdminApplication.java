@@ -25,7 +25,6 @@ import com.alicp.jetcache.anno.config.EnableMethodCache;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.x.file.storage.spring.EnableFileStorage;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -51,7 +50,6 @@ import top.nextdoc4j.core.configuration.NextDoc4jProperties;
 @Slf4j
 @EnableCrudApi
 @EnableGlobalResponse
-@EnableFileStorage
 @EnableMethodCache(basePackages = "top.continew.admin")
 @EnableFeignClients
 @RestController
@@ -63,8 +61,6 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     private final ServerProperties serverProperties;
 
     public static void main(String[] args) {
-        // 禁用 AWS SDK for Java 1.x 弃用提示（1.x 由 x-file-storage 等依赖引入，计划后续迁移至 2.x）
-        System.setProperty("aws.java.v1.disableDeprecationAnnouncement", "true");
         SpringApplication application = new SpringApplication(ContiNewAdminApplication.class);
         application.setDefaultProperties(MapUtil.of("continew-starter.version", ContiNewStarterVersion.getVersion()));
         application.run(args);

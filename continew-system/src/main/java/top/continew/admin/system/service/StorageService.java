@@ -22,6 +22,7 @@ import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.StorageQuery;
 import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.model.resp.StorageResp;
+import top.continew.admin.system.model.resp.file.FileUploadConfigResp;
 import top.continew.starter.data.service.IService;
 
 /**
@@ -61,6 +62,13 @@ public interface StorageService extends BaseService<StorageResp, StorageResp, St
      * @return 存储配置
      */
     StorageDO getByCode(String code);
+
+    /**
+     * 查询默认存储上传配置（生效值）
+     *
+     * @return 默认存储上传配置
+     */
+    FileUploadConfigResp getDefaultUploadConfig();
 
     /**
      * 加载存储引擎

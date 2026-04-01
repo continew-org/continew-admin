@@ -87,6 +87,21 @@ public class StorageDO extends BaseDO {
     private String domain;
 
     /**
+     * 分片上传阈值（字节）
+     */
+    private Long multipartUploadThreshold;
+
+    /**
+     * 分片上传大小（字节）
+     */
+    private Long multipartUploadPartSize;
+
+    /**
+     * 本地分片临时目录
+     */
+    private String multipartTempDir;
+
+    /**
      * 启用回收站
      */
     private Boolean recycleBinEnabled;

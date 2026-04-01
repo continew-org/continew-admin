@@ -17,24 +17,31 @@
 package top.continew.admin.system.config.file;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ClassUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.recorder.FileRecorder;
-import org.dromara.x.file.storage.core.upload.FilePartInfo;
 import org.springframework.stereotype.Component;
+import top.continew.admin.system.constant.MultipartUploadConstants;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.mapper.StorageMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
+import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.FilePartInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
+import top.continew.starter.storage.service.FileRecorder;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -56,22 +63,26 @@ public class FileRecorderImpl implements FileRecorder {
 
     @Override
     public boolean save(FileInfo fileInfo) {
-        if (fileInfo.getAttr() == null) {
+        // 分片初始化阶段不落库，只记录分片会话和分片信息
+        if ("UPLOADING".equalsIgnoreCase(fileInfo.getMetadata() != null
+            ? fileInfo.getMetadata().get("status")
+            : null)) {
             return true;
         }
-        // 保存文件信息
+        StorageDO storage = this.getStorageByPlatform(fileInfo.getPlatform());
+        if (storage == null) {
+            return true;
+        }
         FileDO file = new FileDO(fileInfo);
-        StorageDO storage = (StorageDO)fileInfo.getAttr().get(ClassUtil.getClassName(StorageDO.class, false));
         file.setStorageId(storage.getId());
         fileMapper.insert(file);
-        // 方便文件上传完成后获取文件信息
-        fileInfo.setId(String.valueOf(file.getId()));
+        fileInfo.setFileId(String.valueOf(file.getId()));
         if (!URLUtils.isHttpUrl(fileInfo.getUrl())) {
             String prefix = storage.getUrlPrefix();
-            String url = URLUtil.normalize(prefix + fileInfo.getUrl(), false, true);
+            String url = URLUtil.normalize(prefix + fileInfo.getPath(), false, true);
             fileInfo.setUrl(url);
-            if (StrUtil.isNotBlank(fileInfo.getThUrl())) {
-                fileInfo.setThUrl(URLUtil.normalize(prefix + fileInfo.getThUrl(), false, true));
+            if (StrUtil.isNotBlank(fileInfo.getThumbnailPath()) && !URLUtils.isHttpUrl(fileInfo.getThumbnailPath())) {
+                fileInfo.setThumbnailPath(URLUtil.normalize(prefix + fileInfo.getThumbnailPath(), false, true));
             }
         }
         return true;
@@ -88,8 +99,16 @@ public class FileRecorderImpl implements FileRecorder {
     }
 
     @Override
-    public boolean delete(String url) {
-        FileDO file = this.getFileByUrl(url);
+    public boolean delete(String platform, String path) {
+        StorageDO storage = this.getStorageByPlatform(platform);
+        if (storage == null) {
+            return true;
+        }
+        String normalizedPath = StrUtil.prependIfMissing(path, StringConstants.SLASH);
+        FileDO file = fileMapper.lambdaQuery()
+            .eq(FileDO::getStorageId, storage.getId())
+            .eq(FileDO::getPath, normalizedPath)
+            .one();
         if (file == null) {
             return true;
         }
@@ -97,18 +116,216 @@ public class FileRecorderImpl implements FileRecorder {
     }
 
     @Override
-    public void update(FileInfo fileInfo) {
-        /* 不使用分片功能则无需重写 */
+    public boolean update(FileInfo fileInfo) {
+        StorageDO storage = this.getStorageByPlatform(fileInfo.getPlatform());
+        if (storage == null) {
+            return false;
+        }
+        FileDO file = new FileDO(fileInfo);
+        file.setStorageId(storage.getId());
+        FileDO existFile = fileMapper.lambdaQuery()
+            .eq(FileDO::getStorageId, storage.getId())
+            .eq(FileDO::getPath, file.getPath())
+            .one();
+        if (existFile == null) {
+            fileMapper.insert(file);
+            fileInfo.setFileId(String.valueOf(file.getId()));
+            return true;
+        } else {
+            file.setId(existFile.getId());
+            boolean updated = fileMapper.updateById(file) > 0;
+            fileInfo.setFileId(String.valueOf(existFile.getId()));
+            return updated;
+        }
     }
 
     @Override
     public void saveFilePart(FilePartInfo filePartInfo) {
-        /* 不使用分片功能则无需重写 */
+        FilePartInfo target = new FilePartInfo();
+        target.setFileId(filePartInfo.getFileId());
+        target.setPartNumber(filePartInfo.getPartNumber());
+        target.setPartSize(filePartInfo.getPartSize());
+        target.setPartMd5(filePartInfo.getPartMd5());
+        target.setPartETag(filePartInfo.getPartETag());
+        target.setUploadId(filePartInfo.getUploadId());
+        target.setUploadTime(filePartInfo.getUploadTime());
+        target.setStatus(filePartInfo.getStatus());
+        target.setBucket(filePartInfo.getBucket());
+        target.setPath(filePartInfo.getPath());
+        String key = MultipartUploadConstants.MULTIPART_PARTS_PREFIX + filePartInfo.getUploadId();
+        String partKey = target.getPartNumber().toString();
+        try {
+            RedisUtils.hSet(key, partKey, JSONUtil.toJsonStr(target));
+            RedisUtils.expire(key, Duration.ofHours(MultipartUploadConstants.DEFAULT_EXPIRE_HOURS));
+            log.debug("缓存分片信息: uploadId={}, partNumber={}", filePartInfo.getUploadId(), partKey);
+        } catch (Exception e) {
+            log.error("缓存分片信息失败: uploadId={}, partNumber={}", filePartInfo.getUploadId(), partKey, e);
+            throw new RuntimeException("缓存分片信息失败", e);
+        }
     }
 
     @Override
-    public void deleteFilePartByUploadId(String s) {
-        /* 不使用分片功能则无需重写 */
+    public List<FilePartInfo> getFileParts(String fileId) {
+        String key = MultipartUploadConstants.MULTIPART_PARTS_PREFIX + fileId;
+        try {
+            Map<String, Object> entries = RedisUtils.hGetAll(key);
+            if (CollUtil.isEmpty(entries)) {
+                return new ArrayList<>();
+            }
+            return entries.values()
+                .stream()
+                .map(value -> JSONUtil.toBean(value
+                    .toString(), top.continew.admin.system.model.resp.file.FilePartInfo.class))
+                .sorted(Comparator.comparing(top.continew.admin.system.model.resp.file.FilePartInfo::getPartNumber))
+                .map(filePartInfo -> {
+                    FilePartInfo target = new FilePartInfo();
+                    target.setFileId(filePartInfo.getFileId());
+                    target.setPartNumber(filePartInfo.getPartNumber());
+                    target.setPartSize(filePartInfo.getPartSize());
+                    target.setPartMd5(filePartInfo.getPartMd5());
+                    target.setPartETag(filePartInfo.getPartETag());
+                    target.setUploadId(filePartInfo.getUploadId());
+                    target.setUploadTime(filePartInfo.getUploadTime());
+                    target.setStatus(filePartInfo.getStatus());
+                    target.setBucket(filePartInfo.getBucket());
+                    target.setPath(filePartInfo.getPath());
+                    return target;
+                })
+                .toList();
+        } catch (Exception e) {
+            log.error("获取分片列表失败: uploadId={}", fileId, e);
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void deleteFileParts(String fileId) {
+        try {
+            RedisUtils.delete(MultipartUploadConstants.MULTIPART_PARTS_PREFIX + fileId);
+            log.debug("删除所有分片信息: uploadId={}", fileId);
+        } catch (Exception e) {
+            log.error("删除所有分片信息失败: uploadId={}", fileId, e);
+        }
+    }
+
+    @Override
+    public String getUploadIdByMd5(String md5) {
+        String md5Key = MultipartUploadConstants.MD5_TO_UPLOAD_ID_PREFIX + md5;
+        try {
+            return RedisUtils.hGet(md5Key, "uploadId");
+        } catch (Exception e) {
+            log.error("根据MD5获取uploadId失败: md5={}", md5, e);
+            return null;
+        }
+    }
+
+    @Override
+    public void setMd5Mapping(String md5, String uploadId) {
+        String md5Key = MultipartUploadConstants.MD5_TO_UPLOAD_ID_PREFIX + md5;
+        try {
+            RedisUtils.hSet(md5Key, "uploadId", uploadId);
+            RedisUtils.expire(md5Key, Duration.ofHours(MultipartUploadConstants.DEFAULT_EXPIRE_HOURS));
+            log.debug("缓存MD5映射: md5={}, uploadId={}", md5, uploadId);
+        } catch (Exception e) {
+            log.error("缓存MD5映射失败: md5={}, uploadId={}", md5, uploadId, e);
+            throw new RuntimeException("缓存MD5映射失败", e);
+        }
+    }
+
+    @Override
+    public void deleteMd5Mapping(String md5) {
+        try {
+            RedisUtils.delete(MultipartUploadConstants.MD5_TO_UPLOAD_ID_PREFIX + md5);
+            log.debug("删除MD5映射: md5={}", md5);
+        } catch (Exception e) {
+            log.error("删除MD5映射失败: md5={}", md5, e);
+        }
+    }
+
+    @Override
+    public void saveMultipartSession(String uploadId, MultipartInitResp initResp, Map<String, String> metadata) {
+        top.continew.admin.system.model.resp.file.MultipartUploadInitResp target = new top.continew.admin.system.model.resp.file.MultipartUploadInitResp();
+        target.setFileId(initResp.getFileId());
+        target.setUploadId(initResp.getUploadId());
+        target.setBucket(initResp.getBucket());
+        target.setPlatform(initResp.getPlatform());
+        target.setFileName(initResp.getFileName());
+        target.setFileMd5(initResp.getFileMd5());
+        target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
+        target.setExtension(initResp.getExtension());
+        target.setContentType(initResp.getContentType());
+        target.setParentPath(initResp.getParentPath());
+        target.setPath(initResp.getPath());
+        target.setPartSize(initResp.getPartSize());
+        target.setUploadedPartNumbers(initResp.getUploadedPartNumbers());
+        String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
+        String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
+        try {
+            RedisUtils.set(key, JSONUtil.toJsonStr(target), Duration
+                .ofHours(MultipartUploadConstants.DEFAULT_EXPIRE_HOURS));
+            if (metadata != null && !metadata.isEmpty()) {
+                for (Map.Entry<String, String> entry : metadata.entrySet()) {
+                    RedisUtils.hSet(metadataKey, entry.getKey(), entry.getValue());
+                }
+                RedisUtils.expire(metadataKey, Duration.ofHours(MultipartUploadConstants.DEFAULT_EXPIRE_HOURS));
+            }
+            log.debug("缓存分片上传信息: uploadId={}", uploadId);
+        } catch (Exception e) {
+            log.error("缓存分片上传信息失败: uploadId={}", uploadId, e);
+            throw new RuntimeException("缓存分片上传信息失败", e);
+        }
+    }
+
+    @Override
+    public MultipartInitResp getMultipartSession(String uploadId) {
+        top.continew.admin.system.model.resp.file.MultipartUploadInitResp source = null;
+        try {
+            Object value = RedisUtils.get(MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId);
+            if (value != null) {
+                source = JSONUtil.toBean(value
+                    .toString(), top.continew.admin.system.model.resp.file.MultipartUploadInitResp.class);
+            }
+        } catch (Exception e) {
+            log.error("获取分片上传信息失败: uploadId={}", uploadId, e);
+        }
+        if (source == null) {
+            return null;
+        }
+        MultipartInitResp target = new MultipartInitResp();
+        target.setFileId(source.getFileId());
+        target.setUploadId(source.getUploadId());
+        target.setBucket(source.getBucket());
+        target.setPlatform(source.getPlatform());
+        target.setFileName(source.getFileName());
+        target.setFileMd5(source.getFileMd5());
+        target.setFileSize(source.getFileSize());
+        target.setExtension(source.getExtension());
+        target.setContentType(source.getContentType());
+        target.setParentPath(source.getParentPath());
+        target.setPath(source.getPath());
+        target.setPartSize(source.getPartSize());
+        target.setUploadedPartNumbers(source.getUploadedPartNumbers());
+        return target;
+    }
+
+    @Override
+    public void deleteMultipartSession(String uploadId) {
+        try {
+            String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
+            String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
+            String expireKey = MultipartUploadConstants.MULTIPART_EXPIRE_PREFIX + uploadId;
+            MultipartInitResp initResp = getMultipartSession(uploadId);
+            String fileMd5 = initResp != null ? initResp.getFileMd5() : null;
+            if (StrUtil.isNotBlank(fileMd5)) {
+                deleteMd5Mapping(fileMd5);
+            }
+            RedisUtils.delete(key);
+            RedisUtils.delete(metadataKey);
+            RedisUtils.delete(expireKey);
+            log.debug("删除分片上传信息: uploadId={}", uploadId);
+        } catch (Exception e) {
+            log.error("删除分片上传信息失败: uploadId={}", uploadId, e);
+        }
     }
 
     /**
@@ -143,5 +360,12 @@ public class FileRecorderImpl implements FileRecorder {
             StorageDO storage = storageMap.get(file.getStorageId());
             return urlPrefix.equals(URLUtil.normalize(storage.getUrlPrefix() + file.getParentPath(), false, true));
         }).findFirst().orElse(null);
+    }
+
+    private StorageDO getStorageByPlatform(String platform) {
+        if (StrUtil.isBlank(platform)) {
+            return null;
+        }
+        return storageMapper.lambdaQuery().eq(StorageDO::getCode, platform).one();
     }
 }

@@ -17,15 +17,9 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
-import org.dromara.x.file.storage.core.FileStorageProperties;
-import org.dromara.x.file.storage.core.FileStorageService;
-import org.dromara.x.file.storage.core.FileStorageServiceBuilder;
-import org.dromara.x.file.storage.core.platform.FileStorage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.base.service.BaseServiceImpl;
@@ -38,16 +32,21 @@ import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.StorageQuery;
 import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.model.resp.StorageResp;
+import top.continew.admin.system.model.resp.file.FileUploadConfigResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.util.ExceptionUtils;
-import top.continew.starter.core.util.SpringWebUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
+import top.continew.starter.storage.autoconfigure.properties.LocalStorageConfig;
+import top.continew.starter.storage.autoconfigure.properties.OssStorageConfig;
+import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
+import top.continew.starter.storage.common.constant.StorageConstant;
+import top.continew.starter.storage.core.FileStorageService;
+import top.continew.starter.storage.strategy.impl.LocalStorageStrategy;
+import top.continew.starter.storage.strategy.impl.OssStorageStrategy;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 存储业务实现
@@ -60,6 +59,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
 
     private final FileStorageService fileStorageService;
+    private final StorageProperties storageProperties;
     @Resource
     private FileService fileService;
 
@@ -159,6 +159,7 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, storage.getStatus(), "请先启用所选存储");
         baseMapper.lambdaUpdate().eq(StorageDO::getIsDefault, true).set(StorageDO::getIsDefault, false).update();
         baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getIsDefault, true).update();
+        fileStorageService.defaultStorage(storage.getCode());
     }
 
     @Override
@@ -179,47 +180,194 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
     }
 
     @Override
+    public FileUploadConfigResp getDefaultUploadConfig() {
+        StorageDO storage = this.getDefaultStorage();
+        FileUploadConfigResp resp = new FileUploadConfigResp();
+        resp.setStorageId(storage.getId());
+        resp.setStorageName(storage.getName());
+        resp.setStorageCode(storage.getCode());
+        resp.setStorageType(storage.getType());
+        resp.setMultipartUploadThreshold(resolveMultipartUploadThreshold(storage));
+        resp.setMultipartUploadPartSize(resolveMultipartUploadPartSize(storage));
+        if (StorageTypeEnum.LOCAL.equals(storage.getType())) {
+            resp.setMultipartTempDir(resolveLocalMultipartTempDir(storage));
+        }
+        return resp;
+    }
+
+    @Override
     public void load(StorageDO storage) {
-        CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
+        if (fileStorageService.exists(storage.getCode()) && fileStorageService.isDynamic(storage.getCode())) {
+            fileStorageService.unload(storage.getCode());
+        }
         switch (storage.getType()) {
             case LOCAL -> {
-                FileStorageProperties.LocalPlusConfig config = new FileStorageProperties.LocalPlusConfig();
+                LocalStorageConfig config = new LocalStorageConfig();
+                config.setEnabled(true);
                 config.setPlatform(storage.getCode());
-                config.setStoragePath(storage.getBucketName());
-                fileStorageList.addAll(FileStorageServiceBuilder.buildLocalPlusFileStorage(Collections
-                    .singletonList(config)));
-                // 注册资源映射
-                SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(storage.getDomain()).getPath(), storage
-                    .getBucketName()));
+                config.setBucketName(storage.getBucketName());
+                config.setEndpoint(storage.getDomain());
+                config.setMultipartUploadThreshold(resolveMultipartUploadThreshold(storage));
+                config.setMultipartUploadPartSize(resolveMultipartUploadPartSize(storage));
+                config.setMultipartTempDir(resolveLocalMultipartTempDir(storage));
+                fileStorageService.register(new LocalStorageStrategy(config));
             }
             case OSS -> {
-                FileStorageProperties.AmazonS3Config config = new FileStorageProperties.AmazonS3Config();
+                OssStorageConfig config = new OssStorageConfig();
+                config.setEnabled(true);
                 config.setPlatform(storage.getCode());
                 config.setAccessKey(storage.getAccessKey());
                 config.setSecretKey(storage.getSecretKey());
-                config.setEndPoint(storage.getEndpoint());
+                config.setEndpoint(storage.getEndpoint());
                 config.setBucketName(storage.getBucketName());
-                fileStorageList.addAll(FileStorageServiceBuilder.buildAmazonS3FileStorage(Collections
-                    .singletonList(config), null));
+                config.setDomain(storage.getDomain());
+                config.setMultipartUploadThreshold(resolveMultipartUploadThreshold(storage));
+                config.setMultipartUploadPartSize(resolveMultipartUploadPartSize(storage));
+                config.setPathStyleAccessEnabled(true);
+                fileStorageService.register(new OssStorageStrategy(config));
             }
             default -> throw new IllegalArgumentException("不支持的存储类型：%s".formatted(storage.getType()));
+        }
+        if (Boolean.TRUE.equals(storage.getIsDefault())) {
+            fileStorageService.defaultStorage(storage.getCode());
         }
     }
 
     @Override
     public void unload(StorageDO storage) {
-        FileStorage fileStorage = fileStorageService.getFileStorage(storage.getCode());
-        if (fileStorage == null) {
+        if (!fileStorageService.exists(storage.getCode()) || !fileStorageService.isDynamic(storage.getCode())) {
             return;
         }
-        CopyOnWriteArrayList<FileStorage> fileStorageList = fileStorageService.getFileStorageList();
-        fileStorageList.remove(fileStorage);
-        fileStorage.close();
-        // 本地存储引擎需要移除资源映射
-        if (StorageTypeEnum.LOCAL.equals(storage.getType())) {
-            SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(storage.getDomain()).getPath(), storage
-                .getBucketName()));
-        }
+        fileStorageService.unload(storage.getCode());
+    }
+
+    /**
+     * 解析分片上传阈值（字节）
+     *
+     * <p>
+     * 当上传文件大小超过该阈值时，存储策略将走分片上传流程。
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 全局配置 {@code continew-starter.storage.multipart-upload-threshold}
+     * </p>
+     * <p>
+     * 2. 框架默认值 {@link StorageConstant#DEFAULT_MULTIPART_UPLOAD_THRESHOLD}
+     * </p>
+     *
+     * @return 最终生效的分片上传阈值（字节）
+     */
+    private long resolveMultipartUploadThreshold() {
+        long threshold = storageProperties.getMultipartUploadThreshold();
+        return threshold > 0 ? threshold : StorageConstant.DEFAULT_MULTIPART_UPLOAD_THRESHOLD;
+    }
+
+    /**
+     * 解析存储实例分片上传阈值（字节）
+     *
+     * <p>
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 存储实例配置（{@link StorageDO#getMultipartUploadThreshold()}）
+     * </p>
+     * <p>
+     * 2. 全局配置（见 {@link #resolveMultipartUploadThreshold()}）
+     * </p>
+     *
+     * @param storage 存储配置实体
+     * @return 最终生效的分片上传阈值（字节）
+     */
+    private long resolveMultipartUploadThreshold(StorageDO storage) {
+        Long threshold = storage.getMultipartUploadThreshold();
+        return (threshold != null && threshold > 0) ? threshold : resolveMultipartUploadThreshold();
+    }
+
+    /**
+     * 解析全局分片大小（字节）
+     *
+     * <p>
+     * 用于在存储实例未配置分片大小时作为回退值。
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 全局配置 {@code continew-starter.storage.multipart-upload-part-size}
+     * </p>
+     * <p>
+     * 2. 框架默认值 {@link StorageConstant#DEFAULT_MULTIPART_UPLOAD_PART_SIZE}
+     * </p>
+     *
+     * @return 最终生效的全局分片大小（字节）
+     */
+    private long resolveMultipartUploadPartSize() {
+        long partSize = storageProperties.getMultipartUploadPartSize();
+        return partSize > 0 ? partSize : StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE;
+    }
+
+    /**
+     * 解析存储实例分片大小（字节）
+     *
+     * <p>
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 存储实例配置（{@link StorageDO#getMultipartUploadPartSize()}）
+     * </p>
+     * <p>
+     * 2. 全局配置（见 {@link #resolveMultipartUploadPartSize()}）
+     * </p>
+     *
+     * @param storage 存储配置实体
+     * @return 最终生效的分片大小（字节）
+     */
+    private long resolveMultipartUploadPartSize(StorageDO storage) {
+        Long partSize = storage.getMultipartUploadPartSize();
+        return (partSize != null && partSize > 0) ? partSize : resolveMultipartUploadPartSize();
+    }
+
+    /**
+     * 解析全局本地分片临时目录
+     *
+     * <p>
+     * 用于本地存储实例未配置临时目录时的回退值。
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 全局配置 {@code continew-starter.storage.local-multipart-temp-dir}
+     * </p>
+     * <p>
+     * 2. 框架默认值 {@link StorageConstant#DEFAULT_LOCAL_MULTIPART_TEMP_DIR}
+     * </p>
+     *
+     * @return 最终生效的全局本地分片临时目录
+     */
+    private String resolveLocalMultipartTempDir() {
+        return StrUtil.isBlank(storageProperties.getLocalMultipartTempDir())
+            ? StorageConstant.DEFAULT_LOCAL_MULTIPART_TEMP_DIR
+            : storageProperties.getLocalMultipartTempDir();
+    }
+
+    /**
+     * 解析存储实例本地分片临时目录
+     *
+     * <p>
+     * 仅本地存储策略使用该值。
+     * 取值优先级：
+     * </p>
+     * <p>
+     * 1. 存储实例配置（{@link StorageDO#getMultipartTempDir()}，并进行 trim）
+     * </p>
+     * <p>
+     * 2. 全局配置（见 {@link #resolveLocalMultipartTempDir()}）
+     * </p>
+     *
+     * @param storage 存储配置实体
+     * @return 最终生效的本地分片临时目录
+     */
+    private String resolveLocalMultipartTempDir(StorageDO storage) {
+        return StrUtil.isBlank(storage.getMultipartTempDir())
+            ? resolveLocalMultipartTempDir()
+            : storage.getMultipartTempDir().trim();
     }
 
     /**

@@ -82,17 +82,4 @@ public class MultipartUploadConstants {
      * </p>
      */
     public static final long DEFAULT_EXPIRE_HOURS = 24;
-
-    /**
-     * 临时文件夹
-     * <p>
-     * 分片上传的临时文件夹名称
-     * </p>
-     */
-    public static final String TEMP_DIR_NAME = "temp";
-
-    /**
-     * 分片大小
-     */
-    public static final long MULTIPART_UPLOAD_PART_SIZE = 5 * 1024 * 1024;
 }

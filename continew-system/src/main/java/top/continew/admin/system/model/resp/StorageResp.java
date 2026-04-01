@@ -86,6 +86,24 @@ public class StorageResp extends BaseDetailResp {
     private String domain;
 
     /**
+     * 分片上传阈值（字节）
+     */
+    @Schema(description = "分片上传阈值（字节）", example = "10485760")
+    private Long multipartUploadThreshold;
+
+    /**
+     * 分片上传大小（字节）
+     */
+    @Schema(description = "分片上传大小（字节）", example = "5242880")
+    private Long multipartUploadPartSize;
+
+    /**
+     * 本地分片临时目录
+     */
+    @Schema(description = "本地分片临时目录", example = "/tmp/continew-multipart")
+    private String multipartTempDir;
+
+    /**
      * 启用回收站
      */
     @Schema(description = "启用回收站", example = "true")

@@ -475,6 +475,9 @@ CREATE TABLE IF NOT EXISTS "sys_storage" (
     "endpoint"            varchar(255) DEFAULT NULL,
     "bucket_name"         varchar(255) NOT NULL,
     "domain"              varchar(255) DEFAULT NULL,
+    "multipart_upload_threshold" int8 DEFAULT NULL,
+    "multipart_upload_part_size" int8  DEFAULT NULL,
+    "multipart_temp_dir"  varchar(255) DEFAULT NULL,
     "recycle_bin_enabled" bool         NOT NULL DEFAULT true,
     "recycle_bin_path"    varchar(255) DEFAULT NULL,
     "description"         varchar(200) DEFAULT NULL,
@@ -501,6 +504,9 @@ COMMENT ON COLUMN "sys_storage"."secret_key"          IS 'Secret Key';
 COMMENT ON COLUMN "sys_storage"."endpoint"            IS 'Endpoint';
 COMMENT ON COLUMN "sys_storage"."bucket_name"         IS 'Bucket';
 COMMENT ON COLUMN "sys_storage"."domain"              IS '域名';
+COMMENT ON COLUMN "sys_storage"."multipart_upload_threshold" IS '分片上传阈值（字节）';
+COMMENT ON COLUMN "sys_storage"."multipart_upload_part_size" IS '分片上传大小（字节）';
+COMMENT ON COLUMN "sys_storage"."multipart_temp_dir"  IS '本地分片临时目录';
 COMMENT ON COLUMN "sys_storage"."recycle_bin_enabled" IS '启用回收站';
 COMMENT ON COLUMN "sys_storage"."recycle_bin_path"    IS '回收站路径';
 COMMENT ON COLUMN "sys_storage"."description"         IS '描述';

@@ -18,16 +18,13 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONUtil;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.x.file.storage.core.FileInfo;
-import org.dromara.x.file.storage.core.FileStorageService;
-import org.dromara.x.file.storage.core.ProgressListener;
-import org.dromara.x.file.storage.core.upload.UploadPretreatment;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,19 +38,28 @@ import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
+import top.continew.admin.system.model.resp.file.FileUploadProgressResp;
 import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
+import top.continew.admin.system.enums.FileUploadProgressStatusEnum;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
 import top.continew.starter.cache.redisson.util.RedisLockUtils;
+import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.StrUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
+import top.continew.starter.storage.core.FileStorageService;
+import top.continew.starter.storage.core.UploadPretreatment;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -69,6 +75,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq> implements FileService {
+
+    private static final String FILE_UPLOAD_PROGRESS_PREFIX = "file:upload:progress:";
+    private static final Duration FILE_UPLOAD_PROGRESS_EXPIRE = Duration.ofHours(1);
 
     private final FileStorageService fileStorageService;
     @Lazy
@@ -106,12 +115,18 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
 
     @Override
     public FileInfo upload(MultipartFile file, String parentPath, String storageCode) {
-        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getOriginalFilename()));
+        return this.upload(file, parentPath, storageCode, null);
+    }
+
+    @Override
+    public FileInfo upload(MultipartFile file, String parentPath, String storageCode, String uploadTaskId) {
+        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file
+            .getOriginalFilename()), uploadTaskId);
     }
 
     @Override
     public FileInfo upload(File file, String parentPath, String storageCode) {
-        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getName()));
+        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getName()), null);
     }
 
     @Override
@@ -188,6 +203,27 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
+    public FileUploadProgressResp getUploadProgress(String uploadTaskId) {
+        ValidationUtils.throwIfBlank(uploadTaskId, "上传任务 ID 不能为空");
+        String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
+        Object value = RedisUtils.get(key);
+        if (value == null) {
+            FileUploadProgressResp resp = new FileUploadProgressResp();
+            resp.setUploadTaskId(uploadTaskId);
+            resp.setStatus(FileUploadProgressStatusEnum.NOT_FOUND);
+            resp.setPercentage(0);
+            resp.setBytesRead(0L);
+            resp.setTotalBytes(0L);
+            return resp;
+        }
+        FileUploadProgressResp resp = JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
+        if (StrUtil.isBlank(resp.getUploadTaskId())) {
+            resp.setUploadTaskId(uploadTaskId);
+        }
+        return resp;
+    }
+
+    @Override
     public Long countByStorageIds(List<Long> storageIds) {
         if (CollUtil.isEmpty(storageIds)) {
             return 0L;
@@ -216,13 +252,14 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     /**
      * 上传文件并返回上传后的文件信息
      *
-     * @param file        文件
-     * @param parentPath  上级目录
-     * @param storageCode 存储引擎编码
-     * @param extName     文件扩展名
+     * @param file         文件
+     * @param parentPath   上级目录
+     * @param storageCode  存储引擎编码
+     * @param extName      文件扩展名
+     * @param uploadTaskId 上传任务 ID
      * @return 文件信息
      */
-    private FileInfo upload(Object file, String parentPath, String storageCode, String extName) {
+    private FileInfo upload(Object file, String parentPath, String storageCode, String extName, String uploadTaskId) {
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
@@ -235,38 +272,54 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
 
         // 生成唯一文件名（处理重名情况）
         String originalFileName = getOriginalFileName(file);
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage.getId(), baseMapper);
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
+            .getId(), baseMapper);
+        String sha256 = calculateSha256(file);
+        String normalizedUploadTaskId = StrUtil.emptyToNull(StrUtil.trim(uploadTaskId));
+        long totalBytes = this.getFileSize(file);
+        if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
+            this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.INIT, 0L, totalBytes, 0, null, null, null);
+        }
 
         UploadPretreatment uploadPretreatment = fileStorageService.of(file)
-            .setPlatform(storage.getCode())
-            .setHashCalculatorSha256(true)
-            .putAttr(ClassUtil.getClassName(StorageDO.class, false), storage)
-            .setPath(this.pretreatmentPath(parentPath))
-            .setSaveFilename(uniqueFileName)
-            .setOriginalFilename(uniqueFileName);
+            .platform(storage.getCode())
+            .path(this.pretreatmentPath(parentPath))
+            .fileName(uniqueFileName)
+            .metadata("sha256", sha256)
+            .metadata("storageCode", storage.getCode())
+            .metadata("storageId", String.valueOf(storage.getId()));
         // 图片文件生成缩略图
         if (FileTypeEnum.IMAGE.getExtensions().contains(extName)) {
-            uploadPretreatment.setIgnoreThumbnailException(true, true);
-            uploadPretreatment.thumbnail(img -> img.size(100, 100));
+            uploadPretreatment.thumbnail(100, 100);
         }
-        uploadPretreatment.setProgressMonitor(new ProgressListener() {
-            @Override
-            public void start() {
-                log.info("开始上传文件: {}", uniqueFileName);
-            }
-
-            @Override
-            public void progress(long progressSize, Long allSize) {
-                log.info("文件 [{}] 已上传 [{}]，总大小 [{}]", uniqueFileName, progressSize, allSize);
-            }
-
-            @Override
-            public void finish() {
-                log.info("文件 [{}] 上传完成", uniqueFileName);
+        uploadPretreatment.onProgress((progressSize, allSize, percentage) -> {
+            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", uniqueFileName, progressSize, allSize, percentage);
+            if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
+                FileUploadProgressStatusEnum status = (allSize > 0 && progressSize >= allSize) || percentage >= 100
+                    ? FileUploadProgressStatusEnum.FINALIZING
+                    : FileUploadProgressStatusEnum.UPLOADING;
+                this.saveUploadProgress(normalizedUploadTaskId, status, progressSize, allSize, percentage, null, null, null);
             }
         });
-        // 上传
-        return uploadPretreatment.upload();
+        try {
+            // 上传
+            log.info("开始上传文件: {}", uniqueFileName);
+            FileInfo fileInfo = uploadPretreatment.upload();
+            log.info("文件 [{}] 上传完成", uniqueFileName);
+            FileInfo result = this.postProcessUploadResult(fileInfo, storage);
+            if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
+                long completedSize = result.getSize() == null ? totalBytes : result.getSize();
+                this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.COMPLETED, completedSize, totalBytes, 100, null, result
+                    .getFileId(), result.getUrl());
+            }
+            return result;
+        } catch (RuntimeException e) {
+            if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
+                this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.FAILED, 0L, totalBytes, 0, e
+                    .getMessage(), null, null);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -288,7 +341,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
      * 处理路径
      *
      * <p>
-     * 1.如果 path 为 {@code /}，则设置为空 <br />
+     * 1.如果 path 为 {@code /}，则保持为 {@code /}（避免触发自动日期目录） <br />
      * 2.如果 path 不以 {@code /} 结尾，则添加后缀 {@code /} <br />
      * 3.如果 path 以 {@code /} 开头，则移除前缀 {@code /} <br />
      * 示例：yyyy/MM/dd/
@@ -299,7 +352,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
      */
     private String pretreatmentPath(String path) {
         if (StringConstants.SLASH.equals(path)) {
-            return StringConstants.EMPTY;
+            // 传递根路径本身，避免 starter 将空路径识别为“自动日期目录”
+            return StringConstants.SLASH;
         }
         return StrUtil.appendIfMissing(StrUtil.removePrefix(path, StringConstants.SLASH), StringConstants.SLASH);
     }
@@ -375,14 +429,100 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             CheckUtils.throwIf(exists, "文件夹 [{}] 不为空，请先删除文件夹下的内容", file.getName());
             return;
         }
-        FileInfo fileInfo = file.toFileInfo(storage);
+        String sourcePath = normalizeStoragePath(file.getPath());
         if (Boolean.TRUE.equals(storage.getRecycleBinEnabled())) {
             // 移动到回收站目录
-            fileInfo.setId(file.getId().toString());
-            fileStorageService.move(fileInfo).setPath(storage.getRecycleBinPath() + fileInfo.getPath()).move();
+            String targetPath = normalizeStoragePath(storage.getRecycleBinPath() + sourcePath);
+            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+                .getBucketName(), sourcePath, targetPath);
         } else {
             // 删除文件
-            fileStorageService.delete(fileInfo);
+            fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
         }
+    }
+
+    private String calculateSha256(Object file) {
+        try {
+            if (file instanceof MultipartFile multipartFile) {
+                return DigestUtil.sha256Hex(multipartFile.getInputStream());
+            } else if (file instanceof File ioFile) {
+                return DigestUtil.sha256Hex(ioFile);
+            }
+            return null;
+        } catch (IOException e) {
+            throw new IllegalStateException("计算文件 SHA256 失败", e);
+        }
+    }
+
+    private FileInfo postProcessUploadResult(FileInfo fileInfo, StorageDO storage) {
+        if (fileInfo.getMetadata() == null) {
+            fileInfo.setMetadata(new HashMap<>());
+        }
+        fileInfo.setUrl(URLUtil.normalize(storage.getUrlPrefix() + normalizeStoragePath(fileInfo
+            .getPath()), false, true));
+        if (StrUtil.isNotBlank(fileInfo.getThumbnailPath()) && !StrUtil.startWithAny(fileInfo
+            .getThumbnailPath(), "http://", "https://")) {
+            fileInfo.setThumbnailPath(URLUtil.normalize(storage.getUrlPrefix() + normalizeStoragePath(fileInfo
+                .getThumbnailPath()), false, true));
+        }
+        return fileInfo;
+    }
+
+    private String normalizeStoragePath(String path) {
+        return StrUtil.removePrefix(path.replace("\\", StringConstants.SLASH)
+            .replaceAll("/+", StringConstants.SLASH), StringConstants.SLASH);
+    }
+
+    private long getFileSize(Object file) {
+        if (file instanceof MultipartFile multipartFile) {
+            return multipartFile.getSize();
+        }
+        if (file instanceof File ioFile) {
+            return ioFile.length();
+        }
+        return 0L;
+    }
+
+    private void saveUploadProgress(String uploadTaskId,
+                                    FileUploadProgressStatusEnum status,
+                                    long bytesRead,
+                                    long totalBytes,
+                                    int percentage,
+                                    String message,
+                                    String fileId,
+                                    String url) {
+        String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
+        FileUploadProgressResp current = null;
+        Object value = RedisUtils.get(key);
+        if (value != null) {
+            current = JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
+        }
+        if (current != null && isFinalStatus(current.getStatus()) && !isFinalStatus(status)) {
+            return;
+        }
+        if (!isFinalStatus(status) && current != null) {
+            bytesRead = Math.max(bytesRead, current.getBytesRead() == null ? 0L : current.getBytesRead());
+            percentage = Math.max(percentage, current.getPercentage() == null ? 0 : current.getPercentage());
+        }
+
+        FileUploadProgressResp resp = new FileUploadProgressResp();
+        resp.setUploadTaskId(uploadTaskId);
+        resp.setStatus(status);
+        resp.setBytesRead(bytesRead);
+        resp.setTotalBytes(totalBytes);
+        resp.setPercentage(percentage);
+        resp.setMessage(StrUtil.blankToDefault(message, current == null ? null : current.getMessage()));
+        resp.setFileId(StrUtil.blankToDefault(fileId, current == null ? null : current.getFileId()));
+        resp.setUrl(StrUtil.blankToDefault(url, current == null ? null : current.getUrl()));
+        RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
+    }
+
+    private boolean isFinalStatus(String status) {
+        return StrUtil.equalsAnyIgnoreCase(status, FileUploadProgressStatusEnum.COMPLETED
+            .getValue(), FileUploadProgressStatusEnum.FAILED.getValue());
+    }
+
+    private boolean isFinalStatus(FileUploadProgressStatusEnum status) {
+        return status == FileUploadProgressStatusEnum.COMPLETED || status == FileUploadProgressStatusEnum.FAILED;
     }
 }
