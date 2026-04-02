@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class GlobalSpringDocConfiguration {
 
     @Bean
-    public GroupedOpenApi allApi() {
+    public GroupedOpenApi allModuleApi() {
         return GroupedOpenApi.builder()
             .group("all")
             .displayName("全部接口")
@@ -40,7 +40,7 @@ public class GlobalSpringDocConfiguration {
     }
 
     @Bean
-    public GroupedOpenApi commonApi() {
+    public GroupedOpenApi commonModuleApi() {
         return GroupedOpenApi.builder()
             .group("common")
             .displayName("通用接口")

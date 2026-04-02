@@ -33,7 +33,7 @@ public class AuthConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi authApi() {
+    public GroupedOpenApi authModuleApi() {
         return GroupedOpenApi.builder()
             .group("auth")
             .displayName("系统认证")

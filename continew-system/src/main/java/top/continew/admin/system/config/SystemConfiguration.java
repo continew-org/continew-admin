@@ -33,7 +33,7 @@ public class SystemConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi systemApi() {
+    public GroupedOpenApi systemModuleApi() {
         return GroupedOpenApi.builder().group("system").displayName("系统管理").pathsToMatch("/system/**").build();
     }
 }

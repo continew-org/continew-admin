@@ -33,7 +33,7 @@ public class OpenConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi openApi() {
+    public GroupedOpenApi openModuleApi() {
         return GroupedOpenApi.builder().group("open").displayName("能力开放").pathsToMatch("/open/**").build();
     }
 }
