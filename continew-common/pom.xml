@@ -99,7 +99,7 @@
         <!-- NextDoc4j - SaToken 权限展示插件 -->
         <dependency>
             <groupId>top.nextdoc4j</groupId>
-            <artifactId>nextdoc4j-plugin-security-satoken</artifactId>
+            <artifactId>nextdoc4j-plugin-security-satoken-springboot3</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 认证模块 - JustAuth -->
