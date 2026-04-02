@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import top.continew.admin.system.model.entity.OptionDO;
@@ -30,7 +29,6 @@ import java.util.List;
  * @author Bull-BCLS
  * @since 2023/8/26 19:38
  */
-@Mapper
 public interface OptionMapper extends BaseMapper<OptionDO> {
 
     /**

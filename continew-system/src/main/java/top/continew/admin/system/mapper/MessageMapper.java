@@ -18,7 +18,6 @@ package top.continew.admin.system.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.MessageDO;
 import top.continew.admin.system.model.query.MessageQuery;
@@ -34,7 +33,6 @@ import java.util.List;
  * @author Bull-BCLS
  * @since 2023/10/15 19:05
  */
-@Mapper
 public interface MessageMapper extends BaseMapper<MessageDO> {
 
     /**

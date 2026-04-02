@@ -16,7 +16,6 @@
 
 package top.continew.admin.open.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import top.continew.admin.open.model.entity.AppDO;
@@ -29,7 +28,6 @@ import top.continew.starter.encrypt.field.annotation.FieldEncrypt;
  * @author chengzi
  * @since 2024/10/17 16:03
  */
-@Mapper
 public interface AppMapper extends BaseMapper<AppDO> {
 
     /**

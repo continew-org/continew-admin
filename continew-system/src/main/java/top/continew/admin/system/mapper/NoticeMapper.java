@@ -18,7 +18,6 @@ package top.continew.admin.system.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.NoticeDO;
 import top.continew.admin.system.model.query.NoticeQuery;
@@ -34,7 +33,6 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-@Mapper
 public interface NoticeMapper extends BaseMapper<NoticeDO> {
 
     /**

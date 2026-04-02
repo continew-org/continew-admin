@@ -16,7 +16,6 @@
 
 package top.continew.admin.tenant.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import top.continew.admin.tenant.model.entity.PackageMenuDO;
 import top.continew.starter.data.mapper.BaseMapper;
 
@@ -26,6 +25,5 @@ import top.continew.starter.data.mapper.BaseMapper;
  * @author Charles7c
  * @since 2025/7/13 20:24
  */
-@Mapper
 public interface PackageMenuMapper extends BaseMapper<PackageMenuDO> {
 }

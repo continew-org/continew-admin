@@ -25,6 +25,7 @@ import com.alicp.jetcache.anno.config.EnableMethodCache;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -50,7 +51,8 @@ import top.nextdoc4j.core.configuration.NextDoc4jProperties;
 @Slf4j
 @EnableCrudApi
 @EnableGlobalResponse
-@EnableMethodCache(basePackages = "top.continew.admin")
+@MapperScan(basePackages = {"top.continew.admin.**.mapper"})
+@EnableMethodCache(basePackages = {"top.continew.admin"})
 @EnableFeignClients
 @RestController
 @SpringBootApplication

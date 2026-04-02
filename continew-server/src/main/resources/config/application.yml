@@ -310,8 +310,6 @@ mybatis-plus:
   ## 扩展配置
   extension:
     enabled: true
-    # Mapper 接口扫描包配置
-    mapper-package: ${application.base-package}.**.mapper
     # ID 生成器配置
     id-generator:
       type: COSID
