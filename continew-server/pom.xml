@@ -50,6 +50,12 @@
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-trace</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
