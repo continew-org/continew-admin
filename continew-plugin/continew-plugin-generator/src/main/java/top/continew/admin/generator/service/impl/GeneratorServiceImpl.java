@@ -309,7 +309,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
         // 在模板中允许使用静态方法
         if (engine instanceof FreemarkerEngine freemarkerEngine) {
-            DefaultObjectWrapper wrapper = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_33).build();
+            DefaultObjectWrapper wrapper = new DefaultObjectWrapperBuilder(Configuration.getVersion()).build();
             freemarkerEngine.getConfiguration().setSharedVariable("statics", wrapper.getStaticModels());
         }
         for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {

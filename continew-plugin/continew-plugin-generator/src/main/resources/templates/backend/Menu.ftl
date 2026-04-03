@@ -1,3 +1,4 @@
+<#setting number_format="#">
 SET @parentId = ${statics["cn.hutool.core.util.IdUtil"].getSnowflakeNextId()?c};
 -- ${businessName}管理菜单
 INSERT INTO `sys_menu`
