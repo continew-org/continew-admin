@@ -33,6 +33,8 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.starter.core.ContiNewStarterVersion;
@@ -50,13 +52,15 @@ import top.nextdoc4j.core.configuration.NextDoc4jProperties;
  */
 @Slf4j
 @EnableCrudApi
-@EnableGlobalResponse
-@MapperScan(basePackages = {"top.continew.admin.**.mapper"})
-@EnableMethodCache(basePackages = {"top.continew.admin"})
-@EnableFeignClients
 @RestController
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableScheduling
+@EnableAsync(proxyTargetClass = true)
+@EnableGlobalResponse
+@EnableFeignClients
+@MapperScan(basePackages = {"top.continew.admin.**.mapper"})
+@EnableMethodCache(basePackages = {"top.continew.admin"})
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ApplicationProperties applicationProperties;
