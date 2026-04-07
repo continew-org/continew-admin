@@ -26,6 +26,7 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,10 +55,12 @@ import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.core.UploadPretreatment;
+import top.continew.starter.storage.domain.file.EnhancedMultipartFile;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -281,7 +284,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.INIT, 0L, totalBytes, 0, null, null, null);
         }
 
-        UploadPretreatment uploadPretreatment = fileStorageService.of(file)
+        UploadPretreatment uploadPretreatment = fileStorageService.of(normalizeUploadSource(file))
             .platform(storage.getCode())
             .path(this.pretreatmentPath(parentPath))
             .fileName(uniqueFileName)
@@ -335,6 +338,33 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             return ioFile.getName();
         }
         return "unknown";
+    }
+
+    /**
+     * 规范化上传源对象。
+     *
+     * <p>
+     * 如果传入的是 {@link File}，则先读取文件内容并包装为 {@link EnhancedMultipartFile}，
+     * 避免 starter-storage 将其按普通对象走 JSON 分支处理；其他类型保持原样返回。
+     * </p>
+     *
+     * @param file 上传源对象
+     * @return 可交给 starter-storage 处理的上传对象
+     */
+    private static Object normalizeUploadSource(Object file) {
+        if (!(file instanceof File ioFile)) {
+            return file;
+        }
+        try {
+            String contentType = Files.probeContentType(ioFile.toPath());
+            if (StrUtil.isBlank(contentType)) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+            }
+            return EnhancedMultipartFile.create(ioFile.getName(), ioFile.getName(), contentType, Files.readAllBytes(ioFile
+                .toPath()));
+        } catch (IOException e) {
+            throw new IllegalStateException("读取上传文件失败", e);
+        }
     }
 
     /**
