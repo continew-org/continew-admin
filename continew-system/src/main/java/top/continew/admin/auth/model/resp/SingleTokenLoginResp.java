@@ -18,28 +18,27 @@ package top.continew.admin.auth.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
- * 登录响应参数
- *
- * @author Charles7c
- * @since 2022/12/21 20:42
+ * 单token模式，只有访问的token
  */
 @Data
 @SuperBuilder
-@Schema(description = "登录响应参数")
-public class LoginResp implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+@EqualsAndHashCode(callSuper = true)
+public class SingleTokenLoginResp extends LoginResp {
 
     /**
-     * 租户 ID
+     * 访问令牌
      */
-    @Schema(description = "租户 ID", example = "0")
-    private Long tenantId;
+    @Schema(description = "访问令牌", example = "eyJ0eXAiOiJlV1QiLCJhbGciqiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb29pbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiSjd4SUljYnU5cmNwU09vQ3Uyc1ND1BYYTYycFRjcjAifQ.KUPOYm-2wfuLUSfEEAbpGE527fzmkAJG7sMNcQ0pUZ8")
+    private String token;
+
+    /**
+     * 有效时长（秒）
+     */
+    @Schema(description = "有效时长（秒）", example = "8600")
+    private Long expiresIn;
+
 }

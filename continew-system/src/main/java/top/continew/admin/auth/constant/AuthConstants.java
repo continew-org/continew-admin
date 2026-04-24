@@ -34,6 +34,11 @@ public class AuthConstants {
      */
     public static final String LOGOUT_URI = "/auth/logout";
 
+    /**
+     * Map 存储登录用户信息时的 key 值
+     */
+    public static final String LOGIN_USER = "loginUser";
+
     private AuthConstants() {
     }
 }

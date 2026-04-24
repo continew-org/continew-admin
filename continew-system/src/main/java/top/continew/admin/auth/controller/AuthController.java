@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
@@ -72,6 +73,13 @@ public class AuthController {
         return authService.login(req, request);
     }
 
+    @SaIgnore
+    @Operation(summary = "刷新token", description = "刷新token")
+    @PostMapping("/refreshToken")
+    public LoginResp refreshToken(@RequestParam("refreshToken") @NotBlank String refreshToken) {
+        return authService.refreshToken(refreshToken);
+    }
+
     @Operation(summary = "登出", description = "注销用户的当前登录")
     @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
@@ -88,8 +96,8 @@ public class AuthController {
     public SocialAuthAuthorizeResp authorize(@PathVariable @EnumValue(value = SocialSourceEnum.class, message = "第三方平台无效") String source) {
         AuthRequest authRequest = authRequestFactory.getAuthRequest(source);
         return SocialAuthAuthorizeResp.builder()
-            .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
-            .build();
+                .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
+                .build();
     }
 
     @Log(ignore = true)

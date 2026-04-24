@@ -11,6 +11,8 @@ databaseChangeLog:
       file: db/changelog/mysql/plugin/plugin_schedule.sql
   - include:
       file: db/changelog/mysql/plugin/plugin_generator.sql
+  - includeAll:
+      path: db/changelog/mysql/V4.2.0
 # PostgreSQL
 #  - include:
 #      file: db/changelog/postgresql/main_table.sql
@@ -24,3 +26,5 @@ databaseChangeLog:
 #      file: db/changelog/postgresql/plugin/plugin_schedule.sql
 #  - include:
 #      file: db/changelog/postgresql/plugin/plugin_generator.sql
+#  - includeAll:
+#      path: db/changelog/postgresql/V4.2.0

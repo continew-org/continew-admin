@@ -77,6 +77,19 @@ public class ClientReq implements Serializable {
     private Long timeout;
 
     /**
+     * 是否启用Refresh Token
+     */
+    @Schema(description = "是否启用 Refresh Token", example = "false")
+    @NotNull(message = "是否启用 Refresh Token 不能为空")
+    private Boolean isEnableRefreshToken;
+
+    /**
+     * Refresh Token 有效期（单位：秒; 小于0,则和 Token 有效期相同）
+     */
+    @Schema(description = "Refresh Token 有效期（单位：秒; 小于0,则和 Token 有效期相同）", example = "2592000")
+    private Long refreshTokenTimeout;
+
+    /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）
      */
     @Schema(description = "是否允许同一账号多地同时登录", example = "true")

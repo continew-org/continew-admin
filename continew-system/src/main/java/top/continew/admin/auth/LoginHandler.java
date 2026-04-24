@@ -16,11 +16,18 @@
 
 package top.continew.admin.auth;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import cn.dev33.satoken.temp.SaTempUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.LoginReq;
+import top.continew.admin.auth.model.resp.DoubleTokenLoginResp;
 import top.continew.admin.auth.model.resp.LoginResp;
+import top.continew.admin.auth.model.resp.SingleTokenLoginResp;
+import top.continew.admin.common.context.UserContext;
 import top.continew.admin.system.model.resp.ClientResp;
+import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
 /**
  * 登录处理器
@@ -65,4 +72,38 @@ public interface LoginHandler<T extends LoginReq> {
      * @return 认证类型
      */
     AuthTypeEnum getAuthType();
+
+    /**
+     * 构建登录信息
+     *
+     * @param loginParameter 登录的参数
+     * @param userContext    用户上下文信息
+     * @param client         客户端信息
+     * @return
+     */
+    static LoginResp buildLoginResp(SaLoginParameter loginParameter, UserContext userContext, ClientResp client) {
+        StpUtil.login(userContext.getId(), loginParameter);
+        if (Boolean.TRUE.equals(client.getIsEnableRefreshToken())) {
+            // 刷新令牌设置的有效时长
+            long refreshExpiresIn = (client.getRefreshTokenTimeout() != null && client.getRefreshTokenTimeout() > 0L)
+                    ? client.getRefreshTokenTimeout() : client.getTimeout();
+            String refreshToken = SaTempUtil.createToken(userContext.getId(), refreshExpiresIn, false);
+            // 将生成的token保存一份，方便刷新token时删除先前的token
+            loginParameter.setToken(StpUtil.getTokenValue());
+            SaTempUtil.saveToken(refreshToken, loginParameter, refreshExpiresIn);
+            return DoubleTokenLoginResp.builder()
+                    .accessToken(StpUtil.getTokenValue())
+                    .accessExpiresIn(StpUtil.getTokenTimeout())
+                    .refreshToken(refreshToken)
+                    .refreshExpiresIn(refreshExpiresIn)
+                    .tenantId(TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
+                    .build();
+        } else {
+            return SingleTokenLoginResp.builder()
+                    .token(StpUtil.getTokenValue())
+                    .expiresIn(StpUtil.getTokenTimeout())
+                    .tenantId(TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
+                    .build();
+        }
+    }
 }

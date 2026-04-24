@@ -47,4 +47,12 @@ public interface AuthService {
      * @return 路由树
      */
     List<RouteResp> buildRouteTree(Long userId);
+
+    /**
+     * 刷新token
+     *
+     * @param refreshToken 原认证的 Refresh Token
+     * @return 登录响应参数
+     */
+    LoginResp refreshToken(String refreshToken);
 }

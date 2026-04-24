@@ -69,6 +69,16 @@ public class ClientDO extends BaseDO {
     private Long timeout;
 
     /**
+     * 是否启用 Refresh Token
+     */
+    private Boolean isEnableRefreshToken;
+
+    /**
+     * Refresh Token 有效期（单位：秒，默认 2,592,000）
+     */
+    private Long refreshTokenTimeout;
+
+    /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）
      */
     private Boolean isConcurrent;

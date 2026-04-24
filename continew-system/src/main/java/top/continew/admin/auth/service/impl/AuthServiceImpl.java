@@ -16,6 +16,9 @@
 
 package top.continew.admin.auth.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.stp.parameter.SaLoginParameter;
+import cn.dev33.satoken.temp.SaTempUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
@@ -26,12 +29,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.auth.LoginHandler;
 import top.continew.admin.auth.LoginHandlerFactory;
+import top.continew.admin.auth.constant.AuthConstants;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.service.AuthService;
 import top.continew.admin.common.context.RoleContext;
+import top.continew.admin.common.context.UserContext;
+import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.common.context.UserExtraContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.constant.SystemConstants;
 import top.continew.admin.system.enums.MenuTypeEnum;
@@ -40,14 +47,13 @@ import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.ClientService;
 import top.continew.admin.system.service.MenuService;
 import top.continew.admin.system.service.RoleService;
+import top.continew.starter.core.exception.BusinessException;
+import top.continew.starter.core.util.ServletUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 认证业务实现
@@ -73,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         ValidationUtils.throwIfNull(client, "客户端不存在");
         ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()), "客户端已禁用");
         ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()), "该客户端暂未授权 [{}] 认证", authType
-            .getDescription());
+                .getDescription());
         // 获取处理器
         LoginHandler<LoginReq> loginHandler = loginHandlerFactory.getHandler(authType);
         // 登录前置处理
@@ -122,5 +128,30 @@ public class AuthServiceImpl implements AuthService {
             tree.putExtra("permission", m.getPermission());
         });
         return BeanUtil.copyToList(treeList, RouteResp.class);
+    }
+
+    @Override
+    public LoginResp refreshToken(String refreshToken) {
+        Object refreshTokenInfo = SaTempUtil.parseToken(refreshToken);
+        if (refreshTokenInfo == null) {
+            throw new BusinessException("无效的Refresh Token");
+        }
+        // 获取登录时设置的参数
+        SaLoginParameter loginParameter = (SaLoginParameter) refreshTokenInfo;
+        // 替换登录的 UserContextHolder 为最新的
+        UserContext oldUserContext = (UserContext) loginParameter.getExtra(AuthConstants.LOGIN_USER);
+        UserContext userContext = UserContextHolder.getContext(oldUserContext.getId());
+        loginParameter.setExtra(AuthConstants.LOGIN_USER, userContext);
+
+        ClientResp client = clientService.getByClientId(oldUserContext.getClientId());
+        String oldToken = loginParameter.getToken();
+        LoginResp loginResp = LoginHandler.buildLoginResp(loginParameter, userContext, client);
+        if (oldToken != null) {
+            // 删除原先的 Token
+            StpUtil.kickoutByTokenValue(oldToken);
+        }
+        // 删除原先的 Refresh token
+        SaTempUtil.deleteToken(refreshToken);
+        return loginResp;
     }
 }

@@ -16,7 +16,6 @@
 
 package top.continew.admin.auth;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import cn.dev33.satoken.stp.parameter.enums.SaLogoutMode;
 import cn.dev33.satoken.stp.parameter.enums.SaReplacedRange;
@@ -25,6 +24,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import top.continew.admin.auth.constant.AuthConstants;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.common.context.RoleContext;
@@ -46,6 +46,7 @@ import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.extension.tenant.util.TenantUtils;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -136,13 +137,11 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         userContext.setClientId(client.getClientId());
         userContext.setTenantId(tenantId);
         // 登录并缓存用户信息
-        StpUtil.login(userContext.getId(), loginParameter.setExtraData(BeanUtil
-            .beanToMap(new UserExtraContext(ServletUtils.getRequest()))));
+        Map<String, Object> extraData = BeanUtil.beanToMap(new UserExtraContext(ServletUtils.getRequest()));
+        extraData.put(AuthConstants.LOGIN_USER, userContext);
+        loginParameter.setExtraData(extraData);
         UserContextHolder.setContext(userContext);
-        return LoginResp.builder()
-            .token(StpUtil.getTokenValue())
-            .tenantId(TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
-            .build();
+        return LoginHandler.buildLoginResp(loginParameter, userContext, client);
     }
 
     /**
