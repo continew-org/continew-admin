@@ -19,8 +19,8 @@ package top.continew.admin.open.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import top.continew.admin.common.base.mapper.DataPermissionMapper;
 import top.continew.admin.open.model.entity.AppDO;
-import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.starter.encrypt.field.annotation.FieldEncrypt;
 
 /**
@@ -30,7 +30,7 @@ import top.continew.starter.encrypt.field.annotation.FieldEncrypt;
  * @since 2024/10/17 16:03
  */
 @Mapper
-public interface AppMapper extends BaseMapper<AppDO> {
+public interface AppMapper extends DataPermissionMapper<AppDO> {
 
     /**
      * 根据 Access Key 查询
