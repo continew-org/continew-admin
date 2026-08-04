@@ -28,14 +28,17 @@
 <a href="https://github.com/continew-org/continew-admin" title="GitHub Forks" target="_blank">
 <img src="https://img.shields.io/github/forks/continew-org/continew-admin?style=social" alt="GitHub Forks" />
 </a>
+<a href="https://atomgit.com/continew/continew-admin" title="AtomGit Stars" target="_blank">
+<img src="https://atomgit.com/continew/continew-admin/star/badge.svg" alt="AtomGit Stars" />
+</a>
+<a href="https://atomgit.com/continew/continew-admin" title="AtomGit Forks" target="_blank">
+<img src="https://atomgit.com/continew/continew-admin/fork/badge.svg" alt="AtomGit Forks" />
+</a>
 <a href="https://gitee.com/continew/continew-admin" title="Gitee Stars" target="_blank">
 <img src="https://gitee.com/continew/continew-admin/badge/star.svg?theme=dark" alt="Gitee Stars" />
 </a>
 <a href="https://gitee.com/continew/continew-admin" title="Gitee Forks" target="_blank">
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=dark" alt="Gitee Forks" />
-</a>
-<a href="https://gitcode.com/continew/continew-admin" title="GitCode Stars" target="_blank">
-<img src="https://gitcode.com/continew/continew-admin/star/badge.svg" alt="GitCode Stars" />
 </a>
 
 📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/docs/admin/guide/demo.html) | 💬 [吐槽广场（你就是 Talk King!）](https://continew.top/docs/admin/issue-hub.html) | [![问 DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/continew-org/continew-admin)
@@ -56,9 +59,9 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 |         | 后端                                                         | 前端                                                         |
 | :------ | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
-| GitCode | [continew/continew-admin](https://gitcode.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitcode.com/continew/continew-admin-ui) |
 | GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) | [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui) |
+| AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) | [continew/continew-admin-ui](https://atomgit.com/continew/continew-admin-ui) |
+| Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
 
 ## 项目起源
 

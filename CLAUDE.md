@@ -174,8 +174,12 @@ Graceful Response 统一封装，响应类 `top.continew.starter.web.model.R`。
 
 ### Issue tracker
 
-Issues live as GitHub issues in `continew-org/continew-admin`. See `docs/agents/issue-tracker.md`.
+Issues live as GitHub issues in `continew-org/continew-admin`; use the `gh` CLI for all operations. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-Single-context — one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
