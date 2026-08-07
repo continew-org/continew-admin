@@ -106,15 +106,18 @@ CREATE INDEX "idx_user_source_tenant_id" ON "sys_user_social" ("tenant_id");
 
 ALTER TABLE "sys_user_role" ADD COLUMN "tenant_id" int8 NOT NULL DEFAULT 0;
 COMMENT ON COLUMN "sys_user_role"."tenant_id" IS '租户ID';
-CREATE INDEX "idx_user_role_tenant_id" ON "sys_user_role" ("tenant_id");
 
 ALTER TABLE "sys_role_menu" ADD COLUMN "tenant_id" int8 NOT NULL DEFAULT 0;
 COMMENT ON COLUMN "sys_role_menu"."tenant_id" IS '租户ID';
-CREATE INDEX "idx_role_menu_tenant_id" ON "sys_role_menu" ("tenant_id");
+ALTER TABLE "sys_role_menu"
+    DROP CONSTRAINT "sys_role_menu_pkey",
+    ADD CONSTRAINT "sys_role_menu_pkey" PRIMARY KEY ("tenant_id", "role_id", "menu_id");
 
 ALTER TABLE "sys_role_dept" ADD COLUMN "tenant_id" int8 NOT NULL DEFAULT 0;
 COMMENT ON COLUMN "sys_role_dept"."tenant_id" IS '租户ID';
-CREATE INDEX "idx_role_dept_tenant_id" ON "sys_role_dept" ("tenant_id");
+ALTER TABLE "sys_role_dept"
+    DROP CONSTRAINT "sys_role_dept_pkey",
+    ADD CONSTRAINT "sys_role_dept_pkey" PRIMARY KEY ("tenant_id", "role_id", "dept_id");
 
 ALTER TABLE "sys_log" ADD COLUMN "tenant_id" int8 NOT NULL DEFAULT 0;
 COMMENT ON COLUMN "sys_log"."tenant_id" IS '租户ID';
@@ -159,6 +162,9 @@ CREATE UNIQUE INDEX "uk_user_phone" ON "sys_user" ("phone", "deleted", "tenant_i
 
 DROP INDEX IF EXISTS "uk_user_source_open_id";
 CREATE UNIQUE INDEX "uk_user_source_open_id" ON "sys_user_social" ("source", "open_id", "deleted", "tenant_id");
+
+DROP INDEX IF EXISTS "uk_user_id_role_id";
+CREATE UNIQUE INDEX "uk_user_id_role_id" ON "sys_user_role" ("tenant_id", "user_id", "role_id");
 
 DROP INDEX IF EXISTS "uk_app_access_key";
 CREATE UNIQUE INDEX "uk_app_access_key" ON "sys_app" ("access_key", "deleted", "tenant_id");

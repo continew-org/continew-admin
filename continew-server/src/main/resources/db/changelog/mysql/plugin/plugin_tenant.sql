@@ -69,14 +69,15 @@ ALTER TABLE `sys_user_social`
     ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
     ADD INDEX `idx_tenant_id` (`tenant_id`);
 ALTER TABLE `sys_user_role`
-    ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
-    ADD INDEX `idx_tenant_id` (`tenant_id`);
+    ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID';
 ALTER TABLE `sys_role_menu`
     ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
-    ADD INDEX `idx_tenant_id` (`tenant_id`);
+    DROP PRIMARY KEY,
+    ADD PRIMARY KEY (`tenant_id`, `role_id`, `menu_id`);
 ALTER TABLE `sys_role_dept`
     ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
-    ADD INDEX `idx_tenant_id` (`tenant_id`);
+    DROP PRIMARY KEY,
+    ADD PRIMARY KEY (`tenant_id`, `role_id`, `dept_id`);
 ALTER TABLE `sys_log`
     ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
     ADD INDEX `idx_tenant_id` (`tenant_id`);
@@ -118,6 +119,9 @@ ALTER TABLE `sys_user`
 ALTER TABLE `sys_user_social`
     DROP INDEX `uk_source_open_id`,
     ADD UNIQUE INDEX `uk_source_open_id` (`source`, `open_id`, `deleted`, `tenant_id`);
+ALTER TABLE `sys_user_role`
+    DROP INDEX `uk_user_id_role_id`,
+    ADD UNIQUE INDEX `uk_user_id_role_id` (`tenant_id`, `user_id`, `role_id`);
 ALTER TABLE `sys_app`
     DROP INDEX `uk_access_key`,
     ADD UNIQUE INDEX `uk_access_key` (`access_key`, `deleted`, `tenant_id`);
