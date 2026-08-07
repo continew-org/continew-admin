@@ -291,4 +291,5 @@ VALUES
 INSERT INTO `sys_client`
 (`id`, `client_id`, `client_type`, `auth_type`, `active_timeout`, `timeout`, `status`, `create_user`, `create_time`)
 VALUES
-(1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'PC', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 1800, 86400, 1, 1, NOW());
+(1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'PC', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 1800, 86400, 1, 1, NOW()),
+(2, 'c49796vs31yfhtuz2veh1dkuyb7g4ehe', 'XCX', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 604800, 2592000, 1, 1, NOW());
