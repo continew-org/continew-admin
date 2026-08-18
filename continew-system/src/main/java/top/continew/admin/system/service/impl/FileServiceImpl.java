@@ -360,8 +360,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             if (StrUtil.isBlank(contentType)) {
                 contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }
-            return EnhancedMultipartFile.create(ioFile.getName(), ioFile.getName(), contentType, Files.readAllBytes(ioFile
-                .toPath()));
+            return EnhancedMultipartFile.create(ioFile.getName(), ioFile.getName(), contentType, Files
+                .readAllBytes(ioFile.toPath()));
         } catch (IOException e) {
             throw new IllegalStateException("读取上传文件失败", e);
         }
