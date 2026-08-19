@@ -125,6 +125,7 @@ logging:
   level:
     top.continew.admin: INFO
     top.continew.starter: INFO
+    org.springdoc.core.utils.SpringDocUtils: ERROR
   file:
     path: ../logs
 

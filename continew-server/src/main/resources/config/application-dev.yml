@@ -116,6 +116,7 @@ logging:
   level:
     top.continew.admin: DEBUG
     top.continew.starter: DEBUG
+    org.springdoc.core.utils.SpringDocUtils: ERROR
   file:
     path: ./logs
 
