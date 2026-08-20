@@ -8,8 +8,6 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ContiNew Admin（Continue New Admin）是 **AI 编程纪元** 下基于 ContiNew Starter 构建的高质量多租户中后台管理框架。后端基于 Spring Boot 3.3 / Java 17，前端（独立仓库 `continew-admin-ui`）基于 Vue3 & Arco Design & TS & Vite。后端遵循阿里巴巴《Java开发手册(黄山版)》，注释覆盖率 > 45%，接口参数示例 100%。
 
-当前版本：`4.2.0-SNAPSHOT`（分支 `feat/starter-2.16.0`），依赖 ContiNew Starter `2.16.0-SNAPSHOT`。
-
 ## 常用命令
 
 **构建/编译**（提交前必做，会自动执行 Spotless 代码格式化）：
