@@ -16,17 +16,18 @@
 
 package top.continew.admin.system.model.entity;
 
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dromara.x.file.storage.core.FileInfo;
 import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.Serial;
 import java.util.Map;
@@ -127,24 +128,40 @@ public class FileDO extends BaseDO {
      * @param fileInfo {@link FileInfo} 文件信息
      */
     public FileDO(FileInfo fileInfo) {
-        this.name = fileInfo.getFilename();
-        this.originalName = fileInfo.getOriginalFilename();
+        String normalizedPath = StrUtil.blankToDefault(fileInfo.getPath(), fileInfo.getFullPath());
+        normalizedPath = normalizedPath.replace("\\", StringConstants.SLASH).replaceAll("/+", StringConstants.SLASH);
+        normalizedPath = StrUtil.removePrefix(normalizedPath, StringConstants.SLASH);
+        normalizedPath = StrUtil.removeSuffix(normalizedPath, StringConstants.SLASH);
+        String fileName = StrUtil.blankToDefault(fileInfo.getName(), FileNameUtil.getName(normalizedPath));
+        if (StrUtil.isBlank(normalizedPath)) {
+            normalizedPath = fileName;
+        }
+        this.name = fileName;
+        this.originalName = StrUtil.blankToDefault(fileInfo.getOriginalFileName(), fileName);
         this.size = fileInfo.getSize();
-        // 如果为空，则为 /；如果不为空，则调整格式为：/xxx
-        this.parentPath = StrUtil.isEmpty(fileInfo.getPath())
-            ? StringConstants.SLASH
-            : StrUtil.removeSuffix(StrUtil.prependIfMissing(fileInfo
-                .getPath(), StringConstants.SLASH), StringConstants.SLASH);
-        this.path = StrUtil.prependIfMissing(fileInfo.getUrl(), StringConstants.SLASH);
-        this.extension = fileInfo.getExt();
+        int lastSlash = normalizedPath.lastIndexOf(StringConstants.SLASH);
+        String parent = lastSlash < 0 ? StringConstants.EMPTY : normalizedPath.substring(0, lastSlash);
+        this.parentPath = StrUtil.isBlank(parent) ? StringConstants.SLASH : StringConstants.SLASH + parent;
+        this.path = StringConstants.SLASH + normalizedPath;
+        this.extension = FileNameUtil.extName(fileName);
         this.contentType = fileInfo.getContentType();
         this.type = FileTypeEnum.getByExtension(this.extension);
-        this.sha256 = fileInfo.getHashInfo().getSha256();
-        this.metadata = JSONUtil.toJsonStr(fileInfo.getMetadata());
-        this.thumbnailName = fileInfo.getThFilename();
-        this.thumbnailSize = fileInfo.getThSize();
-        this.thumbnailMetadata = JSONUtil.toJsonStr(fileInfo.getThMetadata());
-        this.setCreateTime(DateUtil.toLocalDateTime(fileInfo.getCreateTime()));
+        Map<String, String> metadataMap = fileInfo.getMetadata();
+        this.sha256 = metadataMap != null
+            ? StrUtil.blankToDefault(metadataMap.get("sha256"), metadataMap.get("etag"))
+            : null;
+        this.metadata = JSONUtil.toJsonStr(metadataMap);
+        String thumbnailPath = fileInfo.getThumbnailPath();
+        if (StrUtil.isNotBlank(thumbnailPath)) {
+            String normalizedThumbnailPath = thumbnailPath.replace("\\", StringConstants.SLASH);
+            if (!normalizedThumbnailPath.startsWith("http://") && !normalizedThumbnailPath.startsWith("https://")) {
+                normalizedThumbnailPath = StrUtil.removePrefix(normalizedThumbnailPath, StringConstants.SLASH);
+            }
+            this.thumbnailName = FileNameUtil.getName(normalizedThumbnailPath);
+        }
+        this.thumbnailSize = fileInfo.getThumbnailSize();
+        this.thumbnailMetadata = null;
+        this.setCreateTime(fileInfo.getUploadTime());
     }
 
     /**
@@ -156,27 +173,27 @@ public class FileDO extends BaseDO {
     public FileInfo toFileInfo(StorageDO storage) {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setPlatform(storage.getCode());
-        fileInfo.setFilename(this.name);
-        fileInfo.setOriginalFilename(this.originalName);
-        // 暂不使用，所以保持空
-        fileInfo.setBasePath(StringConstants.EMPTY);
+        fileInfo.setBucket(storage.getBucketName());
+        fileInfo.setFileId(this.getId() == null ? null : String.valueOf(this.getId()));
+        fileInfo.setName(this.name);
+        fileInfo.setOriginalFileName(this.originalName);
         fileInfo.setSize(this.size);
-        fileInfo.setPath(StringConstants.SLASH.equals(this.parentPath)
-            ? StringConstants.EMPTY
-            : StrUtil.appendIfMissing(StrUtil
-                .removePrefix(this.parentPath, StringConstants.SLASH), StringConstants.SLASH));
-        fileInfo.setExt(this.extension);
+        String normalizedPath = StrUtil.removePrefix(this.path, StringConstants.SLASH);
+        fileInfo.setPath(normalizedPath);
+        fileInfo.setFullPath(normalizedPath);
         fileInfo.setContentType(this.contentType);
         if (StrUtil.isNotBlank(this.metadata)) {
             fileInfo.setMetadata(JSONUtil.toBean(this.metadata, Map.class));
         }
-        fileInfo.setUrl(StrUtil.removePrefix(this.path, StringConstants.SLASH));
+        fileInfo.setUrl(URLUtil.normalize(storage.getUrlPrefix() + normalizedPath, false, true));
         // 缩略图信息
-        fileInfo.setThFilename(this.thumbnailName);
-        fileInfo.setThSize(this.thumbnailSize);
-        fileInfo.setThUrl(fileInfo.getPath() + fileInfo.getThFilename());
-        if (StrUtil.isNotBlank(this.thumbnailMetadata)) {
-            fileInfo.setThMetadata(JSONUtil.toBean(this.thumbnailMetadata, Map.class));
+        if (StrUtil.isNotBlank(this.thumbnailName)) {
+            String normalizedParentPath = StringConstants.SLASH.equals(this.parentPath)
+                ? StringConstants.EMPTY
+                : StrUtil.appendIfMissing(StrUtil
+                    .removePrefix(this.parentPath, StringConstants.SLASH), StringConstants.SLASH);
+            fileInfo.setThumbnailPath(normalizedParentPath + this.thumbnailName);
+            fileInfo.setThumbnailSize(this.thumbnailSize);
         }
         return fileInfo;
     }

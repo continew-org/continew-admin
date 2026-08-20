@@ -33,7 +33,7 @@ public class ScheduleConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi scheduleApi() {
+    public GroupedOpenApi scheduleModuleApi() {
         return GroupedOpenApi.builder().group("schedule").displayName("任务调度").pathsToMatch("/schedule/**").build();
     }
 }

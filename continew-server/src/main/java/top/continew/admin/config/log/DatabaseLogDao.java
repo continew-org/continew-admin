@@ -58,13 +58,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 日志持久层接口本地实现类
+ * 日志持久层 - 数据库存储
  *
  * @author Charles7c
  * @since 2023/12/16 23:55
  */
 @RequiredArgsConstructor
-public class LogDaoLocalImpl implements LogDao {
+public class DatabaseLogDao implements LogDao {
 
     private final UserService userService;
     private final LogMapper logMapper;

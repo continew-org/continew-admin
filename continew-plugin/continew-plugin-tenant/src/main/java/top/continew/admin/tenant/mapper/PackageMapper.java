@@ -16,7 +16,6 @@
 
 package top.continew.admin.tenant.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
 import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.admin.tenant.model.entity.PackageDO;
 
@@ -26,6 +25,5 @@ import top.continew.admin.tenant.model.entity.PackageDO;
  * @author 小熊
  * @since 2024/11/26 11:25
  */
-@Mapper
 public interface PackageMapper extends BaseMapper<PackageDO> {
 }

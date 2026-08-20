@@ -17,17 +17,18 @@
 package top.continew.admin.system.service;
 
 import cn.hutool.core.util.StrUtil;
-import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
+import top.continew.admin.system.model.resp.file.FileUploadProgressResp;
 import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.data.service.IService;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,6 +76,23 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      * @throws IOException /
      */
     FileInfo upload(MultipartFile file, String parentPath, String storageCode) throws IOException;
+
+    /**
+     * 上传到指定存储（支持上传任务 ID 追踪进度）
+     *
+     * @param file         文件信息
+     * @param parentPath   上级目录
+     * @param storageCode  存储编码
+     * @param uploadTaskId 上传任务 ID
+     * @return 文件信息
+     * @throws IOException /
+     */
+    default FileInfo upload(MultipartFile file,
+                            String parentPath,
+                            String storageCode,
+                            String uploadTaskId) throws IOException {
+        return upload(file, parentPath, storageCode);
+    }
 
     /**
      * 上传到默认存储
@@ -140,6 +158,14 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      * @return 文件夹大小（字节）
      */
     Long calcDirSize(Long id);
+
+    /**
+     * 查询单文件上传进度
+     *
+     * @param uploadTaskId 上传任务 ID
+     * @return 上传进度
+     */
+    FileUploadProgressResp getUploadProgress(String uploadTaskId);
 
     /**
      * 根据存储 ID 列表查询

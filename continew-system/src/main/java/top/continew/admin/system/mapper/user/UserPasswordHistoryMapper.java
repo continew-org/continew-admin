@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.mapper.user;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.user.UserPasswordHistoryDO;
 import top.continew.starter.data.mapper.BaseMapper;
@@ -27,7 +26,6 @@ import top.continew.starter.data.mapper.BaseMapper;
  * @author Charles7c
  * @since 2024/5/16 21:58
  */
-@Mapper
 public interface UserPasswordHistoryMapper extends BaseMapper<UserPasswordHistoryDO> {
 
     /**

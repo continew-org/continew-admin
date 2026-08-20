@@ -33,7 +33,7 @@ public class CodeConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi codeApi() {
+    public GroupedOpenApi codeModuleApi() {
         return GroupedOpenApi.builder().group("code").displayName("代码生成").pathsToMatch("/code/**").build();
     }
 }

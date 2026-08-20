@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.mapper.user;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.continew.admin.system.model.entity.user.UserSocialDO;
 import top.continew.starter.data.mapper.BaseMapper;
@@ -27,7 +26,6 @@ import top.continew.starter.data.mapper.BaseMapper;
  * @author Charles7c
  * @since 2023/10/11 22:10
  */
-@Mapper
 public interface UserSocialMapper extends BaseMapper<UserSocialDO> {
 
     /**

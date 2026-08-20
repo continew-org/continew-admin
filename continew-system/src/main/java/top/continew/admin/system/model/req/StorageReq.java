@@ -20,6 +20,7 @@ import cn.sticki.spel.validator.constrain.SpelNotBlank;
 import cn.sticki.spel.validator.jakarta.SpelValid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -111,6 +112,27 @@ public class StorageReq implements Serializable {
     @Length(max = 255, message = "访问路径长度不能超过 {max} 个字符", groups = ValidationGroup.Storage.Local.class)
     @NotBlank(message = "访问路径不能为空", groups = ValidationGroup.Storage.Local.class)
     private String domain;
+
+    /**
+     * 分片上传阈值（字节）
+     */
+    @Schema(description = "分片上传阈值（字节）", example = "10485760")
+    @Min(value = 1, message = "分片上传阈值必须大于 0")
+    private Long multipartUploadThreshold;
+
+    /**
+     * 分片上传大小（字节）
+     */
+    @Schema(description = "分片上传大小（字节）", example = "5242880")
+    @Min(value = 1, message = "分片上传大小必须大于 0")
+    private Long multipartUploadPartSize;
+
+    /**
+     * 本地分片临时目录
+     */
+    @Schema(description = "本地分片临时目录", example = "/tmp/continew-multipart")
+    @Length(max = 255, message = "本地分片临时目录长度不能超过 {max} 个字符")
+    private String multipartTempDir;
 
     /**
      * 启用回收站

@@ -39,6 +39,6 @@ public class LogConfiguration {
      */
     @Bean
     public LogDao logDao(UserService userService, LogMapper logMapper, TraceProperties traceProperties) {
-        return new LogDaoLocalImpl(userService, logMapper, traceProperties);
+        return new DatabaseLogDao(userService, logMapper, traceProperties);
     }
 }

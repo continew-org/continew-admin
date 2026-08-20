@@ -26,21 +26,16 @@
             <artifactId>cosid-spring-redis</artifactId>
         </dependency>
 
-        <!-- X File Storage（一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台） -->
-        <dependency>
-            <groupId>org.dromara.x-file-storage</groupId>
-            <artifactId>x-file-storage-spring</artifactId>
-        </dependency>
-        <!-- Amazon S3（Amazon Simple Storage Service，亚马逊简单存储服务，通用存储协议 S3，兼容主流云厂商对象存储）后续会移除替换1.x的版本 -->
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk-s3</artifactId>
-        </dependency>
-
         <!-- Amazon S3 2.x version （Amazon Simple Storage Service，亚马逊简单存储服务，通用存储协议 S3，兼容主流云厂商对象存储） -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- FreeMarker（模板引擎） -->
@@ -77,6 +72,12 @@
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ContiNew Starter 存储模块 -->
+        <dependency>
+            <groupId>top.continew.starter</groupId>
+            <artifactId>continew-starter-storage</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 缓存模块 - JetCache -->

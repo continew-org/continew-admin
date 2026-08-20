@@ -55,7 +55,7 @@ public class TenantConfiguration {
      * API 文档分组配置
      */
     @Bean
-    public GroupedOpenApi tenantApi() {
+    public GroupedOpenApi tenantModuleApi() {
         return GroupedOpenApi.builder().group("tenant").displayName("租户管理").pathsToMatch("/tenant/**").build();
     }
 }

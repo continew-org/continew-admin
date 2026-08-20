@@ -21,16 +21,10 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.admin.system.constant.MultipartUploadConstants;
-import top.continew.admin.system.dao.MultipartUploadDao;
 import top.continew.admin.system.enums.FileTypeEnum;
-import top.continew.admin.system.factory.StorageHandlerFactory;
-import top.continew.admin.system.handler.StorageHandler;
-import top.continew.admin.system.handler.impl.LocalStorageHandler;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.req.MultipartUploadInitReq;
-import top.continew.admin.system.model.resp.file.FilePartInfo;
 import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
 import top.continew.admin.system.model.resp.file.MultipartUploadResp;
 import top.continew.admin.system.mapper.FileMapper;
@@ -39,12 +33,12 @@ import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
 import top.continew.starter.core.exception.BaseException;
+import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.storage.core.FileStorageService;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.io.IOException;
 
 /**
  * 分片上传业务实现
@@ -57,39 +51,13 @@ import java.util.stream.Collectors;
 public class MultipartUploadServiceImpl implements MultipartUploadService {
 
     private final StorageService storageService;
-
-    private final StorageHandlerFactory storageHandlerFactory;
-
-    private final MultipartUploadDao multipartUploadDao;
-
+    private final FileStorageService fileStorageService;
     private final FileService fileService;
-
     private final FileMapper fileMapper;
 
     @Override
     public MultipartUploadInitResp initMultipartUpload(MultipartUploadInitReq multiPartUploadInitReq) {
-        // 后续可以增加storageCode参数 指定某个存储平台 当前设计是默认存储平台
         StorageDO storageDO = storageService.getByCode(null);
-        // 根据文件Md5查询当前存储平台是否初始化过分片
-        String uploadId = multipartUploadDao.getUploadIdByMd5(multiPartUploadInitReq.getFileMd5());
-        if (StrUtil.isNotBlank(uploadId)) {
-            MultipartUploadInitResp multipartUpload = multipartUploadDao.getMultipartUpload(uploadId);
-            //对比存储平台和分片大小是否一致 一致则返回结果
-            if (multipartUpload != null && multipartUpload.getPartSize()
-                .equals(MultipartUploadConstants.MULTIPART_UPLOAD_PART_SIZE) && multipartUpload.getPlatform()
-                    .equals(storageDO.getCode())) {
-                // 获取已上传分片信息
-                List<FilePartInfo> fileParts = multipartUploadDao.getFileParts(uploadId);
-                Set<Integer> partNumbers = fileParts.stream()
-                    .map(FilePartInfo::getPartNumber)
-                    .collect(Collectors.toSet());
-                multipartUpload.setUploadedPartNumbers(partNumbers);
-                return multipartUpload;
-            }
-            //todo else 待定 更换存储平台 或分片大小有变更 是否需要删除原先分片
-
-        }
-
         // 检测文件名是否已存在（同一目录下文件名不能重复）
         String originalFileName = multiPartUploadInitReq.getFileName();
         String parentPath = multiPartUploadInitReq.getParentPath();
@@ -104,124 +72,143 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         }
 
         // 生成唯一文件名（处理重名情况）
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO.getId(), fileMapper);
+        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
+            .getId(), fileMapper);
         multiPartUploadInitReq.setFileName(uniqueFileName);
+        fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH), storageDO);
 
-        StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
-        //文件元信息
-        Map<String, String> metaData = multiPartUploadInitReq.getMetaData();
-        MultipartUploadInitResp multipartUploadInitResp = storageHandler
-            .initMultipartUpload(storageDO, multiPartUploadInitReq);
-        // 缓存文件信息,md5和uploadId映射
-        multipartUploadDao.setMultipartUpload(multipartUploadInitResp.getUploadId(), multipartUploadInitResp, metaData);
-        multipartUploadDao.setMd5Mapping(multiPartUploadInitReq.getFileMd5(), multipartUploadInitResp.getUploadId());
-        return multipartUploadInitResp;
+        top.continew.starter.storage.domain.model.req.MultipartUploadInitReq storageReq = new top.continew.starter.storage.domain.model.req.MultipartUploadInitReq();
+        storageReq.setPlatform(storageDO.getCode());
+        storageReq.setBucket(storageDO.getBucketName());
+        storageReq.setFileName(uniqueFileName);
+        storageReq.setFileSize(multiPartUploadInitReq.getFileSize());
+        storageReq.setFileMd5(multiPartUploadInitReq.getFileMd5());
+        storageReq.setContentType(multiPartUploadInitReq.getContentType());
+        storageReq.setParentPath(StrUtil.blankToDefault(parentPath, StringConstants.SLASH));
+        storageReq.setMetadata(multiPartUploadInitReq.getMetaData());
+        MultipartInitResp initResp = fileStorageService.initMultipartUpload(storageReq);
+        return this.toAdminInitResp(initResp);
     }
 
     @Override
     public MultipartUploadResp uploadPart(MultipartFile file, String uploadId, Integer partNumber, String path) {
-        StorageDO storageDO = storageService.getByCode(null);
-        StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
-        MultipartUploadResp resp = storageHandler.uploadPart(storageDO, path, uploadId, partNumber, file);
-        FilePartInfo partInfo = new FilePartInfo();
-        partInfo.setUploadId(uploadId);
-        partInfo.setBucket(storageDO.getBucketName());
-        partInfo.setPath(path);
-        partInfo.setPartNumber(partNumber);
-        partInfo.setPartETag(resp.getPartETag());
-        partInfo.setPartSize(resp.getPartSize());
-        partInfo.setStatus("SUCCESS");
-        partInfo.setUploadTime(LocalDateTime.now());
-        multipartUploadDao.setFilePart(uploadId, partInfo);
-        return resp;
+        MultipartInitResp session = fileStorageService.getMultipartSession(uploadId);
+        if (session == null) {
+            throw new BaseException("无效的 uploadId: " + uploadId);
+        }
+        validatePartSize(file, session, partNumber);
+        String targetPath = StrUtil.blankToDefault(session.getPath(), path);
+        try {
+            top.continew.starter.storage.domain.model.resp.MultipartUploadResp resp = fileStorageService
+                .uploadPart(session.getPlatform(), session
+                    .getBucket(), normalizeStoragePath(targetPath), uploadId, partNumber, file.getInputStream());
+            return this.toAdminUploadResp(resp);
+        } catch (IOException e) {
+            throw new BaseException("上传分片失败: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public FileDO completeMultipartUpload(String uploadId) {
-        StorageDO storageDO = storageService.getByCode(null);
-        // 从 FileRecorder 获取所有分片信息
-        List<FilePartInfo> recordedParts = multipartUploadDao.getFileParts(uploadId);
-        MultipartUploadInitResp initResp = multipartUploadDao.getMultipartUpload(uploadId);
-        // 转换为 MultipartUploadResp
-        List<MultipartUploadResp> parts = recordedParts.stream().map(partInfo -> {
-            MultipartUploadResp resp = new MultipartUploadResp();
-            resp.setPartNumber(partInfo.getPartNumber());
-            resp.setPartETag(partInfo.getPartETag());
-            resp.setPartSize(partInfo.getPartSize());
-            resp.setSuccess("SUCCESS".equals(partInfo.getStatus()));
-            return resp;
-        }).collect(Collectors.toList());
-
-        // 如果没有记录，使用客户端传入的分片信息
-        if (parts.isEmpty()) {
-            throw new BaseException("没有找到任何分片信息");
+        MultipartInitResp session = fileStorageService.getMultipartSession(uploadId);
+        if (session == null) {
+            throw new BaseException("无效的 uploadId: " + uploadId);
         }
-
-        // 验证分片完整性
-        validatePartsCompleteness(parts);
-
-        // 获取策略，判断是否需要验证
-        boolean needVerify = true;
-        StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
-        if (storageHandler instanceof LocalStorageHandler) {
-            needVerify = false;
+        FileInfo fileInfo = fileStorageService.completeMultipartUpload(uploadId, null);
+        StorageDO storageDO = storageService.getByCode(session.getPlatform());
+        FileDO file = fileMapper.lambdaQuery()
+            .eq(FileDO::getStorageId, storageDO.getId())
+            .eq(FileDO::getPath, StringConstants.SLASH + normalizeStoragePath(session.getPath()))
+            .one();
+        if (file != null) {
+            return file;
         }
-
-        // 完成上传
-        storageHandler.completeMultipartUpload(storageDO, parts, initResp.getPath(), uploadId, needVerify);
-        // 文件名已在初始化阶段处理为唯一文件名
-        String uniqueFileName = initResp.getFileName().replaceFirst("^[/\\\\]+", "");
-        FileDO file = new FileDO();
-        file.setName(uniqueFileName);
-        file.setOriginalName(uniqueFileName);
-        file.setPath(initResp.getPath());
-        file.setParentPath(initResp.getParentPath());
-        file.setSize(initResp.getFileSize());
-        file.setSha256(initResp.getFileMd5());
-        file.setExtension(initResp.getExtension());
-        file.setContentType(initResp.getContentType());
-        file.setType(FileTypeEnum.getByExtension(FileUtil.extName(uniqueFileName)));
-        file.setStorageId(storageDO.getId());
-        fileService.save(file);
-        multipartUploadDao.deleteMultipartUpload(uploadId);
-        return file;
+        // 兼容兜底：记录器未完成落库时补录
+        FileDO fallback = new FileDO(fileInfo);
+        fallback.setStorageId(storageDO.getId());
+        fallback.setType(FileTypeEnum.getByExtension(FileUtil.extName(fallback.getName())));
+        fileService.save(fallback);
+        return fallback;
     }
 
     @Override
     public void cancelMultipartUpload(String uploadId) {
-        StorageDO storageDO = storageService.getByCode(null);
-        multipartUploadDao.deleteMultipartUploadAll(uploadId);
-        StorageHandler storageHandler = storageHandlerFactory.createHandler(storageDO.getType());
-        storageHandler.cleanPart(storageDO, uploadId);
+        fileStorageService.abortMultipartUpload(uploadId);
+    }
+
+    private MultipartUploadInitResp toAdminInitResp(MultipartInitResp source) {
+        MultipartUploadInitResp target = new MultipartUploadInitResp();
+        target.setFileId(source.getFileId());
+        target.setUploadId(source.getUploadId());
+        target.setBucket(source.getBucket());
+        target.setPlatform(source.getPlatform());
+        target.setFileName(source.getFileName());
+        target.setFileMd5(source.getFileMd5());
+        target.setFileSize(source.getFileSize());
+        target.setExtension(source.getExtension());
+        target.setContentType(source.getContentType());
+        target.setParentPath(source.getParentPath());
+        target.setPath(StringConstants.SLASH + normalizeStoragePath(source.getPath()));
+        target.setPartSize(source.getPartSize());
+        target.setUploadedPartNumbers(source.getUploadedPartNumbers());
+        return target;
+    }
+
+    private MultipartUploadResp toAdminUploadResp(top.continew.starter.storage.domain.model.resp.MultipartUploadResp source) {
+        MultipartUploadResp target = new MultipartUploadResp();
+        target.setPartNumber(source.getPartNumber());
+        target.setPartETag(source.getPartETag());
+        target.setPartSize(source.getPartSize());
+        target.setSuccess(source.isSuccess());
+        target.setErrorMessage(source.getErrorMessage());
+        return target;
     }
 
     /**
-     * 验证分片完整性
+     * 基于分片会话固化参数校验当前分片大小一致性。
      *
-     * @param parts 分片信息
+     * <p>
+     * 规则：
+     * </p>
+     * <p>
+     * 1. 分片序号必须在合法区间（1..totalParts）
+     * </p>
+     * <p>
+     * 2. 非最后一片大小必须等于会话 partSize
+     * </p>
+     * <p>
+     * 3. 最后一片大小必须等于剩余字节数（支持整除时等于 partSize）
+     * </p>
+     *
+     * @param file       当前上传分片
+     * @param session    分片上传会话
+     * @param partNumber 分片序号
      */
-    private void validatePartsCompleteness(List<MultipartUploadResp> parts) {
-        if (parts.isEmpty()) {
-            throw new BaseException("没有找到任何分片信息");
+    private void validatePartSize(MultipartFile file, MultipartInitResp session, Integer partNumber) {
+        if (partNumber == null || partNumber < 1) {
+            throw new BaseException("分片序号不合法: " + partNumber);
         }
-
-        // 检查分片编号连续性
-        List<Integer> partNumbers = parts.stream().map(MultipartUploadResp::getPartNumber).sorted().toList();
-
-        for (int i = 0; i < partNumbers.size(); i++) {
-            if (partNumbers.get(i) != i + 1) {
-                throw new BaseException("分片编号不连续，缺失分片: " + (i + 1));
-            }
+        Long sessionPartSize = session.getPartSize();
+        Long sessionFileSize = session.getFileSize();
+        if (sessionPartSize == null || sessionPartSize <= 0 || sessionFileSize == null || sessionFileSize <= 0) {
+            return;
         }
-
-        // 检查是否所有分片都成功
-        List<Integer> failedParts = parts.stream()
-            .filter(part -> !part.isSuccess())
-            .map(MultipartUploadResp::getPartNumber)
-            .toList();
-
-        if (!failedParts.isEmpty()) {
-            throw new BaseException("存在失败的分片: " + failedParts);
+        long partSize = sessionPartSize;
+        long fileSize = sessionFileSize;
+        long totalParts = (fileSize + partSize - 1) / partSize;
+        if (partNumber > totalParts) {
+            throw new BaseException("分片序号超出范围: " + partNumber);
         }
+        long expectedPartSize = partNumber < totalParts ? partSize : fileSize - (totalParts - 1) * partSize;
+        long actualPartSize = file.getSize();
+        if (actualPartSize != expectedPartSize) {
+            throw new BaseException("分片大小不匹配: partNumber=%s, expected=%s, actual=%s"
+                .formatted(partNumber, expectedPartSize, actualPartSize));
+        }
+    }
+
+    private String normalizeStoragePath(String path) {
+        return StrUtil.removePrefix(path.replace("\\", StringConstants.SLASH)
+            .replaceAll("/+", StringConstants.SLASH), StringConstants.SLASH);
     }
 }

@@ -27,6 +27,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.URLUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
+import top.continew.starter.storage.common.constant.StorageConstant;
 
 /**
  * 存储类型枚举
@@ -66,6 +67,9 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
             ValidationUtils.validate(req, ValidationGroup.Storage.OSS.class);
             ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !ReUtil
                 .isMatch(RegexConstants.URL_HTTP_NOT_IP, req.getDomain()), "域名格式不正确");
+            Long multipartUploadPartSize = req.getMultipartUploadPartSize();
+            ValidationUtils
+                .throwIf(multipartUploadPartSize != null && multipartUploadPartSize < StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE, "对象存储分片大小不能小于 5MB");
         }
     };
 

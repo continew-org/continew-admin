@@ -16,10 +16,11 @@
 
 package top.continew.admin.common.config.doc;
 
-import io.swagger.v3.oas.models.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.BridgeMethodResolver;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.util.ClassUtils;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.common.config.crud.CrudApiPermissionPrefixCache;
 import top.continew.starter.extension.crud.annotation.CrudApi;
@@ -30,6 +31,7 @@ import top.nextdoc4j.security.core.model.NextDoc4jSecurityMetadata;
 import top.nextdoc4j.security.satoken.constant.NextDoc4jSaTokenConstant;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * NextDoc4j 自定义权限码展示
@@ -42,19 +44,18 @@ import java.lang.annotation.Annotation;
 public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetadataResolver {
 
     @Override
-    public void resolve(HandlerMethod handlerMethod, Operation operation, NextDoc4jSecurityMetadata metadata) {
+    public void resolve(Class<?> beanType, Method method, NextDoc4jSecurityMetadata metadata) {
         // 处理 CrudRequestMapping 和 CrudApi 注解生成的权限信息
-        resolveCrudPermission(handlerMethod, metadata);
+        resolveCrudPermission(beanType, method, metadata);
     }
 
     @Override
-    public boolean supports(HandlerMethod handlerMethod) {
+    public boolean supports(Class<?> beanType, Method method) {
         // 检查类上是否有 CrudRequestMapping 注解且方法上有 CrudApi 注解
-        Class<?> targetClass = handlerMethod.getBeanType();
-        CrudRequestMapping crudRequestMapping = targetClass.getAnnotation(CrudRequestMapping.class);
-        CrudApi crudApi = handlerMethod.getMethodAnnotation(CrudApi.class);
+        CrudRequestMapping crudRequestMapping = AnnotatedElementUtils
+            .findMergedAnnotation(beanType, CrudRequestMapping.class);
+        CrudApi crudApi = getCrudApi(beanType, method);
         return crudRequestMapping != null && crudApi != null;
-
     }
 
     @Override
@@ -65,23 +66,23 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
     /**
      * 解析 CRUD 权限信息
      */
-    private void resolveCrudPermission(HandlerMethod handlerMethod, NextDoc4jSecurityMetadata metadata) {
-        Class<?> targetClass = handlerMethod.getBeanType();
-        CrudRequestMapping crudRequestMapping = targetClass.getAnnotation(CrudRequestMapping.class);
-        CrudApi crudApi = handlerMethod.getMethodAnnotation(CrudApi.class);
+    private void resolveCrudPermission(Class<?> beanType, Method method, NextDoc4jSecurityMetadata metadata) {
+        CrudRequestMapping crudRequestMapping = AnnotatedElementUtils
+            .findMergedAnnotation(beanType, CrudRequestMapping.class);
+        CrudApi crudApi = getCrudApi(beanType, method);
 
         if (crudRequestMapping == null || crudApi == null) {
             return;
         }
 
         // 检查方法上是否有 @SaIgnore 注解,如果有则跳过
-        if (hasSaIgnore(handlerMethod)) {
+        if (hasSaIgnore(beanType, method)) {
             return;
         }
 
         // 检查方法上是否已经有 @SaCheckRole 或 @SaCheckPermission 注解
         // 如果有,重写了方法,跳过 CRUD 自动生成,让插件处理
-        if (hasSaTokenAnnotation(handlerMethod)) {
+        if (hasSaTokenAnnotation(beanType, method)) {
             return;
         }
 
@@ -91,7 +92,7 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
         }
 
         // 获取权限前缀
-        String permissionPrefix = CrudApiPermissionPrefixCache.get(targetClass);
+        String permissionPrefix = CrudApiPermissionPrefixCache.get(beanType);
         if (permissionPrefix == null || permissionPrefix.isEmpty()) {
             return;
         }
@@ -105,18 +106,37 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
     }
 
     /**
+     * 解析 CRUD API 注解（优先重写方法，其次父类方法兜底）
+     */
+    private CrudApi getCrudApi(Class<?> beanType, Method method) {
+        Method specificMethod = ClassUtils.getMostSpecificMethod(method, beanType);
+        Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
+
+        // 优先当前方法上的注解（如果重写方法自己标了 @CrudApi，就用它）
+        CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(bridgedMethod, CrudApi.class);
+        if (crudApi != null) {
+            return crudApi;
+        }
+
+        // 兜底：回退到原始方法（父类/接口定义）
+        if (!bridgedMethod.equals(method)) {
+            return AnnotatedElementUtils.findMergedAnnotation(method, CrudApi.class);
+        }
+        return null;
+    }
+
+    /**
      * 检查方法或类上是否有 @SaIgnore 注解
      */
-    private boolean hasSaIgnore(HandlerMethod handlerMethod) {
+    private boolean hasSaIgnore(Class<?> beanType, Method method) {
         // 检查方法上的 @SaIgnore 注解
-        Annotation methodAnnotation = handlerMethod.getMethodAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
+        Annotation methodAnnotation = method.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
         if (methodAnnotation != null) {
             return true;
         }
 
         // 检查类上的 @SaIgnore 注解
-        Annotation classAnnotation = handlerMethod.getBeanType()
-            .getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
+        Annotation classAnnotation = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
         return classAnnotation != null;
     }
 
@@ -124,18 +144,16 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
      * 检查方法或类上是否有 @SaCheckRole 或 @SaCheckPermission 注解
      * 如果有这些注解,说明开发者手动配置了权限,应该跳过 CRUD 自动生成
      */
-    private boolean hasSaTokenAnnotation(HandlerMethod handlerMethod) {
+    private boolean hasSaTokenAnnotation(Class<?> beanType, Method method) {
         // 检查方法上的注解
-        Annotation methodPermission = handlerMethod
-            .getMethodAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
-        Annotation methodRole = handlerMethod.getMethodAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_ROLE_CLASS);
+        Annotation methodPermission = method.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
+        Annotation methodRole = method.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_ROLE_CLASS);
 
         if (methodPermission != null || methodRole != null) {
             return true;
         }
 
         // 检查类上的注解
-        Class<?> beanType = handlerMethod.getBeanType();
         Annotation classPermission = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
         Annotation classRole = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_ROLE_CLASS);
 

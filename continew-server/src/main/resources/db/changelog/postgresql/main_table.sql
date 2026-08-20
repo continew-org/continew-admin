@@ -466,53 +466,59 @@ COMMENT ON COLUMN "sys_notice_log"."read_time" IS '读取时间';
 COMMENT ON TABLE  "sys_notice_log"             IS '公告日志表';
 
 CREATE TABLE IF NOT EXISTS "sys_storage" (
-    "id"                  int8         NOT NULL,
-    "name"                varchar(100) NOT NULL,
-    "code"                varchar(30)  NOT NULL,
-    "type"                int2         NOT NULL DEFAULT 1,
-    "access_key"          varchar(255) DEFAULT NULL,
-    "secret_key"          varchar(255) DEFAULT NULL,
-    "endpoint"            varchar(255) DEFAULT NULL,
-    "bucket_name"         varchar(255) NOT NULL,
-    "domain"              varchar(255) DEFAULT NULL,
-    "recycle_bin_enabled" bool         NOT NULL DEFAULT true,
-    "recycle_bin_path"    varchar(255) DEFAULT NULL,
-    "description"         varchar(200) DEFAULT NULL,
-    "is_default"          bool         NOT NULL DEFAULT false,
-    "sort"                int4         NOT NULL DEFAULT 999,
-    "status"              int2         NOT NULL DEFAULT 1,
-    "create_user"         int8         NOT NULL,
-    "create_time"         timestamp    NOT NULL,
-    "update_user"         int8         DEFAULT NULL,
-    "update_time"         timestamp    DEFAULT NULL,
-    "deleted"             int8         NOT NULL DEFAULT 0,
+    "id"                         int8         NOT NULL,
+    "name"                       varchar(100) NOT NULL,
+    "code"                       varchar(30)  NOT NULL,
+    "type"                       int2         NOT NULL DEFAULT 1,
+    "access_key"                 varchar(255) DEFAULT NULL,
+    "secret_key"                 varchar(255) DEFAULT NULL,
+    "endpoint"                   varchar(255) DEFAULT NULL,
+    "bucket_name"                varchar(255) NOT NULL,
+    "domain"                     varchar(255) DEFAULT NULL,
+    "multipart_upload_threshold" int8                DEFAULT NULL,
+    "multipart_upload_part_size" int8         DEFAULT NULL,
+    "multipart_temp_dir"         varchar(255) DEFAULT NULL,
+    "recycle_bin_enabled"        bool         NOT NULL DEFAULT true,
+    "recycle_bin_path"           varchar(255) DEFAULT NULL,
+    "description"                varchar(200) DEFAULT NULL,
+    "is_default"                 bool         NOT NULL DEFAULT false,
+    "sort"                       int4         NOT NULL DEFAULT 999,
+    "status"                     int2         NOT NULL DEFAULT 1,
+    "create_user"                int8         NOT NULL,
+    "create_time"                timestamp    NOT NULL,
+    "update_user"                int8         DEFAULT NULL,
+    "update_time"                timestamp    DEFAULT NULL,
+    "deleted"                    int8         NOT NULL DEFAULT 0,
     PRIMARY KEY ("id")
 );
 CREATE UNIQUE INDEX "uk_storage_code"  ON "sys_storage" ("code", "deleted");
 CREATE INDEX "idx_storage_create_user" ON "sys_storage" ("create_user");
 CREATE INDEX "idx_storage_update_user" ON "sys_storage" ("update_user");
 CREATE INDEX "idx_storage_deleted"     ON "sys_storage" ("deleted");
-COMMENT ON COLUMN "sys_storage"."id"                  IS 'ID';
-COMMENT ON COLUMN "sys_storage"."name"                IS '名称';
-COMMENT ON COLUMN "sys_storage"."code"                IS '编码';
-COMMENT ON COLUMN "sys_storage"."type"                IS '类型（1：本地存储；2：对象存储）';
-COMMENT ON COLUMN "sys_storage"."access_key"          IS 'Access Key';
-COMMENT ON COLUMN "sys_storage"."secret_key"          IS 'Secret Key';
-COMMENT ON COLUMN "sys_storage"."endpoint"            IS 'Endpoint';
-COMMENT ON COLUMN "sys_storage"."bucket_name"         IS 'Bucket';
-COMMENT ON COLUMN "sys_storage"."domain"              IS '域名';
-COMMENT ON COLUMN "sys_storage"."recycle_bin_enabled" IS '启用回收站';
-COMMENT ON COLUMN "sys_storage"."recycle_bin_path"    IS '回收站路径';
-COMMENT ON COLUMN "sys_storage"."description"         IS '描述';
-COMMENT ON COLUMN "sys_storage"."is_default"          IS '是否为默认存储';
-COMMENT ON COLUMN "sys_storage"."sort"                IS '排序';
-COMMENT ON COLUMN "sys_storage"."status"              IS '状态（1：启用；2：禁用）';
-COMMENT ON COLUMN "sys_storage"."create_user"         IS '创建人';
-COMMENT ON COLUMN "sys_storage"."create_time"         IS '创建时间';
-COMMENT ON COLUMN "sys_storage"."update_user"         IS '修改人';
-COMMENT ON COLUMN "sys_storage"."update_time"         IS '修改时间';
-COMMENT ON COLUMN "sys_storage"."deleted"             IS '是否已删除（0：否；id：是）';
-COMMENT ON TABLE  "sys_storage"                       IS '存储表';
+COMMENT ON COLUMN "sys_storage"."id"                         IS 'ID';
+COMMENT ON COLUMN "sys_storage"."name"                       IS '名称';
+COMMENT ON COLUMN "sys_storage"."code"                       IS '编码';
+COMMENT ON COLUMN "sys_storage"."type"                       IS '类型（1：本地存储；2：对象存储）';
+COMMENT ON COLUMN "sys_storage"."access_key"                 IS 'Access Key';
+COMMENT ON COLUMN "sys_storage"."secret_key"                 IS 'Secret Key';
+COMMENT ON COLUMN "sys_storage"."endpoint"                   IS 'Endpoint';
+COMMENT ON COLUMN "sys_storage"."bucket_name"                IS 'Bucket';
+COMMENT ON COLUMN "sys_storage"."domain"                     IS '域名';
+COMMENT ON COLUMN "sys_storage"."multipart_upload_threshold" IS '分片上传阈值（字节）';
+COMMENT ON COLUMN "sys_storage"."multipart_upload_part_size" IS '分片上传大小（字节）';
+COMMENT ON COLUMN "sys_storage"."multipart_temp_dir"         IS '本地分片临时目录';
+COMMENT ON COLUMN "sys_storage"."recycle_bin_enabled"        IS '启用回收站';
+COMMENT ON COLUMN "sys_storage"."recycle_bin_path"           IS '回收站路径';
+COMMENT ON COLUMN "sys_storage"."description"                IS '描述';
+COMMENT ON COLUMN "sys_storage"."is_default"                 IS '是否为默认存储';
+COMMENT ON COLUMN "sys_storage"."sort"                       IS '排序';
+COMMENT ON COLUMN "sys_storage"."status"                     IS '状态（1：启用；2：禁用）';
+COMMENT ON COLUMN "sys_storage"."create_user"                IS '创建人';
+COMMENT ON COLUMN "sys_storage"."create_time"                IS '创建时间';
+COMMENT ON COLUMN "sys_storage"."update_user"                IS '修改人';
+COMMENT ON COLUMN "sys_storage"."update_time"                IS '修改时间';
+COMMENT ON COLUMN "sys_storage"."deleted"                    IS '是否已删除（0：否；id：是）';
+COMMENT ON TABLE  "sys_storage"                              IS '存储表';
 
 CREATE TABLE IF NOT EXISTS "sys_file" (
     "id"                 int8         NOT NULL,

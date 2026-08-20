@@ -43,6 +43,7 @@ server:
 spring:
   application:
     name: ${application.id}
+    version: ${application.version}
   ## 环境配置
   profiles:
     # 启用的环境
@@ -277,7 +278,7 @@ sa-token:
   ## 扩展配置
   extension:
     enabled: true
-    enableJwt: true
+    jwt-enabled: true
     # 持久层配置
     dao.type: REDIS
 
@@ -310,8 +311,6 @@ mybatis-plus:
   ## 扩展配置
   extension:
     enabled: true
-    # Mapper 接口扫描包配置
-    mapper-package: ${application.base-package}.**.mapper
     # ID 生成器配置
     id-generator:
       type: COSID
@@ -323,6 +322,7 @@ mybatis-plus:
 --- ### CosId 配置
 cosid:
   namespace: ${spring.application.name}
+  ## 机器号配置
   machine:
     enabled: true
     # 机器号分配器
@@ -331,6 +331,7 @@ cosid:
     guarder:
       # 开启机器号守护
       enabled: true
+  ## 雪花算法配置
   snowflake:
     enabled: true
     zone-id: Asia/Shanghai
@@ -341,11 +342,9 @@ cosid:
       converter:
         friendly:
           pad-start: true
+    ## 多 ID 生成器配置
     provider:
-      safe-js:
-        machine-bit: 7
-        sequence-bit: 9
-      # 租户编码
+      # 租户编码生成器
       tenant-code:
         converter:
           type: RADIX

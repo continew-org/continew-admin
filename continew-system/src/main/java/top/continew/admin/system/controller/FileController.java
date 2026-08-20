@@ -24,23 +24,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.dromara.x.file.storage.core.FileInfo;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.FileQuery;
 import top.continew.admin.system.model.req.FileReq;
+import top.continew.admin.system.model.resp.file.FileUploadConfigResp;
+import top.continew.admin.system.model.resp.file.FileUploadProgressResp;
 import top.continew.admin.system.model.resp.file.FileDirCalcSizeResp;
 import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.admin.system.model.resp.file.FileUploadResp;
 import top.continew.admin.system.service.FileService;
+import top.continew.admin.system.service.StorageService;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.log.annotation.Log;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import java.io.IOException;
 
@@ -56,6 +59,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.BATCH_DELETE})
 public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
+
+    private final StorageService storageService;
 
     /**
      * 上传文件
@@ -73,15 +78,32 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
     @SaCheckPermission("system:file:upload")
     @PostMapping("/upload")
     public FileUploadResp upload(@NotNull(message = "文件不能为空") @RequestPart MultipartFile file,
-                                 @RequestParam(required = false) String parentPath) throws IOException {
+                                 @RequestParam(required = false) String parentPath,
+                                 @RequestParam(required = false) String uploadTaskId) throws IOException {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
-        FileInfo fileInfo = baseService.upload(file, parentPath);
+        FileInfo fileInfo = baseService.upload(file, parentPath, null, uploadTaskId);
         return FileUploadResp.builder()
-            .id(fileInfo.getId())
+            .id(fileInfo.getFileId())
             .url(fileInfo.getUrl())
-            .thUrl(fileInfo.getThUrl())
+            .thUrl(fileInfo.getThumbnailPath())
             .metadata(fileInfo.getMetadata())
             .build();
+    }
+
+    @Log(ignore = true)
+    @Operation(summary = "查询默认存储上传配置", description = "查询默认存储上传配置（生效值）")
+    @SaCheckPermission("system:file:upload")
+    @GetMapping("/upload/config/default")
+    public FileUploadConfigResp getDefaultUploadConfig() {
+        return storageService.getDefaultUploadConfig();
+    }
+
+    @Log(ignore = true)
+    @Operation(summary = "查询单文件上传进度", description = "根据上传任务 ID 查询单文件上传进度")
+    @SaCheckPermission("system:file:upload")
+    @GetMapping("/upload/progress/{uploadTaskId}")
+    public FileUploadProgressResp getUploadProgress(@PathVariable String uploadTaskId) {
+        return baseService.getUploadProgress(uploadTaskId);
     }
 
     @Operation(summary = "创建文件夹", description = "创建文件夹")

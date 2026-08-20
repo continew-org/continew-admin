@@ -4,21 +4,21 @@
 -- comment 初始化租户插件数据表
 -- 初始化表结构
 CREATE TABLE IF NOT EXISTS `tenant` (
-    `id`             bigint(20)   AUTO_INCREMENT              COMMENT 'ID',
+    `id`             bigint       AUTO_INCREMENT              COMMENT 'ID',
     `name`           varchar(30)  NOT NULL                    COMMENT '名称',
     `code`           varchar(30)  NOT NULL                    COMMENT '编码',
     `domain`         varchar(255) DEFAULT NULL                COMMENT '域名',
     `expire_time`    datetime     DEFAULT NULL                COMMENT '过期时间',
     `description`    varchar(200) DEFAULT NULL                COMMENT '描述',
-    `status`         tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
-    `admin_user`     bigint(20)   DEFAULT NULL                COMMENT '管理员用户',
+    `status`         tinyint      UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+    `admin_user`     bigint       DEFAULT NULL                COMMENT '管理员用户',
     `admin_username` varchar(64)  DEFAULT NULL                COMMENT '管理员用户名',
-    `package_id`     bigint(20)   NOT NULL                    COMMENT '套餐ID',
-    `create_user`    bigint(20)   NOT NULL                    COMMENT '创建人',
+    `package_id`     bigint       NOT NULL                    COMMENT '套餐ID',
+    `create_user`    bigint       NOT NULL                    COMMENT '创建人',
     `create_time`    datetime     NOT NULL                    COMMENT '创建时间',
-    `update_user`    bigint(20)   DEFAULT NULL                COMMENT '修改人',
+    `update_user`    bigint       DEFAULT NULL                COMMENT '修改人',
     `update_time`    datetime     DEFAULT NULL                COMMENT '修改时间',
-    `deleted`        bigint(20)   NOT NULL DEFAULT 0          COMMENT '是否已删除（0：否；id：是）',
+    `deleted`        bigint       NOT NULL DEFAULT 0          COMMENT '是否已删除（0：否；id：是）',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uk_code`(`code`, `deleted`),
     INDEX `idx_admin_user`(`admin_user`),
@@ -29,17 +29,17 @@ CREATE TABLE IF NOT EXISTS `tenant` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='租户表';
 
 CREATE TABLE IF NOT EXISTS `tenant_package` (
-    `id`                  bigint(20)    AUTO_INCREMENT              COMMENT 'ID',
-    `name`                varchar(30)   NOT NULL                    COMMENT '名称',
-    `sort`                int           NOT NULL DEFAULT 999        COMMENT '排序',
-    `menu_check_strictly` bit(1)        DEFAULT b'1'                COMMENT '菜单选择是否父子节点关联',
-    `description`         varchar(200)  DEFAULT NULL                COMMENT '描述',
-    `status`              tinyint       UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
-    `create_user`         bigint(20)    NOT NULL                    COMMENT '创建人',
-    `create_time`         datetime      NOT NULL                    COMMENT '创建时间',
-    `update_user`         bigint(20)    DEFAULT NULL                COMMENT '修改人',
-    `update_time`         datetime      DEFAULT NULL                COMMENT '修改时间',
-    `deleted`             bigint(20)   NOT NULL DEFAULT 0           COMMENT '是否已删除（0：否；id：是）',
+    `id`                  bigint       AUTO_INCREMENT             COMMENT 'ID',
+    `name`                varchar(30)  NOT NULL                   COMMENT '名称',
+    `sort`                int          NOT NULL DEFAULT 999       COMMENT '排序',
+    `menu_check_strictly` bit(1)       DEFAULT b'1'               COMMENT '菜单选择是否父子节点关联',
+    `description`         varchar(200) DEFAULT NULL                COMMENT '描述',
+    `status`              tinyint      UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+    `create_user`         bigint       NOT NULL                    COMMENT '创建人',
+    `create_time`         datetime     NOT NULL                    COMMENT '创建时间',
+    `update_user`         bigint       DEFAULT NULL                COMMENT '修改人',
+    `update_time`         datetime     DEFAULT NULL                COMMENT '修改时间',
+    `deleted`             bigint       NOT NULL DEFAULT 0          COMMENT '是否已删除（0：否；id：是）',
     PRIMARY KEY (`id`),
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`),
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `tenant_package` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='租户套餐表';
 
 CREATE TABLE IF NOT EXISTS `tenant_package_menu` (
-    `package_id` bigint(20) NOT NULL COMMENT '套餐ID',
-    `menu_id`    bigint(20) NOT NULL COMMENT '菜单ID',
+    `package_id` bigint NOT NULL COMMENT '套餐ID',
+    `menu_id`    bigint NOT NULL COMMENT '菜单ID',
     PRIMARY KEY (`package_id`, `menu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='租户套餐和菜单关联表';
 
