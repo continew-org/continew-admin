@@ -1,12 +1,33 @@
 # AGENTS.md
 
-This file provides guidance to AI agents when working with code in this repository.
+本文件为在本代码库中工作的 AI 智能体提供指引。
 
-`CLAUDE.md` and `AGENTS.md` are mirror files. Whenever either file changes, apply the identical change to the other file and verify that their contents remain byte-for-byte identical（标题文件名除外）.
+> **注意**：`CLAUDE.md` 是指向本文件的符号链接，`.claude/skills` 是指向 `.agents/skills` 的符号链接。
+> 请直接编辑本文件和 `.agents/skills/`，不要改动链接本身。
 
 ## 项目概述
 
 ContiNew Admin（Continue New Admin）是 **AI 编程纪元** 下基于 ContiNew Starter 构建的高质量多租户中后台管理框架。后端基于 Spring Boot 3.3 / Java 17，前端（独立仓库 `continew-admin-ui`）基于 Vue3 & Arco Design & TS & Vite。后端遵循阿里巴巴《Java开发手册(黄山版)》，注释覆盖率 > 45%，接口参数示例 100%。
+
+## 仓库结构
+
+Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revision}` 版本，模块划分如下（依赖自上而下，server 依赖 system，system 依赖 common）：
+
+```
+continew-server        打包部署入口（启动类 ContiNewAdminApplication）+ 通用 controller + Liquibase + 配置文件
+  └ continew-system    核心业务：auth（系统认证）、system（部门/角色/用户/菜单/字典/文件/公告/系统配置等）
+    └ continew-common 公共基类、工具、配置（CRUD/MyBatis/Websocket/Doc/Excel/Exception）
+continew-plugin        独立可插拔插件
+  ├ continew-plugin-open       能力开放（AK/SK、签名算法）
+  ├ continew-plugin-tenant    多租户（SaaS）
+  ├ continew-plugin-schedule  任务调度（基于 Snail Job Open API）
+  └ continew-plugin-generator 代码生成器（前后端模板）
+continew-extension     扩展服务
+  └ continew-extension-schedule-server  Snail Job 服务端（可选，公司统一提供环境可删）
+.agents/skills/        Agent 技能（每个技能一个目录，含 SKILL.md）
+```
+
+**插件化趋势**：`continew-plugin-*` 后续将改造为独立插件；`continew-extension/*` 为可独立部署的辅助服务。
 
 ## 常用命令
 
@@ -14,7 +35,7 @@ ContiNew Admin（Continue New Admin）是 **AI 编程纪元** 下基于 ContiNew
 ```bash
 mvn compile                  # 编译并自动格式化代码（提交前务必执行，执行后勿再打开 IDE 代码窗口）
 mvn clean package -P fat-jar # 胖包打包（依赖、配置打入 jar）
-mvn clean package           # 默认瘦包模式（依赖、配置外置，生产部署用）
+mvn clean package            # 默认瘦包模式（依赖、配置外置，生产部署用）
 ```
 
 **运行**：
@@ -43,25 +64,6 @@ mvn verify -P sonar  # 触发 SonarCloud 扫描（host: sonarcloud.io，org: cha
 5. **物理删除已改为逻辑删除**：`mybatis-plus.global-config.db-config` 配置 `logic-delete-field: deleted`、`logic-delete-value: id`（解决唯一索引冲突），所有 DO 默认继承 `BaseDO`。
 
 ## 架构总览
-
-### 模块依赖与分层
-
-项目为 Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revision}` 版本，模块划分如下（依赖自上而下，server 依赖 system，system 依赖 common）：
-
-```
-continew-server        打包部署入口（启动类 ContiNewAdminApplication）+ 通用 controller + Liquibase + 配置文件
-  └ continew-system    核心业务：auth（系统认证）、system（部门/角色/用户/菜单/字典/文件/公告/系统配置等）
-    └ continew-common 公共基类、工具、配置（CRUD/MyBatis/Websocket/Doc/Excel/Exception）
-continew-plugin        独立可插拔插件
-  ├ continew-plugin-open       能力开放（AK/SK、签名算法）
-  ├ continew-plugin-tenant    多租户（SaaS）
-  ├ continew-plugin-schedule  任务调度（基于 Snail Job Open API）
-  └ continew-plugin-generator 代码生成器（前后端模板）
-continew-extension     扩展服务
-  └ continew-extension-schedule-server  Snail Job 服务端（可选，公司统一提供环境可删）
-```
-
-**插件化趋势**：`continew-plugin-*` 后续将改造为独立插件；`continew-extension/*` 为可独立部署的辅助服务。
 
 ### 内部 API 解耦模式（common 的 api 包）
 
@@ -170,14 +172,10 @@ Graceful Response 统一封装，响应类 `top.continew.starter.web.model.R`。
 
 ## Agent skills
 
-### Issue tracker
+技能是各 agent 工具（Claude Code / Codex / dsh）共用的**唯一事实源**，统一存放在 `.agents/skills/`，每个技能一个目录、含 `SKILL.md`。
 
-Issues live as GitHub issues in `continew-org/continew-admin`; use the `gh` CLI for all operations. See `docs/agents/issue-tracker.md`.
+## 编辑这些说明
 
-### Triage labels
+`CLAUDE.md` 是根目录 `AGENTS.md` 的符号链接，`.claude/skills` 是 `.agents/skills` 的符号链接——请编辑真实文件（本文件与 `.agents/skills/`），不要改动链接本身。保持每条规则自包含，必要时链接到更高层文档。
 
-Five canonical labels (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+> **Windows 注意**：克隆后如需符号链接生效，需开启开发者模式（或以管理员运行 git），并执行 `git config core.symlinks true`，否则链接会被检出为普通文本文件。团队若以 Windows 为主且符号链接不可靠，可改用脚本同步（`cp AGENTS.md CLAUDE.md && cp -r .agents/skills/* .claude/skills/`）。
