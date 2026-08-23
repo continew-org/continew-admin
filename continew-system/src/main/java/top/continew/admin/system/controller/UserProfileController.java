@@ -30,6 +30,7 @@ import me.zhyd.oauth.request.AuthRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import cn.hutool.core.util.StrUtil;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.util.SecureUtils;
@@ -88,7 +89,10 @@ public class UserProfileController {
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
     public void updatePassword(@RequestBody @Valid UserPasswordUpdateReq updateReq) {
-        String oldPassword = SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED);
+        // 三方用户（无密码）设置初始密码时，旧密码为空，无需校验
+        String oldPassword = StrUtil.isNotBlank(updateReq.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED)
+            : null;
         String newPassword = SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getNewPassword(), "新密码解密失败");
         userService.updatePassword(oldPassword, newPassword, UserContextHolder.getUserId());
     }
@@ -96,7 +100,9 @@ public class UserProfileController {
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
     public void updatePhone(@RequestBody @Valid UserPhoneUpdateReq updateReq) {
-        String oldPassword = SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED);
+        String oldPassword = StrUtil.isNotBlank(updateReq.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED)
+            : null;
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getPhone();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
@@ -108,7 +114,9 @@ public class UserProfileController {
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
     public void updateEmail(@RequestBody @Valid UserEmailUpdateReq updateReq) {
-        String oldPassword = SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED);
+        String oldPassword = StrUtil.isNotBlank(updateReq.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(updateReq.getOldPassword(), DECRYPT_FAILED)
+            : null;
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + updateReq.getEmail();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);

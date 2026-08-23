@@ -413,7 +413,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         UserDO user = super.getById(id);
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
-            CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, password), "当前密码不正确");
+            CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, password), "当前密码不正确");
         }
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
@@ -432,7 +432,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updatePhone(String newPhone, String oldPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
+        if (StrUtil.isNotBlank(user.getPassword())) {
+            CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
+        }
         this.checkPhoneRepeat(newPhone, id, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
         // 更新手机号
@@ -442,7 +444,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void updateEmail(String newEmail, String oldPassword, Long id) {
         UserDO user = super.getById(id);
-        CheckUtils.throwIf(!passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
+        if (StrUtil.isNotBlank(user.getPassword())) {
+            CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user.getPassword()), "当前密码不正确");
+        }
         this.checkEmailRepeat(newEmail, id, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
         // 更新邮箱
