@@ -21,6 +21,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -128,8 +129,22 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
-        baseMapper.deleteByIds(ids);
-        messageLogService.deleteByMessageIds(ids);
+    public void delete(List<Long> ids, Long userId) {
+        if (CollUtil.isEmpty(ids)) {
+            return;
+        }
+        // 仅删除当前用户有权访问（接收）的消息，防止越权删除他人消息（水平越权 IDOR）
+        List<MessageDO> messages = baseMapper.selectList(Wrappers.lambdaQuery(MessageDO.class)
+            .in(MessageDO::getId, ids));
+        List<Long> ownIds = messages.stream()
+            .filter(m -> NoticeScopeEnum.ALL.equals(m.getScope()) || (NoticeScopeEnum.USER.equals(m
+                .getScope()) && CollUtil.contains(m.getUsers(), String.valueOf(userId))))
+            .map(MessageDO::getId)
+            .toList();
+        if (CollUtil.isEmpty(ownIds)) {
+            return;
+        }
+        baseMapper.deleteByIds(ownIds);
+        messageLogService.deleteByMessageIds(ownIds);
     }
 }

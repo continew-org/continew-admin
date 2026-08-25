@@ -80,7 +80,8 @@ public interface MessageService {
     /**
      * 删除
      *
-     * @param ids ID 列表
+     * @param ids    ID 列表
+     * @param userId 当前用户 ID（用于校验消息归属，防止越权删除）
      */
-    void delete(List<Long> ids);
+    void delete(List<Long> ids, Long userId);
 }

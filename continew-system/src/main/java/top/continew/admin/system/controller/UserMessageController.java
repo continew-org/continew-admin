@@ -92,7 +92,7 @@ public class UserMessageController {
     @Operation(summary = "删除消息", description = "删除消息")
     @DeleteMapping
     public void delete(@RequestBody @Valid IdsReq req) {
-        messageService.delete(req.getIds());
+        messageService.delete(req.getIds(), UserContextHolder.getUserId());
     }
 
     @Operation(summary = "消息标记为已读", description = "将消息标记为已读状态")
