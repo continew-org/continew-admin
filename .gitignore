@@ -5,36 +5,27 @@ target/
 !**/src/test/**/target/
 .flattened-pom.xml
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 !.idea/icon.png
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-### Temp ###
+# Vibe Coding
+.workbuddy/*
+!.workbuddy/skills/
+!.workbuddy/skills/**
+!.workbuddy/.mcp.json
+.codebuddy/*
+!.codebuddy/skills/
+!.codebuddy/skills/**
+!.codebuddy/.mcp.json
+
+# Temp
 *.log
 *.log.gz
 *.logs
@@ -42,6 +33,3 @@ build/
 *.diff
 *.patch
 *.tmp
-
-### Vibe Coding ###
-.workbuddy/memory
