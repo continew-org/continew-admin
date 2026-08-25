@@ -72,6 +72,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
     private final RoleApi roleApi;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long create(TenantReq req) {
         this.checkNameRepeat(req.getName(), null);
         this.checkDomainRepeat(req.getDomain(), null);
