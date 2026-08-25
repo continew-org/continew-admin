@@ -22,23 +22,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.enums.FileTypeEnum;
+import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.req.MultipartUploadInitReq;
 import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
 import top.continew.admin.system.model.resp.file.MultipartUploadResp;
-import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
-import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.exception.BaseException;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 分片上传业务实现
@@ -57,6 +59,11 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
     @Override
     public MultipartUploadInitResp initMultipartUpload(MultipartUploadInitReq multiPartUploadInitReq) {
+        // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
+        String extName = FileUtil.extName(multiPartUploadInitReq.getFileName()).toLowerCase();
+        List<String> allExtensions = FileTypeEnum.getAllExtensions();
+        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
+            .join(StringConstants.COMMA, allExtensions));
         StorageDO storageDO = storageService.getByCode(null);
         // 检测文件名是否已存在（同一目录下文件名不能重复）
         String originalFileName = multiPartUploadInitReq.getFileName();
