@@ -13,9 +13,9 @@
 
 ## 报告漏洞
 
-**请勿通过公开的 GitHub Issue、Pull Request 或讨论区披露安全漏洞！**
+**请勿在任何代码托管平台通过公开的 Issue、Pull Request 或讨论区披露安全漏洞！**
 
-请通过 **GitHub 私有漏洞报告** 提交：前往 [Security Advisories](https://github.com/continew-org/continew-admin/security/advisories/new) 页面新建安全通告，只有维护者与报告者可以查看。
+请通过 **GitHub 私有漏洞报告** 提交：前往 [Security Advisories](https://github.com/continew-org/continew-admin/security/advisories/new) 页面新建安全通告，只有维护者与报告者可以查看。无论您在哪个代码托管平台发现漏洞，均请通过上述渠道统一提交。
 
 报告时请尽量包含以下信息：
 

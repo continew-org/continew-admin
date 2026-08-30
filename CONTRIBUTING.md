@@ -82,6 +82,8 @@ git clone https://github.com/<您的用户名>/continew-admin.git
 cd continew-admin
 ```
 
+> 上述地址以 GitHub 为例。社区在 AtomGit、Gitee 等平台也提供有官方仓库（见 [README](README.md)），在对应平台贡献时，将命令中的仓库地址替换为相应平台地址即可，流程一致。
+
 ### 2. 关联上游仓库
 
 ```bash
@@ -159,13 +161,13 @@ git rebase upstream/dev
 git push origin feat/your-feature
 ```
 
-在 GitHub 上向 **dev** 分支创建 Pull Request，并按 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md) 填写说明信息（参考[已合并的 PR](https://github.com/continew-org/continew-admin/pulls?q=is%3Apr+is%3Amerged) 有助于提高合并率）。
+在所在代码托管平台上向 **dev** 分支创建 Pull Request，并按 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md) 填写说明信息（参考[已合并的 PR](https://github.com/continew-org/continew-admin/pulls?q=is%3Apr+is%3Amerged) 有助于提高合并率）。
 
 ### 8. 签署 CLA
 
-提交 PR 后，系统会提示签署 [CLA（贡献者许可协议）](CLA.md)。请确保 commit 使用的邮箱与 GitHub 绑定邮箱一致后再签署（CI 会自动校验每个 commit 的作者邮箱是否绑定 GitHub 账号，未绑定的 PR 会被机器人评论提醒）。
+提交 PR 后，所在平台的 CLA 校验机器人会提示签署 [CLA（贡献者许可协议）](CLA.md)（GitHub、AtomGit、Gitee 等主流代码托管平台均已支持，按机器人提示点击同意即可）。请确保 commit 使用的邮箱与您在对应代码托管平台账号绑定的邮箱一致。
 
-如果不一致，最简单的方式是将该邮箱添加到 [GitHub 账号](https://github.com/settings/emails)，无需改写提交历史；也可以将本地 git 配置改为已绑定的邮箱后修订提交并强推，无需重新创建 PR：
+在 GitHub 上贡献时，CI 还会校验每个 commit 的作者邮箱是否已绑定 GitHub 账号，未绑定的 PR 会被机器人评论提醒。如果不一致，最简单的方式是将该邮箱添加到 [GitHub 账号](https://github.com/settings/emails)，无需改写提交历史；也可以将本地 git 配置改为已绑定的邮箱后修订提交并强推，无需重新创建 PR：
 
 ```bash
 git commit --amend --reset-author --no-edit   # 单提交：仅改作者，保留原提交信息
@@ -188,7 +190,7 @@ git push --force-with-lease
 - [ ] 如有行为变更，已同步更新相关文档（含 Liquibase 变更日志）
 - [ ] 按 PR 模板完整填写 Changelog 表格，并关联相关 Issue（Closes/Fixes/Resolves #<issue号>）
 - [ ] commit message 符合 Conventional Commits（约定式提交）规范
-- [ ] commit 作者邮箱已绑定 GitHub 账号
+- [ ] commit 作者邮箱已绑定所在代码托管平台账号
 
 ## 让 PR 更快被合并
 
