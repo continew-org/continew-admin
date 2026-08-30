@@ -21,7 +21,6 @@
 <a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=alert_status" alt="Sonar" />
 </a>
-<br />
 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
