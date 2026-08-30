@@ -37,8 +37,7 @@
         <!-- 项目版本号 -->
         <revision>4.2.0-SNAPSHOT</revision>
 
-        <!-- Maven Plugin Versions -->
-        <spotless.version>3.9.0</spotless.version>
+        <!-- Maven Plugin Versions：Starter 2.16.0 父 POM 未纳入管理的门禁插件版本，待升级至 Starter 2.17.0+ 后随父 POM 统一供给并移除 -->
         <checkstyle.version>11.0.0</checkstyle.version>
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
         <spotbugs.version>4.9.4.0</spotbugs.version>
@@ -172,11 +171,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 代码格式化插件（validate 阶段门禁） -->
+            <!-- 代码格式化插件（validate 阶段门禁，版本由父 POM 统一管理） -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless.version}</version>
                 <configuration>
                     <java>
                         <!-- 步骤按声明顺序执行：格式化 → 清理 → 补 License Header；@formatter:off/on 包裹的区间跳过 -->
