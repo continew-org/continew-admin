@@ -1,51 +1,42 @@
-name: "🙋 咨询问题/Ask Question"
-description: 咨询关于 ContiNew Admin 的问题，包括但不限于使用问题、部署问题、设计规范等。/Ask a question about ContiNew Admin.
-labels:
-  - question
+name: ❓ 使用咨询
+description: 咨询 ContiNew Admin 的使用或设计相关问题
+labels: ["question"]
 body:
-  - type: checkboxes
-    id: checkboxes
+  - type: markdown
     attributes:
-      label: 请您确认
-      description: 在提交问题之前，请先确认 :)
-      options:
-        - label: 我确认是咨询问题而不是报告 Bug（如果是报告 Bug，请选择 Bug 模板）
-          required: true
-        - label: 我确认搜索了 [Issue 广场](https://continew.top/docs/admin/issue-hub.html)，没有其他人提交过类似的问题
-          required: true
-        - label: 我确认查阅过 [使用指南](https://continew.top/docs/admin/guide/introduction.html) 和 [常见问题](https://continew.top/docs/admin/faq.html) 
-          required: true
-        - label: 我确认问过 [DeepWiki](https://deepwiki.com/continew-org/continew-admin) 及知名 AI 大模型
-          required: true
-        - label: 我确认不是依赖组件相关的问题（例如：sa-token、mybatis-plus、snail-job、cosid等，依赖组件相关的问题，请提交至对应组件仓库）
-          required: true
-        - label: 请不要修改此模板 :) 并填写所有必填字段
-          required: true
+      value: |
+        提问前建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)并询问 [DeepWiki](https://deepwiki.com/continew-org/continew-admin)，多数使用问题都能快速找到答案。
 
-  - type: dropdown
+        > 前端相关问题请提交至 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 仓库；依赖组件自身的问题（如 MyBatis-Plus、Sa-Token 等）请提交至对应组件仓库。
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我确认这是使用咨询而非 Bug 报告（Bug 请使用 Bug 报告模板）
+          required: true
+        - label: 我确认已搜索 Issue 广场，没有类似问题
+          required: true
+        - label: 我确认这是 ContiNew Admin 自身的问题，而非前端项目或依赖组件的问题
+          required: true
+  - type: input
+    id: version
     attributes:
       label: ContiNew Admin 版本
-      description: 您使用的 ContiNew Admin 版本，如没有支持的版本选项，请查阅 [更新日志](https://continew.top/docs/admin/changelog/) 或 [版本升级指南](https://continew.top/docs/admin/guide/upgrade.html) 并升级至最新稳定版本。
-      multiple: false
-      options:
-        - 4.2.0-SNAPSHOT (开发版本-dev 分支)
-        - 4.1.0
+      placeholder: 例如：4.1.0
     validations:
       required: true
-
   - type: textarea
-    id: feature-description
+    id: description
     attributes:
       label: 问题描述
-      description: 详细描述您的问题。
-      placeholder: 您想了解关于 ContiNew Admin 的哪些内容？请提供尽可能多的上下文信息。
+      description: 详细描述你的问题，请提供尽可能多的上下文信息。
     validations:
       required: true
-
   - type: textarea
+    id: tried
     attributes:
-      label: 您已尝试的方法
-      description: 描述您已尝试的方法，包括但不限于尝试解决方案等。
-      placeholder: 您是否已尝试过任何解决方案？
+      label: 已尝试的方法
+      description: 描述你已经尝试过的排查或解决方案。
     validations:
       required: false

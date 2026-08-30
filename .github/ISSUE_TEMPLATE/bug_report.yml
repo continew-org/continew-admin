@@ -1,0 +1,87 @@
+name: 🐛 Bug 报告
+description: 报告使用 ContiNew Admin 过程中遇到的问题
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请在提交前完成以下确认，以帮助我们快速定位问题：
+
+        1. 请在[最新版本](https://github.com/continew-org/continew-admin/releases)或[演示环境](https://continew.top/docs/admin/guide/demo.html)上验证问题是否仍然存在，项目仅维护最新版本；
+        2. 请搜索 [Issue 广场](https://continew.top/docs/admin/issue-hub.html) 与[已有 Issue](https://github.com/continew-org/continew-admin/issues)，避免重复提交；
+        3. 使用与配置问题建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)或询问 [DeepWiki](https://deepwiki.com/continew-org/continew-admin)。
+
+        > 前端相关问题请提交至 [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui/issues/new/choose)；依赖组件（如 Sa-Token、MyBatis-Plus、Snail Job）自身的问题请提交至对应组件仓库。
+
+        > 安全漏洞请勿在此提交，请通过 [GitHub 安全通告](https://github.com/continew-org/continew-admin/security/advisories/new) 负责任地披露。
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我确认在最新版本上仍能复现该问题
+          required: true
+        - label: 我确认已搜索 Issue 广场与已有 Issue，不存在重复提交
+          required: true
+        - label: 我确认这是 ContiNew Admin 自身的问题，而非前端项目或依赖组件的问题
+          required: true
+        - label: 我已查阅使用指南或询问过 AI 大模型
+          required: true
+        - label: 我尝试阅读源码并断点调试过该问题
+          required: false
+        - label: 我愿意提交 PR 修复该问题
+          required: false
+  - type: input
+    id: version
+    attributes:
+      label: ContiNew Admin 版本
+      description: 产生问题的版本号（前端 ContiNew Admin UI 版本也请一并说明）
+      placeholder: 例如：4.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 清晰、简洁地描述遇到的问题。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 详细的复现步骤有助于我们定位问题，请尽量提供最小可复现示例。
+      placeholder: |
+        1. 登录系统，进入 xxx 页面
+        2. 点击 / 配置 ...
+        3. 出现 xxx 错误
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+      description: 你期望的正确行为是什么？
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      description: 一切有助于定位问题的环境信息。
+      placeholder: |
+        - 部署方式（源码启动 / Docker / 瘦包部署）：
+        - 数据库（MySQL / PostgreSQL）及版本：
+        - Redis 版本：
+        - 操作系统：
+        - 涉及的功能模块及关键配置：
+        - 完整错误日志（请使用代码块格式，注意脱敏）
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: 附加信息
+      description: 截图或其他补充说明，可直接拖拽上传图片。
+    validations:
+      required: false
