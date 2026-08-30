@@ -18,7 +18,7 @@
     <dependencies>
         <!-- 公共模块 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-common</artifactId>
         </dependency>
 

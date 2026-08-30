@@ -51,49 +51,49 @@
         <dependencies>
             <!-- API 模块（存放 Controller 层代码，打包部署的模块） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-server</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 系统管理模块（存放系统管理模块相关功能，例如：部门管理、角色管理、用户管理等） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-system</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 公共模块（存放公共工具类，公共配置等） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-common</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 能力开放插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-plugin-open</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 租户插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-plugin-tenant</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 任务调度插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-plugin-schedule</artifactId>
                 <version>${revision}</version>
             </dependency>
 
             <!-- 代码生成器插件（后续会改造为独立插件） -->
             <dependency>
-                <groupId>top.continew.admin</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>continew-plugin-generator</artifactId>
                 <version>${revision}</version>
             </dependency>

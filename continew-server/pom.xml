@@ -18,31 +18,31 @@
     <dependencies>
         <!-- 系统管理模块 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-system</artifactId>
         </dependency>
 
         <!-- 能力开放插件 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-plugin-open</artifactId>
         </dependency>
 
         <!-- 租户插件 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-plugin-tenant</artifactId>
         </dependency>
 
         <!-- 任务调度插件 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-plugin-schedule</artifactId>
         </dependency>
 
         <!-- 代码生成器插件 -->
         <dependency>
-            <groupId>top.continew.admin</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>continew-plugin-generator</artifactId>
         </dependency>
 
