@@ -111,8 +111,9 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             }
             user.setAvatar(authUser.getAvatar());
             // 默认设置为系统内置数据的根部门 如果需要设置其他部门自行替换查询条件
-            DeptDO deptDO = deptService.getOne(new LambdaQueryWrapper<DeptDO>().eq(DeptDO::getIsSystem, true)
-                .eq(DeptDO::getParentId, 0));
+            DeptDO deptDO =
+                deptService.getOne(new LambdaQueryWrapper<DeptDO>().eq(DeptDO::getIsSystem, true)
+                    .eq(DeptDO::getParentId, 0));
             ValidationUtils.throwIf(deptDO == null, "未查询到系统内置部门");
             user.setDeptId(deptDO.getId());
             user.setStatus(DisEnableStatusEnum.ENABLE);
@@ -126,7 +127,8 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             userSocial.setOpenId(openId);
             this.sendSecurityMsg(user);
         } else {
-            user = BeanUtil.copyProperties(userService.getById(userSocial.getUserId()), UserDO.class);
+            user =
+                BeanUtil.copyProperties(userService.getById(userSocial.getUserId()), UserDO.class);
         }
         // 检查用户状态
         super.checkUserStatus(user);

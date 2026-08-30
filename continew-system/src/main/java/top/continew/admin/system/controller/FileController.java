@@ -25,7 +25,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.FileQuery;
@@ -58,7 +64,8 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @CrudRequestMapping(value = "/system/file", api = {Api.PAGE, Api.UPDATE, Api.BATCH_DELETE})
-public class FileController extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
+public class FileController
+    extends BaseController<FileService, FileResp, FileResp, FileQuery, FileReq> {
 
     private final StorageService storageService;
 
@@ -74,12 +81,13 @@ public class FileController extends BaseController<FileService, FileResp, FileRe
      * @throws IOException /
      */
     @Operation(summary = "上传文件", description = "上传文件")
-    @Parameter(name = "parentPath", description = "上级目录（默认：/yyyy/MM/dd）", example = "/", in = ParameterIn.QUERY)
+    @Parameter(name = "parentPath", description = "上级目录（默认：/yyyy/MM/dd）", example = "/",
+        in = ParameterIn.QUERY)
     @SaCheckPermission("system:file:upload")
     @PostMapping("/upload")
     public FileUploadResp upload(@NotNull(message = "文件不能为空") @RequestPart MultipartFile file,
-                                 @RequestParam(required = false) String parentPath,
-                                 @RequestParam(required = false) String uploadTaskId) throws IOException {
+        @RequestParam(required = false) String parentPath,
+        @RequestParam(required = false) String uploadTaskId) throws IOException {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = baseService.upload(file, parentPath, null, uploadTaskId);
         return FileUploadResp.builder()

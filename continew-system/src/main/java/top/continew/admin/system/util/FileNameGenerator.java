@@ -62,7 +62,8 @@ public class FileNameGenerator {
      * @param fileMapper 文件Mapper
      * @return 唯一文件名
      */
-    public static String generateUniqueName(String fileName, String parentPath, Long storageId, FileMapper fileMapper) {
+    public static String generateUniqueName(String fileName, String parentPath, Long storageId,
+        FileMapper fileMapper) {
         // 1. 先检查原始文件名是否可用
         boolean exists = existsByName(parentPath, storageId, fileName, fileMapper);
         if (!exists) {
@@ -75,7 +76,8 @@ public class FileNameGenerator {
         String extension = parts[1];
 
         // 3. 获取该目录下所有可能的冲突文件名（优化：批量查询）
-        List<String> existingNames = selectNamesByParentPath(parentPath, storageId, baseName, fileMapper);
+        List<String> existingNames =
+            selectNamesByParentPath(parentPath, storageId, baseName, fileMapper);
 
         // 4. 寻找第一个可用的序号
         int counter = 1;
@@ -180,7 +182,8 @@ public class FileNameGenerator {
      * @param fileMapper 文件Mapper
      * @return true: 存在
      */
-    private static boolean existsByName(String parentPath, Long storageId, String name, FileMapper fileMapper) {
+    private static boolean existsByName(String parentPath, Long storageId, String name,
+        FileMapper fileMapper) {
         return fileMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getStorageId, storageId)
@@ -199,9 +202,9 @@ public class FileNameGenerator {
      * @return 文件名列表
      */
     private static List<String> selectNamesByParentPath(String parentPath,
-                                                        Long storageId,
-                                                        String namePrefix,
-                                                        FileMapper fileMapper) {
+        Long storageId,
+        String namePrefix,
+        FileMapper fileMapper) {
         var wrapper = fileMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getStorageId, storageId)

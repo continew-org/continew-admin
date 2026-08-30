@@ -86,7 +86,8 @@ public class DatabaseLogDao implements LogDao {
             .replace("API", StringConstants.EMPTY)
             .trim()));
         logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
-        logDO.setCreateTime(LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
+        logDO.setCreateTime(
+            LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
         // 设置操作人
         this.setCreateUser(logDO, logRequest, logResponse);
         // 保存记录
@@ -134,7 +135,8 @@ public class DatabaseLogDao implements LogDao {
         // 状态
         Integer statusCode = logResponse.getStatus();
         logDO.setStatusCode(statusCode);
-        logDO.setStatus(statusCode >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE : LogStatusEnum.SUCCESS);
+        logDO.setStatus(statusCode >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE
+            : LogStatusEnum.SUCCESS);
         if (StrUtil.isNotBlank(responseBody)) {
             R result = JSONUtil.toBean(responseBody, R.class);
             if (!result.isSuccess()) {
@@ -161,33 +163,40 @@ public class DatabaseLogDao implements LogDao {
             return;
         }
         // 解析登录接口信息
-        if (requestUri.startsWith(AuthConstants.LOGIN_URI) && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
+        if (requestUri.startsWith(AuthConstants.LOGIN_URI)
+            && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
             String requestBody = logRequest.getBody();
-            logDO.setDescription(JSONUtil.toBean(requestBody, LoginReq.class).getAuthType().getDescription() + "登录");
+            logDO.setDescription(
+                JSONUtil.toBean(requestBody, LoginReq.class).getAuthType().getDescription() + "登录");
             // 解析账号登录用户为操作人
             if (requestBody.contains(AuthTypeEnum.ACCOUNT.getValue())) {
                 AccountLoginReq authReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(authReq.getUsername())
-                    .getId()));
+                logDO.setCreateUser(
+                    ExceptionUtils.exToNull(() -> userService.getByUsername(authReq.getUsername())
+                        .getId()));
                 return;
             } else if (requestBody.contains(AuthTypeEnum.EMAIL.getValue())) {
                 EmailLoginReq authReq = JSONUtil.toBean(requestBody, EmailLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByEmail(authReq.getEmail()).getId()));
+                logDO.setCreateUser(ExceptionUtils
+                    .exToNull(() -> userService.getByEmail(authReq.getEmail()).getId()));
                 return;
             } else if (requestBody.contains(AuthTypeEnum.PHONE.getValue())) {
                 PhoneLoginReq authReq = JSONUtil.toBean(requestBody, PhoneLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByPhone(authReq.getPhone()).getId()));
+                logDO.setCreateUser(ExceptionUtils
+                    .exToNull(() -> userService.getByPhone(authReq.getPhone()).getId()));
                 return;
             }
         }
         // 解析 Token 信息
         Map<String, String> requestHeaders = logRequest.getHeaders();
         String headerName = HttpHeaders.AUTHORIZATION;
-        boolean isContainsAuthHeader = CollUtil.containsAny(requestHeaders.keySet(), Set.of(headerName, headerName
-            .toLowerCase()));
-        if (MapUtil.isNotEmpty(requestHeaders) && isContainsAuthHeader) {
-            String authorization = requestHeaders.getOrDefault(headerName, requestHeaders.get(headerName
+        boolean isContainsAuthHeader =
+            CollUtil.containsAny(requestHeaders.keySet(), Set.of(headerName, headerName
                 .toLowerCase()));
+        if (MapUtil.isNotEmpty(requestHeaders) && isContainsAuthHeader) {
+            String authorization =
+                requestHeaders.getOrDefault(headerName, requestHeaders.get(headerName
+                    .toLowerCase()));
             String token = authorization.replace(SaManager.getConfig()
                 .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));

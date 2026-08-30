@@ -46,7 +46,8 @@ public class SocialLoginReq extends LoginReq {
     /**
      * 授权码
      */
-    @Schema(description = "授权码", example = "a08d33e9e577fb339de027499784ed4e871d6f62ae65b459153e906ab546bd56")
+    @Schema(description = "授权码",
+        example = "a08d33e9e577fb339de027499784ed4e871d6f62ae65b459153e906ab546bd56")
     @NotBlank(message = "授权码不能为空")
     private String code;
 

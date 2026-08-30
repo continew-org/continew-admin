@@ -44,7 +44,8 @@
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
             <property name="allowedAbbreviationLength" value="1"/>
-            <property name="allowedAbbreviations" value="VO"/>
+            <!-- 放行行业通用缩写：VO（视图对象）、DTO（传输对象）、OSS（对象存储） -->
+            <property name="allowedAbbreviations" value="VO,DTO,OSS"/>
         </module>
         
         <!-- Import Checker -->

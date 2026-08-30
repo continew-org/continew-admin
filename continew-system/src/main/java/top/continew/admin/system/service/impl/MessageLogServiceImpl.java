@@ -46,7 +46,8 @@ public class MessageLogServiceImpl implements MessageLogService {
             return;
         }
         List<MessageLogDO> list = CollUtils
-            .mapToList(messageIds, messageId -> new MessageLogDO(messageId, userId, LocalDateTime.now()));
+            .mapToList(messageIds,
+                messageId -> new MessageLogDO(messageId, userId, LocalDateTime.now()));
         baseMapper.insert(list);
     }
 

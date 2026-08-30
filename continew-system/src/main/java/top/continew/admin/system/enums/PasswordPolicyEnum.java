@@ -47,7 +47,8 @@ public enum PasswordPolicyEnum {
     /**
      * 密码错误锁定阈值
      */
-    PASSWORD_ERROR_LOCK_COUNT("密码错误锁定阈值取值范围为 %d-%d", GlobalConstants.Boolean.NO, 10, "由于您连续 %s 次输入错误密码，账号已被锁定 %s 分钟，预计解锁时间为 %s，请稍后再试"),
+    PASSWORD_ERROR_LOCK_COUNT("密码错误锁定阈值取值范围为 %d-%d", GlobalConstants.Boolean.NO, 10,
+        "由于您连续 %s 次输入错误密码，账号已被锁定 %s 分钟，预计解锁时间为 %s，请稍后再试"),
 
     /**
      * 账号锁定时长（分钟）
@@ -63,6 +64,7 @@ public enum PasswordPolicyEnum {
      * 密码到期提醒（天）
      */
     PASSWORD_EXPIRATION_WARNING_DAYS("密码到期提醒取值范围为 %d-%d 天", GlobalConstants.Boolean.NO, 998, null) {
+
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
             if (CollUtil.isEmpty(policyMap)) {
@@ -84,26 +86,34 @@ public enum PasswordPolicyEnum {
      * 密码最小长度
      */
     PASSWORD_MIN_LENGTH("密码最小长度取值范围为 %d-%d", 8, 32, "密码最小长度为 %d 个字符") {
+
         @Override
         public void validate(String password, int value, UserDO user) {
             // 最小长度校验
-            ValidationUtils.throwIf(StrUtil.length(password) < value, this.getMsg().formatted(value));
+            ValidationUtils.throwIf(StrUtil.length(password) < value,
+                this.getMsg().formatted(value));
             // 完整校验
             int passwordMaxLength = this.getMax();
             ValidationUtils.throwIf(!ReUtil.isMatch(RegexConstants.PASSWORD_TEMPLATE
-                .formatted(value, passwordMaxLength), password), "密码长度为 {}-{} 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字", value, passwordMaxLength);
+                .formatted(value, passwordMaxLength), password),
+                "密码长度为 {}-{} 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字", value, passwordMaxLength);
         }
     },
 
     /**
      * 密码是否必须包含特殊字符
      */
-    PASSWORD_REQUIRE_SYMBOLS("密码是否必须包含特殊字符取值只能为是（%d）或否（%d）", GlobalConstants.Boolean.NO, GlobalConstants.Boolean.YES, "密码必须包含特殊字符") {
+    PASSWORD_REQUIRE_SYMBOLS("密码是否必须包含特殊字符取值只能为是（%d）或否（%d）", GlobalConstants.Boolean.NO,
+        GlobalConstants.Boolean.YES, "密码必须包含特殊字符") {
+
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
-            ValidationUtils.throwIf(value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO, this
-                .getDescription()
-                .formatted(GlobalConstants.Boolean.YES, GlobalConstants.Boolean.NO));
+            ValidationUtils
+                .throwIf(
+                    value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO,
+                    this
+                        .getDescription()
+                        .formatted(GlobalConstants.Boolean.YES, GlobalConstants.Boolean.NO));
         }
 
         @Override
@@ -116,12 +126,17 @@ public enum PasswordPolicyEnum {
     /**
      * 密码是否允许包含用户名
      */
-    PASSWORD_ALLOW_CONTAIN_USERNAME("密码是否允许包含用户名取值只能为是（%d）或否（%d）", GlobalConstants.Boolean.NO, GlobalConstants.Boolean.YES, "密码不允许包含正反序用户名") {
+    PASSWORD_ALLOW_CONTAIN_USERNAME("密码是否允许包含用户名取值只能为是（%d）或否（%d）", GlobalConstants.Boolean.NO,
+        GlobalConstants.Boolean.YES, "密码不允许包含正反序用户名") {
+
         @Override
         public void validateRange(int value, Map<String, String> policyMap) {
-            ValidationUtils.throwIf(value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO, this
-                .getDescription()
-                .formatted(GlobalConstants.Boolean.YES, GlobalConstants.Boolean.NO));
+            ValidationUtils
+                .throwIf(
+                    value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO,
+                    this
+                        .getDescription()
+                        .formatted(GlobalConstants.Boolean.YES, GlobalConstants.Boolean.NO));
         }
 
         @Override
@@ -138,13 +153,16 @@ public enum PasswordPolicyEnum {
      * 历史密码重复校验次数
      */
     PASSWORD_REPETITION_TIMES("历史密码重复校验次数取值范围为 %d-%d", 3, 32, "新密码不得与历史前 %d 次密码重复") {
+
         @Override
         public void validate(String password, int value, UserDO user) {
             UserPasswordHistoryService userPasswordHistoryService = SpringUtil
                 .getBean(UserPasswordHistoryService.class);
-            ValidationUtils.throwIf(userPasswordHistoryService.isPasswordReused(user.getId(), password, value), this
-                .getMsg()
-                .formatted(value));
+            ValidationUtils
+                .throwIf(userPasswordHistoryService.isPasswordReused(user.getId(), password, value),
+                    this
+                        .getMsg()
+                        .formatted(value));
         }
     },;
 

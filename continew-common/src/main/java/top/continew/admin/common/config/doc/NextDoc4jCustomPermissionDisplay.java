@@ -66,7 +66,8 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
     /**
      * 解析 CRUD 权限信息
      */
-    private void resolveCrudPermission(Class<?> beanType, Method method, NextDoc4jSecurityMetadata metadata) {
+    private void resolveCrudPermission(Class<?> beanType, Method method,
+        NextDoc4jSecurityMetadata metadata) {
         CrudRequestMapping crudRequestMapping = AnnotatedElementUtils
             .findMergedAnnotation(beanType, CrudRequestMapping.class);
         CrudApi crudApi = getCrudApi(beanType, method);
@@ -130,13 +131,15 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
      */
     private boolean hasSaIgnore(Class<?> beanType, Method method) {
         // 检查方法上的 @SaIgnore 注解
-        Annotation methodAnnotation = method.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
+        Annotation methodAnnotation =
+            method.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
         if (methodAnnotation != null) {
             return true;
         }
 
         // 检查类上的 @SaIgnore 注解
-        Annotation classAnnotation = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
+        Annotation classAnnotation =
+            beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_IGNORE_CLASS);
         return classAnnotation != null;
     }
 
@@ -146,7 +149,8 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
      */
     private boolean hasSaTokenAnnotation(Class<?> beanType, Method method) {
         // 检查方法上的注解
-        Annotation methodPermission = method.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
+        Annotation methodPermission =
+            method.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
         Annotation methodRole = method.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_ROLE_CLASS);
 
         if (methodPermission != null || methodRole != null) {
@@ -154,7 +158,8 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
         }
 
         // 检查类上的注解
-        Annotation classPermission = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
+        Annotation classPermission =
+            beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_PERMISSION_CLASS);
         Annotation classRole = beanType.getAnnotation(NextDoc4jSaTokenConstant.SA_CHECK_ROLE_CLASS);
 
         return classPermission != null || classRole != null;

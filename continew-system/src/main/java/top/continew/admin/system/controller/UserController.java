@@ -27,7 +27,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.common.util.SecureUtils;
@@ -57,9 +63,11 @@ import java.io.IOException;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/system/user", api = {Api.PAGE, Api.LIST, Api.GET, Api.CREATE, Api.UPDATE,
-    Api.BATCH_DELETE, Api.EXPORT, Api.DICT})
-public class UserController extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
+@CrudRequestMapping(value = "/system/user",
+    api = {Api.PAGE, Api.LIST, Api.GET, Api.CREATE, Api.UPDATE,
+        Api.BATCH_DELETE, Api.EXPORT, Api.DICT})
+public class UserController
+    extends BaseController<UserService, UserResp, UserDetailResp, UserQuery, UserReq> {
 
     @Operation(summary = "下载导入模板", description = "下载导入模板")
     @SaCheckPermission("system:user:import")
@@ -71,11 +79,18 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
     @Operation(summary = "解析导入数据", description = "解析导入数据")
     @SaCheckPermission("system:user:import")
     @PostMapping("/import/parse")
-    public UserImportParseResp parseImport(@RequestPart @NotNull(message = "文件不能为空") MultipartFile file) {
+    public UserImportParseResp parseImport(
+        @RequestPart @NotNull(message = "文件不能为空") MultipartFile file) {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         return baseService.parseImport(file);
     }
 
+    /**
+     * 导入数据
+     *
+     * @param req 导入信息
+     * @return 导入结果
+     */
     @Operation(summary = "导入数据", description = "导入数据")
     @SaCheckPermission("system:user:import")
     @PostMapping(value = "/import")
@@ -83,12 +98,19 @@ public class UserController extends BaseController<UserService, UserResp, UserDe
         return baseService.importUser(req);
     }
 
+    /**
+     * 重置密码
+     *
+     * @param req 新密码
+     * @param id 用户 ID
+     */
     @Operation(summary = "重置密码", description = "重置用户登录密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:resetPwd")
     @PatchMapping("/{id}/password")
     public void resetPassword(@RequestBody @Valid UserPasswordResetReq req, @PathVariable Long id) {
-        String newPassword = SecureUtils.decryptPasswordByRsaPrivateKey(req.getNewPassword(), "新密码解密失败", true);
+        String newPassword =
+            SecureUtils.decryptPasswordByRsaPrivateKey(req.getNewPassword(), "新密码解密失败", true);
         req.setNewPassword(newPassword);
         baseService.resetPassword(req, id);
     }

@@ -43,6 +43,7 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
      * 本地存储
      */
     LOCAL(1, "本地存储") {
+
         @Override
         public void validate(StorageReq req) {
             ValidationUtils.validate(req, ValidationGroup.Storage.Local.class);
@@ -62,6 +63,7 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
      * 对象存储
      */
     OSS(2, "对象存储") {
+
         @Override
         public void validate(StorageReq req) {
             ValidationUtils.validate(req, ValidationGroup.Storage.OSS.class);
@@ -69,7 +71,9 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
                 .isMatch(RegexConstants.URL_HTTP_NOT_IP, req.getDomain()), "域名格式不正确");
             Long multipartUploadPartSize = req.getMultipartUploadPartSize();
             ValidationUtils
-                .throwIf(multipartUploadPartSize != null && multipartUploadPartSize < StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE, "对象存储分片大小不能小于 5MB");
+                .throwIf(multipartUploadPartSize != null
+                    && multipartUploadPartSize < StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE,
+                    "对象存储分片大小不能小于 5MB");
         }
     };
 

@@ -65,12 +65,24 @@ import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
-import top.continew.admin.system.model.req.user.*;
+import top.continew.admin.system.model.req.user.UserBasicInfoUpdateReq;
+import top.continew.admin.system.model.req.user.UserImportReq;
+import top.continew.admin.system.model.req.user.UserImportRowReq;
+import top.continew.admin.system.model.req.user.UserPasswordResetReq;
+import top.continew.admin.system.model.req.user.UserReq;
+import top.continew.admin.system.model.req.user.UserRoleUpdateReq;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.model.resp.user.UserImportParseResp;
 import top.continew.admin.system.model.resp.user.UserImportResp;
 import top.continew.admin.system.model.resp.user.UserResp;
-import top.continew.admin.system.service.*;
+import top.continew.admin.system.service.DeptService;
+import top.continew.admin.system.service.FileService;
+import top.continew.admin.system.service.OptionService;
+import top.continew.admin.system.service.RoleService;
+import top.continew.admin.system.service.UserPasswordHistoryService;
+import top.continew.admin.system.service.UserRoleService;
+import top.continew.admin.system.service.UserService;
+import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
@@ -87,12 +99,25 @@ import top.continew.starter.storage.domain.model.resp.FileInfo;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static top.continew.admin.system.enums.ImportPolicyEnum.*;
-import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
+import static top.continew.admin.system.enums.ImportPolicyEnum.EXIT;
+import static top.continew.admin.system.enums.ImportPolicyEnum.SKIP;
+import static top.continew.admin.system.enums.ImportPolicyEnum.UPDATE;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_ALLOW_CONTAIN_USERNAME;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_MIN_LENGTH;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REPETITION_TIMES;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REQUIRE_SYMBOLS;
 
 /**
  * 用户业务实现
@@ -103,7 +128,9 @@ import static top.continew.admin.system.enums.PasswordPolicyEnum.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq> implements UserService {
+public class UserServiceImpl
+    extends BaseServiceImpl<UserMapper, UserDO, UserResp, UserDetailResp, UserQuery, UserReq>
+    implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserPasswordHistoryService userPasswordHistoryService;
@@ -126,8 +153,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
         QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
         super.sort(queryWrapper, pageQuery);
-        IPage<UserDetailResp> page = baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
-            .getSize()), queryWrapper);
+        IPage<UserDetailResp> page =
+            baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
+                .getSize()), queryWrapper);
         PageResp<UserResp> pageResp = PageResp.build(page, super.getListClass());
         pageResp.getList().forEach(this::fill);
         return pageResp;
@@ -135,7 +163,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
     @Override
     public void beforeCreate(UserReq req) {
-        String password = SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败", true);
+        String password =
+            SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败", true);
         req.setPassword(password);
         this.checkUsernameRepeat(req.getUsername(), null);
         this.checkEmailRepeat(req.getEmail(), null, "邮箱为 [{}] 的用户已存在");
@@ -145,7 +174,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void afterCreate(UserReq req, UserDO user) {
         Long userId = user.getId();
-        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now()).eq(UserDO::getId, userId).update();
+        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
         userRoleService.assignRolesToUser(req.getRoleIds(), userId);
     }
@@ -158,15 +188,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         this.checkEmailRepeat(req.getEmail(), id, "邮箱为 [{}] 的用户已存在");
         this.checkPhoneRepeat(req.getPhone(), id, "手机号为 [{}] 的用户已存在");
         DisEnableStatusEnum newStatus = req.getStatus();
-        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, UserContextHolder
-            .getUserId()), "不允许禁用当前用户");
+        CheckUtils.throwIf(
+            DisEnableStatusEnum.DISABLE.equals(newStatus) && ObjectUtil.equal(id, UserContextHolder
+                .getUserId()),
+            "不允许禁用当前用户");
         UserDO oldUser = this.getById(id);
         if (Boolean.TRUE.equals(oldUser.getIsSystem())) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用", oldUser
-                .getNickname());
-            Collection<Long> disjunctionRoleIds = CollUtil.disjunction(req.getRoleIds(), userRoleService
-                .listRoleIdByUserId(id));
-            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色", oldUser.getNickname());
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置用户，不允许禁用",
+                oldUser
+                    .getNickname());
+            Collection<Long> disjunctionRoleIds =
+                CollUtil.disjunction(req.getRoleIds(), userRoleService
+                    .listRoleIdByUserId(id));
+            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色",
+                oldUser.getNickname());
         }
         // 更新信息
         UserDO newUser = BeanUtil.toBean(req, UserDO.class);
@@ -196,10 +231,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .list();
         List<Long> idList = CollUtils.mapToList(list, UserDO::getId);
         Collection<Long> subtractIds = CollUtil.subtract(ids, idList);
-        CheckUtils.throwIfNotEmpty(subtractIds, "所选用户 [{}] 不存在", CollUtil.join(subtractIds, StringConstants.COMMA));
+        CheckUtils.throwIfNotEmpty(subtractIds, "所选用户 [{}] 不存在",
+            CollUtil.join(subtractIds, StringConstants.COMMA));
         Optional<UserDO> isSystemData = list.stream().filter(UserDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除", isSystemData.orElseGet(UserDO::new)
-            .getNickname());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选用户 [{}] 是系统内置用户，不允许删除",
+            isSystemData.orElseGet(UserDO::new)
+                .getNickname());
         // 删除用户和角色关联
         userRoleService.deleteByUserIds(ids);
         // 删除历史密码
@@ -215,7 +252,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public void downloadImportTemplate(HttpServletResponse response) throws IOException {
         try {
-            FileUploadUtils.download(response, ResourceUtil.getStream("templates/import/user.xlsx"), "用户导入模板.xlsx");
+            FileUploadUtils.download(response, ResourceUtil.getStream("templates/import/user.xlsx"),
+                "用户导入模板.xlsx");
         } catch (Exception e) {
             log.error("下载用户导入模板失败：{}", e.getMessage(), e);
             response.setCharacterEncoding(CharsetUtil.UTF_8);
@@ -260,7 +298,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         CheckUtils.throwIf(hasDuplicatePhone, "存在重复手机，请检测数据");
 
         // 校验是否存在无效角色
-        List<String> roleNames = validRowList.stream().map(UserImportRowReq::getRoleName).distinct().toList();
+        List<String> roleNames =
+            validRowList.stream().map(UserImportRowReq::getRoleName).distinct().toList();
         int existRoleCount = roleService.countByNames(roleNames);
         CheckUtils.throwIf(existRoleCount < roleNames.size(), "存在无效角色，请检查数据");
         // 校验是否存在无效部门（支持多级部门解析）
@@ -270,18 +309,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
 
         // 查询重复用户
         userImportResp
-            .setDuplicateUserRows(countExistByField(validRowList, UserImportRowReq::getUsername, UserDO::getUsername));
+            .setDuplicateUserRows(countExistByField(validRowList, UserImportRowReq::getUsername,
+                UserDO::getUsername));
         // 查询重复邮箱
-        userImportResp.setDuplicateEmailRows(countExistByField(validRowList, row -> EncryptHelper.encrypt(row
-            .getEmail()), UserDO::getEmail));
+        userImportResp
+            .setDuplicateEmailRows(countExistByField(validRowList, row -> EncryptHelper.encrypt(row
+                .getEmail()), UserDO::getEmail));
         // 查询重复手机
-        userImportResp.setDuplicatePhoneRows(countExistByField(validRowList, row -> EncryptHelper.encrypt(row
-            .getPhone()), UserDO::getPhone));
+        userImportResp
+            .setDuplicatePhoneRows(countExistByField(validRowList, row -> EncryptHelper.encrypt(row
+                .getPhone()), UserDO::getPhone));
 
         // 设置导入会话并缓存数据，有效期10分钟
         String importKey = UUID.fastUUID().toString(true);
-        RedisUtils.set(CacheConstants.DATA_IMPORT_KEY + importKey, JSONUtil.toJsonStr(validRowList), Duration
-            .ofMinutes(10));
+        RedisUtils.set(CacheConstants.DATA_IMPORT_KEY + importKey, JSONUtil.toJsonStr(validRowList),
+            Duration
+                .ofMinutes(10));
         userImportResp.setImportKey(importKey);
         return userImportResp;
     }
@@ -308,7 +351,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .mapToList(importUserList, UserImportRowReq::getUsername));
         List<String> existUsernames = CollUtils.mapToList(existUserList, UserDO::getUsername);
         CheckUtils
-            .throwIf(isExitImportUser(req, importUserList, existUsernames, existEmails, existPhones), "数据不符合导入策略，已退出导入");
+            .throwIf(
+                isExitImportUser(req, importUserList, existUsernames, existEmails, existPhones),
+                "数据不符合导入策略，已退出导入");
 
         // 基础数据准备
         Map<String, Long> userMap = existUserList.stream()
@@ -317,7 +362,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .map(UserImportRowReq::getRoleName)
             .distinct()
             .toList());
-        Map<String, Long> roleMap = roleList.stream().collect(Collectors.toMap(RoleDO::getName, RoleDO::getId));
+        Map<String, Long> roleMap =
+            roleList.stream().collect(Collectors.toMap(RoleDO::getName, RoleDO::getId));
         // 获取多级部门映射
         Map<String, Long> deptMap = buildMultiLevelDeptMapping(importUserList.stream()
             .map(UserImportRowReq::getDeptName)
@@ -327,7 +373,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         // 批量操作数据库集合
         List<UserDO> insertList = new ArrayList<>();
         List<UserDO> updateList = new ArrayList<>();
-        List<UserRoleDO> userRoleDOList = new ArrayList<>();
+        List<UserRoleDO> userRoleDoList = new ArrayList<>();
         // ID生成器
         IdGenerator idGenerator = DefaultIdGeneratorProvider.INSTANCE.getShare();
         for (UserImportRowReq row : importUserList) {
@@ -338,7 +384,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             UserDO userDO = BeanUtil.toBeanIgnoreError(row, UserDO.class);
             userDO.setStatus(req.getDefaultStatus());
             userDO.setPwdResetTime(LocalDateTime.now());
-            userDO.setGender(EnumUtil.getBy(GenderEnum::getDescription, row.getGender(), GenderEnum.UNKNOWN));
+            userDO.setGender(
+                EnumUtil.getBy(GenderEnum::getDescription, row.getGender(), GenderEnum.UNKNOWN));
             userDO.setDeptId(deptMap.get(row.getDeptName()));
             // 修改 or 新增
             if (UPDATE.validate(req.getDuplicateUser(), row.getUsername(), existUsernames)) {
@@ -349,11 +396,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
                 userDO.setIsSystem(false);
                 insertList.add(userDO);
             }
-            userRoleDOList.add(new UserRoleDO(userDO.getId(), roleMap.get(row.getRoleName())));
+            userRoleDoList.add(new UserRoleDO(userDO.getId(), roleMap.get(row.getRoleName())));
         }
-        doImportUser(insertList, updateList, userRoleDOList);
+        doImportUser(insertList, updateList, userRoleDoList);
         RedisUtils.delete(CacheConstants.DATA_IMPORT_KEY + req.getImportKey());
-        return new UserImportResp(insertList.size() + updateList.size(), insertList.size(), updateList.size());
+        return new UserImportResp(insertList.size() + updateList.size(), insertList.size(),
+            updateList.size());
     }
 
     @Override
@@ -379,8 +427,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     @Override
     public String updateAvatar(MultipartFile avatarFile, Long id) throws IOException {
         String avatarImageType = FileNameUtil.extName(avatarFile.getOriginalFilename());
-        CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix), "头像仅支持 {} 格式的图片", String
-            .join(StringConstants.COMMA, avatarSupportSuffix));
+        CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix),
+            "头像仅支持 {} 格式的图片", String
+                .join(StringConstants.COMMA, avatarSupportSuffix));
         // 上传新头像
         UserDO user = super.getById(id);
         FileInfo fileInfo = fileService.upload(avatarFile, avatarPath);
@@ -434,8 +483,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void updatePhone(String newPhone, String oldPassword, Long id) {
         UserDO user = super.getById(id);
         if (StrUtil.isNotBlank(user.getPassword())) {
-            CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                .getPassword()), "当前密码不正确");
+            CheckUtils
+                .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
+                    .getPassword()), "当前密码不正确");
         }
         this.checkPhoneRepeat(newPhone, id, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -447,8 +497,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
     public void updateEmail(String newEmail, String oldPassword, Long id) {
         UserDO user = super.getById(id);
         if (StrUtil.isNotBlank(user.getPassword())) {
-            CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                .getPassword()), "当前密码不正确");
+            CheckUtils
+                .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
+                    .getPassword()), "当前密码不正确");
         }
         this.checkEmailRepeat(newEmail, id, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
@@ -486,7 +537,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         super.sort(queryWrapper, sortQuery);
         List<UserDetailResp> entityList = baseMapper.selectUserList(queryWrapper);
         if (this.getEntityClass() == targetClass) {
-            return (List<E>)entityList;
+            return (List<E>) entityList;
         }
         return BeanUtil.copyToList(entityList, targetClass);
     }
@@ -503,16 +554,19 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         if (query.getRoleId() != null) {
             excludeUserIdList = userRoleService.listUserIdByRoleId(query.getRoleId());
         }
-        return new QueryWrapper<UserDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
-            .or()
-            .like("t1.nickname", description)
-            .or()
-            .like("t1.description", description))
+        return new QueryWrapper<UserDO>()
+            .and(StrUtil.isNotBlank(description), q -> q.like("t1.username", description)
+                .or()
+                .like("t1.nickname", description)
+                .or()
+                .like("t1.description", description))
             .eq(status != null, "t1.status", status)
-            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
-                .getLast(createTimeList))
+            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time",
+                CollUtil.getFirst(createTimeList), CollUtil
+                    .getLast(createTimeList))
             .and(deptId != null, q -> {
-                List<Long> deptIdList = CollUtils.mapToList(deptService.listChildren(deptId), DeptDO::getId);
+                List<Long> deptIdList =
+                    CollUtils.mapToList(deptService.listChildren(deptId), DeptDO::getId);
                 deptIdList.add(deptId);
                 q.in("t1.dept_id", deptIdList);
             })
@@ -526,9 +580,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      *
      * @param insertList     新增用户
      * @param updateList     修改用户
-     * @param userRoleDOList 用户角色关联
+     * @param userRoleDoList 用户角色关联
      */
-    private void doImportUser(List<UserDO> insertList, List<UserDO> updateList, List<UserRoleDO> userRoleDOList) {
+    private void doImportUser(List<UserDO> insertList, List<UserDO> updateList,
+        List<UserRoleDO> userRoleDoList) {
         if (CollUtil.isNotEmpty(insertList)) {
             baseMapper.insert(insertList);
         }
@@ -536,8 +591,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             baseMapper.updateBatchById(updateList);
             userRoleService.deleteByUserIds(CollUtils.mapToList(updateList, UserDO::getId));
         }
-        if (CollUtil.isNotEmpty(userRoleDOList)) {
-            userRoleService.saveBatch(userRoleDOList);
+        if (CollUtil.isNotEmpty(userRoleDoList)) {
+            userRoleService.saveBatch(userRoleDoList);
         }
     }
 
@@ -552,12 +607,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 是否跳过
      */
     private boolean isSkipUserImport(UserImportReq req,
-                                     UserImportRowReq row,
-                                     List<String> existUsernames,
-                                     List<String> existPhones,
-                                     List<String> existEmails) {
-        return SKIP.validate(req.getDuplicateUser(), row.getUsername(), existUsernames) || SKIP.validate(req
-            .getDuplicateEmail(), row.getEmail(), existEmails) || SKIP.validate(req.getDuplicatePhone(), row
+        UserImportRowReq row,
+        List<String> existUsernames,
+        List<String> existPhones,
+        List<String> existEmails) {
+        return SKIP.validate(req.getDuplicateUser(), row.getUsername(), existUsernames)
+            || SKIP.validate(req
+                .getDuplicateEmail(), row.getEmail(), existEmails)
+            || SKIP.validate(req.getDuplicatePhone(), row
                 .getPhone(), existPhones);
     }
 
@@ -572,14 +629,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 是否退出
      */
     private boolean isExitImportUser(UserImportReq req,
-                                     List<UserImportRowReq> list,
-                                     List<String> existUsernames,
-                                     List<String> existEmails,
-                                     List<String> existPhones) {
+        List<UserImportRowReq> list,
+        List<String> existUsernames,
+        List<String> existEmails,
+        List<String> existPhones) {
         return list.stream()
-            .anyMatch(row -> EXIT.validate(req.getDuplicateUser(), row.getUsername(), existUsernames) || EXIT
-                .validate(req.getDuplicateEmail(), row.getEmail(), existEmails) || EXIT.validate(req
-                    .getDuplicatePhone(), row.getPhone(), existPhones));
+            .anyMatch(
+                row -> EXIT.validate(req.getDuplicateUser(), row.getUsername(), existUsernames)
+                    || EXIT
+                        .validate(req.getDuplicateEmail(), row.getEmail(), existEmails)
+                    || EXIT.validate(req
+                        .getDuplicatePhone(), row.getPhone(), existPhones));
     }
 
     /**
@@ -591,8 +651,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 存在的数量
      */
     private int countExistByField(List<UserImportRowReq> userRowList,
-                                  Function<UserImportRowReq, String> rowField,
-                                  SFunction<UserDO, ?> dbField) {
+        Function<UserImportRowReq, String> rowField,
+        SFunction<UserDO, ?> dbField) {
         List<String> fieldValues = CollUtils.mapToList(userRowList, rowField);
         if (fieldValues.isEmpty()) {
             return 0;
@@ -609,13 +669,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 存在的内容
      */
     private List<String> listExistByField(List<UserImportRowReq> userRowList,
-                                          Function<UserImportRowReq, String> rowField,
-                                          SFunction<UserDO, String> dbField) {
+        Function<UserImportRowReq, String> rowField,
+        SFunction<UserDO, String> dbField) {
         List<String> fieldValues = CollUtils.mapToList(userRowList, rowField);
         if (fieldValues.isEmpty()) {
             return Collections.emptyList();
         }
-        List<UserDO> userList = baseMapper.lambdaQuery().select(dbField).in(dbField, fieldValues).list();
+        List<UserDO> userList =
+            baseMapper.lambdaQuery().select(dbField).in(dbField, fieldValues).list();
         return CollUtils.mapToList(userList, dbField);
     }
 
@@ -631,7 +692,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             .toList();
         // 用户名去重
         return list.stream()
-            .collect(Collectors.toMap(UserImportRowReq::getUsername, user -> user, (existing, replacement) -> existing))
+            .collect(Collectors.toMap(UserImportRowReq::getUsername, user -> user,
+                (existing, replacement) -> existing))
             .values()
             .stream()
             .toList();
@@ -645,17 +707,22 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
      * @return 密码允许重复使用次数
      */
     private int checkPassword(String password, UserDO user) {
-        Map<String, String> passwordPolicy = optionService.getByCategory(OptionCategoryEnum.PASSWORD);
+        Map<String, String> passwordPolicy =
+            optionService.getByCategory(OptionCategoryEnum.PASSWORD);
         // 密码最小长度
-        PASSWORD_MIN_LENGTH.validate(password, MapUtil.getInt(passwordPolicy, PASSWORD_MIN_LENGTH.name()), user);
+        PASSWORD_MIN_LENGTH.validate(password,
+            MapUtil.getInt(passwordPolicy, PASSWORD_MIN_LENGTH.name()), user);
         // 密码是否必须包含特殊字符
-        PASSWORD_REQUIRE_SYMBOLS.validate(password, MapUtil.getInt(passwordPolicy, PASSWORD_REQUIRE_SYMBOLS
-            .name()), user);
+        PASSWORD_REQUIRE_SYMBOLS.validate(password,
+            MapUtil.getInt(passwordPolicy, PASSWORD_REQUIRE_SYMBOLS
+                .name()),
+            user);
         // 密码是否允许包含正反序账号名
         PASSWORD_ALLOW_CONTAIN_USERNAME.validate(password, MapUtil
             .getInt(passwordPolicy, PASSWORD_ALLOW_CONTAIN_USERNAME.name()), user);
         // 密码重复使用次数
-        int passwordRepetitionTimes = MapUtil.getInt(passwordPolicy, PASSWORD_REPETITION_TIMES.name());
+        int passwordRepetitionTimes =
+            MapUtil.getInt(passwordPolicy, PASSWORD_REPETITION_TIMES.name());
         PASSWORD_REPETITION_TIMES.validate(password, passwordRepetitionTimes, user);
         return passwordRepetitionTimes;
     }
@@ -764,7 +831,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
             }
         }
 
-        CheckUtils.throwIf(CollUtil.isNotEmpty(invalidDepts), "以下部门无效或存在歧义：{}", String.join(", ", invalidDepts));
+        CheckUtils.throwIf(CollUtil.isNotEmpty(invalidDepts), "以下部门无效或存在歧义：{}",
+            String.join(", ", invalidDepts));
 
         return validCount;
     }
@@ -860,7 +928,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, UserDO, UserRes
         List<DeptDO> deptList = deptService.lambdaQuery().eq(DeptDO::getName, deptName).list();
 
         CheckUtils.throwIfEmpty(deptList, "部门 [{}] 不存在", deptName);
-        CheckUtils.throwIf(deptList.size() > 1, "存在多个同名部门 [{}]，请使用完整层级路径，如：公司名:{}", deptName, deptName);
+        CheckUtils.throwIf(deptList.size() > 1, "存在多个同名部门 [{}]，请使用完整层级路径，如：公司名:{}", deptName,
+            deptName);
 
         return deptList.get(0);
     }

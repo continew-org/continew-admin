@@ -23,6 +23,7 @@ package top.continew.admin.system.constant;
  * @since 2025/7/30 17:40
  */
 public class MultipartUploadConstants {
+
     //todo 后续改为从配置文件读取
     /**
      * MD5到uploadId的映射前缀

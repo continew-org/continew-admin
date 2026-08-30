@@ -56,7 +56,8 @@ public class PackageMenuServiceImpl implements PackageMenuService {
         // 删除原有关联
         baseMapper.lambdaUpdate().eq(PackageMenuDO::getPackageId, packageId).remove();
         // 保存最新关联
-        List<PackageMenuDO> newList = CollUtils.mapToList(menuIds, menuId -> new PackageMenuDO(packageId, menuId));
+        List<PackageMenuDO> newList =
+            CollUtils.mapToList(menuIds, menuId -> new PackageMenuDO(packageId, menuId));
         return baseMapper.insertBatch(newList);
     }
 

@@ -20,7 +20,7 @@ import top.continew.admin.common.model.dto.TenantDTO;
 
 /**
  * 租户数据 API
- * 
+ *
  * @author 小熊
  * @author Charles7c
  * @since 2024/12/2 20:08

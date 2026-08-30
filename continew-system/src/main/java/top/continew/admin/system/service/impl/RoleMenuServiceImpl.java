@@ -38,7 +38,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenuDO> implements RoleMenuService {
+public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenuDO>
+    implements RoleMenuService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -57,7 +58,8 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenuDO>
         // 删除原有关联
         baseMapper.lambdaUpdate().eq(RoleMenuDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleMenuDO> roleMenuList = CollUtils.mapToList(menuIds, menuId -> new RoleMenuDO(roleId, menuId));
+        List<RoleMenuDO> roleMenuList =
+            CollUtils.mapToList(menuIds, menuId -> new RoleMenuDO(roleId, menuId));
         return baseMapper.insertBatch(roleMenuList);
     }
 

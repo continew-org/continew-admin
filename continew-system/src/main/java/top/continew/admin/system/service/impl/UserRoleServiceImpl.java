@@ -70,15 +70,17 @@ public class UserRoleServiceImpl implements UserRoleService {
     @AutoOperate(type = RoleUserResp.class, on = "list")
     public PageResp<RoleUserResp> pageUser(RoleUserQuery query, PageQuery pageQuery) {
         String description = query.getDescription();
-        QueryWrapper<UserRoleDO> queryWrapper = new QueryWrapper<UserRoleDO>().eq("t1.role_id", query.getRoleId())
-            .and(StrUtil.isNotBlank(description), q -> q.like("t2.username", description)
-                .or()
-                .like("t2.nickname", description)
-                .or()
-                .like("t2.description", description));
+        QueryWrapper<UserRoleDO> queryWrapper =
+            new QueryWrapper<UserRoleDO>().eq("t1.role_id", query.getRoleId())
+                .and(StrUtil.isNotBlank(description), q -> q.like("t2.username", description)
+                    .or()
+                    .like("t2.nickname", description)
+                    .or()
+                    .like("t2.description", description));
         QueryWrapperHelper.sort(queryWrapper, pageQuery.getSort());
-        IPage<RoleUserResp> page = baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
-            .getSize()), queryWrapper);
+        IPage<RoleUserResp> page =
+            baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
+                .getSize()), queryWrapper);
         return PageResp.build(page);
     }
 
@@ -87,13 +89,17 @@ public class UserRoleServiceImpl implements UserRoleService {
     public boolean assignRolesToUser(List<Long> roleIds, Long userId) {
         UserDO userDO = userService.getById(userId);
         if (Boolean.TRUE.equals(userDO.getIsSystem())) {
-            Collection<Long> disjunctionRoleIds = CollUtil.disjunction(roleIds, this.listRoleIdByUserId(userId));
-            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色", userDO.getNickname());
+            Collection<Long> disjunctionRoleIds =
+                CollUtil.disjunction(roleIds, this.listRoleIdByUserId(userId));
+            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色",
+                userDO.getNickname());
         }
         // 超级管理员和租户管理员角色不允许分配
         CheckUtils.throwIf(roleIds.contains(SystemConstants.SUPER_ADMIN_ROLE_ID), "不允许分配超级管理员角色");
-        Set<String> roleCodeSet = CollUtils.mapToSet(roleService.listByUserId(userId), RoleContext::getCode);
-        CheckUtils.throwIf(roleCodeSet.contains(RoleCodeEnum.TENANT_ADMIN.getCode()), "不允许分配系统管理员角色");
+        Set<String> roleCodeSet =
+            CollUtils.mapToSet(roleService.listByUserId(userId), RoleContext::getCode);
+        CheckUtils.throwIf(roleCodeSet.contains(RoleCodeEnum.TENANT_ADMIN.getCode()),
+            "不允许分配系统管理员角色");
         // 检查是否有变更
         List<Long> oldRoleIdList = baseMapper.lambdaQuery()
             .select(UserRoleDO::getRoleId)
@@ -108,13 +114,15 @@ public class UserRoleServiceImpl implements UserRoleService {
         // 删除原有关联
         baseMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
-        List<UserRoleDO> userRoleList = CollUtils.mapToList(roleIds, roleId -> new UserRoleDO(userId, roleId));
+        List<UserRoleDO> userRoleList =
+            CollUtils.mapToList(roleIds, roleId -> new UserRoleDO(userId, roleId));
         return baseMapper.insertBatch(userRoleList);
     }
 
     @Override
     public boolean assignRoleToUsers(Long roleId, List<Long> userIds) {
-        List<UserRoleDO> userRoleList = CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
+        List<UserRoleDO> userRoleList =
+            CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
         return baseMapper.insertBatch(userRoleList);
     }
 

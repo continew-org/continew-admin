@@ -18,7 +18,7 @@ package top.continew.admin.common.api.tenant;
 
 /**
  * 租户业务 API
- * 
+ *
  * @author Charles7c
  * @since 2025/7/23 21:13
  */

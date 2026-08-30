@@ -38,7 +38,11 @@ import top.continew.starter.data.enums.DatabaseType;
 import top.continew.starter.data.util.MetaUtils;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * 部门业务实现
@@ -48,7 +52,9 @@ import java.util.*;
  */
 @Service
 @RequiredArgsConstructor
-public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptResp, DeptQuery, DeptReq> implements DeptService {
+public class DeptServiceImpl
+    extends BaseServiceImpl<DeptMapper, DeptDO, DeptResp, DeptResp, DeptQuery, DeptReq>
+    implements DeptService {
 
     private final RoleDeptService roleDeptService;
     private final DataSource dataSource;
@@ -70,8 +76,10 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         DisEnableStatusEnum newStatus = req.getStatus();
         Long oldParentId = oldDept.getParentId();
         if (Boolean.TRUE.equals(oldDept.getIsSystem())) {
-            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用", oldName);
-            CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门", oldName);
+            CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用",
+                oldName);
+            CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门",
+                oldName);
         }
         // 启用/禁用部门
         if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
@@ -82,8 +90,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
             CheckUtils.throwIf(DisEnableStatusEnum.DISABLE
                 .equals(newStatus) && enabledChildrenCount > 0, "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
             DeptDO oldParentDept = this.getByParentId(oldParentId);
-            CheckUtils.throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus) && DisEnableStatusEnum.DISABLE
-                .equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
+            CheckUtils
+                .throwIf(DisEnableStatusEnum.ENABLE.equals(newStatus) && DisEnableStatusEnum.DISABLE
+                    .equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
         // 变更上级部门
         if (ObjectUtil.notEqual(req.getParentId(), oldParentId)) {
@@ -102,8 +111,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
             .in(DeptDO::getId, ids)
             .list();
         Optional<DeptDO> isSystemData = list.stream().filter(DeptDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除", isSystemData.orElseGet(DeptDO::new)
-            .getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
+            isSystemData.orElseGet(DeptDO::new)
+                .getName());
         CheckUtils.throwIf(this.countChildren(ids) > 0, "所选部门存在下级部门，不允许删除");
         CheckUtils.throwIf(userService.countByDeptIds(ids) > 0, "所选部门存在用户关联，请解除关联后重试");
         // 删除角色和部门关联
@@ -112,7 +122,8 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
 
     @Override
     public List<DeptDO> listChildren(Long id) {
-        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
+        DatabaseType databaseType =
+            MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
         return baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).list();
     }
 
@@ -129,7 +140,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         if (CollUtil.isEmpty(deptNames)) {
             return 0;
         }
-        return (int)this.count(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, deptNames));
+        return (int) this.count(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, deptNames));
     }
 
     /**
@@ -180,9 +191,11 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, DeptDO, DeptRes
         if (CollUtil.isEmpty(ids)) {
             return 0L;
         }
-        DatabaseType databaseType = MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
+        DatabaseType databaseType =
+            MetaUtils.getDatabaseTypeOrDefault(dataSource, DatabaseType.MYSQL);
         return ids.stream()
-            .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors")).count())
+            .mapToLong(id -> baseMapper.lambdaQuery().apply(databaseType.findInSet(id, "ancestors"))
+                .count())
             .sum();
     }
 

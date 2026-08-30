@@ -49,7 +49,8 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
      * 图片
      */
     IMAGE(2, "图片", List
-        .of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng", "xcf")),
+        .of("jpg", "jpeg", "png", "gif", "bmp", "webp", "ico", "psd", "tiff", "dwg", "jxr", "apng",
+            "xcf")),
 
     /**
      * 文档
@@ -59,12 +60,14 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
     /**
      * 视频
      */
-    VIDEO(4, "视频", List.of("mp4", "avi", "mkv", "flv", "webm", "wmv", "m4v", "mov", "mpg", "rmvb", "3gp")),
+    VIDEO(4, "视频",
+        List.of("mp4", "avi", "mkv", "flv", "webm", "wmv", "m4v", "mov", "mpg", "rmvb", "3gp")),
 
     /**
      * 音频
      */
-    AUDIO(5, "音频", List.of("mp3", "flac", "wav", "ogg", "midi", "m4a", "aac", "amr", "ac3", "aiff")),;
+    AUDIO(5, "音频",
+        List.of("mp3", "flac", "wav", "ogg", "midi", "m4a", "aac", "amr", "ac3", "aiff")),;
 
     private final Integer value;
     private final String description;
@@ -89,6 +92,7 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
      * @return 所有扩展名
      */
     public static List<String> getAllExtensions() {
-        return Arrays.stream(FileTypeEnum.values()).flatMap(t -> t.getExtensions().stream()).toList();
+        return Arrays.stream(FileTypeEnum.values()).flatMap(t -> t.getExtensions().stream())
+            .toList();
     }
 }

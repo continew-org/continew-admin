@@ -49,18 +49,28 @@ import top.continew.starter.extension.tenant.util.TenantUtils;
 @Tag(name = "租户管理 API")
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/tenant/management", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
-public class TenantController extends BaseController<TenantService, TenantResp, TenantDetailResp, TenantQuery, TenantReq> {
+@CrudRequestMapping(value = "/tenant/management",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE})
+public class TenantController
+    extends BaseController<TenantService, TenantResp, TenantDetailResp, TenantQuery, TenantReq> {
 
     private final UserApi userApi;
 
+    /**
+     * 修改租户管理员密码
+     *
+     * @param req 新密码
+     * @param id 租户 ID
+     */
     @Operation(summary = "修改租户管理员密码", description = "修改租户管理员密码")
     @SaCheckPermission("tenant:management:updateAdminUserPwd")
     @PutMapping("/{id}/admin/pwd")
-    public void updateAdminUserPwd(@RequestBody @Valid TenantAdminUserPwdUpdateReq req, @PathVariable Long id) {
+    public void updateAdminUserPwd(@RequestBody @Valid TenantAdminUserPwdUpdateReq req,
+        @PathVariable Long id) {
         TenantDO tenant = baseService.getById(id);
         TenantUtils.execute(id, () -> {
-            String password = SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "新密码解密失败");
+            String password =
+                SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "新密码解密失败");
             userApi.resetPassword(password, tenant.getAdminUser());
         });
     }

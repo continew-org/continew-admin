@@ -62,9 +62,12 @@ import java.util.Set;
  */
 @Service
 @RequiredArgsConstructor
-public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, TenantResp, TenantDetailResp, TenantQuery, TenantReq> implements TenantService {
+public class TenantServiceImpl extends
+    BaseServiceImpl<TenantMapper, TenantDO, TenantResp, TenantDetailResp, TenantQuery, TenantReq>
+    implements TenantService {
 
-    private final Map<String, TenantDataApi> tenantDataApiMap = SpringUtil.getBeansOfType(TenantDataApi.class);
+    private final Map<String, TenantDataApi> tenantDataApiMap =
+        SpringUtil.getBeansOfType(TenantDataApi.class);
     private final TenantExtensionProperties tenantExtensionProperties;
     private final PackageService packageService;
     private final IdGeneratorProvider idGeneratorProvider;
@@ -84,7 +87,8 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
         Long id = super.create(req);
         // 初始化租户数据
         req.setId(id);
-        tenantDataApiMap.forEach((key, value) -> value.init(BeanUtil.copyProperties(req, TenantDTO.class)));
+        tenantDataApiMap
+            .forEach((key, value) -> value.init(BeanUtil.copyProperties(req, TenantDTO.class)));
         return id;
     }
 
@@ -101,7 +105,8 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
 
     @Override
     public void afterUpdate(TenantReq req, TenantDO entity) {
-        RedisUtils.deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        RedisUtils
+            .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
@@ -114,7 +119,8 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
 
     @Override
     public void afterDelete(List<Long> ids) {
-        RedisUtils.deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        RedisUtils
+            .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
     }
 
     @Override
@@ -218,7 +224,8 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, TenantDO, T
     private String generateCode() {
         String code;
         do {
-            code = idGeneratorProvider.getRequired(TenantConstants.CODE_GENERATOR_KEY).generateAsString();
+            code = idGeneratorProvider.getRequired(TenantConstants.CODE_GENERATOR_KEY)
+                .generateAsString();
         } while (baseMapper.lambdaQuery().eq(TenantDO::getCode, code).exists());
         return code;
     }

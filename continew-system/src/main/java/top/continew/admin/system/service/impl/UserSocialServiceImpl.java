@@ -77,7 +77,8 @@ public class UserSocialServiceImpl implements UserSocialService {
         String description = SocialSourceEnum.valueOf(source).getDescription();
         CheckUtils.throwIf(boundSocialSet.contains(source), "您已经绑定过了 [{}] 平台，请先解绑", description);
         UserSocialDO userSocial = this.getBySourceAndOpenId(source, openId);
-        CheckUtils.throwIfNotNull(userSocial, "[{}] 平台账号 [{}] 已被其他用户绑定", description, authUser.getUsername());
+        CheckUtils.throwIfNotNull(userSocial, "[{}] 平台账号 [{}] 已被其他用户绑定", description,
+            authUser.getUsername());
         userSocial = new UserSocialDO();
         userSocial.setUserId(userId);
         userSocial.setSource(source);
@@ -89,7 +90,8 @@ public class UserSocialServiceImpl implements UserSocialService {
 
     @Override
     public void deleteBySourceAndUserId(String source, Long userId) {
-        baseMapper.lambdaUpdate().eq(UserSocialDO::getSource, source).eq(UserSocialDO::getUserId, userId).remove();
+        baseMapper.lambdaUpdate().eq(UserSocialDO::getSource, source)
+            .eq(UserSocialDO::getUserId, userId).remove();
     }
 
     @Override

@@ -21,7 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.service.BaseService;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.query.UserQuery;
-import top.continew.admin.system.model.req.user.*;
+import top.continew.admin.system.model.req.user.UserBasicInfoUpdateReq;
+import top.continew.admin.system.model.req.user.UserImportReq;
+import top.continew.admin.system.model.req.user.UserPasswordResetReq;
+import top.continew.admin.system.model.req.user.UserReq;
+import top.continew.admin.system.model.req.user.UserRoleUpdateReq;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.model.resp.user.UserImportParseResp;
 import top.continew.admin.system.model.resp.user.UserImportResp;
@@ -37,7 +41,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2022/12/21 21:48
  */
-public interface UserService extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq>, IService<UserDO> {
+public interface UserService
+    extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq>, IService<UserDO> {
 
     /**
      * 下载导入模板

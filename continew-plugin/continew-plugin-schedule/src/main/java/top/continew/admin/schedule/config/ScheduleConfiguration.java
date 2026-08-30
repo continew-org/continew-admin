@@ -34,6 +34,7 @@ public class ScheduleConfiguration {
      */
     @Bean
     public GroupedOpenApi scheduleModuleApi() {
-        return GroupedOpenApi.builder().group("schedule").displayName("任务调度").pathsToMatch("/schedule/**").build();
+        return GroupedOpenApi.builder().group("schedule").displayName("任务调度")
+            .pathsToMatch("/schedule/**").build();
     }
 }

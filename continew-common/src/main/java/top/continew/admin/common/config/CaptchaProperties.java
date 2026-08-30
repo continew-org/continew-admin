@@ -53,6 +53,7 @@ public class CaptchaProperties {
      */
     @Data
     public static class CaptchaMail {
+
         /**
          * 内容长度
          */
@@ -74,6 +75,7 @@ public class CaptchaProperties {
      */
     @Data
     public static class CaptchaSms {
+
         /**
          * 内容长度
          */

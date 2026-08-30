@@ -39,7 +39,11 @@ import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -51,10 +55,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq> implements DictItemService {
+public class DictItemServiceImpl extends
+    BaseServiceImpl<DictItemMapper, DictItemDO, DictItemResp, DictItemResp, DictItemQuery, DictItemReq>
+    implements DictItemService {
 
     private final ApplicationProperties applicationProperties;
-    private static final Map<String, List<LabelValueResp>> ENUM_DICT_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, List<LabelValueResp>> ENUM_DICT_CACHE =
+        new ConcurrentHashMap<>();
 
     @Override
     public void beforeCreate(DictItemReq req) {
@@ -115,8 +122,9 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
             return List.of();
         }
         return Arrays.stream(enumConstants).map(e -> {
-            BaseEnum baseEnum = (BaseEnum)e;
-            return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(), baseEnum.getColor());
+            BaseEnum baseEnum = (BaseEnum) e;
+            return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(),
+                baseEnum.getColor());
         }).toList();
     }
 
@@ -125,7 +133,8 @@ public class DictItemServiceImpl extends BaseServiceImpl<DictItemMapper, DictIte
      */
     @PostConstruct
     public void init() {
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
+        Set<Class<?>> classSet =
+            ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
         for (Class<?> cls : classSet) {
             List<LabelValueResp> value = this.toEnumDict(cls);
             if (CollUtil.isEmpty(value)) {

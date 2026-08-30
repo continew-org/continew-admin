@@ -36,7 +36,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2024/6/27 23:03
  */
-@FeignClient(value = "job-batch", url = "${snail-job.server.api.url}", path = "/job", configuration = FeignRequestInterceptor.class)
+@FeignClient(value = "job-batch", url = "${snail-job.server.api.url}", path = "/job",
+    configuration = FeignRequestInterceptor.class)
 public interface JobBatchApi {
 
     /**

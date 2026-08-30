@@ -50,7 +50,8 @@ public class SystemContainer {
      * @param userIds 用户 ID 列表
      * @return 角色 ID 列表
      */
-    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, resultKey = "userId", resultType = UserRoleDO.class, type = MappingType.ONE_TO_MANY)
+    @ContainerMethod(namespace = ContainerConstants.USER_ROLE_ID_LIST, resultKey = "userId",
+        resultType = UserRoleDO.class, type = MappingType.ONE_TO_MANY)
     public List<UserRoleDO> listRoleIdByUserId(List<Long> userIds) {
         return userRoleMapper.lambdaQuery()
             .select(UserRoleDO::getRoleId, UserRoleDO::getUserId)
@@ -69,6 +70,7 @@ public class SystemContainer {
         if (CollUtil.isEmpty(ids)) {
             return Collections.emptyList();
         }
-        return roleMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getId).in(RoleDO::getId, ids).list();
+        return roleMapper.lambdaQuery().select(RoleDO::getName, RoleDO::getId)
+            .in(RoleDO::getId, ids).list();
     }
 }

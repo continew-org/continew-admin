@@ -59,7 +59,9 @@ import java.util.Set;
  */
 @Service
 @RequiredArgsConstructor
-public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq> implements MenuService {
+public class MenuServiceImpl
+    extends BaseServiceImpl<MenuMapper, MenuDO, MenuResp, MenuResp, MenuQuery, MenuReq>
+    implements MenuService {
 
     private final TenantExtensionProperties tenantExtensionProperties;
     @Lazy
@@ -133,7 +135,8 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, MenuDO, MenuRes
     public List<Long> listExcludeTenantMenu() {
         Long roleId = roleService.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
         List<Long> allMenuIdList = CollUtils.mapToList(super.list(), MenuDO::getId);
-        List<Long> menuIdList = CollUtils.mapToList(baseMapper.selectListByRoleId(roleId), MenuDO::getId);
+        List<Long> menuIdList =
+            CollUtils.mapToList(baseMapper.selectListByRoleId(roleId), MenuDO::getId);
         return CollUtil.disjunction(allMenuIdList, menuIdList).stream().toList();
     }
 

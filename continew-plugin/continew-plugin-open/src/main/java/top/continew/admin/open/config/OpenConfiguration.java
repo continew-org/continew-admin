@@ -34,6 +34,7 @@ public class OpenConfiguration {
      */
     @Bean
     public GroupedOpenApi openModuleApi() {
-        return GroupedOpenApi.builder().group("open").displayName("能力开放").pathsToMatch("/open/**").build();
+        return GroupedOpenApi.builder().group("open").displayName("能力开放").pathsToMatch("/open/**")
+            .build();
     }
 }

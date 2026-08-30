@@ -35,7 +35,9 @@ import java.util.List;
  */
 @Data
 @Schema(description = "套餐详情响应参数")
-@AssembleMethod(key = "id", prop = ":menuIds", targetType = PackageMenuService.class, method = @ContainerMethod(bindMethod = "listMenuIdsByPackageId", type = MappingType.ORDER_OF_KEYS))
+@AssembleMethod(key = "id", prop = ":menuIds", targetType = PackageMenuService.class,
+    method = @ContainerMethod(bindMethod = "listMenuIdsByPackageId",
+        type = MappingType.ORDER_OF_KEYS))
 public class PackageDetailResp extends PackageResp {
 
     @Serial

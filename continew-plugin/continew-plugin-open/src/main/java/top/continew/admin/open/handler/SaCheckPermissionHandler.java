@@ -40,7 +40,8 @@ public class SaCheckPermissionHandler implements SaAnnotationHandlerInterface<Sa
     }
 
     @Override
-    public void checkMethod(SaCheckPermission saCheckPermission, AnnotatedElement annotatedElement) {
+    public void checkMethod(SaCheckPermission saCheckPermission,
+        AnnotatedElement annotatedElement) {
         if (!OpenApiUtils.isSignParamExists()) {
             _checkMethod(saCheckPermission.type(), saCheckPermission.value(), saCheckPermission
                 .mode(), saCheckPermission.orRole());

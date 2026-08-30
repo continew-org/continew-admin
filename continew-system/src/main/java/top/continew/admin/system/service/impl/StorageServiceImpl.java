@@ -56,7 +56,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq> implements StorageService {
+public class StorageServiceImpl extends
+    BaseServiceImpl<StorageMapper, StorageDO, StorageResp, StorageResp, StorageQuery, StorageReq>
+    implements StorageService {
 
     private final FileStorageService fileStorageService;
     private final StorageProperties storageProperties;
@@ -94,11 +96,14 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         // 校验存储类型、存储编码、回收站配置、状态
         CheckUtils.throwIfNotEqual(req.getType(), oldStorage.getType(), "不允许修改存储类型");
         CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
-        CheckUtils.throwIfNotEqual(req.getRecycleBinEnabled(), oldStorage.getRecycleBinEnabled(), "不允许修改回收站配置");
-        CheckUtils.throwIfNotEqual(req.getRecycleBinPath(), oldStorage.getRecycleBinPath(), "不允许修改回收站配置");
+        CheckUtils.throwIfNotEqual(req.getRecycleBinEnabled(), oldStorage.getRecycleBinEnabled(),
+            "不允许修改回收站配置");
+        CheckUtils.throwIfNotEqual(req.getRecycleBinPath(), oldStorage.getRecycleBinPath(),
+            "不允许修改回收站配置");
         DisEnableStatusEnum newStatus = req.getStatus();
-        CheckUtils.throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
-            .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
+        CheckUtils
+            .throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
+                .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
         // 指定配置参数校验及预处理
         StorageTypeEnum storageType = req.getType();
         storageType.validate(req);
@@ -117,7 +122,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件或文件夹关联，请删除后重试");
         List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
         storageList.forEach(storage -> {
-            CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许删除", storage.getName());
+            CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许删除",
+                storage.getName());
             // 卸载存储引擎
             this.unload(storage);
         });
@@ -133,14 +139,16 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             return;
         }
         // 修改状态
-        baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getStatus, newStatus).update();
+        baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getStatus, newStatus)
+            .update();
         // 加载、卸载存储引擎
         switch (newStatus) {
             case ENABLE:
                 this.load(storage);
                 break;
             case DISABLE:
-                CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许禁用", storage.getName());
+                CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许禁用",
+                    storage.getName());
                 this.unload(storage);
                 break;
             default:
@@ -157,8 +165,10 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
         }
         // 启用状态才能设为默认存储
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, storage.getStatus(), "请先启用所选存储");
-        baseMapper.lambdaUpdate().eq(StorageDO::getIsDefault, true).set(StorageDO::getIsDefault, false).update();
-        baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getIsDefault, true).update();
+        baseMapper.lambdaUpdate().eq(StorageDO::getIsDefault, true)
+            .set(StorageDO::getIsDefault, false).update();
+        baseMapper.lambdaUpdate().eq(StorageDO::getId, id).set(StorageDO::getIsDefault, true)
+            .update();
         fileStorageService.defaultStorage(storage.getCode());
     }
 
@@ -197,7 +207,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     public void load(StorageDO storage) {
-        if (fileStorageService.exists(storage.getCode()) && fileStorageService.isDynamic(storage.getCode())) {
+        if (fileStorageService.exists(storage.getCode())
+            && fileStorageService.isDynamic(storage.getCode())) {
             fileStorageService.unload(storage.getCode());
         }
         switch (storage.getType()) {
@@ -226,7 +237,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
                 config.setPathStyleAccessEnabled(true);
                 fileStorageService.register(new OssStorageStrategy(config));
             }
-            default -> throw new IllegalArgumentException("不支持的存储类型：%s".formatted(storage.getType()));
+            default ->
+                throw new IllegalArgumentException("不支持的存储类型：%s".formatted(storage.getType()));
         }
         if (Boolean.TRUE.equals(storage.getIsDefault())) {
             fileStorageService.defaultStorage(storage.getCode());
@@ -235,7 +247,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
 
     @Override
     public void unload(StorageDO storage) {
-        if (!fileStorageService.exists(storage.getCode()) || !fileStorageService.isDynamic(storage.getCode())) {
+        if (!fileStorageService.exists(storage.getCode())
+            || !fileStorageService.isDynamic(storage.getCode())) {
             return;
         }
         fileStorageService.unload(storage.getCode());
@@ -383,7 +396,8 @@ public class StorageServiceImpl extends BaseServiceImpl<StorageMapper, StorageDO
             return oldStorage.getSecretKey();
         }
         // 解密
-        String secretKey = ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(encryptSecretKey));
+        String secretKey =
+            ExceptionUtils.exToNull(() -> SecureUtils.decryptByRsaPrivateKey(encryptSecretKey));
         ValidationUtils.throwIfNull(secretKey, "私有密钥解密失败");
         ValidationUtils.throwIf(secretKey.length() > 255, "私有密钥长度不能超过 255 个字符");
         return secretKey;

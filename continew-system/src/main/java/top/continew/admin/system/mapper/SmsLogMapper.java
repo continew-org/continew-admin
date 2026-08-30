@@ -25,4 +25,5 @@ import top.continew.admin.system.model.entity.SmsLogDO;
  * @author luoqiz
  * @since 2025/03/15 22:15
  */
-public interface SmsLogMapper extends BaseMapper<SmsLogDO> {}
+public interface SmsLogMapper extends BaseMapper<SmsLogDO> {
+}

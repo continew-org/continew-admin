@@ -32,7 +32,8 @@ import java.util.Set;
  * @author Charles7c
  * @since 2023/1/22 17:54
  */
-public interface DeptService extends BaseService<DeptResp, DeptResp, DeptQuery, DeptReq>, IService<DeptDO> {
+public interface DeptService
+    extends BaseService<DeptResp, DeptResp, DeptQuery, DeptReq>, IService<DeptDO> {
 
     /**
      * 查询子部门列表

@@ -129,10 +129,12 @@ public class FileDO extends BaseDO {
      */
     public FileDO(FileInfo fileInfo) {
         String normalizedPath = StrUtil.blankToDefault(fileInfo.getPath(), fileInfo.getFullPath());
-        normalizedPath = normalizedPath.replace("\\", StringConstants.SLASH).replaceAll("/+", StringConstants.SLASH);
+        normalizedPath = normalizedPath.replace("\\", StringConstants.SLASH).replaceAll("/+",
+            StringConstants.SLASH);
         normalizedPath = StrUtil.removePrefix(normalizedPath, StringConstants.SLASH);
         normalizedPath = StrUtil.removeSuffix(normalizedPath, StringConstants.SLASH);
-        String fileName = StrUtil.blankToDefault(fileInfo.getName(), FileNameUtil.getName(normalizedPath));
+        String fileName =
+            StrUtil.blankToDefault(fileInfo.getName(), FileNameUtil.getName(normalizedPath));
         if (StrUtil.isBlank(normalizedPath)) {
             normalizedPath = fileName;
         }
@@ -140,8 +142,10 @@ public class FileDO extends BaseDO {
         this.originalName = StrUtil.blankToDefault(fileInfo.getOriginalFileName(), fileName);
         this.size = fileInfo.getSize();
         int lastSlash = normalizedPath.lastIndexOf(StringConstants.SLASH);
-        String parent = lastSlash < 0 ? StringConstants.EMPTY : normalizedPath.substring(0, lastSlash);
-        this.parentPath = StrUtil.isBlank(parent) ? StringConstants.SLASH : StringConstants.SLASH + parent;
+        String parent =
+            lastSlash < 0 ? StringConstants.EMPTY : normalizedPath.substring(0, lastSlash);
+        this.parentPath =
+            StrUtil.isBlank(parent) ? StringConstants.SLASH : StringConstants.SLASH + parent;
         this.path = StringConstants.SLASH + normalizedPath;
         this.extension = FileNameUtil.extName(fileName);
         this.contentType = fileInfo.getContentType();
@@ -154,8 +158,10 @@ public class FileDO extends BaseDO {
         String thumbnailPath = fileInfo.getThumbnailPath();
         if (StrUtil.isNotBlank(thumbnailPath)) {
             String normalizedThumbnailPath = thumbnailPath.replace("\\", StringConstants.SLASH);
-            if (!normalizedThumbnailPath.startsWith("http://") && !normalizedThumbnailPath.startsWith("https://")) {
-                normalizedThumbnailPath = StrUtil.removePrefix(normalizedThumbnailPath, StringConstants.SLASH);
+            if (!normalizedThumbnailPath.startsWith("http://")
+                && !normalizedThumbnailPath.startsWith("https://")) {
+                normalizedThumbnailPath =
+                    StrUtil.removePrefix(normalizedThumbnailPath, StringConstants.SLASH);
             }
             this.thumbnailName = FileNameUtil.getName(normalizedThumbnailPath);
         }

@@ -63,8 +63,9 @@ public enum RoleCodeEnum {
      * @return 超级管理员角色编码列表
      */
     public static List<String> getSuperRoleCodes() {
-        if (TenantContextHolder.isTenantDisabled() || SpringUtil.getBean(TenantExtensionProperties.class)
-            .isDefaultTenant()) {
+        if (TenantContextHolder.isTenantDisabled()
+            || SpringUtil.getBean(TenantExtensionProperties.class)
+                .isDefaultTenant()) {
             return List.of(SUPER_ADMIN.getCode());
         }
         return List.of(SUPER_ADMIN.getCode(), TENANT_ADMIN.getCode());

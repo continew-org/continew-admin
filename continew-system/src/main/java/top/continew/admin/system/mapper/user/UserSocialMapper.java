@@ -35,5 +35,6 @@ public interface UserSocialMapper extends BaseMapper<UserSocialDO> {
      * @param openId 开放 ID
      * @return 用户社会化关联信息
      */
-    UserSocialDO selectBySourceAndOpenId(@Param("source") String source, @Param("openId") String openId);
+    UserSocialDO selectBySourceAndOpenId(@Param("source") String source,
+        @Param("openId") String openId);
 }

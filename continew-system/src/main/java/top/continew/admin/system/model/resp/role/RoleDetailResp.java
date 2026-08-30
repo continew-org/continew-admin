@@ -40,7 +40,8 @@ import java.util.List;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "角色详情响应参数")
-@AssembleMethod(key = "id", prop = ":deptIds", targetType = RoleDeptService.class, method = @ContainerMethod(bindMethod = "listDeptIdByRoleId", type = MappingType.ORDER_OF_KEYS))
+@AssembleMethod(key = "id", prop = ":deptIds", targetType = RoleDeptService.class,
+    method = @ContainerMethod(bindMethod = "listDeptIdByRoleId", type = MappingType.ORDER_OF_KEYS))
 public class RoleDetailResp extends BaseDetailResp {
 
     @Serial

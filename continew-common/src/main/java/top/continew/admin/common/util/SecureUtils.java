@@ -17,6 +17,7 @@
 package top.continew.admin.common.util;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
@@ -49,6 +50,18 @@ public class SecureUtils {
     }
 
     /**
+     * 公钥加密
+     *
+     * @param data      要加密的内容
+     * @param publicKey 公钥
+     * @return 加密后的内容
+     */
+    public static String encryptByRsaPublicKey(String data, String publicKey) {
+        return new String(SecureUtil.rsa(null, publicKey).encrypt(data, KeyType.PublicKey),
+            CharsetUtil.CHARSET_UTF_8);
+    }
+
+    /**
      * 私钥解密
      *
      * @param data 要解密的内容（Base64 加密过）
@@ -61,17 +74,6 @@ public class SecureUtils {
     }
 
     /**
-     * 公钥加密
-     *
-     * @param data      要加密的内容
-     * @param publicKey 公钥
-     * @return 加密后的内容
-     */
-    public static String encryptByRsaPublicKey(String data, String publicKey) {
-        return new String(SecureUtil.rsa(null, publicKey).encrypt(data, KeyType.PublicKey));
-    }
-
-    /**
      * 私钥解密
      *
      * @param data       要解密的内容（Base64 加密过）
@@ -79,7 +81,8 @@ public class SecureUtils {
      * @return 解密后的内容
      */
     public static String decryptByRsaPrivateKey(String data, String privateKey) {
-        return new String(SecureUtil.rsa(privateKey, null).decrypt(Base64.decode(data), KeyType.PrivateKey));
+        return new String(SecureUtil.rsa(privateKey, null)
+            .decrypt(Base64.decode(data), KeyType.PrivateKey), CharsetUtil.CHARSET_UTF_8);
     }
 
     /**
@@ -89,7 +92,8 @@ public class SecureUtils {
      * @param errorMsg                        错误信息
      * @return 解密后的密码
      */
-    public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey, String errorMsg) {
+    public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey,
+        String errorMsg) {
         return decryptPasswordByRsaPrivateKey(encryptedPasswordByRsaPublicKey, errorMsg, false);
     }
 
@@ -102,13 +106,15 @@ public class SecureUtils {
      * @return 解密后的密码
      */
     public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey,
-                                                        String errorMsg,
-                                                        boolean isVerifyPattern) {
-        String rawPassword = ExceptionUtils.exToNull(() -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey));
+        String errorMsg,
+        boolean isVerifyPattern) {
+        String rawPassword =
+            ExceptionUtils.exToNull(() -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey));
         ValidationUtils.throwIfBlank(rawPassword, errorMsg);
         if (isVerifyPattern) {
             ValidationUtils.throwIf(!ReUtil
-                .isMatch(RegexConstants.PASSWORD, rawPassword), "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
+                .isMatch(RegexConstants.PASSWORD, rawPassword),
+                "密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字");
         }
         return rawPassword;
     }

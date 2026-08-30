@@ -40,6 +40,6 @@ public interface UserRoleMapper extends BaseMapper<UserRoleDO> {
      * @return 分页列表信息
      */
     IPage<RoleUserResp> selectUserPage(@Param("page") IPage<UserRoleDO> page,
-                                       @Param(Constants.WRAPPER) QueryWrapper<UserRoleDO> queryWrapper);
+        @Param(Constants.WRAPPER) QueryWrapper<UserRoleDO> queryWrapper);
 
 }

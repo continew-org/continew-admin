@@ -59,7 +59,8 @@ public class FileResp extends BaseDetailResp {
     /**
      * URL
      */
-    @Schema(description = "URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/2025/2/25/6824afe8408da079832dcfb6.jpg")
+    @Schema(description = "URL",
+        example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/2025/2/25/6824afe8408da079832dcfb6.jpg")
     private String url;
 
     /**
@@ -95,7 +96,8 @@ public class FileResp extends BaseDetailResp {
     /**
      * SHA256 值
      */
-    @Schema(description = "SHA256 值", example = "722f185c48bed892d6fa12e2b8bf1e5f8200d4a70f522fb62112b6caf13cb74e")
+    @Schema(description = "SHA256 值",
+        example = "722f185c48bed892d6fa12e2b8bf1e5f8200d4a70f522fb62112b6caf13cb74e")
     private String sha256;
 
     /**
@@ -125,7 +127,8 @@ public class FileResp extends BaseDetailResp {
     /**
      * 缩略图 URL
      */
-    @Schema(description = "缩略图 URL", example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/2025/2/25/example.jpg.min.jpg")
+    @Schema(description = "缩略图 URL",
+        example = "https://examplebucket.oss-cn-hangzhou.aliyuncs.com/2025/2/25/example.jpg.min.jpg")
     private String thumbnailUrl;
 
     /**

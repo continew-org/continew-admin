@@ -46,8 +46,8 @@ public class SaExtensionInterceptor extends SaInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Object handler) throws Exception {
+        HttpServletResponse response,
+        Object handler) throws Exception {
         boolean flag = super.preHandle(request, response, handler);
         if (!flag || !StpUtil.isLogin()) {
             return flag;
@@ -73,9 +73,9 @@ public class SaExtensionInterceptor extends SaInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request,
-                                HttpServletResponse response,
-                                Object handler,
-                                @Nullable Exception e) throws Exception {
+        HttpServletResponse response,
+        Object handler,
+        @Nullable Exception e) throws Exception {
         // 清除上下文
         try {
             super.afterCompletion(request, response, handler, e);

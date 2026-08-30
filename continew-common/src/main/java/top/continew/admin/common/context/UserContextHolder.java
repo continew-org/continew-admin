@@ -32,8 +32,10 @@ import top.continew.starter.core.util.ExceptionUtils;
  */
 public class UserContextHolder {
 
-    private static final TransmittableThreadLocal<UserContext> CONTEXT_HOLDER = new TransmittableThreadLocal<>();
-    private static final TransmittableThreadLocal<UserExtraContext> EXTRA_CONTEXT_HOLDER = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<UserContext> CONTEXT_HOLDER =
+        new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<UserExtraContext> EXTRA_CONTEXT_HOLDER =
+        new TransmittableThreadLocal<>();
 
     private UserContextHolder() {
     }
@@ -178,7 +180,8 @@ public class UserContextHolder {
      * @return 用户昵称
      */
     public static String getNickname(Long userId) {
-        return ExceptionUtils.exToNull(() -> SpringUtil.getBean(UserApi.class).getNicknameById(userId));
+        return ExceptionUtils
+            .exToNull(() -> SpringUtil.getBean(UserApi.class).getNicknameById(userId));
     }
 
     /**

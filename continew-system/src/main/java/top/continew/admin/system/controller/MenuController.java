@@ -49,9 +49,11 @@ import java.lang.reflect.Method;
 @Tag(name = "菜单管理 API")
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/system/menu", api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
-    Api.TREE_DICT})
-public class MenuController extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
+@CrudRequestMapping(value = "/system/menu",
+    api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
+        Api.TREE_DICT})
+public class MenuController
+    extends BaseController<MenuService, MenuResp, MenuResp, MenuQuery, MenuReq> {
 
     @Operation(summary = "清除缓存", description = "清除缓存")
     @SaCheckPermission("system:menu:clearCache")
@@ -61,13 +63,14 @@ public class MenuController extends BaseController<MenuService, MenuResp, MenuRe
     }
 
     @Override
-    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {
+    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass)
+        throws Exception {
         super.preHandle(crudApi, args, targetMethod, targetClass);
         Api api = crudApi.value();
         if (!(Api.CREATE.equals(api) || Api.UPDATE.equals(api))) {
             return;
         }
-        MenuReq req = (MenuReq)args[0];
+        MenuReq req = (MenuReq) args[0];
         Boolean isExternal = ObjectUtil.defaultIfNull(req.getIsExternal(), false);
         String path = req.getPath();
         ValidationUtils.throwIf(Boolean.TRUE.equals(isExternal) && !URLUtils
@@ -75,7 +78,8 @@ public class MenuController extends BaseController<MenuService, MenuResp, MenuRe
         // 非外链菜单参数修正
         if (Boolean.FALSE.equals(isExternal)) {
             ValidationUtils.throwIf(URLUtils.isHttpUrl(path), "路由地址格式不正确");
-            req.setPath(StrUtil.isBlank(path) ? path : StrUtil.prependIfMissing(path, StringConstants.SLASH));
+            req.setPath(StrUtil.isBlank(path) ? path
+                : StrUtil.prependIfMissing(path, StringConstants.SLASH));
             req.setName(StrUtil.removePrefix(req.getName(), StringConstants.SLASH));
             req.setComponent(StrUtil.removePrefix(req.getComponent(), StringConstants.SLASH));
         }

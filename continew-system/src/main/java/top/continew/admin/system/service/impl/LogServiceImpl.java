@@ -78,12 +78,14 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
-        List<LoginLogExportResp> list = BeanUtil.copyToList(this.list(query, sortQuery), LoginLogExportResp.class);
+        List<LoginLogExportResp> list =
+            BeanUtil.copyToList(this.list(query, sortQuery), LoginLogExportResp.class);
         ExcelUtils.export(list, "导出登录日志数据", LoginLogExportResp.class, response);
     }
 
     @Override
-    public void exportOperationLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
+    public void exportOperationLog(LogQuery query, SortQuery sortQuery,
+        HttpServletResponse response) {
         List<OperationLogExportResp> list = BeanUtil.copyToList(this
             .list(query, sortQuery), OperationLogExportResp.class);
         ExcelUtils.export(list, "导出操作日志数据", OperationLogExportResp.class, response);
@@ -115,16 +117,18 @@ public class LogServiceImpl implements LogService {
         String createUserString = query.getCreateUserString();
         DisEnableStatusEnum status = query.getStatus();
         List<LocalDateTime> createTimeList = query.getCreateTime();
-        return new QueryWrapper<LogDO>().and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)
-            .or()
-            .like("t1.module", description))
+        return new QueryWrapper<LogDO>()
+            .and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)
+                .or()
+                .like("t1.module", description))
             .eq(StrUtil.isNotBlank(module), "t1.module", module)
             .and(StrUtil.isNotBlank(ip), q -> q.like("t1.ip", ip).or().like("t1.address", ip))
             .and(StrUtil.isNotBlank(createUserString), q -> q.like("t2.username", createUserString)
                 .or()
                 .like("t2.nickname", createUserString))
             .eq(status != null, "t1.status", status)
-            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time", CollUtil.getFirst(createTimeList), CollUtil
-                .getLast(createTimeList));
+            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time",
+                CollUtil.getFirst(createTimeList), CollUtil
+                    .getLast(createTimeList));
     }
 }

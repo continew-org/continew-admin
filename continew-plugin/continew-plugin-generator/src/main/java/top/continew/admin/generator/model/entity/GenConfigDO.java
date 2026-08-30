@@ -17,7 +17,11 @@
 package top.continew.admin.generator.model.entity;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -141,8 +145,9 @@ public class GenConfigDO implements Serializable {
      */
     @Schema(description = "类名前缀", example = "User")
     public String getClassNamePrefix() {
-        String rawClassName = StrUtils.blankToDefault(this.getTablePrefix(), this.getTableName(), prefix -> StrUtil
-            .removePrefix(this.getTableName(), prefix));
+        String rawClassName =
+            StrUtils.blankToDefault(this.getTablePrefix(), this.getTableName(), prefix -> StrUtil
+                .removePrefix(this.getTableName(), prefix));
         return StrUtil.upperFirst(StrUtil.toCamelCase(rawClassName));
     }
 }

@@ -32,7 +32,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictService extends BaseService<DictResp, DictResp, DictQuery, DictReq>, IService<DictDO> {
+public interface DictService
+    extends BaseService<DictResp, DictResp, DictQuery, DictReq>, IService<DictDO> {
 
     /**
      * 查询枚举字典

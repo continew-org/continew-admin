@@ -45,7 +45,8 @@ public class BaseDetailResp extends BaseResp {
      */
     @JsonIgnore
     @ConditionOnPropertyNotNull
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "updateUserString"))
+    @Assemble(container = ContainerConstants.USER_NICKNAME,
+        props = @Mapping(ref = "updateUserString"))
     private Long updateUser;
 
     /**

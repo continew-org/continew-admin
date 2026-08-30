@@ -40,7 +40,11 @@ import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.model.resp.role.RoleDetailResp;
 import top.continew.admin.system.model.resp.role.RoleResp;
-import top.continew.admin.system.service.*;
+import top.continew.admin.system.service.MenuService;
+import top.continew.admin.system.service.RoleDeptService;
+import top.continew.admin.system.service.RoleMenuService;
+import top.continew.admin.system.service.RoleService;
+import top.continew.admin.system.service.UserRoleService;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
@@ -59,7 +63,9 @@ import java.util.Set;
  */
 @Service
 @RequiredArgsConstructor
-public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq> implements RoleService {
+public class RoleServiceImpl
+    extends BaseServiceImpl<RoleMapper, RoleDO, RoleResp, RoleDetailResp, RoleQuery, RoleReq>
+    implements RoleService {
 
     @Resource
     private MenuService menuService;
@@ -88,10 +94,12 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     public void update(RoleReq req, Long id) {
         this.checkNameRepeat(req.getName(), id);
         RoleDO oldRole = super.getById(id);
-        CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改", oldRole.getName());
+        CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改",
+            oldRole.getName());
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
-            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限", oldRole.getName());
+            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
+                oldRole.getName());
         }
         // 更新信息
         super.update(req, id);
@@ -113,8 +121,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             .in(RoleDO::getId, ids)
             .list();
         Optional<RoleDO> isSystemData = list.stream().filter(RoleDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除", isSystemData.orElseGet(RoleDO::new)
-            .getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
+            isSystemData.orElseGet(RoleDO::new)
+                .getName());
         CheckUtils.throwIf(userRoleService.isRoleIdExists(ids), "所选角色存在用户关联，请解除关联后重试");
         // 删除角色和菜单关联
         roleMenuService.deleteByRoleIds(ids);
@@ -147,7 +156,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @CacheInvalidate(key = "#id", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
     public void updatePermission(Long id, RolePermissionUpdateReq req) {
         RoleDO role = super.getById(id);
-        CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许修改角色功能权限", role.getName());
+        CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许修改角色功能权限",
+            role.getName());
         // 保存角色和菜单关联
         boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
         // 如果功能权限有变更，则更新在线用户权限信息
@@ -163,7 +173,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
     @Override
     public void assignToUsers(Long id, List<Long> userIds) {
         RoleDO role = super.getById(id);
-        CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许分配角色给其他用户", role.getName());
+        CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许分配角色给其他用户",
+            role.getName());
         // 保存用户和角色关联
         userRoleService.assignRoleToUsers(id, userIds);
         // 更新用户上下文
@@ -199,7 +210,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         if (CollUtil.isEmpty(roleIdList)) {
             return Collections.emptySet();
         }
-        List<RoleDO> roleList = baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
+        List<RoleDO> roleList =
+            baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
         return CollUtils.mapToSet(roleList, RoleDO::getCode);
     }
 
@@ -213,12 +225,14 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
             .select(RoleDO::getId, RoleDO::getCode, RoleDO::getDataScope)
             .in(RoleDO::getId, roleIdList)
             .list();
-        return CollUtils.mapToSet(roleList, r -> new RoleContext(r.getId(), r.getCode(), r.getDataScope()));
+        return CollUtils.mapToSet(roleList,
+            r -> new RoleContext(r.getId(), r.getCode(), r.getDataScope()));
     }
 
     @Override
     public Long getIdByCode(String code) {
-        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).oneOpt().map(RoleDO::getId).orElse(null);
+        return baseMapper.lambdaQuery().eq(RoleDO::getCode, code).oneOpt().map(RoleDO::getId)
+            .orElse(null);
     }
 
     @Override
@@ -234,7 +248,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, RoleDO, RoleRes
         if (CollUtil.isEmpty(roleNames)) {
             return 0;
         }
-        return (int)this.count(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
+        return (int) this.count(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
     }
 
     /**

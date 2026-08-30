@@ -105,7 +105,9 @@ public class TenantResp extends BaseDetailResp {
      * 套餐 ID
      */
     @Schema(description = "套餐 ID", example = "1")
-    @AssembleMethod(props = @Mapping(src = "name", ref = "packageName"), targetType = PackageService.class, method = @ContainerMethod(bindMethod = "get", resultType = PackageResp.class))
+    @AssembleMethod(props = @Mapping(src = "name", ref = "packageName"),
+        targetType = PackageService.class,
+        method = @ContainerMethod(bindMethod = "get", resultType = PackageResp.class))
     private Long packageId;
 
     /**

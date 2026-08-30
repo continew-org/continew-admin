@@ -23,7 +23,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.context.UserContextHolder;
-import top.continew.admin.system.enums.*;
+import top.continew.admin.system.enums.MessageTemplateEnum;
+import top.continew.admin.system.enums.MessageTypeEnum;
+import top.continew.admin.system.enums.NoticeMethodEnum;
+import top.continew.admin.system.enums.NoticeScopeEnum;
+import top.continew.admin.system.enums.NoticeStatusEnum;
 import top.continew.admin.system.mapper.NoticeMapper;
 import top.continew.admin.system.model.entity.NoticeDO;
 import top.continew.admin.system.model.query.NoticeQuery;
@@ -50,15 +54,18 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> implements NoticeService {
+public class NoticeServiceImpl extends
+    BaseServiceImpl<NoticeMapper, NoticeDO, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq>
+    implements NoticeService {
 
     private final NoticeLogService noticeLogService;
     private final MessageService messageService;
 
     @Override
     public PageResp<NoticeResp> page(NoticeQuery query, PageQuery pageQuery) {
-        IPage<NoticeResp> page = baseMapper.selectNoticePage(new Page<>(pageQuery.getPage(), pageQuery
-            .getSize()), query);
+        IPage<NoticeResp> page =
+            baseMapper.selectNoticePage(new Page<>(pageQuery.getPage(), pageQuery
+                .getSize()), query);
         PageResp<NoticeResp> pageResp = PageResp.build(page);
         pageResp.getList().forEach(this::fill);
         return pageResp;
@@ -92,8 +99,10 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
         switch (oldNotice.getStatus()) {
             case PUBLISHED -> {
                 CheckUtils.throwIfNotEqual(req.getStatus(), oldNotice.getStatus(), "公告已发布，不允许修改状态");
-                CheckUtils.throwIfNotEqual(req.getIsTiming(), oldNotice.getIsTiming(), "公告已发布，不允许修改定时发布信息");
-                CheckUtils.throwIfNotEqual(req.getNoticeScope(), oldNotice.getNoticeScope(), "公告已发布，不允许修改通知范围");
+                CheckUtils.throwIfNotEqual(req.getIsTiming(), oldNotice.getIsTiming(),
+                    "公告已发布，不允许修改定时发布信息");
+                CheckUtils.throwIfNotEqual(req.getNoticeScope(), oldNotice.getNoticeScope(),
+                    "公告已发布，不允许修改通知范围");
                 if (NoticeScopeEnum.USER.equals(oldNotice.getNoticeScope())) {
                     CheckUtils.throwIfNotEmpty(CollUtil.disjunction(req.getNoticeUsers(), oldNotice
                         .getNoticeUsers()), "公告已发布，不允许修改通知用户");
@@ -102,7 +111,8 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
                     .getNoticeMethods()), "公告已发布，不允许修改通知方式");
                 // 修正定时发布信息
                 if (Boolean.TRUE.equals(oldNotice.getIsTiming())) {
-                    CheckUtils.throwIfNotEqual(req.getPublishTime(), oldNotice.getPublishTime(), "公告已发布，不允许修改定时发布信息");
+                    CheckUtils.throwIfNotEqual(req.getPublishTime(), oldNotice.getPublishTime(),
+                        "公告已发布，不允许修改定时发布信息");
                 }
                 req.setPublishTime(oldNotice.getPublishTime());
             }
@@ -128,10 +138,12 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
         // 重置定时发布时间
         if (!NoticeStatusEnum.PUBLISHED.equals(entity.getStatus()) && Boolean.FALSE.equals(entity
             .getIsTiming()) && entity.getPublishTime() != null) {
-            baseMapper.lambdaUpdate().set(NoticeDO::getPublishTime, null).eq(NoticeDO::getId, entity.getId()).update();
+            baseMapper.lambdaUpdate().set(NoticeDO::getPublishTime, null)
+                .eq(NoticeDO::getId, entity.getId()).update();
         }
         // 发送消息
-        if (Boolean.FALSE.equals(entity.getIsTiming()) && NoticeStatusEnum.PUBLISHED.equals(entity.getStatus())) {
+        if (Boolean.FALSE.equals(entity.getIsTiming())
+            && NoticeStatusEnum.PUBLISHED.equals(entity.getStatus())) {
             this.publish(entity);
         }
     }
@@ -145,7 +157,8 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
     @Override
     public void publish(NoticeDO notice) {
         List<Integer> noticeMethods = notice.getNoticeMethods();
-        if (CollUtil.isNotEmpty(noticeMethods) && noticeMethods.contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue())) {
+        if (CollUtil.isNotEmpty(noticeMethods)
+            && noticeMethods.contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue())) {
             MessageTemplateEnum template = MessageTemplateEnum.NOTICE_PUBLISH;
             MessageReq req = new MessageReq(MessageTypeEnum.SYSTEM);
             req.setTitle(template.getTitle());
@@ -158,7 +171,8 @@ public class NoticeServiceImpl extends BaseServiceImpl<NoticeMapper, NoticeDO, N
 
     @Override
     public List<Long> listUnreadIdsByUserId(NoticeMethodEnum method, Long userId) {
-        return baseMapper.selectUnreadIdsByUserId(method != null ? method.getValue() : null, userId);
+        return baseMapper.selectUnreadIdsByUserId(method != null ? method.getValue() : null,
+            userId);
     }
 
     @Override

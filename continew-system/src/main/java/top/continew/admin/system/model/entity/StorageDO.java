@@ -150,7 +150,8 @@ public class StorageDO extends BaseDO {
         // IP（MinIO） 则拼接 BucketName
         if (ReUtil.isMatch(RegexPool.IPV4, host) || ReUtil.isMatch(RegexPool.IPV6, host)) {
             return StrUtil
-                .appendIfMissing(this.endpoint, StringConstants.SLASH) + this.bucketName + StringConstants.SLASH;
+                .appendIfMissing(this.endpoint, StringConstants.SLASH) + this.bucketName
+                + StringConstants.SLASH;
         }
         return "%s://%s.%s/".formatted(url.getProtocol(), this.bucketName, host);
     }

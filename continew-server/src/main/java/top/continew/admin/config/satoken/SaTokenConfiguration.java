@@ -46,7 +46,11 @@ import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -117,7 +121,8 @@ public class SaTokenConfiguration {
             if (AopUtils.isAopProxy(bean)) {
                 clazz = AopProxyUtils.ultimateTargetClass(bean);
             }
-            CrudRequestMapping crudRequestMapping = AnnotationUtils.findAnnotation(clazz, CrudRequestMapping.class);
+            CrudRequestMapping crudRequestMapping =
+                AnnotationUtils.findAnnotation(clazz, CrudRequestMapping.class);
             SaIgnore saIgnore = AnnotationUtils.findAnnotation(clazz, SaIgnore.class);
             if (crudRequestMapping != null) {
                 // 缓存权限前缀
@@ -133,8 +138,9 @@ public class SaTokenConfiguration {
             // 合并现有的 excludes 和新扫描到的
             String[] existingExcludes = Optional.ofNullable(properties.getSecurity().getExcludes())
                 .orElse(new String[0]);
-            String[] combinedExcludes = Stream.concat(Arrays.stream(existingExcludes), additionalExcludes.stream())
-                .toArray(String[]::new);
+            String[] combinedExcludes =
+                Stream.concat(Arrays.stream(existingExcludes), additionalExcludes.stream())
+                    .toArray(String[]::new);
             properties.getSecurity().setExcludes(combinedExcludes);
         }
         log.debug("缓存 CRUD API 权限前缀完成：{}", CrudApiPermissionPrefixCache.getAll().values());

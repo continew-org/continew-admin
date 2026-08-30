@@ -52,7 +52,9 @@ import java.util.Objects;
 @Data
 @ExcelIgnoreUnannotated
 @Schema(description = "用户详情响应参数")
-@Assemble(key = "id", props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST, handlerType = OneToManyAssembleOperationHandler.class)
+@Assemble(key = "id", props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0,
+    container = ContainerConstants.USER_ROLE_ID_LIST,
+    handlerType = OneToManyAssembleOperationHandler.class)
 public class UserDetailResp extends BaseDetailResp {
 
     @Serial
@@ -91,7 +93,9 @@ public class UserDetailResp extends BaseDetailResp {
      */
     @Schema(description = "部门 ID", example = "5")
     @ConditionOnExpression("#target.deptName == null")
-    @AssembleMethod(props = @Mapping(src = "name", ref = "deptName"), targetType = DeptService.class, method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
+    @AssembleMethod(props = @Mapping(src = "name", ref = "deptName"),
+        targetType = DeptService.class,
+        method = @ContainerMethod(bindMethod = "get", resultType = DeptResp.class))
     @ExcelProperty(value = "部门 ID", order = 6)
     private Long deptId;
 
@@ -106,7 +110,9 @@ public class UserDetailResp extends BaseDetailResp {
      * 角色 ID 列表
      */
     @Schema(description = "角色 ID 列表", example = "2")
-    @Assemble(props = @Mapping(src = "name", ref = "roleNames"), container = ContainerConstants.USER_ROLE_NAME_LIST, handlerType = ManyToManyAssembleOperationHandler.class)
+    @Assemble(props = @Mapping(src = "name", ref = "roleNames"),
+        container = ContainerConstants.USER_ROLE_NAME_LIST,
+        handlerType = ManyToManyAssembleOperationHandler.class)
     @ExcelProperty(value = "角色 ID 列表", converter = ExcelListConverter.class, order = 8)
     private List<Long> roleIds;
 
@@ -150,7 +156,8 @@ public class UserDetailResp extends BaseDetailResp {
     /**
      * 头像地址
      */
-    @Schema(description = "头像地址", example = "https://himg.bdimg.com/sys/portrait/item/public.1.81ac9a9e.rf1ix17UfughLQjNo7XQ_w.jpg")
+    @Schema(description = "头像地址",
+        example = "https://himg.bdimg.com/sys/portrait/item/public.1.81ac9a9e.rf1ix17UfughLQjNo7XQ_w.jpg")
     @ExcelProperty(value = "头像地址", order = 14)
     private String avatar;
 

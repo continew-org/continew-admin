@@ -78,7 +78,8 @@ public class DashboardController {
     @GetMapping("/analysis/geo")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "'GEO'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'GEO'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH,
+        syncLocal = true)
     public List<DashboardChartCommonResp> getAnalysisGeo() throws IOException {
         return dashboardService.getAnalysisGeo();
     }
@@ -88,7 +89,8 @@ public class DashboardController {
     @GetMapping("/access/trend/{days}")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "#days", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "#days", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH,
+        syncLocal = true)
     public List<DashboardAccessTrendResp> listAccessTrend(@PathVariable Integer days) {
         ValidationUtils.throwIf(7 != days && 30 != days, "仅支持查询近 7/30 天访问趋势信息");
         return dashboardService.listAccessTrend(days);
@@ -98,7 +100,8 @@ public class DashboardController {
     @GetMapping("/analysis/timeslot")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "'TIMESLOT'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'TIMESLOT'", name = CacheConstants.DASHBOARD_KEY_PREFIX,
+        cacheType = CacheType.BOTH, syncLocal = true)
     public List<DashboardChartCommonResp> getAnalysisTimeslot() {
         return dashboardService.getAnalysisTimeslot();
     }
@@ -107,7 +110,8 @@ public class DashboardController {
     @GetMapping("/analysis/module")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "'MODULE'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'MODULE'", name = CacheConstants.DASHBOARD_KEY_PREFIX,
+        cacheType = CacheType.BOTH, syncLocal = true)
     public List<DashboardChartCommonResp> getAnalysisModule() {
         return dashboardService.getAnalysisModule();
     }
@@ -116,7 +120,8 @@ public class DashboardController {
     @GetMapping("/analysis/os")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "'OS'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'OS'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH,
+        syncLocal = true)
     public List<DashboardChartCommonResp> getAnalysisOs() {
         return dashboardService.getAnalysisOs();
     }
@@ -125,7 +130,8 @@ public class DashboardController {
     @GetMapping("/analysis/browser")
     @CachePenetrationProtect
     @CacheRefresh(refresh = 7200)
-    @Cached(key = "'BROWSER'", name = CacheConstants.DASHBOARD_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "'BROWSER'", name = CacheConstants.DASHBOARD_KEY_PREFIX,
+        cacheType = CacheType.BOTH, syncLocal = true)
     public List<DashboardChartCommonResp> getAnalysisBrowser() {
         return dashboardService.getAnalysisBrowser();
     }

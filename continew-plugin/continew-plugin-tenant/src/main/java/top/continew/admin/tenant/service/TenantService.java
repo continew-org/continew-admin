@@ -33,7 +33,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2024/11/26 17:20
  */
-public interface TenantService extends BaseService<TenantResp, TenantDetailResp, TenantQuery, TenantReq>, IService<TenantDO> {
+public interface TenantService
+    extends BaseService<TenantResp, TenantDetailResp, TenantQuery, TenantReq>, IService<TenantDO> {
 
     /**
      * 根据域名查询

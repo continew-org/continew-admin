@@ -63,8 +63,9 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @AutoOperate(type = MessageResp.class, on = "list")
     public PageResp<MessageResp> page(MessageQuery query, PageQuery pageQuery) {
-        IPage<MessageResp> page = baseMapper.selectMessagePage(new Page<>(pageQuery.getPage(), pageQuery
-            .getSize()), query);
+        IPage<MessageResp> page =
+            baseMapper.selectMessagePage(new Page<>(pageQuery.getPage(), pageQuery
+                .getSize()), query);
         return PageResp.build(page);
     }
 
@@ -95,7 +96,8 @@ public class MessageServiceImpl implements MessageService {
             for (MessageTypeEnum messageType : MessageTypeEnum.values()) {
                 MessageTypeUnreadResp resp = new MessageTypeUnreadResp();
                 resp.setType(messageType);
-                Long count = baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
+                Long count =
+                    baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
                 resp.setCount(count);
                 detailList.add(resp);
                 total += count;

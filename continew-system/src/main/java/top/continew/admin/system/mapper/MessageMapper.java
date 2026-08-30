@@ -42,7 +42,8 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
      * @param query 查询条件
      * @return 消息列表
      */
-    IPage<MessageResp> selectMessagePage(@Param("page") Page<MessageDO> page, @Param("query") MessageQuery query);
+    IPage<MessageResp> selectMessagePage(@Param("page") Page<MessageDO> page,
+        @Param("query") MessageQuery query);
 
     /**
      * 查询消息详情
@@ -67,5 +68,6 @@ public interface MessageMapper extends BaseMapper<MessageDO> {
      * @param type   消息类型
      * @return 未读消息数量
      */
-    Long selectUnreadCountByUserIdAndType(@Param("userId") Long userId, @Param("type") Integer type);
+    Long selectUnreadCountByUserIdAndType(@Param("userId") Long userId,
+        @Param("type") Integer type);
 }

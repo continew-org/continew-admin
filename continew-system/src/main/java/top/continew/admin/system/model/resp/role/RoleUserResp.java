@@ -59,7 +59,9 @@ public class RoleUserResp implements Serializable {
      * 用户 ID
      */
     @Schema(description = "用户 ID", example = "1")
-    @Assemble(props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST, handlerType = OneToManyAssembleOperationHandler.class)
+    @Assemble(props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0,
+        container = ContainerConstants.USER_ROLE_ID_LIST,
+        handlerType = OneToManyAssembleOperationHandler.class)
     private Long userId;
 
     /**
@@ -114,7 +116,9 @@ public class RoleUserResp implements Serializable {
      * 角色 ID 列表
      */
     @Schema(description = "角色 ID 列表", example = "2")
-    @Assemble(props = @Mapping(src = "name", ref = "roleNames"), container = ContainerConstants.USER_ROLE_NAME_LIST, handlerType = ManyToManyAssembleOperationHandler.class)
+    @Assemble(props = @Mapping(src = "name", ref = "roleNames"),
+        container = ContainerConstants.USER_ROLE_NAME_LIST,
+        handlerType = ManyToManyAssembleOperationHandler.class)
     private List<Long> roleIds;
 
     /**

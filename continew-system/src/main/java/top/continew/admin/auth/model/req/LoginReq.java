@@ -35,7 +35,8 @@ import java.io.Serializable;
  * @since 2024/12/22 15:16
  */
 @Data
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "authType", visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
+    property = "authType", visible = true)
 @JsonSubTypes({@JsonSubTypes.Type(value = AccountLoginReq.class, name = "ACCOUNT"),
     @JsonSubTypes.Type(value = EmailLoginReq.class, name = "EMAIL"),
     @JsonSubTypes.Type(value = PhoneLoginReq.class, name = "PHONE"),

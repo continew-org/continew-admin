@@ -36,6 +36,14 @@
     <properties>
         <!-- 项目版本号 -->
         <revision>4.2.0-SNAPSHOT</revision>
+
+        <!-- Maven Plugin Versions -->
+        <spotless.version>3.9.0</spotless.version>
+        <checkstyle.version>11.0.0</checkstyle.version>
+        <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
+        <spotbugs.version>4.9.4.0</spotbugs.version>
+        <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+        <extra-enforcer-rules.version>1.9.0</extra-enforcer-rules.version>
     </properties>
 
     <!-- 全局依赖版本管理 -->
@@ -126,29 +134,121 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!-- 代码格式化插件 -->
+            <!-- 构建环境与依赖卫生检查插件（validate 阶段门禁） -->
             <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>${extra-enforcer-rules.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <rules>
+                        <requireMavenVersion>
+                            <version>[3.9,4)</version>
+                            <message>Maven 版本不满足要求：需要 &gt;= 3.9 且 &lt; 4.0（项目锁定 3.9.16；Maven 4 暂未适配），当前为 ${maven.version}。&#10;请改用项目自带的 Maven Wrapper 构建：&#10;· 命令行：Linux/macOS 执行 ./mvnw，Windows 执行 mvnw.cmd&#10;· IntelliJ IDEA：设置内搜索 Maven，将 Maven home path（Maven 主路径）设为 Use Maven wrapper</message>
+                        </requireMavenVersion>
+                        <requireJavaVersion>
+                            <version>[17,)</version>
+                            <message>本项目要求 JDK 17 及以上版本。</message>
+                        </requireJavaVersion>
+                        <banDuplicatePomDependencyVersions/>
+                        <enforceBytecodeVersion>
+                            <maxJdkVersion>17</maxJdkVersion>
+                            <message>依赖中存在高于 Java 17 字节码版本的构件，请勿引入。</message>
+                        </enforceBytecodeVersion>
+                    </rules>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>compile</phase>
+                        <id>enforce-environment</id>
                         <goals>
-                            <goal>apply</goal>
+                            <goal>enforce</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- 代码格式化插件（validate 阶段门禁） -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
                 <configuration>
                     <java>
-                        <removeUnusedImports/>
+                        <!-- 步骤按声明顺序执行：格式化 → 清理 → 补 License Header；@formatter:off/on 包裹的区间跳过 -->
+                        <toggleOffOn/>
                         <eclipse>
-                            <file>.style/p3c-codestyle.xml</file>
+                            <file>${maven.multiModuleProjectDirectory}/style/ocn-eclipse-formatter.xml</file>
                         </eclipse>
+                        <removeUnusedImports/>
+                        <trimTrailingWhitespace/>
                         <licenseHeader>
-                            <file>.style/license-header</file>
+                            <file>${maven.multiModuleProjectDirectory}/style/license-header</file>
                         </licenseHeader>
                     </java>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>spotless-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 源码语义规范检查插件（validate 阶段门禁，与 Spotless 格式层零重叠） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${maven.multiModuleProjectDirectory}/style/ocn-checkstyle.xml</configLocation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 字节码缺陷检查插件（verify 阶段门禁） -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>High</threshold>
+                    <excludeFilterFile>${maven.multiModuleProjectDirectory}/style/ocn-spotbugs-exclude.xml</excludeFilterFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>spotbugs-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <!-- 统一版本号插件 -->
             <plugin>
@@ -179,6 +279,32 @@
     </build>
 
     <profiles>
+        <!-- 格式化模式：跳过 validate 阶段的格式与规范门禁（Spotless check、Checkstyle），
+             改为编译前自动修复格式（格式化 → 清理 import → 补 License Header） -->
+        <profile>
+            <id>format</id>
+            <properties>
+                <spotless.check.skip>true</spotless.check.skip>
+                <checkstyle.skip>true</checkstyle.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.diffplug.spotless</groupId>
+                        <artifactId>spotless-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>spotless-apply</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>apply</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!-- Sonar 代码质量分析 -->
         <profile>
             <id>sonar</id>

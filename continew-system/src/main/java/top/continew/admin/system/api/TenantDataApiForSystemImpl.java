@@ -33,7 +33,14 @@ import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.common.model.dto.TenantDTO;
 import top.continew.admin.common.util.SecureUtils;
-import top.continew.admin.system.mapper.*;
+import top.continew.admin.system.mapper.DeptMapper;
+import top.continew.admin.system.mapper.LogMapper;
+import top.continew.admin.system.mapper.MessageMapper;
+import top.continew.admin.system.mapper.NoticeMapper;
+import top.continew.admin.system.mapper.RoleDeptMapper;
+import top.continew.admin.system.mapper.RoleMapper;
+import top.continew.admin.system.mapper.RoleMenuMapper;
+import top.continew.admin.system.mapper.UserRoleMapper;
 import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.mapper.user.UserPasswordHistoryMapper;
 import top.continew.admin.system.mapper.user.UserSocialMapper;
@@ -183,7 +190,8 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
      */
     private Long initUserData(TenantDTO tenant, Long deptId) {
         // 解密密码
-        String password = SecureUtils.decryptPasswordByRsaPrivateKey(tenant.getAdminPassword(), "密码解密失败", true);
+        String password =
+            SecureUtils.decryptPasswordByRsaPrivateKey(tenant.getAdminPassword(), "密码解密失败", true);
         // 初始化用户
         UserDO user = new UserDO();
         user.setUsername(tenant.getAdminUsername());

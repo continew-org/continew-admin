@@ -49,7 +49,8 @@ public class NextDoc4jCustomPathFiltering implements NextDoc4jPathExcluder {
      */
     private void addConfiguredExcludes(Set<String> paths) {
         if (saTokenExtensionProperties == null || saTokenExtensionProperties
-            .getSecurity() == null || saTokenExtensionProperties.getSecurity().getExcludes() == null) {
+            .getSecurity() == null
+            || saTokenExtensionProperties.getSecurity().getExcludes() == null) {
             return;
         }
 

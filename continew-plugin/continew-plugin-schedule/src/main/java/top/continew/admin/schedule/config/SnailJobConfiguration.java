@@ -45,7 +45,7 @@ public class SnailJobConfiguration {
     public void onStarting() {
         SnailLogbackAppender<ILoggingEvent> appender = new SnailLogbackAppender<>();
         appender.start();
-        LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(appender);
     }

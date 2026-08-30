@@ -44,7 +44,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class PackageServiceImpl extends BaseServiceImpl<PackageMapper, PackageDO, PackageResp, PackageDetailResp, PackageQuery, PackageReq> implements PackageService {
+public class PackageServiceImpl extends
+    BaseServiceImpl<PackageMapper, PackageDO, PackageResp, PackageDetailResp, PackageQuery, PackageReq>
+    implements PackageService {
 
     private final PackageMenuService packageMenuService;
     @Lazy

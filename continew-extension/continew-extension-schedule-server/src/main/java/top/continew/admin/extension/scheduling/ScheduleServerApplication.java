@@ -38,7 +38,8 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 @Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
-public class ScheduleServerApplication extends com.aizuda.snailjob.server.SnailJobServerApplication implements ApplicationRunner {
+public class ScheduleServerApplication extends com.aizuda.snailjob.server.SnailJobServerApplication
+    implements ApplicationRunner {
 
     private final ServerProperties serverProperties;
 
@@ -54,7 +55,8 @@ public class ScheduleServerApplication extends com.aizuda.snailjob.server.SnailJ
         String baseUrl = URLUtil.normalize("%s:%s%s".formatted(hostAddress, port, contextPath));
         log.info("------------------------------------------------------");
         log.info("{} started successfully.", SpringUtil.getApplicationName());
-        log.info("Snail Job: v{} (Spring Boot: v{})", SnailJobVersion.getVersion(), SpringBootVersion.getVersion());
+        log.info("Snail Job: v{} (Spring Boot: v{})", SnailJobVersion.getVersion(),
+            SpringBootVersion.getVersion());
         log.info("服务地址: {}", baseUrl);
         log.info("服务文档: https://snailjob.opensnail.com");
         log.info("注意: 此服务为 Snail Job 服务端 (为方便本地开发使用而特意提供)");

@@ -47,7 +47,7 @@ public class TenantConfiguration {
     @Bean
     @ConditionalOnEnabledTenant
     public TenantProvider tenantProvider(TenantExtensionProperties tenantExtensionProperties,
-                                         TenantService tenantService) {
+        TenantService tenantService) {
         return new DefaultTenantProvider(tenantExtensionProperties, tenantService);
     }
 
@@ -56,6 +56,7 @@ public class TenantConfiguration {
      */
     @Bean
     public GroupedOpenApi tenantModuleApi() {
-        return GroupedOpenApi.builder().group("tenant").displayName("租户管理").pathsToMatch("/tenant/**").build();
+        return GroupedOpenApi.builder().group("tenant").displayName("租户管理")
+            .pathsToMatch("/tenant/**").build();
     }
 }

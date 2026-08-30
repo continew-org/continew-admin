@@ -24,7 +24,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.common.api.system.DictApi;
 import top.continew.admin.generator.model.entity.FieldConfigDO;
 import top.continew.admin.generator.model.entity.GenConfigDO;
@@ -57,12 +63,14 @@ public class GeneratorController {
     @Operation(summary = "分页查询生成配置", description = "分页查询生成配置列表")
     @SaCheckPermission("code:generator:list")
     @GetMapping("/config")
-    public PageResp<GenConfigDO> pageGenConfig(@Valid GenConfigQuery query, @Valid PageQuery pageQuery) {
+    public PageResp<GenConfigDO> pageGenConfig(@Valid GenConfigQuery query,
+        @Valid PageQuery pageQuery) {
         return baseService.pageGenConfig(query, pageQuery);
     }
 
     @Operation(summary = "查询生成配置信息", description = "查询生成配置信息")
-    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:list")
     @GetMapping("/config/{tableName}")
     public GenConfigDO getGenConfig(@PathVariable String tableName) throws SQLException {
@@ -70,17 +78,20 @@ public class GeneratorController {
     }
 
     @Operation(summary = "查询字段配置列表", description = "查询字段配置列表")
-    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
-    @Parameter(name = "requireSync", description = "是否需要同步", example = "false", in = ParameterIn.QUERY)
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
+    @Parameter(name = "requireSync", description = "是否需要同步", example = "false",
+        in = ParameterIn.QUERY)
     @SaCheckPermission("code:generator:config")
     @GetMapping("/field/{tableName}")
     public List<FieldConfigDO> listFieldConfig(@PathVariable String tableName,
-                                               @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
+        @RequestParam(required = false, defaultValue = "false") Boolean requireSync) {
         return baseService.listFieldConfig(tableName, requireSync);
     }
 
     @Operation(summary = "保存配置信息", description = "保存配置信息")
-    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "tableName", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:config")
     @PostMapping("/config/{tableName}")
     public void saveConfig(@RequestBody @Valid GenConfigReq req, @PathVariable String tableName) {
@@ -88,7 +99,8 @@ public class GeneratorController {
     }
 
     @Operation(summary = "生成预览", description = "预览生成代码")
-    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:preview")
     @GetMapping("/preview/{tableNames}")
     public List<GeneratePreviewResp> preview(@PathVariable List<String> tableNames) {
@@ -96,7 +108,8 @@ public class GeneratorController {
     }
 
     @Operation(summary = "生成下载代码", description = "生成下载代码")
-    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:generate")
     @PostMapping("/{tableNames}/download")
     public void downloadCode(@PathVariable List<String> tableNames, HttpServletResponse response) {
@@ -104,7 +117,8 @@ public class GeneratorController {
     }
 
     @Operation(summary = "生成代码", description = "生成代码")
-    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user", in = ParameterIn.PATH)
+    @Parameter(name = "tableNames", description = "表名称", required = true, example = "sys_user",
+        in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:generate")
     @PostMapping("/{tableNames}")
     public void generateCode(@PathVariable List<String> tableNames) {

@@ -34,6 +34,7 @@ public class CodeConfiguration {
      */
     @Bean
     public GroupedOpenApi codeModuleApi() {
-        return GroupedOpenApi.builder().group("code").displayName("代码生成").pathsToMatch("/code/**").build();
+        return GroupedOpenApi.builder().group("code").displayName("代码生成").pathsToMatch("/code/**")
+            .build();
     }
 }

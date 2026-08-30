@@ -41,7 +41,9 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictResp, DictQuery, DictReq> implements DictService {
+public class DictServiceImpl
+    extends BaseServiceImpl<DictMapper, DictDO, DictResp, DictResp, DictQuery, DictReq>
+    implements DictService {
 
     private final DictItemService dictItemService;
 
@@ -65,8 +67,9 @@ public class DictServiceImpl extends BaseServiceImpl<DictMapper, DictDO, DictRes
             .in(DictDO::getId, ids)
             .list();
         Optional<DictDO> isSystemData = list.stream().filter(DictDO::getIsSystem).findFirst();
-        CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除", isSystemData.orElseGet(DictDO::new)
-            .getName());
+        CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除",
+            isSystemData.orElseGet(DictDO::new)
+                .getName());
         dictItemService.deleteByDictIds(ids);
     }
 

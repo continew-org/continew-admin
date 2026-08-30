@@ -18,8 +18,11 @@ package top.continew.admin.schedule.model.resp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.schedule.enums.*;
-
+import top.continew.admin.schedule.enums.JobBlockStrategyEnum;
+import top.continew.admin.schedule.enums.JobRouteStrategyEnum;
+import top.continew.admin.schedule.enums.JobStatusEnum;
+import top.continew.admin.schedule.enums.JobTaskTypeEnum;
+import top.continew.admin.schedule.enums.JobTriggerTypeEnum;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

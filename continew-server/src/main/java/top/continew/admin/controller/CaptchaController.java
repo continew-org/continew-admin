@@ -42,7 +42,11 @@ import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.core.factory.SmsFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.resp.CaptchaResp;
 import top.continew.admin.common.config.CaptchaProperties;
 import top.continew.admin.common.constant.CacheConstants;
@@ -98,19 +102,28 @@ public class CaptchaController {
     @GetMapping("/behavior")
     public Object getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
+        captchaReq.setBrowserInfo(
+            JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
         ResponseModel responseModel = behaviorCaptchaService.get(captchaReq);
         CheckUtils.throwIf(() -> !StrUtil.equals(RepCodeEnum.SUCCESS.getCode(), responseModel
             .getRepCode()), responseModel.getRepMsg());
         return responseModel.getRepData();
     }
 
+    /**
+     * 校验行为验证码
+     *
+     * @param captchaReq 验证码参数
+     * @return 校验结果
+     */
     @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
-    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq, HttpServletRequest request) {
+    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq,
+        HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaReq.setBrowserInfo(JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
+        captchaReq.setBrowserInfo(
+            JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
         return behaviorCaptchaService.check(captchaReq);
     }
 
@@ -127,7 +140,8 @@ public class CaptchaController {
         Captcha captcha = graphicCaptchaService.getCaptcha();
         long expireTime = LocalDateTimeUtil.toEpochMilli(LocalDateTime.now()
             .plusMinutes(captchaProperties.getExpirationInMinutes()));
-        RedisUtils.set(captchaKey, captcha.text(), Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
+        RedisUtils.set(captchaKey, captcha.text(),
+            Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
         return CaptchaResp.of(uuid, captcha.toBase64(), expireTime);
     }
 
@@ -148,18 +162,28 @@ public class CaptchaController {
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
     @GetMapping("/mail")
     @RateLimiters({
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "MIN", key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')", rate = 2, interval = 1, unit = TimeUnit.MINUTES, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "HOUR", key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')", rate = 8, interval = 1, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'", key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')", rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 100, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 30, interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP, message = "获取验证码操作太频繁，请稍后再试")})
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "MIN",
+            key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')",
+            rate = 2, interval = 1, unit = TimeUnit.MINUTES, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "HOUR",
+            key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')",
+            rate = 8, interval = 1, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'",
+            key = "#email + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.mail.templatePath')",
+            rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 100,
+            interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#email", rate = 30,
+            interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
+            message = "获取验证码操作太频繁，请稍后再试")})
     public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Email(message = "邮箱格式不正确") String email,
-                            CaptchaVO captchaReq) throws MessagingException {
+        CaptchaVO captchaReq) throws MessagingException {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
-        ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes
-            .getRepMsg());
+        ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
+            verificationRes
+                .getRepMsg());
         // 生成验证码
         CaptchaProperties.CaptchaMail captchaMail = captchaProperties.getMail();
         String captcha = RandomUtil.randomNumbers(captchaMail.getLength());
@@ -196,17 +220,28 @@ public class CaptchaController {
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
     @GetMapping("/sms")
     @RateLimiters({
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "MIN", key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')", rate = 2, interval = 1, unit = TimeUnit.MINUTES, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "HOUR", key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')", rate = 8, interval = 1, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'", key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')", rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 100, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
-        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 30, interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP, message = "获取验证码操作太频繁，请稍后再试")})
-    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone, CaptchaVO captchaReq) {
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "MIN",
+            key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')",
+            rate = 2, interval = 1, unit = TimeUnit.MINUTES, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "HOUR",
+            key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')",
+            rate = 8, interval = 1, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX + "DAY'",
+            key = "#phone + ':' + T(cn.hutool.extra.spring.SpringUtil).getProperty('captcha.sms.templateId')",
+            rate = 20, interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 100,
+            interval = 24, unit = TimeUnit.HOURS, message = "获取验证码操作太频繁，请稍后再试"),
+        @RateLimiter(name = CacheConstants.CAPTCHA_KEY_PREFIX, key = "#phone", rate = 30,
+            interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
+            message = "获取验证码操作太频繁，请稍后再试")})
+    public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone,
+        CaptchaVO captchaReq) {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
         ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
-        ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(), verificationRes
-            .getRepMsg());
+        ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
+            verificationRes
+                .getRepMsg());
         CaptchaProperties.CaptchaSms captchaSms = captchaProperties.getSms();
         // 生成验证码
         String captcha = RandomUtil.randomNumbers(captchaSms.getLength());
@@ -220,7 +255,8 @@ public class CaptchaController {
         messageMap.put(captchaSms.getCodeKey(), captcha);
         messageMap.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
         // 发送验证码
-        SmsResponse smsResponse = smsBlend.sendMessage(phone, (LinkedHashMap<String, String>)messageMap);
+        SmsResponse smsResponse =
+            smsBlend.sendMessage(phone, (LinkedHashMap<String, String>) messageMap);
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;

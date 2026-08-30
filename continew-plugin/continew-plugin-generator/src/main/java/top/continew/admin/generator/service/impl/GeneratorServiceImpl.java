@@ -68,7 +68,15 @@ import top.continew.starter.core.util.FileUploadUtils;
 import javax.sql.DataSource;
 import java.io.File;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -88,17 +96,20 @@ public class GeneratorServiceImpl implements GeneratorService {
     private final ApplicationProperties applicationProperties;
     private final FieldConfigMapper fieldConfigMapper;
     private final GenConfigMapper genConfigMapper;
-    private static final List<String> TIME_PACKAGE_CLASS = Arrays.asList("LocalDate", "LocalTime", "LocalDateTime");
+    private static final List<String> TIME_PACKAGE_CLASS =
+        Arrays.asList("LocalDate", "LocalTime", "LocalDateTime");
 
     @Override
     public PageResp<GenConfigDO> pageGenConfig(GenConfigQuery query, PageQuery pageQuery) {
         // 查询所有表
         List<Table> tableList = MetaUtils.getTables(dataSource);
-        tableList.removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
-            .getExcludeTables()));
+        tableList
+            .removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
+                .getExcludeTables()));
         String tableName = query.getTableName();
         if (StrUtil.isNotBlank(tableName)) {
-            tableList.removeIf(table -> !StrUtil.containsAnyIgnoreCase(table.getTableName(), tableName));
+            tableList
+                .removeIf(table -> !StrUtil.containsAnyIgnoreCase(table.getTableName(), tableName));
         }
         // 查询生成配置
         List<GenConfigDO> list = tableList.parallelStream().map(table -> {
@@ -110,8 +121,10 @@ public class GeneratorServiceImpl implements GeneratorService {
             return genConfig;
         })
             .sorted(Comparator.comparing(GenConfigDO::getTableName)
-                .thenComparing(GenConfigDO::getUpdateTime, Comparator.nullsLast(Comparator.naturalOrder()))
-                .thenComparing(GenConfigDO::getCreateTime, Comparator.nullsLast(Comparator.naturalOrder())))
+                .thenComparing(GenConfigDO::getUpdateTime,
+                    Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(GenConfigDO::getCreateTime,
+                    Comparator.nullsLast(Comparator.naturalOrder())))
             .toList();
         // 分页
         return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
@@ -129,12 +142,14 @@ public class GeneratorServiceImpl implements GeneratorService {
             List<Table> tableList = MetaUtils.getTables(dataSource, tableName);
             if (CollUtil.isNotEmpty(tableList)) {
                 Table table = tableList.get(0);
-                genConfig.setBusinessName(StrUtil.replace(table.getComment(), "表", StringConstants.EMPTY));
+                genConfig.setBusinessName(
+                    StrUtil.replace(table.getComment(), "表", StringConstants.EMPTY));
             }
             // 默认作者名称（上次保存使用的作者名称）
-            GenConfigDO lastGenConfig = genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class)
-                .orderByDesc(GenConfigDO::getCreateTime)
-                .last("LIMIT 1"));
+            GenConfigDO lastGenConfig =
+                genConfigMapper.selectOne(Wrappers.lambdaQuery(GenConfigDO.class)
+                    .orderByDesc(GenConfigDO::getCreateTime)
+                    .last("LIMIT 1"));
             if (lastGenConfig != null) {
                 genConfig.setAuthor(lastGenConfig.getAuthor());
             }
@@ -153,13 +168,14 @@ public class GeneratorServiceImpl implements GeneratorService {
         Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
         // 获取数据库对应的类型映射配置
         DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
-        Map<String, List<String>> typeMappingMap = generatorProperties.getTypeMappings().get(databaseType);
+        Map<String, List<String>> typeMappingMap =
+            generatorProperties.getTypeMappings().get(databaseType);
         CheckUtils.throwIfEmpty(typeMappingMap, "请先配置对应数据库的类型映射");
         Set<Map.Entry<String, List<String>>> typeMappingEntrySet = typeMappingMap.entrySet();
         // 新增或更新字段配置
         Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
             .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (existing,
-                                                                                          replacement) -> existing));
+                replacement) -> existing));
         int i = 1;
         for (Column column : columnList) {
             FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
@@ -185,28 +201,33 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Transactional(rollbackFor = Exception.class)
     public void saveConfig(GenConfigReq req, String tableName) {
         // 保存字段配置（先删除再保存）
-        fieldConfigMapper.delete(Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
+        fieldConfigMapper.delete(
+            Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
         List<FieldConfigDO> fieldConfigList = req.getFieldConfigs();
         for (int i = 0; i < fieldConfigList.size(); i++) {
             FieldConfigDO fieldConfig = fieldConfigList.get(i);
             // 重新设置排序
             fieldConfig.setFieldSort(i + 1);
             if (Boolean.TRUE.equals(fieldConfig.getShowInForm())) {
-                fieldConfig.setFormType(ObjectUtil.defaultIfNull(fieldConfig.getFormType(), FormTypeEnum.INPUT));
+                fieldConfig.setFormType(
+                    ObjectUtil.defaultIfNull(fieldConfig.getFormType(), FormTypeEnum.INPUT));
             } else {
                 // 在表单中不显示，不需要设置必填
                 fieldConfig.setIsRequired(false);
             }
             if (Boolean.TRUE.equals(fieldConfig.getShowInQuery())) {
-                fieldConfig.setFormType(ObjectUtil.defaultIfNull(fieldConfig.getFormType(), FormTypeEnum.INPUT));
-                fieldConfig.setQueryType(ObjectUtil.defaultIfNull(fieldConfig.getQueryType(), QueryTypeEnum.EQ));
+                fieldConfig.setFormType(
+                    ObjectUtil.defaultIfNull(fieldConfig.getFormType(), FormTypeEnum.INPUT));
+                fieldConfig.setQueryType(
+                    ObjectUtil.defaultIfNull(fieldConfig.getQueryType(), QueryTypeEnum.EQ));
             } else {
                 // 在查询中不显示，不需要设置查询方式
                 fieldConfig.setQueryType(null);
             }
             // 既不在表单也不在查询中显示，不需要设置表单类型
-            if (Boolean.FALSE.equals(fieldConfig.getShowInForm()) && Boolean.FALSE.equals(fieldConfig
-                .getShowInQuery())) {
+            if (Boolean.FALSE.equals(fieldConfig.getShowInForm())
+                && Boolean.FALSE.equals(fieldConfig
+                    .getShowInQuery())) {
                 fieldConfig.setFormType(null);
             }
             fieldConfig.setTableName(tableName);
@@ -227,7 +248,7 @@ public class GeneratorServiceImpl implements GeneratorService {
     public List<GeneratePreviewResp> preview(List<String> tableNames) {
         List<GeneratePreviewResp> generatePreviewList = new ArrayList<>();
         for (String tableName : tableNames) {
-            generatePreviewList.addAll(this.preview(tableName));
+            generatePreviewList.addAll(this.doPreview(tableName));
         }
         return generatePreviewList;
     }
@@ -240,9 +261,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.del(tempDir + applicationProperties.getId());
             tableNames.forEach(tableName -> {
                 // 初始化配置及数据
-                List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
+                List<GeneratePreviewResp> generatePreviewList = this.doPreview(tableName);
                 // 生成代码
-                this.generateCode(generatePreviewList, genConfigMapper.selectById(tableName));
+                this.doGenerateCode(generatePreviewList, genConfigMapper.selectById(tableName));
             });
             // 打包下载
             File tempDirFile = new File(tempDir, applicationProperties.getId());
@@ -250,7 +271,8 @@ public class GeneratorServiceImpl implements GeneratorService {
             ZipUtil.zip(tempDirFile.getPath(), zipFilePath);
             FileUploadUtils.download(response, new File(zipFilePath));
         } catch (Exception e) {
-            log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
+            log.error("Generate code of table '{}' occurred an error. {}", tableNames,
+                e.getMessage(), e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");
         }
     }
@@ -261,22 +283,25 @@ public class GeneratorServiceImpl implements GeneratorService {
             String projectPath = System.getProperty("user.dir");
             tableNames.forEach(tableName -> {
                 // 初始化配置及数据
-                List<GeneratePreviewResp> generatePreviewList = this.preview(tableName);
+                List<GeneratePreviewResp> generatePreviewList = this.doPreview(tableName);
                 // 生成代码
                 for (GeneratePreviewResp generatePreview : generatePreviewList) {
                     // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
                     // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
                     File file = new File(projectPath + generatePreview.getPath()
-                        .replace("continew-admin\\continew-admin", ""), generatePreview.getFileName());
+                        .replace("continew-admin\\continew-admin", ""),
+                        generatePreview.getFileName());
                     // 如果已经存在，且不允许覆盖，则跳过
-                    if (!file.exists() || Boolean.TRUE.equals(genConfigMapper.selectById(tableName).getIsOverride())) {
+                    if (!file.exists() || Boolean.TRUE
+                        .equals(genConfigMapper.selectById(tableName).getIsOverride())) {
                         FileUtil.writeUtf8String(generatePreview.getContent(), file);
                     }
                 }
             });
 
         } catch (Exception e) {
-            log.error("Generate code of table '{}' occurred an error. {}", tableNames, e.getMessage(), e);
+            log.error("Generate code of table '{}' occurred an error. {}", tableNames,
+                e.getMessage(), e);
             throw new BusinessException("代码生成失败，请手动清理生成文件");
         }
     }
@@ -287,7 +312,7 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @param tableName 表名称
      * @return 预览信息
      */
-    private List<GeneratePreviewResp> preview(String tableName) {
+    private List<GeneratePreviewResp> doPreview(String tableName) {
         List<GeneratePreviewResp> generatePreviewList = new ArrayList<>();
         // 初始化配置
         GenConfigDO genConfig = genConfigMapper.selectById(tableName);
@@ -304,15 +329,19 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
-        Map<String, GeneratorProperties.TemplateConfig> templateConfigMap = generatorProperties.getTemplateConfigs();
+        Map<String, GeneratorProperties.TemplateConfig> templateConfigMap =
+            generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
         // 在模板中允许使用静态方法
         if (engine instanceof FreemarkerEngine freemarkerEngine) {
-            DefaultObjectWrapper wrapper = new DefaultObjectWrapperBuilder(Configuration.getVersion()).build();
-            freemarkerEngine.getConfiguration().setSharedVariable("statics", wrapper.getStaticModels());
+            DefaultObjectWrapper wrapper =
+                new DefaultObjectWrapperBuilder(Configuration.getVersion()).build();
+            freemarkerEngine.getConfiguration().setSharedVariable("statics",
+                wrapper.getStaticModels());
         }
-        for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap.entrySet()) {
+        for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap
+            .entrySet()) {
             GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段
             innerGenConfig.setFieldConfigs(fieldConfigRecords.stream()
@@ -324,7 +353,8 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 处理其他配置
             innerGenConfig.setSubPackageName(templateConfig.getPackageName());
             String classNameSuffix = templateConfigEntry.getKey();
-            String className = classNamePrefix + StrUtil.blankToDefault(templateConfig.getSuffix(), classNameSuffix);
+            String className = classNamePrefix
+                + StrUtil.blankToDefault(templateConfig.getSuffix(), classNameSuffix);
             innerGenConfig.setClassName(className);
             boolean isBackend = templateConfig.isBackend();
             String extension = templateConfig.getExtension();
@@ -352,14 +382,16 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @param imports       待导入包集合
      * @return 新的属性配置信息
      */
-    private FieldConfigDO convertToFieldConfigDO(FieldConfigDO fieldConfigDO, List<String> imports) {
+    private FieldConfigDO convertToFieldConfigDO(FieldConfigDO fieldConfigDO,
+        List<String> imports) {
         FieldConfigDO fieldConfig = new FieldConfigDO();
         BeanUtil.copyProperties(fieldConfigDO, fieldConfig);
         String dictCode = fieldConfig.getDictCode();
         if (StringUtils.isBlank(dictCode)) {
             return fieldConfig;
         }
-        Set<Class<?>> classSet = ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
+        Set<Class<?>> classSet =
+            ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
         Optional<Class<?>> clazzOptional = classSet.stream()
             .filter(s -> StrUtil.toUnderlineCase(s.getSimpleName()).toLowerCase().equals(dictCode))
             .findFirst();
@@ -380,21 +412,26 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @param templateConfig  模板配置
      */
     private void setPreviewPath(GeneratePreviewResp generatePreview,
-                                InnerGenConfigDO genConfig,
-                                GeneratorProperties.TemplateConfig templateConfig) {
+        InnerGenConfigDO genConfig,
+        GeneratorProperties.TemplateConfig templateConfig) {
         // 获取前后端基础路径
-        String backendBasicPackagePath = this.buildBackendBasicPackagePath(genConfig, templateConfig);
+        String backendBasicPackagePath =
+            this.buildBackendBasicPackagePath(genConfig, templateConfig);
         String frontendBasicPackagePath = String.join(File.separator, applicationProperties
             .getId(), applicationProperties.getId() + "-ui");
         String packagePath;
         if (generatePreview.isBackend()) {
             // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl
-            packagePath = String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.DOT, File.separator));
+            packagePath =
+                String.join(File.separator, backendBasicPackagePath, templateConfig.getPackageName()
+                    .replace(StringConstants.DOT, File.separator));
         } else {
             // 例如：continew-admin/continew-admin-ui/src/views/system
-            packagePath = String.join(File.separator, frontendBasicPackagePath, templateConfig.getPackageName()
-                .replace(StringConstants.SLASH, File.separator), genConfig.getApiModuleName());
+            packagePath =
+                String.join(File.separator, frontendBasicPackagePath,
+                    templateConfig.getPackageName()
+                        .replace(StringConstants.SLASH, File.separator),
+                    genConfig.getApiModuleName());
             // 例如：continew-admin/continew-admin-ui/src/views/system/user
             packagePath = ".vue".equals(templateConfig.getExtension())
                 ? packagePath + File.separator + StrUtil.lowerFirst(genConfig.getClassNamePrefix())
@@ -409,12 +446,14 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @param generatePreviewList 生成预览列表
      * @param genConfig           生成配置
      */
-    private void generateCode(List<GeneratePreviewResp> generatePreviewList, GenConfigDO genConfig) {
+    private void doGenerateCode(List<GeneratePreviewResp> generatePreviewList,
+        GenConfigDO genConfig) {
         for (GeneratePreviewResp generatePreview : generatePreviewList) {
             // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
             // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
-            File file = new File(SystemUtil.getUserInfo().getTempDir() + generatePreview.getPath(), generatePreview
-                .getFileName());
+            File file = new File(SystemUtil.getUserInfo().getTempDir() + generatePreview.getPath(),
+                generatePreview
+                    .getFileName());
             // 如果已经存在，且不允许覆盖，则跳过
             if (!file.exists() || Boolean.TRUE.equals(genConfig.getIsOverride())) {
                 FileUtil.writeUtf8String(generatePreview.getContent(), file);
@@ -430,15 +469,19 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @return 后端包路径
      */
     private String buildBackendBasicPackagePath(GenConfigDO genConfig,
-                                                GeneratorProperties.TemplateConfig templateConfig) {
+        GeneratorProperties.TemplateConfig templateConfig) {
         String extension = templateConfig.getExtension();
         // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
-        return String.join(File.separator, applicationProperties.getId(), applicationProperties.getId(), genConfig
-            .getModuleName(), "src", "main", FileNameUtil.EXT_JAVA.equals(extension)
+        return String.join(File.separator, applicationProperties.getId(),
+            applicationProperties.getId(), genConfig
+                .getModuleName(),
+            "src", "main", FileNameUtil.EXT_JAVA.equals(extension)
                 ? "java"
-                : "resources") + (FileNameUtil.EXT_JAVA.equals(extension)
-                    ? File.separator + genConfig.getPackageName().replace(StringConstants.DOT, File.separator)
-                    : StringConstants.EMPTY);
+                : "resources")
+            + (FileNameUtil.EXT_JAVA.equals(extension)
+                ? File.separator
+                    + genConfig.getPackageName().replace(StringConstants.DOT, File.separator)
+                : StringConstants.EMPTY);
     }
 
     /**
@@ -450,7 +493,8 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @return 前端文件名
      */
     private String getFrontendFileName(String classNamePrefix, String className, String extension) {
-        return (".ts".equals(extension) ? StrUtil.lowerFirst(classNamePrefix) : className) + extension;
+        return (".ts".equals(extension) ? StrUtil.lowerFirst(classNamePrefix) : className)
+            + extension;
     }
 
     /**

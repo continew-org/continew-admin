@@ -54,7 +54,7 @@ public interface FileMapper extends BaseMapper<FileDO> {
      */
     @Select("SELECT * FROM sys_file ${ew.customSqlSegment}")
     Page<FileDO> selectPageInRecycleBin(@Param("page") IPage<FileDO> page,
-                                        @Param(Constants.WRAPPER) LambdaQueryWrapper<FileDO> queryWrapper);
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<FileDO> queryWrapper);
 
     /**
      * 根据 ID 查询（文件已进入回收站）

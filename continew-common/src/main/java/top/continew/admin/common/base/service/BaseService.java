@@ -24,7 +24,7 @@ import top.continew.starter.extension.crud.service.CrudService;
  * <p>
  * 根据实际项目需要，自行重写 CRUD 接口或增加自定义通用业务方法
  * </p>
- * 
+ *
  * @param <L> 列表类型
  * @param <D> 详情类型
  * @param <Q> 查询条件类型

@@ -111,7 +111,8 @@ public class JobClient {
         String token = RedisUtils.get(JobConstants.AUTH_TOKEN_HEADER);
         if (StrUtil.isBlank(token)) {
             token = this.authenticate();
-            Object expiresAtSeconds = JWTUtil.parseToken(token).getPayload(RegisteredPayload.EXPIRES_AT);
+            Object expiresAtSeconds =
+                JWTUtil.parseToken(token).getPayload(RegisteredPayload.EXPIRES_AT);
             RedisUtils.set(JobConstants.AUTH_TOKEN_HEADER, token, Duration.ofSeconds(Convert
                 .toLong(expiresAtSeconds) - DateUtil.currentSeconds() - 60));
         }
@@ -135,8 +136,10 @@ public class JobClient {
             }
             Result<?> result = JSONUtil.toBean(response.body(), Result.class);
             if (!STATUS_SUCCESS.equals(result.getStatus())) {
-                log.warn("Password Authentication failed, expected a successful response. error msg: {}", result
-                    .getMessage());
+                log.warn(
+                    "Password Authentication failed, expected a successful response. error msg: {}",
+                    result
+                        .getMessage());
                 throw new ScheduleServerException(result.getMessage());
             }
             return JSONUtil.parseObj(result.getData()).getStr("token");

@@ -61,7 +61,8 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     public List<OptionResp> list(OptionQuery query) {
-        return BeanUtil.copyToList(baseMapper.selectList(QueryWrapperHelper.build(query)), OptionResp.class);
+        return BeanUtil.copyToList(baseMapper.selectList(QueryWrapperHelper.build(query)),
+            OptionResp.class);
     }
 
     @Override
@@ -69,8 +70,10 @@ public class OptionServiceImpl implements OptionService {
     public Map<String, String> getByCategory(OptionCategoryEnum category) {
         return baseMapper.selectByCategory(category.name())
             .stream()
-            .collect(Collectors.toMap(OptionDO::getCode, o -> StrUtil.emptyIfNull(ObjectUtil.defaultIfNull(o
-                .getValue(), o.getDefaultValue())), (existing, replacement) -> existing));
+            .collect(Collectors.toMap(OptionDO::getCode,
+                o -> StrUtil.emptyIfNull(ObjectUtil.defaultIfNull(o
+                    .getValue(), o.getDefaultValue())),
+                (existing, replacement) -> existing));
     }
 
     @Override
@@ -79,7 +82,8 @@ public class OptionServiceImpl implements OptionService {
         List<Long> idList = CollUtils.mapToList(options, OptionReq::getId);
         List<OptionDO> optionList = baseMapper.selectByIds(idList);
         Map<String, OptionDO> optionMap = optionList.stream()
-            .collect(Collectors.toMap(OptionDO::getCode, Function.identity(), (existing, replacement) -> existing));
+            .collect(Collectors.toMap(OptionDO::getCode, Function.identity(),
+                (existing, replacement) -> existing));
         for (OptionReq req : options) {
             OptionDO option = optionMap.get(req.getCode());
             ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", req.getCode());
@@ -91,8 +95,10 @@ public class OptionServiceImpl implements OptionService {
         Map<String, String> passwordPolicyOptionMap = options.stream()
             .filter(option -> StrUtil.startWith(option.getCode(), PasswordPolicyEnum.CATEGORY
                 .name() + StringConstants.UNDERLINE))
-            .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue, (existing, replacement) -> existing));
-        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap.entrySet()) {
+            .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue,
+                (existing, replacement) -> existing));
+        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap
+            .entrySet()) {
             String code = passwordPolicyOptionEntry.getKey();
             String value = passwordPolicyOptionEntry.getValue();
             ValidationUtils.throwIf(!NumberUtil.isNumber(value), "参数 [%s] 的值必须为数字", code);
@@ -109,7 +115,8 @@ public class OptionServiceImpl implements OptionService {
         String category = req.getCategory();
         List<String> codeList = req.getCode();
         ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codeList), "键列表不能为空");
-        LambdaUpdateChainWrapper<OptionDO> updateWrapper = baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
+        LambdaUpdateChainWrapper<OptionDO> updateWrapper =
+            baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
         if (StrUtil.isNotBlank(category)) {
             updateWrapper.eq(OptionDO::getCategory, category);
         } else {

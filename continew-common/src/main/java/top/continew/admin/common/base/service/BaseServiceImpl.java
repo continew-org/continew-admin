@@ -29,7 +29,7 @@ import top.continew.starter.extension.crud.service.CrudServiceImpl;
  * <p>
  * 根据实际项目需要，自行重写 CRUD 接口或增加自定义通用业务方法实现
  * </p>
- * 
+ *
  * @param <M> Mapper 接口
  * @param <T> 实体类型
  * @param <L> 列表类型
@@ -39,7 +39,8 @@ import top.continew.starter.extension.crud.service.CrudServiceImpl;
  * @author Charles7c
  * @since 2024/12/6 20:30
  */
-public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends CrudServiceImpl<M, T, L, D, Q, C> implements BaseService<L, D, Q, C> {
+public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C>
+    extends CrudServiceImpl<M, T, L, D, Q, C> implements BaseService<L, D, Q, C> {
 
     /**
      * 填充数据

@@ -27,4 +27,5 @@ import top.continew.admin.system.model.resp.SmsLogResp;
  * @author luoqiz
  * @since 2025/03/15 22:15
  */
-public interface SmsLogService extends BaseService<SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> {}
+public interface SmsLogService extends BaseService<SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> {
+}

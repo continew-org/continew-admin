@@ -81,7 +81,9 @@ public class NoticeReq implements Serializable {
      * 通知用户
      */
     @Schema(description = "通知用户", example = "[1,2,3]")
-    @SpelNotEmpty(condition = "#this.noticeScope == T(top.continew.admin.system.enums.NoticeScopeEnum).USER", message = "通知用户不能为空")
+    @SpelNotEmpty(
+        condition = "#this.noticeScope == T(top.continew.admin.system.enums.NoticeScopeEnum).USER",
+        message = "通知用户不能为空")
     private List<String> noticeUsers;
 
     /**

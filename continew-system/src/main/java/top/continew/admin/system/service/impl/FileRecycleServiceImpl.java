@@ -63,8 +63,9 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     @Override
     public PageResp<FileResp> page(FileQuery query, PageQuery pageQuery) {
         QueryWrapper<FileDO> queryWrapper = QueryWrapperHelper.build(query, pageQuery.getSort());
-        Page<FileDO> page = fileMapper.selectPageInRecycleBin(new Page<>(pageQuery.getPage(), pageQuery
-            .getSize()), queryWrapper.lambda().eq(FileDO::getDeleted, 1L));
+        Page<FileDO> page =
+            fileMapper.selectPageInRecycleBin(new Page<>(pageQuery.getPage(), pageQuery
+                .getSize()), queryWrapper.lambda().eq(FileDO::getDeleted, 1L));
         return PageResp.build(page, FileResp.class);
     }
 
@@ -96,7 +97,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         }
         // 删除文件
         StorageDO storage = storageService.getById(file.getStorageId());
-        String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + normalizeStoragePath(file.getPath()));
+        String sourcePath = normalizeStoragePath(
+            storage.getRecycleBinPath() + normalizeStoragePath(file.getPath()));
         fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
     }
 
@@ -114,21 +116,25 @@ public class FileRecycleServiceImpl implements FileRecycleService {
             fileMapper.cleanRecycleBin(UserContextHolder.getUserId());
             // 删除文件
             // 批量获取存储配置
-            Map<Long, List<FileDO>> fileListGroup = list.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+            Map<Long, List<FileDO>> fileListGroup =
+                list.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
             List<StorageDO> storageList = storageService.listByIds(fileListGroup.keySet());
             Map<Long, StorageDO> storageGroup = storageList.stream()
-                .collect(Collectors.toMap(StorageDO::getId, Function.identity(), (existing, replacement) -> existing));
+                .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
+                    (existing, replacement) -> existing));
             // 删除文件
             for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
                 StorageDO storage = storageGroup.get(entry.getKey());
                 List<String> deletePaths = entry.getValue()
                     .stream()
                     .filter(file -> !FileTypeEnum.DIR.equals(file.getType()))
-                    .map(file -> normalizeStoragePath(storage.getRecycleBinPath() + normalizeStoragePath(file
-                        .getPath())))
+                    .map(file -> normalizeStoragePath(
+                        storage.getRecycleBinPath() + normalizeStoragePath(file
+                            .getPath())))
                     .toList();
                 if (CollUtil.isNotEmpty(deletePaths)) {
-                    fileStorageService.batchDelete(storage.getCode(), storage.getBucketName(), deletePaths);
+                    fileStorageService.batchDelete(storage.getCode(), storage.getBucketName(),
+                        deletePaths);
                 }
             }
         } finally {

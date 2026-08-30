@@ -49,7 +49,7 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @return 分页列表信息
      */
     IPage<LogResp> selectLogPage(@Param("page") IPage<LogDO> page,
-                                 @Param(Constants.WRAPPER) QueryWrapper<LogDO> queryWrapper);
+        @Param(Constants.WRAPPER) QueryWrapper<LogDO> queryWrapper);
 
     /**
      * 查询列表
@@ -88,7 +88,8 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @return 仪表盘 PV 近 N 月各月份信息
      */
     @Cached(key = "#months[0]", name = CacheConstants.DASHBOARD_KEY_PREFIX + "PV:")
-    List<DashboardChartCommonResp> selectListDashboardAnalysisPv(@Param("months") List<String> months);
+    List<DashboardChartCommonResp> selectListDashboardAnalysisPv(
+        @Param("months") List<String> months);
 
     /**
      * 查询仪表盘 IP 近 N 月各月份信息
@@ -97,7 +98,8 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @return 仪表盘 IP 近 N 月各月份信息
      */
     @Cached(key = "#months[0]", name = CacheConstants.DASHBOARD_KEY_PREFIX + "IP:")
-    List<DashboardChartCommonResp> selectListDashboardAnalysisIp(@Param("months") List<String> months);
+    List<DashboardChartCommonResp> selectListDashboardAnalysisIp(
+        @Param("months") List<String> months);
 
     /**
      * 查询仪表盘地域分析信息
@@ -113,8 +115,9 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @param endTime   结束时间
      * @return 仪表盘访问趋势信息
      */
-    List<DashboardAccessTrendResp> selectListDashboardAccessTrend(@Param("startTime") Date startTime,
-                                                                  @Param("endTime") Date endTime);
+    List<DashboardAccessTrendResp> selectListDashboardAccessTrend(
+        @Param("startTime") Date startTime,
+        @Param("endTime") Date endTime);
 
     /**
      * 查询仪表盘访问时段分析信息

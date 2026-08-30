@@ -24,7 +24,11 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
@@ -46,6 +50,13 @@ public class OnlineUserController {
 
     private final OnlineUserService baseService;
 
+    /**
+     * 分页查询在线用户
+     *
+     * @param query 查询条件
+     * @param pageQuery 分页查询条件
+     * @return 在线用户分页信息
+     */
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @SaCheckPermission("monitor:online:list")
     @GetMapping
@@ -53,8 +64,15 @@ public class OnlineUserController {
         return baseService.page(query, pageQuery);
     }
 
+    /**
+     * 强退在线用户
+     *
+     * @param token 令牌
+     */
     @Operation(summary = "强退在线用户", description = "强退在线用户")
-    @Parameter(name = "token", description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE", in = ParameterIn.PATH)
+    @Parameter(name = "token", description = "令牌",
+        example = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjF9.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE",
+        in = ParameterIn.PATH)
     @SaCheckPermission("monitor:online:kickout")
     @DeleteMapping("/{token}")
     public void kickout(@PathVariable String token) {

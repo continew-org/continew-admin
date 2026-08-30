@@ -77,7 +77,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq> implements FileService {
+public class FileServiceImpl
+    extends BaseServiceImpl<FileMapper, FileDO, FileResp, FileResp, FileQuery, FileReq>
+    implements FileService {
 
     private static final String FILE_UPLOAD_PROGRESS_PREFIX = "file:upload:progress:";
     private static final Duration FILE_UPLOAD_PROGRESS_EXPIRE = Duration.ofHours(1);
@@ -95,10 +97,12 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             return;
         }
         // 批量获取存储配置
-        Map<Long, List<FileDO>> fileListGroup = fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+        Map<Long, List<FileDO>> fileListGroup =
+            fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
         List<StorageDO> storageList = storageService.listByIds(fileListGroup.keySet());
         Map<Long, StorageDO> storageGroup = storageList.stream()
-            .collect(Collectors.toMap(StorageDO::getId, Function.identity(), (existing, replacement) -> existing));
+            .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
+                (existing, replacement) -> existing));
         // 删除记录
         for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
             StorageDO storage = storageGroup.get(entry.getKey());
@@ -122,14 +126,16 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     @Override
-    public FileInfo upload(MultipartFile file, String parentPath, String storageCode, String uploadTaskId) {
-        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file
+    public FileInfo upload(MultipartFile file, String parentPath, String storageCode,
+        String uploadTaskId) {
+        return this.doUpload(file, parentPath, storageCode, FileNameUtil.extName(file
             .getOriginalFilename()), uploadTaskId);
     }
 
     @Override
     public FileInfo upload(File file, String parentPath, String storageCode) {
-        return this.upload(file, parentPath, storageCode, FileNameUtil.extName(file.getName()), null);
+        return this.doUpload(file, parentPath, storageCode, FileNameUtil.extName(file.getName()),
+            null);
     }
 
     @Override
@@ -149,7 +155,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
                 .eq(FileDO::getType, FileTypeEnum.DIR)
                 .one();
             CheckUtils.throwIfNull(parentFile, "父级文件夹不存在");
-            CheckUtils.throwIfNotEqual(parentFile.getStorageId(), storage.getId(), "文件夹和父级文件夹存储引擎不一致");
+            CheckUtils.throwIfNotEqual(parentFile.getStorageId(), storage.getId(),
+                "文件夹和父级文件夹存储引擎不一致");
         }
         // 创建文件夹
         FileDO dirFile = new FileDO();
@@ -188,9 +195,11 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     @Override
     public Long calcDirSize(Long id) {
         FileDO dirFile = super.getById(id);
-        ValidationUtils.throwIfNotEqual(dirFile.getType(), FileTypeEnum.DIR, "ID 为 [{}] 的不是文件夹，不支持计算大小", id);
+        ValidationUtils.throwIfNotEqual(dirFile.getType(), FileTypeEnum.DIR,
+            "ID 为 [{}] 的不是文件夹，不支持计算大小", id);
         // 查询当前文件夹下的所有子文件和子文件夹
-        List<FileDO> children = baseMapper.lambdaQuery().eq(FileDO::getParentPath, dirFile.getPath()).list();
+        List<FileDO> children =
+            baseMapper.lambdaQuery().eq(FileDO::getParentPath, dirFile.getPath()).list();
         if (CollUtil.isEmpty(children)) {
             return 0L;
         }
@@ -219,7 +228,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             resp.setTotalBytes(0L);
             return resp;
         }
-        FileUploadProgressResp resp = JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
+        FileUploadProgressResp resp =
+            JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
         if (StrUtil.isBlank(resp.getUploadTaskId())) {
             resp.setUploadTaskId(uploadTaskId);
         }
@@ -245,8 +255,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             String parentPath = StringConstants.SLASH.equals(fileResp.getParentPath())
                 ? StringConstants.EMPTY
                 : fileResp.getParentPath();
-            String thumbnailUrl = StrUtils.blankToDefault(fileResp.getThumbnailName(), url, thName -> URLUtil
-                .normalize(prefix + parentPath + StringConstants.SLASH + thName, false, true));
+            String thumbnailUrl =
+                StrUtils.blankToDefault(fileResp.getThumbnailName(), url, thName -> URLUtil
+                    .normalize(prefix + parentPath + StringConstants.SLASH + thName, false, true));
             fileResp.setThumbnailUrl(thumbnailUrl);
             fileResp.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
         }
@@ -262,26 +273,30 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
      * @param uploadTaskId 上传任务 ID
      * @return 文件信息
      */
-    private FileInfo upload(Object file, String parentPath, String storageCode, String extName, String uploadTaskId) {
+    private FileInfo doUpload(Object file, String parentPath, String storageCode, String extName,
+        String uploadTaskId) {
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 构建上传预处理对象
         StorageDO storage = storageService.getByCode(storageCode);
-        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(storage.getStatus()), "请先启用存储 [{}]", storage.getCode());
+        CheckUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(storage.getStatus()), "请先启用存储 [{}]",
+            storage.getCode());
 
         // 创建父级目录
         this.createParentDir(parentPath, storage);
 
         // 生成唯一文件名（处理重名情况）
         String originalFileName = getOriginalFileName(file);
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
-            .getId(), baseMapper);
+        String uniqueFileName =
+            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
+                .getId(), baseMapper);
         String sha256 = calculateSha256(file);
         String normalizedUploadTaskId = StrUtil.emptyToNull(StrUtil.trim(uploadTaskId));
         long totalBytes = this.getFileSize(file);
         if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
-            this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.INIT, 0L, totalBytes, 0, null, null, null);
+            this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.INIT, 0L,
+                totalBytes, 0, null, null, null);
         }
 
         UploadPretreatment uploadPretreatment = fileStorageService.of(normalizeUploadSource(file))
@@ -296,12 +311,15 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             uploadPretreatment.thumbnail(100, 100);
         }
         uploadPretreatment.onProgress((progressSize, allSize, percentage) -> {
-            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", uniqueFileName, progressSize, allSize, percentage);
+            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", uniqueFileName, progressSize, allSize,
+                percentage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
-                FileUploadProgressStatusEnum status = (allSize > 0 && progressSize >= allSize) || percentage >= 100
-                    ? FileUploadProgressStatusEnum.FINALIZING
-                    : FileUploadProgressStatusEnum.UPLOADING;
-                this.saveUploadProgress(normalizedUploadTaskId, status, progressSize, allSize, percentage, null, null, null);
+                FileUploadProgressStatusEnum status =
+                    (allSize > 0 && progressSize >= allSize) || percentage >= 100
+                        ? FileUploadProgressStatusEnum.FINALIZING
+                        : FileUploadProgressStatusEnum.UPLOADING;
+                this.saveUploadProgress(normalizedUploadTaskId, status, progressSize, allSize,
+                    percentage, null, null, null);
             }
         });
         try {
@@ -312,14 +330,19 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             FileInfo result = this.postProcessUploadResult(fileInfo, storage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 long completedSize = result.getSize() == null ? totalBytes : result.getSize();
-                this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.COMPLETED, completedSize, totalBytes, 100, null, result
-                    .getFileId(), result.getUrl());
+                this.saveUploadProgress(normalizedUploadTaskId,
+                    FileUploadProgressStatusEnum.COMPLETED, completedSize, totalBytes, 100, null,
+                    result
+                        .getFileId(),
+                    result.getUrl());
             }
             return result;
         } catch (RuntimeException e) {
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
-                this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.FAILED, 0L, totalBytes, 0, e
-                    .getMessage(), null, null);
+                this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.FAILED,
+                    0L, totalBytes, 0, e
+                        .getMessage(),
+                    null, null);
             }
             throw e;
         }
@@ -360,8 +383,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             if (StrUtil.isBlank(contentType)) {
                 contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }
-            return EnhancedMultipartFile.create(ioFile.getName(), ioFile.getName(), contentType, Files
-                .readAllBytes(ioFile.toPath()));
+            return EnhancedMultipartFile.create(ioFile.getName(), ioFile.getName(), contentType,
+                Files
+                    .readAllBytes(ioFile.toPath()));
         } catch (IOException e) {
             throw new IllegalStateException("读取上传文件失败", e);
         }
@@ -385,7 +409,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             // 传递根路径本身，避免 starter 将空路径识别为“自动日期目录”
             return StringConstants.SLASH;
         }
-        return StrUtil.appendIfMissing(StrUtil.removePrefix(path, StringConstants.SLASH), StringConstants.SLASH);
+        return StrUtil.appendIfMissing(StrUtil.removePrefix(path, StringConstants.SLASH),
+            StringConstants.SLASH);
     }
 
     /**
@@ -427,7 +452,8 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
                     .eq(FileDO::getType, FileTypeEnum.DIR)
                     .one();
                 if (dirFile != null) {
-                    CheckUtils.throwIfNotEqual(dirFile.getStorageId(), storage.getId(), "文件夹和上传文件存储引擎不一致");
+                    CheckUtils.throwIfNotEqual(dirFile.getStorageId(), storage.getId(),
+                        "文件夹和上传文件存储引擎不一致");
                     continue;
                 }
                 FileDO file = new FileDO();
@@ -492,8 +518,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             .getPath()), false, true));
         if (StrUtil.isNotBlank(fileInfo.getThumbnailPath()) && !StrUtil.startWithAny(fileInfo
             .getThumbnailPath(), "http://", "https://")) {
-            fileInfo.setThumbnailPath(URLUtil.normalize(storage.getUrlPrefix() + normalizeStoragePath(fileInfo
-                .getThumbnailPath()), false, true));
+            fileInfo.setThumbnailPath(
+                URLUtil.normalize(storage.getUrlPrefix() + normalizeStoragePath(fileInfo
+                    .getThumbnailPath()), false, true));
         }
         return fileInfo;
     }
@@ -514,13 +541,13 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     private void saveUploadProgress(String uploadTaskId,
-                                    FileUploadProgressStatusEnum status,
-                                    long bytesRead,
-                                    long totalBytes,
-                                    int percentage,
-                                    String message,
-                                    String fileId,
-                                    String url) {
+        FileUploadProgressStatusEnum status,
+        long bytesRead,
+        long totalBytes,
+        int percentage,
+        String message,
+        String fileId,
+        String url) {
         String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
         FileUploadProgressResp current = null;
         Object value = RedisUtils.get(key);
@@ -531,8 +558,10 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
             return;
         }
         if (!isFinalStatus(status) && current != null) {
-            bytesRead = Math.max(bytesRead, current.getBytesRead() == null ? 0L : current.getBytesRead());
-            percentage = Math.max(percentage, current.getPercentage() == null ? 0 : current.getPercentage());
+            bytesRead =
+                Math.max(bytesRead, current.getBytesRead() == null ? 0L : current.getBytesRead());
+            percentage =
+                Math.max(percentage, current.getPercentage() == null ? 0 : current.getPercentage());
         }
 
         FileUploadProgressResp resp = new FileUploadProgressResp();
@@ -541,8 +570,10 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
         resp.setBytesRead(bytesRead);
         resp.setTotalBytes(totalBytes);
         resp.setPercentage(percentage);
-        resp.setMessage(StrUtil.blankToDefault(message, current == null ? null : current.getMessage()));
-        resp.setFileId(StrUtil.blankToDefault(fileId, current == null ? null : current.getFileId()));
+        resp.setMessage(
+            StrUtil.blankToDefault(message, current == null ? null : current.getMessage()));
+        resp.setFileId(
+            StrUtil.blankToDefault(fileId, current == null ? null : current.getFileId()));
         resp.setUrl(StrUtil.blankToDefault(url, current == null ? null : current.getUrl()));
         RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
     }
@@ -553,6 +584,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileDO, FileRes
     }
 
     private boolean isFinalStatus(FileUploadProgressStatusEnum status) {
-        return status == FileUploadProgressStatusEnum.COMPLETED || status == FileUploadProgressStatusEnum.FAILED;
+        return status == FileUploadProgressStatusEnum.COMPLETED
+            || status == FileUploadProgressStatusEnum.FAILED;
     }
 }

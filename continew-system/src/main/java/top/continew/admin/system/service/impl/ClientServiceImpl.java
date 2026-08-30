@@ -45,7 +45,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, ClientDO, ClientResp, ClientResp, ClientQuery, ClientReq> implements ClientService {
+public class ClientServiceImpl
+    extends BaseServiceImpl<ClientMapper, ClientDO, ClientResp, ClientResp, ClientQuery, ClientReq>
+    implements ClientService {
 
     private final OnlineUserService onlineUserService;
 
@@ -63,7 +65,8 @@ public class ClientServiceImpl extends BaseServiceImpl<ClientMapper, ClientDO, C
         for (Long id : ids) {
             ClientDO client = this.getById(id);
             query.setClientId(client.getClientId());
-            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "客户端 [{}] 还存在在线用户，不允许删除", client.getClientId());
+            CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "客户端 [{}] 还存在在线用户，不允许删除",
+                client.getClientId());
         }
     }
 

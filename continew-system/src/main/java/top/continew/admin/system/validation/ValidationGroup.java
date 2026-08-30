@@ -30,6 +30,7 @@ public interface ValidationGroup extends Default {
      * 分组校验-增删改查
      */
     interface Storage extends ValidationGroup {
+
         /**
          * 本地存储
          */

@@ -35,7 +35,8 @@ import java.util.Map;
 @Component
 public class LoginHandlerFactory {
 
-    private final Map<AuthTypeEnum, LoginHandler<? extends LoginReq>> handlerMap = new EnumMap<>(AuthTypeEnum.class);
+    private final Map<AuthTypeEnum, LoginHandler<? extends LoginReq>> handlerMap =
+        new EnumMap<>(AuthTypeEnum.class);
 
     @Autowired
     public LoginHandlerFactory(List<LoginHandler<? extends LoginReq>> handlers) {
@@ -51,6 +52,6 @@ public class LoginHandlerFactory {
      * @return 认证处理器
      */
     public LoginHandler<LoginReq> getHandler(AuthTypeEnum authType) {
-        return (LoginHandler<LoginReq>)handlerMap.get(authType);
+        return (LoginHandler<LoginReq>) handlerMap.get(authType);
     }
 }

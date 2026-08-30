@@ -57,12 +57,13 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
     private final PropertyResolverUtils propertyResolverUtils;
 
     public GlobalSpringDocResponseOperationCustomizer(OperationService operationService,
-                                                      SpringDocConfigProperties springDocConfigProperties,
-                                                      PropertyResolverUtils propertyResolverUtils,
-                                                      GlobalResponseProperties globalResponseProperties) {
+        SpringDocConfigProperties springDocConfigProperties,
+        PropertyResolverUtils propertyResolverUtils,
+        GlobalResponseProperties globalResponseProperties) {
         super(operationService, springDocConfigProperties, propertyResolverUtils);
         this.globalResponseProperties = globalResponseProperties;
-        this.responseClass = ClassUtil.loadClass(globalResponseProperties.getResponseClassFullName());
+        this.responseClass =
+            ClassUtil.loadClass(globalResponseProperties.getResponseClassFullName());
         this.propertyResolverUtils = propertyResolverUtils;
     }
 
@@ -78,17 +79,18 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      */
     @Override
     public Content buildContent(Components components,
-                                Annotation[] annotations,
-                                String[] methodProduces,
-                                JsonView jsonView,
-                                Type returnType) {
+        Annotation[] annotations,
+        String[] methodProduces,
+        JsonView jsonView,
+        Type returnType) {
         if (ArrayUtils.isEmpty(methodProduces)) {
             return new Content();
         }
 
         // 如果返回类型已经包含全局响应包装类，直接处理
         if (isAlreadyWrapped(returnType)) {
-            return buildContentForWrappedType(components, annotations, methodProduces, jsonView, returnType);
+            return buildContentForWrappedType(components, annotations, methodProduces, jsonView,
+                returnType);
         }
 
         // 包装返回类型为全局响应格式
@@ -98,7 +100,8 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
             return null;
         }
 
-        return buildContentForWrappedType(components, annotations, methodProduces, jsonView, wrappedType);
+        return buildContentForWrappedType(components, annotations, methodProduces, jsonView,
+            wrappedType);
     }
 
     /**
@@ -108,7 +111,8 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @return 是否已被包装
      */
     private boolean isAlreadyWrapped(Type returnType) {
-        return returnType.getTypeName().contains(globalResponseProperties.getResponseClassFullName());
+        return returnType.getTypeName()
+            .contains(globalResponseProperties.getResponseClassFullName());
     }
 
     /**
@@ -135,15 +139,16 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @return 响应内容
      */
     private Content buildContentForWrappedType(Components components,
-                                               Annotation[] annotations,
-                                               String[] methodProduces,
-                                               JsonView jsonView,
-                                               Type returnType) {
+        Annotation[] annotations,
+        String[] methodProduces,
+        JsonView jsonView,
+        Type returnType) {
         Content content = new Content();
         Schema<?> schema = calculateSchema(components, returnType, jsonView, annotations);
 
         if (schema != null) {
-            io.swagger.v3.oas.models.media.MediaType mediaType = new io.swagger.v3.oas.models.media.MediaType();
+            io.swagger.v3.oas.models.media.MediaType mediaType =
+                new io.swagger.v3.oas.models.media.MediaType();
             mediaType.setSchema(schema);
             setContent(methodProduces, content, mediaType);
         }
@@ -182,13 +187,14 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @return Schema 对象
      */
     private Schema<?> calculateSchema(Components components,
-                                      Type returnType,
-                                      JsonView jsonView,
-                                      Annotation[] annotations) {
+        Type returnType,
+        JsonView jsonView,
+        Annotation[] annotations) {
         if (isVoid(returnType) || SpringDocAnnotationsUtils.isAnnotationToIgnore(returnType)) {
             return null;
         }
-        return extractSchema(components, returnType, jsonView, annotations, propertyResolverUtils.getSpecVersion());
+        return extractSchema(components, returnType, jsonView, annotations,
+            propertyResolverUtils.getSpecVersion());
     }
 
     /**
@@ -199,8 +205,9 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param mediaType      媒体类型对象
      */
     private void setContent(String[] methodProduces,
-                            Content content,
-                            io.swagger.v3.oas.models.media.MediaType mediaType) {
-        Arrays.stream(methodProduces).forEach(mediaTypeStr -> content.addMediaType(mediaTypeStr, mediaType));
+        Content content,
+        io.swagger.v3.oas.models.media.MediaType mediaType) {
+        Arrays.stream(methodProduces)
+            .forEach(mediaTypeStr -> content.addMediaType(mediaTypeStr, mediaType));
     }
 }

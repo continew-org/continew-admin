@@ -46,7 +46,7 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      */
     @DataPermission(tableAlias = "t1")
     IPage<UserDetailResp> selectUserPage(@Param("page") IPage<UserDO> page,
-                                         @Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
+        @Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
 
     /**
      * 查询列表
@@ -55,7 +55,8 @@ public interface UserMapper extends DataPermissionMapper<UserDO> {
      * @return 列表信息
      */
     @DataPermission(tableAlias = "t1")
-    List<UserDetailResp> selectUserList(@Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
+    List<UserDetailResp> selectUserList(
+        @Param(Constants.WRAPPER) QueryWrapper<UserDO> queryWrapper);
 
     /**
      * 根据用户名查询

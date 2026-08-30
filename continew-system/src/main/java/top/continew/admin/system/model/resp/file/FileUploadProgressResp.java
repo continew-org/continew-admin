@@ -45,7 +45,8 @@ public class FileUploadProgressResp implements Serializable {
     /**
      * 任务状态（INIT/UPLOADING/FINALIZING/COMPLETED/FAILED/NOT_FOUND）
      */
-    @Schema(description = "任务状态（INIT/UPLOADING/FINALIZING/COMPLETED/FAILED/NOT_FOUND）", example = "UPLOADING")
+    @Schema(description = "任务状态（INIT/UPLOADING/FINALIZING/COMPLETED/FAILED/NOT_FOUND）",
+        example = "UPLOADING")
     private FileUploadProgressStatusEnum status;
 
     /**

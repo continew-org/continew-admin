@@ -46,7 +46,8 @@ public class CaptchaResp implements Serializable {
     /**
      * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
      */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）", example = "data:image/png;base64,iVBORw0KGgoAAAAN...")
+    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）",
+        example = "data:image/png;base64,iVBORw0KGgoAAAAN...")
     private String img;
 
     /**
@@ -70,6 +71,7 @@ public class CaptchaResp implements Serializable {
      * @return 验证码信息
      */
     public static CaptchaResp of(String uuid, String img, Long expireTime) {
-        return CaptchaResp.builder().uuid(uuid).img(img).expireTime(expireTime).isEnabled(true).build();
+        return CaptchaResp.builder().uuid(uuid).img(img).expireTime(expireTime).isEnabled(true)
+            .build();
     }
 }

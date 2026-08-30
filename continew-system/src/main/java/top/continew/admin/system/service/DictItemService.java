@@ -32,7 +32,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/9/11 21:29
  */
-public interface DictItemService extends BaseService<DictItemResp, DictItemResp, DictItemQuery, DictItemReq>, IService<DictItemDO> {
+public interface DictItemService extends
+    BaseService<DictItemResp, DictItemResp, DictItemQuery, DictItemReq>, IService<DictItemDO> {
 
     /**
      * 根据字典编码查询字典项列表

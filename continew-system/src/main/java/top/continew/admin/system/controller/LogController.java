@@ -73,7 +73,8 @@ public class LogController {
     @Operation(summary = "导出登录日志", description = "导出登录日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/login")
-    public void exportLoginLog(@Valid LogQuery query, @Valid SortQuery sortQuery, HttpServletResponse response) {
+    public void exportLoginLog(@Valid LogQuery query, @Valid SortQuery sortQuery,
+        HttpServletResponse response) {
         baseService.exportLoginLog(query, sortQuery, response);
     }
 
@@ -81,7 +82,8 @@ public class LogController {
     @Operation(summary = "导出操作日志", description = "导出操作日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/operation")
-    public void exportOperationLog(@Valid LogQuery query, @Valid SortQuery sortQuery, HttpServletResponse response) {
+    public void exportOperationLog(@Valid LogQuery query, @Valid SortQuery sortQuery,
+        HttpServletResponse response) {
         baseService.exportOperationLog(query, sortQuery, response);
     }
 }

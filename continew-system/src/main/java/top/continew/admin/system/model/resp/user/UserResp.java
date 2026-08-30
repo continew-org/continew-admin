@@ -42,7 +42,9 @@ import java.util.Objects;
  */
 @Data
 @Schema(description = "用户响应参数")
-@Assemble(key = "id", props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0, container = ContainerConstants.USER_ROLE_ID_LIST, handlerType = OneToManyAssembleOperationHandler.class)
+@Assemble(key = "id", props = @Mapping(src = "roleId", ref = "roleIds"), sort = 0,
+    container = ContainerConstants.USER_ROLE_ID_LIST,
+    handlerType = OneToManyAssembleOperationHandler.class)
 public class UserResp extends BaseDetailResp {
 
     @Serial
@@ -69,7 +71,8 @@ public class UserResp extends BaseDetailResp {
     /**
      * 头像地址
      */
-    @Schema(description = "头像地址", example = "https://himg.bdimg.com/sys/portrait/item/public.1.81ac9a9e.rf1ix17UfughLQjNo7XQ_w.jpg")
+    @Schema(description = "头像地址",
+        example = "https://himg.bdimg.com/sys/portrait/item/public.1.81ac9a9e.rf1ix17UfughLQjNo7XQ_w.jpg")
     private String avatar;
 
     /**
@@ -120,7 +123,9 @@ public class UserResp extends BaseDetailResp {
      * 角色 ID 列表
      */
     @Schema(description = "角色 ID 列表", example = "2")
-    @Assemble(props = @Mapping(src = "name", ref = "roleNames"), container = ContainerConstants.USER_ROLE_NAME_LIST, handlerType = ManyToManyAssembleOperationHandler.class)
+    @Assemble(props = @Mapping(src = "name", ref = "roleNames"),
+        container = ContainerConstants.USER_ROLE_NAME_LIST,
+        handlerType = ManyToManyAssembleOperationHandler.class)
     private List<Long> roleIds;
 
     /**

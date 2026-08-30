@@ -32,7 +32,8 @@ import java.util.Set;
  * @author Charles7c
  * @since 2023/2/15 20:30
  */
-public interface MenuService extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {
+public interface MenuService
+    extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {
 
     /**
      * 根据用户 ID 查询

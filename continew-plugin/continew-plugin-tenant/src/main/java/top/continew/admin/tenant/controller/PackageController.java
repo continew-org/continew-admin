@@ -47,9 +47,11 @@ import java.util.List;
 @Tag(name = "套餐管理 API")
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/tenant/package", api = {Api.LIST, Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE,
-    Api.DICT})
-public class PackageController extends BaseController<PackageService, PackageResp, PackageDetailResp, PackageQuery, PackageReq> {
+@CrudRequestMapping(value = "/tenant/package",
+    api = {Api.LIST, Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE,
+        Api.DICT})
+public class PackageController extends
+    BaseController<PackageService, PackageResp, PackageDetailResp, PackageQuery, PackageReq> {
 
     private final TenantExtensionProperties tenantExtensionProperties;
     private final MenuApi menuApi;
@@ -57,7 +59,8 @@ public class PackageController extends BaseController<PackageService, PackageRes
     @Operation(summary = "查询租户套餐菜单", description = "查询租户套餐菜单树列表")
     @SaCheckPermission("tenant:package:list")
     @GetMapping("/menu/tree")
-    public List<Tree<Long>> listMenuTree(@RequestParam(required = false, defaultValue = "true") Boolean isSimple) {
+    public List<Tree<Long>> listMenuTree(
+        @RequestParam(required = false, defaultValue = "true") Boolean isSimple) {
         return menuApi.listTree(tenantExtensionProperties.getIgnoreMenus(), isSimple);
     }
 }

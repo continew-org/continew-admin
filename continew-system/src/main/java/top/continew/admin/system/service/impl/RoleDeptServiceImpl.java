@@ -56,7 +56,8 @@ public class RoleDeptServiceImpl implements RoleDeptService {
         // 删除原有关联
         baseMapper.lambdaUpdate().eq(RoleDeptDO::getRoleId, roleId).remove();
         // 保存最新关联
-        List<RoleDeptDO> roleDeptList = CollUtils.mapToList(deptIds, deptId -> new RoleDeptDO(roleId, deptId));
+        List<RoleDeptDO> roleDeptList =
+            CollUtils.mapToList(deptIds, deptId -> new RoleDeptDO(roleId, deptId));
         return baseMapper.insertBatch(roleDeptList);
     }
 

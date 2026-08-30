@@ -87,8 +87,9 @@ public class CrudApiPermissionPrefixCache {
             throw new IllegalArgumentException("无效的 @CrudRequestMapping 路径配置：" + path);
         }
         String moduleName = pathSegmentList.get(0);
-        String resourceName = StrUtil.toCamelCase(String.join(StringConstants.UNDERLINE, pathSegmentList
-            .subList(1, pathSegmentList.size())));
+        String resourceName =
+            StrUtil.toCamelCase(String.join(StringConstants.UNDERLINE, pathSegmentList
+                .subList(1, pathSegmentList.size())));
         return "%s:%s".formatted(moduleName, resourceName);
     }
 }

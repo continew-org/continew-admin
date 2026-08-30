@@ -41,7 +41,11 @@ import top.continew.starter.core.util.CollUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 仪表盘业务实现
@@ -66,7 +70,8 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewPv();
         resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList = logMapper.selectListDashboardAnalysisPv(last12MonthList);
+        List<DashboardChartCommonResp> dataList =
+            logMapper.selectListDashboardAnalysisPv(last12MonthList);
         if (dataList.size() < 12) {
             // 填充缺失的数据
             this.fillMissingDateData(last12MonthList, dataList);
@@ -80,7 +85,8 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewIp();
         resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList = logMapper.selectListDashboardAnalysisIp(last12MonthList);
+        List<DashboardChartCommonResp> dataList =
+            logMapper.selectListDashboardAnalysisIp(last12MonthList);
         if (dataList.size() < 12) {
             // 填充缺失的数据
             this.fillMissingDateData(last12MonthList, dataList);
@@ -119,7 +125,8 @@ public class DashboardServiceImpl implements DashboardService {
         DateTime currentDate = DateUtil.date();
         Date startTime = DateUtil.beginOfDay(DateUtil.offsetDay(currentDate, -days)).toJdkDate();
         Date endTime = DateUtil.endOfDay(DateUtil.offsetDay(currentDate, -1)).toJdkDate();
-        List<DashboardAccessTrendResp> list = logMapper.selectListDashboardAccessTrend(startTime, endTime);
+        List<DashboardAccessTrendResp> list =
+            logMapper.selectListDashboardAccessTrend(startTime, endTime);
         if (list.size() < days) {
             List<String> all = DateUtil.rangeToList(startTime, endTime, DateField.DAY_OF_MONTH)
                 .stream()
@@ -127,7 +134,8 @@ public class DashboardServiceImpl implements DashboardService {
                 .toList();
             Collection<String> missings = CollUtil.disjunction(all, CollUtils
                 .mapToList(list, DashboardAccessTrendResp::getDate));
-            list.addAll(CollUtils.mapToList(missings, missing -> new DashboardAccessTrendResp(missing, 0L, 0L)));
+            list.addAll(CollUtils.mapToList(missings,
+                missing -> new DashboardAccessTrendResp(missing, 0L, 0L)));
             list.sort(Comparator.comparing(DashboardAccessTrendResp::getDate));
         }
         return list;
@@ -175,7 +183,9 @@ public class DashboardServiceImpl implements DashboardService {
     private BigDecimal calcGrowthFromYesterday(Long today, Long yesterday) {
         return (0 == yesterday)
             ? BigDecimal.valueOf(100)
-            : NumberUtil.round(NumberUtil.mul(NumberUtil.div(NumberUtil.sub(today, yesterday), yesterday), 100), 1);
+            : NumberUtil.round(
+                NumberUtil.mul(NumberUtil.div(NumberUtil.sub(today, yesterday), yesterday), 100),
+                1);
     }
 
     /**
@@ -184,7 +194,8 @@ public class DashboardServiceImpl implements DashboardService {
      * @param list 饼图数据列表
      * @return 饼图数据列表
      */
-    private List<DashboardChartCommonResp> buildOtherPieChartData(List<DashboardChartCommonResp> list) {
+    private List<DashboardChartCommonResp> buildOtherPieChartData(
+        List<DashboardChartCommonResp> list) {
         Long totalCount = logMapper.selectTotalCount();
         long sumCount = list.stream().mapToLong(DashboardChartCommonResp::getValue).sum();
         if (sumCount < totalCount) {
@@ -202,7 +213,8 @@ public class DashboardServiceImpl implements DashboardService {
     private void fillMissingDateData(List<String> all, List<DashboardChartCommonResp> list) {
         Collection<String> missings = CollUtil.disjunction(all, CollUtils
             .mapToList(list, DashboardChartCommonResp::getName));
-        list.addAll(CollUtils.mapToList(missings, missing -> new DashboardChartCommonResp(missing, 0L)));
+        list.addAll(
+            CollUtils.mapToList(missings, missing -> new DashboardChartCommonResp(missing, 0L)));
         list.sort(Comparator.comparing(DashboardChartCommonResp::getName));
     }
 

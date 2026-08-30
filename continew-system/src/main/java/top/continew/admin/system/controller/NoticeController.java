@@ -43,17 +43,20 @@ import java.util.List;
  */
 @Tag(name = "公告管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/notice", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
-public class NoticeController extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
+@CrudRequestMapping(value = "/system/notice",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
+public class NoticeController
+    extends BaseController<NoticeService, NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq> {
 
     @Override
-    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {
+    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass)
+        throws Exception {
         super.preHandle(crudApi, args, targetMethod, targetClass);
         Api api = crudApi.value();
         if (!(Api.CREATE.equals(api) || Api.UPDATE.equals(api))) {
             return;
         }
-        NoticeReq req = (NoticeReq)args[0];
+        NoticeReq req = (NoticeReq) args[0];
         // 校验通知方式
         List<Integer> noticeMethods = req.getNoticeMethods();
         if (CollUtil.isNotEmpty(noticeMethods)) {

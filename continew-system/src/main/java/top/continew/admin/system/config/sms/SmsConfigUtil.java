@@ -41,7 +41,7 @@ public class SmsConfigUtil {
 
     /**
      * 将本地配置转换为 SMS4J 配置
-     * 
+     *
      * @param smsConfig 本地配置对象
      * @return SMS4J 配置基类
      */
@@ -50,7 +50,8 @@ public class SmsConfigUtil {
             return null;
         }
         String supplier = smsConfig.getSupplier();
-        BaseProviderFactory<?, ?> providerFactory = ProviderFactoryHolder.requireForSupplier(supplier);
+        BaseProviderFactory<?, ?> providerFactory =
+            ProviderFactoryHolder.requireForSupplier(supplier);
         if (providerFactory == null) {
             return null;
         }
@@ -73,7 +74,7 @@ public class SmsConfigUtil {
         if (StrUtil.isNotBlank(smsConfig.getSupplierConfig())) {
             configInfo.putAll(JSONUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
         }
-        return (BaseConfig)BeanUtil.toBean(configInfo, providerFactory.getConfigClass());
+        return (BaseConfig) BeanUtil.toBean(configInfo, providerFactory.getConfigClass());
     }
 
 }

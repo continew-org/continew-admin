@@ -28,7 +28,8 @@ import top.continew.admin.system.model.resp.SmsConfigResp;
  * @author luoqiz
  * @since 2025/03/15 18:41
  */
-public interface SmsConfigService extends BaseService<SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> {
+public interface SmsConfigService
+    extends BaseService<SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> {
 
     /**
      * 设置默认配置

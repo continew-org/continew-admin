@@ -34,7 +34,7 @@ public interface UserApi {
      * <p>
      * 数据填充容器 {@link ContainerConstants#USER_NICKNAME}
      * </p>
-     * 
+     *
      * @param id ID
      * @return 昵称
      */

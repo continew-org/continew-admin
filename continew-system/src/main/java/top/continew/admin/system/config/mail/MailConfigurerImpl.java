@@ -52,7 +52,8 @@ public class MailConfigurerImpl implements MailConfigurer {
         mailConfig.setPort(MapUtil.getInt(map, "MAIL_PORT"));
         mailConfig.setUsername(MapUtil.getStr(map, "MAIL_USERNAME"));
         mailConfig.setPassword(MapUtil.getStr(map, "MAIL_PASSWORD"));
-        mailConfig.setSslEnabled(GlobalConstants.Boolean.YES.equals(MapUtil.getInt(map, "MAIL_SSL_ENABLED")));
+        mailConfig.setSslEnabled(
+            GlobalConstants.Boolean.YES.equals(MapUtil.getInt(map, "MAIL_SSL_ENABLED")));
         if (mailConfig.isSslEnabled()) {
             mailConfig.setSslPort(MapUtil.getInt(map, "MAIL_SSL_PORT"));
         }

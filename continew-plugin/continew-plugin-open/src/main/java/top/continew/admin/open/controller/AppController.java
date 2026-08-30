@@ -46,9 +46,11 @@ import top.continew.starter.extension.crud.enums.Api;
 @Tag(name = "应用管理 API")
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/open/app", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
-    Api.EXPORT})
-public class AppController extends BaseController<AppService, AppResp, AppDetailResp, AppQuery, AppReq> {
+@CrudRequestMapping(value = "/open/app",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
+        Api.EXPORT})
+public class AppController
+    extends BaseController<AppService, AppResp, AppDetailResp, AppQuery, AppReq> {
 
     @Operation(summary = "获取密钥", description = "获取应用密钥")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)

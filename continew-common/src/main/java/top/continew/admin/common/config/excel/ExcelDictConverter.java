@@ -41,8 +41,8 @@ public class ExcelDictConverter implements Converter<Object> {
 
     @Override
     public Object convertToJavaData(ReadCellData<?> cellData,
-                                    ExcelContentProperty contentProperty,
-                                    GlobalConfiguration globalConfiguration) {
+        ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         // 获取字典项数据
         List<LabelValueResp> dictItemList = this.getDictCode(contentProperty);
         // 转换字典标签为字典值
@@ -57,8 +57,8 @@ public class ExcelDictConverter implements Converter<Object> {
 
     @Override
     public WriteCellData<String> convertToExcelData(Object data,
-                                                    ExcelContentProperty contentProperty,
-                                                    GlobalConfiguration globalConfiguration) {
+        ExcelContentProperty contentProperty,
+        GlobalConfiguration globalConfiguration) {
         if (data == null) {
             return new WriteCellData<>(StringConstants.EMPTY);
         }
@@ -82,7 +82,8 @@ public class ExcelDictConverter implements Converter<Object> {
      * @return 字典项数据
      */
     private List<LabelValueResp> getDictCode(ExcelContentProperty contentProperty) {
-        DictExcelProperty dictExcelProperty = contentProperty.getField().getAnnotation(DictExcelProperty.class);
+        DictExcelProperty dictExcelProperty =
+            contentProperty.getField().getAnnotation(DictExcelProperty.class);
         if (dictExcelProperty == null) {
             throw new IllegalArgumentException("Excel 字典转换器异常：请为字段添加 @DictExcelProperty 注解");
         }

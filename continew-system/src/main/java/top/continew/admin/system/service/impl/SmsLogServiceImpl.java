@@ -32,4 +32,7 @@ import top.continew.admin.system.service.SmsLogService;
  * @since 2025/03/15 22:15
  */
 @Service
-public class SmsLogServiceImpl extends BaseServiceImpl<SmsLogMapper, SmsLogDO, SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> implements SmsLogService {}
+public class SmsLogServiceImpl
+    extends BaseServiceImpl<SmsLogMapper, SmsLogDO, SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq>
+    implements SmsLogService {
+}

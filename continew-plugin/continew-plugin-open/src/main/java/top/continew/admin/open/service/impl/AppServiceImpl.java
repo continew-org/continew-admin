@@ -39,7 +39,9 @@ import top.continew.starter.core.constant.StringConstants;
  * @since 2024/10/17 16:03
  */
 @Service
-public class AppServiceImpl extends BaseServiceImpl<AppMapper, AppDO, AppResp, AppDetailResp, AppQuery, AppReq> implements AppService {
+public class AppServiceImpl
+    extends BaseServiceImpl<AppMapper, AppDO, AppResp, AppDetailResp, AppQuery, AppReq>
+    implements AppService {
 
     @Override
     public void beforeCreate(AppReq req) {

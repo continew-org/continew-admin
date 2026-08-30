@@ -52,8 +52,11 @@ public class OnlineUserResp implements Serializable {
     /**
      * 令牌
      */
-    @Schema(description = "令牌", example = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjEsInJuU3RyIjoiTUd6djdyOVFoeHEwdVFqdFAzV3M5YjVJRzh4YjZPSEUifQ.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
-    @AssembleMethod(prop = ":lastActiveTime", targetType = OnlineUserService.class, method = @ContainerMethod(bindMethod = "getLastActiveTime", type = MappingType.ORDER_OF_KEYS))
+    @Schema(description = "令牌",
+        example = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjF9.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
+    @AssembleMethod(prop = ":lastActiveTime", targetType = OnlineUserService.class,
+        method = @ContainerMethod(bindMethod = "getLastActiveTime",
+            type = MappingType.ORDER_OF_KEYS))
     private String token;
 
     /**

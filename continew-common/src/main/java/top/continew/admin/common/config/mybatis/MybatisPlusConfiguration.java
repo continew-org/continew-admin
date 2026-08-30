@@ -36,8 +36,9 @@ public class MybatisPlusConfiguration {
 
     // SQL 解析本地缓存
     static {
-        JsqlParserGlobal.setJsqlParseCache(new JdkSerialCaffeineJsqlParseCache(cache -> cache.maximumSize(1024)
-            .expireAfterWrite(5, TimeUnit.SECONDS)));
+        JsqlParserGlobal
+            .setJsqlParseCache(new JdkSerialCaffeineJsqlParseCache(cache -> cache.maximumSize(1024)
+                .expireAfterWrite(5, TimeUnit.SECONDS)));
     }
 
     /**

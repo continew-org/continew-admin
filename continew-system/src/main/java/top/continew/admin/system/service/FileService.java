@@ -41,7 +41,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/12/23 10:38
  */
-public interface FileService extends BaseService<FileResp, FileResp, FileQuery, FileReq>, IService<FileDO> {
+public interface FileService
+    extends BaseService<FileResp, FileResp, FileQuery, FileReq>, IService<FileDO> {
 
     /**
      * 上传到默认存储
@@ -88,9 +89,9 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      * @throws IOException /
      */
     default FileInfo upload(MultipartFile file,
-                            String parentPath,
-                            String storageCode,
-                            String uploadTaskId) throws IOException {
+        String parentPath,
+        String storageCode,
+        String uploadTaskId) throws IOException {
         return upload(file, parentPath, storageCode);
     }
 
@@ -198,7 +199,9 @@ public interface FileService extends BaseService<FileResp, FileResp, FileQuery, 
      */
     default String getDefaultParentPath() {
         LocalDate today = LocalDate.now();
-        return today.getYear() + StringConstants.SLASH + today.getMonthValue() + StringConstants.SLASH + today
-            .getDayOfMonth() + StringConstants.SLASH;
+        return today.getYear() + StringConstants.SLASH + today.getMonthValue()
+            + StringConstants.SLASH + today
+                .getDayOfMonth()
+            + StringConstants.SLASH;
     }
 }

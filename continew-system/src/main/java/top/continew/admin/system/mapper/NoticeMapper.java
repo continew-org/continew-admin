@@ -42,7 +42,8 @@ public interface NoticeMapper extends BaseMapper<NoticeDO> {
      * @param query 查询条件
      * @return 公告列表
      */
-    IPage<NoticeResp> selectNoticePage(@Param("page") Page<NoticeDO> page, @Param("query") NoticeQuery query);
+    IPage<NoticeResp> selectNoticePage(@Param("page") Page<NoticeDO> page,
+        @Param("query") NoticeQuery query);
 
     /**
      * 查询未读公告 ID 列表
@@ -51,7 +52,8 @@ public interface NoticeMapper extends BaseMapper<NoticeDO> {
      * @param userId       用户 ID
      * @return 未读公告 ID 列表
      */
-    List<Long> selectUnreadIdsByUserId(@Param("noticeMethod") Integer noticeMethod, @Param("userId") Long userId);
+    List<Long> selectUnreadIdsByUserId(@Param("noticeMethod") Integer noticeMethod,
+        @Param("userId") Long userId);
 
     /**
      * 查询仪表盘公告列表

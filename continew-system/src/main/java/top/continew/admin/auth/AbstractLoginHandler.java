@@ -111,8 +111,9 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
             });
             return roles;
         }, threadPoolTaskExecutor);
-        CompletableFuture<Integer> passwordExpirationDaysFuture = CompletableFuture.supplyAsync(() -> optionService
-            .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()), threadPoolTaskExecutor);
+        CompletableFuture<Integer> passwordExpirationDaysFuture =
+            CompletableFuture.supplyAsync(() -> optionService
+                .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()), threadPoolTaskExecutor);
         CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);
         UserContext userContext = new UserContext(permissionFuture.join(), roleFuture
             .join(), passwordExpirationDaysFuture.join());
@@ -126,11 +127,13 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         // 设置并发登录配置参数
         loginParameter.setIsConcurrent(client.getIsConcurrent());
         if (Boolean.FALSE.equals(client.getIsConcurrent())) {
-            loginParameter.setReplacedRange(SaReplacedRange.valueOf(client.getReplacedRange().getValue()));
+            loginParameter
+                .setReplacedRange(SaReplacedRange.valueOf(client.getReplacedRange().getValue()));
         }
         loginParameter.setMaxLoginCount(client.getMaxLoginCount());
         if (client.getMaxLoginCount() != -1) {
-            loginParameter.setOverflowLogoutMode(SaLogoutMode.valueOf(client.getOverflowLogoutMode().getValue()));
+            loginParameter.setOverflowLogoutMode(
+                SaLogoutMode.valueOf(client.getOverflowLogoutMode().getValue()));
         }
         userContext.setClientType(client.getClientType());
         userContext.setClientId(client.getClientId());
@@ -141,7 +144,8 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         UserContextHolder.setContext(userContext);
         return LoginResp.builder()
             .token(StpUtil.getTokenValue())
-            .tenantId(TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
+            .tenantId(
+                TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
             .build();
     }
 
@@ -151,8 +155,10 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
      * @param user 用户信息
      */
     protected void checkUserStatus(UserDO user) {
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(), "此账号已被禁用，如有疑问，请联系管理员");
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, user.getStatus(),
+            "此账号已被禁用，如有疑问，请联系管理员");
         DeptDO dept = deptService.getById(user.getDeptId());
-        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, dept.getStatus(), "此账号所属部门已被禁用，如有疑问，请联系管理员");
+        CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, dept.getStatus(),
+            "此账号所属部门已被禁用，如有疑问，请联系管理员");
     }
 }

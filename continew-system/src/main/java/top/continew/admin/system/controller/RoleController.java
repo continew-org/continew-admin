@@ -27,7 +27,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.query.RoleUserQuery;
@@ -57,9 +63,11 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@CrudRequestMapping(value = "/system/role", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
-    Api.DICT})
-public class RoleController extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
+@CrudRequestMapping(value = "/system/role",
+    api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE,
+        Api.DICT})
+public class RoleController
+    extends BaseController<RoleService, RoleResp, RoleDetailResp, RoleQuery, RoleReq> {
 
     private final UserRoleService userRoleService;
     private final MenuService menuService;
@@ -75,7 +83,8 @@ public class RoleController extends BaseController<RoleService, RoleResp, RoleDe
     @Operation(summary = "修改权限", description = "修改角色的功能权限")
     @SaCheckPermission("system:role:updatePermission")
     @PutMapping("/{id}/permission")
-    public void updatePermission(@PathVariable("id") Long id, @RequestBody @Valid RolePermissionUpdateReq req) {
+    public void updatePermission(@PathVariable("id") Long id,
+        @RequestBody @Valid RolePermissionUpdateReq req) {
         baseService.updatePermission(id, req);
     }
 
@@ -84,8 +93,8 @@ public class RoleController extends BaseController<RoleService, RoleResp, RoleDe
     @SaCheckPermission("system:role:list")
     @GetMapping("/{id}/user")
     public PageResp<RoleUserResp> pageUser(@PathVariable("id") Long id,
-                                           @Valid RoleUserQuery query,
-                                           @Valid PageQuery pageQuery) {
+        @Valid RoleUserQuery query,
+        @Valid PageQuery pageQuery) {
         query.setRoleId(id);
         return userRoleService.pageUser(query, pageQuery);
     }
@@ -94,14 +103,15 @@ public class RoleController extends BaseController<RoleService, RoleResp, RoleDe
     @SaCheckPermission("system:role:assign")
     @PostMapping("/{id}/user")
     public void assignToUsers(@PathVariable("id") Long id,
-                              @RequestBody @NotEmpty(message = "用户ID列表不能为空") List<Long> userIds) {
+        @RequestBody @NotEmpty(message = "用户ID列表不能为空") List<Long> userIds) {
         baseService.assignToUsers(id, userIds);
     }
 
     @Operation(summary = "取消分配用户", description = "批量取消分配角色给用户")
     @SaCheckPermission("system:role:unassign")
     @DeleteMapping("/user")
-    public void unassignFromUsers(@RequestBody @NotEmpty(message = "用户列表不能为空") List<Long> userRoleIds) {
+    public void unassignFromUsers(
+        @RequestBody @NotEmpty(message = "用户列表不能为空") List<Long> userRoleIds) {
         userRoleService.deleteByIds(userRoleIds);
     }
 

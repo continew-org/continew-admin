@@ -58,7 +58,8 @@ public class NoticeLogServiceImpl implements NoticeLogService {
         }
         // 新增没有关联的
         LocalDateTime now = LocalDateTime.now();
-        List<NoticeLogDO> list = CollUtils.mapToList(subtract, userId -> new NoticeLogDO(noticeId, userId, now));
+        List<NoticeLogDO> list =
+            CollUtils.mapToList(subtract, userId -> new NoticeLogDO(noticeId, userId, now));
         return baseMapper.insertBatch(list);
     }
 

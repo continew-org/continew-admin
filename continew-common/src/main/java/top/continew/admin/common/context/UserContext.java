@@ -98,7 +98,8 @@ public class UserContext implements Serializable {
      */
     private Long tenantId;
 
-    public UserContext(Set<String> permissions, Set<RoleContext> roles, Integer passwordExpirationDays) {
+    public UserContext(Set<String> permissions, Set<RoleContext> roles,
+        Integer passwordExpirationDays) {
         this.permissions = permissions;
         this.setRoles(roles);
         this.passwordExpirationDays = passwordExpirationDays;
@@ -121,14 +122,16 @@ public class UserContext implements Serializable {
      */
     public boolean isPasswordExpired() {
         // 永久有效
-        if (this.passwordExpirationDays == null || this.passwordExpirationDays <= GlobalConstants.Boolean.NO) {
+        if (this.passwordExpirationDays == null
+            || this.passwordExpirationDays <= GlobalConstants.Boolean.NO) {
             return false;
         }
         // 初始密码（第三方登录用户）暂不提示修改
         if (this.pwdResetTime == null) {
             return false;
         }
-        return this.pwdResetTime.plusDays(this.passwordExpirationDays).isBefore(LocalDateTime.now());
+        return this.pwdResetTime.plusDays(this.passwordExpirationDays)
+            .isBefore(LocalDateTime.now());
     }
 
     /**
@@ -152,7 +155,9 @@ public class UserContext implements Serializable {
         if (CollUtil.isEmpty(roleCodes)) {
             return false;
         }
-        TenantExtensionProperties tenantExtensionProperties = SpringUtil.getBean(TenantExtensionProperties.class);
-        return !tenantExtensionProperties.isDefaultTenant() && roleCodes.contains(RoleCodeEnum.TENANT_ADMIN.getCode());
+        TenantExtensionProperties tenantExtensionProperties =
+            SpringUtil.getBean(TenantExtensionProperties.class);
+        return !tenantExtensionProperties.isDefaultTenant()
+            && roleCodes.contains(RoleCodeEnum.TENANT_ADMIN.getCode());
     }
 }

@@ -40,7 +40,8 @@ public class UserApiImpl implements UserApi {
     private final UserMapper baseMapper;
 
     @Override
-    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH, syncLocal = true)
+    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH,
+        syncLocal = true)
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

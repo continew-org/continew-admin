@@ -34,6 +34,8 @@ import top.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "客户端管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/client", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
-public class ClientController extends BaseController<ClientService, ClientResp, ClientResp, ClientQuery, ClientReq> {
+@CrudRequestMapping(value = "/system/client",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
+public class ClientController
+    extends BaseController<ClientService, ClientResp, ClientResp, ClientQuery, ClientReq> {
 }

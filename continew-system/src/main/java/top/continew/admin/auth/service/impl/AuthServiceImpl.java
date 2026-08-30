@@ -72,8 +72,9 @@ public class AuthServiceImpl implements AuthService {
         ClientResp client = clientService.getByClientId(req.getClientId());
         ValidationUtils.throwIfNull(client, "客户端不存在");
         ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()), "客户端已禁用");
-        ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()), "该客户端暂未授权 [{}] 认证", authType
-            .getDescription());
+        ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()),
+            "该客户端暂未授权 [{}] 认证", authType
+                .getDescription());
         // 获取处理器
         LoginHandler<LoginReq> loginHandler = loginHandlerFactory.getHandler(authType);
         // 登录前置处理
@@ -98,29 +99,32 @@ public class AuthServiceImpl implements AuthService {
         } else {
             roleSet.forEach(r -> menuSet.addAll(menuService.listByRoleId(r.getId())));
         }
-        List<MenuResp> menuList = menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).toList();
+        List<MenuResp> menuList =
+            menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).toList();
         if (CollUtil.isEmpty(menuList)) {
             return new ArrayList<>(0);
         }
         // 构建路由树
         TreeField treeField = MenuResp.class.getDeclaredAnnotation(TreeField.class);
-        TreeNodeConfig treeNodeConfig = crudProperties.getTreeDictModel().genTreeNodeConfig(treeField);
-        List<Tree<Long>> treeList = TreeUtil.build(menuList, treeField.rootId(), treeNodeConfig, (m, tree) -> {
-            tree.setId(m.getId());
-            tree.setParentId(m.getParentId());
-            tree.setName(m.getTitle());
-            tree.setWeight(m.getSort());
-            tree.putExtra("type", m.getType().getValue());
-            tree.putExtra("path", m.getPath());
-            tree.putExtra("name", m.getName());
-            tree.putExtra("component", m.getComponent());
-            tree.putExtra("redirect", m.getRedirect());
-            tree.putExtra("icon", m.getIcon());
-            tree.putExtra("isExternal", m.getIsExternal());
-            tree.putExtra("isCache", m.getIsCache());
-            tree.putExtra("isHidden", m.getIsHidden());
-            tree.putExtra("permission", m.getPermission());
-        });
+        TreeNodeConfig treeNodeConfig =
+            crudProperties.getTreeDictModel().genTreeNodeConfig(treeField);
+        List<Tree<Long>> treeList =
+            TreeUtil.build(menuList, treeField.rootId(), treeNodeConfig, (m, tree) -> {
+                tree.setId(m.getId());
+                tree.setParentId(m.getParentId());
+                tree.setName(m.getTitle());
+                tree.setWeight(m.getSort());
+                tree.putExtra("type", m.getType().getValue());
+                tree.putExtra("path", m.getPath());
+                tree.putExtra("name", m.getName());
+                tree.putExtra("component", m.getComponent());
+                tree.putExtra("redirect", m.getRedirect());
+                tree.putExtra("icon", m.getIcon());
+                tree.putExtra("isExternal", m.getIsExternal());
+                tree.putExtra("isCache", m.getIsCache());
+                tree.putExtra("isHidden", m.getIsHidden());
+                tree.putExtra("permission", m.getPermission());
+            });
         return BeanUtil.copyToList(treeList, RouteResp.class);
     }
 }

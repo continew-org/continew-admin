@@ -35,7 +35,8 @@ import java.util.Set;
  * @author Charles7c
  * @since 2023/2/8 23:15
  */
-public interface RoleService extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
+public interface RoleService
+    extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {
 
     /**
      * 修改角色权限

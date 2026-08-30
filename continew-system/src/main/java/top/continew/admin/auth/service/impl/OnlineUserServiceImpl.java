@@ -38,7 +38,12 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +75,8 @@ public class OnlineUserServiceImpl implements OnlineUserService {
                 Object loginIdObj = StpUtil.getLoginIdByToken(token);
                 long tokenTimeout = StpUtil.getStpLogic().getTokenActiveTimeoutByToken(token);
                 // 将相关信息打包成对象或简单的Entry对，便于后续过滤与归类
-                return new AbstractMap.SimpleEntry<>(token, new AbstractMap.SimpleEntry<>(loginIdObj, tokenTimeout));
+                return new AbstractMap.SimpleEntry<>(token,
+                    new AbstractMap.SimpleEntry<>(loginIdObj, tokenTimeout));
             })
             // 过滤出未过期且loginId存在的Token
             .filter(entry -> {
@@ -79,14 +85,16 @@ public class OnlineUserServiceImpl implements OnlineUserService {
                 return loginIdObj != null && tokenTimeout >= SaTokenDao.NEVER_EXPIRE;
             })
             // 此时数据都有效，进行收集
-            .collect(Collectors.groupingBy(entry -> Convert.toLong(entry.getValue().getKey()), Collectors
-                .mapping(AbstractMap.SimpleEntry::getKey, Collectors.toList())));
+            .collect(
+                Collectors.groupingBy(entry -> Convert.toLong(entry.getValue().getKey()), Collectors
+                    .mapping(AbstractMap.SimpleEntry::getKey, Collectors.toList())));
         // 筛选数据
         for (Map.Entry<Long, List<String>> entry : tokenMap.entrySet()) {
             Long userId = entry.getKey();
             UserContext userContext = UserContextHolder.getContext(userId);
-            if (userContext == null || !this.isMatchNickname(query.getNickname(), userContext) || !this
-                .isMatchClientId(query.getClientId(), userContext)) {
+            if (userContext == null || !this.isMatchNickname(query.getNickname(), userContext)
+                || !this
+                    .isMatchClientId(query.getClientId(), userContext)) {
                 continue;
             }
             // 只显示本租户数据
@@ -115,7 +123,8 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Override
     public LocalDateTime getLastActiveTime(String token) {
         long lastActiveTime = StpUtil.getStpLogic().getTokenLastActiveTime(token);
-        return lastActiveTime == SaTokenDao.NOT_VALUE_EXPIRE ? null : DateUtil.date(lastActiveTime).toLocalDateTime();
+        return lastActiveTime == SaTokenDao.NOT_VALUE_EXPIRE ? null
+            : DateUtil.date(lastActiveTime).toLocalDateTime();
     }
 
     @Override
@@ -137,8 +146,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         if (StrUtil.isBlank(nickname)) {
             return true;
         }
-        return StrUtil.contains(userContext.getUsername(), nickname) || StrUtil.contains(UserContextHolder
-            .getNickname(userContext.getId()), nickname);
+        return StrUtil.contains(userContext.getUsername(), nickname)
+            || StrUtil.contains(UserContextHolder
+                .getNickname(userContext.getId()), nickname);
     }
 
     /**

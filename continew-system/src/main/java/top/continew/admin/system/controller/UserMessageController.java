@@ -23,7 +23,14 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.NoticeMethodEnum;
 import top.continew.admin.system.enums.NoticeScopeEnum;
@@ -82,8 +89,10 @@ public class UserMessageController {
     @GetMapping("/{id}")
     public MessageDetailResp getMessage(@PathVariable Long id) {
         MessageDetailResp detail = messageService.get(id);
-        CheckUtils.throwIf(detail == null || (NoticeScopeEnum.USER.equals(detail.getScope()) && !CollUtil
-            .contains(detail.getUsers(), UserContextHolder.getUserId().toString())), "消息不存在或无权限访问");
+        CheckUtils.throwIf(
+            detail == null || (NoticeScopeEnum.USER.equals(detail.getScope()) && !CollUtil
+                .contains(detail.getUsers(), UserContextHolder.getUserId().toString())),
+            "消息不存在或无权限访问");
         messageService.readMessage(Collections.singletonList(id), UserContextHolder.getUserId());
         detail.setIsRead(true);
         return detail;
@@ -117,15 +126,18 @@ public class UserMessageController {
 
     @Log(ignore = true)
     @Operation(summary = "查询未读公告", description = "查询当前用户的未读公告")
-    @Parameter(name = "method", description = "通知方式", example = "LOGIN_POPUP", in = ParameterIn.PATH)
+    @Parameter(name = "method", description = "通知方式", example = "LOGIN_POPUP",
+        in = ParameterIn.PATH)
     @GetMapping("/notice/unread/{method}")
     public List<Long> listUnreadNotice(@PathVariable String method) {
-        return noticeService.listUnreadIdsByUserId(NoticeMethodEnum.valueOf(method), UserContextHolder.getUserId());
+        return noticeService.listUnreadIdsByUserId(NoticeMethodEnum.valueOf(method),
+            UserContextHolder.getUserId());
     }
 
     @Operation(summary = "分页查询公告列表", description = "分页查询公告列表")
     @GetMapping("/notice")
-    public BasePageResp<NoticeResp> pageNotice(@Valid NoticeQuery query, @Valid PageQuery pageQuery) {
+    public BasePageResp<NoticeResp> pageNotice(@Valid NoticeQuery query,
+        @Valid PageQuery pageQuery) {
         query.setUserId(UserContextHolder.getUserId());
         return noticeService.page(query, pageQuery);
     }
@@ -135,9 +147,11 @@ public class UserMessageController {
     @GetMapping("/notice/{id}")
     public NoticeDetailResp getNotice(@PathVariable Long id) {
         NoticeDetailResp detail = noticeService.get(id);
-        CheckUtils.throwIf(detail == null || (NoticeScopeEnum.USER.equals(detail.getNoticeScope()) && !detail
-            .getNoticeUsers()
-            .contains(UserContextHolder.getUserId().toString())), "公告不存在或无权限访问");
+        CheckUtils.throwIf(
+            detail == null || (NoticeScopeEnum.USER.equals(detail.getNoticeScope()) && !detail
+                .getNoticeUsers()
+                .contains(UserContextHolder.getUserId().toString())),
+            "公告不存在或无权限访问");
         noticeService.readNotice(id, UserContextHolder.getUserId());
         return detail;
     }

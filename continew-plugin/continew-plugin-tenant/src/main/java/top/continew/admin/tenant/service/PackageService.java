@@ -30,7 +30,8 @@ import top.continew.starter.data.service.IService;
  * @author 小熊
  * @since 2024/11/26 11:25
  */
-public interface PackageService extends BaseService<PackageResp, PackageDetailResp, PackageQuery, PackageReq>, IService<PackageDO> {
+public interface PackageService extends
+    BaseService<PackageResp, PackageDetailResp, PackageQuery, PackageReq>, IService<PackageDO> {
 
     /**
      * 检查套餐状态

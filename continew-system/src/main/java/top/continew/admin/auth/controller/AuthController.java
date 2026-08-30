@@ -29,7 +29,12 @@ import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
@@ -65,6 +70,13 @@ public class AuthController {
     private final UserService userService;
     private final AuthRequestFactory authRequestFactory;
 
+    /**
+     * 用户登录
+     *
+     * @param req 登录信息
+     * @param request 请求对象
+     * @return 登录结果
+     */
     @SaIgnore
     @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
@@ -72,8 +84,14 @@ public class AuthController {
         return authService.login(req, request);
     }
 
+    /**
+     * 注销用户的当前登录
+     *
+     * @return 被登出的用户 ID
+     */
     @Operation(summary = "登出", description = "注销用户的当前登录")
-    @Parameter(name = "Authorization", description = "令牌", required = true, example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
+    @Parameter(name = "Authorization", description = "令牌", required = true,
+        example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
     public Object logout() {
         Object loginId = StpUtil.getLoginId(-1L);
@@ -81,17 +99,29 @@ public class AuthController {
         return loginId;
     }
 
+    /**
+     * 三方账号登录授权
+     *
+     * @param source 第三方平台来源
+     * @return 授权地址响应
+     */
     @SaIgnore
     @Operation(summary = "三方账号登录授权", description = "三方账号登录授权")
     @Parameter(name = "source", description = "来源", example = "gitee", in = ParameterIn.PATH)
     @GetMapping("/{source}")
-    public SocialAuthAuthorizeResp authorize(@PathVariable @EnumValue(value = SocialSourceEnum.class, message = "第三方平台无效") String source) {
+    public SocialAuthAuthorizeResp authorize(@PathVariable @EnumValue(
+        value = SocialSourceEnum.class, message = "第三方平台无效") String source) {
         AuthRequest authRequest = authRequestFactory.getAuthRequest(source);
         return SocialAuthAuthorizeResp.builder()
             .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
             .build();
     }
 
+    /**
+     * 获取登录用户信息
+     *
+     * @return 用户信息（含权限列表）
+     */
     @Log(ignore = true)
     @Operation(summary = "获取用户信息", description = "获取登录用户信息")
     @GetMapping("/user/info")

@@ -64,7 +64,8 @@ public class CacheConstants {
     /**
      * 用户密码错误次数缓存键前缀
      */
-    public static final String USER_PASSWORD_ERROR_KEY_PREFIX = USER_KEY_PREFIX + "PASSWORD_ERROR" + DELIMITER;
+    public static final String USER_PASSWORD_ERROR_KEY_PREFIX =
+        USER_KEY_PREFIX + "PASSWORD_ERROR" + DELIMITER;
 
     /**
      * 数据导入临时会话key

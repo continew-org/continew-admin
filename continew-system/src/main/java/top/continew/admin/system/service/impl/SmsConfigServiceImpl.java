@@ -42,7 +42,9 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class SmsConfigServiceImpl extends BaseServiceImpl<SmsConfigMapper, SmsConfigDO, SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> implements SmsConfigService {
+public class SmsConfigServiceImpl extends
+    BaseServiceImpl<SmsConfigMapper, SmsConfigDO, SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq>
+    implements SmsConfigService {
 
     @Override
     public void afterCreate(SmsConfigReq req, SmsConfigDO entity) {
@@ -74,8 +76,10 @@ public class SmsConfigServiceImpl extends BaseServiceImpl<SmsConfigMapper, SmsCo
         }
         // 启用状态才能设为默认配置
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, smsConfig.getStatus(), "请先启用所选配置");
-        baseMapper.lambdaUpdate().eq(SmsConfigDO::getIsDefault, true).set(SmsConfigDO::getIsDefault, false).update();
-        baseMapper.lambdaUpdate().eq(SmsConfigDO::getId, id).set(SmsConfigDO::getIsDefault, true).update();
+        baseMapper.lambdaUpdate().eq(SmsConfigDO::getIsDefault, true)
+            .set(SmsConfigDO::getIsDefault, false).update();
+        baseMapper.lambdaUpdate().eq(SmsConfigDO::getId, id).set(SmsConfigDO::getIsDefault, true)
+            .update();
     }
 
     @Override

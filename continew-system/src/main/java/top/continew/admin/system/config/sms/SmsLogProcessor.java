@@ -49,7 +49,8 @@ public class SmsLogProcessor implements CoreMethodProcessor {
             req.setConfigId(Long.parseLong(result.getConfigId()));
             req.setPhone(param[0].toString());
             req.setParams(JSONUtil.toJsonStr(param[1]));
-            req.setStatus(result.isSuccess() ? SuccessFailureStatusEnum.SUCCESS : SuccessFailureStatusEnum.FAILURE);
+            req.setStatus(result.isSuccess() ? SuccessFailureStatusEnum.SUCCESS
+                : SuccessFailureStatusEnum.FAILURE);
             req.setResMsg(JSONUtil.toJsonStr(result.getData()));
             smsLogService.create(req);
         }
@@ -63,8 +64,8 @@ public class SmsLogProcessor implements CoreMethodProcessor {
 
     @Override
     public void sendMessageByTemplatePreProcess(String phone,
-                                                String templateId,
-                                                LinkedHashMap<String, String> messages) {
+        String templateId,
+        LinkedHashMap<String, String> messages) {
         // do nothing
     }
 
@@ -75,8 +76,8 @@ public class SmsLogProcessor implements CoreMethodProcessor {
 
     @Override
     public void massTextingByTemplatePreProcess(List<String> phones,
-                                                String templateId,
-                                                LinkedHashMap<String, String> messages) {
+        String templateId,
+        LinkedHashMap<String, String> messages) {
         // do nothing
     }
 }

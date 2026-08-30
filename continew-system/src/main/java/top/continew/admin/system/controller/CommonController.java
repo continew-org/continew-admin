@@ -26,13 +26,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.enums.OptionCategoryEnum;
 import top.continew.admin.system.model.query.OptionQuery;
 import top.continew.admin.system.model.resp.file.FileUploadResp;
-import top.continew.admin.system.service.*;
+import top.continew.admin.system.service.DictItemService;
+import top.continew.admin.system.service.FileService;
+import top.continew.admin.system.service.OptionService;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.tenant.annotation.TenantIgnore;
@@ -61,11 +69,18 @@ public class CommonController {
     private final DictItemService dictItemService;
     private final OptionService optionService;
 
+    /**
+     * 上传文件
+     *
+     * @param file 文件
+     * @param parentPath 上级目录
+     * @return 上传结果
+     */
     @Operation(summary = "上传文件", description = "上传文件")
     @Parameter(name = "parentPath", description = "上级目录", example = "/", in = ParameterIn.QUERY)
     @PostMapping("/file")
     public FileUploadResp upload(@RequestPart @NotNull(message = "文件不能为空") MultipartFile file,
-                                 @RequestParam(required = false) String parentPath) throws IOException {
+        @RequestParam(required = false) String parentPath) throws IOException {
         ValidationUtils.throwIf(file::isEmpty, "文件不能为空");
         FileInfo fileInfo = fileService.upload(file, parentPath);
         return FileUploadResp.builder()
@@ -83,6 +98,11 @@ public class CommonController {
         return dictItemService.listByDictCode(code);
     }
 
+    /**
+     * 查询系统配置参数
+     *
+     * @return 系统配置参数列表
+     */
     @TenantIgnore
     @SaIgnore
     @Operation(summary = "查询系统配置参数", description = "查询系统配置参数")
@@ -93,8 +113,9 @@ public class CommonController {
         optionQuery.setCategory(OptionCategoryEnum.SITE.name());
         return optionService.list(optionQuery)
             .stream()
-            .map(option -> new LabelValueResp<>(option.getCode(), StrUtil.nullToDefault(option.getValue(), option
-                .getDefaultValue())))
+            .map(option -> new LabelValueResp<>(option.getCode(),
+                StrUtil.nullToDefault(option.getValue(), option
+                    .getDefaultValue())))
             .toList();
     }
 

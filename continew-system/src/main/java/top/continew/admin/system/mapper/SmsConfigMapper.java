@@ -25,4 +25,5 @@ import top.continew.admin.system.model.entity.SmsConfigDO;
  * @author luoqiz
  * @since 2025/03/15 18:41
  */
-public interface SmsConfigMapper extends BaseMapper<SmsConfigDO> {}
+public interface SmsConfigMapper extends BaseMapper<SmsConfigDO> {
+}

@@ -34,7 +34,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2023/8/20 10:55
  */
-public interface NoticeService extends BaseService<NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq>, IService<NoticeDO> {
+public interface NoticeService
+    extends BaseService<NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq>, IService<NoticeDO> {
 
     /**
      * 发布公告

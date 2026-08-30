@@ -22,7 +22,7 @@ import top.continew.starter.core.enums.BaseEnum;
 
 /**
  * 顶人下线的范围枚举
- * 
+ *
  * @author KAI
  * @since 2025/10/28 14:05
  */

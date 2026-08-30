@@ -54,9 +54,13 @@ public class NoticePublishJob {
      * 定时发布公告（未启用 Snail Job 则使用它）
      */
     @Component
-    @ConditionalOnProperty(prefix = "snail-job", name = PropertiesConstants.ENABLED, havingValue = "false")
+    @ConditionalOnProperty(prefix = "snail-job", name = PropertiesConstants.ENABLED,
+        havingValue = "false")
     public static class Scheduler {
 
+        /**
+         * 定时发布公告
+         */
         @TenantIgnore
         @Scheduled(cron = "0 * * * * ?")
         @Transactional(rollbackFor = Exception.class)
@@ -74,6 +78,9 @@ public class NoticePublishJob {
     @ConditionalOnEnabledScheduleJob
     public static class ScheduleJob {
 
+        /**
+         * 通过 Snail Job 定时发布公告
+         */
         @TenantIgnore
         @JobExecutor(name = "NoticePublishJob")
         @Transactional(rollbackFor = Exception.class)
@@ -100,7 +107,8 @@ public class NoticePublishJob {
         // 筛选需要发送消息的公告并发送
         List<NoticeDO> needSendMessageList = list.stream()
             .filter(notice -> CollUtil.isNotEmpty(notice.getNoticeMethods()))
-            .filter(notice -> notice.getNoticeMethods().contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue()))
+            .filter(notice -> notice.getNoticeMethods()
+                .contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue()))
             .toList();
         if (CollUtil.isNotEmpty(needSendMessageList)) {
             // 发送消息

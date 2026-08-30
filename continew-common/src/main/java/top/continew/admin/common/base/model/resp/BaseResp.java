@@ -52,7 +52,8 @@ public class BaseResp implements Serializable {
      * 创建人
      */
     @JsonIgnore
-    @Assemble(container = ContainerConstants.USER_NICKNAME, props = @Mapping(ref = "createUserString"))
+    @Assemble(container = ContainerConstants.USER_NICKNAME,
+        props = @Mapping(ref = "createUserString"))
     private Long createUser;
 
     /**

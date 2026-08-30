@@ -29,7 +29,8 @@ import java.util.List;
  * @author Charles7c
  * @since 2025/3/28 22:25
  */
-@FeignClient(value = "job-group", url = "${snail-job.server.api.url}", path = "/group", configuration = FeignRequestInterceptor.class)
+@FeignClient(value = "job-group", url = "${snail-job.server.api.url}", path = "/group",
+    configuration = FeignRequestInterceptor.class)
 public interface JobGroupApi {
 
     /**

@@ -37,7 +37,7 @@ import java.util.Collection;
 
 /**
  * 控制器基类
- * 
+ *
  * <p>
  * 根据实际项目需要，自行重写 CRUD 接口或增加自定义通用业务接口
  * </p>
@@ -50,10 +50,12 @@ import java.util.Collection;
  * @author Charles7c
  * @since 2024/12/6 20:30
  */
-public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> extends AbstractCrudController<S, L, D, Q, C> {
+public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C>
+    extends AbstractCrudController<S, L, D, Q, C> {
 
     @Override
-    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass) throws Exception {
+    public void preHandle(CrudApi crudApi, Object[] args, Method targetMethod, Class<?> targetClass)
+        throws Exception {
         // 忽略带 sign 请求权限校验
         SaRequest saRequest = SaHolder.getRequest();
         Collection<String> paramNames = saRequest.getParamNames();
@@ -66,7 +68,8 @@ public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> exten
             return;
         }
         // 忽略排除（放行）路径
-        SaTokenExtensionProperties saTokenExtensionProperties = SpringUtil.getBean(SaTokenExtensionProperties.class);
+        SaTokenExtensionProperties saTokenExtensionProperties =
+            SpringUtil.getBean(SaTokenExtensionProperties.class);
         if (saTokenExtensionProperties.isEnabled()) {
             String[] excludePatterns = saTokenExtensionProperties.getSecurity().getExcludes();
             if (SpringUtils.isMatch(ServletUtils.getRequest().getServletPath(), excludePatterns)) {

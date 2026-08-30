@@ -43,9 +43,10 @@ public class DefaultDataPermissionUserDataProvider implements DataPermissionUser
         UserData userData = new UserData();
         userData.setUserId(userContext.getId());
         userData.setDeptId(userContext.getDeptId());
-        userData.setRoles(CollUtils.mapToSet(userContext.getRoles(), r -> new RoleData(r.getId(), DataScope.valueOf(r
-            .getDataScope()
-            .name()))));
+        userData.setRoles(CollUtils.mapToSet(userContext.getRoles(),
+            r -> new RoleData(r.getId(), DataScope.valueOf(r
+                .getDataScope()
+                .name()))));
         return userData;
     }
 }

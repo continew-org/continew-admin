@@ -31,7 +31,8 @@ import top.continew.starter.data.service.IService;
  * @author Charles7c
  * @since 2023/12/26 22:09
  */
-public interface StorageService extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {
+public interface StorageService
+    extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {
 
     /**
      * 修改状态

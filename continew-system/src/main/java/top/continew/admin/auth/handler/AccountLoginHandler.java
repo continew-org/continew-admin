@@ -61,7 +61,8 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         // 验证用户名密码
         String username = req.getUsername();
         UserDO user = userService.getByUsername(username);
-        boolean isError = ObjectUtil.isNull(user) || !passwordEncoder.matches(password, user.getPassword());
+        boolean isError =
+            ObjectUtil.isNull(user) || !passwordEncoder.matches(password, user.getPassword());
         // 检查账号锁定状态
         this.checkUserLocked(req.getUsername(), request, isError);
         ValidationUtils.throwIf(isError, "用户名或密码不正确");
@@ -101,16 +102,19 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
      */
     private void checkUserLocked(String username, HttpServletRequest request, boolean isError) {
         // 不锁定
-        int maxErrorCount = optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.name());
+        int maxErrorCount =
+            optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.name());
         if (maxErrorCount <= GlobalConstants.Boolean.NO) {
             return;
         }
         // 检测是否已被锁定
-        String key = CacheConstants.USER_PASSWORD_ERROR_KEY_PREFIX + RedisUtils.formatKey(username, JakartaServletUtil
-            .getClientIP(request));
+        String key = CacheConstants.USER_PASSWORD_ERROR_KEY_PREFIX
+            + RedisUtils.formatKey(username, JakartaServletUtil
+                .getClientIP(request));
         Integer currentErrorCount = ObjectUtil.defaultIfNull(RedisUtils.get(key), 0);
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.getMsg()
-            .formatted(this.getUnlockTime(key)));
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount,
+            PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.getMsg()
+                .formatted(this.getUnlockTime(key)));
         // 登录成功清除计数
         if (!isError) {
             RedisUtils.delete(key);
@@ -118,10 +122,12 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         }
         // 登录失败递增计数
         currentErrorCount++;
-        int lockMinutes = optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.name());
+        int lockMinutes =
+            optionService.getValueByCode2Int(PasswordPolicyEnum.PASSWORD_ERROR_LOCK_MINUTES.name());
         RedisUtils.set(key, currentErrorCount, Duration.ofMinutes(lockMinutes));
-        CheckUtils.throwIf(currentErrorCount >= maxErrorCount, PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.getMsg()
-            .formatted(maxErrorCount, lockMinutes, this.getUnlockTime(key)));
+        CheckUtils.throwIf(currentErrorCount >= maxErrorCount,
+            PasswordPolicyEnum.PASSWORD_ERROR_LOCK_COUNT.getMsg()
+                .formatted(maxErrorCount, lockMinutes, this.getUnlockTime(key)));
     }
 
     /**
@@ -134,7 +140,7 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         long timeToLive = RedisUtils.getTimeToLive(key);
         return timeToLive > 0
             ? DateUtil.date()
-                .offset(DateField.MILLISECOND, (int)timeToLive)
+                .offset(DateField.MILLISECOND, (int) timeToLive)
                 .toString(DatePattern.CHINESE_DATE_TIME_FORMAT)
             : "";
     }

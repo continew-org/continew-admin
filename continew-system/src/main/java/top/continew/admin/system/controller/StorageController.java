@@ -43,14 +43,17 @@ import top.continew.starter.extension.crud.enums.Api;
  */
 @Tag(name = "存储管理 API")
 @RestController
-@CrudRequestMapping(value = "/system/storage", api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
-public class StorageController extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {
+@CrudRequestMapping(value = "/system/storage",
+    api = {Api.LIST, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
+public class StorageController
+    extends BaseController<StorageService, StorageResp, StorageResp, StorageQuery, StorageReq> {
 
     @Operation(summary = "修改状态", description = "修改状态")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:storage:updateStatus")
     @PutMapping({"/{id}/status"})
-    public void updateStatus(@RequestBody @Valid CommonStatusUpdateReq req, @PathVariable("id") Long id) {
+    public void updateStatus(@RequestBody @Valid CommonStatusUpdateReq req,
+        @PathVariable("id") Long id) {
         baseService.updateStatus(req, id);
     }
 

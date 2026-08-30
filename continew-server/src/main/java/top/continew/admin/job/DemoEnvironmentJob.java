@@ -27,10 +27,36 @@ import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.open.mapper.AppMapper;
 import top.continew.admin.open.model.entity.AppDO;
-import top.continew.admin.system.mapper.*;
+import top.continew.admin.system.mapper.ClientMapper;
+import top.continew.admin.system.mapper.DeptMapper;
+import top.continew.admin.system.mapper.DictItemMapper;
+import top.continew.admin.system.mapper.DictMapper;
+import top.continew.admin.system.mapper.MenuMapper;
+import top.continew.admin.system.mapper.MessageLogMapper;
+import top.continew.admin.system.mapper.MessageMapper;
+import top.continew.admin.system.mapper.NoticeLogMapper;
+import top.continew.admin.system.mapper.NoticeMapper;
+import top.continew.admin.system.mapper.RoleDeptMapper;
+import top.continew.admin.system.mapper.RoleMapper;
+import top.continew.admin.system.mapper.RoleMenuMapper;
+import top.continew.admin.system.mapper.StorageMapper;
+import top.continew.admin.system.mapper.UserRoleMapper;
 import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.mapper.user.UserSocialMapper;
-import top.continew.admin.system.model.entity.*;
+import top.continew.admin.system.model.entity.ClientDO;
+import top.continew.admin.system.model.entity.DeptDO;
+import top.continew.admin.system.model.entity.DictDO;
+import top.continew.admin.system.model.entity.DictItemDO;
+import top.continew.admin.system.model.entity.MenuDO;
+import top.continew.admin.system.model.entity.MessageDO;
+import top.continew.admin.system.model.entity.MessageLogDO;
+import top.continew.admin.system.model.entity.NoticeDO;
+import top.continew.admin.system.model.entity.NoticeLogDO;
+import top.continew.admin.system.model.entity.RoleDO;
+import top.continew.admin.system.model.entity.RoleDeptDO;
+import top.continew.admin.system.model.entity.RoleMenuDO;
+import top.continew.admin.system.model.entity.StorageDO;
+import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.tenant.mapper.PackageMapper;
 import top.continew.admin.tenant.mapper.PackageMenuMapper;
@@ -76,8 +102,12 @@ public class DemoEnvironmentJob {
     private static final Long DELETE_FLAG = 10000L;
     private static final Long MESSAGE_FLAG = 0L;
     private static final List<Long> USER_FLAG = List
-        .of(1L, 547889293968801822L, 547889293968801823L, 547889293968801824L, 547889293968801825L, 547889293968801826L, 547889293968801827L, 547889293968801828L, 547889293968801829L, 547889293968801830L, 547889293968801831L, 547889293968801832L, 547889293968801833L, 547889293968801834L);
-    private static final List<Long> ROLE_FLAG = List.of(1L, 2L, 3L, 547888897925840927L, 547888897925840928L);
+        .of(1L, 547889293968801822L, 547889293968801823L, 547889293968801824L, 547889293968801825L,
+            547889293968801826L, 547889293968801827L, 547889293968801828L, 547889293968801829L,
+            547889293968801830L, 547889293968801831L, 547889293968801832L, 547889293968801833L,
+            547889293968801834L);
+    private static final List<Long> ROLE_FLAG =
+        List.of(1L, 2L, 3L, 547888897925840927L, 547888897925840928L);
     private static final Long DEPT_FLAG = 547887852587843611L;
     private static final Long USER_ROLE_FLAG = 14L;
 
@@ -92,11 +122,13 @@ public class DemoEnvironmentJob {
             SnailJobLog.REMOTE.info("定时任务 [重置演示环境数据] 开始执行。");
             // 检测待清理数据
             SnailJobLog.REMOTE.info("开始检测演示环境待清理数据项，请稍候...");
-            Long dictItemCount = dictItemMapper.lambdaQuery().gt(DictItemDO::getId, DELETE_FLAG).count();
+            Long dictItemCount =
+                dictItemMapper.lambdaQuery().gt(DictItemDO::getId, DELETE_FLAG).count();
             this.log(dictItemCount, "字典项");
             Long dictCount = dictMapper.lambdaQuery().gt(DictDO::getId, DELETE_FLAG).count();
             this.log(dictCount, "字典");
-            Long storageCount = storageMapper.lambdaQuery().gt(StorageDO::getId, DELETE_FLAG).count();
+            Long storageCount =
+                storageMapper.lambdaQuery().gt(StorageDO::getId, DELETE_FLAG).count();
             this.log(storageCount, "存储");
             Long noticeCount = noticeMapper.lambdaQuery().gt(NoticeDO::getId, DELETE_FLAG).count();
             this.log(noticeCount, "公告");
@@ -133,9 +165,10 @@ public class DemoEnvironmentJob {
             this.clean(dictItemCount, "字典项", null, () -> dictItemMapper.lambdaUpdate()
                 .gt(DictItemDO::getId, DELETE_FLAG)
                 .remove());
-            this.clean(dictCount, "字典", CacheConstants.DICT_KEY_PREFIX, () -> dictMapper.lambdaUpdate()
-                .gt(DictDO::getId, DELETE_FLAG)
-                .remove());
+            this.clean(dictCount, "字典", CacheConstants.DICT_KEY_PREFIX,
+                () -> dictMapper.lambdaUpdate()
+                    .gt(DictDO::getId, DELETE_FLAG)
+                    .remove());
             this.clean(storageCount, "存储", null, () -> storageMapper.lambdaUpdate()
                 .gt(StorageDO::getId, DELETE_FLAG)
                 .remove());
@@ -145,13 +178,18 @@ public class DemoEnvironmentJob {
             this.clean(messageCount, "通知", null, () -> messageMapper.lambdaUpdate()
                 .gt(MessageDO::getId, MESSAGE_FLAG)
                 .remove());
-            this.clean(userCount, "用户", null, () -> userMapper.lambdaUpdate().notIn(UserDO::getId, USER_FLAG).remove());
-            this.clean(roleCount, "角色", null, () -> roleMapper.lambdaUpdate().notIn(RoleDO::getId, ROLE_FLAG).remove());
-            this.clean(menuCount, "菜单", CacheConstants.ROLE_MENU_KEY_PREFIX, () -> menuMapper.lambdaUpdate()
-                .gt(MenuDO::getId, DELETE_FLAG)
-                .remove());
-            this.clean(deptCount, "部门", null, () -> deptMapper.lambdaUpdate().gt(DeptDO::getId, DEPT_FLAG).remove());
-            this.clean(appCount, "应用", null, () -> appMapper.lambdaUpdate().gt(AppDO::getId, DEPT_FLAG).remove());
+            this.clean(userCount, "用户", null,
+                () -> userMapper.lambdaUpdate().notIn(UserDO::getId, USER_FLAG).remove());
+            this.clean(roleCount, "角色", null,
+                () -> roleMapper.lambdaUpdate().notIn(RoleDO::getId, ROLE_FLAG).remove());
+            this.clean(menuCount, "菜单", CacheConstants.ROLE_MENU_KEY_PREFIX,
+                () -> menuMapper.lambdaUpdate()
+                    .gt(MenuDO::getId, DELETE_FLAG)
+                    .remove());
+            this.clean(deptCount, "部门", null,
+                () -> deptMapper.lambdaUpdate().gt(DeptDO::getId, DEPT_FLAG).remove());
+            this.clean(appCount, "应用", null,
+                () -> appMapper.lambdaUpdate().gt(AppDO::getId, DEPT_FLAG).remove());
             this.clean(clientCount, "客户端", null, () -> clientsMapper.lambdaUpdate()
                 .gt(ClientDO::getId, DEPT_FLAG)
                 .remove());
