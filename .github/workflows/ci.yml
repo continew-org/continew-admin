@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build and verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Remove repository mirrors
+        # POM 中配置的国内镜像仓库在 CI 环境不稳定，构建前移除，改用 Maven Central
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
+      - name: Build and verify
+        # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) -> 编译 -> SpotBugs (verify)
+        run: ./mvnw -B verify

@@ -1,0 +1,32 @@
+name: Greeting
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    name: Greet first-time contributor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Greet first-time contributor
+        uses: actions/first-interaction@v3
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          issue_message: |-
+            🙏 感谢 @${{ github.actor }} 向 ContiNew Admin 提交第一个 Issue！我们非常重视每一位用户的反馈，这是推动项目不断进步的动力。
+
+            为了便于问题的跟进与沉淀，请您确认 Issue 内容符合模板要求（如版本号、复现步骤、期望结果等）。同时，欢迎您将本 Issue 链接分享至官方交流群并 @ 我们，即可与项目维护团队及其他大佬用户直接交流探讨（入群方式详见 [continew.top/discussion.html](https://continew.top/discussion.html)）。再次感谢您的宝贵支持！
+          pr_message: |-
+            🎉 恭喜 @${{ github.actor }}，这是您对 ContiNew Admin 仓库的首次贡献！我们衷心感谢您付出的努力。
+
+            为了保证代码库的完整性和可读性，请您在合并代码之前，确认您的代码符合项目既定的格式规范。关于代码风格和推荐格式化工具的详细指南，请查看仓库中的 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+            如有任何疑问，或希望获得更详细的说明，欢迎随时留言交流。此外，诚挚邀请您加入官方交流群，与项目维护团队及其他大佬用户实时交流探讨、获取第一手项目动态（入群方式详见 [continew.top/discussion.html](https://continew.top/discussion.html)）。再次感谢您的宝贵贡献！

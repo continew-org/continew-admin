@@ -7,27 +7,32 @@ on:
   # 可手动执行
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   deploy-server:
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@v4
-      # 2、安装 Java 环境
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: "adopt"
-          java-version: 17
-          cache: "maven"
-      # 3、打包
-      - name: Build
+        uses: actions/checkout@v7
+      # 2、移除 POM 中的国内镜像仓库（CI 环境不稳定）
+      - name: Remove repository mirrors
         run: |
           sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
           sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
-          mvn -B package --file pom.xml
-      # 4、拷贝到服务器
+      # 3、安装 Java 环境
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
+      # 4、打包
+      - name: Build
+        run: ./mvnw -B package
+      # 5、拷贝到服务器
       - name: Copy
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -38,7 +43,7 @@ jobs:
           source: ./continew-server/target/app/*
           target: ${{ secrets.SERVER_PATH }}/continew-admin
           strip_components: 3
-      # 5、启动
+      # 6、启动
       - name: Start
         uses: appleboy/ssh-action@master
         with:

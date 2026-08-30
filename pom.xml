@@ -308,8 +308,8 @@
             <id>sonar</id>
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>charles7c</sonar.organization>
-                <sonar.projectKey>Charles7c_continew-admin</sonar.projectKey>
+                <sonar.organization>continew-org</sonar.organization>
+                <sonar.projectKey>continew-org_continew-admin</sonar.projectKey>
                 <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
             </properties>
             <activation>

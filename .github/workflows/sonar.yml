@@ -1,0 +1,57 @@
+name: SonarQube
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build and analyze
+    # 仅官方仓库运行：fork PR 无法读取 SONAR_TOKEN，不设守卫会导致 fork 必红
+    if: github.repository == 'continew-org/continew-admin'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Sonar 需要完整提交历史用于准确分析
+          fetch-depth: 0
+      - name: Remove repository mirrors
+        # POM 中配置的国内镜像仓库在 CI 环境不稳定，构建前移除，改用 Maven Central
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw -B verify -Psonar

@@ -12,11 +12,14 @@
 <a href="https://github.com/continew-org/continew-admin" title="Open JDK" target="_blank">
 <img src="https://img.shields.io/badge/Open JDK-17-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
 </a>
+<a href="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml" title="CI" target="_blank">
+<img src="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI" />
+</a>
 <a href="https://app.codacy.com/gh/continew-org/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" title="Codacy" target="_blank">
 <img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy" />
 </a>
-<a href="https://sonarcloud.io/summary/new_code?id=Charles7c_continew-admin" title="Sonar" target="_blank">
-<img src="https://sonarcloud.io/api/project_badges/measure?project=Charles7c_continew-admin&metric=alert_status" alt="Sonar" />
+<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar" target="_blank">
+<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=alert_status" alt="Sonar" />
 </a>
 <br />
 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">

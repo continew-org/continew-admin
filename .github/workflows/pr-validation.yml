@@ -1,0 +1,135 @@
+name: PR Validation
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited]
+
+jobs:
+  validate-pr-title:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          scopes: |
+            common
+            system
+            server
+            plugin
+            extension
+            auth
+            open
+            tenant
+            schedule
+            generator
+            docker
+          requireScope: false
+          # if true, the PR title must match the commit message
+          validateSingleCommit: false
+          # if true, the PR title must match the single commit message
+          validateSingleCommitMatchesPrTitle: false
+
+  check-commit-authors:
+    name: Verify commit author emails
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # 仅在提交变动时校验，标题/描述编辑（edited）无需重跑
+    if: github.event.action != 'edited'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check commit authors linked to GitHub
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            const commits = await github.rest.pulls.listCommits({
+              owner,
+              repo,
+              pull_number: prNumber,
+              per_page: 100,
+            });
+
+            const unlinked = commits.data.filter(c => !c.author);
+            if (unlinked.length === 0) {
+              core.info('所有提交的作者邮箱均已绑定 GitHub 账号。');
+              return;
+            }
+
+            const details = unlinked.map(c =>
+              `| \`${c.sha.slice(0, 7)}\` | ${c.commit.author.name} | ${c.commit.author.email} |`
+            ).join('\n');
+
+            const body = [
+              '### ⚠️ 提交作者校验未通过',
+              '',
+              '以下提交的作者邮箱**未绑定任何 GitHub 账号**，',
+              '这将导致 CLA 无法签署，进而阻塞 PR 合并。',
+              '',
+              '| 提交 | 作者 | 邮箱 |',
+              '|:-----|:-----|:-----|',
+              details,
+              '',
+              '**修复方式：**',
+              '1. 将该邮箱添加到你的 GitHub 账号：https://github.com/settings/emails',
+              '2. 或将本地 git 配置改为已绑定 GitHub 的邮箱：',
+              '   ```',
+              '   git config user.name "你的 GitHub 用户名"',
+              '   git config user.email "your-github-email@example.com"',
+              '   ```',
+              '3. 修订提交并强推：',
+              '   ```',
+              '   git rebase -i HEAD~' + unlinked.length + ' # 标记为 "edit"，修改作者信息后 continue',
+              '   git push --force-with-lease',
+              '   ```',
+              '',
+              '*推送后本校验会自动重新运行。*',
+            ].join('\n');
+
+            // Post or update comment
+            const marker = '<!-- pr-validation-author-check -->';
+            const commentBody = marker + '\n' + body;
+            const existingComments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: prNumber,
+            });
+            const existing = existingComments.data.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: commentBody,
+              });
+            }
+
+            core.setFailed(
+              `${unlinked.length} 个提交的作者邮箱未绑定 GitHub 账号，修复方式见 PR 评论。`
+            );
