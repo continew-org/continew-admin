@@ -1,181 +1,175 @@
 # AGENTS.md
 
-本文件为在本代码库中工作的 AI 智能体提供指引。
+本文件为在本代码库中工作的 AI 编程智能体（DeepSeek Harness、Claude Code、Codex、Cursor 等）提供指引。面向人类贡献者的说明请查阅 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
-> **注意**：`CLAUDE.md` 是指向本文件的符号链接，`.claude/skills` 是指向 `.agents/skills` 的符号链接。
-> 请直接编辑本文件和 `.agents/skills/`，不要改动链接本身。
+## AI 贡献准则
+
+- **不得以 AI 身份在 Issue 或 PR 上发表评论**。讨论区只属于人类。
+- **先讨论再实现**：非平凡改动（如新功能、重构）开工前，先在 Issue 评论中与维护者就实现方向达成一致。
+- **第三方依赖版本不由本项目管理**：第三方依赖版本统一由父 POM（ContiNew Starter）的依赖管理供给，禁止在模块 POM 中硬编码版本号；升级基础能力通过更换 `continew-starter` parent 版本完成。
+- **内部模块依赖统一写 `${project.groupId}`**：模块 POM 中的内部依赖 groupId 一律使用 `${project.groupId}`，版本由根 POM `dependencyManagement`（`${revision}`）统一供给；`<parent>` 与项目自身坐标保持字面量。
+- **新增模块需在两处注册**：根 POM 的 `<modules>` 与根 POM `dependencyManagement`。
+- **数据库结构变更必须走 Liquibase**：新增或修改变更集后需在 `continew-server/src/main/resources/db/changelog/db.changelog-master.yaml` 登记，且 `mysql/` 与 `postgresql/` 两套 SQL 必须同步提供。
+- **新增公共表需登记租户白名单**：不参与租户隔离的表必须加入 `continew-starter.tenant.ignore-tables` 配置。
+- **披露 AI 使用**：当提交中较大部分由 AI 生成时，请在 commit message 末尾追加 trailer，注明实际使用的智能体，例如：
+
+  ```
+  Assisted-by: DeepSeek Harness
+  ```
+- 贡献流程一律**遵循 [CONTRIBUTING.md](./CONTRIBUTING.md)**。
 
 ## 项目概述
 
-ContiNew Admin（Continue New Admin）是 **AI 编程纪元** 下基于 ContiNew Starter 构建的高质量多租户中后台管理框架。后端基于 Spring Boot 3.3 / Java 17，前端（独立仓库 `continew-admin-ui`）基于 Vue3 & Arco Design & TS & Vite。后端遵循阿里巴巴《Java开发手册(黄山版)》，注释覆盖率 > 45%，接口参数示例 100%。
+ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：本仓库为后端（Spring Boot 3.5 / Java 17 的 Maven 多模块工程），前端为独立仓库 `continew-admin-ui`（Vue3 & Arco Design & TS & Vite）。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
 
-## 仓库结构
+**当前版本**：4.2.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：JDK 17 | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
 
-Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revision}` 版本，模块划分如下（依赖自上而下，server 依赖 system，system 依赖 common）：
+## 核心架构
 
-```
-continew-server        打包部署入口（启动类 ContiNewAdminApplication）+ 通用 controller + Liquibase + 配置文件
-  └ continew-system    核心业务：auth（系统认证）、system（部门/角色/用户/菜单/字典/文件/公告/系统配置等）
-    └ continew-common 公共基类、工具、配置（CRUD/MyBatis/Websocket/Doc/Excel/Exception）
-continew-plugin        独立可插拔插件
-  ├ continew-plugin-open       能力开放（AK/SK、签名算法）
-  ├ continew-plugin-tenant    多租户（SaaS）
-  ├ continew-plugin-schedule  任务调度（基于 Snail Job Open API）
-  └ continew-plugin-generator 代码生成器（前后端模板）
-continew-extension     扩展服务
-  └ continew-extension-schedule-server  Snail Job 服务端（可选，公司统一提供环境可删）
-.agents/skills/        Agent 技能（每个技能一个目录，含 SKILL.md）
-```
+Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revision}` 版本。模块依赖自上而下（server 依赖 system，system 依赖 common）：
 
-**插件化趋势**：`continew-plugin-*` 后续将改造为独立插件；`continew-extension/*` 为可独立部署的辅助服务。
+| 模块 | 职责 |
+|:-----|:-----|
+| `continew-server` | 打包部署入口（启动类 + 通用 controller + Liquibase + 配置文件） |
+| `continew-system` | 核心业务：auth（系统认证）、system（部门/角色/用户/菜单/字典/文件/公告/系统配置等） |
+| `continew-common` | 公共基类、工具、配置（CRUD/MyBatis/Websocket/Doc/Excel/Exception） |
+| `continew-plugin` | 独立可插拔插件：open（能力开放 AK/SK）、tenant（多租户 SaaS）、schedule（任务调度）、generator（代码生成器） |
+| `continew-extension` | 可独立部署的扩展服务（continew-extension-schedule-server 为 Snail Job 服务端，可选） |
 
-## 常用命令
+### 关键机制
 
-**构建/编译**（提交前必做，会自动执行 Spotless 代码格式化）：
-```bash
-mvn compile                  # 编译并自动格式化代码（提交前务必执行，执行后勿再打开 IDE 代码窗口）
-mvn clean package -P fat-jar # 胖包打包（依赖、配置打入 jar）
-mvn clean package            # 默认瘦包模式（依赖、配置外置，生产部署用）
-```
+- **内部 API 解耦**：业务模块将对其他模块暴露的公共业务定义为接口，放在 `continew-common` 的 `top.continew.admin.common.api` 包下，由对应 biz 模块的 `api/` 目录提供实现；其他模块依赖 common 的接口而非具体实现，避免循环依赖。新增跨模块调用时遵循此模式。
+- **CRUD 套件**：封装于 ContiNew Starter 的 `continew-starter-crud`。`BaseController<S, L, D, Q, C>` + `@CrudRequestMapping(value, api = {...})` 声明即可自动生成 CRUD 接口，`BaseController.preHandle` 根据 API 类型自动生成并校验权限码（如 `POST /system/user` → `system:user:create`）。
+- **数据填充**：`xxx/container/` 目录配置 Crane4j 容器，基于注解完成数据映射，减少单字段联表查询。
+- **多租户**：`continew-starter.tenant` 行级隔离（LINE），租户 ID 经 `X-Tenant-Id`/`X-Tenant-Code` 头传递，默认租户 `0`。
+- **认证与权限**：Sa-Token + JWT（Token 名 `Authorization`，jwt-simple 模式）；前端传入密码经 RSA 公钥加密，后端 `SecureUtils.decryptPasswordByRsaPrivateKey` 解密；数据权限由 `DataPermissionMapper` 提供。内置用户和角色不允许变更。
+- **缓存**：JetCache 二级缓存（Caffeine + Redisson），`broadcastChannel` 开启多 JVM 本地缓存失效广播。
+- **ID 生成**：CosID 雪花算法（`COSID`），租户编码生成器前缀 `T`。
+- **全局响应**：Graceful Response 统一封装，响应类 `top.continew.starter.web.model.R`。
+- **任务调度**：`continew-plugin-schedule` 通过 OpenAPI 对接 Snail Job 服务端，`snail-job.enabled: false` 默认关闭。
 
-**运行**：
-```bash
-# 启动类：top.continew.admin.ContiNewAdminApplication（位于 continew-server 模块）
-# 默认 dev 环境端口 8000，可通过 IDEA 环境变量配置数据源/Redis：DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB
-```
+### 分层目录约定
 
-**测试**：`pom.xml` 中 `maven-surefire-plugin` 已设置 `skip=true`，单元测试默认跳过；`continew-server/pom.xml` 引入了 `spring-boot-starter-test` 供本地使用。
-
-**代码质量**（Sonar）：
-```bash
-mvn verify -P sonar  # 触发 SonarCloud 扫描（host: sonarcloud.io，org: charles7c）
-```
-
-**数据库迁移**：Liquibase 自动执行，变更日志 `continew-server/src/main/resources/db/changelog/db.changelog-master.yaml`，初始 SQL 位于其下 `mysql/` 或 `postgresql/` 目录。新增变更需在该 YAML 中登记。
-
-**Docker 部署**：`docker/docker-compose.yml` 包含 mysql、redis、continew-server（18000 业务端口 / 17889 任务调度客户端端口）、continew-web（Nginx 80/443）、schedule-server（18001/17888）。生产环境通过 `PROFILES_ACTIVE=prod` 等环境变量注入配置。
-
-## 代码规范（强制）
-
-1. **代码格式化**：Spotless 插件绑定到 `compile` 阶段，使用 `.style/p3c-codestyle.xml`（P3C 阿里规范）和 `.style/license-header`（Apache-2.0 文件头）。提交前执行 `mvn compile`，之后勿再在 IDE 中打开代码窗口以免格式差异。
-2. **Lombok 全局配置**（`lombok.config`）：继承场景自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`；**禁用** `@val`、`@Log4j`、`@Log4j2`（报 ERROR），日志统一用 `@Slf4j`。
-3. **提交规范**：遵循 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular)，参考 `CHANGELOG.md` 已有风格。
-4. **命名风格**：统一「名词 + 动词 + 类型」，前端模板简化命名（如 `AddDrawer` 而非 `UserAddDrawer`）。
-5. **物理删除已改为逻辑删除**：`mybatis-plus.global-config.db-config` 配置 `logic-delete-field: deleted`、`logic-delete-value: id`（解决唯一索引冲突），所有 DO 默认继承 `BaseDO`。
-
-## 架构总览
-
-### 内部 API 解耦模式（common 的 api 包）
-
-为降低模块耦合，业务模块（如 system、tenant）将**对其他模块暴露的公共业务**定义为接口，放在 `continew-common` 的 `top.continew.admin.common.api` 包下，由对应 biz 模块提供实现（`xxx/api/` 目录）。其他模块依赖 common 的接口而非具体实现，避免循环依赖。新增跨模块调用时遵循此模式。
-
-### CRUD 套件（核心生产力）
-
-封装于 ContiNew Starter 的 `continew-starter-crud`，本仓库在 `continew-common` 提供基类适配：
-
-- `BaseController<S, L, D, Q, C>` 继承 `AbstractCrudController`，泛型依次为：Service、列表类型、详情类型、查询类型、创建/修改请求类型。
-- `BaseService<L, D, Q, C>` 继承 `CrudService`。
-- `BaseDO` / `BaseCreateDO` / `BaseUpdateDO` / `TenantBaseDO`（带租户字段）实体基类。
-- `BaseResp` / `BaseDetailResp` 响应基类。
-
-**Controller 用法极简**：通过 `@CrudRequestMapping(value, api = {...})` 声明开放的 API，基类自动生成 CRUD 接口。可选项：`Api.PAGE`、`Api.LIST`、`Api.TREE`、`Api.TREE_DICT`、`Api.DICT`、`Api.GET`、`Api.CREATE`、`Api.UPDATE`、`Api.DELETE`、`Api.BATCH_DELETE`、`Api.EXPORT`。
-
-示例（部门管理，全套 CRUD 仅需声明）：
-```java
-@Tag(name = "部门管理 API")
-@RestController
-@CrudRequestMapping(value = "/system/dept", api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE,
-    Api.BATCH_DELETE, Api.EXPORT, Api.TREE_DICT})
-public class DeptController extends BaseController<DeptService, DeptResp, DeptResp, DeptQuery, DeptReq> {}
-```
-
-**权限自动校验**：`BaseController.preHandle` 根据 CRUD API 类型生成权限码并校验，例如 `POST /system/user` → `system:user:create`。权限前缀由 `CrudApiPermissionPrefixCache` 缓存。放行场景：
-- 带 `sign` 参数（API 签名，SaSignTemplate）
-- 类/方法标注 `@SaIgnore`
-- 命中 `sa-token.extension.security.excludes` 路径
-- `Api.DICT` / `Api.TREE_DICT` 字典类接口
-
-### 分层目录约定（每个业务模块）
-
-每个业务功能在所属模块下按以下子包组织（参考 continew-system 的 auth/system 子包）：
+每个业务功能按以下子包组织（参考 continew-system 的 auth/system 子包）：
 
 | 子包 | 职责 |
-| :-- | :-- |
+|:--|:--|
 | `controller` | REST API |
 | `service` / `service.impl` | 业务接口与实现 |
-| `mapper` | MyBatis Plus Mapper |
+| `mapper` | MyBatis Plus Mapper（XML 统一放 `src/main/resources/mapper/`） |
 | `model.entity` / `query` / `req` / `resp` | 实体 / 查询 / 请求 / 响应 |
 | `enums` / `constant` / `util` / `config` | 枚举 / 常量 / 工具 / 配置 |
 | `container` | Crane4j 数据填充容器配置 |
-| `handler` | 处理器 |
 | `api` | 对外公共业务 API 实现（配合 common.api 接口） |
 | `validation` | 自定义校验注解/工具 |
-| `sign` | API 参数签名算法（能力开放模块） |
-| `annotation` / `exception` | 注解 / 异常（任务调度模块） |
 
-Mapper XML 统一放在 `src/main/resources/mapper/`，被 `mybatis-plus.mapper-locations: classpath*:/mapper/**/*Mapper.xml` 扫描。
+## 构建与运行命令
 
-### 多租户（SaaS）
+```bash
+# 完整构建（全部门禁：validate 阶段 Enforcer -> Spotless -> Checkstyle，编译，verify 阶段 SpotBugs）
+./mvnw verify
 
-`continew-starter.tenant` 默认开启，隔离级别 `LINE`（行级）。租户 ID 通过请求头 `X-Tenant-Id` 或 `X-Tenant-Code` 传递，默认租户 `0`（超级管理员所在）。**`ignore-tables`** 配置了不参与租户隔离的表（如 `sys_menu`、`sys_dict`、`tenant` 等），新增公共表需在此登记。**`ignore-menus`** 配置租户不可用的菜单 ID。租户相关业务在 `continew-plugin/continew-plugin-tenant`。
+# 仅编译（含 validate 阶段三道门禁，不含 SpotBugs）——仅用于快速迭代，不可作为提交前自检
+./mvnw compile
 
-### 认证与权限
+# 编译单个模块（含依赖模块）
+./mvnw -pl :continew-system -am compile
 
-- **Sa-Token + JWT**（`sa-token.extension.jwt-enabled: true`，DAO 类型 REDIS）：Token 名 `Authorization`，使用 jwt-simple 模式（`is-share` 恒为 false）。Token 有效期等参数**动态配置**，通过前端「系统配置/客户端配置」调整，相关代码注释了静态配置。
-- **密码加密**：`continew-starter.encrypt.password-encoder` 默认 BCrypt；前端传入密码经 RSA 公钥加密，后端 `SecureUtils.decryptPasswordByRsaPrivateKey` 解密。RSA 密钥配置于 `continew-starter.encrypt.field`。
-- **数据权限**：`DataPermissionMapper` 提供基于角色的数据权限控制。
-- 内置角色：超级管理员、租户管理员（系统管理员）；内置用户和角色不允许变更。
+# 自动修复格式（被 Spotless 门禁拦截时使用：格式化 + 清理无用 import + 补 License Header）
+./mvnw compile -Pformat
 
-### 数据填充（Crane4j）
+# 打包（默认瘦包，依赖、配置外置，生产部署用）
+./mvnw package
 
-`xxx/container/` 目录配置 Crane4j 容器，基于注解完成「根据 A 的 key 拿到 B，再把 B 的属性映射到 A」，减少因单字段（如用户名）产生的联表查询。
+# 胖包打包（依赖、配置打入 jar）
+./mvnw clean package -P fat-jar
 
-### 缓存（JetCache 二级缓存）
+# 清理所有 target 目录及 flatten 生成的 .flattened-pom.xml
+./mvnw clean
+```
 
-JetCache 本地一级 Caffeine + 远程二级 Redisson，`broadcastChannel: ${spring.application.name}` 开启多 JVM 本地缓存失效广播。方法级缓存通过 `@Cached` 等注解使用。
+本项目 `maven-surefire-plugin` 已设置 `skip=true`，单元测试默认跳过。代码改动的验证方式是执行 `./mvnw verify` 确保四道门禁全部通过。
 
-### ID 生成（CosID）
+运行时数据源/Redis 可通过环境变量注入：`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PWD`、`DB_NAME`；`REDIS_HOST`、`REDIS_PORT`、`REDIS_PWD`、`REDIS_DB`。配置文件位于 `continew-server/src/main/resources/config/`（application.yml 通用，application-dev.yml / application-prod.yml 分环境）。
 
-`mybatis-plus.extension.id-generator.type: COSID`，雪花算法 + Redis 机器号分配器 + 守护进程。租户编码生成器配置为 `RADIX` 转换器，前缀 `T`。
+### 提交前门禁（必须通过）
 
-### 任务调度（Snail Job）
+提交 Java 代码前，AI 智能体**必须**让门禁通过：
 
-`continew-plugin-schedule` 通过 OpenAPI(SDK API) 对接 Snail Job 服务端。`snail-job.enabled: false` 默认关闭，未启用时调用相关接口会有默认提示。服务端可独立部署（`continew-extension-schedule-server`）。配置在 `application-dev.yml` 的 `snail-job` 节，通过 `SCHEDULE_HOST/PORT/USERNAME/PASSWORD/TOKEN` 等环境变量注入。
+1. 执行 `./mvnw verify`。四道门禁依次为：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），以及编译后 verify 阶段的 **SpotBugs**（字节码缺陷），任一不通过都会直接构建失败。
+2. 若被 Spotless 拦截，执行 `./mvnw compile -Pformat` 自动修复，然后再执行一次 `./mvnw verify` 确认通过。
+3. 四道门禁全部通过后才能提交。
 
-### 配置文件结构
+构建过程**不会修改任何源码文件**；`-Pformat` 是唯一会修改源码的 profile。不要用 IDE 格式化或 `git diff --check` 替代 Spotless 门禁——IDE 格式化引擎是另一套实现，可能放行项目格式化器拒绝的代码。
 
-`continew-server/src/main/resources/`：
-- `config/application.yml`：通用配置（应用信息、Undertow、Spring、CRUD、租户、限流、Sa-Token、MyBatis Plus、CosId、文档、日志、链路追踪）。
-- `config/application-dev.yml`：开发环境（数据源 Hikari+P6Spy、Liquibase、Redis/Redisson、JetCache、跨域、加密、验证码、短信、邮件、WebSocket、JustAuth、Sa-Token excludes、Snail Job）。
-- `config/application-prod.yml`：生产环境。
-- `db/changelog/`：Liquibase 变更（`mysql/`、`postgresql/` 两套 SQL）。
-- `templates/`：模板（如 `mail/captcha.ftl`）。
-- `logback-spring.xml`：日志配置。
+> **Windows 注意**：提交前执行 `./mvnw verify` 后勿再在 IDE 中打开代码窗口，避免不同 IDE 配置导致的格式差异。
 
-多数据库支持：`mybatis-plus.configuration.database-id` 可在 `mysql` / `pgsql` 间切换，适配 SQL 方言差异。
+## 代码风格
 
-### 接口文档
+遵循**阿里巴巴《Java 开发手册(黄山版)》**（P3C）。全部风格配置集中于 `style/` 目录（OCN-CodeStyle，基于 Apache Nacos 社区代码风格调整，OpenContiNew 社区各项目通用）：
 
-SpringDoc + NextDoc4j（替代 Swagger UI）。访问路径：`/swagger-ui`、`/nextdoc/`。文档分组按模块拆分，controller 配置在各自模块。`springdoc.default-flat-param-object: true` 平展对象型参数。
+- Eclipse Formatter 配置（唯一事实源，Spotless 使用）：[`style/ocn-eclipse-formatter.xml`](style/ocn-eclipse-formatter.xml)
+- IDEA 代码风格（近似映射）：[`style/ocn-idea-code-style.xml`](style/ocn-idea-code-style.xml)
+- Checkstyle 规则：[`style/ocn-checkstyle.xml`](style/ocn-checkstyle.xml)
+- 风格说明与 IDE 配置指引：[`style/STYLE.md`](style/STYLE.md)
 
-### 全局响应
+### AI 智能体关键规则
 
-Graceful Response 统一封装，响应类 `top.continew.starter.web.model.R`。成功码 `0` / 提示「操作成功」，失败码 `1` / 提示「服务器异常，请联系管理员」，失败 HTTP 状态码 `200`。不将原生异常信息填充到响应。
+| 规则 | 值 |
+|------|-----|
+| 缩进 | **4 空格**（禁用 Tab），续行缩进 4 空格 |
+| 行宽 | 最多 **100 字符**（由 Spotless 的 Eclipse 格式化器 `lineSplit=100` 强制；Checkstyle `LineLength` 设为 150 仅作兜底） |
+| 星号导入 | **禁止**（`AvoidStarImport`），包括静态星导入 |
+| 无用 import | **禁止**（`-Pformat` 自动清理） |
+| 大括号 | `if/else/for/while/do-while` 必须加大括号（`NeedBraces`） |
+| 空行 | 连续空行最多保留 1 行（`EmptyLineSeparator`） |
+| 类注释 | 必须包含 `@author` 与 `@since` 标签；公共方法需有 Javadoc |
+| 重载方法 | 同一组重载必须相邻声明（`OverloadMethodsDeclarationOrder`） |
+| 格式化豁免 | `// @formatter:off` 与 `// @formatter:on` 之间的代码不参与格式化 |
+| 命名 | `style/` 配置文件与 agent 技能统一使用 `ocn-` 前缀（OCN = OpenContiNew） |
 
-### 链路追踪
+### License Header
 
-`continew-starter-trace`（TLog），trace-id 名 `X-Trace-Id`，pattern `[$spanId][$traceId]`。
+每个新增 Java 源文件**必须**包含 Apache-2.0 License Header。Spotless 在 validate 阶段校验，`./mvnw compile -Pformat` 可自动补全。模板位于 [`style/license-header`](style/license-header)：
 
-### 代码生成器
+```java
+/*
+ * Copyright (c) 2022-present Charles7c Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+```
 
-`continew-plugin-generator` 根据数据库表生成前后端 CRUD 代码，模板位于 `src/main/resources/templates/{backend,frontend}/`。配合前端「系统工具/代码生成」功能使用，支持表结构同步与预览。
+### Lombok 约定
 
-## Agent skills
+`lombok.config` 全局配置：继承场景自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`；**禁用** `@val`、`@Log4j`、`@Log4j2`（报 ERROR），日志统一用 `@Slf4j`。
 
-技能是各 agent 工具（Claude Code / Codex / dsh）共用的**唯一事实源**，统一存放在 `.agents/skills/`，每个技能一个目录、含 `SKILL.md`。
+## PR 约定
 
-## 编辑这些说明
+所有 PR 必须提交到 `dev` 分支（新功能与功能优化）；维护分支 `x.x.x` 仅接受 bug 修复。请基于目标分支创建特性分支（如 `feat/new-feature`），不要直接修改源分支。遵循 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)。
 
-`CLAUDE.md` 是根目录 `AGENTS.md` 的符号链接，`.claude/skills` 是 `.agents/skills` 的符号链接——请编辑真实文件（本文件与 `.agents/skills/`），不要改动链接本身。保持每条规则自包含，必要时链接到更高层文档。
+**提交格式**：[Conventional Commits（约定式提交）1.0.0](https://www.conventionalcommits.org/zh-hans/v1.0.0/)规范，`<类型>[可选作用域]: <描述>`，破坏性变更在类型或作用域后追加 `!`，如 `feat(system): 新增 xxx`、`feat!:`。
 
-> **Windows 注意**：克隆后如需符号链接生效，需开启开发者模式（或以管理员运行 git），并执行 `git config core.symlinks true`，否则链接会被检出为普通文本文件。团队若以 Windows 为主且符号链接不可靠，可改用脚本同步（`cp AGENTS.md CLAUDE.md && cp -r .agents/skills/* .claude/skills/`）。
+**提交前检查**：
+
+```bash
+./mvnw verify     # 四道门禁必须全部通过（被 Spotless 拦截时使用 -Pformat）
+```
+
+## 安全漏洞
+
+不得通过 GitHub Issue 报告安全漏洞。请使用 GitHub 私有漏洞报告——详见 [SECURITY.md](./SECURITY.md)。
+
+## Agent Skills
+
+各 agent 工具（DeepSeek Harness / Claude Code / Codex）共用的技能统一存放在 `.agents/skills/` 作为唯一事实源——每个技能一个目录、含 `SKILL.md`。新增技能沿用 `ocn-` 命名前缀。
