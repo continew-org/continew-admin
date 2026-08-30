@@ -66,6 +66,15 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 | AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) | [continew/continew-admin-ui](https://atomgit.com/continew/continew-admin-ui) |
 | Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
 
+## OpenContiNew 生态
+
+ContiNew 系列项目均由 OpenContiNew 开源社区维护，除本项目外还包括：
+
+| 项目 | 简介 |
+|:-----|:-----|
+| [ContiNew Starter](https://github.com/continew-org/continew-starter) | ContiNew Admin 的通用基础能力抽离形成的企业级 Starter 库，约定优于配置，开箱即用 |
+| [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui) | ContiNew Admin 前端适配项目 |
+
 ## 项目起源
 
 我热衷于做数据归档，归档后的数据可以提高学习/工作效率，为记忆“减负”，在持续的数据归档中，优质的“沉淀”会带来非匀速、跨越式的学习/工作体验。**数据归档是一件需要持续去做的事情**。
@@ -481,25 +490,42 @@ continew-admin
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  └─ pom.xml
-├─ .github（GitHub 相关配置目录，实际开发时直接删除）
+├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
+├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
 ├─ .idea
 │  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
 ├─ .image（截图目录，实际开发时直接删除）
-├─ .style（代码格式、License文件头相关配置目录，实际开发时根据需要取舍，删除时注意删除 /pom.xml 中的 spotless 插件配置）
+├─ .mvn（Maven Wrapper 配置目录）
+├─ style（代码风格配置目录：Spotless/Checkstyle/IDEA 配置等，详见 style/STYLE.md）
 ├─ .gitignore（Git 忽略文件相关配置文件）
 ├─ docker（项目部署相关配置目录，实际开发时可备份后直接删除）
 ├─ LICENSE（开源协议文件）
 ├─ CHANGELOG.md（更新日志文件，实际开发时直接删除）
+├─ CODE_OF_CONDUCT.md（贡献者行为准则）
+├─ CONTRIBUTING.md（贡献指南）
+├─ SECURITY.md（安全策略）
 ├─ README.md（项目 README 文件，实际开发时替换为真实内容）
 ├─ lombok.config（Lombok 全局配置文件）
+├─ mvnw / mvnw.cmd（Maven Wrapper 脚本，锁定 Maven 3.9.16）
 └─ pom.xml（包含版本锁定及全局插件相关配置）
 ```
 
 ## 参与贡献
 
-ContiNew（Continue New）系列项目致力于通过持续迭代，为开发者提供舒适的开发体验。作为开源社区，我们的初衷是希望通过开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
+ContiNew（Continue New）系列项目致力于通过持续迭代，为开发者提供舒适的开发体验。作为 OpenContiNew 开源社区，我们的初衷是希望通过开源协作模式，提升技术透明度、放大集体智慧、共创优秀实践，源源不断地为企业级项目开发提供助力。
 
-我们诚挚邀请广大社区用户为 ContiNew 项目贡献力量，包括但不限于 Issue 排查、测试验证、代码开发与重构等。每一份贡献，都是推动项目进步的重要力量（请查阅 [贡献指南](https://continew.top/about/contributing.html)）。欢迎各位感兴趣的小伙伴儿，[添加微信](https://continew.top/discussion.html) 讨论或认领任务。
+我们诚挚邀请广大社区用户为 ContiNew 项目贡献力量，贡献并不仅限于写代码，以下方式都非常欢迎：
+
+- 🐛 报告 Bug：提交 Issue 时请附上版本号、复现步骤与错误日志（[Issue 表单](https://github.com/continew-org/continew-admin/issues/new/choose)）
+- 💡 建议功能：描述使用场景与期望效果
+- 📖 改进文档：修复错别字、完善说明、补充使用示例
+- 👀 审查 PR：帮助我们审查其他贡献者的 [Pull Request](https://github.com/continew-org/continew-admin/pulls)
+- 💻 编写代码：修复 Bug、开发新功能、提升性能
+
+> [!IMPORTANT]
+> 安全漏洞请勿通过公开 Issue 反馈，请参阅 [安全策略](SECURITY.md) 通过 GitHub 安全通告负责任地披露。
+
+完整的贡献流程（环境准备、门禁自检、commit 规范、CLA 签署等）请查阅 [贡献指南](CONTRIBUTING.md)。
 
 ### 分支说明
 
@@ -509,26 +535,6 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 | ----- | ------------------------------------------------------------ |
 | dev   | 开发分支，用于下个大版本的 SNAPSHOT 开发，接受新功能或功能优化 PR |
 | x.x.x | 维护分支，用于特定版本（如 vx.x.x）的 bug 修复，仅接受已有功能的修复 PR，不接受新功能 |
-
-### 流程步骤
-
-若您希望提交新功能或优化现有代码，请遵循以下步骤：
-
-1. 在开源平台上将项目 fork 到您的个人仓库
-2. 将 fork 的项目克隆到本地开发环境
-3. 基于当前维护的分支（如 dev）创建新分支（如 feat/newFeature），请勿直接修改源分支（源分支仅做同步 ContiNew 最新代码用）
-4. 在新分支上进行代码修改，完成后提交并 push 到您的远程仓库
-5. 在开源平台上创建 pull request (PR)，选择正确的源分支和目标分支，按模板填写说明信息（参考 [已合并的 PR](https://github.com/continew-org/continew-admin-ui/pulls?q=is%3Apr+is%3Amerged) 可提高合并率）
-6. 提交 PR 后，系统会提示签署 CLA（贡献者协议）。请确保 commit 使用的邮箱与平台绑定邮箱一致（如果不一致，可以在本地通过 `git reset --soft HEAD~1` 回退，然后使用正确邮箱重新提交，最后 `git push -f` 即可，不需要重新创建 PR），然后使用该邮箱签署即可
-7. 耐心等待维护者审核并合并您的 PR（建议通过交流群进行快捷沟通）
-8. PR 合并后，下次贡献前请先同步最新代码，再重复步骤 3 开始
-
-> [!IMPORTANT]
-> 为了确保项目质量和协作效率，请注意以下事项：
->
-> 1. 代码和配置文件请参考已有风格，遵循清晰的结构与命名规范，提供完善的注释（包括接口文档和参数示例），后端代码请符合阿里巴巴 <a href="https://github.com/continew-org/continew-admin/blob/dev/.style/Java%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C(%E9%BB%84%E5%B1%B1%E7%89%88).pdf" target="_blank">《Java开发手册(黄山版)》</a> 中的代码规范
-> 2. 提交后端代码前请关闭所有代码窗口，执行 `mvn compile` 命令进行代码格式化（ContiNew 项目后端编译时会自动执行插件进行代码格式修正）。编译通过后请勿再次打开代码窗口，避免不同 IDE 配置导致的格式差异 
-> 3. 提交时，请按照 [Angular 提交规范](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) 编写 commit message（参考已有风格）
 
 ## 反馈交流
 
@@ -544,8 +550,6 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 </div>
 
 ## 鸣谢
-
-### 鸣谢
 
 感谢参与贡献的每一位小伙伴🥰
 
