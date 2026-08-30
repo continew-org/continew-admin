@@ -125,6 +125,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 | 空行 | 连续空行最多保留 1 行（`EmptyLineSeparator`） |
 | 类注释 | 必须包含 `@author` 与 `@since` 标签；公共方法需有 Javadoc |
 | 重载方法 | 同一组重载必须相邻声明（`OverloadMethodsDeclarationOrder`） |
+| 内联全限定名 | **禁止**（`InlineFullyQualifiedName`：与依赖库同名时应调整类名，而非内联全限定名绕过） |
 | 格式化豁免 | `// @formatter:off` 与 `// @formatter:on` 之间的代码不参与格式化 |
 | 命名 | `style/` 配置文件与 agent 技能统一使用 `ocn-` 前缀（OCN = OpenContiNew） |
 

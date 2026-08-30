@@ -214,5 +214,13 @@
             <property name="tokens" value="VARIABLE_DEF"/>
             <property name="allowSamelineMultipleAnnotations" value="true"/>
         </module>
+    <!-- 禁止内联使用项目内全限定类名（package/import 语句除外，SpEL/切点等字符串场景不受影响）；与依赖库同名时应调整类名 -->
+    <module name="RegexpSinglelineJava">
+        <property name="id" value="InlineFullyQualifiedName"/>
+        <property name="format"
+            value="^(?!(?:import|package)\s).*(?:new\s+top\.continew\.|top\.continew\.(?:admin|starter)\.[a-z0-9.]+[A-Z][a-zA-Z0-9]*(?:\.class|::|\s+[a-zA-Z_][a-zA-Z0-9_]*\s*[=;,)]))"/>
+        <property name="ignoreComments" value="true"/>
+        <property name="message" value="禁止内联全限定类名，请通过 import 引入；与依赖库同名时应调整类名"/>
+    </module>
     </module>
 </module>

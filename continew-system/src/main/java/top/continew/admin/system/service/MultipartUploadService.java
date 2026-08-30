@@ -18,9 +18,9 @@ package top.continew.admin.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.model.entity.FileDO;
-import top.continew.admin.system.model.req.MultipartUploadInitReq;
-import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
-import top.continew.admin.system.model.resp.file.MultipartUploadResp;
+import top.continew.admin.system.model.req.MultipartUploadCreateReq;
+import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
+import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
 
 /**
  * 分片上传业务接口
@@ -30,9 +30,10 @@ import top.continew.admin.system.model.resp.file.MultipartUploadResp;
  */
 public interface MultipartUploadService {
 
-    MultipartUploadInitResp initMultipartUpload(MultipartUploadInitReq multiPartUploadInitReq);
+    MultipartUploadCreateResp initMultipartUpload(MultipartUploadCreateReq multiPartUploadInitReq);
 
-    MultipartUploadResp uploadPart(MultipartFile file, String uploadId, Integer partNumber, String path);
+    MultipartUploadPartResp uploadPart(MultipartFile file, String uploadId, Integer partNumber,
+        String path);
 
     FileDO completeMultipartUpload(String uploadId);
 

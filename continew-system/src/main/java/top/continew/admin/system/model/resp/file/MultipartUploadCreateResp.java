@@ -30,7 +30,7 @@ import java.util.Set;
  */
 @Data
 @Schema(description = "分片初始化响应参数")
-public class MultipartUploadInitResp implements Serializable {
+public class MultipartUploadCreateResp implements Serializable {
 
     /**
      * 文件ID

@@ -25,9 +25,9 @@ import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
-import top.continew.admin.system.model.req.MultipartUploadInitReq;
-import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
-import top.continew.admin.system.model.resp.file.MultipartUploadResp;
+import top.continew.admin.system.model.req.MultipartUploadCreateReq;
+import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
+import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
@@ -37,7 +37,9 @@ import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.req.MultipartUploadInitReq;
 import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
+import top.continew.starter.storage.domain.model.resp.MultipartUploadResp;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +60,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
     private final FileMapper fileMapper;
 
     @Override
-    public MultipartUploadInitResp initMultipartUpload(MultipartUploadInitReq multiPartUploadInitReq) {
+    public MultipartUploadCreateResp initMultipartUpload(
+        MultipartUploadCreateReq multiPartUploadInitReq) {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
         String extName = FileUtil.extName(multiPartUploadInitReq.getFileName()).toLowerCase();
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
@@ -79,12 +82,14 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         }
 
         // 生成唯一文件名（处理重名情况）
-        String uniqueFileName = FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
-            .getId(), fileMapper);
+        String uniqueFileName =
+            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
+                .getId(), fileMapper);
         multiPartUploadInitReq.setFileName(uniqueFileName);
-        fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH), storageDO);
+        fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
+            storageDO);
 
-        top.continew.starter.storage.domain.model.req.MultipartUploadInitReq storageReq = new top.continew.starter.storage.domain.model.req.MultipartUploadInitReq();
+        MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
         storageReq.setPlatform(storageDO.getCode());
         storageReq.setBucket(storageDO.getBucketName());
         storageReq.setFileName(uniqueFileName);
@@ -98,7 +103,9 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
     }
 
     @Override
-    public MultipartUploadResp uploadPart(MultipartFile file, String uploadId, Integer partNumber, String path) {
+    public MultipartUploadPartResp uploadPart(MultipartFile file, String uploadId,
+        Integer partNumber,
+        String path) {
         MultipartInitResp session = fileStorageService.getMultipartSession(uploadId);
         if (session == null) {
             throw new BaseException("无效的 uploadId: " + uploadId);
@@ -106,9 +113,11 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         validatePartSize(file, session, partNumber);
         String targetPath = StrUtil.blankToDefault(session.getPath(), path);
         try {
-            top.continew.starter.storage.domain.model.resp.MultipartUploadResp resp = fileStorageService
-                .uploadPart(session.getPlatform(), session
-                    .getBucket(), normalizeStoragePath(targetPath), uploadId, partNumber, file.getInputStream());
+            MultipartUploadResp resp =
+                fileStorageService
+                    .uploadPart(session.getPlatform(), session
+                        .getBucket(), normalizeStoragePath(targetPath), uploadId, partNumber,
+                        file.getInputStream());
             return this.toAdminUploadResp(resp);
         } catch (IOException e) {
             throw new BaseException("上传分片失败: " + e.getMessage(), e);
@@ -143,8 +152,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         fileStorageService.abortMultipartUpload(uploadId);
     }
 
-    private MultipartUploadInitResp toAdminInitResp(MultipartInitResp source) {
-        MultipartUploadInitResp target = new MultipartUploadInitResp();
+    private MultipartUploadCreateResp toAdminInitResp(MultipartInitResp source) {
+        MultipartUploadCreateResp target = new MultipartUploadCreateResp();
         target.setFileId(source.getFileId());
         target.setUploadId(source.getUploadId());
         target.setBucket(source.getBucket());
@@ -161,8 +170,9 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         return target;
     }
 
-    private MultipartUploadResp toAdminUploadResp(top.continew.starter.storage.domain.model.resp.MultipartUploadResp source) {
-        MultipartUploadResp target = new MultipartUploadResp();
+    private MultipartUploadPartResp toAdminUploadResp(
+        MultipartUploadResp source) {
+        MultipartUploadPartResp target = new MultipartUploadPartResp();
         target.setPartNumber(source.getPartNumber());
         target.setPartETag(source.getPartETag());
         target.setPartSize(source.getPartSize());
@@ -191,13 +201,15 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
      * @param session    分片上传会话
      * @param partNumber 分片序号
      */
-    private void validatePartSize(MultipartFile file, MultipartInitResp session, Integer partNumber) {
+    private void validatePartSize(MultipartFile file, MultipartInitResp session,
+        Integer partNumber) {
         if (partNumber == null || partNumber < 1) {
             throw new BaseException("分片序号不合法: " + partNumber);
         }
         Long sessionPartSize = session.getPartSize();
         Long sessionFileSize = session.getFileSize();
-        if (sessionPartSize == null || sessionPartSize <= 0 || sessionFileSize == null || sessionFileSize <= 0) {
+        if (sessionPartSize == null || sessionPartSize <= 0 || sessionFileSize == null
+            || sessionFileSize <= 0) {
             return;
         }
         long partSize = sessionPartSize;
@@ -206,7 +218,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         if (partNumber > totalParts) {
             throw new BaseException("分片序号超出范围: " + partNumber);
         }
-        long expectedPartSize = partNumber < totalParts ? partSize : fileSize - (totalParts - 1) * partSize;
+        long expectedPartSize =
+            partNumber < totalParts ? partSize : fileSize - (totalParts - 1) * partSize;
         long actualPartSize = file.getSize();
         if (actualPartSize != expectedPartSize) {
             throw new BaseException("分片大小不匹配: partNumber=%s, expected=%s, actual=%s"

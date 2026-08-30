@@ -34,7 +34,7 @@ import java.util.Map;
  */
 @Data
 @Schema(description = "分片初始化请求参数")
-public class MultipartUploadInitReq implements Serializable {
+public class MultipartUploadCreateReq implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

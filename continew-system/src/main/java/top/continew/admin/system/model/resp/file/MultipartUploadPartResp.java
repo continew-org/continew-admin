@@ -29,7 +29,8 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "分片上传响应参数")
-public class MultipartUploadResp implements Serializable {
+public class MultipartUploadPartResp implements Serializable {
+
     /**
      * 分片编号
      */

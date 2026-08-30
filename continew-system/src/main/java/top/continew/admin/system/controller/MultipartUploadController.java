@@ -20,12 +20,19 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.system.model.entity.FileDO;
-import top.continew.admin.system.model.req.MultipartUploadInitReq;
-import top.continew.admin.system.model.resp.file.MultipartUploadInitResp;
-import top.continew.admin.system.model.resp.file.MultipartUploadResp;
+import top.continew.admin.system.model.req.MultipartUploadCreateReq;
+import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
+import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
 import top.continew.admin.system.service.MultipartUploadService;
 
 /**
@@ -50,7 +57,8 @@ public class MultipartUploadController {
     @Operation(summary = "初始化分片上传", description = "初始化分片上传，返回uploadId等信息")
     @SaCheckPermission("system:file:upload")
     @PostMapping("/init")
-    public MultipartUploadInitResp initMultipartUpload(@RequestBody @Valid MultipartUploadInitReq multiPartUploadInitReq) {
+    public MultipartUploadCreateResp initMultipartUpload(
+        @RequestBody @Valid MultipartUploadCreateReq multiPartUploadInitReq) {
         return multipartUploadService.initMultipartUpload(multiPartUploadInitReq);
     }
 
@@ -66,10 +74,10 @@ public class MultipartUploadController {
     @Operation(summary = "上传分片", description = "上传单个分片")
     @SaCheckPermission("system:file:upload")
     @PostMapping("/part")
-    public MultipartUploadResp uploadPart(@RequestPart("file") MultipartFile file,
-                                          @RequestParam("uploadId") String uploadId,
-                                          @RequestParam("partNumber") Integer partNumber,
-                                          @RequestParam("path") String path) {
+    public MultipartUploadPartResp uploadPart(@RequestPart("file") MultipartFile file,
+        @RequestParam("uploadId") String uploadId,
+        @RequestParam("partNumber") Integer partNumber,
+        @RequestParam("path") String path) {
         return multipartUploadService.uploadPart(file, uploadId, partNumber, path);
     }
 
