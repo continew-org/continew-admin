@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<code_scheme name="OCN-CodeStyle">
+    <!-- 行分隔符：LF -->
+    <option name="LINE_SEPARATOR" value="&#xA;"/>
+    <!-- 999 = 不自动转星号导入（对齐 Checkstyle AvoidStarImport，Google 官方 IDEA 配置同值） -->
+    <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999"/>
+    <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999"/>
+
+    <codeStyleSettings language="JAVA">
+        <!-- 行宽：formatter lineSplit=100 -->
+        <option name="RIGHT_MARGIN" value="100"/>
+        <!-- 保留手工换行：formatter join_wrapped_lines=false（IDEA 默认值，勿关闭） -->
+        <option name="KEEP_LINE_BREAKS" value="true"/>
+        <option name="KEEP_FIRST_COLUMN_COMMENT" value="false"/>
+        <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false"/>
+        <!-- 空行保留上限 1：formatter number_of_empty_lines_to_preserve=1 -->
+        <option name="KEEP_BLANK_LINES_IN_CODE" value="1"/>
+        <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="1"/>
+        <!-- 空行结构：逐项对齐 formatter blank_lines_* 与仓库既有约定 -->
+        <!-- 仓库约定：license 头与 package 之间保留 1 个空行（formatter 不强插、保留 ≤1） -->
+        <option name="BLANK_LINES_BEFORE_PACKAGE" value="1"/>
+        <option name="BLANK_LINES_AFTER_PACKAGE" value="1"/>
+        <option name="BLANK_LINES_BEFORE_IMPORTS" value="1"/>
+        <option name="BLANK_LINES_AFTER_IMPORTS" value="1"/>
+        <option name="BLANK_LINES_AROUND_CLASS" value="1"/>
+        <!-- formatter before_field=0：字段间空行有则保留（≤1）、无则不插 -->
+        <option name="BLANK_LINES_AROUND_FIELD" value="0"/>
+        <option name="BLANK_LINES_AROUND_METHOD" value="1"/>
+        <option name="BLANK_LINES_AFTER_CLASS_HEADER" value="1"/>
+        <!-- formatter 三处 comment.format_*=false：注释完全不参与格式化 -->
+        <option name="WRAP_COMMENTS" value="false"/>
+        <!-- 换行取向：formatter 对齐值 16 = 必要时换行，即 IDEA wrap if long -->
+        <option name="ALIGN_MULTILINE_PARAMETERS" value="false"/>
+        <option name="ALIGN_MULTILINE_RESOURCES" value="false"/>
+        <option name="ALIGN_MULTILINE_FOR" value="false"/>
+        <option name="CALL_PARAMETERS_WRAP" value="1"/>
+        <option name="METHOD_PARAMETERS_WRAP" value="1"/>
+        <option name="RESOURCE_LIST_WRAP" value="1"/>
+        <option name="EXTENDS_KEYWORD_WRAP" value="1"/>
+        <option name="THROWS_KEYWORD_WRAP" value="1"/>
+        <option name="METHOD_CALL_CHAIN_WRAP" value="1"/>
+        <option name="BINARY_OPERATION_WRAP" value="1"/>
+        <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="true"/>
+        <option name="TERNARY_OPERATION_WRAP" value="1"/>
+        <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true"/>
+        <option name="FOR_STATEMENT_WRAP" value="1"/>
+        <option name="ARRAY_INITIALIZER_WRAP" value="1"/>
+        <option name="ASSIGNMENT_WRAP" value="1"/>
+        <!-- formatter 48 = 每个枚举常量独立一行 -->
+        <option name="ENUM_CONSTANTS_WRAP" value="2"/>
+        <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" value="true"/>
+        <!-- 块体不与花括号同行：formatter keep_*_on_one_line=one_line_never -->
+        <option name="IF_BRACE_FORCE" value="3"/>
+        <option name="DOWHILE_BRACE_FORCE" value="3"/>
+        <option name="WHILE_BRACE_FORCE" value="3"/>
+        <option name="FOR_BRACE_FORCE" value="3"/>
+        <indentOptions>
+            <option name="INDENT_SIZE" value="4"/>
+            <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+            <option name="USE_TAB_CHARACTER" value="false"/>
+            <option name="TAB_SIZE" value="4"/>
+            <!-- 空行必须完全空白：formatter indent_empty_lines=false，Spotless trimTrailingWhitespace 兜底强制 -->
+            <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="false"/>
+        </indentOptions>
+    </codeStyleSettings>
+
+    <codeStyleSettings language="XML">
+        <option name="XML_ALIGN_ATTRIBUTES" value="false"/>
+        <indentOptions>
+            <option name="INDENT_SIZE" value="4"/>
+            <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+            <option name="USE_TAB_CHARACTER" value="false"/>
+            <option name="TAB_SIZE" value="4"/>
+            <option name="KEEP_INDENTS_ON_EMPTY_LINES" value="false"/>
+        </indentOptions>
+    </codeStyleSettings>
+</code_scheme>

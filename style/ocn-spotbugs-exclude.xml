@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SpotBugs 豁免清单：只为"无法通过修改代码消除"的现存问题建立豁免台账，逐条注明原因与消除计划，随修复逐条删除 -->
+<FindBugsFilter>
+</FindBugsFilter>

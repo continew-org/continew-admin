@@ -33,3 +33,4 @@ target/
 *.diff
 *.patch
 *.tmp
+.mindfs
