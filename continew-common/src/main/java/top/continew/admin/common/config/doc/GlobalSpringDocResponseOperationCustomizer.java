@@ -97,7 +97,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         Type wrappedType = wrapReturnType(returnType);
 
         if (isVoidType(wrappedType)) {
-            return null;
+            return new Content();
         }
 
         return buildContentForWrappedType(components, annotations, methodProduces, jsonView,
@@ -144,13 +144,13 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         JsonView jsonView,
         Type returnType) {
         Content content = new Content();
-        Schema<?> schema = calculateSchema(components, returnType, jsonView, annotations);
+        Schema<?> schema = resolveSchema(components, returnType, jsonView, annotations);
 
         if (schema != null) {
             io.swagger.v3.oas.models.media.MediaType mediaType =
                 new io.swagger.v3.oas.models.media.MediaType();
             mediaType.setSchema(schema);
-            setContent(methodProduces, content, mediaType);
+            applyMediaTypes(methodProduces, content, mediaType);
         }
 
         return content;
@@ -186,7 +186,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param annotations 方法注解
      * @return Schema 对象
      */
-    private Schema<?> calculateSchema(Components components,
+    private Schema<?> resolveSchema(Components components,
         Type returnType,
         JsonView jsonView,
         Annotation[] annotations) {
@@ -204,7 +204,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param content        响应内容
      * @param mediaType      媒体类型对象
      */
-    private void setContent(String[] methodProduces,
+    private void applyMediaTypes(String[] methodProduces,
         Content content,
         io.swagger.v3.oas.models.media.MediaType mediaType) {
         Arrays.stream(methodProduces)

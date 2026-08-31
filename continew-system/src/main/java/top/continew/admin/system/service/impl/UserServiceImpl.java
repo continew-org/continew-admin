@@ -154,7 +154,7 @@ public class UserServiceImpl
     /**
      * 旧密码校验失败提示
      */
-    private static final String OLD_PASSWORD_INCORRECT_MSG = "当前密码不正确";
+    private static final String OLD_CREDENTIAL_MISMATCH_MSG = "当前密码不正确";
 
     @Override
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
@@ -471,7 +471,7 @@ public class UserServiceImpl
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
             CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder
-                .matches(oldPassword, password), OLD_PASSWORD_INCORRECT_MSG);
+                .matches(oldPassword, password), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
@@ -493,7 +493,7 @@ public class UserServiceImpl
         if (StrUtil.isNotBlank(user.getPassword())) {
             CheckUtils
                 .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                    .getPassword()), OLD_PASSWORD_INCORRECT_MSG);
+                    .getPassword()), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         this.checkPhoneRepeat(newPhone, id, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -507,7 +507,7 @@ public class UserServiceImpl
         if (StrUtil.isNotBlank(user.getPassword())) {
             CheckUtils
                 .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                    .getPassword()), OLD_PASSWORD_INCORRECT_MSG);
+                    .getPassword()), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         this.checkEmailRepeat(newEmail, id, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");
