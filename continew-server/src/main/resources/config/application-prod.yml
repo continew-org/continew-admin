@@ -16,7 +16,7 @@ spring.datasource:
   # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
   url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
-  password: ${DB_PWD:123456}
+  password: ${DB_PWD}
   driver-class-name: com.mysql.cj.jdbc.Driver
   #  # PostgreSQL 配置
   #  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
@@ -51,8 +51,8 @@ spring.data:
     host: ${REDIS_HOST:127.0.0.1}
     # 端口（默认 6379）
     port: ${REDIS_PORT:6379}
-    # 密码（未设置密码时请注释掉）
-    password: ${REDIS_PWD:123456}
+    # 密码
+    password: ${REDIS_PWD}
     # 数据库索引
     database: ${REDIS_DB:0}
     # 连接超时时间
@@ -273,7 +273,7 @@ snail-job:
       # 用户名
       username: ${SCHEDULE_USERNAME:admin}
       # 密码
-      password: ${SCHEDULE_PASSWORD:admin}
+      password: ${SCHEDULE_PASSWORD}
   ## OpenAPI 配置
   openapi:
     # 服务端 Web 端口（默认：8080，如果你部署的服务端改动了端口，这里也需要对应改动）
@@ -288,4 +288,4 @@ snail-job:
   # 接入组名
   group: ${SCHEDULE_GROUP:continew-admin}
   # 接入组 token
-  token: ${SCHEDULE_TOKEN:SJ_Wyz3dmsdbDOkDujOTSSoBjGQP1BMsVnj}
+  token: ${SCHEDULE_TOKEN}
