@@ -11,6 +11,7 @@
 - **新增模块需在两处注册**：根 POM 的 `<modules>` 与根 POM `dependencyManagement`。
 - **数据库结构变更必须走 Liquibase**：新增或修改变更集后需在 `continew-server/src/main/resources/db/changelog/db.changelog-master.yaml` 登记，且 `mysql/` 与 `postgresql/` 两套 SQL 必须同步提供。
 - **新增公共表需登记租户白名单**：不参与租户隔离的表必须加入 `continew-starter.tenant.ignore-tables` 配置。
+- **禁止硬编码敏感凭据**：密码、密钥、token 等不得硬编码进配置或源码。`application-prod.yml` 一律使用**无默认值**的环境变量占位符（如 `${DB_PWD}`，未配置即启动失败，强制注入）；`application-dev.yml` 可保留本地示例默认值以保证开箱即用。新增凭据遵循同一模式。
 - **披露 AI 使用**：当提交中较大部分由 AI 生成时，请在 commit message 末尾追加 trailer，注明实际使用的智能体，例如：
 
   ```
@@ -90,7 +91,10 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 本项目 `maven-surefire-plugin` 已设置 `skip=true`，单元测试默认跳过。代码改动的验证方式是执行 `./mvnw verify` 确保四道门禁全部通过。
 
-运行时数据源/Redis 可通过环境变量注入：`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PWD`、`DB_NAME`；`REDIS_HOST`、`REDIS_PORT`、`REDIS_PWD`、`REDIS_DB`。配置文件位于 `continew-server/src/main/resources/config/`（application.yml 通用，application-dev.yml / application-prod.yml 分环境）。
+运行时配置通过环境变量注入，配置文件位于 `continew-server/src/main/resources/config/`（application.yml 通用，application-dev.yml / application-prod.yml 分环境）。
+
+- **非凭据项**（dev/prod 均有默认值）：`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_NAME`；`REDIS_HOST`、`REDIS_PORT`、`REDIS_DB`。
+- **凭据项**：dev 保留弱默认值便于本地启动；**prod 无默认值、必须注入，缺失即启动失败**——`DB_PWD`（数据库密码）、`REDIS_PWD`（Redis 密码）、`FIELD_ENCRYPT_PASSWORD`（字段加密 AES 密钥）、`FIELD_ENCRYPT_PUBLIC_KEY` / `FIELD_ENCRYPT_PRIVATE_KEY`（字段加密 RSA 密钥对）；`SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`（Snail Job 控制台密码与接入组 token，仅启用调度时需要，prod 默认 `snail-job.enabled: true`）。
 
 ### 提交前门禁（必须通过）
 
@@ -99,6 +103,8 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 1. 执行 `./mvnw verify`。四道门禁依次为：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），以及编译后 verify 阶段的 **SpotBugs**（字节码缺陷），任一不通过都会直接构建失败。
 2. 若被 Spotless 拦截，执行 `./mvnw compile -Pformat` 自动修复，然后再执行一次 `./mvnw verify` 确认通过。
 3. 四道门禁全部通过后才能提交。
+
+> **无需跑门禁**：四道门禁只作用于 Java 源码与 POM。仅改文档（`*.md`）、运行时配置（`application*.yml`、`*.properties`）、CI workflow 或脚本时，不触发任何门禁，可直接提交，无需执行 `./mvnw verify`。
 
 构建过程**不会修改任何源码文件**；`-Pformat` 是唯一会修改源码的 profile。不要用 IDE 格式化或 `git diff --check` 替代 Spotless 门禁——IDE 格式化引擎是另一套实现，可能放行项目格式化器拒绝的代码。
 
