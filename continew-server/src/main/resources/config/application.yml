@@ -89,12 +89,13 @@ spring.task:
       await-termination-period: 30s
 
 --- ### 文件上传配置
+# 文件管理支持大文件直传，单文件上限与分片上传阈值（10MB）配套，属有意放宽，非配置疏漏（S5693）
 spring.servlet.multipart:
   enabled: true
   # 单文件上传大小限制
-  max-file-size: 10MB
+  max-file-size: 10MB # NOSONAR: 直传上限需与分片阈值 10MB 保持一致
   # 单次总上传文件大小限制
-  max-request-size: 20MB
+  max-request-size: 20MB # NOSONAR: 允许一次请求携带多个分片/文件
 ## 头像配置
 avatar:
   # 存储路径

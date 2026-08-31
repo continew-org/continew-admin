@@ -46,6 +46,7 @@ import top.continew.admin.system.enums.FileUploadProgressStatusEnum;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
+import top.continew.admin.system.util.StoragePathValidator;
 import top.continew.starter.cache.redisson.util.RedisLockUtils;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
@@ -141,6 +142,8 @@ public class FileServiceImpl
     @Override
     public Long createDir(FileReq req) {
         String parentPath = req.getParentPath();
+        // 校验上级目录路径，防止通过 ../ 等路径穿越在存储根目录之外创建目录
+        StoragePathValidator.validate(parentPath);
         FileDO file = baseMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getName, req.getOriginalName())
@@ -275,6 +278,8 @@ public class FileServiceImpl
      */
     private FileInfo doUpload(Object file, String parentPath, String storageCode, String extName,
         String uploadTaskId) {
+        // 校验上级目录路径，防止通过 ../ 等路径穿越将文件写入存储根目录之外
+        StoragePathValidator.validate(parentPath);
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
