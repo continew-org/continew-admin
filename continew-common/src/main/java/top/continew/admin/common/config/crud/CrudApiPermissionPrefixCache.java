@@ -92,4 +92,7 @@ public class CrudApiPermissionPrefixCache {
                 .subList(1, pathSegmentList.size())));
         return "%s:%s".formatted(moduleName, resourceName);
     }
+
+    private CrudApiPermissionPrefixCache() {
+    }
 }

@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class NoticeLogServiceImpl implements NoticeLogService {
             return false;
         }
         // 新增没有关联的
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
         List<NoticeLogDO> list =
             CollUtils.mapToList(subtract, userId -> new NoticeLogDO(noticeId, userId, now));
         return baseMapper.insertBatch(list);

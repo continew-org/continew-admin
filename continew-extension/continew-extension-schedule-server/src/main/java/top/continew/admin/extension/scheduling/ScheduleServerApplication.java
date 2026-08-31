@@ -43,7 +43,7 @@ public class ScheduleServerApplication extends com.aizuda.snailjob.server.SnailJ
 
     private final ServerProperties serverProperties;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { // NOSONAR: JVM 启动入口必须命名为 main，无法重命名
         SpringApplication.run(ScheduleServerApplication.class, args);
     }
 

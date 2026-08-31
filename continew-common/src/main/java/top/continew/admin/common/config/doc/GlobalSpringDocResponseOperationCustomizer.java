@@ -96,7 +96,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         // 包装返回类型为全局响应格式
         Type wrappedType = wrapReturnType(returnType);
 
-        if (isVoid(wrappedType)) {
+        if (isVoidType(wrappedType)) {
             return null;
         }
 
@@ -162,7 +162,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param returnType 返回类型
      * @return 是否为 void 类型
      */
-    private boolean isVoid(Type returnType) {
+    private boolean isVoidType(Type returnType) {
         if (Void.TYPE.equals(returnType) || Void.class.equals(returnType)) {
             return true;
         }
@@ -170,7 +170,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         if (returnType instanceof ParameterizedType parameterizedType) {
             Type[] types = parameterizedType.getActualTypeArguments();
             if (isResponseTypeWrapper(ResolvableType.forType(returnType).getRawClass())) {
-                return isVoid(types[0]);
+                return isVoidType(types[0]);
             }
         }
 
@@ -190,7 +190,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         Type returnType,
         JsonView jsonView,
         Annotation[] annotations) {
-        if (isVoid(returnType) || SpringDocAnnotationsUtils.isAnnotationToIgnore(returnType)) {
+        if (isVoidType(returnType) || SpringDocAnnotationsUtils.isAnnotationToIgnore(returnType)) {
             return null;
         }
         return extractSchema(components, returnType, jsonView, annotations,

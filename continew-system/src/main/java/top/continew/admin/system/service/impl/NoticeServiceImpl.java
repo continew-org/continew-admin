@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -80,7 +82,7 @@ public class NoticeServiceImpl extends
             } else {
                 // 已发布
                 req.setStatus(NoticeStatusEnum.PUBLISHED);
-                req.setPublishTime(LocalDateTime.now());
+                req.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             }
         }
     }
@@ -125,7 +127,7 @@ public class NoticeServiceImpl extends
                     } else {
                         // 已发布
                         req.setStatus(NoticeStatusEnum.PUBLISHED);
-                        req.setPublishTime(LocalDateTime.now());
+                        req.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
                     }
                 }
             }

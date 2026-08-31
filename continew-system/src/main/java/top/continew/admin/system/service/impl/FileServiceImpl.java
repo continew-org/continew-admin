@@ -66,6 +66,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -301,7 +302,7 @@ public class FileServiceImpl
         long totalBytes = this.getFileSize(file);
         if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
             this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.INIT, 0L,
-                totalBytes, 0, null, null, null);
+                totalBytes, 0, null);
         }
 
         UploadPretreatment uploadPretreatment = fileStorageService.of(normalizeUploadSource(file))
@@ -324,7 +325,7 @@ public class FileServiceImpl
                         ? FileUploadProgressStatusEnum.FINALIZING
                         : FileUploadProgressStatusEnum.UPLOADING;
                 this.saveUploadProgress(normalizedUploadTaskId, status, progressSize, allSize,
-                    percentage, null, null, null);
+                    percentage, null);
             }
         });
         try {
@@ -336,18 +337,17 @@ public class FileServiceImpl
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 long completedSize = result.getSize() == null ? totalBytes : result.getSize();
                 this.saveUploadProgress(normalizedUploadTaskId,
-                    FileUploadProgressStatusEnum.COMPLETED, completedSize, totalBytes, 100, null,
-                    result
-                        .getFileId(),
-                    result.getUrl());
+                    FileUploadProgressStatusEnum.COMPLETED, completedSize, totalBytes, 100,
+                    r -> {
+                        r.setFileId(result.getFileId());
+                        r.setUrl(result.getUrl());
+                    });
             }
             return result;
         } catch (RuntimeException e) {
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 this.saveUploadProgress(normalizedUploadTaskId, FileUploadProgressStatusEnum.FAILED,
-                    0L, totalBytes, 0, e
-                        .getMessage(),
-                    null, null);
+                    0L, totalBytes, 0, r -> r.setMessage(e.getMessage()));
             }
             throw e;
         }
@@ -545,14 +545,26 @@ public class FileServiceImpl
         return 0L;
     }
 
+    /**
+     * 保存文件上传进度到 Redis
+     *
+     * <p>
+     * 进度过程中 message/fileId/url 沿用上一次的值；终态（成功/失败）通过 customizer 写入结果信息。
+     * </p>
+     *
+     * @param uploadTaskId 上传任务 ID
+     * @param status       进度状态
+     * @param bytesRead    已上传字节数
+     * @param totalBytes   总字节数
+     * @param percentage   进度百分比
+     * @param customizer   终态结果定制器（可为 {@code null}），用于写入文件 ID、URL 或失败原因
+     */
     private void saveUploadProgress(String uploadTaskId,
         FileUploadProgressStatusEnum status,
         long bytesRead,
         long totalBytes,
         int percentage,
-        String message,
-        String fileId,
-        String url) {
+        Consumer<FileUploadProgressResp> customizer) {
         String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
         FileUploadProgressResp current = null;
         Object value = RedisUtils.get(key);
@@ -575,11 +587,13 @@ public class FileServiceImpl
         resp.setBytesRead(bytesRead);
         resp.setTotalBytes(totalBytes);
         resp.setPercentage(percentage);
-        resp.setMessage(
-            StrUtil.blankToDefault(message, current == null ? null : current.getMessage()));
-        resp.setFileId(
-            StrUtil.blankToDefault(fileId, current == null ? null : current.getFileId()));
-        resp.setUrl(StrUtil.blankToDefault(url, current == null ? null : current.getUrl()));
+        // 进度过程沿用上一次的结果信息，终态由 customizer 覆盖写入
+        resp.setMessage(current == null ? null : current.getMessage());
+        resp.setFileId(current == null ? null : current.getFileId());
+        resp.setUrl(current == null ? null : current.getUrl());
+        if (customizer != null) {
+            customizer.accept(resp);
+        }
         RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
     }
 

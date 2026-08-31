@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +86,7 @@ public class UserSocialServiceImpl implements UserSocialService {
         userSocial.setSource(source);
         userSocial.setOpenId(openId);
         userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
-        userSocial.setLastLoginTime(LocalDateTime.now());
+        userSocial.setLastLoginTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         baseMapper.insert(userSocial);
     }
 

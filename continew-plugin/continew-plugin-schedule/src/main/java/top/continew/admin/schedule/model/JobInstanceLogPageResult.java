@@ -46,7 +46,7 @@ public class JobInstanceLogPageResult implements Serializable {
      * 日志详情
      */
     @Schema(description = "日志详情")
-    private List message;
+    private List<String> message;
 
     /**
      * 异常信息
