@@ -119,9 +119,4 @@ public class InnerGenConfigDO extends GenConfigDO {
         this.setApiModuleName(StrUtil.subSuf(realPackageName, StrUtil
             .lastIndexOfIgnoreCase(realPackageName, StringConstants.DOT) + 1));
     }
-
-    @Override
-    public String getClassNamePrefix() {
-        return super.getClassNamePrefix();
-    }
 }

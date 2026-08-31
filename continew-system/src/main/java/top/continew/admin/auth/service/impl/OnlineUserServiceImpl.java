@@ -92,16 +92,12 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         for (Map.Entry<Long, List<String>> entry : tokenMap.entrySet()) {
             Long userId = entry.getKey();
             UserContext userContext = UserContextHolder.getContext(userId);
+            // 过滤无效/不匹配数据；并仅显示本租户数据（依赖 || 短路，确保 userContext 非空后再读取租户）
             if (userContext == null || !this.isMatchNickname(query.getNickname(), userContext)
-                || !this
-                    .isMatchClientId(query.getClientId(), userContext)) {
+                || !this.isMatchClientId(query.getClientId(), userContext)
+                || (TenantContextHolder.isTenantEnabled() && !TenantContextHolder.getTenantId()
+                    .equals(userContext.getTenantId()))) {
                 continue;
-            }
-            // 只显示本租户数据
-            if (TenantContextHolder.isTenantEnabled()) {
-                if (!TenantContextHolder.getTenantId().equals(userContext.getTenantId())) {
-                    continue;
-                }
             }
             List<LocalDateTime> loginTimeList = query.getLoginTime();
             entry.getValue().parallelStream().forEach(token -> {

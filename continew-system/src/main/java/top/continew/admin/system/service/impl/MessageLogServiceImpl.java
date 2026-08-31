@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,8 @@ public class MessageLogServiceImpl implements MessageLogService {
         }
         List<MessageLogDO> list = CollUtils
             .mapToList(messageIds,
-                messageId -> new MessageLogDO(messageId, userId, LocalDateTime.now()));
+                messageId -> new MessageLogDO(messageId, userId,
+                    LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)));
         baseMapper.insert(list);
     }
 

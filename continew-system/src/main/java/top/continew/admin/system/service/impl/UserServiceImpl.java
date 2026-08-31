@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -149,6 +151,11 @@ public class UserServiceImpl
     @Value("${avatar.path}")
     private String avatarPath;
 
+    /**
+     * 旧密码校验失败提示
+     */
+    private static final String OLD_CREDENTIAL_MISMATCH_MSG = "当前密码不正确";
+
     @Override
     public PageResp<UserResp> page(UserQuery query, PageQuery pageQuery) {
         QueryWrapper<UserDO> queryWrapper = this.buildQueryWrapper(query);
@@ -174,7 +181,8 @@ public class UserServiceImpl
     @Override
     public void afterCreate(UserReq req, UserDO user) {
         Long userId = user.getId();
-        baseMapper.lambdaUpdate().set(UserDO::getPwdResetTime, LocalDateTime.now())
+        baseMapper.lambdaUpdate()
+            .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, userId).update();
         // 保存用户和角色关联
         userRoleService.assignRolesToUser(req.getRoleIds(), userId);
@@ -383,7 +391,7 @@ public class UserServiceImpl
             }
             UserDO userDO = BeanUtil.toBeanIgnoreError(row, UserDO.class);
             userDO.setStatus(req.getDefaultStatus());
-            userDO.setPwdResetTime(LocalDateTime.now());
+            userDO.setPwdResetTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             userDO.setGender(
                 EnumUtil.getBy(GenderEnum::getDescription, row.getGender(), GenderEnum.UNKNOWN));
             userDO.setDeptId(deptMap.get(row.getDeptName()));
@@ -409,7 +417,7 @@ public class UserServiceImpl
         this.getById(id);
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, req.getNewPassword())
-            .set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, id)
             .update();
     }
@@ -463,14 +471,14 @@ public class UserServiceImpl
         String password = user.getPassword();
         if (StrUtil.isNotBlank(password)) {
             CheckUtils.throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder
-                .matches(oldPassword, password), "当前密码不正确");
+                .matches(oldPassword, password), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         // 校验密码合法性
         int passwordRepetitionTimes = this.checkPassword(newPassword, user);
         // 更新密码和密码重置时间
         baseMapper.lambdaUpdate()
             .set(UserDO::getPassword, newPassword)
-            .set(UserDO::getPwdResetTime, LocalDateTime.now())
+            .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, id)
             .update();
         // 保存历史密码
@@ -485,7 +493,7 @@ public class UserServiceImpl
         if (StrUtil.isNotBlank(user.getPassword())) {
             CheckUtils
                 .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                    .getPassword()), "当前密码不正确");
+                    .getPassword()), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         this.checkPhoneRepeat(newPhone, id, "手机号已绑定其他账号，请更换其他手机号");
         CheckUtils.throwIfEqual(newPhone, user.getPhone(), "新手机号不能与当前手机号相同");
@@ -499,7 +507,7 @@ public class UserServiceImpl
         if (StrUtil.isNotBlank(user.getPassword())) {
             CheckUtils
                 .throwIf(StrUtil.isBlank(oldPassword) || !passwordEncoder.matches(oldPassword, user
-                    .getPassword()), "当前密码不正确");
+                    .getPassword()), OLD_CREDENTIAL_MISMATCH_MSG);
         }
         this.checkEmailRepeat(newEmail, id, "邮箱已绑定其他账号，请更换其他邮箱");
         CheckUtils.throwIfEqual(newEmail, user.getEmail(), "新邮箱不能与当前邮箱相同");

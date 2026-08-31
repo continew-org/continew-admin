@@ -138,8 +138,9 @@ public class CaptchaController {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
         Captcha captcha = graphicCaptchaService.getCaptcha();
-        long expireTime = LocalDateTimeUtil.toEpochMilli(LocalDateTime.now()
-            .plusMinutes(captchaProperties.getExpirationInMinutes()));
+        long expireTime =
+            LocalDateTimeUtil.toEpochMilli(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)
+                .plusMinutes(captchaProperties.getExpirationInMinutes()));
         RedisUtils.set(captchaKey, captcha.text(),
             Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
         return CaptchaResp.of(uuid, captcha.toBase64(), expireTime);

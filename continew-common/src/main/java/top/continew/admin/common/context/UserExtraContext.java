@@ -16,6 +16,8 @@
 
 package top.continew.admin.common.context;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,7 +73,7 @@ public class UserExtraContext implements Serializable {
         this.ip = JakartaServletUtil.getClientIP(request);
         this.address = ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(this.ip));
         this.setBrowser(ServletUtils.getBrowser(request));
-        this.setLoginTime(LocalDateTime.now());
+        this.setLoginTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         this.setOs(StrUtil.subBefore(ServletUtils.getOs(request), " or", false));
     }
 }

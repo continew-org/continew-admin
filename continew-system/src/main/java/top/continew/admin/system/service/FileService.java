@@ -16,6 +16,8 @@
 
 package top.continew.admin.system.service;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.util.StrUtil;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.service.BaseService;
@@ -198,7 +200,7 @@ public interface FileService
      * @return 默认上级目录
      */
     default String getDefaultParentPath() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(GlobalConstants.DEFAULT_ZONE_ID);
         return today.getYear() + StringConstants.SLASH + today.getMonthValue()
             + StringConstants.SLASH + today
                 .getDayOfMonth()

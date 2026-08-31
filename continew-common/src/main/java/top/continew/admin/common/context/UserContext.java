@@ -131,7 +131,7 @@ public class UserContext implements Serializable {
             return false;
         }
         return this.pwdResetTime.plusDays(this.passwordExpirationDays)
-            .isBefore(LocalDateTime.now());
+            .isBefore(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
     }
 
     /**

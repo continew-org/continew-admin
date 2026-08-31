@@ -16,6 +16,8 @@
 
 package top.continew.admin.auth.handler;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -133,7 +135,7 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
         // 检查用户状态
         super.checkUserStatus(user);
         userSocial.setMetaJson(JSONUtil.toJsonStr(authUser));
-        userSocial.setLastLoginTime(LocalDateTime.now());
+        userSocial.setLastLoginTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         userSocialService.saveOrUpdate(userSocial);
         // 执行认证
         return super.authenticate(user, client);

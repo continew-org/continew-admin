@@ -311,6 +311,20 @@
                 <sonar.organization>continew-org</sonar.organization>
                 <sonar.projectKey>continew-org_continew-admin</sonar.projectKey>
                 <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+                <!--
+                    Liquibase 变更脚本（DDL/种子数据）不参与代码分析：
+                    1. MySQL/PostgreSQL 方言脚本会被 PL/SQL 分析器误判（如要求 PostgreSQL 使用 Oracle 的 VARCHAR2）；
+                    2. 种子数据中包含开源脚手架公开的默认账号密码哈希，并非真实凭据泄露。
+                -->
+                <sonar.exclusions>**/src/main/resources/db/changelog/**/*.sql</sonar.exclusions>
+                <!-- S3252：项目统一使用 Hutool 门面类 StrUtil/ValidationUtils 调用静态方法，其父类
+                     CharSequenceUtil/Validator 属实现细节，经门面访问是 Hutool 官方推荐用法，故关闭该规则。 -->
+                <sonar.issue.ignore.multicriteria>S3252,S2068-regex</sonar.issue.ignore.multicriteria>
+                <sonar.issue.ignore.multicriteria.S3252.ruleKey>java:S3252</sonar.issue.ignore.multicriteria.S3252.ruleKey>
+                <sonar.issue.ignore.multicriteria.S3252.resourceKey>**/*</sonar.issue.ignore.multicriteria.S3252.resourceKey>
+                <!-- S2068：RegexConstants 中的 PASSWORD 是密码强度校验正则常量，并非硬编码凭据，属误报。 -->
+                <sonar.issue.ignore.multicriteria.S2068-regex.ruleKey>java:S2068</sonar.issue.ignore.multicriteria.S2068-regex.ruleKey>
+                <sonar.issue.ignore.multicriteria.S2068-regex.resourceKey>**/constant/RegexConstants.java</sonar.issue.ignore.multicriteria.S2068-regex.resourceKey>
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>

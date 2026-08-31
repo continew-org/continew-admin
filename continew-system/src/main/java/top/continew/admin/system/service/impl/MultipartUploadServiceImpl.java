@@ -32,6 +32,7 @@ import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
+import top.continew.admin.system.util.StoragePathValidator;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.core.util.validation.CheckUtils;
@@ -67,6 +68,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
+        // 校验上级目录路径，防止通过 ../ 等路径穿越将文件写入存储根目录之外
+        StoragePathValidator.validate(multiPartUploadInitReq.getParentPath());
         StorageDO storageDO = storageService.getByCode(null);
         // 检测文件名是否已存在（同一目录下文件名不能重复）
         String originalFileName = multiPartUploadInitReq.getFileName();

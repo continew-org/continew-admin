@@ -16,6 +16,8 @@
 
 package top.continew.admin.common.config.mybatis;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
@@ -60,7 +62,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
             return;
         }
         Long createUser = UserContextHolder.getUserId();
-        LocalDateTime createTime = LocalDateTime.now();
+        LocalDateTime createTime = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
         if (metaObject.getOriginalObject() instanceof BaseDO baseDO) {
             // 继承了 BaseDO 的类，填充创建信息字段
             baseDO.setCreateUser(ObjectUtil.defaultIfNull(baseDO.getCreateUser(), createUser));
@@ -83,7 +85,7 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
             return;
         }
         Long updateUser = UserContextHolder.getUserId();
-        LocalDateTime updateTime = LocalDateTime.now();
+        LocalDateTime updateTime = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
         if (metaObject.getOriginalObject() instanceof BaseDO baseDO) {
             // 继承了 BaseDO 的类，填充修改信息
             baseDO.setUpdateUser(updateUser);

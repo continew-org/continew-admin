@@ -96,8 +96,8 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         // 包装返回类型为全局响应格式
         Type wrappedType = wrapReturnType(returnType);
 
-        if (isVoid(wrappedType)) {
-            return null;
+        if (isVoidType(wrappedType)) {
+            return new Content();
         }
 
         return buildContentForWrappedType(components, annotations, methodProduces, jsonView,
@@ -144,13 +144,13 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         JsonView jsonView,
         Type returnType) {
         Content content = new Content();
-        Schema<?> schema = calculateSchema(components, returnType, jsonView, annotations);
+        Schema<?> schema = resolveSchema(components, returnType, jsonView, annotations);
 
         if (schema != null) {
             io.swagger.v3.oas.models.media.MediaType mediaType =
                 new io.swagger.v3.oas.models.media.MediaType();
             mediaType.setSchema(schema);
-            setContent(methodProduces, content, mediaType);
+            applyMediaTypes(methodProduces, content, mediaType);
         }
 
         return content;
@@ -162,7 +162,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param returnType 返回类型
      * @return 是否为 void 类型
      */
-    private boolean isVoid(Type returnType) {
+    private boolean isVoidType(Type returnType) {
         if (Void.TYPE.equals(returnType) || Void.class.equals(returnType)) {
             return true;
         }
@@ -170,7 +170,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
         if (returnType instanceof ParameterizedType parameterizedType) {
             Type[] types = parameterizedType.getActualTypeArguments();
             if (isResponseTypeWrapper(ResolvableType.forType(returnType).getRawClass())) {
-                return isVoid(types[0]);
+                return isVoidType(types[0]);
             }
         }
 
@@ -186,11 +186,11 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param annotations 方法注解
      * @return Schema 对象
      */
-    private Schema<?> calculateSchema(Components components,
+    private Schema<?> resolveSchema(Components components,
         Type returnType,
         JsonView jsonView,
         Annotation[] annotations) {
-        if (isVoid(returnType) || SpringDocAnnotationsUtils.isAnnotationToIgnore(returnType)) {
+        if (isVoidType(returnType) || SpringDocAnnotationsUtils.isAnnotationToIgnore(returnType)) {
             return null;
         }
         return extractSchema(components, returnType, jsonView, annotations,
@@ -204,7 +204,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @param content        响应内容
      * @param mediaType      媒体类型对象
      */
-    private void setContent(String[] methodProduces,
+    private void applyMediaTypes(String[] methodProduces,
         Content content,
         io.swagger.v3.oas.models.media.MediaType mediaType) {
         Arrays.stream(methodProduces)

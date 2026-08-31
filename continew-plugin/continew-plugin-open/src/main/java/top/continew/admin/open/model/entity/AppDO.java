@@ -16,6 +16,8 @@
 
 package top.continew.admin.open.model.entity;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.base.model.entity.BaseDO;
@@ -80,6 +82,6 @@ public class AppDO extends BaseDO {
         if (expireTime == null) {
             return false;
         }
-        return LocalDateTime.now().isAfter(expireTime);
+        return LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID).isAfter(expireTime);
     }
 }

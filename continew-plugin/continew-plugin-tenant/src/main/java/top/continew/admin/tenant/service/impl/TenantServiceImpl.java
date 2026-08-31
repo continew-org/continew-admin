@@ -16,6 +16,8 @@
 
 package top.continew.admin.tenant.service.impl;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -154,7 +156,7 @@ public class TenantServiceImpl extends
         TenantDO tenant = this.getById(id);
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, tenant.getStatus(), "租户已被禁用");
         CheckUtils.throwIf(tenant.getExpireTime() != null && tenant.getExpireTime()
-            .isBefore(LocalDateTime.now()), "租户已过期");
+            .isBefore(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)), "租户已过期");
         // 检查套餐
         packageService.checkStatus(tenant.getPackageId());
     }

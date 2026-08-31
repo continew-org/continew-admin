@@ -94,7 +94,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
             // 初始化部门
             Long deptId = this.initDeptData(tenant);
             // 初始化角色
-            Long roleId = this.initRoleData(tenant);
+            Long roleId = this.initRoleData();
             // 角色绑定菜单
             List<Long> menuIds = packageMenuApi.listMenuIdsByPackageId(tenant.getPackageId());
             roleMenuService.add(menuIds, roleId);
@@ -163,10 +163,9 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
     /**
      * 初始化角色数据
      *
-     * @param tenant 租户信息
      * @return 角色 ID
      */
-    private Long initRoleData(TenantDTO tenant) {
+    private Long initRoleData() {
         RoleDO role = new RoleDO();
         RoleCodeEnum tenantAdmin = RoleCodeEnum.TENANT_ADMIN;
         role.setName(tenantAdmin.getDescription());
@@ -201,7 +200,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
         user.setDescription("系统初始用户");
         user.setStatus(DisEnableStatusEnum.ENABLE);
         user.setIsSystem(true);
-        user.setPwdResetTime(LocalDateTime.now());
+        user.setPwdResetTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         user.setDeptId(deptId);
         userMapper.insert(user);
         return user.getId();

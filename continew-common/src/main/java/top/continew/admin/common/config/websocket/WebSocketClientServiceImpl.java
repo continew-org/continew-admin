@@ -19,7 +19,7 @@ package top.continew.admin.common.config.websocket;
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.messaging.websocket.core.WebSocketClientService;
 
@@ -29,7 +29,7 @@ import top.continew.starter.messaging.websocket.core.WebSocketClientService;
  * @author Charles7c
  * @since 2024/6/4 22:13
  */
-@Component
+@Service
 public class WebSocketClientServiceImpl implements WebSocketClientService {
 
     @Override

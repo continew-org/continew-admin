@@ -16,11 +16,12 @@
 
 package top.continew.admin.job;
 
+import top.continew.admin.common.constant.GlobalConstants;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.aizuda.snailjob.client.job.core.annotation.JobExecutor;
 import com.aizuda.snailjob.common.log.SnailJobLog;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,9 +47,10 @@ import java.util.List;
  * @since 2025/5/11 22:19
  */
 @Slf4j
-@Component
-@RequiredArgsConstructor
 public class NoticePublishJob {
+
+    private NoticePublishJob() {
+    }
 
     /**
      * 定时发布公告（未启用 Snail Job 则使用它）
@@ -99,7 +101,7 @@ public class NoticePublishJob {
         // 查询待发布公告
         List<NoticeDO> list = noticeMapper.lambdaQuery()
             .eq(NoticeDO::getStatus, NoticeStatusEnum.PENDING)
-            .le(NoticeDO::getPublishTime, LocalDateTime.now())
+            .le(NoticeDO::getPublishTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .list();
         if (CollUtil.isEmpty(list)) {
             return;

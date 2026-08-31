@@ -24,7 +24,7 @@ package top.continew.admin.system.constant;
  */
 public class MultipartUploadConstants {
 
-    //todo 后续改为从配置文件读取
+    // TODO 后续改为从配置文件读取
     /**
      * MD5到uploadId的映射前缀
      * <p>
@@ -83,4 +83,7 @@ public class MultipartUploadConstants {
      * </p>
      */
     public static final long DEFAULT_EXPIRE_HOURS = 24;
+
+    private MultipartUploadConstants() {
+    }
 }
