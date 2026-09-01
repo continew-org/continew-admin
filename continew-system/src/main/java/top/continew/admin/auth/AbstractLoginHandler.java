@@ -99,16 +99,13 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
         Long tenantId = TenantContextHolder.getTenantId();
         CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> {
             Set<String> permissions = new HashSet<>();
-            TenantUtils.execute(tenantId, () -> {
-                permissions.addAll(roleService.listPermissionByUserId(userId));
-            });
+            TenantUtils.execute(tenantId,
+                () -> permissions.addAll(roleService.listPermissionByUserId(userId)));
             return permissions;
         }, threadPoolTaskExecutor);
         CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> {
             Set<RoleContext> roles = new HashSet<>();
-            TenantUtils.execute(tenantId, () -> {
-                roles.addAll(roleService.listByUserId(userId));
-            });
+            TenantUtils.execute(tenantId, () -> roles.addAll(roleService.listByUserId(userId)));
             return roles;
         }, threadPoolTaskExecutor);
         CompletableFuture<Integer> passwordExpirationDaysFuture =

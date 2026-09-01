@@ -89,9 +89,10 @@ public class UserMessageController {
     @GetMapping("/{id}")
     public MessageDetailResp getMessage(@PathVariable Long id) {
         MessageDetailResp detail = messageService.get(id);
+        CheckUtils.throwIfNull(detail, "消息不存在或无权限访问");
         CheckUtils.throwIf(
-            detail == null || (NoticeScopeEnum.USER.equals(detail.getScope()) && !CollUtil
-                .contains(detail.getUsers(), UserContextHolder.getUserId().toString())),
+            NoticeScopeEnum.USER.equals(detail.getScope()) && !CollUtil
+                .contains(detail.getUsers(), UserContextHolder.getUserId().toString()),
             "消息不存在或无权限访问");
         messageService.readMessage(Collections.singletonList(id), UserContextHolder.getUserId());
         detail.setIsRead(true);

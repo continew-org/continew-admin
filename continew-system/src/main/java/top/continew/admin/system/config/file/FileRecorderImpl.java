@@ -76,7 +76,7 @@ public class FileRecorderImpl implements FileRecorder {
         }
         FileDO file = new FileDO(fileInfo);
         file.setStorageId(storage.getId());
-        fileMapper.insert(file);
+        boolean saved = fileMapper.insert(file) > 0;
         fileInfo.setFileId(String.valueOf(file.getId()));
         if (!URLUtils.isHttpUrl(fileInfo.getUrl())) {
             String prefix = storage.getUrlPrefix();
@@ -88,7 +88,7 @@ public class FileRecorderImpl implements FileRecorder {
                     URLUtil.normalize(prefix + fileInfo.getThumbnailPath(), false, true));
             }
         }
-        return true;
+        return saved;
     }
 
     @Override
