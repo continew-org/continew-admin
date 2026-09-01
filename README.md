@@ -15,9 +15,6 @@
 <a href="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml" title="CI" target="_blank">
 <img src="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI" />
 </a>
-<a href="https://app.codacy.com/gh/continew-org/continew-admin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade" title="Codacy" target="_blank">
-<img src="https://app.codacy.com/project/badge/Grade/19e3e2395d554efe902c3822e65db30e" alt="Codacy" />
-</a>
 <a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=alert_status" alt="Sonar" />
 </a>
@@ -136,7 +133,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 > 优秀的中后台框架不仅提供组件集成与配置，封装好用的工具，更应提供通用基础业务设计及解决方案，为初创团队减负。
 
-**10.质量与安全并重：** 我们高度重视项目质量与安全，CI 已集成 Sonar、Codacy，代码提交即自动扫描质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案。
+**10.质量与安全并重：** 我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案。
 
 许多项目在开发或交付过程中需满足 Sonarqube 等质量指标，使用 ContiNew Admin 框架，让你从一开始就站在高质量的起点。
 

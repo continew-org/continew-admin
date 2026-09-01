@@ -1,0 +1,105 @@
+name: OCR Review
+
+# Open Code Review AI 评审：https://github.com/alibaba/open-code-review
+# 与 SonarCloud 静态扫描互补，不作为必需检查。
+# 需配置 secret：OCR_LLM_URL、OCR_LLM_AUTH_TOKEN；variable：OCR_LLM_MODEL、OCR_LLM_USE_ANTHROPIC。
+
+# 无关评论进入独立 noop 组，避免取消正在进行的评审
+# 注意：下方触发条件与 job.if 中的判断同源，修改时需同步两处
+concurrency:
+  group: >-
+    ${{
+      (
+        github.event_name == 'pull_request_target'
+        || (
+          github.event_name == 'issue_comment'
+          && github.event.issue.pull_request
+          && github.event.comment.user.type != 'Bot'
+          && (
+            github.event.comment.author_association == 'MEMBER'
+            || github.event.comment.author_association == 'OWNER'
+            || github.event.comment.author_association == 'COLLABORATOR'
+          )
+          && (
+            startsWith(github.event.comment.body, '/open-code-review')
+            || startsWith(github.event.comment.body, '@open-code-review')
+          )
+        )
+      )
+      && format('ocr-{0}', github.event.pull_request.number || github.event.issue.number)
+      || format('noop-{0}', github.run_id)
+    }}
+  cancel-in-progress: true
+
+on:
+  # pull_request_target 使 fork PR 也能读取 LLM 密钥；action 只读 diff，不执行 PR 代码
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - '**.md'
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  code-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # 自动评审 PR；评论触发仅限维护者发送 /open-code-review 或 @open-code-review
+    if: |
+      github.event_name == 'pull_request_target'
+      || (
+        github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && github.event.comment.user.type != 'Bot'
+        && (
+          github.event.comment.author_association == 'MEMBER'
+          || github.event.comment.author_association == 'OWNER'
+          || github.event.comment.author_association == 'COLLABORATOR'
+        )
+        && (
+          startsWith(github.event.comment.body, '/open-code-review')
+          || startsWith(github.event.comment.body, '@open-code-review')
+        )
+      )
+    steps:
+      - name: Get PR context
+        id: pr-context
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { data: pullRequest } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('base_ref', pullRequest.base.ref);
+            core.setOutput('head_sha', pullRequest.head.sha);
+
+      - name: Run OpenCodeReview
+        uses: alibaba/open-code-review@8d023aafcec05f8ba5628fca3eaba88078e5d201 # v1.11.1
+        with:
+          ocr_version: '1.11.1'
+          llm_url: ${{ secrets.OCR_LLM_URL }}
+          llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
+          llm_model: ${{ vars.OCR_LLM_MODEL }}
+          # 缺省走 OpenAI 兼容协议（空值会被上游归一化为 anthropic）
+          llm_use_anthropic: ${{ vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+          language: Chinese
+          # 已评论位置不重复发，重复推送只审新提交
+          incremental: 'true'
+          checkpoint_range: 'true'
+          # 评论手动触发时强制全量重审，否则无新提交会被 checkpoint 跳过
+          full_review: ${{ github.event_name == 'issue_comment' }}
+          # 风格/文档类及 low 严重度折叠进摘要，行内只留较有价值的评论
+          route_categories: style,documentation
+          route_severity_below: low
+          # 不上传 artifact：公开仓库无需留存 diff/评审原文，排错看日志即可
+          upload_artifacts: 'false'
+          base_ref: ${{ steps.pr-context.outputs.base_ref }}
+          head_sha: ${{ steps.pr-context.outputs.head_sha }}
