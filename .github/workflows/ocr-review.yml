@@ -1,16 +1,10 @@
 name: OCR Review
 
-# Open Code Review（阿里开源 AI 代码评审）：https://github.com/alibaba/open-code-review
-# 仅评审 PR diff 并发行内评论 + 摘要评论，与 SonarCloud 静态扫描互补，不做质量门禁（非必需检查）。
-#
-# 需在 Settings -> Secrets and variables -> Actions 配置：
-#   secret    OCR_LLM_URL            LLM API 地址（OpenAI 兼容协议，如 DeepSeek/通义千问）
-#   secret    OCR_LLM_AUTH_TOKEN     LLM API Key
-#   variable  OCR_LLM_MODEL          模型名称
-#   variable  OCR_LLM_USE_ANTHROPIC  使用 Anthropic 协议时为 'true'，OpenAI 兼容协议为 'false'
+# Open Code Review AI 评审：https://github.com/alibaba/open-code-review
+# 与 SonarCloud 静态扫描互补，不作为必需检查。
+# 需配置 secret：OCR_LLM_URL、OCR_LLM_AUTH_TOKEN；variable：OCR_LLM_MODEL、OCR_LLM_USE_ANTHROPIC。
 
-# PR 事件与 /open-code-review 评论触发共用同一并发组；无关评论进入独立 noop 组，
-# 避免一条普通评论取消正在进行的评审。
+# 无关评论进入独立 noop 组，避免取消正在进行的评审
 concurrency:
   group: >-
     ${{
@@ -37,8 +31,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  # 使用 pull_request_target 以便 fork PR 也能获取 LLM 密钥；
-  # action 只读 PR diff，不执行 PR 中的代码。
+  # pull_request_target 使 fork PR 也能读取 LLM 密钥；action 只读 diff，不执行 PR 代码
   pull_request_target:
     types: [opened, synchronize, reopened]
   issue_comment:
@@ -53,8 +46,7 @@ jobs:
     name: AI Code Review
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # PR 事件自动评审；评论触发仅限维护者以 /open-code-review 或 @open-code-review 开头，
-    # 防止外部用户通过评论消耗 LLM 额度。
+    # 自动评审 PR；评论触发仅限维护者发送 /open-code-review 或 @open-code-review
     if: |
       github.event_name == 'pull_request_target'
       || (
@@ -72,7 +64,6 @@ jobs:
         )
       )
     steps:
-      # issue_comment 事件不含 PR 的 base/head 信息，需先解析
       - name: Get PR context
         id: pr-context
         if: github.event_name == 'issue_comment'
@@ -96,15 +87,11 @@ jobs:
           llm_model: ${{ vars.OCR_LLM_MODEL }}
           llm_use_anthropic: ${{ vars.OCR_LLM_USE_ANTHROPIC }}
           language: Chinese
-          # 摘要评论原地更新，不重复刷屏
-          sticky_summary: 'true'
-          # 已评论过的位置不重复发评论
+          # 已评论位置不重复发，重复推送只审新提交
           incremental: 'true'
-          # 重复推送时只评审上次检查点之后的新提交
           checkpoint_range: 'true'
-          # 风格/文档类问题交由 Spotless/Checkstyle/Sonar 负责，AI 评论折叠进摘要
+          # 风格/文档类及 low 严重度折叠进摘要，行内只留较有价值的评论
           route_categories: style,documentation
-          # low 严重度折叠进摘要，行内只保留 medium 及以上
           route_severity_below: low
           base_ref: ${{ steps.pr-context.outputs.base_ref }}
           head_sha: ${{ steps.pr-context.outputs.head_sha }}
