@@ -11,7 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  deploy-server:
+  deploy:
+    name: Deploy server
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
@@ -34,7 +35,7 @@ jobs:
         run: ./mvnw -B package
       # 5、拷贝到服务器
       - name: Copy
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
@@ -45,7 +46,7 @@ jobs:
           strip_components: 3
       # 6、启动
       - name: Start
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
