@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Server
 
 on:
   # 推送时执行
@@ -17,7 +17,7 @@ jobs:
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 2、移除 POM 中的国内镜像仓库（CI 环境不稳定）
       - name: Remove repository mirrors
         run: |
@@ -25,7 +25,7 @@ jobs:
           sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
       # 3、安装 Java 环境
       - name: Setup Java
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
         with:
           java-version: 17
           distribution: temurin
