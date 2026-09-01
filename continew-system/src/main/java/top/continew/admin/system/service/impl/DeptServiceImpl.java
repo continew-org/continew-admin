@@ -43,6 +43,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 部门业务实现
@@ -212,10 +214,13 @@ public class DeptServiceImpl
             return;
         }
         List<DeptDO> list = new ArrayList<>(children.size());
+        // 祖级路径按字面量匹配，正则在循环外编译一次复用，避免每次迭代重复编译
+        Pattern oldAncestorPattern = Pattern.compile(oldAncestors, Pattern.LITERAL);
         for (DeptDO child : children) {
             DeptDO dept = new DeptDO();
             dept.setId(child.getId());
-            dept.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+            Matcher matcher = oldAncestorPattern.matcher(child.getAncestors());
+            dept.setAncestors(matcher.replaceFirst(Matcher.quoteReplacement(newAncestors)));
             list.add(dept);
         }
         baseMapper.updateById(list);

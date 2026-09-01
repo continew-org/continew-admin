@@ -28,7 +28,6 @@ import top.continew.starter.data.service.impl.ServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 角色和菜单业务实现
@@ -51,7 +50,7 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenuDO>
             .list()
             .stream()
             .map(RoleMenuDO::getMenuId)
-            .collect(Collectors.toList());
+            .toList();
         if (CollUtil.isEmpty(CollUtil.disjunction(menuIds, oldMenuIdList))) {
             return false;
         }

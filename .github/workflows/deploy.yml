@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy Server
 
 on:
   # 推送时执行
@@ -11,12 +11,13 @@ permissions:
   contents: read
 
 jobs:
-  deploy-server:
+  deploy:
+    name: Deploy server
     runs-on: ubuntu-latest
     steps:
       # 1、检出源码
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 2、移除 POM 中的国内镜像仓库（CI 环境不稳定）
       - name: Remove repository mirrors
         run: |
@@ -24,7 +25,7 @@ jobs:
           sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
       # 3、安装 Java 环境
       - name: Setup Java
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
         with:
           java-version: 17
           distribution: temurin
@@ -34,7 +35,7 @@ jobs:
         run: ./mvnw -B package
       # 5、拷贝到服务器
       - name: Copy
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
@@ -45,7 +46,7 @@ jobs:
           strip_components: 3
       # 6、启动
       - name: Start
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SERVER_HOST }}
           port: ${{ secrets.SERVER_PORT }}
