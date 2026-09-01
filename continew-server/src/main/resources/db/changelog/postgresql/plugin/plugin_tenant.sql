@@ -183,3 +183,19 @@ VALUES
 (3024, '修改', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:update', 4, 1, 1, NOW()),
 (3025, '删除', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:delete', 5, 1, 1, NOW());
 
+-- changeset luoqiz:2
+-- comment 调整租户关联表主键及用户角色唯一索引
+DROP INDEX IF EXISTS "idx_user_role_tenant_id";
+DROP INDEX IF EXISTS "idx_role_menu_tenant_id";
+DROP INDEX IF EXISTS "idx_role_dept_tenant_id";
+
+ALTER TABLE "sys_role_menu"
+    DROP CONSTRAINT "sys_role_menu_pkey",
+    ADD CONSTRAINT "sys_role_menu_pkey" PRIMARY KEY ("tenant_id", "role_id", "menu_id");
+ALTER TABLE "sys_role_dept"
+    DROP CONSTRAINT "sys_role_dept_pkey",
+    ADD CONSTRAINT "sys_role_dept_pkey" PRIMARY KEY ("tenant_id", "role_id", "dept_id");
+
+DROP INDEX IF EXISTS "uk_user_id_role_id";
+CREATE UNIQUE INDEX "uk_user_id_role_id" ON "sys_user_role" ("tenant_id", "user_id", "role_id");
+
