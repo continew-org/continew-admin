@@ -133,7 +133,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 > 优秀的中后台框架不仅提供组件集成与配置，封装好用的工具，更应提供通用基础业务设计及解决方案，为初创团队减负。
 
-**10.质量与安全并重：** 我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，代码提交即自动扫描质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案。
+**10.质量与安全并重：** 我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案。
 
 许多项目在开发或交付过程中需满足 Sonarqube 等质量指标，使用 ContiNew Admin 框架，让你从一开始就站在高质量的起点。
 
