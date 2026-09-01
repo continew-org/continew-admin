@@ -142,3 +142,18 @@ VALUES
 (3023, '新增', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:create', 3, 1, 1, NOW()),
 (3024, '修改', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:update', 4, 1, 1, NOW()),
 (3025, '删除', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:delete', 5, 1, 1, NOW());
+
+-- changeset luoqiz:2
+-- comment 调整租户关联表主键及用户角色唯一索引
+ALTER TABLE `sys_user_role`
+    DROP INDEX `idx_tenant_id`,
+    DROP INDEX `uk_user_id_role_id`,
+    ADD UNIQUE INDEX `uk_user_id_role_id` (`tenant_id`, `user_id`, `role_id`);
+ALTER TABLE `sys_role_menu`
+    DROP INDEX `idx_tenant_id`,
+    DROP PRIMARY KEY,
+    ADD PRIMARY KEY (`tenant_id`, `role_id`, `menu_id`);
+ALTER TABLE `sys_role_dept`
+    DROP INDEX `idx_tenant_id`,
+    DROP PRIMARY KEY,
+    ADD PRIMARY KEY (`tenant_id`, `role_id`, `dept_id`);
