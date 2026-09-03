@@ -53,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.context.UserContext;
@@ -141,6 +142,7 @@ public class UserServiceImpl
     private final OptionService optionService;
     private final RoleService roleService;
     private final OnlineUserService onlineUserService;
+    private final RefreshTokenService refreshTokenService;
     private final FileService fileService;
     private final FileStorageService fileStorageService;
 
@@ -254,7 +256,9 @@ public class UserServiceImpl
         // 删除用户
         super.delete(ids);
         // 踢出在线用户
-        ids.forEach(onlineUserService::kickOut);
+        ids.forEach(id -> {
+            onlineUserService.kickOut(id);
+        });
     }
 
     @Override
@@ -420,6 +424,8 @@ public class UserServiceImpl
             .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, id)
             .update();
+        // 管理员重置密码后，旧设备上的长期凭证也必须全部失效。
+        onlineUserService.kickOut(id);
     }
 
     @Override
@@ -484,6 +490,7 @@ public class UserServiceImpl
         // 保存历史密码
         userPasswordHistoryService.add(id, password, passwordRepetitionTimes);
         // 修改后登出
+        refreshTokenService.revokeByUser(id);
         StpUtil.logout();
     }
 

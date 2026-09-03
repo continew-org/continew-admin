@@ -17,6 +17,7 @@
 package top.continew.admin.auth.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.AbstractLoginHandler;
 import top.continew.admin.auth.enums.AuthTypeEnum;
@@ -39,14 +40,15 @@ import top.continew.starter.core.util.validation.ValidationUtils;
 public class PhoneLoginHandler extends AbstractLoginHandler<PhoneLoginReq> {
 
     @Override
-    public LoginResp login(PhoneLoginReq req, ClientResp client, HttpServletRequest request) {
+    public LoginResp login(PhoneLoginReq req, ClientResp client, HttpServletRequest request,
+        HttpServletResponse response) {
         // 验证手机号
         UserDO user = userService.getByPhone(req.getPhone());
         ValidationUtils.throwIfNull(user, "此手机号未绑定本系统账号");
         // 检查用户状态
         super.checkUserStatus(user);
         // 执行认证
-        return super.authenticate(user, client);
+        return super.authenticate(user, client, request, response);
     }
 
     @Override

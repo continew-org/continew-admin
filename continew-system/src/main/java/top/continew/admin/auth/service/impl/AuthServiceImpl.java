@@ -22,25 +22,33 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.auth.LoginHandler;
 import top.continew.admin.auth.LoginHandlerFactory;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.LoginReq;
+import top.continew.admin.auth.model.req.RefreshTokenReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
+import top.continew.admin.auth.model.RefreshSession;
+import top.continew.admin.auth.service.AuthTokenService;
 import top.continew.admin.auth.service.AuthService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.constant.SystemConstants;
 import top.continew.admin.system.enums.MenuTypeEnum;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.model.resp.MenuResp;
+import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.service.ClientService;
 import top.continew.admin.system.service.MenuService;
 import top.continew.admin.system.service.RoleService;
+import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.util.validation.ValidationUtils;
+import top.continew.starter.extension.tenant.util.TenantUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
 
@@ -48,6 +56,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 认证业务实现
@@ -61,12 +70,15 @@ public class AuthServiceImpl implements AuthService {
 
     private final LoginHandlerFactory loginHandlerFactory;
     private final ClientService clientService;
+    private final UserService userService;
+    private final AuthTokenService authTokenService;
+    private final RefreshTokenService refreshTokenService;
     private final RoleService roleService;
     private final MenuService menuService;
     private final CrudProperties crudProperties;
 
     @Override
-    public LoginResp login(LoginReq req, HttpServletRequest request) {
+    public LoginResp login(LoginReq req, HttpServletRequest request, HttpServletResponse response) {
         AuthTypeEnum authType = req.getAuthType();
         // 校验客户端
         ClientResp client = clientService.getByClientId(req.getClientId());
@@ -80,10 +92,41 @@ public class AuthServiceImpl implements AuthService {
         // 登录前置处理
         loginHandler.preLogin(req, client, request);
         // 登录
-        LoginResp loginResp = loginHandler.login(req, client, request);
+        LoginResp loginResp = loginHandler.login(req, client, request, response);
         // 登录后置处理
         loginHandler.postLogin(req, client, request);
         return loginResp;
+    }
+
+    @Override
+    public LoginResp refresh(RefreshTokenReq req, HttpServletRequest request,
+        HttpServletResponse response) {
+        String bodyRefreshToken = req == null ? null : req.getRefreshToken();
+        String rawRefreshToken = refreshTokenService.resolve(bodyRefreshToken, request);
+        return refreshTokenService.rotate(rawRefreshToken, request, response,
+            session -> this.issueForRefreshSession(session, request, response));
+    }
+
+    /**
+     * 根据 Refresh Session 重新装载最新用户、客户端配置并签发 Access Token。
+     * 这里重新查询数据库是为了让用户禁用、角色调整、部门禁用和客户端禁用立即生效。
+     */
+    private LoginResp issueForRefreshSession(RefreshSession session, HttpServletRequest request,
+        HttpServletResponse response) {
+        ClientResp client = clientService.getByClientId(session.getClientId());
+        ValidationUtils.throwIfNull(client, "客户端不存在");
+        ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()),
+            "客户端已禁用");
+        ValidationUtils.throwIf(!refreshTokenService.isEnabled(client),
+            "登录状态已失效，请重新登录");
+
+        AtomicReference<UserDO> userReference = new AtomicReference<>();
+        TenantUtils.execute(session.getTenantId(),
+            () -> userReference.set(userService.getById(session.getUserId())));
+        ValidationUtils.throwIfNull(userReference.get(), "用户不存在");
+        // 这里只重新签发 Access Token；原 familyId 下的新 Refresh Token 由 rotate 原子生成。
+        return authTokenService.issueAccessToken(userReference.get(), client, session.getTenantId(),
+            request, response);
     }
 
     @Override

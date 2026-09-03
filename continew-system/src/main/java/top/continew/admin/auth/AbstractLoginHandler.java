@@ -16,21 +16,14 @@
 
 package top.continew.admin.auth;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.dev33.satoken.stp.parameter.SaLoginParameter;
-import cn.dev33.satoken.stp.parameter.enums.SaLogoutMode;
-import cn.dev33.satoken.stp.parameter.enums.SaReplacedRange;
-import cn.hutool.core.bean.BeanUtil;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
-import top.continew.admin.common.context.RoleContext;
-import top.continew.admin.common.context.UserContext;
-import top.continew.admin.common.context.UserContextHolder;
-import top.continew.admin.common.context.UserExtraContext;
+import top.continew.admin.auth.service.AuthTokenService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.user.UserDO;
@@ -39,17 +32,9 @@ import top.continew.admin.system.service.DeptService;
 import top.continew.admin.system.service.OptionService;
 import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserService;
-import top.continew.starter.core.util.ServletUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.Validator;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
-import top.continew.starter.extension.tenant.util.TenantUtils;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
 
 /**
  * 登录处理器基类
@@ -70,11 +55,12 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
     @Resource
     private DeptService deptService;
     @Resource
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    protected AuthTokenService authTokenService;
+    @Resource
+    protected RefreshTokenService refreshTokenService;
 
     protected static final String CAPTCHA_EXPIRED = "验证码已失效";
     protected static final String CAPTCHA_ERROR = "验证码不正确";
-    protected static final String CLIENT_ID = "clientId";
 
     @Override
     public void preLogin(T req, ClientResp client, HttpServletRequest request) {
@@ -89,61 +75,17 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
     /**
      * 认证
      *
-     * @param user   用户信息
-     * @param client 客户端信息
+     * @param user     用户信息
+     * @param client   客户端信息
+     * @param request  请求对象
+     * @param response 响应对象
      * @return 登录响应参数
      */
-    protected LoginResp authenticate(UserDO user, ClientResp client) {
-        // 获取权限、角色、密码过期天数
-        Long userId = user.getId();
-        Long tenantId = TenantContextHolder.getTenantId();
-        CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> {
-            Set<String> permissions = new HashSet<>();
-            TenantUtils.execute(tenantId,
-                () -> permissions.addAll(roleService.listPermissionByUserId(userId)));
-            return permissions;
-        }, threadPoolTaskExecutor);
-        CompletableFuture<Set<RoleContext>> roleFuture = CompletableFuture.supplyAsync(() -> {
-            Set<RoleContext> roles = new HashSet<>();
-            TenantUtils.execute(tenantId, () -> roles.addAll(roleService.listByUserId(userId)));
-            return roles;
-        }, threadPoolTaskExecutor);
-        CompletableFuture<Integer> passwordExpirationDaysFuture =
-            CompletableFuture.supplyAsync(() -> optionService
-                .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()), threadPoolTaskExecutor);
-        CompletableFuture.allOf(permissionFuture, roleFuture, passwordExpirationDaysFuture);
-        UserContext userContext = new UserContext(permissionFuture.join(), roleFuture
-            .join(), passwordExpirationDaysFuture.join());
-        BeanUtil.copyProperties(user, userContext);
-        // 设置登录配置参数
-        SaLoginParameter loginParameter = new SaLoginParameter();
-        loginParameter.setActiveTimeout(client.getActiveTimeout());
-        loginParameter.setTimeout(client.getTimeout());
-        loginParameter.setDeviceType(client.getClientType());
-        loginParameter.setExtra(CLIENT_ID, client.getClientId());
-        // 设置并发登录配置参数
-        loginParameter.setIsConcurrent(client.getIsConcurrent());
-        if (Boolean.FALSE.equals(client.getIsConcurrent())) {
-            loginParameter
-                .setReplacedRange(SaReplacedRange.valueOf(client.getReplacedRange().getValue()));
-        }
-        loginParameter.setMaxLoginCount(client.getMaxLoginCount());
-        if (client.getMaxLoginCount() != -1) {
-            loginParameter.setOverflowLogoutMode(
-                SaLogoutMode.valueOf(client.getOverflowLogoutMode().getValue()));
-        }
-        userContext.setClientType(client.getClientType());
-        userContext.setClientId(client.getClientId());
-        userContext.setTenantId(tenantId);
-        // 登录并缓存用户信息
-        StpUtil.login(userContext.getId(), loginParameter.setExtraData(BeanUtil
-            .beanToMap(new UserExtraContext(ServletUtils.getRequest()))));
-        UserContextHolder.setContext(userContext);
-        return LoginResp.builder()
-            .token(StpUtil.getTokenValue())
-            .tenantId(
-                TenantContextHolder.isTenantEnabled() ? TenantContextHolder.getTenantId() : null)
-            .build();
+    protected LoginResp authenticate(UserDO user, ClientResp client, HttpServletRequest request,
+        HttpServletResponse response) {
+        // 所有登录方式共用一套令牌签发流程，避免某种登录方式遗漏 Refresh Token。
+        return authTokenService.issue(user, client, TenantContextHolder.getTenantId(), request,
+            response);
     }
 
     /**

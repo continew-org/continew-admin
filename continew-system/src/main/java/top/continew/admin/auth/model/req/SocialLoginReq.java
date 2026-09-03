@@ -57,4 +57,13 @@ public class SocialLoginReq extends LoginReq {
     @Schema(description = "状态码", example = "2ca8d8baf437eb374efaa1191a3d")
     @NotBlank(message = "状态码不能为空")
     private String state;
+
+    /**
+     * 当前会话的 Refresh Token（可选）。
+     *
+     * <p>浏览器通常从 HttpOnly Cookie 自动携带；App / 微信小程序的 BODY 模式可显式提交，
+     * 用于第三方登录前撤销原会话。未提交时后端仍会通过 Access Token 关联关系兜底撤销。</p>
+     */
+    @Schema(description = "当前会话 Refresh Token（BODY 模式可选提交）")
+    private String refreshToken;
 }

@@ -356,6 +356,16 @@ cosid:
 
 --- ### 认证配置
 auth:
+  ## Refresh Token 配置。浏览器使用 HttpOnly Cookie，App / 小程序后续可切换 BODY 模式。
+  refresh-token:
+    enabled: true
+    cookie-name: refresh_token
+    # 必须覆盖前端代理路径（如 /api、/dev-api），否则浏览器刷新请求不会携带 Cookie。
+    cookie-path: /
+    # 本地开发通常使用 HTTP；生产配置在 application-prod.yml 中覆盖为 true。
+    cookie-secure: false
+    cookie-same-site: Lax
+    default-timeout: 2592000
   ## 密码配置
   password:
     excludes:

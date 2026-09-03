@@ -24,7 +24,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
@@ -36,11 +38,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.req.LoginReq;
+import top.continew.admin.auth.model.req.RefreshTokenReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.model.resp.SocialAuthAuthorizeResp;
 import top.continew.admin.auth.model.resp.UserInfoResp;
 import top.continew.admin.auth.service.AuthService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.SocialSourceEnum;
@@ -63,10 +67,12 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
     private final UserService userService;
     private final AuthRequestFactory authRequestFactory;
 
@@ -80,8 +86,22 @@ public class AuthController {
     @SaIgnore
     @Operation(summary = "登录", description = "用户登录")
     @PostMapping("/login")
-    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request) {
-        return authService.login(req, request);
+    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request,
+        HttpServletResponse response) {
+        return authService.login(req, request, response);
+    }
+
+    /**
+     * 使用 Refresh Token 轮换 Access Token。
+     * 浏览器不需要提交请求体，Refresh Token 由 HttpOnly Cookie 自动携带；BODY 模式为
+     * 未来 App / 微信小程序预留请求体字段。
+     */
+    @SaIgnore
+    @Operation(summary = "刷新令牌", description = "使用 Refresh Token 轮换 Access Token")
+    @PostMapping("/refresh")
+    public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq req,
+        HttpServletRequest request, HttpServletResponse response) {
+        return authService.refresh(req, request, response);
     }
 
     /**
@@ -93,9 +113,21 @@ public class AuthController {
     @Parameter(name = "Authorization", description = "令牌", required = true,
         example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public Object logout() {
+    public Object logout(@RequestBody(required = false) RefreshTokenReq req,
+        HttpServletRequest request, HttpServletResponse response) {
         Object loginId = StpUtil.getLoginId(-1L);
+        String accessToken = StpUtil.getTokenValue();
+        String refreshToken =
+            refreshTokenService.resolve(req == null ? null : req.getRefreshToken(),
+                request);
+        // 先完成 Sa-Token 登出，Refresh Session 撤销属于增强清理，不能因 Redis 异常阻塞用户退出。
         StpUtil.logout();
+        try {
+            refreshTokenService.revokeCurrent(accessToken, refreshToken);
+        } catch (Exception e) {
+            log.warn("撤销当前 Refresh Session 失败，登录态已完成注销", e);
+        }
+        refreshTokenService.clearCookie(response);
         return loginId;
     }
 

@@ -243,6 +243,13 @@ continew-starter.justauth:
   cache:
     type: REDIS
 
+--- ### Refresh Token 生产安全配置
+auth.refresh-token:
+  # 生产环境只允许通过 HTTPS 发送长期凭证。
+  cookie-secure: true
+  # 兼容网关前缀及前后端分离部署，Refresh Token Cookie 在站点根路径生效。
+  cookie-path: /
+
 --- ### Sa-Token 扩展配置
 sa-token.extension:
   # 安全配置：排除（放行）路径配置

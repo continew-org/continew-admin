@@ -24,6 +24,7 @@ import top.continew.admin.common.base.model.resp.BaseDetailResp;
 import top.continew.admin.common.config.excel.DictExcelProperty;
 import top.continew.admin.common.config.excel.ExcelDictConverter;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.auth.enums.RefreshTokenModeEnum;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
 import top.continew.starter.excel.converter.ExcelBaseEnumConverter;
@@ -83,38 +84,54 @@ public class ClientResp extends BaseDetailResp {
     @ExcelProperty(value = "Token 有效期", order = 7)
     private Long timeout;
 
+    /** 是否启用 Refresh Token。 */
+    @Schema(description = "是否启用 Refresh Token", example = "true")
+    @ExcelProperty(value = "是否启用 Refresh Token", order = 8)
+    private Boolean isEnableRefreshToken;
+
+    /** Refresh Token 绝对有效期（单位：秒）。 */
+    @Schema(description = "Refresh Token 有效期（单位：秒）", example = "2592000")
+    @ExcelProperty(value = "Refresh Token 有效期", order = 9)
+    private Long refreshTokenTimeout;
+
+    /** Refresh Token 传输模式。 */
+    @Schema(description = "Refresh Token 传输模式", example = "COOKIE")
+    @ExcelProperty(value = "Refresh Token 传输模式", converter = ExcelBaseEnumConverter.class,
+        order = 10)
+    private RefreshTokenModeEnum refreshTokenMode;
+
     /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）
      */
     @Schema(description = "是否允许同一账号多地同时登录", example = "true")
-    @ExcelProperty(value = "是否允许同一账号多地同时登录", order = 8)
+    @ExcelProperty(value = "是否允许同一账号多地同时登录", order = 11)
     private Boolean isConcurrent;
 
     /**
      * 顶人下线的范围
      */
     @Schema(description = "顶人下线的范围", example = "ALL_DEVICE_TYPE")
-    @ExcelProperty(value = "顶人下线的范围", converter = ExcelBaseEnumConverter.class, order = 9)
+    @ExcelProperty(value = "顶人下线的范围", converter = ExcelBaseEnumConverter.class, order = 12)
     private ReplacedRangeEnum replacedRange;
 
     /**
      * 同一账号最大登录数量（-1：不限制，只有在 isConcurrent=true，isShare=false 时才有效）
      */
     @Schema(description = "同一账号最大登录数量", example = "-1")
-    @ExcelProperty(value = "同一账号最大登录数量", order = 10)
+    @ExcelProperty(value = "同一账号最大登录数量", order = 13)
     private Integer maxLoginCount;
 
     /**
      * 溢出人数的下线方式
      */
     @Schema(description = "溢出人数的下线方式", example = "KICKOUT")
-    @ExcelProperty(value = "溢出人数的下线方式", converter = ExcelBaseEnumConverter.class, order = 11)
+    @ExcelProperty(value = "溢出人数的下线方式", converter = ExcelBaseEnumConverter.class, order = 14)
     private LogoutModeEnum overflowLogoutMode;
 
     /**
      * 状态
      */
     @Schema(description = "状态", example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 12)
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 15)
     private DisEnableStatusEnum status;
 }

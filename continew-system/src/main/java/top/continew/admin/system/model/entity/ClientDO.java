@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.auth.enums.RefreshTokenModeEnum;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
 
@@ -67,6 +68,15 @@ public class ClientDO extends BaseDO {
      * Token 有效期（单位：秒，-1：永不过期）
      */
     private Long timeout;
+
+    /** 是否为该客户端启用 Refresh Token。迁移默认开启，也可按客户端关闭。 */
+    private Boolean isEnableRefreshToken;
+
+    /** Refresh Token 绝对有效期（单位：秒），轮换不会延长该期限。 */
+    private Long refreshTokenTimeout;
+
+    /** Refresh Token 传输模式：浏览器使用 COOKIE，App / 小程序预留 BODY。 */
+    private RefreshTokenModeEnum refreshTokenMode;
 
     /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）

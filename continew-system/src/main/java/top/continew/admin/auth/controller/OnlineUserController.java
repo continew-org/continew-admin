@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
@@ -49,6 +50,7 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 public class OnlineUserController {
 
     private final OnlineUserService baseService;
+    private final RefreshTokenService refreshTokenService;
 
     /**
      * 分页查询在线用户
@@ -78,6 +80,8 @@ public class OnlineUserController {
     public void kickout(@PathVariable String token) {
         String currentToken = StpUtil.getTokenValue();
         CheckUtils.throwIfEqual(token, currentToken, "不能强退自己");
+        // 踢出 Access Token 的同时撤销其所属 familyId，防止旧 Refresh Token 重新登录。
+        refreshTokenService.revokeByAccessToken(token);
         StpUtil.kickoutByTokenValue(token);
     }
 }
