@@ -27,6 +27,6 @@ jobs:
           pr_message: |-
             🎉 恭喜 @${{ github.actor }}，这是您对 ContiNew Admin 仓库的首次贡献！我们衷心感谢您付出的努力。
 
-            为了保证代码库的完整性和可读性，请您在合并代码之前，确认您的代码符合项目既定的格式规范。关于代码风格和推荐格式化工具的详细指南，请查看仓库中的 [CONTRIBUTING.md](CONTRIBUTING.md)。
+            为了保证代码库的完整性和可读性，请您在合并代码之前，确认您的代码符合项目既定的格式规范。关于代码风格和推荐格式化工具的详细指南，请查看仓库中的 [CONTRIBUTING.md](https://github.com/continew-org/continew-admin/blob/dev/CONTRIBUTING.md)。
 
             如有任何疑问，或希望获得更详细的说明，欢迎随时留言交流。此外，诚挚邀请您加入官方交流群，与项目维护团队及其他大佬用户实时交流探讨、获取第一手项目动态（入群方式详见 [continew.top/discussion.html](https://continew.top/discussion.html)）。再次感谢您的宝贵贡献！

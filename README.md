@@ -1,7 +1,7 @@
 # ContiNew Admin 多租户中后台管理框架
 
-<a href="https://github.com/continew-org/continew-admin" title="Release" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v4.2.0-%23ff3f59.svg" alt="Release" />
+<a href="https://github.com/continew-org/continew-admin" title="Current Version" target="_blank">
+<img src="https://img.shields.io/badge/SNAPSHOT-v4.2.0-%23ff3f59.svg" alt="Current Version" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
 <img src="https://img.shields.io/badge/ContiNew Starter-2.17.0--SNAPSHOT-%236CB52D.svg" alt="ContiNew Starter" />
