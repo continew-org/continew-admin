@@ -1,8 +1,22 @@
 name: OCR Review
 
-# Open Code Review AI 评审：https://github.com/alibaba/open-code-review
-# 与 SonarCloud 静态扫描互补，不作为必需检查。
-# 需配置 secret：OCR_LLM_URL、OCR_LLM_AUTH_TOKEN；variable：OCR_LLM_MODEL、OCR_LLM_USE_ANTHROPIC。
+# OpenCodeReview - GitHub Actions PR 自动评审
+#
+# 基于 OpenCodeReview（https://github.com/alibaba/open-code-review）对 PR 进行 AI 代码评审，
+# 与 SonarCloud 静态扫描互补，不作为必需检查。PR 打开/更新/重开时自动评审
+# （pull_request_target：fork PR 也能读取 LLM 密钥；action 只读 diff，不执行 PR 代码）；
+# 维护者在 PR 评论以 '/continew-code-review' 或 '@continew-code-review' 开头可手动全量重审。
+#
+# 凭据与配置（Settings -> Secrets and variables -> Actions）：
+#   secret    OCR_LLM_URL             LLM API 端点
+#   secret    OCR_LLM_AUTH_TOKEN      LLM API 认证 token（内部映射为 OCR_LLM_TOKEN）
+#   secret    OCR_LLM_MODEL           模型名（也可配在 variables，二者皆有时 secrets 优先）
+#   secret    OCR_LLM_USE_ANTHROPIC   'true' 走 Anthropic 协议；缺省/其他值走 OpenAI 兼容协议
+#   variable  OCR_USE_GITHUB_APP      可选，'true' 时以下方 GitHub App 身份发布评论
+#   secret    CR_BOT_APP_CLIENT_ID    可选，GitHub APP Client ID（App：OpenContiNew CodeReview Bot）
+#   secret    CR_BOT_APP_PRIVATE_KEY  可选，GitHub App 私钥（.pem 文件全文，含首尾标记行）
+#
+# 未开启 App 发布时回退内置 GITHUB_TOKEN（评论显示为 github-actions[bot]）。
 
 # 无关评论进入独立 noop 组，避免取消正在进行的评审
 # 注意：下方触发条件与 job.if 中的判断同源，修改时需同步两处
@@ -21,8 +35,8 @@ concurrency:
             || github.event.comment.author_association == 'COLLABORATOR'
           )
           && (
-            startsWith(github.event.comment.body, '/open-code-review')
-            || startsWith(github.event.comment.body, '@open-code-review')
+            startsWith(github.event.comment.body, '/continew-code-review')
+            || startsWith(github.event.comment.body, '@continew-code-review')
           )
         )
       )
@@ -48,8 +62,8 @@ jobs:
   code-review:
     name: AI Code Review
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    # 自动评审 PR；评论触发仅限维护者发送 /open-code-review 或 @open-code-review
+    timeout-minutes: 60
+    # 自动评审 PR；评论触发仅限维护者发送 /continew-code-review 或 @continew-code-review
     if: |
       github.event_name == 'pull_request_target'
       || (
@@ -62,8 +76,8 @@ jobs:
           || github.event.comment.author_association == 'COLLABORATOR'
         )
         && (
-          startsWith(github.event.comment.body, '/open-code-review')
-          || startsWith(github.event.comment.body, '@open-code-review')
+          startsWith(github.event.comment.body, '/continew-code-review')
+          || startsWith(github.event.comment.body, '@continew-code-review')
         )
       )
     steps:
@@ -80,6 +94,17 @@ jobs:
             });
             core.setOutput('base_ref', pullRequest.base.ref);
             core.setOutput('head_sha', pullRequest.head.sha);
+            core.setOutput('title', pullRequest.title);
+
+      # 以 GitHub App 身份发布评论；未开启 variable OCR_USE_GITHUB_APP 时跳过，回退内置 GITHUB_TOKEN。
+      # 需配 secret：CR_BOT_APP_CLIENT_ID、CR_BOT_APP_PRIVATE_KEY（App 权限：Pull requests 读写、Contents 只读）。
+      - name: Get GitHub App token
+        id: app-token
+        if: ${{ vars.OCR_USE_GITHUB_APP == 'true' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.CR_BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.CR_BOT_APP_PRIVATE_KEY }}
 
       - name: Run OpenCodeReview
         uses: alibaba/open-code-review@8d023aafcec05f8ba5628fca3eaba88078e5d201 # v1.11.1
@@ -87,19 +112,19 @@ jobs:
           ocr_version: '1.11.1'
           llm_url: ${{ secrets.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
-          llm_model: ${{ vars.OCR_LLM_MODEL }}
+          llm_model: ${{ secrets.OCR_LLM_MODEL || vars.OCR_LLM_MODEL }}
           # 缺省走 OpenAI 兼容协议（空值会被上游归一化为 anthropic）
-          llm_use_anthropic: ${{ vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+          llm_use_anthropic: ${{ secrets.OCR_LLM_USE_ANTHROPIC || vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+          # 背景上下文（官方文档：对评审效果影响最大的单一参数）：传入 PR 标题；
+          # 评论触发事件无 pull_request 上下文，回退到 pr-context 步骤解析的标题
+          background: ${{ github.event.pull_request.title || steps.pr-context.outputs.title }}
+          # 发布评论所用 token：开启 App 时为 App installation token（评论显示为 OpenContiNew CodeReview Bot），
+          # 否则回退内置 GITHUB_TOKEN（显示为 github-actions[bot]）
+          github_token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
           language: Chinese
-          # 已评论位置不重复发，重复推送只审新提交
-          incremental: 'true'
-          checkpoint_range: 'true'
-          # 评论手动触发时强制全量重审，否则无新提交会被 checkpoint 跳过
-          full_review: ${{ github.event_name == 'issue_comment' }}
-          # 风格/文档类及 low 严重度折叠进摘要，行内只留较有价值的评论
-          route_categories: style,documentation
-          route_severity_below: low
-          # 不上传 artifact：公开仓库无需留存 diff/评审原文，排错看日志即可
-          upload_artifacts: 'false'
+          sticky_summary: 'true'
+          incremental: 'false'
+          # 失败/取消时也上传原始输出，便于排错
+          upload_artifacts: 'true'
           base_ref: ${{ steps.pr-context.outputs.base_ref }}
           head_sha: ${{ steps.pr-context.outputs.head_sha }}

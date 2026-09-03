@@ -23,8 +23,11 @@ concurrency:
 jobs:
   build:
     name: Build and analyze
-    # 仅官方仓库运行：fork PR 无法读取 SONAR_TOKEN，不设守卫会导致 fork 必红
-    if: github.repository == 'continew-org/continew-admin'
+    # 外部 PR 无权读取 SONAR_TOKEN，跳过避免必红；外部 PR 由 OCR 与人工评审把关，合并后 push 分析兜底
+    if: >-
+      github.repository == 'continew-org/continew-admin'
+      && (github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
