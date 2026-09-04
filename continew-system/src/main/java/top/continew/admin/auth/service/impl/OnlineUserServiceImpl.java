@@ -100,19 +100,23 @@ public class OnlineUserServiceImpl implements OnlineUserService {
                 continue;
             }
             List<LocalDateTime> loginTimeList = query.getLoginTime();
-            entry.getValue().parallelStream().forEach(token -> {
+            // 仅做内存过滤，顺序遍历即可：并发写入普通 ArrayList 会丢条目、留 null 空洞甚至扩容越界
+            for (String token : entry.getValue()) {
                 UserExtraContext extraContext = UserContextHolder.getExtraContext(token);
-                if (!this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
-                    return;
+                // 附加上下文可能已从缓存中过期
+                if (extraContext == null
+                    || !this.isMatchLoginTime(loginTimeList, extraContext.getLoginTime())) {
+                    continue;
                 }
                 OnlineUserResp resp = BeanUtil.copyProperties(userContext, OnlineUserResp.class);
                 BeanUtil.copyProperties(extraContext, resp);
                 resp.setToken(token);
                 list.add(resp);
-            });
+            }
         }
-        // 设置排序
-        CollUtil.sort(list, Comparator.comparing(OnlineUserResp::getLoginTime).reversed());
+        // 设置排序（登录时间可能缺失，需空值安全）
+        CollUtil.sort(list, Comparator.comparing(OnlineUserResp::getLoginTime, Comparator
+            .nullsFirst(Comparator.naturalOrder())).reversed());
         return list;
     }
 
@@ -171,6 +175,10 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     private boolean isMatchLoginTime(List<LocalDateTime> loginTimeList, LocalDateTime loginTime) {
         if (CollUtil.isEmpty(loginTimeList)) {
             return true;
+        }
+        // 登录时间缺失时无法参与区间比较，按不匹配处理
+        if (loginTime == null) {
+            return false;
         }
         return loginTime.isAfter(loginTimeList.get(0)) && loginTime.isBefore(loginTimeList.get(1));
     }

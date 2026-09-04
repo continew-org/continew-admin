@@ -27,6 +27,7 @@ import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.resp.file.FileStatisticsResp;
 import top.continew.starter.data.mapper.BaseMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -76,25 +77,31 @@ public interface FileMapper extends BaseMapper<FileDO> {
     /**
      * 从回收站恢复文件
      *
-     * @param id     ID
-     * @param userId 用户 ID
+     * @param id         ID
+     * @param userId     用户 ID
+     * @param updateTime 修改时间
      */
-    @Update("UPDATE sys_file SET deleted = 0, update_user = #{userId}, update_time = NOW() WHERE id = #{id}")
-    void restoreInRecycleBin(@Param("id") Long id, @Param("userId") Long userId);
+    @Update("UPDATE sys_file SET deleted = 0, update_user = #{userId}, update_time = #{updateTime} WHERE id = #{id}")
+    void restoreInRecycleBin(@Param("id") Long id, @Param("userId") Long userId,
+        @Param("updateTime") LocalDateTime updateTime);
 
     /**
      * 删除文件（不进入回收站）
      *
-     * @param ids    ID 列表
-     * @param userId 用户 ID
+     * @param ids        ID 列表
+     * @param userId     用户 ID
+     * @param updateTime 修改时间
      */
-    void deleteWithoutRecycleBin(@Param("ids") List<Long> ids, @Param("userId") Long userId);
+    void deleteWithoutRecycleBin(@Param("ids") List<Long> ids, @Param("userId") Long userId,
+        @Param("updateTime") LocalDateTime updateTime);
 
     /**
      * 清空文件回收站
      *
-     * @param userId 用户 ID
+     * @param userId     用户 ID
+     * @param updateTime 修改时间
      */
-    @Update("UPDATE sys_file SET deleted = id, update_user = #{userId}, update_time = NOW() WHERE deleted = 1")
-    void cleanRecycleBin(@Param("userId") Long userId);
+    @Update("UPDATE sys_file SET deleted = id, update_user = #{userId}, update_time = #{updateTime} WHERE deleted = 1")
+    void cleanRecycleBin(@Param("userId") Long userId,
+        @Param("updateTime") LocalDateTime updateTime);
 }

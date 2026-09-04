@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
@@ -63,6 +64,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +114,8 @@ public class FileServiceImpl
             if (Boolean.TRUE.equals(storage.getRecycleBinEnabled())) {
                 baseMapper.deleteByIds(idList);
             } else {
-                baseMapper.deleteWithoutRecycleBin(idList, UserContextHolder.getUserId());
+                baseMapper.deleteWithoutRecycleBin(idList, UserContextHolder
+                    .getUserId(), LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             }
         }
         // 删除实际文件
@@ -143,8 +146,9 @@ public class FileServiceImpl
     @Override
     public Long createDir(FileReq req) {
         String parentPath = req.getParentPath();
-        // 校验上级目录路径，防止通过 ../ 等路径穿越在存储根目录之外创建目录
+        // 校验上级目录路径与名称，防止通过 ../ 等路径穿越在存储根目录之外创建目录
         StoragePathValidator.validate(parentPath);
+        StoragePathValidator.validateName(req.getOriginalName());
         FileDO file = baseMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getName, req.getOriginalName())
@@ -172,6 +176,14 @@ public class FileServiceImpl
         dirFile.setStorageId(storage.getId());
         baseMapper.insert(dirFile);
         return dirFile.getId();
+    }
+
+    @Override
+    public void beforeUpdate(FileReq req, Long id) {
+        // 名称和上级目录都会参与物理路径拼接（见 FileDO#setParentPath），
+        // 需与新建入口做同样的路径穿越校验，避免通过修改接口改写出存储根目录之外的路径
+        StoragePathValidator.validate(req.getParentPath());
+        StoragePathValidator.validateName(req.getOriginalName());
     }
 
     @Override
@@ -279,8 +291,10 @@ public class FileServiceImpl
      */
     private FileInfo doUpload(Object file, String parentPath, String storageCode, String extName,
         String uploadTaskId) {
-        // 校验上级目录路径，防止通过 ../ 等路径穿越将文件写入存储根目录之外
+        // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
         StoragePathValidator.validate(parentPath);
+        String originalFileName = getOriginalFileName(file);
+        StoragePathValidator.validateName(originalFileName);
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
@@ -293,7 +307,6 @@ public class FileServiceImpl
         this.createParentDir(parentPath, storage);
 
         // 生成唯一文件名（处理重名情况）
-        String originalFileName = getOriginalFileName(file);
         String uniqueFileName =
             FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
                 .getId(), baseMapper);

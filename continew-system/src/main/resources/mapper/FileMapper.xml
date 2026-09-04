@@ -3,7 +3,7 @@
 <mapper namespace="top.continew.admin.system.mapper.FileMapper">
     <update id="deleteWithoutRecycleBin">
         UPDATE sys_file
-        SET deleted = id, update_user = #{userId}, update_time = NOW()
+        SET deleted = id, update_user = #{userId}, update_time = #{updateTime}
         WHERE id IN
         <foreach item="item" index="index" collection="ids" separator="," open="(" close=")">
             #{item}

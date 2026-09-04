@@ -58,6 +58,16 @@ public class GlobalExceptionHandler {
     private static final String LOG_REQUEST_TEMPLATE = "[{}] {}";
 
     /**
+     * 客户端异常日志模板：[请求方法] 请求路径 - 异常信息
+     *
+     * <p>
+     * 4xx 属于可预期的客户端错误（扫描探测、过期 Token、参数不合法等），打印完整堆栈既无诊断价值，
+     * 又会被外部请求放大成同步的多 KB 日志写入，因此这类异常只记录 WARN 级别的摘要信息。
+     * </p>
+     */
+    private static final String LOG_CLIENT_ERROR_TEMPLATE = "[{}] {} - {}";
+
+    /**
      * 自定义异常
      */
     @ExceptionHandler(BaseException.class)
@@ -83,7 +93,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
     }
 
@@ -97,7 +108,8 @@ public class GlobalExceptionHandler {
     public R handleMissingServletRequestParameterException(
         MissingServletRequestParameterException e,
         HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()),
             "参数 '%s' 缺失".formatted(e.getParameterName()));
     }
@@ -110,7 +122,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public R handleBindException(BindException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         String errorMsg = e.getFieldErrors()
             .stream()
             .findFirst()
@@ -128,7 +141,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public R handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e,
         HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()),
             "参数 '%s' 类型不匹配".formatted(e.getName()));
     }
@@ -145,7 +159,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public R handleHttpMessageNotReadableException(HttpMessageNotReadableException e,
         HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         // @RequestBody 实体内参数类型不匹配
         if (e.getCause() instanceof InvalidFormatException invalidFormatException) {
             return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), "参数 '%s' 类型不匹配"
@@ -159,7 +174,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MultipartException.class)
     public R handleMultipartException(MultipartException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         String msg = e.getMessage();
         R defaultFail = R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), msg);
         if (CharSequenceUtil.isBlank(msg)) {
@@ -187,7 +203,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public R handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.NOT_FOUND.value()),
             "请求 URL '%s' 不存在".formatted(request
                 .getRequestURI()));
@@ -199,7 +216,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
         HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.METHOD_NOT_ALLOWED.value()),
             "请求方式 '%s' 不支持".formatted(e.getMethod()));
     }

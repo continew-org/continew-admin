@@ -17,10 +17,6 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateField;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.json.JSONArray;
@@ -29,6 +25,7 @@ import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp;
@@ -41,11 +38,16 @@ import top.continew.starter.core.util.CollUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 仪表盘业务实现
@@ -56,6 +58,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
+
+    /**
+     * 月份格式（yyyy-MM）
+     */
+    private static final DateTimeFormatter MONTH_FORMATTER =
+        DateTimeFormatter.ofPattern("yyyy-MM");
 
     private final LogMapper logMapper;
     private final NoticeService noticeService;
@@ -122,15 +130,18 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardAccessTrendResp> listAccessTrend(Integer days) {
-        DateTime currentDate = DateUtil.date();
-        Date startTime = DateUtil.beginOfDay(DateUtil.offsetDay(currentDate, -days)).toJdkDate();
-        Date endTime = DateUtil.endOfDay(DateUtil.offsetDay(currentDate, -1)).toJdkDate();
+        // 按业务时区确定自然日边界，避免 JVM 默认时区与业务时区不一致时落入错误的日期分桶
+        ZoneId zoneId = GlobalConstants.DEFAULT_ZONE_ID;
+        LocalDate today = LocalDate.now(zoneId);
+        LocalDate startDate = today.minusDays(days);
+        Date startTime = Date.from(startDate.atStartOfDay(zoneId).toInstant());
+        Date endTime = Date.from(today.atStartOfDay(zoneId).toInstant().minusMillis(1));
         List<DashboardAccessTrendResp> list =
             logMapper.selectListDashboardAccessTrend(startTime, endTime);
         if (list.size() < days) {
-            List<String> all = DateUtil.rangeToList(startTime, endTime, DateField.DAY_OF_MONTH)
-                .stream()
-                .map(date -> date.toString(DatePattern.NORM_DATE_FORMAT))
+            List<String> all = Stream
+                .iterate(startDate, date -> date.isBefore(today), date -> date.plusDays(1))
+                .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
                 .toList();
             Collection<String> missings = CollUtil.disjunction(all, CollUtils
                 .mapToList(list, DashboardAccessTrendResp::getDate));
@@ -224,11 +235,12 @@ public class DashboardServiceImpl implements DashboardService {
      * @return 月份列表
      */
     private List<String> getLast12Months() {
-        DateTime currentMonth = DateUtil.beginOfMonth(DateUtil.date());
-        return DateUtil.rangeToList(DateUtil.offsetMonth(currentMonth, -12), DateUtil
-            .offsetMonth(currentMonth, -1), DateField.MONTH)
-            .stream()
-            .map(dateTime -> DateUtil.format(dateTime, DatePattern.NORM_MONTH_FORMAT))
+        // 与访问趋势一致，按业务时区确定当前月份
+        YearMonth currentMonth = YearMonth.now(GlobalConstants.DEFAULT_ZONE_ID);
+        return Stream
+            .iterate(currentMonth.minusMonths(12), month -> month.isBefore(currentMonth),
+                month -> month.plusMonths(1))
+            .map(MONTH_FORMATTER::format)
             .toList();
     }
 }

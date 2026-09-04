@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.context.UserContextHolder;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.system.enums.FileTypeEnum;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.model.entity.FileDO;
@@ -41,6 +42,7 @@ import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.storage.core.FileStorageService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -74,7 +76,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     public void restore(Long id) {
         FileDO file = this.getById(id);
         // 恢复记录
-        fileMapper.restoreInRecycleBin(id, UserContextHolder.getUserId());
+        fileMapper.restoreInRecycleBin(id, UserContextHolder.getUserId(), LocalDateTime
+            .now(GlobalConstants.DEFAULT_ZONE_ID));
         if (FileTypeEnum.DIR.equals(file.getType())) {
             return;
         }
@@ -91,7 +94,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     public void delete(Long id) {
         FileDO file = this.getById(id);
         // 删除记录
-        fileMapper.deleteWithoutRecycleBin(List.of(id), UserContextHolder.getUserId());
+        fileMapper.deleteWithoutRecycleBin(List.of(id), UserContextHolder.getUserId(), LocalDateTime
+            .now(GlobalConstants.DEFAULT_ZONE_ID));
         if (FileTypeEnum.DIR.equals(file.getType())) {
             return;
         }
@@ -113,7 +117,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         try {
             InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().blockAttack(true).build());
             // 删除记录
-            fileMapper.cleanRecycleBin(UserContextHolder.getUserId());
+            fileMapper.cleanRecycleBin(UserContextHolder.getUserId(), LocalDateTime
+                .now(GlobalConstants.DEFAULT_ZONE_ID));
             // 删除文件
             // 批量获取存储配置
             Map<Long, List<FileDO>> fileListGroup =

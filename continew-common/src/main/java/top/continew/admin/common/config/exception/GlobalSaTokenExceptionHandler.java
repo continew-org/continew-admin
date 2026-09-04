@@ -39,16 +39,22 @@ import top.continew.starter.web.model.R;
 public class GlobalSaTokenExceptionHandler {
 
     /**
-     * 异常日志模板：[请求方法] 请求路径
+     * 客户端异常日志模板：[请求方法] 请求路径 - 异常信息
+     *
+     * <p>
+     * 认证/鉴权失败（401、403）属于可预期的客户端错误，常由过期 Token 探测或越权尝试触发，
+     * 打印完整堆栈会被外部请求放大成同步的多 KB 日志写入，因此只记录 WARN 级别的摘要信息。
+     * </p>
      */
-    private static final String LOG_REQUEST_TEMPLATE = "[{}] {}";
+    private static final String LOG_CLIENT_ERROR_TEMPLATE = "[{}] {} - {}";
 
     /**
      * 认证异常-登录认证
      */
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         String errorMsg = switch (e.getType()) {
             case NotLoginException.KICK_OUT -> "您已被踢下线";
             case NotLoginException.BE_REPLACED -> "您已被顶下线";
@@ -62,7 +68,8 @@ public class GlobalSaTokenExceptionHandler {
      */
     @ExceptionHandler(NotPermissionException.class)
     public R handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), "没有访问权限，请联系管理员授权");
     }
 
@@ -71,7 +78,8 @@ public class GlobalSaTokenExceptionHandler {
      */
     @ExceptionHandler(NotRoleException.class)
     public R handleNotRoleException(NotRoleException e, HttpServletRequest request) {
-        log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
         return R.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), "没有访问权限，请联系管理员授权");
     }
 }

@@ -30,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import top.continew.admin.auth.constant.AuthConstants;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.AccountLoginReq;
 import top.continew.admin.auth.model.req.EmailLoginReq;
@@ -53,7 +54,6 @@ import top.continew.starter.trace.autoconfigure.TraceProperties;
 import top.continew.starter.web.model.R;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,7 +87,7 @@ public class DatabaseLogDao implements LogDao {
             .trim()));
         logDO.setTimeTaken(logRecord.getTimeTaken().toMillis());
         logDO.setCreateTime(
-            LocalDateTime.ofInstant(logRecord.getTimestamp(), ZoneId.systemDefault()));
+            LocalDateTime.ofInstant(logRecord.getTimestamp(), GlobalConstants.DEFAULT_ZONE_ID));
         // 设置操作人
         this.setCreateUser(logDO, logRequest, logResponse);
         // 保存记录

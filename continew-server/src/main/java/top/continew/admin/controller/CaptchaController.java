@@ -17,7 +17,6 @@
 package top.continew.admin.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
@@ -71,7 +70,7 @@ import top.continew.starter.validation.constraints.Mobile;
 import top.continew.starter.web.model.R;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -138,11 +137,10 @@ public class CaptchaController {
         String uuid = IdUtil.fastUUID();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + uuid;
         Captcha captcha = graphicCaptchaService.getCaptcha();
-        long expireTime =
-            LocalDateTimeUtil.toEpochMilli(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)
-                .plusMinutes(captchaProperties.getExpirationInMinutes()));
-        RedisUtils.set(captchaKey, captcha.text(),
-            Duration.ofMinutes(captchaProperties.getExpirationInMinutes()));
+        // 过期时间与 Redis TTL 取自同一来源，避免业务时区与 JVM 默认时区不一致导致换算偏差
+        Duration expiration = Duration.ofMinutes(captchaProperties.getExpirationInMinutes());
+        long expireTime = Instant.now().plus(expiration).toEpochMilli();
+        RedisUtils.set(captchaKey, captcha.text(), expiration);
         return CaptchaResp.of(uuid, captcha.toBase64(), expireTime);
     }
 

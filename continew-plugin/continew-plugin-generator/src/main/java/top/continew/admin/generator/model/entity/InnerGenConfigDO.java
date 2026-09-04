@@ -17,12 +17,14 @@
 package top.continew.admin.generator.model.entity;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.starter.core.constant.StringConstants;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -108,7 +110,12 @@ public class InnerGenConfigDO extends GenConfigDO {
 
     public InnerGenConfigDO(GenConfigDO genConfig) {
         BeanUtil.copyProperties(genConfig, this);
-        this.setDatetime(DateUtil.date().toString("yyyy/MM/dd HH:mm"));
+        this.setDatetime(LocalDateTimeUtil.format(LocalDateTime
+            .now(GlobalConstants.DEFAULT_ZONE_ID), "yyyy/MM/dd HH:mm"));
+        // 父类的 classNamePrefix 是没有 backing 字段的计算属性（sys_user -> User），
+        // 而 BeanUtil.beanToMap 只按字段发现属性，模板中的 ${classNamePrefix} 会取不到值，
+        // 因此这里在 copyProperties 之后显式落到本类字段上
+        this.setClassNamePrefix(super.getClassNamePrefix());
         this.setApiName(StrUtil.lowerFirst(this.getClassNamePrefix()));
     }
 

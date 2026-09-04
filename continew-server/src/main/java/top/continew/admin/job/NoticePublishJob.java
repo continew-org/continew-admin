@@ -114,8 +114,11 @@ public class NoticePublishJob {
             .toList();
         if (CollUtil.isNotEmpty(needSendMessageList)) {
             // 发送消息
+            // 注意：此处必须顺序执行。本方法运行在 @Transactional + @TenantIgnore 之下，
+            // 而事务连接与租户上下文都绑定在 ThreadLocal 上，ForkJoinPool 线程不会继承，
+            // 一旦并发执行，消息会脱离事务自动提交，回滚后公告仍为待发布状态并被下一次调度重复推送
             NoticeService noticeService = SpringUtil.getBean(NoticeService.class);
-            needSendMessageList.parallelStream().forEach(noticeService::publish);
+            needSendMessageList.forEach(noticeService::publish);
         }
         // 更新状态
         noticeMapper.lambdaUpdate()

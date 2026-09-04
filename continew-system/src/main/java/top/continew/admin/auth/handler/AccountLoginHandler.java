@@ -16,9 +16,8 @@
 
 package top.continew.admin.auth.handler;
 
-import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +39,7 @@ import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
  * 账号登录处理器
@@ -138,10 +138,10 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
      */
     private String getUnlockTime(String key) {
         long timeToLive = RedisUtils.getTimeToLive(key);
+        // 与其余业务时间戳保持同一时区，避免 JVM 默认时区不同导致展示时间偏移
         return timeToLive > 0
-            ? DateUtil.date()
-                .offset(DateField.MILLISECOND, (int) timeToLive)
-                .toString(DatePattern.CHINESE_DATE_TIME_FORMAT)
+            ? LocalDateTimeUtil.format(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)
+                .plus(Duration.ofMillis(timeToLive)), DatePattern.CHINESE_DATE_TIME_PATTERN)
             : "";
     }
 }

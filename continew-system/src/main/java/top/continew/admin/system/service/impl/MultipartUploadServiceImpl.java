@@ -68,8 +68,9 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
-        // 校验上级目录路径，防止通过 ../ 等路径穿越将文件写入存储根目录之外
+        // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
         StoragePathValidator.validate(multiPartUploadInitReq.getParentPath());
+        StoragePathValidator.validateName(multiPartUploadInitReq.getFileName());
         StorageDO storageDO = storageService.getByCode(null);
         // 检测文件名是否已存在（同一目录下文件名不能重复）
         String originalFileName = multiPartUploadInitReq.getFileName();
@@ -114,7 +115,12 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
             throw new BaseException("无效的 uploadId: " + uploadId);
         }
         validatePartSize(file, session, partNumber);
-        String targetPath = StrUtil.blankToDefault(session.getPath(), path);
+        String sessionPath = session.getPath();
+        if (StrUtil.isBlank(sessionPath)) {
+            // 会话未携带路径时才会回退到调用方传入的 path，此处校验这个不可信入参
+            StoragePathValidator.validate(path);
+        }
+        String targetPath = StrUtil.blankToDefault(sessionPath, path);
         try {
             MultipartUploadResp resp =
                 fileStorageService
