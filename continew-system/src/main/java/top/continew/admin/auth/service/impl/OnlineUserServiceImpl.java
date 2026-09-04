@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.context.UserExtraContext;
@@ -55,6 +56,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OnlineUserServiceImpl implements OnlineUserService {
+
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     @AutoOperate(type = OnlineUserResp.class, on = "list")
@@ -130,9 +133,12 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Override
     public void kickOut(Long userId) {
         if (!StpUtil.isLogin(userId)) {
+            // 即使当前没有有效 Access Token，也要清理长期 Refresh Session。
+            refreshTokenService.revokeByUser(userId);
             return;
         }
         StpUtil.logout(userId);
+        refreshTokenService.revokeByUser(userId);
     }
 
     /**

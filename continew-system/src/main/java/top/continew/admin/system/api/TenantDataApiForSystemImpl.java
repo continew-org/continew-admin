@@ -33,6 +33,7 @@ import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.common.model.dto.TenantDTO;
 import top.continew.admin.common.util.SecureUtils;
+import top.continew.admin.auth.service.RefreshTokenService;
 import top.continew.admin.system.mapper.DeptMapper;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.mapper.MessageMapper;
@@ -85,6 +86,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
     private final UserPasswordHistoryMapper userPasswordHistoryMapper;
     private final UserRoleMapper userRoleMapper;
     private final UserSocialMapper userSocialMapper;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -114,6 +116,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
         List<UserDO> userList = userMapper.selectList(null);
         for (UserDO user : userList) {
             StpUtil.logout(user.getId());
+            refreshTokenService.revokeByUser(user.getId());
         }
         Wrapper queryWrapper = Wrappers.query().eq("1", 1);
         // 部门清除

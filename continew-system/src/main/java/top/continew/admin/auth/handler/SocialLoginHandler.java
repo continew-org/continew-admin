@@ -27,6 +27,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
@@ -80,15 +81,16 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
     @Override
     @Transactional
-    public LoginResp login(SocialLoginReq req, ClientResp client, HttpServletRequest request) {
+    public LoginResp login(SocialLoginReq req, ClientResp client, HttpServletRequest request,
+        HttpServletResponse response) {
         // 获取第三方登录信息
         AuthRequest authRequest = authRequestFactory.getAuthRequest(req.getSource());
         AuthCallback callback = new AuthCallback();
         callback.setCode(req.getCode());
         callback.setState(req.getState());
-        AuthResponse<AuthUser> response = authRequest.login(callback);
-        ValidationUtils.throwIf(!response.ok(), response.getMsg());
-        AuthUser authUser = response.getData();
+        AuthResponse<AuthUser> authResponse = authRequest.login(callback);
+        ValidationUtils.throwIf(!authResponse.ok(), authResponse.getMsg());
+        AuthUser authUser = authResponse.getData();
         // 如未绑定则自动注册新用户，保存或更新关联信息
         String source = authUser.getSource();
         String openId = authUser.getUuid();
@@ -138,13 +140,15 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
         userSocial.setLastLoginTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         userSocialService.saveOrUpdate(userSocial);
         // 执行认证
-        return super.authenticate(user, client);
+        return super.authenticate(user, client, request, response);
     }
 
     @Override
     public void preLogin(SocialLoginReq req, ClientResp client, HttpServletRequest request) {
         super.preLogin(req, client, request);
         if (StpUtil.isLogin()) {
+            refreshTokenService.revokeCurrent(StpUtil.getTokenValue(),
+                refreshTokenService.resolve(req.getRefreshToken(), request));
             StpUtil.logout();
         }
     }

@@ -21,6 +21,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -55,7 +56,8 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public LoginResp login(AccountLoginReq req, ClientResp client, HttpServletRequest request) {
+    public LoginResp login(AccountLoginReq req, ClientResp client, HttpServletRequest request,
+        HttpServletResponse response) {
         // 解密密码
         String password = SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败");
         // 验证用户名密码
@@ -69,7 +71,7 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
         // 检查用户状态
         super.checkUserStatus(user);
         // 执行认证
-        return super.authenticate(user, client);
+        return super.authenticate(user, client, request, response);
     }
 
     @Override
