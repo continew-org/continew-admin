@@ -292,3 +292,7 @@ INSERT INTO "sys_client"
 ("id", "client_id", "client_type", "auth_type", "active_timeout", "timeout", "status", "create_user", "create_time")
 VALUES
 (1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'PC', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 1800, 86400, 1, 1, NOW());
+
+-- changeset luoqiz:2
+-- comment 清理已重编号下线的旧菜单（2020-2023）残留的角色菜单关联
+DELETE FROM "sys_role_menu" WHERE "menu_id" IN (2020, 2021, 2022, 2023);
