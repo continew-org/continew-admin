@@ -16,7 +16,6 @@
 
 package top.continew.admin.system.api;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.ListUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -33,6 +32,7 @@ import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.common.model.dto.TenantDTO;
 import top.continew.admin.common.util.SecureUtils;
+import top.continew.admin.auth.service.SessionInvalidationService;
 import top.continew.admin.system.mapper.DeptMapper;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.mapper.MessageMapper;
@@ -52,6 +52,7 @@ import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.RoleMenuService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.starter.core.util.CollUtils;
+import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.extension.tenant.util.TenantUtils;
 
 import java.time.LocalDateTime;
@@ -85,6 +86,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
     private final UserPasswordHistoryMapper userPasswordHistoryMapper;
     private final UserRoleMapper userRoleMapper;
     private final UserSocialMapper userSocialMapper;
+    private final SessionInvalidationService sessionInvalidationService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -110,11 +112,9 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void clear() {
-        // 退出所有用户
-        List<UserDO> userList = userMapper.selectList(null);
-        for (UserDO user : userList) {
-            StpUtil.logout(user.getId());
-        }
+        // 会话失效注册为事务提交后的动作，避免租户数据清理回滚时误踢出用户。
+        sessionInvalidationService.invalidateTenant(TenantContextHolder.getTenantId());
+        // Access Token 由认证会话校验统一拒绝，无需在事务内提前修改 Sa-Token 状态。
         Wrapper queryWrapper = Wrappers.query().eq("1", 1);
         // 部门清除
         deptMapper.delete(queryWrapper);
@@ -139,6 +139,11 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
         userPasswordHistoryMapper.delete(queryWrapper);
         userRoleMapper.delete(queryWrapper);
         userSocialMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void invalidateSessions() {
+        sessionInvalidationService.invalidateTenant(TenantContextHolder.getTenantId());
     }
 
     /**

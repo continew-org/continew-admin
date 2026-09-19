@@ -22,8 +22,12 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.service.SessionInvalidationService;
+import top.continew.admin.auth.adapter.ClientPolicyLockTargetResolver;
+import top.continew.admin.auth.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.system.mapper.ClientMapper;
 import top.continew.admin.system.model.entity.ClientDO;
@@ -34,6 +38,7 @@ import top.continew.admin.system.service.ClientService;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validation.CheckUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +55,7 @@ public class ClientServiceImpl
     implements ClientService {
 
     private final OnlineUserService onlineUserService;
-
+    private final SessionInvalidationService sessionInvalidationService;
     @Override
     public void beforeCreate(ClientReq req) {
         req.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())
@@ -59,15 +64,42 @@ public class ClientServiceImpl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(ClientPolicyLockTargetResolver.class)
+    public void update(ClientReq req, Long id) {
+        super.update(req, id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(ClientPolicyLockTargetResolver.class)
+    public void delete(List<Long> ids) {
+        super.delete(ids);
+    }
+
+    @Override
     public void beforeDelete(List<Long> ids) {
         // 如果还存在在线用户，则不能删除
         OnlineUserQuery query = new OnlineUserQuery();
+        List<String> clientIds = new ArrayList<>(ids.size());
         for (Long id : ids) {
             ClientDO client = this.getById(id);
             query.setClientId(client.getClientId());
             CheckUtils.throwIfNotEmpty(onlineUserService.list(query), "客户端 [{}] 还存在在线用户，不允许删除",
                 client.getClientId());
+            clientIds.add(client.getClientId());
         }
+        // 所有客户端都通过在线校验后，再统一撤销长期会话，避免部分撤销后删除失败。
+        for (String clientId : clientIds) {
+            sessionInvalidationService.invalidateClient(clientId);
+        }
+    }
+
+    @Override
+    public void afterUpdate(ClientReq req, ClientDO entity) {
+        // 客户端配置全部属于认证策略。传输模式、有效期、并发规则或状态发生修改后，
+        // 旧 Session 不能继续按历史策略运行，统一要求重新登录。
+        sessionInvalidationService.invalidateClient(entity.getClientId());
     }
 
     @Override

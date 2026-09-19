@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 
-package top.continew.admin.auth.model.resp;
+package top.continew.admin.auth.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 登录响应参数
+ * Refresh Token 短时轮换结果。
  *
- * @author Charles7c
- * @since 2022/12/21 20:42
+ * <p>Redis 中的 Access Token 和 Refresh Token 均为 AES-GCM 密文，记录只在并发宽限期内
+ * 存活，用于让浏览器多标签页、App 和小程序弱网重试得到完全相同的结果。</p>
+ *
+ * @author luoqiz
+ * @since 4.2.0
  */
 @Data
-@Builder
-@Schema(description = "登录响应参数")
-public class LoginResp implements Serializable {
+@NoArgsConstructor
+public class RefreshRotationResult implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 令牌
-     */
-    @Schema(description = "令牌",
-        example = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjF9.KUPOYm-2wfuLUSfEEAbpGE527fzmkAJG7sMNcQ0pUZ8")
-    private String token;
-
-    /**
-     * 租户 ID
-     */
-    @Schema(description = "租户 ID", example = "0")
+    private String encryptedAccessToken;
+    private String encryptedRefreshToken;
+    private Long expiresIn;
+    private Long refreshExpiresIn;
     private Long tenantId;
+
+    /** 是否已经完成 Access Token 签发，可以直接幂等返回。 */
+    public boolean isComplete() {
+        return encryptedAccessToken != null;
+    }
 }

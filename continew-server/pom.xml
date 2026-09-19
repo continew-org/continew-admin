@@ -22,6 +22,12 @@
             <artifactId>continew-system</artifactId>
         </dependency>
 
+        <!-- 认证会话模块（拦截器与 Refresh / Logout HTTP 端点） -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>continew-auth-refresh</artifactId>
+        </dependency>
+
         <!-- 能力开放插件 -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -92,6 +98,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- 本模块的纯单元测试（拦截器线程本地清理、在线用户）需在 CI 中实际运行；
+                 Spring 上下文测试（ContiNewAdminApplicationTests）依赖 MySQL/Redis，继续排除 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                    <excludes>
+                        <exclude>**/ContiNewAdminApplicationTests.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

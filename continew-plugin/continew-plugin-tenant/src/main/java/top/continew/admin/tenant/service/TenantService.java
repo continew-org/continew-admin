@@ -68,6 +68,13 @@ public interface TenantService
     void updateTenantMenu(List<Long> newMenuIds, Long packageId);
 
     /**
+     * 使指定套餐下全部租户的认证会话失效。
+     *
+     * @param packageId 套餐 ID
+     */
+    void invalidateSessionsByPackageId(Long packageId);
+
+    /**
      * 根据套餐 ID 查询数量
      *
      * @param packageIds 套餐 ID 列表

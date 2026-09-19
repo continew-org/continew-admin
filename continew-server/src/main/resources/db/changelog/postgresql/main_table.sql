@@ -680,3 +680,31 @@ COMMENT ON COLUMN "sys_sms_log"."res_msg"     IS '返回数据';
 COMMENT ON COLUMN "sys_sms_log"."create_user" IS '创建人';
 COMMENT ON COLUMN "sys_sms_log"."create_time" IS '创建时间';
 COMMENT ON TABLE "sys_sms_log"                IS '短信日志表';
+
+-- changeset luoqiz:refresh-token-timeout-client-field-postgresql
+-- comment 客户端 Refresh Token 策略字段
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'sys_client' AND column_name = 'refresh_token_timeout'
+ALTER TABLE "sys_client"
+    ADD COLUMN "refresh_token_timeout" int8 NOT NULL DEFAULT 2592000;
+
+COMMENT ON COLUMN "sys_client"."refresh_token_timeout"
+    IS 'Refresh Token 绝对有效期（单位：秒）';
+
+-- changeset luoqiz:refresh-token-mode-client-field-postgresql
+-- comment 客户端 Refresh Token 策略字段
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
+ALTER TABLE "sys_client"
+    ADD COLUMN "refresh_token_mode" varchar(16) NOT NULL DEFAULT 'COOKIE';
+
+COMMENT ON COLUMN "sys_client"."refresh_token_mode"
+    IS 'Refresh Token 传输模式（COOKIE：浏览器；BODY：App/小程序）';
+
+-- changeset luoqiz:refresh-token-mode-by-client-type-postgresql
+-- comment 存量 App/小程序客户端默认使用 BODY 传输 Refresh Token，避免升级后无法获取 Refresh Token
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
+UPDATE "sys_client"
+    SET "refresh_token_mode" = 'BODY'
+    WHERE "client_type" IN ('ANDROID', 'XCX');
