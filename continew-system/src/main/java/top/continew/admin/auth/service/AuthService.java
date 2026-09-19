@@ -17,6 +17,7 @@
 package top.continew.admin.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.model.resp.RouteResp;
@@ -38,7 +39,7 @@ public interface AuthService {
      * @param request 请求对象
      * @return 登录响应参数
      */
-    LoginResp login(LoginReq req, HttpServletRequest request);
+    LoginResp login(LoginReq req, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 构建路由树

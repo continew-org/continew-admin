@@ -160,4 +160,12 @@ public interface UserService
      * @return 用户数量
      */
     Long countByDeptIds(List<Long> deptIds);
+
+    /**
+     * 根据部门 ID 查询直属用户 ID 列表。
+     *
+     * @param deptId 部门 ID
+     * @return 用户 ID 列表
+     */
+    List<Long> listIdByDeptId(Long deptId);
 }

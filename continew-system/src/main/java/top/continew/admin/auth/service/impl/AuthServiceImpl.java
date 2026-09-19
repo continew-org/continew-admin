@@ -22,6 +22,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.auth.LoginHandler;
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
     private final CrudProperties crudProperties;
 
     @Override
-    public LoginResp login(LoginReq req, HttpServletRequest request) {
+    public LoginResp login(LoginReq req, HttpServletRequest request, HttpServletResponse response) {
         AuthTypeEnum authType = req.getAuthType();
         // 校验客户端
         ClientResp client = clientService.getByClientId(req.getClientId());
@@ -80,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
         // 登录前置处理
         loginHandler.preLogin(req, client, request);
         // 登录
-        LoginResp loginResp = loginHandler.login(req, client, request);
+        LoginResp loginResp = loginHandler.login(req, client, request, response);
         // 登录后置处理
         loginHandler.postLogin(req, client, request);
         return loginResp;

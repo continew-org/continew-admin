@@ -16,14 +16,8 @@
 
 package top.continew.admin.auth.model.resp;
 
-import cn.crane4j.annotation.Assemble;
-import cn.crane4j.annotation.AssembleMethod;
-import cn.crane4j.annotation.ContainerMethod;
-import cn.crane4j.annotation.MappingType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.common.constant.ContainerConstants;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -46,18 +40,13 @@ public class OnlineUserResp implements Serializable {
      * ID
      */
     @Schema(description = "ID", example = "1")
-    @Assemble(prop = ":nickname", container = ContainerConstants.USER_NICKNAME)
     private Long id;
 
     /**
-     * 令牌
+     * 登录会话 ID
      */
-    @Schema(description = "令牌",
-        example = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjF9.7q7U3ouoN7WPhH2kUEM7vPe5KF3G_qavSG-vRgIxKvE")
-    @AssembleMethod(prop = ":lastActiveTime", targetType = OnlineUserService.class,
-        method = @ContainerMethod(bindMethod = "getLastActiveTime",
-            type = MappingType.ORDER_OF_KEYS))
-    private String token;
+    @Schema(description = "登录会话 ID", example = "Zm9vYmFyYmF6cXV4MTIzNA")
+    private String sessionId;
 
     /**
      * 用户名
@@ -114,8 +103,8 @@ public class OnlineUserResp implements Serializable {
     private LocalDateTime loginTime;
 
     /**
-     * 最后活跃时间
+     * 最后刷新时间
      */
-    @Schema(description = "最后活跃时间", example = "2023-08-08 08:08:08", type = "string")
-    private LocalDateTime lastActiveTime;
+    @Schema(description = "最后刷新时间", example = "2023-08-08 08:08:08", type = "string")
+    private LocalDateTime lastRefreshTime;
 }

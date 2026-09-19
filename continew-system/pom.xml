@@ -22,6 +22,12 @@
             <artifactId>continew-common</artifactId>
         </dependency>
 
+        <!-- 认证会话模块 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>continew-auth-refresh</artifactId>
+        </dependency>
+
         <!-- SMS4J（短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程） -->
         <dependency>
             <groupId>org.dromara.sms4j</groupId>

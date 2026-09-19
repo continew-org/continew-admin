@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package top.continew.admin.common.config.websocket;
+package top.continew.admin.auth.websocket;
 
 import cn.dev33.satoken.stp.StpUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
+import top.continew.admin.auth.api.AccessSessionValidator;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.messaging.websocket.core.WebSocketClientService;
 
@@ -30,13 +32,17 @@ import top.continew.starter.messaging.websocket.core.WebSocketClientService;
  * @since 2024/6/4 22:13
  */
 @Service
+@RequiredArgsConstructor
 public class WebSocketClientServiceImpl implements WebSocketClientService {
+
+    private final AccessSessionValidator accessSessionValidator;
 
     @Override
     public String getClientId(ServletServerHttpRequest request) {
         HttpServletRequest servletRequest = request.getServletRequest();
         String token = servletRequest.getParameter("token");
-        if (StpUtil.getLoginIdByToken(token) == null) {
+        if (token == null || token.isBlank() || StpUtil.getLoginIdByToken(token) == null
+            || accessSessionValidator.isInvalid(token)) {
             throw new BusinessException("登录已过期，请重新登录");
         }
         return token;

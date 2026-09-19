@@ -126,6 +126,8 @@ public class UserContextHolder {
         context.setBrowser(Convert.toStr(StpUtil.getExtra(token, "browser")));
         context.setOs(Convert.toStr(StpUtil.getExtra(token, "os")));
         context.setLoginTime(Convert.toLocalDateTime(StpUtil.getExtra(token, "loginTime")));
+        context.setTenantId(Convert.toLong(StpUtil.getExtra(token, "tenantId")));
+        context.setClientId(Convert.toStr(StpUtil.getExtra(token, "clientId")));
         return context;
     }
 

@@ -17,13 +17,13 @@
 package top.continew.admin.auth.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
@@ -47,6 +47,7 @@ import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.auth.justauth.AuthRequestFactory;
+import top.continew.starter.log.enums.Include;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.validation.constraints.EnumValue;
 
@@ -79,24 +80,11 @@ public class AuthController {
      */
     @SaIgnore
     @Operation(summary = "登录", description = "用户登录")
+    @Log(excludes = {Include.REQUEST_HEADERS, Include.RESPONSE_HEADERS, Include.RESPONSE_BODY})
     @PostMapping("/login")
-    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request) {
-        return authService.login(req, request);
-    }
-
-    /**
-     * 注销用户的当前登录
-     *
-     * @return 被登出的用户 ID
-     */
-    @Operation(summary = "登出", description = "注销用户的当前登录")
-    @Parameter(name = "Authorization", description = "令牌", required = true,
-        example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
-    @PostMapping("/logout")
-    public Object logout() {
-        Object loginId = StpUtil.getLoginId(-1L);
-        StpUtil.logout();
-        return loginId;
+    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request,
+        HttpServletResponse response) {
+        return authService.login(req, request, response);
     }
 
     /**
