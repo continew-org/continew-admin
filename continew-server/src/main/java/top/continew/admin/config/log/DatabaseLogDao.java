@@ -54,6 +54,7 @@ import top.continew.starter.trace.autoconfigure.TraceProperties;
 import top.continew.starter.web.model.R;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -93,7 +94,7 @@ public class DatabaseLogDao implements LogDao {
         // 保存记录
         if (TenantContextHolder.isTenantEnabled()) {
             // 异步无法获取租户 ID
-            String tenantId = logRequest.getHeaders()
+            String tenantId = this.getRequestHeaders(logRequest)
                 .get(SpringUtil.getBean(TenantProperties.class).getTenantIdHeader());
             if (StrUtil.isNotBlank(tenantId)) {
                 TenantUtils.execute(Long.parseLong(tenantId), () -> logMapper.insert(logDO));
@@ -112,8 +113,11 @@ public class DatabaseLogDao implements LogDao {
     private void setRequest(LogDO logDO, LogRequest logRequest) {
         logDO.setRequestMethod(logRequest.getMethod());
         logDO.setRequestUrl(logRequest.getUrl().toString());
-        logDO.setRequestHeaders(JSONUtil.toJsonStr(logRequest.getHeaders()));
-        logDO.setRequestBody(logRequest.getBody());
+        logDO.setRequestHeaders(JSONUtil.toJsonStr(this.getRequestHeaders(logRequest)));
+        String requestUri = URLUtil.getPath(logDO.getRequestUrl());
+        // 登录请求体仅在当前日志处理链路中用于解析操作人，禁止持久化加密密码报文。
+        logDO.setRequestBody(
+            AuthConstants.LOGIN_URI.equals(requestUri) ? null : logRequest.getBody());
         logDO.setIp(logRequest.getIp());
         logDO.setAddress(logRequest.getAddress());
         logDO.setBrowser(logRequest.getBrowser());
@@ -127,13 +131,20 @@ public class DatabaseLogDao implements LogDao {
      * @param logResponse 响应信息
      */
     private void setResponse(LogDO logDO, LogResponse logResponse) {
+        if (logResponse == null) {
+            logDO.setStatusCode(HttpStatus.HTTP_INTERNAL_ERROR);
+            logDO.setStatus(LogStatusEnum.FAILURE);
+            return;
+        }
         Map<String, String> responseHeaders = logResponse.getHeaders();
+        responseHeaders = responseHeaders == null ? Collections.emptyMap() : responseHeaders;
         logDO.setResponseHeaders(JSONUtil.toJsonStr(responseHeaders));
         logDO.setTraceId(responseHeaders.get(traceProperties.getTraceIdName()));
         String responseBody = logResponse.getBody();
         logDO.setResponseBody(responseBody);
         // 状态
         Integer statusCode = logResponse.getStatus();
+        statusCode = statusCode == null ? HttpStatus.HTTP_INTERNAL_ERROR : statusCode;
         logDO.setStatusCode(statusCode);
         logDO.setStatus(statusCode >= HttpStatus.HTTP_BAD_REQUEST ? LogStatusEnum.FAILURE
             : LogStatusEnum.SUCCESS);
@@ -156,31 +167,42 @@ public class DatabaseLogDao implements LogDao {
     private void setCreateUser(LogDO logDO, LogRequest logRequest, LogResponse logResponse) {
         String requestUri = URLUtil.getPath(logDO.getRequestUrl());
         // 解析退出接口信息
-        String responseBody = logResponse.getBody();
-        if (requestUri.startsWith(AuthConstants.LOGOUT_URI) && StrUtil.isNotBlank(responseBody)) {
+        String responseBody = logResponse == null ? null : logResponse.getBody();
+        if (AuthConstants.LOGOUT_URI.equals(requestUri) && StrUtil.isNotBlank(responseBody)) {
             R result = JSONUtil.toBean(responseBody, R.class);
-            logDO.setCreateUser(Convert.toLong(result.getData(), null));
+            Long userId = Convert.toLong(result.getData(), null);
+            if (userId != null && userId > 0) {
+                logDO.setCreateUser(userId);
+            }
             return;
         }
         // 解析登录接口信息
-        if (requestUri.startsWith(AuthConstants.LOGIN_URI)
+        if (AuthConstants.LOGIN_URI.equals(requestUri)
             && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
             String requestBody = logRequest.getBody();
-            logDO.setDescription(
-                JSONUtil.toBean(requestBody, LoginReq.class).getAuthType().getDescription() + "登录");
+            LoginReq loginReq = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
+                LoginReq.class));
+            AuthTypeEnum authType = loginReq == null ? null : loginReq.getAuthType();
+            // 登录接口已配置脱敏，不同日志实现或旧管理端可能没有保留 authType。操作日志
+            // 不能因附加信息不完整而覆盖真实登录结果。
+            if (authType == null) {
+                logDO.setDescription("登录");
+                return;
+            }
+            logDO.setDescription(authType.getDescription() + "登录");
             // 解析账号登录用户为操作人
-            if (requestBody.contains(AuthTypeEnum.ACCOUNT.getValue())) {
+            if (AuthTypeEnum.ACCOUNT.equals(authType)) {
                 AccountLoginReq authReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
                 logDO.setCreateUser(
                     ExceptionUtils.exToNull(() -> userService.getByUsername(authReq.getUsername())
                         .getId()));
                 return;
-            } else if (requestBody.contains(AuthTypeEnum.EMAIL.getValue())) {
+            } else if (AuthTypeEnum.EMAIL.equals(authType)) {
                 EmailLoginReq authReq = JSONUtil.toBean(requestBody, EmailLoginReq.class);
                 logDO.setCreateUser(ExceptionUtils
                     .exToNull(() -> userService.getByEmail(authReq.getEmail()).getId()));
                 return;
-            } else if (requestBody.contains(AuthTypeEnum.PHONE.getValue())) {
+            } else if (AuthTypeEnum.PHONE.equals(authType)) {
                 PhoneLoginReq authReq = JSONUtil.toBean(requestBody, PhoneLoginReq.class);
                 logDO.setCreateUser(ExceptionUtils
                     .exToNull(() -> userService.getByPhone(authReq.getPhone()).getId()));
@@ -188,7 +210,7 @@ public class DatabaseLogDao implements LogDao {
             }
         }
         // 解析 Token 信息
-        Map<String, String> requestHeaders = logRequest.getHeaders();
+        Map<String, String> requestHeaders = this.getRequestHeaders(logRequest);
         String headerName = HttpHeaders.AUTHORIZATION;
         boolean isContainsAuthHeader =
             CollUtil.containsAny(requestHeaders.keySet(), Set.of(headerName, headerName
@@ -197,9 +219,19 @@ public class DatabaseLogDao implements LogDao {
             String authorization =
                 requestHeaders.getOrDefault(headerName, requestHeaders.get(headerName
                     .toLowerCase()));
+            if (StrUtil.isBlank(authorization)) {
+                return;
+            }
             String token = authorization.replace(SaManager.getConfig()
                 .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
             logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
         }
+    }
+
+    private Map<String, String> getRequestHeaders(LogRequest logRequest) {
+        if (logRequest == null || logRequest.getHeaders() == null) {
+            return Collections.emptyMap();
+        }
+        return logRequest.getHeaders();
     }
 }

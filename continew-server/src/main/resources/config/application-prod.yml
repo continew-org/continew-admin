@@ -5,6 +5,21 @@ application:
   # 是否为生产环境
   production: true
 
+--- ### 认证配置
+auth:
+  ## Refresh Token 配置。浏览器使用 HttpOnly Cookie，App / 小程序使用 BODY 模式。
+  refresh-token:
+    # 生产环境必须显式提供独立的高熵密钥，不允许回退复用 JWT 密钥。
+    secret: ${REFRESH_TOKEN_SECRET}
+    # 生产环境只允许通过 HTTPS 发送长期凭证。
+    cookie-secure: true
+    # __Host- 前缀禁止 Domain 属性并强制 Path=/，可防止子域写入同名 Cookie。
+    cookie-name: __Host-refresh_token
+    # 覆盖网关前缀及前后端分离部署，Refresh Token Cookie 在站点根路径生效。
+    cookie-path: /
+    # Cookie 请求来源可填精确 Origin 或 http[s]://*.example.com 子域通配符，不继承通用 CORS 配置。
+    cookie-allowed-origins:
+      - ${application.url}
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）
@@ -244,18 +259,21 @@ continew-starter.justauth:
     type: REDIS
 
 --- ### Sa-Token 扩展配置
-sa-token.extension:
-  # 安全配置：排除（放行）路径配置
-  security.excludes:
-    - /error
-    # 静态资源
-    - /*.html
-    - /*/*.html
-    - /*/*.css
-    - /*/*.js
-    - /websocket/**
-    # 本地存储资源
-    - /file/**
+sa-token:
+  # 生产环境必须显式设置 Access Token JWT 密钥，不允许继承开发默认值。
+  jwt-secret-key: ${ACCESS_TOKEN_JWT_SECRET}
+  extension:
+    # 安全配置：排除（放行）路径配置
+    security.excludes:
+      - /error
+      # 静态资源
+      - /*.html
+      - /*/*.html
+      - /*/*.css
+      - /*/*.js
+      - /websocket/**
+      # 本地存储资源
+      - /file/**
 
 --- ### Snail Job 配置
 snail-job:

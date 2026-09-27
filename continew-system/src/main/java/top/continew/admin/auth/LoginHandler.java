@@ -17,6 +17,7 @@
 package top.continew.admin.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
@@ -36,10 +37,12 @@ public interface LoginHandler<T extends LoginReq> {
      *
      * @param req     登录请求参数
      * @param client  客户端信息
-     * @param request 请求对象
+     * @param request  请求对象
+     * @param response 响应对象
      * @return 登录响应参数
      */
-    LoginResp login(T req, ClientResp client, HttpServletRequest request);
+    LoginResp login(T req, ClientResp client, HttpServletRequest request,
+        HttpServletResponse response);
 
     /**
      * 登录前置处理

@@ -14,4 +14,30 @@
 
     <name>${project.artifactId}</name>
     <description>租户插件</description>
+
+    <dependencies>
+        <!-- 认证会话模块：租户和套餐变更需要参与会话策略锁与失效 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>continew-auth-refresh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 本模块含租户认证边界单元测试（无外部依赖），需在 CI 中实际运行 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

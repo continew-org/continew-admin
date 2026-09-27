@@ -35,6 +35,11 @@ public interface TenantDataApi {
     void init(TenantDTO tenant);
 
     /**
+     * 使当前租户的认证会话失效。
+     */
+    void invalidateSessions();
+
+    /**
      * 清除数据
      */
     void clear();

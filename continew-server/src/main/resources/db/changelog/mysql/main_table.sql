@@ -406,3 +406,27 @@ CREATE TABLE IF NOT EXISTS `sys_sms_log`  (
     INDEX `idx_config_id`(`config_id`),
     INDEX `idx_create_user`(`create_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信日志表';
+
+-- changeset luoqiz:refresh-token-timeout-client-field-mysql
+-- comment 客户端 Refresh Token 策略字段
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_timeout'
+ALTER TABLE `sys_client`
+    ADD COLUMN `refresh_token_timeout` bigint NOT NULL DEFAULT 2592000
+        COMMENT 'Refresh Token 绝对有效期（单位：秒）';
+
+-- changeset luoqiz:refresh-token-mode-client-field-mysql
+-- comment 客户端 Refresh Token 策略字段
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
+ALTER TABLE `sys_client`
+    ADD COLUMN `refresh_token_mode` varchar(16) NOT NULL DEFAULT 'COOKIE'
+        COMMENT 'Refresh Token 传输模式（COOKIE：浏览器；BODY：App/小程序）';
+
+-- changeset luoqiz:refresh-token-mode-by-client-type-mysql
+-- comment 存量 App/小程序客户端默认使用 BODY 传输 Refresh Token，避免升级后无法获取 Refresh Token
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
+UPDATE `sys_client`
+    SET `refresh_token_mode` = 'BODY'
+    WHERE `client_type` IN ('ANDROID', 'XCX');

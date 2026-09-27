@@ -60,4 +60,5 @@ public class LoginReq implements Serializable {
     @Schema(description = "认证类型", example = "ACCOUNT")
     @NotNull(message = "认证类型无效")
     private AuthTypeEnum authType;
+
 }

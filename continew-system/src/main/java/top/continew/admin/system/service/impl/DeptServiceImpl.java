@@ -23,6 +23,10 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.adapter.DeptUserPolicyLockTargetResolver;
+import top.continew.admin.auth.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.DeptMapper;
@@ -63,11 +67,21 @@ public class DeptServiceImpl
     @Lazy
     @Resource
     private UserService userService;
+    @Lazy
+    @Resource
+    private OnlineUserService onlineUserService;
 
     @Override
     public void beforeCreate(DeptReq req) {
         this.checkNameRepeat(req.getName(), req.getParentId(), null);
         req.setAncestors(this.getAncestors(req.getParentId()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(DeptUserPolicyLockTargetResolver.class)
+    public void update(DeptReq req, Long id) {
+        super.update(req, id);
     }
 
     @Override
@@ -103,6 +117,15 @@ public class DeptServiceImpl
             req.setAncestors(newAncestors);
             // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
+        }
+    }
+
+    @Override
+    public void afterUpdate(DeptReq req, DeptDO entity) {
+        if (DisEnableStatusEnum.DISABLE.equals(req.getStatus())) {
+            // 部门禁用后，直属用户的 Access/Refresh Session 必须立即失效。下级部门要求
+            // 先逐级禁用，因此这里只处理当前部门即可。
+            userService.listIdByDeptId(entity.getId()).forEach(onlineUserService::kickOut);
         }
     }
 

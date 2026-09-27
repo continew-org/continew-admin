@@ -26,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 import me.ahoo.cosid.provider.IdGeneratorProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.auth.api.AuthPolicyWriteLocked;
+import top.continew.admin.auth.support.TenantArgumentPolicyLockTargetResolver;
 import top.continew.admin.common.api.system.RoleApi;
 import top.continew.admin.common.api.system.RoleMenuApi;
 import top.continew.admin.common.api.tenant.TenantDataApi;
@@ -95,6 +97,20 @@ public class TenantServiceImpl extends
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(TenantArgumentPolicyLockTargetResolver.class)
+    public void update(TenantReq req, Long id) {
+        super.update(req, id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(TenantArgumentPolicyLockTargetResolver.class)
+    public void delete(List<Long> ids) {
+        super.delete(ids);
+    }
+
+    @Override
     public void beforeUpdate(TenantReq req, Long id) {
         this.checkNameRepeat(req.getName(), id);
         this.checkDomainRepeat(req.getDomain(), id);
@@ -109,6 +125,7 @@ public class TenantServiceImpl extends
     public void afterUpdate(TenantReq req, TenantDO entity) {
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        this.invalidateSessions(entity.getId());
     }
 
     @Override
@@ -150,10 +167,12 @@ public class TenantServiceImpl extends
     @Override
     public void checkStatus(Long id) {
         // 默认租户
-        if (tenantExtensionProperties.getDefaultTenantId().equals(id)) {
+        if (tenantExtensionProperties.getDefaultTenantId() != null
+            && tenantExtensionProperties.getDefaultTenantId().equals(id)) {
             return;
         }
         TenantDO tenant = this.getById(id);
+        CheckUtils.throwIfNull(tenant, "租户不存在");
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, tenant.getStatus(), "租户已被禁用");
         CheckUtils.throwIf(tenant.getExpireTime() != null && tenant.getExpireTime()
             .isBefore(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)), "租户已过期");
@@ -185,6 +204,11 @@ public class TenantServiceImpl extends
         }));
         // 删除缓存
         RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+    }
+
+    @Override
+    public void invalidateSessionsByPackageId(Long packageId) {
+        this.listIdByPackageId(packageId).forEach(this::invalidateSessions);
     }
 
     @Override
@@ -246,5 +270,10 @@ public class TenantServiceImpl extends
             .stream()
             .map(TenantDO::getId)
             .toList();
+    }
+
+    private void invalidateSessions(Long tenantId) {
+        TenantUtils.execute(tenantId,
+            () -> tenantDataApiMap.forEach((key, value) -> value.invalidateSessions()));
     }
 }

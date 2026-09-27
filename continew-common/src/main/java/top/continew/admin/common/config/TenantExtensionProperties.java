@@ -55,6 +55,6 @@ public class TenantExtensionProperties {
      * @return 是否为默认租户
      */
     public boolean isDefaultTenant() {
-        return defaultTenantId.equals(TenantContextHolder.getTenantId());
+        return defaultTenantId != null && defaultTenantId.equals(TenantContextHolder.getTenantId());
     }
 }

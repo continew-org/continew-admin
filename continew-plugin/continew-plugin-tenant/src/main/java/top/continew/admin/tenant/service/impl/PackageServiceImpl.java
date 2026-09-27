@@ -20,6 +20,9 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.auth.api.AuthPolicyWriteLocked;
+import top.continew.admin.tenant.auth.PackageTenantPolicyLockTargetResolver;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.tenant.mapper.PackageMapper;
@@ -64,17 +67,20 @@ public class PackageServiceImpl extends
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(PackageTenantPolicyLockTargetResolver.class)
     public void update(PackageReq req, Long id) {
         this.checkNameRepeat(req.getName(), id);
         // 更新信息
         super.update(req, id);
         // 保存套餐和菜单关联
         boolean isSaveMenuSuccess = packageMenuService.add(req.getMenuIds(), id);
-        if (!isSaveMenuSuccess) {
-            return;
+        if (isSaveMenuSuccess) {
+            // 更新租户菜单
+            tenantService.updateTenantMenu(req.getMenuIds(), id);
         }
-        // 更新租户菜单
-        tenantService.updateTenantMenu(req.getMenuIds(), id);
+        // 套餐状态、权限或其他配置变化后，关联租户的旧会话统一重新认证。
+        tenantService.invalidateSessionsByPackageId(id);
     }
 
     @Override

@@ -34,6 +34,11 @@ public class AuthConstants {
      */
     public static final String LOGOUT_URI = "/auth/logout";
 
+    /**
+     * 刷新令牌 URI
+     */
+    public static final String REFRESH_URI = "/auth/refresh";
+
     private AuthConstants() {
     }
 }

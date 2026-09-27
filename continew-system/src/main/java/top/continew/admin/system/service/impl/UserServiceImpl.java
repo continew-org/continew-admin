@@ -18,7 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import top.continew.admin.common.constant.GlobalConstants;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;
@@ -53,6 +52,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.support.UserArgumentPolicyLockTargetResolver;
+import top.continew.admin.auth.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.context.UserContext;
@@ -191,6 +192,7 @@ public class UserServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
+    @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void update(UserReq req, Long id) {
         this.checkUsernameRepeat(req.getUsername(), id);
         this.checkEmailRepeat(req.getEmail(), id, "邮箱为 [{}] 的用户已存在");
@@ -231,6 +233,7 @@ public class UserServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheInvalidate(key = "#ids", name = CacheConstants.USER_KEY_PREFIX, multi = true)
+    @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(CollUtil.contains(ids, UserContextHolder.getUserId()), "不允许删除当前用户");
         List<UserDO> list = baseMapper.lambdaQuery()
@@ -254,7 +257,9 @@ public class UserServiceImpl
         // 删除用户
         super.delete(ids);
         // 踢出在线用户
-        ids.forEach(onlineUserService::kickOut);
+        ids.forEach(id -> {
+            onlineUserService.kickOut(id);
+        });
     }
 
     @Override
@@ -413,6 +418,8 @@ public class UserServiceImpl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void resetPassword(UserPasswordResetReq req, Long id) {
         this.getById(id);
         baseMapper.lambdaUpdate()
@@ -420,6 +427,8 @@ public class UserServiceImpl
             .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, id)
             .update();
+        // 管理员重置密码后，旧设备上的长期凭证也必须全部失效。
+        onlineUserService.kickOut(id);
     }
 
     @Override
@@ -465,6 +474,7 @@ public class UserServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void updatePassword(String oldPassword, String newPassword, Long id) {
         CheckUtils.throwIfEqual(newPassword, oldPassword, "新密码不能与当前密码相同");
         UserDO user = super.getById(id);
@@ -483,8 +493,8 @@ public class UserServiceImpl
             .update();
         // 保存历史密码
         userPasswordHistoryService.add(id, password, passwordRepetitionTimes);
-        // 修改后登出
-        StpUtil.logout();
+        // 修改密码后全端登出，同时撤销全部长期 Refresh Session。
+        onlineUserService.kickOut(id);
     }
 
     @Override
@@ -536,6 +546,17 @@ public class UserServiceImpl
             return 0L;
         }
         return baseMapper.lambdaQuery().in(UserDO::getDeptId, deptIds).count();
+    }
+
+    @Override
+    public List<Long> listIdByDeptId(Long deptId) {
+        return baseMapper.lambdaQuery()
+            .select(UserDO::getId)
+            .eq(UserDO::getDeptId, deptId)
+            .list()
+            .stream()
+            .map(UserDO::getId)
+            .toList();
     }
 
     @Override

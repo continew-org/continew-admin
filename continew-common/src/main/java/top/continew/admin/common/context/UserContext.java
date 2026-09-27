@@ -54,6 +54,11 @@ public class UserContext implements Serializable {
     private String username;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
      * 部门 ID
      */
     private Long deptId;

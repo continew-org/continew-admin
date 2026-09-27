@@ -69,11 +69,28 @@ public class UserExtraContext implements Serializable {
      */
     private LocalDateTime loginTime;
 
-    public UserExtraContext(HttpServletRequest request) {
+    /**
+     * 登录时确定的租户 ID。
+     *
+     * <p>该字段随 Access Token 保存，用于在线用户强退等按令牌维度的租户边界校验；
+     * 不能只依赖用户级 SaSession，因为同一用户可能同时存在多个租户会话。</p>
+     */
+    private Long tenantId;
+
+    /**
+     * 登录时使用的客户端 ID。
+     *
+     * <p>客户端 ID 是令牌级属性，不能使用用户级 SaSession 中最后一次登录的值，
+     * 否则同一用户多客户端登录时在线用户查询会串数据。</p>
+     */
+    private String clientId;
+
+    public UserExtraContext(HttpServletRequest request, Long tenantId) {
         this.ip = JakartaServletUtil.getClientIP(request);
         this.address = ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(this.ip));
         this.setBrowser(ServletUtils.getBrowser(request));
         this.setLoginTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
         this.setOs(StrUtil.subBefore(ServletUtils.getOs(request), " or", false));
+        this.tenantId = tenantId;
     }
 }

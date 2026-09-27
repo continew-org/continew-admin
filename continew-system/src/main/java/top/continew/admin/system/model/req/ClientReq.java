@@ -22,9 +22,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.auth.enums.RefreshTokenModeEnum;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
 
@@ -75,6 +78,18 @@ public class ClientReq implements Serializable {
     @Schema(description = "Token 有效期（单位：秒，-1：永不过期）", example = "86400")
     @NotNull(message = "Token 有效期不能为空")
     private Long timeout;
+
+    /** Refresh Token 绝对有效期（单位：秒）。 */
+    @Schema(description = "Refresh Token 有效期（单位：秒）", example = "2592000")
+    @NotNull(message = "Refresh Token 有效期不能为空")
+    @Min(value = 60, message = "Refresh Token 有效期不能少于 60 秒")
+    @Max(value = 315360000, message = "Refresh Token 有效期不能超过 10 年")
+    private Long refreshTokenTimeout;
+
+    /** Refresh Token 传输模式。 */
+    @Schema(description = "Refresh Token 传输模式", example = "COOKIE")
+    @NotNull(message = "Refresh Token 传输模式不能为空")
+    private RefreshTokenModeEnum refreshTokenMode;
 
     /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）

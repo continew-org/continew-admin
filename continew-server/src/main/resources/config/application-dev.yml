@@ -3,6 +3,22 @@ application:
   # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
   url: http://localhost:5173
 
+--- ### 认证配置
+auth:
+  ## Refresh Token 配置。浏览器使用 HttpOnly Cookie，App / 小程序使用 BODY 模式。
+  refresh-token:
+    # 团队共享的开发环境固定密钥；仅用于 dev，禁止与 Access Token 的 JWT 密钥复用。
+    secret: 80B38761234D4D108BAF2022065FE6E6
+    # 可配置精确 Origin 或 http[s]://*.example.com 子域通配符。
+    cookie-allowed-origins:
+      - http://localhost:5173
+      - http://localhost:5777
+
+--- ### Sa-Token 配置
+sa-token:
+  # 团队共享的开发环境固定密钥；生产环境必须通过环境变量覆盖。
+  jwt-secret-key: C1C626D887634D838EDB8D3C5391E3DC
+
 --- ### 服务器配置
 server:
   # HTTP 端口（默认 8080）
