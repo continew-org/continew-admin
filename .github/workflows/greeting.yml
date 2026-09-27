@@ -14,7 +14,7 @@ permissions:
 jobs:
   welcome:
     name: Greet first-time contributor
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       # actions/first-interaction 无法区分维护者与外部贡献者，这里先放行仓库协作者（含组织/团队成员）

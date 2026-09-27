@@ -7,7 +7,7 @@ on:
 jobs:
   validate-pr-title:
     name: Validate PR title
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       pull-requests: read
@@ -48,7 +48,7 @@ jobs:
 
   check-commit-authors:
     name: Verify commit author emails
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     # 仅在提交变动时校验，标题/描述编辑（edited）无需重跑
     if: github.event.action != 'edited'

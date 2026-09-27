@@ -61,7 +61,7 @@ permissions:
 jobs:
   code-review:
     name: AI Code Review
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     # 自动评审 PR；评论触发仅限维护者发送 /continew-code-review 或 @continew-code-review
     if: |
