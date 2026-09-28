@@ -1,9 +1,13 @@
-version: '3'
 services:
   mysql:
     image: mysql:8.0.42
     container_name: mysql
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - '3306:3306'
     volumes:
@@ -22,6 +26,12 @@ services:
       --collation-server=utf8mb4_general_ci
       --explicit_defaults_for_timestamp=true
       --lower_case_table_names=1
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
 #  postgresql:
 #    image: postgres:14.2
 #    container_name: postgresql
@@ -39,6 +49,11 @@ services:
     image: redis:7.2.8
     container_name: redis
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - '6379:6379'
     volumes:
@@ -48,11 +63,22 @@ services:
     environment:
       TZ: Asia/Shanghai
     command: 'redis-server /usr/local/redis/config/redis.conf --appendonly yes'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
   continew-server:
     build: ./continew-admin
     image: continew-server:4.2.0-SNAPSHOT
     container_name: continew-server
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - '18000:18000'
       - '17889:17889'
@@ -64,25 +90,34 @@ services:
     environment:
       TZ: Asia/Shanghai
       PROFILES_ACTIVE: prod
-      DB_HOST: 172.17.0.1
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: 你的数据库用户名
       DB_PWD: 你的数据库密码
       DB_NAME: continew_admin
-      REDIS_HOST: 172.17.0.1
+      REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PWD: 你的 Redis 密码
       REDIS_DB: 0
-      SCHEDULE_HOST: 172.17.0.1
+      SCHEDULE_HOST: schedule-server
       SCHEDULE_PORT: 1788
       SCHEDULE_TOKEN: 任务调度服务端 Token
+      ACCESS_TOKEN_JWT_SECRET: 你的访问令牌 JWT 密钥（至少 32 字符）
+      REFRESH_TOKEN_SECRET: 你的刷新令牌密钥（至少 32 字符，且与前者不同）
     depends_on:
-      - redis
-      - mysql
+      redis:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
   continew-web:
     image: nginx:1.27.0
     container_name: continew-web
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - '80:80'
       - '443:443'
@@ -99,6 +134,11 @@ services:
     image: schedule-server:1.8.0
     container_name: schedule-server
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
     ports:
       - '18001:18001'
       - '17888:17888'
@@ -106,10 +146,11 @@ services:
       - /docker/schedule-server/logs/:/app/logs/
     environment:
       TZ: Asia/Shanghai
-      DB_HOST: 172.17.0.1
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: 你的数据库用户名
       DB_PWD: 你的数据库密码
       DB_NAME: continew_admin_job
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
