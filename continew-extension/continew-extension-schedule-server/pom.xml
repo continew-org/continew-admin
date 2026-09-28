@@ -17,7 +17,7 @@
 
     <properties>
         <!-- SnailJob 服务端 -->
-        <snail-job.version>1.8.0</snail-job.version>
+        <snail-job.version>1.10.0</snail-job.version>
     </properties>
 
     <dependencies>
@@ -34,6 +34,21 @@
             <artifactId>liquibase-core</artifactId>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 锁定与 SnailJob 服务端一致的 MyBatis Plus 版本：
+                 父 POM 管理的 3.5.17 移除了 MybatisSqlSessionFactoryBean，
+                 会导致 SnailJob 服务端启动时 NoClassDefFoundError -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>3.5.14</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <!-- 设置构建的 jar 包名 -->

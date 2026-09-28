@@ -534,3 +534,19 @@ CREATE TABLE `sj_job_executor`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4 COMMENT ='任务执行器信息';
+-- changeset snail-job-server:1.10.0
+-- 1.10.0 为任务与工作流引入业务 ID：sj_job.biz_id 与 sj_workflow.biz_id，
+-- 并以 (namespace_id, biz_id) 唯一约束替代原有任务定位方式；
+-- 历史数据 biz_id 先回填为 id，保证非空约束与唯一索引可用。
+ALTER TABLE `sj_job`
+    ADD COLUMN `biz_id` varchar(64) NOT NULL DEFAULT '' COMMENT '业务ID' AFTER `namespace_id`;
+ALTER TABLE `sj_workflow`
+    ADD COLUMN `biz_id` varchar(64) NOT NULL DEFAULT '' COMMENT '业务ID' AFTER `namespace_id`;
+
+UPDATE `sj_job` SET `biz_id` = CAST(`id` AS CHAR) WHERE `biz_id` = '';
+UPDATE `sj_workflow` SET `biz_id` = CAST(`id` AS CHAR) WHERE `biz_id` = '';
+
+ALTER TABLE `sj_job`
+    ADD UNIQUE KEY `uk_sj_job_01` (`namespace_id`, `biz_id`);
+ALTER TABLE `sj_workflow`
+    ADD UNIQUE KEY `uk_sj_workflow_01` (`namespace_id`, `biz_id`);

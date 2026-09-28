@@ -853,3 +853,18 @@ COMMENT ON COLUMN sj_job_executor.executor_type IS '1:java 2:python 3:go';
 COMMENT ON COLUMN sj_job_executor.create_dt IS '创建时间';
 COMMENT ON COLUMN sj_job_executor.update_dt IS '修改时间';
 COMMENT ON TABLE sj_job_executor IS '任务执行器信息';
+
+-- changeset snail-job-server:1.10.0
+-- 1.10.0 为任务与工作流引入业务 ID：sj_job.biz_id 与 sj_workflow.biz_id，
+-- 并以 (namespace_id, biz_id) 唯一约束替代原有任务定位方式；
+-- 历史数据 biz_id 先回填为 id，保证非空约束与唯一索引可用。
+ALTER TABLE sj_job ADD COLUMN biz_id varchar(64) NOT NULL DEFAULT '';
+ALTER TABLE sj_workflow ADD COLUMN biz_id varchar(64) NOT NULL DEFAULT '';
+
+UPDATE sj_job SET biz_id = CAST(id AS varchar) WHERE biz_id = '';
+UPDATE sj_workflow SET biz_id = CAST(id AS varchar) WHERE biz_id = '';
+
+CREATE UNIQUE INDEX uk_sj_job_01 ON sj_job (namespace_id, biz_id);
+CREATE UNIQUE INDEX uk_sj_workflow_01 ON sj_workflow (namespace_id, biz_id);
+COMMENT ON COLUMN sj_job.biz_id IS '业务ID';
+COMMENT ON COLUMN sj_workflow.biz_id IS '业务ID';
