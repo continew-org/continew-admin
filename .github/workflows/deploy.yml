@@ -10,49 +10,43 @@ on:
 permissions:
   contents: read
 
+# 部署不可中途取消（避免容器重建被打断），连续触发时排队执行
+concurrency:
+  group: deploy-server
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy server
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
+    timeout-minutes: 30
     steps:
       # 1、检出源码
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # 2、移除 POM 中的国内镜像仓库（CI 环境不稳定）
-      - name: Remove repository mirrors
-        run: |
-          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
-          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
-      # 3、安装 Java 环境
-      - name: Setup Java
-        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
-        with:
-          java-version: 17
-          distribution: temurin
-          cache: maven
-      # 4、打包
+      # 2、打包（容器内构建：mvnw/pom 插件/注解处理器等构建期代码不触达宿主机，
+      #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）
       - name: Build
-        run: ./mvnw -B package
-      # 5、拷贝到服务器
+        run: >
+          docker run --rm
+          --memory=6g --cpus=4
+          -v "$PWD":/ws -v /root/.m2:/root/.m2 -w /ws
+          maven:3.9-eclipse-temurin-17
+          ./mvnw -B package
+      # 3、同步到服务器部署目录（runner 与部署机同机，本地 rsync 即可）
+      #    lib/ 与 bin/ 为纯构建产物，用 --delete 清理升级后遗留的旧依赖/旧 jar，
+      #    防止宿主 lib/ 堆积导致 classpath 多版本共存（如 snail-job 三代同存）；
+      #    config/ 来自构建产物普通同步；Dockerfile 不属于构建产物（在仓库 docker/ 下），
+      #    单独从源码同步，保证 docker-compose --build 的构建上下文完整且不依赖历史遗留。
       - name: Copy
-        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          source: ./continew-server/target/app/*
-          target: ${{ secrets.SERVER_PATH }}/continew-admin
-          strip_components: 3
-      # 6、启动
+        run: |
+          rsync -a --delete continew-server/target/app/lib/ ${{ secrets.SERVER_PATH }}/continew-admin/lib/
+          rsync -a --delete continew-server/target/app/bin/ ${{ secrets.SERVER_PATH }}/continew-admin/bin/
+          rsync -a continew-server/target/app/config/ ${{ secrets.SERVER_PATH }}/continew-admin/config/
+          rsync -a docker/continew-admin/Dockerfile ${{ secrets.SERVER_PATH }}/continew-admin/Dockerfile
+      # 5、启动
       - name: Start
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            cd ${{ secrets.SERVER_PATH }}
-            docker-compose up --force-recreate --build -d continew-server
-            docker images | grep none | awk '{print $3}' | xargs -r docker rmi
+        run: |
+          cd ${{ secrets.SERVER_PATH }}
+          docker-compose up --force-recreate --build -d continew-server
+          docker images | grep none | awk '{print $3}' | xargs -r docker rmi
