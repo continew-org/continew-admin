@@ -69,7 +69,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(ContiNewAdminApplication.class);
         application.setDefaultProperties(
-            MapUtil.of("continew-starter.version", ContiNewStarterVersion.getVersion()));
+            MapUtil.of("continew-starter.version", ContiNewStarterVersion.VERSION));
         application.run(args);
     }
 
@@ -88,7 +88,7 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         String baseUrl = URLUtil.normalize("%s:%s%s".formatted(hostAddress, port, contextPath));
         log.info("--------------------------------------------------------");
         log.info("{} server started successfully.", applicationProperties.getName());
-        log.info("ContiNew Starter: v{} (Spring Boot: v{})", ContiNewStarterVersion.getVersion(),
+        log.info("ContiNew Starter: v{} (Spring Boot: v{})", ContiNewStarterVersion.VERSION,
             SpringBootVersion
                 .getVersion());
         log.info("当前版本: v{} (Profile: {})", applicationProperties.getVersion(), SpringUtil

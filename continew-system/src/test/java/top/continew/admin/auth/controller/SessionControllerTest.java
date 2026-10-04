@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import top.continew.admin.auth.service.RefreshAccessTokenIssuer;
-import top.continew.admin.auth.service.RefreshTokenService;
-import top.continew.admin.auth.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

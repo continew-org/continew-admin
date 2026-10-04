@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.auth.adapter.DeptUserPolicyLockTargetResolver;
-import top.continew.admin.auth.api.AuthPolicyWriteLocked;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.DeptMapper;

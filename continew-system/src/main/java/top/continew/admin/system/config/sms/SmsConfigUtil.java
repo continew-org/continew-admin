@@ -25,7 +25,7 @@ import org.dromara.sms4j.provider.config.BaseConfig;
 import org.dromara.sms4j.provider.factory.BaseProviderFactory;
 import org.dromara.sms4j.provider.factory.ProviderFactoryHolder;
 import top.continew.admin.system.model.resp.SmsConfigResp;
-import top.continew.starter.json.jackson.util.JSONUtils;
+import top.continew.starter.json.jackson.util.JsonUtils;
 
 import java.util.Map;
 
@@ -72,7 +72,7 @@ public class SmsConfigUtil {
             configInfo.put("maxRetries", smsConfig.getMaxRetries());
         }
         if (StrUtil.isNotBlank(smsConfig.getSupplierConfig())) {
-            configInfo.putAll(JSONUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
+            configInfo.putAll(JsonUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
         }
         return (BaseConfig) BeanUtil.toBean(configInfo, providerFactory.getConfigClass());
     }

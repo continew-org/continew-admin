@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.continew.admin.auth.api.AuthPolicyWriteLocked;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.admin.tenant.auth.PackageTenantPolicyLockTargetResolver;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;

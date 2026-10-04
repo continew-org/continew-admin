@@ -24,9 +24,9 @@ import top.continew.admin.common.base.model.resp.BaseDetailResp;
 import top.continew.admin.common.config.excel.DictExcelProperty;
 import top.continew.admin.common.config.excel.ExcelDictConverter;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.auth.enums.RefreshTokenModeEnum;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
+import top.continew.starter.auth.refresh.token.enums.RefreshTokenModeEnum;
 import top.continew.starter.excel.converter.ExcelBaseEnumConverter;
 import top.continew.starter.excel.converter.ExcelListConverter;
 

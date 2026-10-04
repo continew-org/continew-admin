@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.admin.auth.web;
+package top.continew.admin.common.config.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import top.continew.admin.auth.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
 import top.continew.starter.web.model.R;
 
 /** Refresh Token HTTP 协议异常处理器。 */

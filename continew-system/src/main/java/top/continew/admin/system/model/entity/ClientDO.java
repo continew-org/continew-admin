@@ -22,9 +22,9 @@ import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.Data;
 import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.auth.enums.RefreshTokenModeEnum;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
+import top.continew.starter.auth.refresh.token.enums.RefreshTokenModeEnum;
 
 import java.io.Serial;
 import java.util.List;

@@ -32,7 +32,7 @@ import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.MenuService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.core.util.UrlUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
@@ -73,11 +73,11 @@ public class MenuController
         MenuReq req = (MenuReq) args[0];
         Boolean isExternal = ObjectUtil.defaultIfNull(req.getIsExternal(), false);
         String path = req.getPath();
-        ValidationUtils.throwIf(Boolean.TRUE.equals(isExternal) && !URLUtils
+        ValidationUtils.throwIf(Boolean.TRUE.equals(isExternal) && !UrlUtils
             .isHttpUrl(path), "路由地址格式不正确，请以 http:// 或 https:// 开头");
         // 非外链菜单参数修正
         if (Boolean.FALSE.equals(isExternal)) {
-            ValidationUtils.throwIf(URLUtils.isHttpUrl(path), "路由地址格式不正确");
+            ValidationUtils.throwIf(UrlUtils.isHttpUrl(path), "路由地址格式不正确");
             req.setPath(StrUtil.isBlank(path) ? path
                 : StrUtil.prependIfMissing(path, StringConstants.SLASH));
             req.setName(StrUtil.removePrefix(req.getName(), StringConstants.SLASH));

@@ -25,7 +25,7 @@ import top.continew.admin.system.model.req.StorageReq;
 import top.continew.admin.system.validation.ValidationGroup;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.enums.BaseEnum;
-import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.core.util.UrlUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.storage.common.constant.StorageConstant;
 
@@ -47,7 +47,7 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
         @Override
         public void validate(StorageReq req) {
             ValidationUtils.validate(req, ValidationGroup.Storage.Local.class);
-            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !URLUtils.isHttpUrl(req
+            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !UrlUtils.isHttpUrl(req
                 .getDomain()), "访问路径格式不正确");
         }
 

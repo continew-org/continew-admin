@@ -25,23 +25,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import top.continew.admin.auth.enums.RefreshTokenModeEnum;
-import top.continew.admin.auth.model.AuthSecurityVersion;
-import top.continew.admin.auth.model.RefreshSession;
-import top.continew.admin.auth.model.RefreshClientPolicy;
+import top.continew.starter.auth.refresh.token.enums.RefreshTokenModeEnum;
+import top.continew.starter.auth.refresh.token.model.AuthSecurityVersion;
+import top.continew.starter.auth.refresh.token.model.RefreshSession;
+import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
 import top.continew.admin.auth.adapter.RefreshClientPolicyMapper;
+import top.continew.admin.auth.adapter.RefreshSessionPrincipalAdapter;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
-import top.continew.admin.auth.service.RefreshTokenService;
-import top.continew.admin.auth.service.RefreshTokenService.LoginAttempt;
-import top.continew.admin.auth.api.AuthSessionConstants;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService.LoginAttempt;
+import top.continew.starter.auth.refresh.token.api.AuthSessionConstants;
 import top.continew.admin.common.api.tenant.TenantApi;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.context.UserExtraContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.auth.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
@@ -159,7 +160,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
         RefreshClientPolicy refreshClientPolicy = RefreshClientPolicyMapper.from(client);
         long accessTokenTimeout = this.getEffectiveAccessTokenTimeout(client.getTimeout(),
-            issueRefreshToken ? refreshTokenService.getRefreshTimeout(refreshClientPolicy)
+            issueRefreshToken ? refreshClientPolicy.refreshTokenTimeout()
                 : this.remainingSeconds(refreshSession.getExpiresAt()));
 
         // Sa-Token 只管理短期 Access Token 的生命周期。并发登录、顶人范围和最大登录
@@ -203,13 +204,11 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             // 新登录创建 Refresh Session。浏览器明文只进入 HttpOnly Cookie；BODY 模式
             // 将明文返回给 App / 微信小程序客户端。
             if (issueRefreshToken) {
-                String refreshToken =
-                    refreshTokenService.issue(sessionId, userContext, refreshClientPolicy,
-                        extraContext, securityVersion, response, accessToken, accessTokenTimeout);
-                loginResp.setRefreshExpiresIn(
-                    refreshTokenService.getRefreshTimeout(refreshClientPolicy));
-                if (RefreshTokenModeEnum.BODY
-                    .equals(refreshTokenService.getMode(refreshClientPolicy))) {
+                String refreshToken = refreshTokenService.issue(sessionId,
+                    new RefreshSessionPrincipalAdapter(userContext, extraContext),
+                    refreshClientPolicy, securityVersion, response);
+                loginResp.setRefreshExpiresIn(refreshClientPolicy.refreshTokenTimeout());
+                if (RefreshTokenModeEnum.BODY.equals(refreshClientPolicy.refreshTokenMode())) {
                     loginResp.setRefreshToken(refreshToken);
                 }
             }

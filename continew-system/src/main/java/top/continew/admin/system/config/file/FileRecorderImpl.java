@@ -34,7 +34,7 @@ import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
-import top.continew.starter.core.util.URLUtils;
+import top.continew.starter.core.util.UrlUtils;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 import top.continew.starter.storage.domain.model.resp.FilePartInfo;
 import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
@@ -78,12 +78,12 @@ public class FileRecorderImpl implements FileRecorder {
         file.setStorageId(storage.getId());
         boolean saved = fileMapper.insert(file) > 0;
         fileInfo.setFileId(String.valueOf(file.getId()));
-        if (!URLUtils.isHttpUrl(fileInfo.getUrl())) {
+        if (!UrlUtils.isHttpUrl(fileInfo.getUrl())) {
             String prefix = storage.getUrlPrefix();
             String url = URLUtil.normalize(prefix + fileInfo.getPath(), false, true);
             fileInfo.setUrl(url);
             if (StrUtil.isNotBlank(fileInfo.getThumbnailPath())
-                && !URLUtils.isHttpUrl(fileInfo.getThumbnailPath())) {
+                && !UrlUtils.isHttpUrl(fileInfo.getThumbnailPath())) {
                 fileInfo.setThumbnailPath(
                     URLUtil.normalize(prefix + fileInfo.getThumbnailPath(), false, true));
             }
@@ -322,7 +322,7 @@ public class FileRecorderImpl implements FileRecorder {
         LambdaQueryChainWrapper<FileDO> queryWrapper = fileMapper.lambdaQuery()
             .eq(FileDO::getName, StrUtil.subAfter(url, StringConstants.SLASH, true));
         // 非 HTTP URL 场景
-        if (!URLUtils.isHttpUrl(url)) {
+        if (!UrlUtils.isHttpUrl(url)) {
             return queryWrapper
                 .eq(FileDO::getPath, StrUtil.prependIfMissing(url, StringConstants.SLASH)).one();
         }

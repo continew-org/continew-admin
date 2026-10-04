@@ -38,7 +38,8 @@ public class AccessTokenSecretValidator {
     public void validate() {
         String accessSecret = this.bindSecret("sa-token.jwt-secret-key",
             "Access Token JWT 密钥");
-        String refreshSecret = this.bindSecret("auth.refresh-token.secret", "Refresh Token 密钥");
+        String refreshSecret = this.bindSecret("continew-starter.refresh-token.secret",
+            "Refresh Token 密钥");
         if (MessageDigest.isEqual(accessSecret.getBytes(StandardCharsets.UTF_8),
             refreshSecret.getBytes(StandardCharsets.UTF_8))) {
             throw new IllegalStateException(

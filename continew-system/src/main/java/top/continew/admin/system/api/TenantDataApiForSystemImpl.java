@@ -32,7 +32,7 @@ import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.common.model.dto.TenantDTO;
 import top.continew.admin.common.util.SecureUtils;
-import top.continew.admin.auth.service.SessionInvalidationService;
+import top.continew.starter.auth.refresh.token.service.SessionInvalidationService;
 import top.continew.admin.system.mapper.DeptMapper;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.mapper.MessageMapper;

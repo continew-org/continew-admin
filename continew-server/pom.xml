@@ -22,11 +22,6 @@
             <artifactId>continew-system</artifactId>
         </dependency>
 
-        <!-- 认证会话模块（拦截器与 Refresh / Logout HTTP 端点） -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>continew-auth-refresh</artifactId>
-        </dependency>
 
         <!-- 能力开放插件 -->
         <dependency>

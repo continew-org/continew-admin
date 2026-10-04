@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import top.continew.admin.auth.api.AccessSessionValidator;
+import top.continew.starter.auth.refresh.token.api.AccessSessionValidator;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;

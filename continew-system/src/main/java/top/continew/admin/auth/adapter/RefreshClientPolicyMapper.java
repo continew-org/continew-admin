@@ -16,9 +16,9 @@
 
 package top.continew.admin.auth.adapter;
 
-import top.continew.admin.auth.enums.LogoutReasonEnum;
-import top.continew.admin.auth.enums.SessionReplacementScope;
-import top.continew.admin.auth.model.RefreshClientPolicy;
+import top.continew.starter.auth.refresh.token.enums.LogoutReasonEnum;
+import top.continew.starter.auth.refresh.token.enums.SessionReplacementScope;
+import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
 import top.continew.admin.system.model.resp.ClientResp;

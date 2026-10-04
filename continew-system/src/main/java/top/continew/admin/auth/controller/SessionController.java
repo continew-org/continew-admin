@@ -34,9 +34,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.req.RefreshTokenReq;
 import top.continew.admin.auth.model.resp.LoginResp;
-import top.continew.admin.auth.service.RefreshAccessTokenIssuer;
-import top.continew.admin.auth.service.RefreshTokenService;
-import top.continew.admin.auth.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.model.RefreshIssueResult;
+import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
 import top.continew.starter.extension.tenant.annotation.TenantIgnore;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.log.enums.Include;
@@ -63,12 +64,14 @@ public class SessionController {
     @PostMapping("/refresh")
     public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq req,
         HttpServletRequest request, HttpServletResponse response) {
-        String rawRefreshToken = refreshTokenService.resolve(req == null ? null : req
-            .getRefreshToken(), request);
-        refreshTokenService.checkRequestRateLimit(request);
-        refreshTokenService.validateRequest(rawRefreshToken, request);
-        return refreshTokenService.rotate(rawRefreshToken, response,
-            session -> refreshAccessTokenIssuer.issue(session, request, response));
+        // 四步安全钩子（解析 → 限流 → 来源校验 → 原子轮换）由 Starter 的 refresh 模板固化编排
+        RefreshIssueResult result = refreshTokenService.refresh(req == null ? null : req
+            .getRefreshToken(), request, response, session -> refreshAccessTokenIssuer.issue(session,
+                request, response));
+        return LoginResp.builder().accessToken(result.getAccessToken())
+            .tokenType(result.getTokenType()).expiresIn(result.getExpiresIn())
+            .refreshExpiresIn(result.getRefreshExpiresIn()).refreshToken(result.getRefreshToken())
+            .tenantId(result.getTenantId()).build();
     }
 
     /** 注销当前认证会话。 */

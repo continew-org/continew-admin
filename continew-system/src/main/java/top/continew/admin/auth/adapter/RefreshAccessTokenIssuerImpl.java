@@ -21,13 +21,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.continew.admin.auth.model.RefreshSession;
+import top.continew.starter.auth.refresh.token.model.IssuedAccessToken;
+import top.continew.starter.auth.refresh.token.model.RefreshSession;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
-import top.continew.admin.auth.service.RefreshAccessTokenIssuer;
+import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
 import top.continew.admin.common.api.tenant.TenantApi;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.auth.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.service.ClientService;
@@ -48,7 +49,7 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
     private final UserService userService;
 
     @Override
-    public LoginResp issue(RefreshSession session, HttpServletRequest request,
+    public IssuedAccessToken issue(RefreshSession session, HttpServletRequest request,
         HttpServletResponse response) {
         ClientResp client = clientService.getByClientId(session.getClientId());
         if (client == null || DisEnableStatusEnum.DISABLE.equals(client.getStatus())) {
@@ -65,7 +66,9 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
         if (userReference.get() == null || StrUtil.isBlank(userReference.get().getUsername())) {
             throw RefreshTokenException.unauthorized("登录状态已失效，请重新登录");
         }
-        return authTokenService.issueAccessToken(userReference.get(), client, session.getTenantId(),
-            session, request, response);
+        LoginResp loginResp = authTokenService.issueAccessToken(userReference.get(), client,
+            session.getTenantId(), session, request, response);
+        return new IssuedAccessToken(loginResp.getAccessToken(), loginResp.getExpiresIn(),
+            loginResp.getTenantId());
     }
 }

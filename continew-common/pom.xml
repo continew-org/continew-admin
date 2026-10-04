@@ -114,6 +114,18 @@
             <artifactId>continew-starter-auth-justauth</artifactId>
         </dependency>
 
+        <!-- ContiNew Starter 认证模块 - Refresh Token（可轮换的登录会话） -->
+        <dependency>
+            <groupId>top.continew.starter</groupId>
+            <artifactId>continew-starter-auth-refresh-token</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- ContiNew Starter 加密模块 - 字段加密 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
