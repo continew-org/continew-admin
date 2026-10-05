@@ -16,12 +16,11 @@
 
 package top.continew.admin.system.controller;
 
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import cn.hutool.core.util.StrUtil;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.util.SecureUtils;
@@ -57,6 +55,8 @@ import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.validation.constraints.EnumValue;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 

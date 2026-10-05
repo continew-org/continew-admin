@@ -17,10 +17,10 @@
 package top.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 
+import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

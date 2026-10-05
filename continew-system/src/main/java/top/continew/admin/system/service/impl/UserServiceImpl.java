@@ -16,7 +16,13 @@
 
 package top.continew.admin.system.service.impl;
 
-import top.continew.admin.common.constant.GlobalConstants;
+import static top.continew.admin.system.enums.ImportPolicyEnum.EXIT;
+import static top.continew.admin.system.enums.ImportPolicyEnum.SKIP;
+import static top.continew.admin.system.enums.ImportPolicyEnum.UPDATE;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_ALLOW_CONTAIN_USERNAME;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_MIN_LENGTH;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REPETITION_TIMES;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REQUIRE_SYMBOLS;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -39,8 +45,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.ahoo.cosid.IdGenerator;
@@ -52,10 +56,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.starter.auth.refresh.token.support.UserArgumentPolicyLockTargetResolver;
-import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
@@ -86,6 +89,8 @@ import top.continew.admin.system.service.UserPasswordHistoryService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.admin.system.service.UserService;
 import top.continew.admin.system.service.UserSocialService;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
+import top.continew.starter.auth.refresh.token.support.UserArgumentPolicyLockTargetResolver;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
@@ -99,6 +104,8 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -113,14 +120,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static top.continew.admin.system.enums.ImportPolicyEnum.EXIT;
-import static top.continew.admin.system.enums.ImportPolicyEnum.SKIP;
-import static top.continew.admin.system.enums.ImportPolicyEnum.UPDATE;
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_ALLOW_CONTAIN_USERNAME;
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_MIN_LENGTH;
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REPETITION_TIMES;
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_REQUIRE_SYMBOLS;
 
 /**
  * 用户业务实现

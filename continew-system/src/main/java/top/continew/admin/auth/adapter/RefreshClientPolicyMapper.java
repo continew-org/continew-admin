@@ -16,12 +16,12 @@
 
 package top.continew.admin.auth.adapter;
 
-import top.continew.starter.auth.refresh.token.enums.LogoutReasonEnum;
-import top.continew.starter.auth.refresh.token.enums.SessionReplacementScope;
-import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
 import top.continew.admin.system.enums.LogoutModeEnum;
 import top.continew.admin.system.enums.ReplacedRangeEnum;
 import top.continew.admin.system.model.resp.ClientResp;
+import top.continew.starter.auth.refresh.token.enums.LogoutReasonEnum;
+import top.continew.starter.auth.refresh.token.enums.SessionReplacementScope;
+import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
 
 /**
  * 系统客户端配置到认证会话策略的边界转换器。

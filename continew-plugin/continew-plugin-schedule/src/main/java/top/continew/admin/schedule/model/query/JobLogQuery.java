@@ -17,11 +17,11 @@
 package top.continew.admin.schedule.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import top.continew.admin.schedule.enums.JobExecuteStatusEnum;
 import top.continew.starter.validation.constraints.EnumValue;
 
+import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDateTime;
 

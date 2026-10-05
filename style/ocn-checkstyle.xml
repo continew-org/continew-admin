@@ -52,6 +52,13 @@
         <module name="AvoidStarImport"/>
         <module name="UnusedImports"/>
         <module name="RedundantImport"/>
+        <!-- import 排序与分组：静态导入置顶，JDK 平台组（java/javax/jakarta）收尾，组内按字典序、组间空行分隔（Spotless 只清理不排序，顺序由本规则约束） -->
+        <module name="CustomImportOrder">
+            <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS"/>
+            <property name="specialImportsRegExp" value="^(java|javax|jakarta)\."/>
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+        </module>
         
         <!-- Block Checker -->
         <module name="EmptyBlock">

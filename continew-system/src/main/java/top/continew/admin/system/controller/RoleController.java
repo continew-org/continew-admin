@@ -23,8 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,8 +35,8 @@ import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.system.model.query.RoleQuery;
 import top.continew.admin.system.model.query.RoleUserQuery;
-import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.req.RolePermissionUpdateReq;
+import top.continew.admin.system.model.req.RoleReq;
 import top.continew.admin.system.model.resp.role.RoleDetailResp;
 import top.continew.admin.system.model.resp.role.RolePermissionResp;
 import top.continew.admin.system.model.resp.role.RoleResp;
@@ -51,6 +49,8 @@ import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**

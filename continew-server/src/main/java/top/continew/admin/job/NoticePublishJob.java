@@ -16,8 +16,6 @@
 
 package top.continew.admin.job;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.aizuda.snailjob.client.job.core.annotation.JobExecutor;
@@ -27,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.schedule.annotation.ConditionalOnEnabledScheduleJob;
 import top.continew.admin.system.enums.NoticeMethodEnum;
 import top.continew.admin.system.enums.NoticeStatusEnum;

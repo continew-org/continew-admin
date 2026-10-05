@@ -16,6 +16,9 @@
 
 package top.continew.admin.common.config.doc;
 
+import static org.springdoc.core.converters.ConverterUtils.isResponseTypeWrapper;
+import static org.springdoc.core.utils.SpringDocAnnotationsUtils.extractSchema;
+
 import cn.hutool.core.util.ClassUtil;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.models.Components;
@@ -36,9 +39,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-
-import static org.springdoc.core.converters.ConverterUtils.isResponseTypeWrapper;
-import static org.springdoc.core.utils.SpringDocAnnotationsUtils.extractSchema;
 
 /**
  * 全局响应操作自定义器

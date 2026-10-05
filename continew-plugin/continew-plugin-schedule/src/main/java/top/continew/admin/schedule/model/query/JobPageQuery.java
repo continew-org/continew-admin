@@ -17,10 +17,10 @@
 package top.continew.admin.schedule.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import jakarta.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
 

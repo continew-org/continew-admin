@@ -16,13 +16,12 @@
 
 package top.continew.admin.common.config.mybatis;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
-import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.base.model.entity.BaseDO;
+import top.continew.admin.common.constant.GlobalConstants;
+import top.continew.admin.common.context.UserContextHolder;
 
 import java.time.LocalDateTime;
 

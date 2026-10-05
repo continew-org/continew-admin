@@ -22,9 +22,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
@@ -47,10 +44,13 @@ import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.auth.justauth.AuthRequestFactory;
-import top.continew.starter.log.enums.Include;
 import top.continew.starter.log.annotation.Log;
+import top.continew.starter.log.enums.Include;
 import top.continew.starter.validation.constraints.EnumValue;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

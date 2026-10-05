@@ -23,7 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +47,7 @@ import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 

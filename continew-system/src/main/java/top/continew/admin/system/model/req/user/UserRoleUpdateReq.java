@@ -17,9 +17,9 @@
 package top.continew.admin.system.model.req.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;

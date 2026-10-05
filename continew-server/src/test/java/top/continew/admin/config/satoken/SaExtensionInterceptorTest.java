@@ -16,6 +16,15 @@
 
 package top.continew.admin.config.satoken;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.context.SaTokenContextForThreadLocal;
 import cn.dev33.satoken.servlet.model.SaRequestForServlet;
@@ -33,19 +42,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import top.continew.starter.auth.refresh.token.api.AccessSessionValidator;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
+import top.continew.starter.auth.refresh.token.api.AccessSessionValidator;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 /**
  * SaExtensionInterceptor 短路路径线程本地清理测试。

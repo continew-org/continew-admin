@@ -16,17 +16,16 @@
 
 package top.continew.admin.common.context;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.IpUtils;
 import top.continew.starter.core.util.ServletUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

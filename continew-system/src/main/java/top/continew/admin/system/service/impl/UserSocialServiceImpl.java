@@ -16,13 +16,12 @@
 
 package top.continew.admin.system.service.impl;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthUser;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.mapper.user.UserSocialMapper;
 import top.continew.admin.system.model.entity.user.UserSocialDO;

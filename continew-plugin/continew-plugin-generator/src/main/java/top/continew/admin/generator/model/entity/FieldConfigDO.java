@@ -23,8 +23,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -32,6 +30,8 @@ import top.continew.admin.generator.enums.FormTypeEnum;
 import top.continew.admin.generator.enums.QueryTypeEnum;
 import top.continew.starter.core.constant.StringConstants;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

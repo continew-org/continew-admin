@@ -17,19 +17,19 @@
 package top.continew.admin.system.model.req.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
-import top.continew.starter.validation.constraints.Mobile;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
+import top.continew.starter.validation.constraints.Mobile;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;

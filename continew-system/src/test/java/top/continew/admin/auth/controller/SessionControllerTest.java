@@ -16,16 +16,6 @@
 
 package top.continew.admin.auth.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
-import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
-import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -34,6 +24,16 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import cn.dev33.satoken.stp.StpUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
 
 /** logout Cookie 安全边界测试。 */
 class SessionControllerTest {

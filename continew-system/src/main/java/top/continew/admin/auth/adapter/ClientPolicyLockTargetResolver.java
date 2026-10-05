@@ -19,10 +19,10 @@ package top.continew.admin.auth.adapter;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTarget;
-import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTargetResolver;
 import top.continew.admin.system.mapper.ClientMapper;
 import top.continew.admin.system.model.entity.ClientDO;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTarget;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTargetResolver;
 
 import java.util.Collection;
 import java.util.List;

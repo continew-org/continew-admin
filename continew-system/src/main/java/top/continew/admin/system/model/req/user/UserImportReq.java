@@ -17,12 +17,12 @@
 package top.continew.admin.system.model.req.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.enums.ImportPolicyEnum;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 

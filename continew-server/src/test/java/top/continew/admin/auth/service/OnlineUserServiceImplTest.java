@@ -16,6 +16,11 @@
 
 package top.continew.admin.auth.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
@@ -31,11 +36,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 /** 在线用户以 Refresh Session 为事实源测试。 */
 class OnlineUserServiceImplTest {

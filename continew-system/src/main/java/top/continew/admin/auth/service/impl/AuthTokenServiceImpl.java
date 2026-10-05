@@ -16,33 +16,25 @@
 
 package top.continew.admin.auth.service.impl;
 
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
+
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
 import cn.hutool.core.bean.BeanUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import top.continew.starter.auth.refresh.token.enums.RefreshTokenModeEnum;
-import top.continew.starter.auth.refresh.token.model.AuthSecurityVersion;
-import top.continew.starter.auth.refresh.token.model.RefreshSession;
-import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
 import top.continew.admin.auth.adapter.RefreshClientPolicyMapper;
 import top.continew.admin.auth.adapter.RefreshSessionPrincipalAdapter;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
-import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
-import top.continew.starter.auth.refresh.token.service.RefreshTokenService.LoginAttempt;
-import top.continew.starter.auth.refresh.token.api.AuthSessionConstants;
 import top.continew.admin.common.api.tenant.TenantApi;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.context.UserExtraContext;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
 import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
@@ -51,21 +43,29 @@ import top.continew.admin.system.service.DeptService;
 import top.continew.admin.system.service.OptionService;
 import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserService;
+import top.continew.starter.auth.refresh.token.api.AuthSessionConstants;
+import top.continew.starter.auth.refresh.token.enums.RefreshTokenModeEnum;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.model.AuthSecurityVersion;
+import top.continew.starter.auth.refresh.token.model.RefreshClientPolicy;
+import top.continew.starter.auth.refresh.token.model.RefreshSession;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService;
+import top.continew.starter.auth.refresh.token.service.RefreshTokenService.LoginAttempt;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 import top.continew.starter.extension.tenant.util.TenantUtils;
 
-import java.util.HashSet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-
-import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
 
 /**
  * 统一 Access Token 签发实现。

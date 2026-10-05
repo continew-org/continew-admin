@@ -17,11 +17,11 @@
 package top.continew.admin.system.model.req.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.starter.validation.constraints.Mobile;
 
+import jakarta.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
 

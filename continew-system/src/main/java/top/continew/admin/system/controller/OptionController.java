@@ -20,7 +20,6 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,6 +33,7 @@ import top.continew.admin.system.model.req.OptionValueResetReq;
 import top.continew.admin.system.model.resp.OptionResp;
 import top.continew.admin.system.service.OptionService;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 /**

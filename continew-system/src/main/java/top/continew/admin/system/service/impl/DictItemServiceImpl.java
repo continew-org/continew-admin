@@ -20,7 +20,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +38,7 @@ import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 
+import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

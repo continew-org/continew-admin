@@ -16,12 +16,12 @@
 
 package top.continew.admin.config.satoken;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 

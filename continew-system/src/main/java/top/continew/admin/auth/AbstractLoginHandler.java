@@ -16,9 +16,6 @@
 
 package top.continew.admin.auth;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.model.req.LoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
@@ -30,6 +27,10 @@ import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.util.validation.Validator;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
+
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 登录处理器基类

@@ -16,8 +16,6 @@
 
 package top.continew.admin.auth.handler;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.AbstractLoginHandler;
 import top.continew.admin.auth.enums.AuthTypeEnum;
@@ -28,6 +26,9 @@ import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 手机号登录处理器

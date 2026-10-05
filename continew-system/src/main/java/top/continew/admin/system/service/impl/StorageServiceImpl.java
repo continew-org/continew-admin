@@ -18,7 +18,6 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +45,7 @@ import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.strategy.impl.LocalStorageStrategy;
 import top.continew.starter.storage.strategy.impl.OssStorageStrategy;
 
+import jakarta.annotation.Resource;
 import java.util.List;
 
 /**

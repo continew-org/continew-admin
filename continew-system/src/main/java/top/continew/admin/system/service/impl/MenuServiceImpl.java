@@ -21,7 +21,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.Cached;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -47,6 +46,7 @@ import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
