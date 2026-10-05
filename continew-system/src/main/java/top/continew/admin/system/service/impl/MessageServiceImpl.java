@@ -82,9 +82,11 @@ public class MessageServiceImpl implements MessageService {
         messageLogService.addWithUserId(CollUtil.isNotEmpty(ids)
             ? CollUtil.intersection(unreadIds, ids).stream().toList()
             : unreadIds, userId);
-        WebSocketUtils.sendMessage(StpUtil.getTokenValueByLoginId(userId), String.valueOf(baseMapper
-            .selectUnreadListByUserId(userId)
-            .size()));
+        // 遍历该用户全部在线令牌推送未读数：多会话并发时仅取最新令牌会遗漏其余会话；
+        // sendMessageToAll 覆盖同一令牌下多标签页的全部连接
+        String unreadCount = String.valueOf(baseMapper.selectUnreadListByUserId(userId).size());
+        StpUtil.getTokenValueListByLoginId(userId)
+            .forEach(token -> WebSocketUtils.sendMessageToAll(token, unreadCount));
     }
 
     @Override
@@ -123,7 +125,7 @@ public class MessageServiceImpl implements MessageService {
             // 放到 ForkJoinPool 公共池上既拿不到事务与租户上下文，也会阻塞公共池
             userIdList.forEach(userId -> {
                 List<String> tokenList = StpUtil.getTokenValueListByLoginId(userId);
-                tokenList.forEach(token -> WebSocketUtils.sendMessage(token, "1"));
+                tokenList.forEach(token -> WebSocketUtils.sendMessageToAll(token, "1"));
             });
             return;
         }
