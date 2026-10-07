@@ -24,6 +24,7 @@ target/
 !.codebuddy/skills/
 !.codebuddy/skills/**
 !.codebuddy/.mcp.json
+.zcodeignore
 
 # Temp
 *.log
