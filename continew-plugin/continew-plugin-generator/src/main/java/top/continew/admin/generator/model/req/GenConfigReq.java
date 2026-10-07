@@ -17,13 +17,13 @@
 package top.continew.admin.generator.model.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import top.continew.admin.generator.model.entity.FieldConfigDO;
 import top.continew.admin.generator.model.entity.GenConfigDO;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;

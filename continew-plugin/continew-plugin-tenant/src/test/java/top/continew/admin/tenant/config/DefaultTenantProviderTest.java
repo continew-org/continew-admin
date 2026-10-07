@@ -16,6 +16,12 @@
 
 package top.continew.admin.tenant.config;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +31,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import top.continew.admin.common.config.TenantExtensionProperties;
 import top.continew.admin.tenant.service.TenantService;
 import top.continew.starter.extension.tenant.context.TenantContext;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 /**
  * 默认租户提供者测试：验证刷新/退出时请求入口忽略残留租户头，而业务代码显式切换的

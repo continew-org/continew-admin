@@ -19,14 +19,12 @@ package top.continew.admin.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.auth.adapter.DeptUserPolicyLockTargetResolver;
-import top.continew.admin.auth.api.AuthPolicyWriteLocked;
+import top.continew.admin.auth.service.OnlineUserService;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.mapper.DeptMapper;
@@ -37,11 +35,12 @@ import top.continew.admin.system.model.resp.DeptResp;
 import top.continew.admin.system.service.DeptService;
 import top.continew.admin.system.service.RoleDeptService;
 import top.continew.admin.system.service.UserService;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.data.enums.DatabaseType;
 import top.continew.starter.data.util.MetaUtils;
 
-import javax.sql.DataSource;
+import jakarta.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,6 +48,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.sql.DataSource;
 
 /**
  * 部门业务实现

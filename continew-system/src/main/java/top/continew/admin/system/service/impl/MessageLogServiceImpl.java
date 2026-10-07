@@ -16,11 +16,10 @@
 
 package top.continew.admin.system.service.impl;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.system.mapper.MessageLogMapper;
 import top.continew.admin.system.model.entity.MessageLogDO;
 import top.continew.admin.system.service.MessageLogService;

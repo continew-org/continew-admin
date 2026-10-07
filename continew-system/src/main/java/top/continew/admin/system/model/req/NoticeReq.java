@@ -21,13 +21,13 @@ import cn.sticki.spel.validator.constrain.SpelNotEmpty;
 import cn.sticki.spel.validator.constrain.SpelNotNull;
 import cn.sticki.spel.validator.jakarta.SpelValid;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.system.enums.NoticeScopeEnum;
 import top.continew.admin.system.enums.NoticeStatusEnum;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

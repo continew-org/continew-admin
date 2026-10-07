@@ -17,7 +17,6 @@
 package top.continew.admin.tenant.config;
 
 import cn.hutool.core.util.StrUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import top.continew.admin.common.config.TenantExtensionProperties;
 import top.continew.admin.tenant.service.TenantService;
@@ -25,6 +24,8 @@ import top.continew.starter.core.util.ServletUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.context.TenantContext;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 默认租户提供者

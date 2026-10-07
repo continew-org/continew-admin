@@ -16,8 +16,8 @@
 
 package top.continew.admin.system.mapper;
 
-import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.admin.system.model.entity.SmsConfigDO;
+import top.continew.starter.data.mapper.BaseMapper;
 
 /**
  * 短信配置 Mapper

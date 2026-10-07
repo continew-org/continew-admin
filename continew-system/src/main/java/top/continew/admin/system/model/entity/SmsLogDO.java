@@ -18,8 +18,8 @@ package top.continew.admin.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import top.continew.admin.common.enums.SuccessFailureStatusEnum;
 import top.continew.admin.common.base.model.entity.BaseCreateDO;
+import top.continew.admin.common.enums.SuccessFailureStatusEnum;
 
 import java.io.Serial;
 

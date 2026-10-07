@@ -18,9 +18,9 @@ package top.continew.admin.tenant.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.continew.admin.auth.api.AuthPolicyLockTarget;
-import top.continew.admin.auth.api.AuthPolicyLockTargetResolver;
 import top.continew.admin.common.api.tenant.TenantApi;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTarget;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTargetResolver;
 
 import java.util.Collection;
 

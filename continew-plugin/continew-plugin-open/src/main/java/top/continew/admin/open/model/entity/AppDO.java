@@ -16,11 +16,10 @@
 
 package top.continew.admin.open.model.entity;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import top.continew.admin.common.base.model.entity.BaseDO;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.starter.encrypt.field.annotation.FieldEncrypt;
 

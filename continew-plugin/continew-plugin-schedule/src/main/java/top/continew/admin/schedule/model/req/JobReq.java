@@ -17,8 +17,6 @@
 package top.continew.admin.schedule.model.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import top.continew.admin.schedule.enums.JobBlockStrategyEnum;
@@ -26,6 +24,9 @@ import top.continew.admin.schedule.enums.JobRouteStrategyEnum;
 import top.continew.admin.schedule.enums.JobStatusEnum;
 import top.continew.admin.schedule.enums.JobTaskTypeEnum;
 import top.continew.admin.schedule.enums.JobTriggerTypeEnum;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 

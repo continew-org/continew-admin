@@ -17,24 +17,25 @@
 package top.continew.admin.auth.adapter;
 
 import cn.hutool.core.util.StrUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import top.continew.admin.auth.model.RefreshSession;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
-import top.continew.admin.auth.service.RefreshAccessTokenIssuer;
 import top.continew.admin.common.api.tenant.TenantApi;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.auth.exception.RefreshTokenException;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.service.ClientService;
 import top.continew.admin.system.service.UserService;
+import top.continew.starter.auth.refresh.token.exception.RefreshTokenException;
+import top.continew.starter.auth.refresh.token.model.IssuedAccessToken;
+import top.continew.starter.auth.refresh.token.model.RefreshSession;
+import top.continew.starter.auth.refresh.token.service.RefreshAccessTokenIssuer;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.extension.tenant.util.TenantUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** system 对刷新主体状态和 Access Token 签发的适配实现。 */
@@ -48,7 +49,7 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
     private final UserService userService;
 
     @Override
-    public LoginResp issue(RefreshSession session, HttpServletRequest request,
+    public IssuedAccessToken issue(RefreshSession session, HttpServletRequest request,
         HttpServletResponse response) {
         ClientResp client = clientService.getByClientId(session.getClientId());
         if (client == null || DisEnableStatusEnum.DISABLE.equals(client.getStatus())) {
@@ -65,7 +66,9 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
         if (userReference.get() == null || StrUtil.isBlank(userReference.get().getUsername())) {
             throw RefreshTokenException.unauthorized("登录状态已失效，请重新登录");
         }
-        return authTokenService.issueAccessToken(userReference.get(), client, session.getTenantId(),
-            session, request, response);
+        LoginResp loginResp = authTokenService.issueAccessToken(userReference.get(), client,
+            session.getTenantId(), session, request, response);
+        return new IssuedAccessToken(loginResp.getAccessToken(), loginResp.getExpiresIn(),
+            loginResp.getTenantId());
     }
 }

@@ -23,7 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,18 +30,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
-import top.continew.admin.auth.model.SessionView;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.auth.service.SessionInvalidationService;
-import top.continew.admin.auth.service.SessionQueryService;
 import top.continew.admin.common.context.UserContextHolder;
-import top.continew.admin.auth.api.AuthSessionConstants;
+import top.continew.starter.auth.refresh.token.api.AuthSessionConstants;
+import top.continew.starter.auth.refresh.token.model.SessionView;
+import top.continew.starter.auth.refresh.token.service.SessionInvalidationService;
+import top.continew.starter.auth.refresh.token.service.SessionQueryService;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
+import jakarta.validation.Valid;
 import java.util.Objects;
 
 /**

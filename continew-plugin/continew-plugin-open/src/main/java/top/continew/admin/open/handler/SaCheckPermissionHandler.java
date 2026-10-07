@@ -16,14 +16,14 @@
 
 package top.continew.admin.open.handler;
 
+import static cn.dev33.satoken.annotation.handler.SaCheckPermissionHandler._checkMethod;
+
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.handler.SaAnnotationHandlerInterface;
 import org.springframework.stereotype.Component;
 import top.continew.admin.open.util.OpenApiUtils;
 
 import java.lang.reflect.AnnotatedElement;
-
-import static cn.dev33.satoken.annotation.handler.SaCheckPermissionHandler._checkMethod;
 
 /**
  * 重定义注解 SaCheckPermission 的处理器

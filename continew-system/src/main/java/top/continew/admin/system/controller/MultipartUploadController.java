@@ -18,7 +18,6 @@ package top.continew.admin.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +33,8 @@ import top.continew.admin.system.model.req.MultipartUploadCreateReq;
 import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
 import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
 import top.continew.admin.system.service.MultipartUploadService;
+
+import jakarta.validation.Valid;
 
 /**
  * 分片上传控制器

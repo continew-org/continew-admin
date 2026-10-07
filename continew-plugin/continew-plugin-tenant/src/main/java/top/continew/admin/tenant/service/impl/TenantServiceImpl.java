@@ -16,8 +16,6 @@
 
 package top.continew.admin.tenant.service.impl;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -26,14 +24,13 @@ import lombok.RequiredArgsConstructor;
 import me.ahoo.cosid.provider.IdGeneratorProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import top.continew.admin.auth.api.AuthPolicyWriteLocked;
-import top.continew.admin.auth.support.TenantArgumentPolicyLockTargetResolver;
 import top.continew.admin.common.api.system.RoleApi;
 import top.continew.admin.common.api.system.RoleMenuApi;
 import top.continew.admin.common.api.tenant.TenantDataApi;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.config.TenantExtensionProperties;
 import top.continew.admin.common.constant.CacheConstants;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.common.model.dto.TenantDTO;
@@ -47,6 +44,8 @@ import top.continew.admin.tenant.model.resp.TenantDetailResp;
 import top.continew.admin.tenant.model.resp.TenantResp;
 import top.continew.admin.tenant.service.PackageService;
 import top.continew.admin.tenant.service.TenantService;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
+import top.continew.starter.auth.refresh.token.support.TenantArgumentPolicyLockTargetResolver;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validation.CheckUtils;

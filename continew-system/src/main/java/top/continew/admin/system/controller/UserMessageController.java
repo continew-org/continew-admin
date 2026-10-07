@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +50,7 @@ import top.continew.starter.extension.crud.model.resp.BasePageResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.log.annotation.Log;
 
+import jakarta.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 

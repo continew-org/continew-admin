@@ -19,7 +19,6 @@ package top.continew.admin.system.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +31,8 @@ import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.service.FileRecycleService;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
+
+import jakarta.validation.Valid;
 
 /**
  * 文件回收站管理 API

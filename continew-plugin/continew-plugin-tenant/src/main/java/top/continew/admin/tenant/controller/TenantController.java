@@ -19,7 +19,6 @@ package top.continew.admin.tenant.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,6 +37,8 @@ import top.continew.admin.tenant.service.TenantService;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.tenant.util.TenantUtils;
+
+import jakarta.validation.Valid;
 
 /**
  * 租户管理 API

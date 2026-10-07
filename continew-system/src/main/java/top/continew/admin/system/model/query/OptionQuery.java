@@ -19,9 +19,9 @@ package top.continew.admin.system.model.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import top.continew.admin.system.enums.OptionCategoryEnum;
-import top.continew.starter.validation.constraints.EnumValue;
 import top.continew.starter.data.annotation.Query;
 import top.continew.starter.data.enums.QueryType;
+import top.continew.starter.validation.constraints.EnumValue;
 
 import java.io.Serial;
 import java.io.Serializable;

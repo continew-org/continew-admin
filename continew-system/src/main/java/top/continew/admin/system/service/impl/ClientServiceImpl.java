@@ -23,11 +23,9 @@ import cn.hutool.crypto.SecureUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.continew.admin.auth.adapter.ClientPolicyLockTargetResolver;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.service.OnlineUserService;
-import top.continew.admin.auth.service.SessionInvalidationService;
-import top.continew.admin.auth.adapter.ClientPolicyLockTargetResolver;
-import top.continew.admin.auth.api.AuthPolicyWriteLocked;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.system.mapper.ClientMapper;
 import top.continew.admin.system.model.entity.ClientDO;
@@ -35,6 +33,8 @@ import top.continew.admin.system.model.query.ClientQuery;
 import top.continew.admin.system.model.req.ClientReq;
 import top.continew.admin.system.model.resp.ClientResp;
 import top.continew.admin.system.service.ClientService;
+import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
+import top.continew.starter.auth.refresh.token.service.SessionInvalidationService;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validation.CheckUtils;
 
@@ -56,6 +56,7 @@ public class ClientServiceImpl
 
     private final OnlineUserService onlineUserService;
     private final SessionInvalidationService sessionInvalidationService;
+
     @Override
     public void beforeCreate(ClientReq req) {
         req.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())

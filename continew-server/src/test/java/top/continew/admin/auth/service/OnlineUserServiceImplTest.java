@@ -16,23 +16,26 @@
 
 package top.continew.admin.auth.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import top.continew.admin.auth.model.SessionView;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.impl.OnlineUserServiceImpl;
+import top.continew.starter.auth.refresh.token.model.RefreshSession;
+import top.continew.starter.auth.refresh.token.model.SessionView;
+import top.continew.starter.auth.refresh.token.service.SessionInvalidationService;
+import top.continew.starter.auth.refresh.token.service.SessionQueryService;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 /** 在线用户以 Refresh Session 为事实源测试。 */
 class OnlineUserServiceImplTest {
@@ -42,15 +45,16 @@ class OnlineUserServiceImplTest {
         SessionInvalidationService sessionInvalidationService =
             mock(SessionInvalidationService.class);
         SessionQueryService sessionQueryService = mock(SessionQueryService.class);
-        SessionView session = new SessionView();
-        session.setSessionId("session-1");
-        session.setUserId(1L);
-        session.setUsername("tester");
-        session.setNickname("Tester");
-        session.setClientId("web");
-        session.setClientType("WEB");
-        session.setCreatedAt(1_767_262_400_000L);
-        session.setLastRefreshAt(1_767_266_000_000L);
+        RefreshSession refreshSession = new RefreshSession();
+        refreshSession.setSessionId("session-1");
+        refreshSession.setUserId(1L);
+        refreshSession.setUsername("tester");
+        refreshSession.setNickname("Tester");
+        refreshSession.setClientId("web");
+        refreshSession.setClientType("WEB");
+        refreshSession.setCreatedAt(1_767_262_400_000L);
+        refreshSession.setLastRefreshAt(1_767_266_000_000L);
+        SessionView session = SessionView.from(refreshSession);
         when(sessionQueryService.listSessions(null)).thenReturn(List.of(session));
 
         OnlineUserServiceImpl service = new OnlineUserServiceImpl(sessionInvalidationService,

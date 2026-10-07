@@ -16,8 +16,6 @@
 
 package top.continew.admin.auth.handler;
 
-import top.continew.admin.common.constant.GlobalConstants;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
@@ -25,8 +23,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
@@ -38,6 +34,7 @@ import top.continew.admin.auth.AbstractLoginHandler;
 import top.continew.admin.auth.enums.AuthTypeEnum;
 import top.continew.admin.auth.model.req.SocialLoginReq;
 import top.continew.admin.auth.model.resp.LoginResp;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
@@ -57,6 +54,8 @@ import top.continew.starter.auth.justauth.AuthRequestFactory;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.validation.ValidationUtils;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
