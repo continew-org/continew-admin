@@ -36,6 +36,8 @@ public class DefaultController {
 
     /**
      * 模块禁用时的兜底接口，显式声明接管标准 REST 方法并返回统一的"模块已禁用"提示
+     *
+     * @return 统一错误响应
      */
     @RequestMapping(value = "/**",
         method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,

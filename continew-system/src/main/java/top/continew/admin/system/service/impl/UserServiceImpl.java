@@ -712,6 +712,7 @@ public class UserServiceImpl
      * 过滤无效的导入用户数据（批量导入不严格校验数据）
      *
      * @param importRowList 导入数据
+     * @return 过滤并去重后的有效导入数据
      */
     private List<UserImportRowReq> filterImportData(List<UserImportRowReq> importRowList) {
         // 校验过滤

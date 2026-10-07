@@ -37,7 +37,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-/** 在线用户以 Refresh Session 为事实源测试。 */
+/**
+ * 在线用户以 Refresh Session 为事实源测试
+ *
+ * @author luoqiz
+ * @since 4.2.0
+ */
 class OnlineUserServiceImplTest {
 
     @Test

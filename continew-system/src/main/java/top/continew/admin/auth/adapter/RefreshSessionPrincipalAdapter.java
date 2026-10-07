@@ -26,6 +26,8 @@ import top.continew.starter.auth.refresh.token.model.RefreshSessionPrincipal;
  * <p>认证会话模块不依赖用户实体，登录签发时由本适配器提供创建会话所需的主体信息，
  * 随 Refresh Session 一并保存，用于会话管理展示与失效原因判定。</p>
  *
+ * @param userContext  用户上下文
+ * @param extraContext 用户额外上下文（含租户 ID、IP 等请求信息）
  * @author Charles7c
  * @since 4.2.0
  */

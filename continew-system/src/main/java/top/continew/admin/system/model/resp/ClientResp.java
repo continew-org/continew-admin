@@ -84,12 +84,16 @@ public class ClientResp extends BaseDetailResp {
     @ExcelProperty(value = "Token 有效期", order = 7)
     private Long timeout;
 
-    /** Refresh Token 绝对有效期（单位：秒）。 */
+    /**
+     * Refresh Token 绝对有效期（单位：秒）
+     */
     @Schema(description = "Refresh Token 有效期（单位：秒）", example = "2592000")
     @ExcelProperty(value = "Refresh Token 有效期", order = 8)
     private Long refreshTokenTimeout;
 
-    /** Refresh Token 传输模式。 */
+    /**
+     * Refresh Token 传输模式
+     */
     @Schema(description = "Refresh Token 传输模式", example = "COOKIE")
     @ExcelProperty(value = "Refresh Token 传输模式", converter = ExcelBaseEnumConverter.class,
         order = 9)

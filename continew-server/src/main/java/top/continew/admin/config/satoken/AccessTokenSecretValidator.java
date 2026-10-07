@@ -25,7 +25,12 @@ import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
-/** 启动时校验认证密钥，禁止生产认证使用弱密钥或复用密钥。 */
+/**
+ * 启动时校验认证密钥，禁止生产认证使用弱密钥或复用密钥
+ *
+ * @author luoqiz
+ * @since 4.2.0
+ */
 @Component
 @RequiredArgsConstructor
 public class AccessTokenSecretValidator {

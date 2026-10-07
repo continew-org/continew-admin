@@ -37,7 +37,9 @@ public class RefreshTokenReq implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /** App / 小程序提交的 Refresh Token，浏览器模式为空 */
+    /**
+     * App / 小程序提交的 Refresh Token，浏览器模式为空
+     */
     @Schema(description = "Refresh Token（浏览器 Cookie 模式不填写）")
     private String refreshToken;
 }

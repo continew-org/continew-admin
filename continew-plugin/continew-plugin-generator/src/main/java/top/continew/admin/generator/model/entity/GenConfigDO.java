@@ -142,6 +142,8 @@ public class GenConfigDO implements Serializable {
 
     /**
      * 类名前缀
+     *
+     * @return 类名前缀
      */
     @Schema(description = "类名前缀", example = "User")
     public String getClassNamePrefix() {

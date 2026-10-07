@@ -26,7 +26,12 @@ import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTargetResolver;
 
 import java.util.Collection;
 
-/** 将部门变更影响的直属用户解析为认证会话策略锁目标。 */
+/**
+ * 将部门变更影响的直属用户解析为认证会话策略锁目标
+ *
+ * @author luoqiz
+ * @since 4.2.0
+ */
 @Component
 @RequiredArgsConstructor
 public class DeptUserPolicyLockTargetResolver implements AuthPolicyLockTargetResolver {

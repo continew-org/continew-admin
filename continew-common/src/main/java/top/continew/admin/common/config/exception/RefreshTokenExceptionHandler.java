@@ -26,7 +26,12 @@ import top.continew.starter.web.model.R;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/** Refresh Token HTTP 协议异常处理器。 */
+/**
+ * Refresh Token HTTP 协议异常处理器
+ *
+ * @author Charles7c
+ * @since 4.2.0
+ */
 @Slf4j
 @Order(98)
 @RestControllerAdvice

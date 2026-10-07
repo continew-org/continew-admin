@@ -86,6 +86,7 @@ public class MultipartUploadController {
      * 合并分片
      *
      * @param uploadId 上传ID
+     * @return 文件信息
      */
     @Operation(summary = "完成分片上传", description = "合并所有分片，完成上传")
     @SaCheckPermission("system:file:upload")

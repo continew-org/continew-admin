@@ -129,7 +129,16 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         return result.get();
     }
 
-    /** 新登录的最终数据库复查、安全版本读取、会话策略和签发必须处于同一组作用域锁内。 */
+    /**
+     * 新登录的最终数据库复查、安全版本读取、会话策略和签发必须处于同一组作用域锁内
+     *
+     * @param authenticatedUser   认证用户信息
+     * @param authenticatedClient 认证客户端信息
+     * @param tenantId            租户 ID
+     * @param request             请求对象
+     * @param response            响应对象
+     * @return 登录响应参数
+     */
     private LoginResp issueNewSession(UserDO authenticatedUser, ClientResp authenticatedClient,
         Long tenantId, HttpServletRequest request, HttpServletResponse response) {
         return refreshTokenService.executeLoginPolicy(authenticatedUser.getId(),
@@ -229,7 +238,13 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         }
     }
 
-    /** 构建刷新时也必须使用的最新权限上下文，避免角色变更后继续沿用旧权限。 */
+    /**
+     * 构建刷新时也必须使用的最新权限上下文，避免角色变更后继续沿用旧权限
+     *
+     * @param user     用户信息
+     * @param tenantId 租户 ID
+     * @return 用户上下文
+     */
     private UserContext buildUserContext(UserDO user, Long tenantId) {
         Long userId = user.getId();
         CompletableFuture<Set<String>> permissionFuture = CompletableFuture.supplyAsync(() -> {
@@ -254,7 +269,12 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         return context;
     }
 
-    /** 刷新不能绕过用户或部门禁用校验。 */
+    /**
+     * 刷新不能绕过用户或部门禁用校验
+     *
+     * @param user           用户信息
+     * @param refreshRequest 是否为刷新令牌请求
+     */
     private void checkUserStatus(UserDO user, boolean refreshRequest) {
         this.requireUserState(user != null, "用户不存在", refreshRequest);
         this.requireUserState(!DisEnableStatusEnum.DISABLE.equals(user.getStatus()),

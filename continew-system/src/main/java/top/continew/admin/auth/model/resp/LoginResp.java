@@ -39,24 +39,34 @@ public class LoginResp implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /** 短期访问令牌。Web 端仅保存在内存中，过期后调用 /auth/refresh 获取新令牌。 */
+    /**
+     * 短期访问令牌。Web 端仅保存在内存中，过期后调用 /auth/refresh 获取新令牌
+     */
     @Schema(description = "Access Token",
         example = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOjF9.KUPOYm-2wfuLUSfEEAbpGE527fzmkAJG7sMNcQ0pUZ8")
     private String accessToken;
 
-    /** 访问令牌类型，当前固定为 Bearer。 */
+    /**
+     * 访问令牌类型，当前固定为 Bearer
+     */
     @Schema(description = "Access Token 类型", example = "Bearer")
     private String tokenType;
 
-    /** Access Token 有效期（秒），不会超过所属 Refresh Session 的剩余寿命。 */
+    /**
+     * Access Token 有效期（秒），不会超过所属 Refresh Session 的剩余寿命
+     */
     @Schema(description = "Access Token 有效期（秒）", example = "900")
     private Long expiresIn;
 
-    /** Refresh Token 的剩余有效期（秒），用于客户端展示或提前续期提示。 */
+    /**
+     * Refresh Token 的剩余有效期（秒），用于客户端展示或提前续期提示
+     */
     @Schema(description = "Refresh Token 有效期（秒）", example = "2592000")
     private Long refreshExpiresIn;
 
-    /** BODY 模式的 Refresh Token，供 App / 微信小程序使用；浏览器 Cookie 模式为空。 */
+    /**
+     * BODY 模式的 Refresh Token，供 App / 微信小程序使用；浏览器 Cookie 模式为空
+     */
     @Schema(description = "Refresh Token（浏览器 Cookie 模式不返回）", example = "rft_xxx")
     private String refreshToken;
 

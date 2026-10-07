@@ -27,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * 登录处理器
  *
+ * @param <T> 登录请求参数类型
  * @author KAI
  * @author Charles7c
  * @since 2024/12/22 14:52

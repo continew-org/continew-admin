@@ -52,6 +52,11 @@ public class GlobalSaTokenExceptionHandler {
 
     /**
      * 认证异常-登录认证
+     *
+     * @param e        登录认证异常
+     * @param request  当前请求
+     * @param response 当前响应
+     * @return 统一错误响应
      */
     @ExceptionHandler(NotLoginException.class)
     public R handleNotLoginException(NotLoginException e, HttpServletRequest request,
@@ -69,6 +74,11 @@ public class GlobalSaTokenExceptionHandler {
 
     /**
      * 认证异常-权限认证
+     *
+     * @param e        权限认证异常
+     * @param request  当前请求
+     * @param response 当前响应
+     * @return 统一错误响应
      */
     @ExceptionHandler(NotPermissionException.class)
     public R handleNotPermissionException(NotPermissionException e, HttpServletRequest request,
@@ -81,6 +91,11 @@ public class GlobalSaTokenExceptionHandler {
 
     /**
      * 认证异常-角色认证
+     *
+     * @param e        角色认证异常
+     * @param request  当前请求
+     * @param response 当前响应
+     * @return 统一错误响应
      */
     @ExceptionHandler(NotRoleException.class)
     public R handleNotRoleException(NotRoleException e, HttpServletRequest request,

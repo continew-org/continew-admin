@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * NextDoc4j 自定义权限码展示
  *
  * @author echo
- * @since 2025/12/18
+ * @since 4.2.0
  */
 @Component
 @RequiredArgsConstructor
@@ -65,6 +65,10 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
 
     /**
      * 解析 CRUD 权限信息
+     *
+     * @param beanType Bean 类型
+     * @param method   方法
+     * @param metadata 安全元数据
      */
     private void resolveCrudPermission(Class<?> beanType, Method method,
         NextDoc4jSecurityMetadata metadata) {
@@ -108,6 +112,10 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
 
     /**
      * 解析 CRUD API 注解（优先重写方法，其次父类方法兜底）
+     *
+     * @param beanType Bean 类型
+     * @param method   方法
+     * @return CRUD API 注解，不存在时返回 {@code null}
      */
     private CrudApi getCrudApi(Class<?> beanType, Method method) {
         Method specificMethod = ClassUtils.getMostSpecificMethod(method, beanType);
@@ -128,6 +136,10 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
 
     /**
      * 检查方法或类上是否有 @SaIgnore 注解
+     *
+     * @param beanType Bean 类型
+     * @param method   方法
+     * @return 方法或类上是否包含 @SaIgnore 注解
      */
     private boolean hasSaIgnore(Class<?> beanType, Method method) {
         // 检查方法上的 @SaIgnore 注解
@@ -146,6 +158,10 @@ public class NextDoc4jCustomPermissionDisplay implements NextDoc4jSecurityMetada
     /**
      * 检查方法或类上是否有 @SaCheckRole 或 @SaCheckPermission 注解
      * 如果有这些注解,说明开发者手动配置了权限,应该跳过 CRUD 自动生成
+     *
+     * @param beanType Bean 类型
+     * @param method   方法
+     * @return 方法或类上是否包含 Sa-Token 鉴权注解
      */
     private boolean hasSaTokenAnnotation(Class<?> beanType, Method method) {
         // 检查方法上的注解

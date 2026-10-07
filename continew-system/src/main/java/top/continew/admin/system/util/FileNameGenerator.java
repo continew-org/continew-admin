@@ -33,7 +33,7 @@ import java.util.List;
  * </p>
  *
  * @author fjwupeng
- * @since 2026/2/06
+ * @since 4.2.0
  */
 @Slf4j
 public class FileNameGenerator {

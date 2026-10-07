@@ -22,6 +22,7 @@ import lombok.Data;
 /**
  * 任务调度服务端分页响应参数
  *
+ * @param <T> 数据类型
  * @author KAI
  * @author Charles7c
  * @since 2024/6/26 22:27

@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * </p>
  *
  * @author Charles7c
- * @since 2026/8/31
+ * @since 4.2.0
  */
 public class StoragePathValidator {
 

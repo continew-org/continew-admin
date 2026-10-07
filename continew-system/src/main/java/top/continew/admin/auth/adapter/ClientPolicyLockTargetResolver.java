@@ -27,7 +27,12 @@ import top.continew.starter.auth.refresh.token.api.AuthPolicyLockTargetResolver;
 import java.util.Collection;
 import java.util.List;
 
-/** 将客户端数据库主键解析为认证会话使用的客户端标识。 */
+/**
+ * 将客户端数据库主键解析为认证会话使用的客户端标识
+ *
+ * @author luoqiz
+ * @since 4.2.0
+ */
 @Component
 @RequiredArgsConstructor
 public class ClientPolicyLockTargetResolver implements AuthPolicyLockTargetResolver {

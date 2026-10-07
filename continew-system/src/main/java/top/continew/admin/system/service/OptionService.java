@@ -75,6 +75,7 @@ public interface OptionService {
     /**
      * 根据编码查询参数值
      *
+     * @param <T>    参数值类型
      * @param code   编码
      * @param mapper 转换方法 e.g.：value -> Integer.parseInt(value)
      * @return 参数值

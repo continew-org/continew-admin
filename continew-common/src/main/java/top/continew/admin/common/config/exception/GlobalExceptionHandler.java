@@ -70,6 +70,10 @@ public class GlobalExceptionHandler {
 
     /**
      * 自定义异常
+     *
+     * @param e       自定义异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(BaseException.class)
     public R handleBaseException(BaseException e, HttpServletRequest request) {
@@ -79,6 +83,10 @@ public class GlobalExceptionHandler {
 
     /**
      * 业务异常
+     *
+     * @param e       业务异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(BusinessException.class)
     public R handleBusinessException(BusinessException e, HttpServletRequest request) {
@@ -91,6 +99,10 @@ public class GlobalExceptionHandler {
      * <p>
      * {@code ValidationUtils.throwIfXxx(xxx)}
      * </p>
+     *
+     * @param e       错误请求异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(BadRequestException.class)
     public R handleBadRequestException(BadRequestException e, HttpServletRequest request) {
@@ -104,6 +116,10 @@ public class GlobalExceptionHandler {
      * <p>
      * {@code @RequestParam} 参数缺失
      * </p>
+     *
+     * @param e       参数缺失异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public R handleMissingServletRequestParameterException(
@@ -120,6 +136,10 @@ public class GlobalExceptionHandler {
      * <p>
      * {@code @NotBlank}、{@code @NotNull} 等参数验证不通过
      * </p>
+     *
+     * @param e       参数校验不通过异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler({BindException.class, MethodArgumentNotValidException.class})
     public R handleBindException(BindException e, HttpServletRequest request) {
@@ -138,6 +158,10 @@ public class GlobalExceptionHandler {
      * <p>
      * {@code @RequestParam} 参数类型不匹配
      * </p>
+     *
+     * @param e       参数类型不匹配异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public R handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e,
@@ -156,6 +180,10 @@ public class GlobalExceptionHandler {
      * 3.请求体解析格式异常<br />
      * ...
      * </p>
+     *
+     * @param e       HTTP 消息不可读异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public R handleHttpMessageNotReadableException(HttpMessageNotReadableException e,
@@ -172,6 +200,10 @@ public class GlobalExceptionHandler {
 
     /**
      * 文件上传异常-超过上传大小限制
+     *
+     * @param e       文件上传异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(MultipartException.class)
     public R handleMultipartException(MultipartException e, HttpServletRequest request) {
@@ -201,6 +233,10 @@ public class GlobalExceptionHandler {
 
     /**
      * 请求 URL 不存在异常
+     *
+     * @param e       请求 URL 不存在异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public R handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletRequest request) {
@@ -213,6 +249,10 @@ public class GlobalExceptionHandler {
 
     /**
      * 不支持的 HTTP 请求方法异常
+     *
+     * @param e       不支持的 HTTP 请求方法异常
+     * @param request 当前请求
+     * @return 统一错误响应
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,

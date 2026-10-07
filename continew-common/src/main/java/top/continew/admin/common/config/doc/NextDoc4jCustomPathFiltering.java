@@ -29,7 +29,7 @@ import java.util.Set;
  * NextDoc4j 自定义路径过滤
  *
  * @author echo
- * @since 2025/12/18
+ * @since 4.2.0
  */
 @Component
 @RequiredArgsConstructor
@@ -46,6 +46,8 @@ public class NextDoc4jCustomPathFiltering implements NextDoc4jPathExcluder {
 
     /**
      * 添加 Sa-Token 配置中的排除路径
+     *
+     * @param paths 排除路径集合
      */
     private void addConfiguredExcludes(Set<String> paths) {
         if (saTokenExtensionProperties == null || saTokenExtensionProperties

@@ -75,8 +75,9 @@ public class FileController
      * 公共上传文件请使用 {@link CommonController#upload}
      * </p>
      *
-     * @param file       文件
-     * @param parentPath 上级目录
+     * @param file         文件
+     * @param parentPath   上级目录
+     * @param uploadTaskId 上传任务 ID
      * @return 文件上传响应参数
      * @throws IOException /
      */

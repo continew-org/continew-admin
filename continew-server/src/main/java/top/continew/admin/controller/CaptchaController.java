@@ -113,6 +113,7 @@ public class CaptchaController {
      * 校验行为验证码
      *
      * @param captchaReq 验证码参数
+     * @param request    请求对象
      * @return 校验结果
      */
     @Log(ignore = true)

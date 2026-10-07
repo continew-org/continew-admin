@@ -54,6 +54,9 @@ import top.continew.starter.extension.tenant.context.TenantContextHolder;
  * UserContext 线程本地，池化线程会残留上一请求的上下文被下一请求复用。断言方式是
  * 短路后再次读取上下文：若已清除则重新走 {@link StpUtil#getSession()}（调用 2 次），
  * 未清除则命中线程本地（仅 1 次）。</p>
+ *
+ * @author luoqiz
+ * @since 4.2.0
  */
 class SaExtensionInterceptorTest {
 

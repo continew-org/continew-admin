@@ -43,7 +43,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-/** Refresh Token 会话 API。 */
+/**
+ * Refresh Token 会话 API
+ *
+ * @author Charles7c
+ * @since 4.2.0
+ */
 @Tag(name = "认证会话 API")
 @Log(module = "认证会话")
 @Validated
@@ -56,7 +61,14 @@ public class SessionController {
     private final RefreshAccessTokenIssuer refreshAccessTokenIssuer;
     private final RefreshTokenService refreshTokenService;
 
-    /** 使用 Refresh Token 轮换 Access Token。 */
+    /**
+     * 使用 Refresh Token 轮换 Access Token
+     *
+     * @param req      刷新令牌请求参数，可为空
+     * @param request  请求对象
+     * @param response 响应对象
+     * @return 登录响应参数
+     */
     @SaIgnore
     @TenantIgnore
     @Operation(summary = "刷新令牌", description = "使用 Refresh Token 轮换 Access Token")
@@ -76,7 +88,14 @@ public class SessionController {
             .tenantId(result.getTenantId()).build();
     }
 
-    /** 注销当前认证会话。 */
+    /**
+     * 注销当前认证会话
+     *
+     * @param req      注销请求参数，可为空
+     * @param request  请求对象
+     * @param response 响应对象
+     * @return 被注销会话的登录用户 ID
+     */
     @SaIgnore
     @TenantIgnore
     @Operation(summary = "登出", description = "注销用户的当前登录")

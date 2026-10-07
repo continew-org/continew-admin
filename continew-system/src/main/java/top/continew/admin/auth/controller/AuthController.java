@@ -74,8 +74,9 @@ public class AuthController {
     /**
      * 用户登录
      *
-     * @param req 登录信息
-     * @param request 请求对象
+     * @param req      登录信息
+     * @param request  请求对象
+     * @param response 响应对象
      * @return 登录结果
      */
     @SaIgnore

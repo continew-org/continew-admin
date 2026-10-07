@@ -79,14 +79,18 @@ public class ClientReq implements Serializable {
     @NotNull(message = "Token 有效期不能为空")
     private Long timeout;
 
-    /** Refresh Token 绝对有效期（单位：秒）。 */
+    /**
+     * Refresh Token 绝对有效期（单位：秒）
+     */
     @Schema(description = "Refresh Token 有效期（单位：秒）", example = "2592000")
     @NotNull(message = "Refresh Token 有效期不能为空")
     @Min(value = 60, message = "Refresh Token 有效期不能少于 60 秒")
     @Max(value = 315360000, message = "Refresh Token 有效期不能超过 10 年")
     private Long refreshTokenTimeout;
 
-    /** Refresh Token 传输模式。 */
+    /**
+     * Refresh Token 传输模式
+     */
     @Schema(description = "Refresh Token 传输模式", example = "COOKIE")
     @NotNull(message = "Refresh Token 传输模式不能为空")
     private RefreshTokenModeEnum refreshTokenMode;

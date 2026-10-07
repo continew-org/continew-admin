@@ -69,10 +69,14 @@ public class ClientDO extends BaseDO {
      */
     private Long timeout;
 
-    /** Refresh Token 绝对有效期（单位：秒），轮换不会延长该期限。 */
+    /**
+     * Refresh Token 绝对有效期（单位：秒），轮换不会延长该期限
+     */
     private Long refreshTokenTimeout;
 
-    /** Refresh Token 传输模式：浏览器使用 COOKIE，App / 小程序使用 BODY。 */
+    /**
+     * Refresh Token 传输模式：浏览器使用 COOKIE，App / 小程序使用 BODY
+     */
     private RefreshTokenModeEnum refreshTokenMode;
 
     /**

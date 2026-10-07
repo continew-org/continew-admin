@@ -38,7 +38,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** system 对刷新主体状态和 Access Token 签发的适配实现。 */
+/**
+ * system 对刷新主体状态和 Access Token 签发的适配实现
+ *
+ * @author luoqiz
+ * @since 4.2.0
+ */
 @Component
 @RequiredArgsConstructor
 public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {

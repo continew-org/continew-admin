@@ -16,6 +16,13 @@
         <property name="ignorePattern"
             value="^implements.*|^extends.*|^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
+    <!-- 禁止单行 Javadoc：注释一律展开为多行，方法需补全 @param/@return -->
+    <module name="RegexpSingleline">
+        <property name="fileExtensions" value="java"/>
+        <property name="format" value="^\s*/\*\* .+ \*/\s*$"/>
+        <property name="message"
+            value="禁止单行 Javadoc，请展开为多行并为方法补充 @param/@return"/>
+    </module>
     <module name="SuppressWarningsFilter"/>
     
     <module name="TreeWalker">
@@ -74,9 +81,12 @@
         <module name="NeedBraces"/>
         
         <!-- Javadoc Checker -->
+        <module name="JavadocType">
+            <property name="authorFormat" value="\S"/>
+        </module>
         <module name="JavadocMethod">
-            <property name="allowMissingParamTags" value="true"/>
-            <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
             <property name="allowedAnnotations"
                 value="Override, Test, Before, After, BeforeClass, AfterClass, Parameterized, Parameters, Bean, PostConstruct"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF"/>

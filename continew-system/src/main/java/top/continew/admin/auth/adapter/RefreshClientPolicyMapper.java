@@ -50,7 +50,12 @@ public final class RefreshClientPolicyMapper {
             client.getMaxLoginCount(), toLogoutReason(client.getOverflowLogoutMode()));
     }
 
-    /** 客户端配置的注销模式决定登录数量超限时被淘汰会话看到的提示。 */
+    /**
+     * 客户端配置的注销模式决定登录数量超限时被淘汰会话看到的提示
+     *
+     * @param overflowLogoutMode 注销模式
+     * @return 认证会话模块的注销原因
+     */
     private static LogoutReasonEnum toLogoutReason(LogoutModeEnum overflowLogoutMode) {
         if (overflowLogoutMode == null) {
             return LogoutReasonEnum.REPLACED;
