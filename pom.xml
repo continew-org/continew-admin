@@ -122,8 +122,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- 跳过单元测试 -->
-                    <skip>true</skip>
+                    <excludes>
+                        <!-- 上下文加载测试依赖 MySQL/Redis 等基础设施，本地与 CI 无法常驻，
+                             待引入 Testcontainers 后随集成测试一并启用 -->
+                        <exclude>**/ContiNewAdminApplicationTests.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!-- 构建环境与依赖卫生检查插件（validate 阶段门禁） -->
@@ -321,6 +324,28 @@
             </activation>
             <build>
                 <plugins>
+                    <!-- 单元测试覆盖率采集（为 Sonar 分析提供覆盖率数据；版本暂由本项目管理，
+                         待 Starter 父 POM 统一管理 jacoco-maven-plugin 后移除显式版本） -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.13</version>
+                        <executions>
+                            <execution>
+                                <id>jacoco-prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jacoco-report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
