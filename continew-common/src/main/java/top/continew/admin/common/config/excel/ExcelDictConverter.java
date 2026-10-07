@@ -35,7 +35,7 @@ import java.util.Objects;
  * Easy Excel 字典转换器
  *
  * @author Charles7c
- * @since 2025/4/9 20:22
+ * @since 3.6.0
  */
 public class ExcelDictConverter implements Converter<Object> {
 

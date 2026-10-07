@@ -35,7 +35,7 @@ import java.util.List;
  * 角色详情响应参数
  *
  * @author Charles7c
- * @since 2023/2/1 22:19
+ * @since 1.0.0
  */
 @Data
 @ExcelIgnoreUnannotated

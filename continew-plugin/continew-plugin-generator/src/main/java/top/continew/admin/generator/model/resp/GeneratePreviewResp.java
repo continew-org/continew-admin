@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 生成预览响应参数
  *
  * @author Charles7c
- * @since 2023/12/19 21:34
+ * @since 2.2.0
  */
 @Data
 @Schema(description = "生成预览响应参数")

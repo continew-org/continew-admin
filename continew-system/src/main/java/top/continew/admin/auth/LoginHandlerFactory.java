@@ -30,7 +30,7 @@ import java.util.Map;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/20 15:16
+ * @since 3.5.0
  */
 @Component
 public class LoginHandlerFactory {

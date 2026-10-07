@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/22 14:59
+ * @since 3.5.0
  */
 @Component
 public class PhoneLoginHandler extends AbstractLoginHandler<PhoneLoginReq> {

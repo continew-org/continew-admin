@@ -34,7 +34,7 @@ import java.time.LocalDateTime;
  * 用户实体
  *
  * @author Charles7c
- * @since 2022/12/21 20:42
+ * @since 1.0.0
  */
 @Data
 @DictModel(labelKey = "nickname", extraKeys = {"username"})

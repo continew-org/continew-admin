@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
  * 在线用户响应参数
  *
  * @author Charles7c
- * @since 2023/1/20 21:54
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "在线用户响应参数")

@@ -27,7 +27,7 @@ import java.util.List;
  * 套餐和菜单关联业务 API 实现
  *
  * @author Charles7c
- * @since 2025/7/23 21:13
+ * @since 4.0.0
  */
 @Service
 @RequiredArgsConstructor

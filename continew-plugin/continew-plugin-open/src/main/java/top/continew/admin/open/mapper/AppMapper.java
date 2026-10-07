@@ -27,7 +27,7 @@ import top.continew.starter.encrypt.field.annotation.FieldEncrypt;
  * 应用 Mapper
  *
  * @author chengzi
- * @since 2024/10/17 16:03
+ * @since 3.4.0
  */
 @Mapper
 public interface AppMapper extends DataPermissionMapper<AppDO> {

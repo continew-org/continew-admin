@@ -27,7 +27,7 @@ import java.util.List;
  * 角色和部门关联 Mapper
  *
  * @author Charles7c
- * @since 2023/2/18 21:57
+ * @since 1.0.0
  */
 public interface RoleDeptMapper extends BaseMapper<RoleDeptDO> {
 

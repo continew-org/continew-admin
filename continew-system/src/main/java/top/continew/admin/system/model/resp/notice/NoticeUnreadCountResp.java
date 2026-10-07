@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 未读公告数量响应参数
  *
  * @author Charles7c
- * @since 2025/5/22 22:15
+ * @since 3.7.0
  */
 @Data
 @NoArgsConstructor

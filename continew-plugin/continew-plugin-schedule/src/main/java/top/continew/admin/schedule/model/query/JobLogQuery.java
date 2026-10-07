@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * 任务日志查询条件
  *
  * @author KAI
- * @since 2024/6/27 23:58
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "任务日志查询条件")

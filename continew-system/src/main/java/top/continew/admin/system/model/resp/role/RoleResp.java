@@ -27,7 +27,7 @@ import java.io.Serial;
  * 角色响应参数
  *
  * @author Charles7c
- * @since 2023/2/8 23:05
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "角色响应参数")

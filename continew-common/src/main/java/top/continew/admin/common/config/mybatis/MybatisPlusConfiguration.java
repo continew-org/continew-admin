@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * MyBatis Plus 配置
  *
  * @author Charles7c
- * @since 2022/12/22 19:51
+ * @since 1.0.0
  */
 @Configuration
 public class MybatisPlusConfiguration {

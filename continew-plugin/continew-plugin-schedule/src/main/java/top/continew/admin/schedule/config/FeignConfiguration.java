@@ -28,7 +28,7 @@ import top.continew.starter.core.autoconfigure.application.ApplicationProperties
  * Feign 配置
  *
  * @author Charles7c
- * @since 2025/3/28 21:17
+ * @since 3.6.0
  */
 @Configuration
 @RequiredArgsConstructor

@@ -24,7 +24,7 @@ import java.util.List;
  * 字典业务 API
  *
  * @author Charles7c
- * @since 2025/7/26 10:16
+ * @since 4.0.0
  */
 public interface DictApi {
 

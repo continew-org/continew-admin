@@ -53,7 +53,7 @@ import java.util.stream.Stream;
  * 仪表盘业务实现
  *
  * @author Charles7c
- * @since 2023/9/8 21:32
+ * @since 1.2.0
  */
 @Service
 @RequiredArgsConstructor

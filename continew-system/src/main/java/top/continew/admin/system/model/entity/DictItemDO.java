@@ -27,7 +27,7 @@ import java.io.Serial;
  * 字典项实体
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 @Data
 @TableName("sys_dict_item")

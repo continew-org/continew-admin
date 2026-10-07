@@ -29,7 +29,7 @@ import top.continew.admin.system.service.SmsLogService;
  * 短信日志业务实现
  *
  * @author luoqiz
- * @since 2025/03/15 22:15
+ * @since 3.6.0
  */
 @Service
 public class SmsLogServiceImpl

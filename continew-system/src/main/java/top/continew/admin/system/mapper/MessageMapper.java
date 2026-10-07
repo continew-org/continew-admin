@@ -31,7 +31,7 @@ import java.util.List;
  * 消息 Mapper
  *
  * @author Bull-BCLS
- * @since 2023/10/15 19:05
+ * @since 1.3.0
  */
 public interface MessageMapper extends BaseMapper<MessageDO> {
 

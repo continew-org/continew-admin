@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 文件上传进度响应参数
  *
  * @author echo
- * @since 2026/3/3 12:20
+ * @since 4.2.0
  */
 @Data
 @Schema(description = "文件上传进度响应参数")

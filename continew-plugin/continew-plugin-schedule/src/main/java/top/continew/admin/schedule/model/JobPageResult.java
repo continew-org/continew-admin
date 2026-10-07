@@ -25,7 +25,7 @@ import lombok.Data;
  * @param <T> 数据类型
  * @author KAI
  * @author Charles7c
- * @since 2024/6/26 22:27
+ * @since 3.2.0
  */
 @Data
 public class JobPageResult<T> extends Result<T> {

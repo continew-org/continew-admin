@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 租户 Mapper
  *
  * @author 小熊
- * @since 2024/11/26 17:20
+ * @since 3.4.1
  */
 public interface TenantMapper extends BaseMapper<TenantDO> {
 }

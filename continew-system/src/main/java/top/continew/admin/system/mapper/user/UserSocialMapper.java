@@ -24,7 +24,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 用户社会化关联 Mapper
  *
  * @author Charles7c
- * @since 2023/10/11 22:10
+ * @since 1.3.0
  */
 public interface UserSocialMapper extends BaseMapper<UserSocialDO> {
 

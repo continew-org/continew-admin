@@ -30,7 +30,7 @@ import java.util.Map;
  * 分片初始化请求参数
  *
  * @author KAI
- * @since 2025/7/30 16:38
+ * @since 4.1.0
  */
 @Data
 @Schema(description = "分片初始化请求参数")

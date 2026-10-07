@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 角色和部门关联实体
  *
  * @author Charles7c
- * @since 2023/2/18 21:57
+ * @since 1.0.0
  */
 @Data
 @NoArgsConstructor

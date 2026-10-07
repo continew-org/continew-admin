@@ -28,7 +28,7 @@ import java.util.List;
  * 角色编码枚举
  *
  * @author Charles7c
- * @since 2025/7/26 19:18
+ * @since 4.0.0
  */
 @Getter
 @RequiredArgsConstructor

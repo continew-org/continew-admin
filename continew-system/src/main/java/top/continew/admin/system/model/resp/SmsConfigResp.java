@@ -34,7 +34,7 @@ import java.io.Serial;
  *
  * @author luoqiz
  * @author Charles7c
- * @since 2025/03/15 18:41
+ * @since 3.6.0
  */
 @Data
 @ExcelIgnoreUnannotated

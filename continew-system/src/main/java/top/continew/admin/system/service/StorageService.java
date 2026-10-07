@@ -29,7 +29,7 @@ import top.continew.starter.data.service.IService;
  * 存储业务接口
  *
  * @author Charles7c
- * @since 2023/12/26 22:09
+ * @since 2.2.0
  */
 public interface StorageService
     extends BaseService<StorageResp, StorageResp, StorageQuery, StorageReq>, IService<StorageDO> {

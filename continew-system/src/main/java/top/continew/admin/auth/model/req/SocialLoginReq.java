@@ -27,7 +27,7 @@ import java.io.Serial;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/25 15:43
+ * @since 3.5.0
  */
 @Data
 @Schema(description = "第三方账号登录请求参数")

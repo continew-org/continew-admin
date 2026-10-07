@@ -39,7 +39,7 @@ import java.util.List;
  * 用户业务接口
  *
  * @author Charles7c
- * @since 2022/12/21 21:48
+ * @since 1.0.0
  */
 public interface UserService
     extends BaseService<UserResp, UserDetailResp, UserQuery, UserReq>, IService<UserDO> {

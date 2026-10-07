@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 状态修改请求参数
  *
  * @author Charles7c
- * @since 2025/3/4 20:09
+ * @since 4.0.0
  */
 @Data
 @Schema(description = "状态修改请求参数")

@@ -27,7 +27,7 @@ import java.util.List;
  * 任务组 REST API
  *
  * @author Charles7c
- * @since 2025/3/28 22:25
+ * @since 3.6.0
  */
 @FeignClient(value = "job-group", url = "${snail-job.server.api.url}", path = "/group",
     configuration = FeignRequestInterceptor.class)

@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author 小熊
  * @author Charles7c
- * @since 2024/11/26 11:25
+ * @since 3.4.1
  */
 @Data
 @Schema(description = "套餐创建或修改请求参数")

@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 短信配置 Mapper
  *
  * @author luoqiz
- * @since 2025/03/15 18:41
+ * @since 3.6.0
  */
 public interface SmsConfigMapper extends BaseMapper<SmsConfigDO> {
 }

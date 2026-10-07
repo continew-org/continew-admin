@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  * @author 小熊
  * @author Charles7c
- * @since 2024/12/12 15:35
+ * @since 3.5.0
  */
 @RequiredArgsConstructor
 public class DefaultTenantProvider implements TenantProvider {

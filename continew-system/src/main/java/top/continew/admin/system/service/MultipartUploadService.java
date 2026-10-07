@@ -26,7 +26,7 @@ import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
  * 分片上传业务接口
  *
  * @author KAI
- * @since 2025/7/3 8:42
+ * @since 4.1.0
  */
 public interface MultipartUploadService {
 

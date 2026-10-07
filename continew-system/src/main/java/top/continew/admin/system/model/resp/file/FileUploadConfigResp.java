@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 默认存储上传配置响应参数
  *
  * @author echo
- * @since 2026/3/3 12:20
+ * @since 4.2.0
  */
 @Data
 @Schema(description = "默认存储上传配置响应参数")

@@ -29,7 +29,7 @@ import java.util.List;
  * 文件资源统计响应参数
  *
  * @author Kils
- * @since 2024/4/30 14:30
+ * @since 3.0.1
  */
 @Data
 @Schema(description = "文件资源统计响应参数")

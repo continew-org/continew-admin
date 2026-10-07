@@ -33,7 +33,7 @@ import top.continew.starter.log.annotation.Log;
  * 公共 API
  *
  * @author Charles7c
- * @since 2025/7/15 20:32
+ * @since 4.0.0
  */
 @Tag(name = "公共 API")
 @Log(ignore = true)

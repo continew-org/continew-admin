@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 各类型未读消息响应参数
  *
  * @author Charles7c
- * @since 2023/11/2 23:00
+ * @since 1.3.0
  */
 @Data
 @Schema(description = "各类型未读消息响应参数")

@@ -30,7 +30,7 @@ import java.io.Serializable;
  * 用户导入请求参数
  *
  * @author Kils
- * @since 2024/6/17 16:42
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "用户导入请求参数")

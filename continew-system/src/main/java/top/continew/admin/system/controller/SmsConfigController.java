@@ -37,7 +37,7 @@ import top.continew.starter.extension.crud.enums.Api;
  *
  * @author luoqiz
  * @author Charles7c
- * @since 2025/03/15 18:41
+ * @since 3.6.0
  */
 @Tag(name = "短信配置管理 API")
 @RestController

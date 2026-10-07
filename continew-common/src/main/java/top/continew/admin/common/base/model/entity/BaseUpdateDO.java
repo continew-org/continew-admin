@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author Charles7c
- * @since 2025/1/12 23:00
+ * @since 3.5.0
  */
 @Data
 public class BaseUpdateDO extends BaseIdDO {

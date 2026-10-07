@@ -39,7 +39,7 @@ import java.util.List;
  * 公告管理 API
  *
  * @author Charles7c
- * @since 2023/8/20 10:55
+ * @since 1.1.0
  */
 @Tag(name = "公告管理 API")
 @RestController

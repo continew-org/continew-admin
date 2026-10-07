@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @param <T> 登录请求参数类型
  * @author KAI
  * @author Charles7c
- * @since 2024/12/22 14:52
+ * @since 3.5.0
  */
 public interface LoginHandler<T extends LoginReq> {
 

@@ -28,7 +28,7 @@ import java.io.Serializable;
  * 字典查询条件
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 @Data
 @Schema(description = "字典查询条件")

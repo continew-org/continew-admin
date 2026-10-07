@@ -28,7 +28,7 @@ import java.util.List;
  * 在线用户查询条件
  *
  * @author Charles7c
- * @since 2023/1/20 23:07
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "在线用户查询条件")

@@ -26,7 +26,7 @@ import top.continew.admin.system.model.resp.SmsConfigResp;
  * 短信配置业务接口
  *
  * @author luoqiz
- * @since 2025/03/15 18:41
+ * @since 3.6.0
  */
 public interface SmsConfigService
     extends BaseService<SmsConfigResp, SmsConfigResp, SmsConfigQuery, SmsConfigReq> {

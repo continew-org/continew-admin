@@ -30,7 +30,7 @@ import java.util.Set;
  * 菜单业务接口
  *
  * @author Charles7c
- * @since 2023/2/15 20:30
+ * @since 1.0.0
  */
 public interface MenuService
     extends BaseService<MenuResp, MenuResp, MenuQuery, MenuReq>, IService<MenuDO> {

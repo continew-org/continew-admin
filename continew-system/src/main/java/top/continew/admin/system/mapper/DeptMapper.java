@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 部门 Mapper
  *
  * @author Charles7c
- * @since 2023/1/22 17:56
+ * @since 1.0.0
  */
 public interface DeptMapper extends BaseMapper<DeptDO> {
 }

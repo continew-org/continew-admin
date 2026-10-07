@@ -43,7 +43,7 @@ import java.util.List;
  * 公告发布任务
  *
  * @author Charles7c
- * @since 2025/5/11 22:19
+ * @since 3.7.0
  */
 @Slf4j
 public class NoticePublishJob {

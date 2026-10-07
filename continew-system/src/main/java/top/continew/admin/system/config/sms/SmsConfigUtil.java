@@ -33,7 +33,7 @@ import java.util.Map;
  * 短信配置工具类
  *
  * @author Top2Hub
- * @since 2025/04/21 14:00
+ * @since 3.7.0
  */
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

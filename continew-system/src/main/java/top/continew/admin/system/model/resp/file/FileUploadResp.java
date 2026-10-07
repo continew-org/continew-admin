@@ -28,7 +28,7 @@ import java.util.Map;
  * 文件上传响应参数
  *
  * @author Charles7c
- * @since 2024/3/6 22:26
+ * @since 2.5.0
  */
 @Data
 @Builder

@@ -35,7 +35,7 @@ import java.net.URL;
  * 存储实体
  *
  * @author Charles7c
- * @since 2023/12/26 22:09
+ * @since 2.2.0
  */
 @Data
 @TableName("sys_storage")

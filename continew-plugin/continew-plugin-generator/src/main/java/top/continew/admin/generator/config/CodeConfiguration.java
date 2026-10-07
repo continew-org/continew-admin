@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  * 代码生成配置
  *
  * @author Charles7c
- * @since 2025/6/14 21:22
+ * @since 4.0.0
  */
 @Configuration
 public class CodeConfiguration {

@@ -25,8 +25,8 @@ import java.util.Set;
 /**
  * 分片上传初始化结果
  *
- * @author echo
- * @since 2.14.0
+ * @author KAI
+ * @since 4.1.0
  */
 @Data
 @Schema(description = "分片初始化响应参数")

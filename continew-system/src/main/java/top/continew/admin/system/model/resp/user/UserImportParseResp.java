@@ -28,7 +28,7 @@ import java.io.Serializable;
  * 用户导入解析响应参数
  *
  * @author kils
- * @since 2024/6/18 14:37
+ * @since 3.2.0
  */
 @Data
 @AllArgsConstructor

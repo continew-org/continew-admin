@@ -26,7 +26,7 @@ import java.io.Serial;
  * 参数实体
  *
  * @author Bull-BCLS
- * @since 2023/8/26 19:20
+ * @since 1.2.0
  */
 @Data
 @TableName("sys_option")

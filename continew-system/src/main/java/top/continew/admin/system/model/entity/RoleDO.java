@@ -28,7 +28,7 @@ import java.io.Serial;
  * 角色实体
  *
  * @author Charles7c
- * @since 2023/2/8 22:54
+ * @since 1.0.0
  */
 @Data
 @DictModel

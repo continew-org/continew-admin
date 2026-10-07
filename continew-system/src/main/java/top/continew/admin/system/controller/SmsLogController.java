@@ -31,7 +31,7 @@ import top.continew.starter.extension.crud.enums.Api;
  *
  * @author luoqiz
  * @author Charles7c
- * @since 2025/03/15 22:15
+ * @since 3.6.0
  */
 @Tag(name = "短信日志管理 API")
 @RestController

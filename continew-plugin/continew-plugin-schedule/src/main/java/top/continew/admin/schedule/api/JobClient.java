@@ -48,7 +48,7 @@ import java.util.function.Supplier;
  * 任务调度客户端
  *
  * @author Charles7c
- * @since 2024/7/4 23:07
+ * @since 3.2.0
  */
 @Slf4j
 @Data

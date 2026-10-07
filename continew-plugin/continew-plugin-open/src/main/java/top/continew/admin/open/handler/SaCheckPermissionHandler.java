@@ -29,7 +29,7 @@ import java.lang.reflect.AnnotatedElement;
  * 重定义注解 SaCheckPermission 的处理器
  *
  * @author chengzi
- * @since 2024/10/25 12:03
+ * @since 3.4.0
  */
 @Component
 public class SaCheckPermissionHandler implements SaAnnotationHandlerInterface<SaCheckPermission> {

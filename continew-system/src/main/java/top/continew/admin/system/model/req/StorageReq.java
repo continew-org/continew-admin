@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 存储创建或修改请求参数
  *
  * @author Charles7c
- * @since 2023/12/26 22:09
+ * @since 2.2.0
  */
 @Data
 @SpelValid

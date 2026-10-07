@@ -24,8 +24,8 @@ import java.io.Serializable;
 /**
  * 分片上传结果
  *
- * @author echo
- * @since 2.14.0
+ * @author KAI
+ * @since 4.1.0
  */
 @Data
 @Schema(description = "分片上传响应参数")

@@ -24,7 +24,7 @@ import java.util.List;
  * 租户通用信息返回
  *
  * @author 小熊
- * @since 2024/11/28 09:53
+ * @since 3.4.1
  */
 @Data
 public class TenantCommonResp {

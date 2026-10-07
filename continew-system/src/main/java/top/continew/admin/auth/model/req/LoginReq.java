@@ -32,7 +32,7 @@ import java.io.Serializable;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/22 15:16
+ * @since 3.5.0
  */
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,

@@ -33,7 +33,7 @@ import java.util.Set;
  * 角色业务接口
  *
  * @author Charles7c
- * @since 2023/2/8 23:15
+ * @since 1.0.0
  */
 public interface RoleService
     extends BaseService<RoleResp, RoleDetailResp, RoleQuery, RoleReq>, IService<RoleDO> {

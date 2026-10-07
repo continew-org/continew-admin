@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * @author luoqiz
  * @author Charles7c
- * @since 2025/03/15 22:15
+ * @since 3.6.0
  */
 @Data
 @Schema(description = "短信日志查询条件")

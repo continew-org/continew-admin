@@ -64,7 +64,7 @@ import java.util.Collections;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/25 14:21
+ * @since 3.5.0
  */
 @Component
 @RequiredArgsConstructor

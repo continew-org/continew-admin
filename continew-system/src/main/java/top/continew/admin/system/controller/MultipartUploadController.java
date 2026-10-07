@@ -40,7 +40,7 @@ import jakarta.validation.Valid;
  * 分片上传控制器
  *
  * @author KAI
- * @since 2025/7/30 16:38
+ * @since 4.1.0
  */
 @RestController
 @RequestMapping("/system/multipart-upload")

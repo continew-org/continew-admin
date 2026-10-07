@@ -26,7 +26,7 @@ import top.continew.admin.system.model.resp.ClientResp;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/03 16:04
+ * @since 3.5.0
  */
 public interface ClientService extends BaseService<ClientResp, ClientResp, ClientQuery, ClientReq> {
 

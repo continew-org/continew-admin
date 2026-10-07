@@ -27,7 +27,7 @@ import top.continew.starter.web.model.R;
  * 任务调度默认控制器
  *
  * @author Charles7c
- * @since 2025/10/25 12:28
+ * @since 4.1.0
  */
 @RestController
 @ConditionalOnDisabledScheduleJob

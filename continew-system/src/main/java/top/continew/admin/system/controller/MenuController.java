@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  * 菜单管理 API
  *
  * @author Charles7c
- * @since 2023/2/15 20:35
+ * @since 1.0.0
  */
 @Tag(name = "菜单管理 API")
 @RestController

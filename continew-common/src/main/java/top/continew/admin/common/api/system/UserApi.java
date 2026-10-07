@@ -24,7 +24,7 @@ import top.continew.admin.common.constant.ContainerConstants;
  * 用户业务 API
  *
  * @author Charles7c
- * @since 2025/1/9 20:17
+ * @since 3.5.0
  */
 public interface UserApi {
 

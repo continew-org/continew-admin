@@ -28,7 +28,7 @@ import top.continew.starter.extension.tenant.config.TenantProvider;
  * 租户配置
  *
  * @author Charles7c
- * @since 2025/7/12 13:30
+ * @since 4.0.0
  */
 @Configuration
 public class TenantConfiguration {

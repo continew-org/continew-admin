@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author 小熊
  * @author Charles7c
- * @since 2024/11/29 12:05
+ * @since 4.0.0
  */
 @Data
 @ConfigurationProperties(prefix = PropertiesConstants.TENANT)

@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 套餐和菜单关联 Mapper
  *
  * @author Charles7c
- * @since 2025/7/13 20:24
+ * @since 4.0.0
  */
 public interface PackageMenuMapper extends BaseMapper<PackageMenuDO> {
 }

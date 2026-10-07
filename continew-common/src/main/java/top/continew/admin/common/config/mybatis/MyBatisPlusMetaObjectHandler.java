@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * MyBatis Plus 元对象处理器配置（插入或修改时自动填充）
  *
  * @author Charles7c
- * @since 2022/12/22 19:52
+ * @since 1.0.0
  */
 public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
 

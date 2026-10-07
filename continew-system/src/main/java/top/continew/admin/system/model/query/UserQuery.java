@@ -30,7 +30,7 @@ import java.util.List;
  * 用户查询条件
  *
  * @author Charles7c
- * @since 2023/2/20 21:01
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "用户查询条件")

@@ -24,7 +24,7 @@ import top.continew.starter.core.enums.BaseEnum;
  * 注销模式枚举
  *
  * @author KAI
- * @since 2025/10/28 14:04
+ * @since 4.2.0
  */
 @Getter
 @RequiredArgsConstructor

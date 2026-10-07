@@ -30,7 +30,7 @@ import java.util.List;
  * 消息详情响应参数
  *
  * @author Charles7c
- * @since 2025/6/13 21:22
+ * @since 3.7.0
  */
 @Data
 @Schema(description = "消息详情响应参数")

@@ -27,7 +27,7 @@ import java.util.List;
  * Sa-Token 权限认证实现
  *
  * @author Charles7c
- * @since 2023/3/1 22:28
+ * @since 1.0.0
  */
 public class SaTokenPermissionImpl implements StpInterface {
 

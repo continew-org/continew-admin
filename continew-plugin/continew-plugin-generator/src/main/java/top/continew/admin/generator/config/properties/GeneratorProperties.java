@@ -30,7 +30,7 @@ import java.util.Map;
  * 代码生成器配置属性
  *
  * @author Charles7c
- * @since 2023/8/5 11:08
+ * @since 1.1.0
  */
 @Data
 @Component

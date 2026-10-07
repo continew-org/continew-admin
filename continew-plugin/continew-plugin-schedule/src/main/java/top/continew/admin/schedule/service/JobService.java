@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/6/25 17:20
+ * @since 3.2.0
  */
 public interface JobService {
 

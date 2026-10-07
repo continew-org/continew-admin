@@ -23,7 +23,7 @@ import cn.hutool.extra.spring.SpringUtil;
  *
  * @author Zheng Jie（ELADMIN）
  * @author Charles7c
- * @since 2022/12/21 20:21
+ * @since 1.0.0
  */
 public class RsaProperties {
 

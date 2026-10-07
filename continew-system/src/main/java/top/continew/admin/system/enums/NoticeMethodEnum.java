@@ -24,7 +24,7 @@ import top.continew.starter.core.enums.BaseEnum;
  * 公告通知方式枚举
  *
  * @author Charles7c
- * @since 2025/5/8 21:18
+ * @since 3.7.0
  */
 @Getter
 @RequiredArgsConstructor

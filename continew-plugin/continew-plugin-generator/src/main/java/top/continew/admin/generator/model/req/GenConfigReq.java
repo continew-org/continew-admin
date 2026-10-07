@@ -33,7 +33,7 @@ import java.util.List;
  * 代码生成配置请求参数
  *
  * @author Charles7c
- * @since 2023/8/8 20:40
+ * @since 1.1.0
  */
 @Data
 @Schema(description = "代码生成配置请求参数")

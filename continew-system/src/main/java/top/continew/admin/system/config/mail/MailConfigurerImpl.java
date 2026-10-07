@@ -32,7 +32,7 @@ import java.util.Map;
  * 邮件配置实现
  *
  * @author Charles7c
- * @since 2024/5/30 22:32
+ * @since 3.1.0
  */
 @Slf4j
 @Component

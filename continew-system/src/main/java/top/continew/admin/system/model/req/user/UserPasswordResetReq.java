@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 用户密码重置请求参数
  *
  * @author Charles7c
- * @since 2024/2/2 22:50
+ * @since 2.4.0
  */
 @Data
 @Schema(description = "用户密码重置请求参数")

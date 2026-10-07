@@ -34,7 +34,7 @@ import java.util.List;
  * 文件 Mapper
  *
  * @author Charles7c
- * @since 2023/12/23 10:38
+ * @since 2.2.0
  */
 public interface FileMapper extends BaseMapper<FileDO> {
 

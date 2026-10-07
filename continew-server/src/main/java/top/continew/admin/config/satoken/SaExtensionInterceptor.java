@@ -41,7 +41,7 @@ import java.util.Objects;
  * Sa-Token 扩展拦截器
  *
  * @author Charles7c
- * @since 2024/10/10 20:25
+ * @since 3.4.0
  */
 @Slf4j
 public class SaExtensionInterceptor extends SaInterceptor {

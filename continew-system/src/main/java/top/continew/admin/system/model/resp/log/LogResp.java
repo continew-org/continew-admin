@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * 日志响应参数
  *
  * @author Charles7c
- * @since 2023/1/14 18:27
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "日志响应参数")

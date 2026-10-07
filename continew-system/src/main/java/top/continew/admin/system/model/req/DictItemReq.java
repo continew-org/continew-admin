@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 字典项创建或修改请求参数
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 @Data
 @Schema(description = "字典项创建或修改请求参数")

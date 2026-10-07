@@ -79,7 +79,7 @@ import java.util.concurrent.TimeUnit;
  * 验证码 API
  *
  * @author Charles7c
- * @since 2022/12/11 14:00
+ * @since 1.0.0
  */
 @Tag(name = "验证码 API")
 @TenantIgnore

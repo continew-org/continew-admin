@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  *
  * @author chengzi
  * @author Charles7c
- * @since 2024/10/17 16:03
+ * @since 3.4.0
  */
 @Data
 @Schema(description = "应用响应参数")

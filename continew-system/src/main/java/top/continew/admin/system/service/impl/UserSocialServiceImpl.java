@@ -37,7 +37,7 @@ import java.util.Set;
  * 用户社会化关联业务实现
  *
  * @author Charles7c
- * @since 2023/10/11 22:10
+ * @since 1.3.0
  */
 @Service
 @RequiredArgsConstructor

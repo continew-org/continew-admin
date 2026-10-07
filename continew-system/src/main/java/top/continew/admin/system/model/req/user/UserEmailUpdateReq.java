@@ -29,7 +29,7 @@ import java.io.Serializable;
  * 用户邮箱修改请求参数
  *
  * @author Charles7c
- * @since 2023/1/12 20:18
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "用户邮箱修改请求参数")

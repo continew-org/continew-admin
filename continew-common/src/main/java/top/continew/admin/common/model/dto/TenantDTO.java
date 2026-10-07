@@ -25,7 +25,7 @@ import java.io.Serializable;
  * 租户信息
  *
  * @author Charles7c
- * @since 2025/7/23 21:05
+ * @since 4.0.0
  */
 @Data
 public class TenantDTO implements Serializable {

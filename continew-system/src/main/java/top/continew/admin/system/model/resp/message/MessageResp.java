@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
  * 消息响应参数
  *
  * @author Bull-BCLS
- * @since 2023/10/15 19:05
+ * @since 1.3.0
  */
 @Data
 @Schema(description = "消息响应参数")

@@ -26,7 +26,7 @@ import java.io.Serializable;
  * 第三方账号绑定响应参数
  *
  * @author Charles7c
- * @since 2023/10/19 21:29
+ * @since 1.3.0
  */
 @Data
 @Schema(description = "第三方账号绑定响应参数")

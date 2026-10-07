@@ -59,7 +59,7 @@ import java.util.stream.Stream;
  *
  * @author Charles7c
  * @author chengzi
- * @since 2022/12/19 22:13
+ * @since 1.0.0
  */
 @Slf4j
 @Configuration

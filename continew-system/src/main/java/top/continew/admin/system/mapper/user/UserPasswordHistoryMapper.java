@@ -24,7 +24,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 用户历史密码 Mapper
  *
  * @author Charles7c
- * @since 2024/5/16 21:58
+ * @since 3.1.0
  */
 public interface UserPasswordHistoryMapper extends BaseMapper<UserPasswordHistoryDO> {
 

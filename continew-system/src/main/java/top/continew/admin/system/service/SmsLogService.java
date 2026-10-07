@@ -25,7 +25,7 @@ import top.continew.admin.system.model.resp.SmsLogResp;
  * 短信日志业务接口
  *
  * @author luoqiz
- * @since 2025/03/15 22:15
+ * @since 3.6.0
  */
 public interface SmsLogService extends BaseService<SmsLogResp, SmsLogResp, SmsLogQuery, SmsLogReq> {
 }

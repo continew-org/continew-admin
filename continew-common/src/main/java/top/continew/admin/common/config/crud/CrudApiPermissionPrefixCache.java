@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </p>
  *
  * @author Charles7c
- * @since 2025/7/24 22:14
+ * @since 4.0.0
  */
 public class CrudApiPermissionPrefixCache {
 

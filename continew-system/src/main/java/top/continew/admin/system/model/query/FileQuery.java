@@ -29,7 +29,7 @@ import java.io.Serializable;
  * 文件查询条件
  *
  * @author Charles7c
- * @since 2023/12/23 10:38
+ * @since 2.2.0
  */
 @Data
 @Schema(description = "文件查询条件")

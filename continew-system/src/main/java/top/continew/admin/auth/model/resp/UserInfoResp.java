@@ -34,7 +34,7 @@ import java.util.Set;
  * 登录用户响应参数
  *
  * @author Charles7c
- * @since 2022/12/29 20:15
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "登录用户响应参数")

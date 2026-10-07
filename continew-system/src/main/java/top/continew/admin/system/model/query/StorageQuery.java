@@ -30,7 +30,7 @@ import java.io.Serializable;
  * 存储查询条件
  *
  * @author Charles7c
- * @since 2023/12/26 22:09
+ * @since 2.2.0
  */
 @Data
 @Schema(description = "存储查询条件")

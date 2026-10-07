@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * 系统日志实体
  *
  * @author Charles7c
- * @since 2022/12/25 9:11
+ * @since 1.0.0
  */
 @Data
 @TableName("sys_log")

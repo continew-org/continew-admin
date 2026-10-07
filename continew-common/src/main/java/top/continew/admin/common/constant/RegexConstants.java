@@ -20,7 +20,7 @@ package top.continew.admin.common.constant;
  * 正则相关常量
  *
  * @author Charles7c
- * @since 2023/1/10 20:06
+ * @since 1.0.0
  */
 public class RegexConstants {
 

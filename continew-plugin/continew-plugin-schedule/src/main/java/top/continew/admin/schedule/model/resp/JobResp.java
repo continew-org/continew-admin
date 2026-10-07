@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/6/25 17:15
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "任务响应参数")

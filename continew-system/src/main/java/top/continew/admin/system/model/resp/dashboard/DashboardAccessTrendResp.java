@@ -28,7 +28,7 @@ import java.io.Serializable;
  * 仪表盘-访问趋势响应参数
  *
  * @author Charles7c
- * @since 2023/9/9 20:20
+ * @since 1.2.0
  */
 @Data
 @NoArgsConstructor

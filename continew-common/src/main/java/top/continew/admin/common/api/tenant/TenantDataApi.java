@@ -23,7 +23,7 @@ import top.continew.admin.common.model.dto.TenantDTO;
  *
  * @author 小熊
  * @author Charles7c
- * @since 2024/12/2 20:08
+ * @since 3.4.1
  */
 public interface TenantDataApi {
 

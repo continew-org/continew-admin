@@ -34,7 +34,7 @@ import java.util.List;
  * 角色创建或修改请求参数
  *
  * @author Charles7c
- * @since 2023/2/8 23:12
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "角色创建或修改请求参数")

@@ -28,7 +28,7 @@ import top.continew.starter.data.service.IService;
  * 套餐业务接口
  *
  * @author 小熊
- * @since 2024/11/26 11:25
+ * @since 3.4.1
  */
 public interface PackageService extends
     BaseService<PackageResp, PackageDetailResp, PackageQuery, PackageReq>, IService<PackageDO> {

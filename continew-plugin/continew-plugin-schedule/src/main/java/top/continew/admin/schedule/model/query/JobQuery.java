@@ -27,7 +27,7 @@ import java.io.Serial;
  * 任务查询条件
  *
  * @author KAI
- * @since 2024/6/25 16:43
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "任务查询条件")

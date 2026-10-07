@@ -22,7 +22,7 @@ import java.time.ZoneId;
  * 全局常量
  *
  * @author Charles7c
- * @since 2023/2/9 22:11
+ * @since 1.0.0
  */
 public class GlobalConstants {
 

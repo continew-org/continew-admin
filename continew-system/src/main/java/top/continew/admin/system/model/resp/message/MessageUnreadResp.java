@@ -28,7 +28,7 @@ import java.util.List;
  * 未读消息响应参数
  *
  * @author Charles7c
- * @since 2023/11/2 23:00
+ * @since 1.3.0
  */
 @Data
 @Schema(description = "未读消息响应参数")

@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
  * 响应参数基类
  *
  * @author Charles7c
- * @since 2024/12/27 20:32
+ * @since 3.5.0
  */
 @Data
 public class BaseResp implements Serializable {

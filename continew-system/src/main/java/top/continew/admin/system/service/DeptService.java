@@ -30,7 +30,7 @@ import java.util.Set;
  * 部门业务接口
  *
  * @author Charles7c
- * @since 2023/1/22 17:54
+ * @since 1.0.0
  */
 public interface DeptService
     extends BaseService<DeptResp, DeptResp, DeptQuery, DeptReq>, IService<DeptDO> {

@@ -27,7 +27,7 @@ import java.util.List;
  * 任务实例日志分页响应参数
  *
  * @author Charles7c
- * @since 2024/7/14 21:51
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "任务实例日志分页响应参数")

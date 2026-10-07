@@ -32,7 +32,7 @@ import java.io.Serializable;
  * 菜单创建或修改请求参数
  *
  * @author Charles7c
- * @since 2023/2/15 20:21
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "菜单创建或修改请求参数")

@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 消息创建请求参数
  *
  * @author Bull-BCLS
- * @since 2023/10/15 19:05
+ * @since 1.3.0
  */
 @Data
 @NoArgsConstructor

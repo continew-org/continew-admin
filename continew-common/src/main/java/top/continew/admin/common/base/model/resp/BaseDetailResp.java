@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
  * 详情响应参数基类
  *
  * @author Charles7c
- * @since 2024/12/27 20:32
+ * @since 3.5.0
  */
 @Data
 public class BaseDetailResp extends BaseResp {

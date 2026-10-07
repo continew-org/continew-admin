@@ -41,7 +41,7 @@ import java.time.LocalDateTime;
  * 生成配置实体
  *
  * @author Charles7c
- * @since 2023/4/12 20:21
+ * @since 1.1.0
  */
 @Data
 @NoArgsConstructor

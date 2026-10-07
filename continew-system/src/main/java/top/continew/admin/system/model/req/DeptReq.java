@@ -31,7 +31,7 @@ import java.io.Serializable;
  * 部门创建或修改请求参数
  *
  * @author Charles7c
- * @since 2023/1/24 00:21
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "部门创建或修改请求参数")

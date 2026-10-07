@@ -27,7 +27,7 @@ import java.util.Collection;
  *
  * @author chengzi
  * @author Charles7c
- * @since 2024/10/25 15:31
+ * @since 3.4.0
  */
 public class OpenApiUtils {
 

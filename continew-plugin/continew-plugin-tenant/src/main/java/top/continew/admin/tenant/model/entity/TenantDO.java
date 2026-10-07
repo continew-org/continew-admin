@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  *
  * @author 小熊
  * @author Charles7c
- * @since 2024/11/26 17:20
+ * @since 3.4.1
  */
 @Data
 @TableName("tenant")

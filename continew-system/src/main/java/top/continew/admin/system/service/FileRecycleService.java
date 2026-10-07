@@ -27,7 +27,7 @@ import jakarta.validation.Valid;
  * 文件回收站业务接口
  *
  * @author Charles7c
- * @since 2025/11/11 21:28
+ * @since 4.1.0
  */
 public interface FileRecycleService {
 

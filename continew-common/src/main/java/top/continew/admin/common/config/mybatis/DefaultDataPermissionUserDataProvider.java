@@ -28,7 +28,7 @@ import top.continew.starter.extension.datapermission.provider.DataPermissionUser
  * 数据权限用户数据提供者
  *
  * @author Charles7c
- * @since 2023/12/21 21:19
+ * @since 2.2.0
  */
 public class DefaultDataPermissionUserDataProvider implements DataPermissionUserDataProvider {
 

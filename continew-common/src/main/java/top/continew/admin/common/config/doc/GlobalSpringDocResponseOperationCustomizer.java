@@ -47,7 +47,7 @@ import java.util.Arrays;
  * </p>
  *
  * @author echo
- * @since 2025/07/08 09:34
+ * @since 4.2.0
  */
 @Component
 public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseService {

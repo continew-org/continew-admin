@@ -30,7 +30,7 @@ import java.util.function.Function;
  * 参数业务接口
  *
  * @author Bull-BCLS
- * @since 2023/8/26 19:38
+ * @since 1.2.0
  */
 public interface OptionService {
 

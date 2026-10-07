@@ -20,7 +20,7 @@ package top.continew.admin.common.constant;
  * 数据源容器相关常量（Crane4j 数据填充组件使用）
  *
  * @author Charles7c
- * @since 2024/1/20 12:33
+ * @since 2.3.0
  */
 public class ContainerConstants {
 

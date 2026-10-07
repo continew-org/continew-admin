@@ -29,7 +29,7 @@ import java.io.Serializable;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/6/27 9:24
+ * @since 3.2.0
  */
 @Data
 @Schema(description = "任务状态修改请求参数")

@@ -58,7 +58,7 @@ import java.util.List;
  * 个人消息 API
  *
  * @author Charles7c
- * @since 2025/4/5 21:30
+ * @since 3.6.0
  */
 @Tag(name = "个人消息 API")
 @RestController

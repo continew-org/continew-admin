@@ -22,7 +22,7 @@ import java.util.List;
  * 用户历史密码业务接口
  *
  * @author Charles7c
- * @since 2024/5/16 21:58
+ * @since 3.1.0
  */
 public interface UserPasswordHistoryService {
 

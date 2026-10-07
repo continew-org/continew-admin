@@ -28,7 +28,7 @@ import java.io.Serial;
  * 手机号登录请求参数
  *
  * @author Charles7c
- * @since 2023/10/26 22:37
+ * @since 1.3.0
  */
 @Data
 @Schema(description = "手机号登录请求参数")

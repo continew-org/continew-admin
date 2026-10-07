@@ -33,7 +33,7 @@ import java.util.List;
  * 用户 Mapper
  *
  * @author Charles7c
- * @since 2022/12/22 21:47
+ * @since 1.0.0
  */
 public interface UserMapper extends DataPermissionMapper<UserDO> {
 

@@ -28,7 +28,7 @@ import java.io.Serial;
  * </p>
  *
  * @author Charles7c
- * @since 2025/7/17 20:20
+ * @since 4.0.0
  */
 @Data
 public class TenantBaseDO extends BaseDO {

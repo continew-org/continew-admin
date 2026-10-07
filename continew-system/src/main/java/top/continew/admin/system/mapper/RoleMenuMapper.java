@@ -25,7 +25,7 @@ import java.util.List;
  * 角色和菜单 Mapper
  *
  * @author Charles7c
- * @since 2023/2/15 20:30
+ * @since 1.0.0
  */
 public interface RoleMenuMapper extends BaseMapper<RoleMenuDO> {
 

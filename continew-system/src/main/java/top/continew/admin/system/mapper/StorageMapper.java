@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 存储 Mapper
  *
  * @author Charles7c
- * @since 2023/12/26 22:09
+ * @since 2.2.0
  */
 public interface StorageMapper extends BaseMapper<StorageDO> {
 }

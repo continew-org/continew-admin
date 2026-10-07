@@ -38,7 +38,7 @@ import java.util.Objects;
  * 用户响应参数
  *
  * @author Charles7c
- * @since 2023/2/20 21:08
+ * @since 1.0.0
  */
 @Data
 @Schema(description = "用户响应参数")

@@ -37,7 +37,7 @@ import top.continew.starter.extension.crud.service.CrudServiceImpl;
  * @param <Q> 查询条件类型
  * @param <C> 创建或修改请求参数类型
  * @author Charles7c
- * @since 2024/12/6 20:30
+ * @since 3.4.1
  */
 public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C>
     extends CrudServiceImpl<M, T, L, D, Q, C> implements BaseService<L, D, Q, C> {

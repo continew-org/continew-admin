@@ -57,7 +57,7 @@ import java.util.List;
  * 认证 API
  *
  * @author Charles7c
- * @since 2022/12/21 20:37
+ * @since 1.0.0
  */
 @Tag(name = "认证 API")
 @Log(module = "登录")

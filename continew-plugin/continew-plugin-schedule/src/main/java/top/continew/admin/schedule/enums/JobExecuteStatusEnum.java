@@ -25,7 +25,7 @@ import top.continew.starter.core.enums.BaseEnum;
  * 任务执行状态枚举
  *
  * @author Charles7c
- * @since 2024/7/11 22:28
+ * @since 3.2.0
  */
 @Getter
 @RequiredArgsConstructor

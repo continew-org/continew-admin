@@ -40,7 +40,7 @@ import java.util.List;
  * 文件业务接口
  *
  * @author Charles7c
- * @since 2023/12/23 10:38
+ * @since 2.2.0
  */
 public interface FileService
     extends BaseService<FileResp, FileResp, FileQuery, FileReq>, IService<FileDO> {

@@ -24,7 +24,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  *
  * @author Bull-BCLS
  * @author Charles7c
- * @since 2023/10/15 20:25
+ * @since 1.3.0
  */
 public interface MessageLogMapper extends BaseMapper<MessageLogDO> {
 }

@@ -43,7 +43,7 @@ import jakarta.validation.Valid;
  * 系统日志 API
  *
  * @author Charles7c
- * @since 2023/1/18 23:55
+ * @since 1.0.0
  */
 @Tag(name = "系统日志 API")
 @RestController

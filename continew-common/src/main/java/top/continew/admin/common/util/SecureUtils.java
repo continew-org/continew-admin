@@ -30,7 +30,7 @@ import top.continew.starter.core.util.validation.ValidationUtils;
  * 加密/解密工具类
  *
  * @author Charles7c
- * @since 2022/12/21 21:41
+ * @since 1.0.0
  */
 public class SecureUtils {
 

@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
  * 用户历史密码实体
  *
  * @author Charles7c
- * @since 2024/5/16 21:58
+ * @since 3.1.0
  */
 @Data
 @NoArgsConstructor

@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 任务执行请求参数
  *
  * @author Charles7c
- * @since 2025/3/26 21:50
+ * @since 3.6.0
  */
 @Data
 @Schema(description = "任务执行请求参数")

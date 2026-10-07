@@ -28,7 +28,7 @@ import top.continew.starter.trace.autoconfigure.TraceProperties;
  * 日志配置
  *
  * @author Charles7c
- * @since 2022/12/24 23:15
+ * @since 1.0.0
  */
 @Configuration
 @ConditionalOnEnabledLog

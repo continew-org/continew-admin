@@ -37,7 +37,7 @@ import java.util.List;
  * 系统日志 Mapper
  *
  * @author Charles7c
- * @since 2022/12/22 21:47
+ * @since 1.0.0
  */
 public interface LogMapper extends BaseMapper<LogDO> {
 

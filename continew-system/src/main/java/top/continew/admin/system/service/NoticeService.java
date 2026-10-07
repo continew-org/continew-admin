@@ -32,7 +32,7 @@ import java.util.List;
  * 公告业务接口
  *
  * @author Charles7c
- * @since 2023/8/20 10:55
+ * @since 1.1.0
  */
 public interface NoticeService
     extends BaseService<NoticeResp, NoticeDetailResp, NoticeQuery, NoticeReq>, IService<NoticeDO> {

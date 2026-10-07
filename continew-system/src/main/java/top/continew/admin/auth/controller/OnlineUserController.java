@@ -49,7 +49,7 @@ import java.util.Objects;
  * 在线用户 API
  *
  * @author Charles7c
- * @since 2023/1/20 21:51
+ * @since 1.0.0
  */
 @Tag(name = "在线用户 API")
 @RestController

@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 字典 Mapper
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 public interface DictMapper extends BaseMapper<DictDO> {
 }

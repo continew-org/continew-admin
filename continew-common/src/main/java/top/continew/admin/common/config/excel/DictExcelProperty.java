@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * 字典字段注解
  *
  * @author Charles7c
- * @since 2025/4/9 20:25
+ * @since 3.6.0
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

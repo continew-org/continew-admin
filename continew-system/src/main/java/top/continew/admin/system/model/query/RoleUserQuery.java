@@ -26,7 +26,7 @@ import java.io.Serializable;
  * 角色关联用户查询条件
  *
  * @author Charles7c
- * @since 2025/2/5 22:01
+ * @since 3.5.0
  */
 @Data
 @Schema(description = "角色关联用户查询条件")

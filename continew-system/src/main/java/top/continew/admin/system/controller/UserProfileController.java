@@ -64,7 +64,7 @@ import java.util.List;
  * 个人信息 API
  *
  * @author Charles7c
- * @since 2023/1/2 11:41
+ * @since 1.0.0
  */
 @Tag(name = "个人信息 API")
 @Validated

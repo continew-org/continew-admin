@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * 是否禁用 Snail Job 判断注解
  *
  * @author Charles7c
- * @since 2025/10/25 12:28
+ * @since 4.1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

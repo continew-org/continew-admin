@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 角色 Mapper
  *
  * @author Charles7c
- * @since 2023/2/8 23:17
+ * @since 1.0.0
  */
 public interface RoleMapper extends BaseMapper<RoleDO> {
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * 字典项业务接口
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 public interface DictItemService extends
     BaseService<DictItemResp, DictItemResp, DictItemQuery, DictItemReq>, IService<DictItemDO> {

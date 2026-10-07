@@ -23,7 +23,7 @@ import top.continew.starter.data.mapper.BaseMapper;
  * 客户端 Mapper
  *
  * @author KAI
- * @since 2024/12/03 16:04
+ * @since 3.5.0
  */
 public interface ClientMapper extends BaseMapper<ClientDO> {
 }

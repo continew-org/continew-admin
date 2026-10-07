@@ -48,7 +48,7 @@ import java.util.Collection;
  * @param <Q> 查询条件类型
  * @param <C> 创建或修改请求参数类型
  * @author Charles7c
- * @since 2024/12/6 20:30
+ * @since 3.4.1
  */
 public class BaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C>
     extends AbstractCrudController<S, L, D, Q, C> {

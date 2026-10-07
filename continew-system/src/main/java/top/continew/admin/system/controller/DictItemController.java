@@ -31,7 +31,7 @@ import top.continew.starter.log.annotation.Log;
  * 字典项管理 API
  *
  * @author Charles7c
- * @since 2023/9/11 21:29
+ * @since 1.2.0
  */
 @Log(module = "字典管理")
 @Tag(name = "字典项管理 API")

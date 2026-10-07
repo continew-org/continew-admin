@@ -27,7 +27,7 @@ import java.io.Serializable;
  * 套餐和菜单关联实体
  *
  * @author Charles7c
- * @since 2025/7/11 22:01
+ * @since 4.0.0
  */
 @Data
 @NoArgsConstructor

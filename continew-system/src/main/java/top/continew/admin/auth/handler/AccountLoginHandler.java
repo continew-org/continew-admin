@@ -47,7 +47,7 @@ import java.time.LocalDateTime;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/12/22 14:58
+ * @since 3.5.0
  */
 @Component
 @RequiredArgsConstructor

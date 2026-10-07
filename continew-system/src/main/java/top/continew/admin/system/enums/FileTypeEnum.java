@@ -29,7 +29,7 @@ import java.util.List;
  * 文件类型枚举
  *
  * @author Charles7c
- * @since 2023/12/23 13:38
+ * @since 2.2.0
  */
 @Getter
 @RequiredArgsConstructor

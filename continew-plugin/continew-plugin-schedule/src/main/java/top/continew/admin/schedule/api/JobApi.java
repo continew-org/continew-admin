@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @author KAI
  * @author Charles7c
- * @since 2024/6/25 18:20
+ * @since 3.2.0
  */
 @FeignClient(value = "job", url = "${snail-job.server.api.url}", path = "/job",
     configuration = FeignRequestInterceptor.class)

@@ -30,7 +30,7 @@ import top.continew.starter.extension.crud.enums.Api;
  * 部门管理 API
  *
  * @author Charles7c
- * @since 2023/1/22 17:50
+ * @since 1.0.0
  */
 @Tag(name = "部门管理 API")
 @RestController

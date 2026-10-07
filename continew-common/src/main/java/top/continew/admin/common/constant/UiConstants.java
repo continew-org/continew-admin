@@ -20,7 +20,7 @@ package top.continew.admin.common.constant;
  * UI 相关常量
  *
  * @author Charles7c
- * @since 2023/9/17 14:12
+ * @since 1.2.0
  */
 public class UiConstants {
 

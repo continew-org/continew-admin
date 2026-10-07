@@ -28,7 +28,7 @@ import java.util.List;
  * 角色功能权限修改请求参数
  *
  * @author Charles7c
- * @since 2025/2/5 21:00
+ * @since 3.5.0
  */
 @Data
 @Schema(description = "角色功能权限修改请求参数")

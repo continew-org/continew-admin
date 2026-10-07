@@ -28,7 +28,7 @@ import java.util.List;
  * 字典业务 API 实现
  *
  * @author Charles7c
- * @since 2025/7/26 10:16
+ * @since 4.0.0
  */
 @Service
 @RequiredArgsConstructor

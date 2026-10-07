@@ -48,7 +48,7 @@ import top.nextdoc4j.core.configuration.NextDoc4jProperties;
  * 启动程序
  *
  * @author Charles7c
- * @since 2022/12/8 23:15
+ * @since 1.0.0
  */
 @Slf4j
 @EnableCrudApi

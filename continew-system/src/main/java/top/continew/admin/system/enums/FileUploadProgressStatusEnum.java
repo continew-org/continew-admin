@@ -24,7 +24,7 @@ import top.continew.starter.core.enums.BaseEnum;
  * 文件上传进度状态枚举
  *
  * @author echo
- * @since 2026/3/3 14:55
+ * @since 4.2.0
  */
 @Getter
 @RequiredArgsConstructor

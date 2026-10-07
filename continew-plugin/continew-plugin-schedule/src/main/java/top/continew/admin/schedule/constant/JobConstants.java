@@ -20,7 +20,7 @@ package top.continew.admin.schedule.constant;
  * 任务调度常量
  *
  * @author KAI
- * @since 2024/6/26 9:19
+ * @since 3.2.0
  */
 public class JobConstants {
 

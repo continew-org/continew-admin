@@ -41,7 +41,7 @@ import top.continew.starter.extension.crud.enums.Api;
  *
  * @author chengzi
  * @author Charles7c
- * @since 2024/10/17 16:03
+ * @since 3.4.0
  */
 @Tag(name = "应用管理 API")
 @RestController
