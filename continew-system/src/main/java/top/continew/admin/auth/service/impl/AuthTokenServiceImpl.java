@@ -268,7 +268,9 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     private LoginState reloadLoginState(UserDO authenticatedUser, ClientResp authenticatedClient,
         Long tenantId) {
         ClientResp currentClient = clientService.getByClientId(authenticatedClient.getClientId());
-        CheckUtils.throwIfNull(currentClient, "客户端不存在");
+        if (currentClient == null) {
+            throw new BusinessException("客户端不存在");
+        }
         CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, currentClient.getStatus(),
             "客户端已禁用");
         if (!this.isSameSecurityPolicy(authenticatedClient, currentClient)) {

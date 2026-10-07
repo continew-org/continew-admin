@@ -39,6 +39,7 @@ import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.ClientService;
 import top.continew.admin.system.service.MenuService;
 import top.continew.admin.system.service.RoleService;
+import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
@@ -71,13 +72,18 @@ public class AuthServiceImpl implements AuthService {
         AuthTypeEnum authType = req.getAuthType();
         // 校验客户端
         ClientResp client = clientService.getByClientId(req.getClientId());
-        ValidationUtils.throwIfNull(client, "客户端不存在");
+        if (client == null) {
+            throw new BadRequestException("客户端不存在");
+        }
         ValidationUtils.throwIf(DisEnableStatusEnum.DISABLE.equals(client.getStatus()), "客户端已禁用");
         ValidationUtils.throwIf(!client.getAuthType().contains(authType.getValue()),
             "该客户端暂未授权 [{}] 认证", authType
                 .getDescription());
         // 获取处理器
         LoginHandler<LoginReq> loginHandler = loginHandlerFactory.getHandler(authType);
+        if (loginHandler == null) {
+            throw new BadRequestException("不支持的认证类型 [" + authType.getDescription() + "]");
+        }
         // 登录前置处理
         loginHandler.preLogin(req, client, request);
         // 登录
