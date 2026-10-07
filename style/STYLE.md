@@ -47,7 +47,7 @@ Settings/Preferences → Editor → Code Style → 齿轮图标 → Import Schem
 Spotless 使用 Eclipse JDT 格式化引擎执行 `ocn-eclipse-formatter.xml`，绑定在 Maven `validate` 阶段作为门禁：
 
 ```bash
-./mvnw verify             # 门禁检查：格式不符合将直接构建失败（四道门禁）
+./mvnw verify             # 门禁检查：格式不符合将直接构建失败（四道静态门禁 + 单元测试）
 ./mvnw compile -Pformat   # 自动修复：格式化 + 清理 import + 补 License Header
 ```
 

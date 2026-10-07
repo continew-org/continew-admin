@@ -111,7 +111,7 @@ git checkout -b feat/your-feature upstream/dev
 ./mvnw verify         # Windows 为 mvnw.cmd verify
 ```
 
-该命令会通过四道门禁：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），以及编译后 verify 阶段的 **SpotBugs**（字节码缺陷）。构建过程不会修改任何源码。
+该命令会通过四道静态门禁并执行单元测试：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），编译后 verify 阶段的 **SpotBugs**（字节码缺陷），以及 test 阶段的**单元测试**（`ContiNewAdminApplicationTests` 上下文加载测试依赖 MySQL/Redis 等基础设施，已在 surefire 中排除，待引入 Testcontainers 后随集成测试启用）。构建过程不会修改任何源码。
 
 - 如果 Spotless 检查报红，执行 `./mvnw compile -Pformat` 自动修复格式，修复后请再执行一次正常构建确认通过；
 - License Header 由 Spotless 在检查阶段自动校验，新建文件请从现有文件复制头部或让 `-Pformat` 自动补全；
@@ -186,7 +186,7 @@ git push --force-with-lease
 
 - [ ] 一个 PR 只解决一个 Issue（只做一件事），不夹带无关改动
 - [ ] 代码遵循已有风格，注释完善（含接口文档和参数示例），符合阿里巴巴《Java 开发手册(黄山版)》
-- [ ] 本地 `./mvnw verify` 四道门禁全部通过
+- [ ] 本地 `./mvnw verify` 四道静态门禁与单元测试全部通过
 - [ ] 如有行为变更，已同步更新相关文档（含 Liquibase 变更日志）
 - [ ] 按 PR 模板完整填写 Changelog 表格，并关联相关 Issue（Closes/Fixes/Resolves #<issue号>）
 - [ ] commit message 符合 Conventional Commits（约定式提交）规范

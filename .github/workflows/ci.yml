@@ -40,5 +40,5 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Build and verify
-        # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) -> 编译 -> SpotBugs (verify)
+        # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) -> 编译 -> 单元测试 (test) -> SpotBugs (verify)
         run: ./mvnw -B verify
