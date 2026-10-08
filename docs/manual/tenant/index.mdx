@@ -1,0 +1,13 @@
+---
+title: 多租户
+description: 多租户模块基于 MyBatis-Plus 行级隔离实现租户数据隔离，通过租户与套餐两级管理控制各租户可用的菜单与数据范围。
+---
+
+多租户模块位于 `continew-plugin-tenant`，基于 ContiNew Starter 的 `continew-starter-extension-tenant-mp`（MyBatis-Plus 行级隔离）实现：执行 SQL 时自动拼接当前租户条件，各租户共享同一套库表而互不可见。租户上下文经请求头 `X-Tenant-Id`（ID）或 `X-Tenant-Code`（编码）传递，超级管理员所在的默认租户 ID 为 0。
+
+模块对外提供两级管理：套餐定义一组可选菜单构成产品规格，租户绑定套餐并获得对应菜单能力。对应一级菜单「租户管理」（菜单 ID 3000）。
+
+<Cards>
+  <Card title="租户管理" description="创建租户并自动初始化租户数据，管理域名、过期时间、状态与绑定套餐" href="./management" />
+  <Card title="套餐管理" description="维护套餐与菜单的关联，套餐变更实时同步到所有引用租户" href="./package" />
+</Cards>

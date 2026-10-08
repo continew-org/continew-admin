@@ -1,0 +1,47 @@
+---
+title: 更新日志
+description: 汇总 ContiNew Admin 4.x 各版本的主要变更，完整提交级记录以 GitHub Releases 为准。
+---
+
+本页按版本摘取影响使用与升级的变更，不逐条搬运提交记录。每个版本的完整清单（含问题修复与提交链接）见 [GitHub Releases](https://github.com/continew-org/continew-admin/releases)，仓库根目录的 `CHANGELOG.md` 同步维护同样的内容。
+
+## v4.1.0（2025-11-17）
+
+[完整变更](https://github.com/continew-org/continew-admin/releases/tag/v4.1.0) · [与 v4.0.0 对比](https://github.com/continew-org/continew-admin/compare/v4.0.0...v4.1.0)
+
+- 新增多文件分片上传，本地存储与 S3 存储均支持，配套文件回收站。
+- 物理删除调整为逻辑删除，逻辑已删除值取记录 `id`，适配已有唯一索引。
+- `UserContextHolder` 由 `ThreadLocal` 改为 `TransmittableThreadLocal`，修复线程池场景下上下文丢失。
+- 打包配置重构为胖瘦双模式，`./mvnw package` 出瘦包，`./mvnw clean package -P fat-jar` 出胖包。
+- 移除 `@QueryIgnore` 注解，Query 参数改为各查询对象自行处理。
+- 依赖升级 continew-starter 2.13.4 → 2.14.0。
+
+## v4.0.0（2025-07-27）
+
+[完整变更](https://github.com/continew-org/continew-admin/releases/tag/v4.0.0) · [与 v3.7.0 对比](https://github.com/continew-org/continew-admin/compare/v3.7.0...v4.0.0)
+
+<Callout type="warn">
+v4.0.0 含模块改名与权限控制重构，从 3.x 升级时按下列条目逐一核对。
+</Callout>
+
+- 新增多租户插件模块 `continew-plugin-tenant`，基于行级隔离，租户管理、套餐管理入口随插件提供。
+- 模块改名，`continew-webapi` 改为 `continew-server`，`continew-module-system` 改为 `continew-system`，有自定义引用时需同步修改。
+- 用户与角色体系梳理，内置超级管理员、租户管理员两个内置角色，内置用户和角色不允许变更及分配。
+- 重构 CRUD API 权限控制，新增 `CrudApiPermissionPrefixCache` 缓存权限前缀。
+- 新增 `database-id` 配置，适配 MySQL 与 PostgreSQL 的 SQL 语法差异。
+- 重构内部 API 依赖模式，`common` 模块新增 `api` 包，各业务模块提供实现，降低模块间耦合。
+- 运行环境升级，MySQL 8.0.33 → 8.0.42、Redis 7.2.3 → 7.2.8、Nginx 1.25.3 → 1.27.0；continew-starter 2.12.2 → 2.13.4。
+
+## dev 分支进行中
+
+以下变更已合入 dev 分支（`4.2.0-SNAPSHOT`），尚未随正式版发布，CHANGELOG 未定稿，以源码为准。
+
+- 引入 `continew-starter-auth-refresh-token`，登录改为 Access Token 加 Refresh Token 双令牌，Refresh Token 走 HttpOnly Cookie 轮换，配套 `SessionController` 与 `AuthTokenService`。
+- Sa-Token 的 `timeout`、`active-timeout` 等参数迁移到「系统管理 → 系统配置 → 客户端配置」页面按客户端动态管理，YAML 中对应配置转为注释状态。
+- 接口文档引入 NextDoc4j，替代原有展示层，提供品牌定制、枚举与权限码展示。
+
+## 相关源码
+
+- [CHANGELOG.md](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)
+- [GitHub Releases](https://github.com/continew-org/continew-admin/releases)
+- [前端仓库 CHANGELOG.md](https://github.com/continew-org/continew-admin-ui/blob/dev/CHANGELOG.md)

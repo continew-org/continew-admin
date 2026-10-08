@@ -1,0 +1,58 @@
+---
+title: 存储管理
+description: 本地存储与对象存储的配置管理、默认存储切换与分片上传参数。
+---
+
+存储管理维护文件落盘的目标平台，功能入口在「系统管理 -> 存储管理」（前端位于系统配置的存储页签），后端接口前缀为 `/system/storage`，对应 `StorageController`。存储配置存储在 `sys_storage` 表，运行时由 `StorageServiceImpl.load` 注册为 X File Storage 的动态存储平台，保存即生效，不需要重启。
+
+## 存储类型
+
+存储类型由 `StorageTypeEnum` 定义。
+
+| 类型 | 值 | 必填配置 |
+|:-----|:---|:---------|
+| 本地存储 | 1 | Bucket（存储路径，自动补尾部 `/`）、访问路径（domain，需为 http/https URL） |
+| 对象存储 | 2 | Access Key、Secret Key、Endpoint、Bucket、域名 |
+
+两类配置的必填项不同，由 `StorageTypeEnum.validate` 按分组校验（`ValidationGroup.Storage.Local` / `ValidationGroup.Storage.OSS`）。域名保存时自动补尾部 `/`，因为 X File Storage 拼接路径时直接做字符串相加，每一级路径都要求以 `/` 结尾。
+
+## 存储字段
+
+`sys_storage` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `name` / `code` | 名称与编码，编码唯一，作为 X File Storage 的 platform |
+| `type` | 类型（1：本地存储；2：对象存储） |
+| `access_key` / `secret_key` / `endpoint` | 对象存储的凭据与接入点 |
+| `bucket_name` | 本地存储路径或对象存储 Bucket |
+| `domain` | 访问域名，拼文件 URL 用 |
+| `multipart_upload_threshold` | 分片上传阈值（字节），超过该大小走分片 |
+| `multipart_upload_part_size` | 分片大小（字节），对象存储不能小于 5MB |
+| `multipart_temp_dir` | 本地分片临时目录，仅本地存储使用 |
+| `recycle_bin_enabled` / `recycle_bin_path` | 回收站开关与路径 |
+| `is_default` | 是否默认存储 |
+| `status` | 状态（1：启用；2：禁用） |
+
+## 默认存储与动态加载
+
+存储记录保存后，`StorageServiceImpl.load` 按类型构造 `LocalStorageConfig` 或 `OssStorageConfig`，调用 X File Storage 的 `fileStorageService.register` 注册平台；编码已存在且为动态平台时先卸载再注册，实现热更新。标记为默认的存储经 `fileStorageService.defaultStorage(code)` 生效，未指定存储编码的上传全部落到默认存储。
+
+切换默认存储有两个入口。页面上「设为默认」按钮调 `PUT /system/storage/{id}/default`（权限码 `system:storage:setDefault`）；启停存储调 `PUT /system/storage/{id}/status`（权限码 `system:storage:updateStatus`）。
+
+<Callout type="info">
+上传时前端先调 `GET /system/file/upload/config/default` 拿默认存储的生效配置（阈值、分片大小、临时目录），据此决定直接上传还是走分片。阈值、分片大小未在存储记录中配置时，回退到 X File Storage 的全局默认值（10MB 阈值、5MB 分片，见 `StorageConstant`）。
+</Callout>
+
+## 与文件管理的关系
+
+`sys_file.storage_id` 记录每个文件所属的存储，删除存储前需要确认其下没有文件。回收站路径配置在该存储上，文件删除时移动到对应路径，详见[文件管理](./file.mdx)。
+
+对象存储兼容 S3 协议（`OssStorageStrategy` 强制开启 path-style access），主流厂商（阿里云 OSS、腾讯云 COS、MinIO 等）均可接入，厂商差异通过 Endpoint 与域名配置消化。
+
+## 相关源码
+
+- [StorageController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/StorageController.java)（/system/storage 接口）
+- [StorageServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/StorageServiceImpl.java)（动态注册与默认值回退）
+- [StorageTypeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/StorageTypeEnum.java)（类型校验与参数预处理）
+- [前端页面 src/views/system/config/storage](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/config/storage)

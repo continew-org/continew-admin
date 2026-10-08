@@ -1,0 +1,144 @@
+---
+title: 常见问题
+description: 按症状排查 ContiNew Admin 入门阶段的常见问题，覆盖环境、启动、登录、端口与依赖五类。
+---
+
+本文按「症状 → 原因 → 处理」组织入门阶段的常见问题，定位到具体配置键与报错特征。配置细节见 [配置说明](/docs/admin/configuration.mdx)，部署细节见 [部署](./deployment.mdx)。
+
+## 环境
+
+### 构建报「Maven 版本不满足要求」
+
+报错信息形如 `Maven 版本不满足要求：需要 >= 3.9 且 < 4.0（项目锁定 3.9.16；Maven 4 暂未适配）`。根 `pom.xml` 的 enforcer 插件锁死了 Maven 版本区间。
+
+改用项目自带的 Maven Wrapper，Linux/macOS 执行 `./mvnw`，Windows 执行 `mvnw.cmd`；IDEA 在设置中搜索 Maven，把 Maven home path 改为 Use Maven wrapper。
+
+### `mvnw` 无法下载 Maven 发行包
+
+Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络不通会卡在下载阶段。
+
+手动下载 Maven 3.9.16 解压，或在 `~/.m2/wrapper/dists` 下预置发行包；也可以先在本机装好 3.9.x 后用 `mvn` 直接构建，版本在 enforcer 允许区间内即可。
+
+### JDK 版本不对导致编译失败或 `UnsupportedClassVersionError`
+
+项目基于 Spring Boot 3.5.16，最低 JDK 17，用 JDK 8/11 编译会直接失败，用低版本运行时启动会报类版本错误。
+
+`java -version` 确认 17，`JAVA_HOME` 指向 JDK 17；IDEA 的 Project SDK 与 Maven importer JDK 都要对齐到 17。
+
+### 前端 `pnpm install` 或 `pnpm dev` 异常
+
+前端锁定 pnpm 9.3.0，用 npm/yarn 或差异过大的 pnpm 版本安装，lockfile 解析结果不同，容易出现依赖缺失或构建失败。
+
+`corepack enable` 后 `corepack prepare pnpm@9.3.0 --activate`，再执行 `pnpm install`。
+
+## 启动
+
+### 启动即报数据源连接失败
+
+报错特征为 `CommunicationsException` 或 `Access denied for user`。两类高频原因，数据库没建，或密码不对。
+
+按顺序排查。
+
+1. 确认 MySQL 已启动且监听 3306；
+2. 确认已创建数据库，默认库名 `continew_admin`，改名需同步改 `DB_NAME`；
+3. dev 环境数据源默认账号 `root` / `123456`，本机密码不同就用 `DB_USER`、`DB_PWD` 环境变量覆盖，不要直接改文件里的默认值提交上去。
+
+### 启动即报 Redis 连接失败
+
+报错特征为 `Unable to connect to Redis` 或 `ERR AUTH`。会话、缓存、验证码、限流都依赖 Redis，连不上就无法启动。
+
+确认 Redis 已启动且监听 6379；dev 默认密码 `123456`，本机无密码就把 `application-dev.yml` 中 `spring.data.redis.password` 一行注释掉；改了地址用 `REDIS_HOST`、`REDIS_PORT`、`REDIS_PWD`、`REDIS_DB` 覆盖。
+
+### 启动报「Field 'xxx' doesn't have a default value」或表不存在
+
+原因多为旧库残留。Liquibase 按 `db/changelog/db.changelog-master.yaml` 管理变更，升级版本后旧库结构与新脚本冲突，或首次启动中断导致表没建全。
+
+全新环境直接删库重建再启动，Liquibase 会从头执行；已有数据的库不要删，先核对 `DATABASECHANGELOG` 表执行记录，再对照仓库 `db/changelog` 目录手工补齐缺失变更。
+
+### prod 启动即失败，报占位符无法解析
+
+报错特征为 `Could not resolve placeholder 'ACCESS_TOKEN_JWT_SECRET'` 之类。prod 环境所有凭据无默认值，这是有意设计，缺失即启动失败。
+
+对照 [环境变量参考](/docs/admin/reference/environment.mdx) 的凭据清单逐项注入，至少包括 `DB_PWD`、`REDIS_PWD`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`，启用任务调度还要 `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`。
+
+### 任务调度相关报错
+
+prod 默认 `snail-job.enabled: true`，没部署调度中心时启动或访问任务管理会报连接失败。
+
+不用任务调度就在 prod 配置中把 `snail-job.enabled` 改为 `false`（dev 默认就是 `false`）；要启用就部署 `continew-extension/continew-extension-schedule-server`，并核对 `SCHEDULE_HOST`、`SCHEDULE_PORT`（默认 17888）与 OpenAPI 端口（prod 默认 18001）。
+
+## 登录
+
+### 登录一直在验证码或账号密码处失败
+
+账号密码登录用的是图形验证码（`GET /captcha/image`），验证码过期或输入错误都会直接失败，重新点击图片刷新一张再试即可。该接口没有失败锁定逻辑，反复试错不会被锁。
+
+如果启用了行为验证码（邮箱、手机验证码登录页的滑动拼图），它的失败锁定默认是关闭的：`continew-starter.captcha.behavior` 下 `req-frequency-limit-enable` 默认为 `0`，此时 `req-get-lock-limit` / `req-get-lock-seconds` 不生效。只有手动把开关打开，才会出现「一分钟内失败 5 次锁定 300 秒」。
+
+最后确认用户名密码本身正确。本地初始数据库的超管是 admin / admin123（见 `main_data.sql` 初始化脚本注释，首次登录后应立即修改）；在线演示站的密码以演示页说明为准，可能被访客改过。
+
+### 登录请求直接 401 或提示客户端无效
+
+前端 `VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」中某条启用状态的客户端 ID 一致。前端 `.env.development` 预置的 `ef51c9a3e9046c4f2ea45142c8a8344a` 对应初始数据中的 PC 端客户端，改过库或清过初始数据就会对不上。
+
+查 `sys_client` 表确认客户端 ID 与状态，把前端环境变量改成一致后重新构建或重启 dev server。
+
+### 登录成功但一刷新页面就掉线
+
+Access Token 只存内存，刷新依赖 Refresh Token 的 HttpOnly Cookie。Cookie 没种上或没带上，刷新就失败。三个高频原因。
+
+1. 前端代理路径不在 Cookie 作用域内。`continew-starter.refresh-token.cookie-path` 必须覆盖前端代理前缀（如 `/dev-api`），配置为 `/` 最稳妥；
+2. 跨域来源不在白名单。`cookie-allowed-origins` 要包含前端源，且不继承通用 CORS 的 `*`；
+3. 前端请求没带凭证。`refreshToken()` 走 `withCredentials`，前端 dev server 代理或 Nginx 把 Cookie 丢掉了也会出现这个症状，检查代理配置与 `Set-Cookie` 是否被剥离。
+
+### 生产环境登录后频繁 401 或全站 429
+
+经 Nginx 反代但没配置 `continew-starter.refresh-token.trusted-proxy-addresses` 时，后端按连接对端地址限流，全站用户共享 Nginx 这一个 IP 的限流桶（`ip-rate-limit` 默认 60 次/分钟），`/auth/refresh` 是匿名接口，公共桶被填满就全站 429。
+
+把 `trusted-proxy-addresses` 配为 Nginx 出口地址，并确认 Nginx 显式覆盖 `X-Forwarded-For $remote_addr`（仓库自带 nginx.conf 已处理）。
+
+## 端口
+
+### 8000 或 18000 被占用
+
+报错特征为 `Port 8000 was already in use`。dev 端口 8000，prod 端口 18000。
+
+Windows 下 `netstat -ano | findstr :8000` 找到 PID 后在任务管理器结束；或修改对应 `application-*.yml` 的 `server.port`。改 dev 端口要同步改前端 `.env.development` 的 `VITE_API_BASE_URL`、`VITE_API_WS_URL`。
+
+### 前端 5173 能开但接口全 404 / 网络错误
+
+dev server 把 `VITE_API_PREFIX`（默认 `/dev-api`）代理到 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。后端没启动、端口改过、或代理目标写错，都会表现为页面正常、接口全挂。
+
+先直接访问 `http://localhost:8000/v3/api-docs` 验证后端存活；再核对 `.env.development` 三个值与后端实际端口一致；改了 `.env` 要重启 dev server 才生效。
+
+### WebSocket 连不上
+
+WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:8000`。经 Nginx 部署后连不上，基本是代理没转发 Upgrade 头。
+
+按仓库自带 nginx.conf 的后端站点配置，确认 `proxy_http_version 1.1` 与 `Upgrade`、`Connection` 两个头已设置；前端 `VITE_API_WS_URL` 生产用 `wss://`。
+
+## 依赖
+
+### 拉不到 `top.continew.starter` 相关依赖
+
+ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），admin 4.2.0-SNAPSHOT 适配的版本为 2.17.0，可在 [Maven Central](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew) 查询。拉不到通常是本地仓库缓存损坏或镜像配置问题。
+
+`./mvnw -U clean package` 强制更新；检查 `settings.xml` 镜像是否把 `central` 也代理到了不通的内网源；公司内网代理仓库需要确认已代理 Maven Central。
+
+### 依赖版本冲突或类找不到（`NoClassDefFoundError` / `NoSuchMethodError`）
+
+项目依赖由根 `pom.xml` 的 `dependencyManagement` 与 ContiNew Starter BOM 统一管理，自行升级单个依赖（尤其 Sa-Token、MyBatis Plus、Snail Job）容易与 Starter 内部版本打架。
+
+先 `./mvnw dependency:tree` 找出谁引入了冲突版本；升级以 Starter 发布的适配版本为准（README 徽章标注当前适配的 Starter 版本），不要绕开 BOM 单独 bump。
+
+### 前端类型检查报错导致 `pnpm build` 中断
+
+`pnpm build` 先执行 `vue-tsc --noEmit`，类型错误会中断构建，dev 能跑不代表能构建。
+
+`pnpm typecheck` 单独跑类型检查定位报错；升级依赖后出现的类型错误，优先对照 continew-admin-ui 仓库同版本代码修复，不要加 `// @ts-ignore` 绕过。
+
+## 相关源码
+
+- [continew-server/src/main/resources/config/](https://github.com/continew-org/continew-admin/tree/dev/continew-server/src/main/resources/config)
+- [continew-admin-ui/.env.development](https://github.com/continew-org/continew-admin-ui/blob/dev/.env.development)
+- [continew-admin-ui/vite.config.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/vite.config.ts)

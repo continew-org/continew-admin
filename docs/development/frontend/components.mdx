@@ -1,0 +1,100 @@
+---
+title: 组件库
+description: 介绍 src/components 下的 Gi 组件库与通用业务组件，说明各自适用场景与选用建议。
+---
+
+`src/components/` 下约 30 个组件目录，分两类：Gi 前缀的通用封装（表格、表单、布局件）和面向具体业务场景的组件（分片上传、行为验证、用户选择等）。组件经自动导入插件全局注册，页面里直接用，不需要 import。
+
+## GiTable 与 GiForm
+
+列表页的标配组合是 `GiForm`（搜索区）+ `GiTable`（数据区），外层再套 `GiPageLayout`。
+
+`GiTable` 在 Arco `Table` 之上加了工具栏（刷新、列显隐、密度、全屏）和内置分页，数据、列配置、加载态直接透传。典型用法如下。
+
+```vue
+<template>
+  <GiTable
+    row-key="id"
+    :data="dataList"
+    :columns="columns"
+    :loading="loading"
+    :pagination="pagination"
+    :disabled-tools="['size']"
+    :disabled-column-keys="['nickname']"
+    @refresh="search"
+  >
+    <template #top>
+      <GiForm v-model="queryForm" search :columns="queryFormColumns" @search="search" @reset="reset" />
+    </template>
+    <template #toolbar-left>
+      <a-button v-permission="['system:user:create']" type="primary" @click="onAdd">新增</a-button>
+    </template>
+    <template #status="{ record }">
+      <GiCellStatus :status="record.status" />
+    </template>
+  </GiTable>
+</template>
+```
+
+`disabled-tools` 隐藏指定工具栏按钮，`disabled-column-keys` 锁定不允许隐藏的列，`@refresh` 绑定工具栏刷新按钮。数据获取一般配 `useTable` hook，它接管分页参数、加载态和删除后刷新。
+
+`GiForm` 用 `columns` 配置驱动，每项声明 `type`（`input` / `select` / `range-picker` 等）、`label`、`field`、`props`，加 `search` 属性后变成内联搜索表单（带查询/重置按钮和折叠）。列配置里 `span` 支持响应式断点，例如 `span: { xs: 24, sm: 8, xxl: 8 }`。
+
+```ts
+import type { ColumnItem } from '@/components/GiForm'
+
+const queryFormColumns: ColumnItem[] = [
+  { type: 'input', label: '用户名', field: 'description', props: { placeholder: '用户名/昵称' } },
+  { type: 'select', label: '状态', field: 'status', props: { options: statusList } },
+]
+```
+
+## 单元格展示组件
+
+`GiCell` 系列解决列表里高频的展示格式。
+
+| 组件 | 场景 |
+|:-----|:-----|
+| `GiCellAvatar` | 头像 + 名称组合 |
+| `GiCellGender` | 性别图标 |
+| `GiCellStatus` | 启用/禁用状态点 |
+| `GiCellTag` | 单值字典标签（按字典项 `extra` 配色，见 [字典使用](./dict.mdx)） |
+| `GiCellTags` | 多值标签列表 |
+
+## 布局类组件
+
+| 组件 | 场景 |
+|:-----|:-----|
+| `GiPageLayout` | 页面骨架，提供头部、左侧、内容区插槽，列表页的标准外壳 |
+| `GiLeftRightPane` | 左树右表分栏容器（用户管理页的部门树 + 用户表实际用 `GiPageLayout` 的 `#left` 插槽实现，本组件目前无页面使用，可按需引入） |
+| `GiSplitPane` / `SplitPanel` | 可拖拽分割的双栏 |
+| `GiEditTable` | 可编辑表格，单元格内嵌表单控件 |
+| `GiFooter` | 页脚（版权、备案号） |
+| `ParentView` | 多级菜单的中间占位组件，动态路由 `component` 填 `ParentView` 时映射到它 |
+
+## 业务组件
+
+| 组件 | 场景 | 使用方示例 |
+|:-----|:-----|:-----------|
+| `MultipartUpload` | 大文件分片上传（对接后端 `/system/multipart-upload`） | 文件管理 |
+| `FilePreview` | 图片/音视频/PDF/Office 在线预览 | 文件管理 |
+| `Verify` | 行为验证码（滑动拼图，对接 AJ-Captcha） | 登录页邮箱/手机登录 |
+| `UserSelect` | 用户选择器（按部门过滤、搜索、多选） | 公告指定用户、角色分配用户 |
+| `GenCron` | Cron 表达式生成器（页面以 `CronModal` 弹窗形式引用） | 任务管理新增弹窗 |
+| `GiIconSelector` | 图标选择器 | 菜单管理 |
+| `GiSvgIcon` | SVG 图标渲染（配合菜单图标字段） | 布局菜单 |
+| `GiThemeBtn` | 主题切换按钮 | 头部工具栏 |
+| `GiIframe` | 内嵌外部页面 | 接口文档、更新日志页 |
+
+其余小组件按需取用：`Chart`（ECharts 封装）、`GiCodeView`（代码高亮展示）、`JsonPretty`（JSON 美化）、`TextCopy` / `CellCopy`（点击复制）、`GiDot`（状态点）、`GiSpace`（间距）、`DateRangePicker`（日期范围）。
+
+## 选用建议
+
+新页面优先复用既有组合而不是重写：`GiPageLayout` + `GiForm` + `GiTable` 覆盖九成列表页；左树右表结构用 `GiPageLayout` 的 `#left` 插槽放树组件（参考用户管理页）；详情展示用抽屉（`a-drawer`）而非新路由页，配合路由 `meta.activeMenu` 保持父菜单高亮。通用性足够的新组件放进 `src/components/` 并按 `Gi` 前缀命名，一次性组件留在页面目录的 `components/` 下（动态路由扫描会剔除页面内 `components` 目录，见 [路由与页签](./route.mdx)）。
+
+## 相关源码
+
+- [src/components/GiTable](https://github.com/continew-org/continew-admin-ui/tree/dev/src/components/GiTable)：表格封装
+- [src/components/GiForm](https://github.com/continew-org/continew-admin-ui/tree/dev/src/components/GiForm)：配置驱动表单
+- [src/components](https://github.com/continew-org/continew-admin-ui/tree/dev/src/components)：全部组件目录
+- [src/views/system/user/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/system/user/index.vue)：GiTable + GiForm + GiCell 组合的完整参考实现

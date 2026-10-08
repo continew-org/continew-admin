@@ -1,0 +1,47 @@
+---
+title: 短信管理
+description: 短信厂商配置的维护、负载均衡与默认配置切换，以及发送日志的查询。
+---
+
+短信管理维护短信发送通道，功能入口在「系统管理 -> 短信配置」（前端位于系统配置的短信页签），后端接口前缀为 `/system/sms/config`，对应 `SmsConfigController`。配置存储在 `sys_sms_config` 表，底层基于 SMS4J 3.3.5，发送记录落在 `sys_sms_log` 表。
+
+## 短信配置字段
+
+`sys_sms_config` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `name` | 配置名称 |
+| `supplier` | 厂商，取值来自字典 `sms_supplier`（alibaba、tencent、cloopen） |
+| `access_key` / `secret_key` | 厂商凭据 |
+| `signature` | 短信签名 |
+| `template_id` | 模板 ID，如验证码模板 |
+| `weight` | 负载均衡权重，多配置时按权重分流 |
+| `retry_interval` / `max_retries` | 失败重试间隔（秒）与重试次数 |
+| `maximum` | 发送上限，达到上限的配置退出负载 |
+| `supplier_config` | 厂商独立配置（JSON），消化厂商特有参数 |
+| `is_default` | 是否默认配置 |
+| `status` | 状态（1：启用；2：禁用） |
+
+## 动态加载与负载均衡
+
+配置保存后，`SmsConfigServiceImpl.load` 把记录转为 SMS4J 的 `BaseConfig` 并调用 `SmsFactory.createSmsBlend` 注册发送实例；修改与删除时先 `SmsFactory.unregister` 卸载再处理，保存即生效，不需要重启。配置来源由 `SmsReadConfigDatabaseImpl`（实现 SMS4J 的 `SmsReadConfig`）从数据库读取。
+
+同一厂商可以建多条配置，SMS4J 按 `weight` 做负载均衡分流，`maximum` 控制单配置的发送上限，超限后自动退出分流。发送失败按 `retry_interval` 与 `max_retries` 重试。「设为默认」调 `PUT /system/sms/config/{id}/default`（权限码 `system:smsConfig:setDefault`）。
+
+<Callout type="info">
+手机验证码登录（`PhoneLoginHandler`）与短信验证码（`continew-starter.captcha.sms`，6 位、5 分钟有效期）复用这里的发送通道。未配置任何启用的短信配置时，短信验证码发送失败。
+</Callout>
+
+## 发送日志
+
+每次发送的结果由 `SmsLogProcessor`（SMS4J 的 `CoreMethodProcessor` 实现）写入 `sys_sms_log` 表，包含配置 ID、手机号、模板参数、发送状态（1：成功；2：失败）与厂商返回数据。
+
+日志查询入口在「系统监控 -> 短信日志」，接口前缀为 `/system/sms/log`，对应 `SmsLogController`，提供分页、详情、批量删除与导出（`@CrudRequestMapping("/system/sms/log", api = {Api.PAGE, Api.GET, Api.BATCH_DELETE, Api.EXPORT})`），权限码按 API 类型自动生成（如 `system:smsLog:list`）。
+
+## 相关源码
+
+- [SmsConfigController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/SmsConfigController.java)（/system/sms/config 接口）
+- [SmsConfigServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/SmsConfigServiceImpl.java)（配置动态注册与卸载）
+- [SmsLogController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/SmsLogController.java)（/system/sms/log 接口）
+- [前端页面 src/views/system/config/sms](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/config/sms)

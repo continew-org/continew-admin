@@ -1,0 +1,36 @@
+---
+title: 套餐管理
+description: 套餐管理页面维护套餐与菜单的关联关系，套餐是租户可用菜单的规格模板，套餐变更会实时同步到所有引用它的租户。
+---
+
+「租户管理 → 套餐管理」页面维护租户套餐，数据存于 `tenant_package` 表，套餐与菜单的关联存于 `tenant_package_menu` 表。对应接口前缀 `/tenant/package`，基于 CRUD 套件提供列表、分页、详情、新增、修改、删除与字典接口。
+
+## 套餐字段
+
+`PackageDO` 定义的套餐字段：名称、排序、菜单选择是否父子节点关联、描述、状态（启用或禁用）。实体标注了 `@DictModel`，套餐可作为字典数据源供下拉选择，例如租户新增表单的套餐选项。
+
+## 菜单授权
+
+套餐表单中的菜单树来自 `GET /tenant/package/menu/tree`，权限码 `tenant:package:list`。这棵树在系统全量菜单的基础上剔除了 `continew-starter.tenant.ignore-menus` 配置的菜单 ID，ContiNew Admin 默认剔除菜单管理、字典管理、系统配置、短信日志、租户管理、能力开放、任务调度、开发工具等平台级菜单，保证租户侧只能拿到业务可用的功能子集。
+
+勾选结果按「菜单选择是否父子节点关联」字段决定树控件的联动行为，保存时 `PackageMenuService` 将勾选的菜单 ID 全量写入 `tenant_package_menu`。
+
+## 套餐变更的连锁更新
+
+修改套餐（`PackageServiceImpl.update`）在事务内完成三件事。
+
+1. 更新套餐记录与菜单关联；
+2. 若菜单发生变更，`TenantServiceImpl.updateTenantMenu` 遍历所有引用该套餐的租户：各租户角色先删掉不再包含的菜单授权，租户管理员角色（角色编码 `admin`）再补齐新增菜单，最后更新相关在线用户的上下文缓存；
+3. 使该套餐下全部租户的所有在线会话失效，租户用户重新登录后按新菜单权限进入系统。
+
+方法标注了 `@AuthPolicyWriteLocked(PackageTenantPolicyLockTargetResolver.class)`，套餐写入期间会锁定关联租户的认证策略，避免变更窗口内出现权限不一致的会话。
+
+<Callout type="warn">
+删除套餐前有占用检查：任一租户仍引用该套餐时删除会被拒绝，提示「所选套餐存在关联租户，不允许删除」。需要先把租户改绑到其他套餐。
+</Callout>
+
+## 相关源码
+
+- [PackageController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/controller/PackageController.java)：套餐管理 API 与套餐菜单树
+- [PackageServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/service/impl/PackageServiceImpl.java)：套餐变更与连锁更新逻辑
+- [continew-admin-ui/src/views/tenant/package/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/tenant/package)：前端页面

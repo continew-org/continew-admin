@@ -1,0 +1,129 @@
+---
+title: 环境与配置
+description: 汇总 ContiNew Admin 后端环境变量、profile 差异与前端 .env 配置项，供部署与本地开发时逐项对照。
+---
+
+ContiNew Admin 的配置分两侧。后端在 `continew-server/src/main/resources/config/` 下按 profile 拆分 YAML，前端在仓库根目录按 `.env.<mode>` 拆分环境变量。本页把两侧需要注入的变量和关键配置块列全，默认值与源码保持一致。各配置块的语义讲解见 [配置说明](/docs/admin/configuration.mdx)，本页只做对照参考。
+
+## 后端配置
+
+### 配置文件组织
+
+`application.yml` 放环境无关的通用配置，`application-dev.yml` 与 `application-prod.yml` 放环境差异配置，`application-generator.yml` 放代码生成器配置。启用的 profile 由 `spring.profiles.active` 决定，默认经环境变量 `PROFILES_ACTIVE` 注入，未设置时回退到 `dev`。
+
+```yaml
+spring:
+  profiles:
+    active: ${PROFILES_ACTIVE:dev}
+    include:
+      - generator
+```
+
+端口不写死在通用配置里。dev 为 `8000`，prod 为 `18000`。
+
+### 环境变量
+
+dev 环境的所有变量都有默认值，不注入也能启动。prod 环境的凭据类变量没有默认值，缺失即启动失败，这是有意设计。
+
+| 变量 | 作用 | dev 默认值 | prod |
+|:-----|:-----|:-----------|:-----|
+| `PROFILES_ACTIVE` | 启用的 profile | `dev` | 需设为 `prod` |
+| `DB_HOST` | MySQL 主机 | `127.0.0.1` | 有回退，按需注入 |
+| `DB_PORT` | MySQL 端口 | `3306` | 有回退 |
+| `DB_USER` | 数据库用户 | `root` | 有回退 |
+| `DB_NAME` | 数据库名 | `continew_admin` | 有回退 |
+| `DB_PWD` | 数据库密码 | `123456` | 必填，无默认值 |
+| `REDIS_HOST` | Redis 主机 | `127.0.0.1` | 有回退 |
+| `REDIS_PORT` | Redis 端口 | `6379` | 有回退 |
+| `REDIS_PWD` | Redis 密码 | `123456` | 必填，无默认值 |
+| `REDIS_DB` | Redis 数据库索引 | `0` | 有回退 |
+| `ACCESS_TOKEN_JWT_SECRET` | Access Token 的 JWT 密钥 | dev 有固定示例值 | 必填，无默认值 |
+| `REFRESH_TOKEN_SECRET` | Refresh Token 签名密钥 | dev 有固定示例值 | 必填，无默认值 |
+| `FIELD_ENCRYPT_PASSWORD` | 字段加密 AES 密钥 | dev 有示例值 | 必填，无默认值 |
+| `FIELD_ENCRYPT_PUBLIC_KEY` | 字段加密 RSA 公钥 | dev 有示例密钥对 | 必填，无默认值 |
+| `FIELD_ENCRYPT_PRIVATE_KEY` | 字段加密 RSA 私钥 | dev 有示例密钥对 | 必填，无默认值 |
+| `SCHEDULE_HOST` | Snail Job 服务端主机 | `127.0.0.1` | 有回退 |
+| `SCHEDULE_PORT` | Snail Job 服务端通讯端口 | `17888` | 有回退 |
+| `SCHEDULE_USERNAME` | Snail Job OpenAPI 用户名 | `admin` | 有回退 |
+| `SCHEDULE_PASSWORD` | Snail Job OpenAPI 密码 | dev 为 `admin` | 必填，无默认值 |
+| `SCHEDULE_NAMESPACE` | Snail Job 命名空间 | 内置默认值 | 有回退 |
+| `SCHEDULE_GROUP` | Snail Job 接入组名 | `continew-admin` | 有回退 |
+| `SCHEDULE_TOKEN` | Snail Job 接入组 token | dev 有示例值 | 必填，无默认值 |
+
+<Callout type="warn">
+`REFRESH_TOKEN_SECRET` 必须是独立的高熵随机值，禁止与 `ACCESS_TOKEN_JWT_SECRET` 复用。dev 配置里的示例密钥只用于本地联调，生产环境必须全部替换。
+</Callout>
+
+### 通用配置块速查
+
+以下配置块定义在 `application.yml`，两个环境共用。配置项本身的语义属于 ContiNew Starter，完整定义见 [ContiNew Starter 文档](/docs/starter)；这里列的是 admin 填的值。
+
+| 配置块 | 关键值 |
+|:-------|:-------|
+| `server.undertow` | `max-http-post-size: -1`、`buffer-size: 512`、`io: 8`、`worker: 256` |
+| `spring.servlet.multipart` | `max-file-size: 10MB`、`max-request-size: 20MB`，与分片上传阈值 10MB 配套 |
+| `springdoc` / `nextdoc4j` | 接口文档路径 `/v3/api-docs` 与 `/swagger-ui`，NextDoc4j 增强开启 |
+| `continew-starter.web.response` | `default-success-code: 0`、`default-error-code: 1`，响应类 `top.continew.starter.web.model.R` |
+| `continew-starter.log` | 记录请求/响应头、请求/响应体、IP、浏览器、OS 等 |
+| `continew-starter.trace` | 链路头 `X-Trace-Id`，日志经 TLog 输出 |
+| `continew-starter.tenant` | `isolation-level: LINE`，租户头 `X-Tenant-Id`，默认租户 `0` |
+| `continew-starter.rate-limiter` | 开启，key 前缀 `RateLimiter` |
+| `sa-token` | token 名 `Authorization`，`jwt-secret-key: ${ACCESS_TOKEN_JWT_SECRET}`，持久层 `dao.type: REDIS` |
+| `mybatis-plus` | `id-type: ASSIGN_ID`，逻辑删除字段 `deleted`（未删除 `0`，已删除取 `id`），ID 生成器 `COSID` |
+| `cosid` | 雪花算法，epoch `1577203200000`，开启时钟回拨同步；租户编码生成器前缀 `T` |
+| `continew-starter.refresh-token` | `cookie-name: refresh_token`、`cookie-path: /`、`cookie-secure: false`、`cookie-same-site: Lax` |
+| `auth.password.excludes` | 密码过期拦截放行 `/auth/user/route`、`/auth/user/info`、`/auth/logout`、`/system/user/password` |
+
+Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改由「系统管理 → 系统配置 → 客户端配置」页面按客户端动态管理，application.yml 中对应配置已注释。
+
+### profile 差异
+
+| 配置 | dev | prod |
+|:-----|:----|:-----|
+| `server.port` | `8000` | `18000` |
+| `application.url` | `http://localhost:5173` | `https://admin.continew.top` |
+| 数据源驱动 | `com.p6spy.engine.spy.P6SpyDriver`（SQL 日志） | `com.mysql.cj.jdbc.Driver` |
+| `continew-starter.web.cors.allowed-origins` | `*` | 仅 `${application.url}` |
+| `continew-starter.log.access-log.enabled` | `true` | `false` |
+| `logging.level.top.continew.*` | `DEBUG` | `INFO` |
+| `continew-starter.refresh-token.cookie-secure` | `false` | `true`，且 cookie 名改为 `__Host-refresh_token` |
+| `nextdoc4j.production` | 关闭 | 随 `application.production` 屏蔽接口文档 |
+| `snail-job.enabled` | `false` | `true` |
+
+### Snail Job 配置
+
+任务调度默认在 dev 关闭、prod 开启，开关是 `snail-job.enabled`。客户端连服务端的通讯端口、OpenAPI 地址、命名空间、接入组 token 都走 `SCHEDULE_*` 环境变量，见上表。关闭时调度相关接口由一个兜底 Controller 返回未启用提示。
+
+## 前端配置
+
+### 环境变量文件
+
+前端用 Vite 的 mode 机制，仓库根目录放 `.env.development`、`.env.test`、`.env.production` 三份文件，分别对应 `pnpm dev`、`pnpm build:test`、`pnpm build`。`vite.config.ts` 里 `envPrefix: ['VITE', 'FILE']`，变量必须以 `VITE_` 开头才会暴露给客户端代码，经 `import.meta.env.<KEY>` 读取。
+
+| 变量 | 作用 | development | production |
+|:-----|:-----|:------------|:-----------|
+| `VITE_API_PREFIX` | 接口前缀，dev 下由 Vite 代理转发 | `/dev-api` | 不设置 |
+| `VITE_API_BASE_URL` | 后端接口地址 | `http://localhost:8000` | `https://api.continew.top` |
+| `VITE_API_WS_URL` | WebSocket 地址 | `ws://localhost:8000` | `wss://api.continew.top` |
+| `VITE_BASE` | 部署基础路径 | `/` | `/` |
+| `VITE_CLIENT_ID` | 登录时上报的客户端 ID，对应后端「客户端配置」 | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 |
+| `VITE_APP_SETTING` | 是否显示应用配置面板入口 | `true` | `true` |
+| `VITE_OPEN_DEVTOOLS` | 是否加载 Vue DevTools 插件 | `false` | 不设置 |
+| `VITE_BUILD_MOCK` | 打包时是否启用 Mock | 不设置 | `false`（test 为 `true`） |
+
+### 变量在代码里的落点
+
+`VITE_API_PREFIX` 与 `VITE_API_BASE_URL` 决定 axios 实例的 `baseURL`（`src/utils/http.ts`），dev 下优先取前缀，由 `vite.config.ts` 的 `server.proxy` 把前缀代理到 `VITE_API_BASE_URL` 并去掉前缀，生产构建没有代理，直接取 `VITE_API_BASE_URL`。`VITE_API_WS_URL` 在 `src/layout/components/HeaderRightBar/index.vue` 拼接 `/websocket` 建立连接。`VITE_CLIENT_ID` 在 `src/stores/modules/user.ts` 的各登录请求里作为 `clientId` 上报。
+
+<Callout type="info">
+`VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」里某条客户端记录的 ID 一致，否则登录时会匹配不到客户端策略。默认值对应初始脚本里的 PC 端配置。
+</Callout>
+
+## 相关源码
+
+- [application.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application.yml)
+- [application-dev.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-dev.yml)
+- [application-prod.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-prod.yml)
+- [continew-admin-ui/.env.development](https://github.com/continew-org/continew-admin-ui/blob/dev/.env.development)
+- [continew-admin-ui/.env.production](https://github.com/continew-org/continew-admin-ui/blob/dev/.env.production)
+- [continew-admin-ui/vite.config.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/vite.config.ts)

@@ -1,0 +1,69 @@
+---
+title: 任务调度
+description: 任务调度模块基于 Snail Job 实现分布式任务调度，管理端默认关闭，需部署调度服务端并配置启用后可在线管理任务与查看执行日志。
+---
+
+任务调度模块位于 `continew-plugin-schedule`，底层调度引擎为 Snail Job 1.10.0。整体分三部分：独立部署的调度中心服务端（Snail Job Server，负责任务分发与重试）、内嵌在业务服务中的客户端（`snail-job-client-starter`，注册并执行具体任务）、ContiNew Admin 的管理界面（经 OpenFeign 调用 Snail Job OpenAPI 做任务与日志管理）。调度数据落库于独立的 `sj_*` 系列表（23 张），与业务库分离。
+
+## 启用开关与默认状态
+
+模块受 `snail-job.enabled` 开关控制。dev 环境默认 `false`，prod 环境默认 `true`。两个条件注解完成装配切换。
+
+- `ConditionalOnEnabledScheduleJob`：开关为 true 时装配 `SnailJobConfiguration`（`@EnableSnailJob` 与日志上报）、`JobController`、`JobLogController`；
+- `ConditionalOnDisabledScheduleJob`：开关为 false 时装配 `DefaultController`，接管 `/schedule/job` 与 `/schedule/log` 下全部请求，统一返回「任务模块已禁用，请于对应环境配置文件中配置 snail-job.enabled 为 true 进行启用」。
+
+## 部署调度服务端
+
+仓库提供 `continew-extension-schedule-server` 模块作为本地开发用的调度中心，启动类 `ScheduleServerApplication` 继承 Snail Job 官方的 `SnailJobServerApplication`，通过 Liquibase 独立 changelog 初始化 `sj_*` 表，数据默认落在 `continew_admin_job` 库。dev 环境 Web 端口 8001、通讯端口 17888，prod 环境 Web 端口 18001。生产部署也可以按 Snail Job 官方文档搭建服务端，二者等价。
+
+Docker Compose 部署时 `docker-compose.yml` 已包含 `schedule-server` 服务（镜像 `schedule-server:1.8.0`），与主服务同网编排。
+
+业务服务侧的连接配置（`application-dev.yml` 节选）。
+
+```yaml
+snail-job:
+  enabled: false
+  server:
+    host: ${SCHEDULE_HOST:127.0.0.1}
+    port: ${SCHEDULE_PORT:17888}
+    api:
+      url: http://127.0.0.1:8001/snail-job
+      username: ${SCHEDULE_USERNAME:admin}
+      password: ${SCHEDULE_PASSWORD:admin}
+  openapi:
+    port: 8001
+  port: 17889
+  namespace: ${SCHEDULE_NAMESPACE:764d604ec6fc45f68cd92514c40e9e1a}
+  group: ${SCHEDULE_GROUP:continew-admin}
+  token: ${SCHEDULE_TOKEN:SJ_Wyz3dmsdbDOkDujOTSSoBjGQP1BMsVnj}
+```
+
+prod 环境 `SCHEDULE_PASSWORD` 与 `SCHEDULE_TOKEN` 无默认值，必须由环境变量注入，缺失即启动失败。`namespace` 与 `group` 要与调度服务端控制台中创建的命名空间、组配置保持一致。
+
+## 任务管理
+
+「任务调度 → 任务管理」（菜单 ID 8010）对应接口前缀 `/schedule/job`，提供分页查询、新增、修改、修改状态、删除、手动执行、任务组列表七个接口。管理操作不落本地库，`JobServiceImpl` 经 OpenFeign（`JobApi`、`JobGroupApi`）或 `SnailJobOpenApi` 直接调用调度服务端的 OpenAPI。
+
+新增任务的字段由 `JobReq` 定义，常用的几组如下。
+
+- 基本信息：任务组、任务名称、描述；
+- 触发：触发类型（Cron、固定间隔等 `JobTriggerTypeEnum`）与间隔时长，页面内置 GenCron 组件辅助生成 Cron 表达式；
+- 执行：任务类型（`JobTaskTypeEnum`，如单机、广播、分片）、执行器名称（客户端注册的执行器 Bean 名）、任务参数；
+- 策略：路由策略（`JobRouteStrategyEnum`）、阻塞策略（`JobBlockStrategyEnum`）、超时时间、最大重试次数、重试间隔、并行数。
+
+「执行任务」按钮调用 `POST /schedule/job/trigger/{id}`（权限码 `schedule:job:trigger`）立即触发一次，常用于联调。
+
+## 任务日志
+
+「任务调度 → 任务日志」（菜单 ID 8020）对应接口前缀 `/schedule/log`，查询每次任务实例的执行记录：触发原因、执行状态、执行节点、耗时与失败堆栈。日志由客户端经 `SnailLogbackAppender` 上报到调度服务端（`SnailJobConfiguration.onStarting` 在服务启动时挂载该 Appender），管理界面再从 OpenAPI 查询，本地同样不留存。
+
+<Callout type="info">
+任务日志页面拉取的是调度服务端的执行日志，与「系统监控 → 系统日志」中记录的管理操作日志（登录、新增任务等）是两个来源。
+</Callout>
+
+## 相关源码
+
+- [JobController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/controller/JobController.java) 与 [JobLogController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/controller/JobLogController.java)：任务与任务日志 API
+- [SnailJobConfiguration.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/config/SnailJobConfiguration.java)：客户端装配与日志上报
+- [ScheduleServerApplication.java](https://github.com/continew-org/continew-admin/blob/dev/continew-extension/continew-extension-schedule-server/src/main/java/top/continew/admin/extension/scheduling/ScheduleServerApplication.java)：调度服务端启动类
+- [continew-admin-ui/src/views/schedule/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/schedule)：前端页面

@@ -1,0 +1,128 @@
+---
+title: HTTP 请求
+description: 讲解前端 axios 封装（src/utils/http.ts）的统一约定，包括请求头注入、401 刷新重试与错误提示。
+---
+
+前端所有接口请求都经过 `src/utils/http.ts` 导出的封装实例，业务代码不直接引用 axios。这一层统一处理了请求头注入、双令牌刷新、错误提示三件事。
+
+## 基本用法
+
+API 定义集中在 `src/apis/` 下，按后端模块分文件。每个文件从 `@/utils/http` 导入封装对象，用 `get` / `post` / `put` / `del` 等方法拼出接口函数。
+
+```ts
+// src/apis/system/user.ts（节选）
+import http from '@/utils/http'
+
+const BASE_URL = '/system/user'
+
+/** @desc 查询用户列表（分页） */
+export function listUser(query: UserPageQuery) {
+  return http.get<PageRes<UserResp[]>>(`${BASE_URL}`, query)
+}
+
+/** @desc 查询所有用户（无分页） */
+export function listAllUser() {
+  return http.get<UserResp[]>(`${BASE_URL}/list`)
+}
+
+/** @desc 新增用户 */
+export function addUser(data: any) {
+  return http.post(`${BASE_URL}`, data)
+}
+```
+
+页面里通过 `useTable` 等 hook 调用这些函数，或直接 `await`。
+
+```ts
+import { listUser } from '@/apis/system/user'
+
+const { data } = await listUser({ page: 1, size: 10 })
+```
+
+封装导出的方法如下。
+
+| 方法 | 说明 |
+|:-----|:-----|
+| `get` / `post` / `put` / `patch` / `del` | 常规请求，返回 `Promise<ApiRes<T>>`（已解包到响应体） |
+| `request` | 原始请求，返回 `Promise<ApiRes<T>>` |
+| `requestNative` | 返回完整 `AxiosResponse`（需要响应头时用） |
+| `download` | 文件下载，`responseType: 'blob'`，返回 `AxiosResponse` |
+
+## axios 实例配置
+
+`http.ts` 创建的实例有三项关键配置（`src/utils/http.ts:38`）。
+
+```ts
+const http: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_PREFIX ?? import.meta.env.VITE_API_BASE_URL,
+  timeout: 30 * 1000,
+  // Refresh Token 由后端写入 HttpOnly Cookie，浏览器必须允许跨域请求携带 Cookie。
+  withCredentials: true,
+})
+```
+
+`baseURL` 优先取 `VITE_API_PREFIX`（开发环境走 Vite 代理），没有则取 `VITE_API_BASE_URL`（生产环境直连接口域名）。`withCredentials: true` 让跨域请求携带 HttpOnly Cookie，双令牌刷新依赖这一点。
+
+后端统一响应结构由 Graceful Response 封装，形如 `{ "code": 0, "data": ..., "msg": "...", "success": true, "timestamp": ... }`。响应拦截器检查 `success` 字段：`true` 直接放行，`false` 弹出错误提示并 reject。`get` 类请求会自动用 `query-string` 序列化参数，数组参数不会被 axios 默认格式序列化坏。
+
+## 请求头注入
+
+请求拦截器在每个请求上注入两类请求头（`src/utils/http.ts:207`）。
+
+`Authorization` 取内存中的 Access Token，拼成 `Bearer <token>`。Access Token 只保存在内存（`src/features/auth-session/access-token.ts`），不落地 localStorage，浏览器刷新后靠 HttpOnly Cookie 里的 Refresh Token 换新的。
+
+`X-Tenant-Id` 在租户功能开启（`tenantStore.tenantEnabled`）且已选定租户（`tenantStore.tenantId`）时注入，值来自登录响应或刷新响应。后端多租户插件靠这个头做行级隔离，对应 starter 配置 `continew-starter.tenant.tenant-id-header`。
+
+认证接口有例外处理：`/auth/refresh`、`/auth/logout` 以及账号密码登录的 `/auth/login` 不携带 `X-Tenant-Id`，因为这些请求要么以服务端 Refresh Session 为准，要么以用户显式输入的租户编码为准；社交登录回调则保留授权前选定的租户。请求重试时会复用原始 headers，拦截器在租户状态变化时主动删除旧租户头，避免把上一次会话的租户上下文带给服务端。
+
+## 401 处理与双令牌刷新
+
+HTTP 状态 401 走 `retryAfterRefresh` 分支（`src/utils/http.ts:165`），处理流程分三步。
+
+<Steps>
+  <Step>
+    首次 401 触发 `/auth/refresh` 刷新请求，浏览器自动携带 HttpOnly Cookie。同一时间多个 401 请求共用一个单例 Promise（`refreshPromise`），Refresh Token 不会被并发轮换。
+  </Step>
+  <Step>
+    刷新成功后更新内存中的 Access Token 与租户 ID，给原请求打上 `__isRetryRequest` 标记，换上新 Token 重发。
+  </Step>
+  <Step>
+    重发后再次 401，或者刷新请求本身返回 401（Refresh Token 确定失效），进入重新登录流程。
+  </Step>
+</Steps>
+
+重新登录流程由 `showReLogin` 负责（`src/utils/http.ts:78`）：清理内存 Token 与持久化的用户、路由状态，调用 `/auth/logout` 让服务端清掉 Cookie，然后弹 Modal 引导用户重新登录，确认后跳转 `/login` 并带上 `redirect` 参数。弹窗期间如果用户已在别处重新登录，「认证代次」（auth generation）机制会让旧弹窗失效，不会把新会话重置掉。
+
+刷新请求遇到 403、429、5xx 或网络故障时不算终态失败，Cookie 会保留，下一次请求继续尝试刷新。只有刷新返回 401 或业务层明确拒绝（HTTP 200 但 `success: false`）才引导重新登录。
+
+<Callout type="warn">
+401 的重登弹窗只对应用内操作出现。浏览器刷新后首次进入页面时没有会话，由路由守卫直接跳转登录页，不弹窗（见 [路由与页签](./route.mdx)）。
+</Callout>
+
+## 错误提示
+
+非 401 的 HTTP 错误按状态码映射到 `StatusCodeMessage` 里的中文提示（如 403「拒绝访问」、500「服务器错误」），映射不到时给通用兜底文案。网络层失败（无响应对象）提示「网络连接失败」。
+
+提示形式按文案长度分流（`src/utils/http.ts:193`）：15 字以内用 `Message`，更长用 `Notification`，都包了一层防重复弹出的 wrapper（`message-error-wrapper` / `notification-error-wrapper`）。
+
+下载类请求（`responseType: 'blob'`）的失败响应是 JSON 格式的 Blob，响应拦截器会用 `FileReader` 读出 `msg` 再提示，不会让错误以乱码形式吞掉。
+
+## 新增接口的建议
+
+在 `src/apis/` 对应模块文件里追加函数，遵循既有约定：`BASE_URL` 常量拼路径、`@desc` 注释描述用途、返回类型用泛型标注。新增模块时在 `src/apis/index.ts` 里 re-export。
+
+```ts
+/** @desc 查询公告列表 */
+export function listNotice(query: NoticePageQuery) {
+  return http.get<PageRes<NoticeResp[]>>(`/system/notice`, query)
+}
+```
+
+不要在页面组件里直接写 `axios.get`，绕过封装意味着丢掉 Token 注入、租户头、401 刷新和错误提示。
+
+## 相关源码
+
+- [src/utils/http.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/utils/http.ts)：axios 封装本体
+- [src/features/auth-session/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/features/auth-session)：Access Token 存储与认证生命周期锁
+- [src/stores/modules/tenant.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/tenant.ts)：租户状态与持久化
+- [src/apis/system/user.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/apis/system/user.ts)：API 定义参考实现

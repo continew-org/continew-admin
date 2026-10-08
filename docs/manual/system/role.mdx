@@ -1,0 +1,67 @@
+---
+title: 角色管理
+description: 角色的功能权限、数据权限与关联用户分配，以及内置角色的保护规则。
+---
+
+角色是权限分配的中间层，用户通过关联角色获得菜单、按钮等「功能权限」和数据行可见范围的「数据权限」。功能入口在「系统管理 -> 角色管理」，后端接口前缀为 `/system/role`，对应 `RoleController`。角色数据存储在 `sys_role` 表，与菜单、部门的关联分别存储在 `sys_role_menu`、`sys_role_dept` 表。
+
+## 功能概览
+
+| 功能 | 接口 | 权限码 |
+|:-----|:-----|:-------|
+| 列表/详情/新增/修改/删除 | `@CrudRequestMapping("/system/role")` 自动生成 | `system:role:list` 等 |
+| 查询角色权限树 | `GET /system/role/permission/tree` | `system:role:updatePermission` |
+| 修改功能权限 | `PUT /system/role/{id}/permission` | `system:role:updatePermission` |
+| 分页查询关联用户 | `GET /system/role/{id}/user` | `system:role:list` |
+| 分配用户 | `POST /system/role/{id}/user` | `system:role:assign` |
+| 取消分配用户 | `DELETE /system/role/user` | `system:role:unassign` |
+| 查询关联用户 ID | `GET /system/role/{id}/user/id` | `system:role:list` |
+
+## 角色字段
+
+`sys_role` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `name` | 角色名称，唯一 |
+| `code` | 角色编码，唯一，前端 `v-role` 指令与编程式 `hasRole` 按编码判断 |
+| `data_scope` | 数据权限范围，默认 4（仅本人） |
+| `menu_check_strictly` | 菜单选择是否父子节点关联，默认关联 |
+| `dept_check_strictly` | 部门选择是否父子节点关联，默认关联 |
+| `is_system` | 是否系统内置数据 |
+| `sort` | 排序，默认 999 |
+
+## 功能权限
+
+功能权限通过「修改权限」接口维护，将角色与菜单树（`sys_menu`）中的目录、菜单、按钮绑定，关联写入 `sys_role_menu` 表。
+
+勾选时 `menu_check_strictly` 控制父子节点是否联动。联动模式下勾选子节点会带上父节点；不联动时可单独勾选某个按钮而不挂整棵分支，适合精细授权。用户登录后，其全部角色的权限标识并集决定可见路由与可用按钮，后端接口由 `@SaCheckPermission` 逐项拦截。超级管理员角色的权限为通配符 `*:*:*`，自动通过所有校验。
+
+## 数据权限
+
+数据权限由 `data_scope` 字段定义，取值来自 `DataScopeEnum`，控制查询时可触达的数据行范围。
+
+| 取值 | 说明 |
+|:-----|:-----|
+| 1 | 全部数据权限 |
+| 2 | 本部门及以下数据权限 |
+| 3 | 本部门数据权限 |
+| 4 | 仅本人数据权限 |
+| 5 | 自定义数据权限 |
+
+取值为 5 时，可见部门集合来自 `sys_role_dept` 表（`dept_check_strictly` 控制勾选联动）。实现上由 `continew-starter-extension-datapermission-mp` 在 SQL 层追加条件，当前用户的数据范围由 `DefaultDataPermissionUserDataProvider` 提供，已接入的 Mapper 有 `UserMapper`、`AppMapper`。机制细节见 [ContiNew Starter 数据权限文档](/docs/starter/modules/extension/data-permission)。
+
+## 分配用户
+
+角色页提供「分配用户」能力，支持从角色视角批量绑定（`POST /system/role/{id}/user`）与解绑（`DELETE /system/role/user`）用户。从用户视角调整角色则使用用户管理的「分配角色」，见[用户管理](./user.mdx)。
+
+<Callout type="warn">
+初始化脚本内置超级管理员角色（`super_admin`，`is_system = 1`），系统内置角色与用户禁止变更。普通角色若仍有关联用户，删除前请先解除关联。
+</Callout>
+
+## 相关源码
+
+- [RoleController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/RoleController.java)（/system/role 接口与权限码）
+- [RoleServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/RoleServiceImpl.java)（权限修改与分配逻辑）
+- [DataScopeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/enums/DataScopeEnum.java)（数据权限取值）
+- [前端页面 src/views/system/role](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/role)

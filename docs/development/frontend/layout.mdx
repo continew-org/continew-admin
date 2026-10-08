@@ -1,0 +1,74 @@
+---
+title: 布局与主题
+description: 讲解布局模式切换、主题色与暗黑模式、页签样式等外观配置的运行机制与 setting.ts 默认值。
+---
+
+布局与外观配置的运行时在 Pinia 的 `app` store，默认值来自 `src/config/setting.ts`，用户在「应用配置面板」里的修改会持久化到 `localStorage`（`app` store 全量持久化）。
+
+## setting.ts 默认配置
+
+`src/config/setting.ts` 导出 `defaultSettings`，字段与默认值如下（`src/types/app.d.ts` 的 `App.AppSettings` 是类型定义）。
+
+| 字段 | 默认值 | 说明 |
+|:-----|:-------|:-----|
+| `theme` | `light` | 主题，`light` / `dark` |
+| `themeColor` | `#165DFF` | 主题色 |
+| `tab` | `true` | 是否显示页签栏 |
+| `tabMode` | `card-gutter` | 页签样式，`card` / `card-gutter` / `rounded` |
+| `animate` | `false` | 页面切换动画开关 |
+| `animateMode` | `zoom-fade` | 动画类型，共 6 种可选 |
+| `menuCollapse` | `false` | 菜单折叠状态 |
+| `menuAccordion` | `true` | 菜单手风琴模式（同级只展开一个） |
+| `menuDark` | `false` | 深色菜单 |
+| `copyrightDisplay` | `true` | 页脚版权显示 |
+| `layout` | `mix` | 布局模式，`left` / `mix` / `columns` / `top` |
+| `isOpenWatermark` | 未设置 | 全局水印开关 |
+| `watermark` | 未设置 | 水印文案，留空显示用户名 |
+| `enableColorWeaknessMode` | `false` | 色弱模式 |
+| `enableMourningMode` | `false` | 哀悼模式 |
+
+改全局默认值就改这个文件。用户的个性化配置在配置面板里改，存 `localStorage`，优先级高于默认值。
+
+## 布局模式
+
+四套布局组件在 `src/layout/` 下，`src/layout/index.vue` 按 `appStore.layout` 动态切换（`src/layout/index.vue:23`）。
+
+| 值 | 组件 | 形态 |
+|:---|:-----|:-----|
+| `default` | `LayoutDefault` | 经典左侧菜单 |
+| `mix` | `LayoutMix` | 混合布局（默认），顶部一级菜单 + 左侧二级菜单 |
+| `columns` | `LayoutColumns` | 双栏布局，一级菜单窄栏 + 二级菜单栏 |
+| `top` | `LayoutTop` | 顶部菜单，无侧边栏 |
+
+布局本体之外的公共件（头部、页签栏、主内容区）在 `src/layout/components/` 下复用。主内容区 `Main.vue` 是 `<transition>` 套 `<keep-alive>` 再套 `<router-view>` 的结构（`src/layout/components/Main.vue:3`），动画名取 `appStore.transitionName`，`keep-alive` 的 `include` 绑定 `tabsStore.cacheList`（页签缓存机制见 [路由与页签](./route.mdx)）。
+
+## 主题与暗黑模式
+
+主题切换在 `appStore.toggleTheme`（`src/stores/modules/app.ts:35`）：给 `document.body` 设置或移除 `arco-theme="dark"` 属性，Arco 组件按属性切换暗色样式，然后重算主题色变量。
+
+主题色不是编译期写死的。`setThemeColor` 用 `@arco-design/color` 的 `generate` 按当前主题算出 10 级色阶，逐个写到 `document.body` 的 `--primary-1` 到 `--primary-10` CSS 变量上。浅色的深色菜单场景用 store 里的 `themeCSSVar`（恒按 dark 计算）。
+
+色弱模式与哀悼模式通过 `watch` 监听，给 `document.documentElement` 加 CSS `filter`：哀悼模式是 `grayscale(100%)`，色弱模式是 `invert(80%)`，两者可同时叠加（`src/stores/modules/app.ts:85`）。
+
+## 页签栏
+
+页签栏的显隐由 `tab` 控制，样式由 `tabMode` 控制（卡片、卡片间隔、圆角）。页签的打开、关闭、固定、缓存行为由 `tabs` store 与路由 `meta` 决定，数据流转见 [路由与页签](./route.mdx)，这里只列配置入口。
+
+页签数据持久化到 `sessionStorage`，关掉浏览器标签页即清空；`localStorage` 里的 `app` store 只存样式偏好，不存页签。
+
+## 应用配置面板
+
+右上角齿轮图标打开配置抽屉（`src/layout/components/HeaderRightBar/SettingDrawer.vue`），实时修改上述字段并即时生效。抽屉底部「复制配置」按钮把当前设置导出为 JSON，方便把一套调好的外观写回 `setting.ts` 作为新默认值。
+
+面板的显示受环境变量 `VITE_APP_SETTING` 控制（`SettingDrawer.vue:94`），值为 `false` 时入口隐藏。
+
+## 站点信息的来源
+
+站点标题、Logo、Favicon、版权、备案号不在 `setting.ts`，由后端「系统配置 → 网站配置」维护，前端启动时经 `appStore.initSiteConfig()` 调 `GET /system/common/dict/option/site` 拉取并写入 `document.title` 与 favicon 链接（`src/stores/modules/app.ts:60`）。改站点名不用改前端代码，后台页面改配置即可。
+
+## 相关源码
+
+- [src/config/setting.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/config/setting.ts)：默认外观配置
+- [src/stores/modules/app.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/app.ts)：外观配置的运行时 store（主题、布局、站点信息）
+- [src/layout/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/layout/index.vue)：布局模式动态切换
+- [src/layout/components/HeaderRightBar/SettingDrawer.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/layout/components/HeaderRightBar/SettingDrawer.vue)：应用配置面板

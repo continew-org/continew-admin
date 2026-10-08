@@ -1,0 +1,76 @@
+---
+title: 用户管理
+description: 系统用户的查询、新增、导入导出、重置密码与分配角色，以及内置用户的保护规则。
+---
+
+用户管理维护可以登录系统的账号，功能入口在「系统管理 -> 用户管理」，后端接口前缀为 `/system/user`，对应 `UserController`。用户数据存储在 `sys_user` 表，角色关联存储在 `sys_user_role` 表。
+
+## 功能概览
+
+| 功能 | 接口 | 权限码 |
+|:-----|:-----|:-------|
+| 分页/列表/详情/新增/修改/删除/导出 | `@CrudRequestMapping("/system/user")` 自动生成 | `system:user:list` 等 |
+| 下载导入模板 | `GET /system/user/import/template` | `system:user:import` |
+| 解析导入数据 | `POST /system/user/import/parse` | `system:user:import` |
+| 导入数据 | `POST /system/user/import` | `system:user:import` |
+| 重置密码 | `PATCH /system/user/{id}/password` | `system:user:resetPwd` |
+| 分配角色 | `PATCH /system/user/{id}/role` | `system:user:updateRole` |
+
+CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成，例如新增用户对应 `system:user:create`，删除对应 `system:user:delete`。
+
+## 用户字段
+
+`sys_user` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `username` | 用户名，登录账号，唯一（与 `deleted` 组成联合唯一索引） |
+| `nickname` | 昵称，页面展示名 |
+| `password` | 密码，BCrypt 加密存储，前缀 `{bcrypt}` |
+| `gender` | 性别（0：未知；1：男；2：女） |
+| `email` / `phone` | 邮箱、手机号，均带唯一索引，可用于对应方式登录 |
+| `avatar` | 头像地址 |
+| `status` | 状态（1：启用；2：禁用），禁用后无法登录 |
+| `is_system` | 是否系统内置数据 |
+| `pwd_reset_time` | 最后一次修改密码时间，用于密码有效期策略 |
+| `dept_id` | 所属部门，关联 `sys_dept` |
+
+## 新增与修改
+
+新增用户时填写用户名、昵称、所属部门、角色等基础信息，初始密码由管理员设置。提交时前端先用 RSA 公钥加密密码，后端经 `SecureUtils.decryptPasswordByRsaPrivateKey` 解密后再以 BCrypt 入库。
+
+用户名、邮箱、手机号分别带唯一索引，重复时直接报错。邮箱、手机号字段经过 `continew-starter.encrypt.field` 的 AES 字段加密，数据库中保存密文。
+
+## 导入与导出
+
+用户导入分三步走，先下载模板，再解析校验，最后确认导入。
+
+<Steps>
+  <Step>点击「下载模板」获取 Excel 导入模板，接口为 `GET /system/user/import/template`。</Step>
+  <Step>填写后上传文件，前端调 `POST /system/user/import/parse` 解析并展示校验结果（成功条数与失败原因）。</Step>
+  <Step>确认无误后提交导入，`POST /system/user/import` 执行实际写入并返回导入结果。</Step>
+</Steps>
+
+导出使用 `GET /system/user/export`，按当前查询条件生成 Excel，基于 FastExcel 实现。
+
+## 重置密码
+
+管理员通过 `PATCH /system/user/{id}/password` 重置指定用户的登录密码。新密码同样经 RSA 加密传输，重置后用户的 `pwd_reset_time` 刷新，历史密码写入 `sys_user_password_history` 表，受「系统配置 -> 密码配置」中历史密码重复校验次数约束。
+
+## 分配角色
+
+用户与角色为多对多关系，通过 `PATCH /system/user/{id}/role` 整体调整某个用户的角色集合。角色决定用户的功能权限（菜单、按钮）与数据权限，详见[角色管理](./role.mdx)。
+
+<Callout type="warn">
+初始化脚本中 `admin` 用户（`is_system = 1`）与内置角色为系统内置数据，禁止变更与删除，避免把系统的最后入口关掉。
+</Callout>
+
+## 密码策略联动
+
+用户的密码行为受「系统配置 -> 密码配置」分组控制，包括错误锁定阈值（`PASSWORD_ERROR_LOCK_COUNT`，默认 5 次）、锁定时长（`PASSWORD_ERROR_LOCK_MINUTES`，默认 5 分钟）、密码有效期（`PASSWORD_EXPIRATION_DAYS`）、历史密码重复校验（`PASSWORD_REPETITION_TIMES`，默认 3 次）与最小长度（`PASSWORD_MIN_LENGTH`，默认 8）。密码过期后登录会被强制跳转到修改密码页。配置项详见[系统配置](./option.mdx)。
+
+## 相关源码
+
+- [UserController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/UserController.java)（/system/user 接口与权限码）
+- [UserServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/UserServiceImpl.java)（导入导出、重置密码、分配角色）
+- [前端页面 src/views/system/user](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/user)

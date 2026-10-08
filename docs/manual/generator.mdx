@@ -1,0 +1,64 @@
+---
+title: 代码生成
+description: 代码生成器读取数据表元数据，按 15 个 FreeMarker 模板一键产出前后端 CRUD 代码与菜单 SQL，支持在线预览、直接落盘与打包下载。
+---
+
+「开发工具 → 代码生成」（菜单 ID 9010）基于数据表结构生成标准 CRUD 代码，位于 `continew-plugin-generator`。对应接口前缀 `/code/generator`。生成器的思路是把「建表」作为开发的起点：表结构即元数据，字段注释、类型、是否可空在配置页补全为页面语义，模板渲染后直接得到一套可运行的前后端代码。
+
+## 模板清单
+
+模板为 FreeMarker 文件（`.ftl`），放在插件模块的 `resources/templates` 下，共 15 个，在 `application-generator.yml` 的 `generator.templateConfigs` 中登记各自的输出包名与扩展名。
+
+后端 11 个模板，输出到生成配置指定的模块与包。
+
+| 模板 | 产出 |
+|:-----|:-----|
+| `Entity.ftl` | 实体类 `model.entity`，默认排除 `id` 与四个审计字段 |
+| `Query.ftl` | 查询对象 `model.query` |
+| `Req.ftl` | 请求对象 `model.req` |
+| `Resp.ftl` | 列表响应 `model.resp` |
+| `DetailResp.ftl` | 详情响应 `model.resp` |
+| `Mapper.ftl` | Mapper 接口 |
+| `MapperXml.ftl` | Mapper XML（扩展名 `.xml`） |
+| `Service.ftl` / `ServiceImpl.ftl` | 业务接口与实现，继承 CRUD 套件基类 |
+| `Controller.ftl` | 控制器，`@CrudRequestMapping` 声明标准 API |
+| `Menu.ftl` | 菜单初始化 SQL（扩展名 `.sql`） |
+
+前端 4 个模板，输出到 `src/apis` 与 `src/views`：`api.ftl`（`.ts` 接口封装）、`index.ftl`（列表页）、`AddModal.ftl`（新增弹窗）、`DetailDrawer.ftl`（详情抽屉）。
+
+## 字段配置
+
+列表页选择一张表后进入「配置」，后端经 `GET /code/generator/field/{tableName}` 读取表字段元数据并落库为 `FieldConfigDO`（`gen_field_config` 表），逐项可调整。
+
+- 基本：字段名（列名自动转驼峰）、Java 类型、注释、排序、是否必填；
+- 展示：是否出现在列表、表单、查询区；
+- 表单类型：输入框、数字输入框、下拉框、单选框、开关、日期时间框等 12 种（`FormTypeEnum`）；
+- 查询方式：等于、范围、LIKE、IN、空值判断等 14 种（`QueryTypeEnum`）；
+- 字典：绑定字典编码后，下拉类控件自动挂接字典数据。
+
+生成配置本身存于 `gen_config` 表，包含表名、模块名、包名、业务名、作者、表前缀与「是否覆盖」。表前缀用于推导类名，例如 `sys_user` 去掉前缀 `sys_` 后类名前缀为 `User`。
+
+## 类型映射
+
+列类型到 Java 类型的映射由 `generator.typeMappings` 配置，按数据库方言分组。MySQL 默认映射：`varchar`、`char`、`text`、`json` 等映射为 `String`；`int`、`tinyint` 等映射为 `Integer`；`bigint` 映射为 `Long`；`decimal` 映射为 `BigDecimal`；`date` 映射为 `LocalDate`；`datetime`、`timestamp` 映射为 `LocalDateTime`。PostgreSQL 对应提供 `int2`/`int4`/`int8`、`float4`/`float8`、`bool`、`timestamp` 等映射。新列类型未命中映射时，在该配置中补充即可。
+
+`generator.excludeTables` 配置不出现在可选表清单中的表，默认排除 Liquibase 的 `DATABASECHANGELOG*` 与生成器自身的两张配置表。
+
+## 生成与下载
+
+配置保存后提供三种产出方式，「预览」权限码 `code:generator:preview`，「生成」与「下载」权限码 `code:generator:generate`。
+
+- 预览：`GET /code/generator/preview/{tableNames}`，逐模板渲染后在弹窗中查看代码内容，不落盘；
+- 生成：`POST /code/generator/{tableNames}`，按模板登记的相对路径直接写入当前工作目录下的后端模块与前端工程，已存在的文件仅在「是否覆盖」为 true 时重写；
+- 下载：`POST /code/generator/{tableNames}/download`，先渲染到系统临时目录再打包为 zip 返回。
+
+<Callout type="info">
+「生成」按 `user.dir` 拼相对路径写入文件，要求以后端工程根目录为工作目录启动服务，且前端工程目录与后端保持仓库约定的相对位置。仅做评审或跨机交付时用「下载」更稳妥。
+</Callout>
+
+## 相关源码
+
+- [GeneratorController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-generator/src/main/java/top/continew/admin/generator/controller/GeneratorController.java)：代码生成 API
+- [templates/](https://github.com/continew-org/continew-admin/tree/dev/continew-plugin/continew-plugin-generator/src/main/resources/templates)：15 个 FreeMarker 模板
+- [application-generator.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-generator.yml)：模板登记、类型映射与排除表配置
+- [continew-admin-ui/src/views/code/generator/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/code/generator)：前端页面

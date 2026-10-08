@@ -1,0 +1,78 @@
+---
+title: 文件管理
+description: 文件的上传、预览、分片上传、秒传与回收站，以及文件资源的统计。
+---
+
+文件管理提供统一的文件上传与查阅能力，功能入口在「系统管理 -> 文件管理」，后端接口前缀为 `/system/file`，对应 `FileController`。文件元数据存储在 `sys_file` 表，实际内容落在[存储管理](./storage.mdx)配置的存储平台上，底层基于 X File Storage 2.3.0。
+
+## 功能概览
+
+| 功能 | 接口 | 权限码 |
+|:-----|:-----|:-------|
+| 分页/修改/批量删除 | `@CrudRequestMapping("/system/file")` 自动生成 | `system:file:list` 等 |
+| 上传文件 | `POST /system/file/upload` | `system:file:upload` |
+| 查询默认存储上传配置 | `GET /system/file/upload/config/default` | `system:file:upload` |
+| 查询上传进度 | `GET /system/file/upload/progress/{uploadTaskId}` | `system:file:upload` |
+| 创建文件夹 | `POST /system/file/dir` | `system:file:createDir` |
+| 计算文件夹大小 | `GET /system/file/dir/{id}/size` | `system:file:calcDirSize` |
+| 文件资源统计 | `GET /system/file/statistics` | `system:file:list` |
+| 检测文件是否存在 | `GET /system/file/check` | `system:file:check` |
+
+业务页面的公共上传入口（如头像、编辑器插图）走 `POST /system/common/file`（`CommonController`），与文件管理共用 `FileService.upload`。
+
+## 文件记录
+
+`sys_file` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `name` / `original_name` | 存储名与原始文件名 |
+| `size` | 大小（字节） |
+| `parent_path` / `path` | 上级目录与完整路径，默认按 `/yyyy/MM/dd` 归档 |
+| `type` | 类型（0：目录；1：其他；2：图片；3：文档；4：视频；5：音频），按扩展名归入 `FileTypeEnum` |
+| `sha256` | 文件哈希，秒传检测的依据 |
+| `thumbnail_*` | 图片缩略图信息 |
+| `storage_id` | 所属存储，关联 `sys_storage` |
+
+上传时不指定 `parentPath` 则按日期目录归档。单文件大小受 Spring multipart 限制（`max-file-size` 默认 10MB），超出请走分片上传。
+
+## 秒传与分片上传
+
+前端上传前先调 `GET /system/file/check?fileHash=xxx` 提交 SHA256，命中已有文件时直接复用记录，不再传输内容。
+
+大文件走分片上传，接口前缀为 `/system/multipart-upload`，对应 `MultipartUploadController`，自 4.1.0 起同时支持本地与 S3 存储。
+
+<Steps>
+  <Step>`POST /system/multipart-upload/init` 初始化，返回 `uploadId`。</Step>
+  <Step>`POST /system/multipart-upload/part` 逐片上传，携带 `uploadId` 与分片编号。</Step>
+  <Step>`GET /system/multipart-upload/complete/{uploadId}` 合并分片，生成文件记录。</Step>
+</Steps>
+
+中途放弃可调 `GET /system/multipart-upload/cancel/{uploadId}` 清理缓存与临时分片。是否触发分片以及分片大小由默认存储的「分片上传阈值」与「分片上传大小」决定（默认 10MB 阈值、5MB 分片），配置见[存储管理](./storage.mdx)。前端大文件上传使用 `MultipartUpload` 组件，进度经 `GET /system/file/upload/progress/{uploadTaskId}` 轮询。
+
+## 预览与统计
+
+文件管理页支持按类型筛选、文件夹层级浏览与文件夹大小统计。预览由前端 `FilePreview` 组件完成，覆盖图片、音视频、PDF 与 Office 文档；图片类文件上传时自动生成缩略图。`GET /system/file/statistics` 返回存储用量与各类型的数量、体积分布，用于页面顶部的资源概览。
+
+## 回收站
+
+删除文件时不直接移除物理文件，而是移动到存储配置中的回收站路径（`recycle_bin_path`），自 4.1.0 起提供。回收站接口前缀为 `/system/file/recycle`，对应 `FileRecycleController`。
+
+| 功能 | 接口 | 权限码 |
+|:-----|:-----|:-------|
+| 分页查询 | `GET /system/file/recycle` | `system:fileRecycle:list` |
+| 还原文件 | `PUT /system/file/recycle/restore/{id}` | `system:fileRecycle:restore` |
+| 彻底删除 | `DELETE /system/file/recycle/{id}` | `system:fileRecycle:delete` |
+| 清空回收站 | `DELETE /system/file/recycle/clean` | `system:fileRecycle:clean` |
+
+<Callout type="warn">
+回收站开关与路径按存储配置生效（`sys_storage.recycle_bin_enabled`）。关闭回收站后删除操作直接移除物理文件，不可恢复。
+</Callout>
+
+## 相关源码
+
+- [FileController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/FileController.java)（/system/file 接口）
+- [MultipartUploadController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/MultipartUploadController.java)（分片上传接口）
+- [FileRecycleController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/FileRecycleController.java)（回收站接口）
+- [FileServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/FileServiceImpl.java)（上传、秒传、统计逻辑）
+- [前端页面 src/views/system/file](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/file)

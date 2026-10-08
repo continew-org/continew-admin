@@ -1,0 +1,42 @@
+---
+title: 能力开放
+description: 能力开放模块通过应用管理发放 AK/SK 密钥对，第三方系统凭密钥对请求参数做 MD5 签名后可直接调用开放接口，无需登录态。
+---
+
+能力开放模块位于 `continew-plugin-open`，解决「第三方系统不带用户登录态调用平台接口」的场景。平台在「能力开放 → 应用管理」为每个接入方发放一对 Access Key 与 Secret Key，调用方按约定规则对请求参数签名，服务端验签通过后放行请求。
+
+## 应用管理
+
+「能力开放 → 应用管理」（菜单 ID 7010）维护接入应用，数据存于 `sys_app` 表。对应接口前缀 `/open/app`，基于 CRUD 套件提供分页、详情、新增、修改、批量删除、导出接口。
+
+应用字段由 `AppDO` 定义：名称、Access Key、Secret Key、失效时间、描述、状态。两个密钥字段标注了 `@FieldEncrypt`，在库中以密文存储。Access Key 在新增时自动生成（UUID 派生的 30 位字符串），Secret Key 不在列表与详情接口返回，页面通过「显示」按钮单独调用 `GET /open/app/{id}/secret`（权限码 `open:app:secret`）获取，「重置密钥」调用 `PATCH /open/app/{id}/secret`（权限码 `open:app:resetSecret`）换发新 Secret Key，旧密钥立即作废。
+
+## 签名机制
+
+验签逻辑在 `OpenApiSignTemplate` 中，它继承 Sa-Token Sign 的 `SaSignTemplate`，签名算法为 MD5。调用方需要携带四个公共参数。
+
+- `timestamp`：当前时间戳（毫秒），服务端校验时效以抵御重放；
+- `nonce`：随机字符串，服务端校验一次性；
+- `accessKey`：应用标识；
+- `sign`：除 `sign` 外全部参数按字典序拼接后混入 Secret Key 计算的 MD5 值。
+
+服务端验签依次执行四个检查：四个公共参数齐全；`accessKey` 对应的应用存在、未禁用、未过期；时间戳在允许的时间窗内、nonce 未被使用过；按应用对应的 Secret Key 重算签名并与 `sign` 比对。任一检查失败抛出对应错误信息（如「accessKey无效」「应用已过期, 请联系管理员」）。
+
+## 验签后的权限放行
+
+平台原有接口标注的 `@SaCheckPermission` 依赖登录态。能力开放场景没有登录用户，`SaCheckPermissionHandler` 重定义了该注解的处理逻辑：当请求携带 `sign` 参数时跳过登录态权限校验，验签通过即视为合法调用。判断依据是请求参数中是否存在 `sign`，见 `OpenApiUtils.isSignParamExists`。
+
+<Callout type="warn">
+携带 `sign` 参数的请求会绕过全部 `@SaCheckPermission` 校验，签名链路本身就是唯一的防线。Secret Key 应只在服务端持有，不要下发到浏览器端代码；泄露后第一时间在应用管理中重置密钥。
+</Callout>
+
+## 接口文档
+
+能力开放相关接口在 API 文档中单独分组，`OpenConfiguration` 注册了 `GroupedOpenApi`：分组名 `open`、显示名「能力开放」、匹配路径 `/open/**`。
+
+## 相关源码
+
+- [AppController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-open/src/main/java/top/continew/admin/open/controller/AppController.java)：应用管理 API，密钥查看与重置
+- [OpenApiSignTemplate.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-open/src/main/java/top/continew/admin/open/sign/OpenApiSignTemplate.java)：签名生成与验签实现
+- [SaCheckPermissionHandler.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-open/src/main/java/top/continew/admin/open/handler/SaCheckPermissionHandler.java)：签名请求的权限放行
+- [continew-admin-ui/src/views/open/app/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/open/app)：前端页面

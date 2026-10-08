@@ -1,0 +1,93 @@
+---
+title: 系统配置
+description: 网站、密码、邮件、登录四类系统参数的运行时修改与重置，无需重启生效。
+---
+
+系统配置把运行期需要调整的参数（站点信息、密码策略、邮件服务器、登录开关）放到页面上维护，修改即写库生效，不需要重启服务。功能入口在「系统管理 -> 系统配置」，后端接口前缀为 `/system/option`，对应 `OptionController`。参数存储在 `sys_option` 表，每条记录包含类别、键、值与默认值。
+
+## 参数类别
+
+参数类别由 `OptionCategoryEnum` 定义，只有四类。
+
+| 类别 | 页面分组 | 说明 |
+|:-----|:---------|:-----|
+| `SITE` | 网站配置 | 系统名称、描述、版权、备案号、图标、LOGO |
+| `PASSWORD` | 安全配置 | 密码错误锁定、有效期、历史密码、长度与复杂度 |
+| `MAIL` | 邮件配置 | SMTP 服务器、账号、SSL |
+| `LOGIN` | 登录配置 | 登录验证码开关 |
+
+<Callout type="info">
+短信配置走 `sys_sms_config` 表，存储配置走 `sys_storage` 表，客户端配置走 `sys_client` 表，均不在 `sys_option` 中。前端「系统配置」菜单下的短信、存储、客户端三个页签分别对应[短信管理](./sms.mdx)、[存储管理](./storage.mdx)、[客户端配置](./client.mdx)。
+</Callout>
+
+## 内置参数清单
+
+初始化脚本写入的参数键与默认值如下（`sys_option` 表）。
+
+### 网站配置（SITE）
+
+| 键 | 默认值 | 说明 |
+|:---|:-------|:-----|
+| `SITE_TITLE` | ContiNew Admin | 显示在浏览器标题栏和登录界面的系统名称 |
+| `SITE_DESCRIPTION` | 持续迭代优化的前后端分离中后台管理系统框架 | 用于 SEO 的网站元描述 |
+| `SITE_COPYRIGHT` | Copyright © 2022 - present ContiNew Admin 版权所有 | 页面底部版权声明 |
+| `SITE_BEIAN` | 空 | 工信部 ICP 备案编号 |
+| `SITE_FAVICON` | /favicon.ico | 浏览器标签页图标 |
+| `SITE_LOGO` | /logo.svg | 登录页与导航栏图标 |
+
+网站配置经 `GET /system/common/dict/option/site` 公开读取，前端标题、LOGO、备案号均取自该接口，不需要登录。
+
+### 安全配置（PASSWORD）
+
+| 键 | 默认值 | 说明 |
+|:---|:-------|:-----|
+| `PASSWORD_ERROR_LOCK_COUNT` | 5 | 连续登录失败达到该次数锁定账号（0 表示禁用锁定） |
+| `PASSWORD_ERROR_LOCK_MINUTES` | 5 | 锁定后自动解锁的分钟数 |
+| `PASSWORD_EXPIRATION_DAYS` | 0 | 密码强制修改周期，0 表示永不过期 |
+| `PASSWORD_EXPIRATION_WARNING_DAYS` | 0 | 过期前提前提醒天数，0 表示不提醒 |
+| `PASSWORD_REPETITION_TIMES` | 3 | 禁止使用最近 N 次历史密码 |
+| `PASSWORD_MIN_LENGTH` | 8 | 密码最小长度 |
+| `PASSWORD_ALLOW_CONTAIN_USERNAME` | 1 | 是否允许密码包含正序或倒序用户名 |
+| `PASSWORD_REQUIRE_SYMBOLS` | 0 | 是否要求密码包含特殊字符 |
+
+### 邮件配置（MAIL）
+
+| 键 | 默认值 | 说明 |
+|:---|:-------|:-----|
+| `MAIL_PROTOCOL` | smtp | 邮件发送协议 |
+| `MAIL_HOST` | smtp.126.com | 邮件服务器地址 |
+| `MAIL_PORT` | 465 | 服务器端口 |
+| `MAIL_USERNAME` | charles7c@126.com | 发件人邮箱账号 |
+| `MAIL_PASSWORD` | 空 | 邮箱授权码 |
+| `MAIL_SSL_ENABLED` | 1 | 是否启用 SSL/TLS 加密 |
+| `MAIL_SSL_PORT` | 465 | SSL 端口 |
+
+邮件配置是邮箱验证码登录（`EmailLoginHandler`）与邮件通知的前提，`MAIL_PASSWORD` 未配置时发信会失败。
+
+### 登录配置（LOGIN）
+
+| 键 | 默认值 | 说明 |
+|:---|:-------|:-----|
+| `LOGIN_CAPTCHA_ENABLED` | 1 | 是否启用登录验证码 |
+
+## 接口与权限
+
+`OptionController` 不走 CRUD 套件，只提供三个接口，按页面分组拆分权限码。
+
+| 功能 | 接口 | 权限码（满足其一即可） |
+|:-----|:-----|:-----------------------|
+| 查询参数列表 | `GET /system/option` | `system:siteConfig:get` / `system:securityConfig:get` / `system:loginConfig:get` / `system:mailConfig:get` |
+| 修改参数 | `PUT /system/option` | 对应分组的 `system:*Config:update` |
+| 重置参数 | `PATCH /system/option/value` | 对应分组的 `system:*Config:update` |
+
+修改接口按提交的键值批量更新；重置接口把指定参数恢复为 `default_value`。
+
+<Callout type="warn">
+`sys_option` 没有逻辑删除字段，参数记录由初始化脚本写入，不要直接删行。新增自定义参数类别需要同步扩展 `OptionCategoryEnum` 与前端页面，属于代码级改动。
+</Callout>
+
+## 相关源码
+
+- [OptionController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/OptionController.java)（/system/option 接口与权限码）
+- [OptionCategoryEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/OptionCategoryEnum.java)（参数类别枚举）
+- [前端页面 src/views/system/config](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/config)（site/security/mail/login 等子页）

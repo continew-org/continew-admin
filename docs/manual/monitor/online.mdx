@@ -1,0 +1,42 @@
+---
+title: 在线用户
+description: 在线用户页面展示当前全部有效登录会话，支持按用户、昵称、客户端筛选，并可强退指定会话强制用户重新登录。
+---
+
+「系统监控 → 在线用户」页面展示系统中当前有效的登录会话。数据不走数据库，直接来自认证框架维护的会话（Session）记录，列表按登录时间倒序排列。
+
+## 会话数据来源
+
+自 4.2 版本起，ContiNew Admin 采用「Access Token + Refresh Token」双令牌模型。Access Token 存活时间短且可以自然过期，Refresh Token 对应的长期会话（Refresh Session）才是登录态的事实源。在线用户列表遍历的是 `SessionQueryService.listSessions` 返回的会话视图，所以即使某个用户的 Access Token 已经过期，只要他的长期会话仍有效，管理员依然能在列表中看到这台设备并执行强退。对应实现见 `OnlineUserServiceImpl`。
+
+每条会话展示以下字段：用户名、昵称、客户端类型、客户端 ID、登录 IP 与归属地、浏览器、操作系统、登录时间、最后刷新时间。
+
+## 查询与筛选
+
+页面支持三类筛选条件，在服务端内存中匹配会话。
+
+- 昵称：模糊匹配用户名或昵称（`contains` 语义）；
+- 登录时间：起止时间段，仅保留区间内登录的会话；
+- 客户端：按客户端 ID 精确匹配，客户端清单来自「系统管理 → 系统配置 → 客户端配置」。
+
+对应接口为 `GET /monitor/online`，权限码 `monitor:online:list`。
+
+## 强退会话
+
+点击「强退」调用 `DELETE /monitor/online/{sessionId}`，权限码 `monitor:online:kickout`。后端 `OnlineUserController.kickout` 执行三道校验后才撤销会话。
+
+1. 不能强退自己当前的会话，防止管理员把自己踢下线；
+2. 会话必须存在；
+3. 多租户开启时，非超级管理员只能操作本租户的会话，避免仅凭一个 Access Token 跨租户撤销他人登录。
+
+撤销的粒度是整个会话。`SessionInvalidationService.revokeSession` 删除会话记录后，该设备持有的全部 Access Token 与 Refresh Token 立即失效，用户下一次请求会被引导重新登录。
+
+<Callout type="info">
+修改用户密码、禁用用户、调整角色等业务操作也会触发同一会话失效机制（`invalidateUser`），用户需要重新认证才能继续操作。
+</Callout>
+
+## 相关源码
+
+- [OnlineUserController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/controller/OnlineUserController.java)：在线用户 API，分页查询与强退入口
+- [OnlineUserServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/OnlineUserServiceImpl.java)：会话遍历、筛选与强退逻辑
+- [continew-admin-ui/src/views/monitor/online/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/monitor/online/index.vue)：前端页面

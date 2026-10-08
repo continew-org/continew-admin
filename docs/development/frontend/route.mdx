@@ -1,0 +1,102 @@
+---
+title: 路由与页签
+description: 讲解前端路由的静态与动态注册机制、全局守卫的登录判定流程，以及页签与页面缓存的控制方式。
+---
+
+路由代码集中在 `src/router/`，状态在 Pinia 的 `route` 与 `tabs` 两个 store。整体模型是「静态路由打底 + 登录后动态注册业务路由」，菜单数据完全由后端下发。
+
+## 路由组成
+
+`src/router/index.ts` 创建实例时用 `createWebHistory`（HTML5 History 模式），初始只注册两组静态路由。
+
+| 分组 | 内容 |
+|:-----|:-----|
+| `constantRoutes` | `/redirect`（重定向中转）、`/:pathMatch(.*)*`（404）、`/403` |
+| `systemRoutes` | `/login`、`/`（Layout + 仪表盘两个子页）、`/social/callback`、`/pwdExpired`、`/user`（个人中心/消息中心）、`/about` |
+
+业务页面（系统管理、监控、租户等）不在初始路由表里，登录成功后由 `routeStore.generateRoutes()` 动态注册。
+
+## 动态路由注册
+
+动态路由的数据源是后端「菜单管理」里配置的菜单树。流程分四步（`src/stores/modules/route.ts:92`）。
+
+<Steps>
+  <Step>
+    调 `getUserRoute()`（`GET /auth/user/route`）拉取当前用户可见的菜单树，后端已按角色过滤。
+  </Step>
+  <Step>
+    `formatAsyncRoutes` 把菜单树转成路由记录：`path`/`redirect` 直取，`name` 缺省时由路径转换，`component` 字符串映射到真实组件。
+  </Step>
+  <Step>
+    `flatMultiLevelRoutes` 把三级及以上路由降级为二级（`toTreeArray` 拍平 children），vue-router 对多层嵌套的命名视图支持有限，拍平后页签缓存与布局渲染都更可控。
+  </Step>
+  <Step>
+    守卫里 `router.addRoute(route)` 逐条注册，外链（`isHttp` 判断）跳过注册，只出现在菜单里。
+  </Step>
+</Steps>
+
+组件映射的规则在 `transformComponentView`（`src/stores/modules/route.ts:17`）：`component` 字段是 `Layout` 或 `ParentView` 时映射到布局组件，否则去 `asyncRouteModules` 里按路径查找。`asyncRouteModules` 由 `import.meta.glob('@/views/**/*.vue')` 生成（`src/router/asyncModules.ts`），剔除了 `views/login` 和任何 `components` 目录。
+
+这意味着新增页面的约定是：`.vue` 文件放进 `src/views/` 后，菜单的「组件路径」填相对 `src/views/` 且不带扩展名的路径。例如文件 `src/views/system/user/index.vue` 对应组件路径 `system/user`。
+
+```text
+src/views/system/user/index.vue  →  component 填 system/user
+src/views/monitor/online/index.vue →  component 填 monitor/online
+```
+
+菜单字段到路由 `meta` 的映射如下。
+
+| 菜单字段 | meta 字段 | 作用 |
+|:---------|:----------|:-----|
+| `title` | `title` | 菜单名、页签名、面包屑 |
+| `isHidden` | `hidden` | 在菜单中隐藏（路由仍可访问） |
+| `isCache` | `keepAlive` | 页面组件是否进 `keep-alive` 缓存 |
+| `icon` | `icon` | 菜单图标 |
+| `showInTabs` | `showInTabs` | 是否在页签栏显示 |
+| `activeMenu` | `activeMenu` | 高亮哪个菜单项（详情页选中父菜单用） |
+
+## 全局守卫
+
+`src/router/guard.ts` 的 `beforeEach` 做四件事，按执行顺序如下。
+
+1. **NProgress 进度条**：每次导航开始启动，`afterEach` 与 `onError` 里结束。
+2. **会话恢复**：Access Token 只存内存，浏览器刷新后内存为空。守卫发现没有 Token 且目标不在白名单时，先调 `userStore.restoreSession()` 用 HttpOnly Cookie 尝试换新 Token，成功则视同已登录，失败才走未登录分支。
+3. **登录判定**：有 Token 且首次进入时，依次执行 `userStore.getInfo()` → 密码过期强制跳 `/pwdExpired` → `routeStore.generateRoutes()` 注册动态路由，然后 `next({ ...to, replace: true })` 重放导航。没有 Token 且不在白名单（`/login`、`/social/callback`、`/pwdExpired`）时跳 `/login?redirect=<目标地址>`。
+4. **版本检测**（仅生产环境）：比较首页响应的 `ETag` / `Last-Modified`，变化说明发版了，右下角弹 Notification 提示用户刷新。
+
+<Callout type="info">
+会话恢复只认明确的 401 作为「无会话」终态。限流、网络抖动、服务端临时故障不会清掉 Cookie，守卫给出「登录状态恢复失败」提示并允许重试，避免把临时故障误判成踢下线。
+</Callout>
+
+登出或会话失效时调用 `resetRouter()`（`src/router/index.ts:19`）按 `name` 移除所有动态路由。动态路由必须带 `name`，否则移除不干净，这也是菜单「路由名称」字段必填的原因。
+
+## 页签与页面缓存
+
+页签是独立的 Pinia store（`src/stores/modules/tabs.ts`），持久化到 `sessionStorage`。两个核心数组如下。
+
+- `tabList`：已打开的页签，路由变化时由布局组件调用 `addTabItem` 追加；
+- `cacheList`：`keep-alive` 的 `include` 名单，元素是组件 `name`。
+
+两者的行为由路由 `meta` 控制。
+
+| meta | 效果 |
+|:-----|:-----|
+| `affix: true` | 页签固定，不可关闭（工作台默认固定） |
+| `showInTabs: false` | 不出现在页签栏（个人中心、消息中心用） |
+| `keepAlive: true` | 组件名进 `cacheList`，切走再切回时保留页面状态 |
+
+页签栏右侧的刷新按钮通过 `reloadPage` 实现：先把当前组件名从 `cacheList` 删掉，`nextTick` 后加回来，强制 `keep-alive` 重建组件，重新触发生命周期钩子。
+
+<Callout type="warn">
+`keep-alive` 按组件 `name` 匹配缓存，页面组件必须用 `defineOptions({ name: 'SystemUser' })` 显式命名，且名字与路由 `name` 对应。缺了 `defineOptions`，缓存会静默失效，表现为每次切换页签都重新加载数据。
+</Callout>
+
+关闭页签的操作（关闭当前/其他/左侧/右侧/全部）都同步清理 `cacheList` 里对应的缓存项，下次再打开时页面是全新状态。
+
+## 相关源码
+
+- [src/router/guard.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/router/guard.ts)：全局守卫与版本检测
+- [src/router/route.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/router/route.ts)：静态路由定义
+- [src/stores/modules/route.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/route.ts)：动态路由生成与格式化
+- [src/stores/modules/tabs.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/tabs.ts)：页签与缓存管理
+- [MenuController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/MenuController.java)：菜单与路由数据的后端来源

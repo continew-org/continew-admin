@@ -1,0 +1,71 @@
+---
+title: 后端开发
+description: ContiNew Admin 后端二次开发入口，给出工程通用约定与各专题页导航。
+---
+
+ContiNew Admin 后端基于 Spring Boot 3.5.16（Java 17），脚手架能力由 ContiNew Starter 2.17.0 供给。二次开发前先确认 [项目结构](./structure.mdx) 中的模块划分，再按本组专题页对照落地。
+
+## 通用约定
+
+以下三条约定贯穿全部业务代码，新增功能时先对齐这三条再动手。
+
+### 分层子包
+
+`continew-system` 的 `auth`、`system` 与 `continew-plugin` 下各插件按同一套分层子包组织：`controller`、`service`（含 `impl`）、`mapper`、`model.entity` / `model.query` / `model.req` / `model.resp`，按需补充 `enums`、`constant`、`util`、`config`、`validation`。实体继承 common 的 `BaseDO`（自带 `id`、`createUser`、`createTime`、`updateUser`、`updateTime`、`deleted` 字段），字段由 `MyBatisPlusMetaObjectHandler` 在插入与更新时自动填充。完整分层对照表见 [项目结构](./structure.mdx)。
+
+### 内部 API 解耦
+
+跨模块调用不直接依赖对方 Service。被调方在 `continew-common` 的 `top.continew.admin.common.api` 包定义接口（如 `UserApi`、`TenantApi`），业务模块在自己的 `api/` 子包提供实现并注册为 Spring Bean，调用方只注入接口。模块依赖保持 server → system → common 单向，不会出现循环依赖。`continew-plugin-tenant` 的 `TenantApiImpl`、`continew-system` 的 `UserApiImpl` 都是这一模式的实例。
+
+### 全局响应
+
+Controller 直接返回业务对象，Graceful Response（5.0.5-boot3）在出口统一包装为 `top.continew.starter.web.model.R`，字段为 `code`、`data`、`msg`、`success`、`timestamp`。成功码 `0`、失败码 `1`、错误时 HTTP 状态码仍为 200，这些默认值由 `application.yml` 的 `continew-starter.web.response` 配置块固定。导出文件等需要绕过包装的场景，在方法上加 `@ExcludeFromGracefulResponse`（`AbstractCrudController` 的 `export` 方法即如此）。前端约定见 [请求封装](/docs/admin/development/frontend/request)。
+
+## 专题导航
+
+<Cards>
+  <Card
+    title="项目结构"
+    description="Maven 多模块划分、业务分层子包约定与前端 src 目录组织，改代码前先找对位置。"
+    href="./structure"
+  />
+  <Card
+    title="CRUD 开发"
+    description="@CrudRequestMapping 声明接口集，BaseController 自动生成并校验权限码，五分钟跑通一个资源的全套增删改查。"
+    href="./crud"
+  />
+  <Card
+    title="认证与安全"
+    description="Sa-Token + JWT 签发短期 Access Token，Refresh Token 双令牌轮换，RSA 加密密码传输，登录处理器扩展新登录方式。"
+    href="./security"
+  />
+  <Card
+    title="数据权限"
+    description="Mapper 继承 DataPermissionMapper 即接入行级数据权限，五种数据范围由角色-部门关系驱动。"
+    href="./data-permission"
+  />
+  <Card
+    title="多租户接入"
+    description="新业务表加 tenant_id 字段并继承 TenantBaseDO 即纳入行级租户隔离，ignore-tables 白名单放行长共享表。"
+    href="./tenant"
+  />
+  <Card
+    title="接口文档"
+    description="NextDoc4j 渲染接口文档，springdoc 分组，CRUD 权限码自动展示。"
+    href="./api-doc"
+  />
+  <Card
+    title="Excel 导入导出"
+    description="FastExcel 导入导出，DictExcelProperty 与 ExcelDictConverter 完成字典值与标签互转。"
+    href="./excel"
+  />
+  <Card
+    title="常见问题"
+    description="后端二次开发高频问题，按症状组织，先对症状再找原因。"
+    href="./faq"
+  />
+</Cards>
+
+## 相关源码
+
+- [continew-common 公共基类与配置](https://github.com/continew-org/continew-admin/tree/dev/continew-common/src/main/java/top/continew/admin/common)

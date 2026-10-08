@@ -1,0 +1,186 @@
+---
+title: 部署
+description: 从环境准备、打包到 Docker Compose 与 Nginx 配置，完成 ContiNew Admin 的生产部署，并附上线前检查清单。
+---
+
+本文以仓库自带的 `docker/` 目录为主线，走通「打包 → Docker Compose 编排 → Nginx 反向代理」的完整部署路径。不使用 Docker 的场景可以只参考打包与 Nginx 两节。
+
+## 环境要求
+
+| 组件 | 版本 | 说明 |
+|:-----|:-----|:-----|
+| JDK | 17 | Spring Boot 3 的最低要求，打包与运行都需要 |
+| Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` 即可 |
+| Node.js / pnpm | pnpm 9.3.0 | 仅构建前端时需要 |
+| MySQL | 8.0.42 | 也支持 PostgreSQL，Liquibase 脚本在 `db/changelog/postgresql` |
+| Redis | 7.2.8 | 会话、缓存、验证码、限流共用 |
+| Nginx | 1.27.0 | 前端静态资源托管与后端反向代理 |
+| Docker / Docker Compose | 任意近期版本 | 仅容器化部署需要 |
+
+## 打包
+
+### 后端
+
+后端提供胖瘦两种打包方式，由 `continew-server/pom.xml` 中的 Maven profile 控制，默认激活 `thin-jar`。
+
+<Tabs items={['瘦包（生产推荐）', '胖包']}>
+  <Tab value="瘦包（生产推荐）">
+
+```bash
+./mvnw clean package
+```
+
+瘦包把主程序、依赖、配置文件拆到三个目录，产物在 `continew-server/target/app/`。
+
+```
+app/
+├── bin/continew-admin.jar    # 主程序（仅业务类）
+├── config/                   # 配置文件、db 脚本、模板、logback
+└── lib/                      # 全部第三方依赖 jar
+```
+
+配置文件外置后，改配置不需要重新打包，docker-compose 也正是把宿主目录挂载到 `/app/config/` 来覆盖配置。
+
+  </Tab>
+  <Tab value="胖包">
+
+```bash
+./mvnw clean package -P fat-jar
+```
+
+胖包把依赖与配置全部打进单个可执行 jar（`continew-server/target/continew-admin.jar`），`java -jar` 即可运行，适合快速验证。
+
+  </Tab>
+</Tabs>
+
+### 前端
+
+前端在独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 中。生产构建前先确认 `.env.production` 中的 `VITE_API_BASE_URL` 与 `VITE_API_WS_URL` 指向实际后端地址。
+
+```bash
+pnpm install
+pnpm build
+```
+
+产物在 `dist/`，部署时把整个目录交给 Nginx（docker-compose 中挂载到 `/usr/share/nginx/html/`）。
+
+<Callout type="info">
+`pnpm build` 会先跑 `vue-tsc --noEmit` 做类型检查再执行 `vite build`，类型错误会直接中断构建。`VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」中某条启用状态的客户端 ID 一致，否则登录会被拒绝。
+</Callout>
+
+## Docker Compose 部署
+
+仓库根目录的 `docker/` 提供了完整编排样例，包含五个服务。
+
+| 服务 | 镜像 | 端口 | 职责 |
+|:-----|:-----|:-----|:-----|
+| mysql | mysql:8.0.42 | 3306 | 业务数据库（含注释掉的 postgres:14.2 备选） |
+| redis | redis:7.2.8 | 6379 | 缓存与会话 |
+| continew-server | continew-server:4.2.0-SNAPSHOT（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
+| continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
+| schedule-server | schedule-server:1.8.0（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |
+
+<Steps>
+  <Step>
+    **构建后端瘦包**
+
+    在仓库根目录执行 `./mvnw clean package`，产物落到 `continew-server/target/app/`。`docker/continew-admin/Dockerfile` 以 `./bin/*.jar` 为构建上下文入口，构建前把 `app/` 目录内容复制到 `docker/continew-admin/` 下（`bin/`、`config/`、`lib/` 齐备），或按需调整 Dockerfile 的 `JAR_FILE` 路径。
+  </Step>
+  <Step>
+    **准备宿主目录与配置**
+
+    按 compose 文件中的挂载约定，在宿主创建 `/docker/continew-admin/{config,data/file,logs,lib}`、`/docker/nginx/{conf,cert,logs}`、`/docker/continew-admin/web` 等目录，把外置配置放进 `/docker/continew-admin/config/`，前端 `dist/` 内容放进 `/docker/continew-admin/web/`，SSL 证书放进 `/docker/nginx/cert/`。
+  </Step>
+  <Step>
+    **填写环境变量**
+
+    编辑 `docker/docker-compose.yml`，把 `DB_USER`、`DB_PWD`、`REDIS_PWD`、`SCHEDULE_TOKEN`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET` 等占位值替换为真实值。两个 Token 密钥都要求高熵随机、至少 32 字符，且互不相同。
+  </Step>
+  <Step>
+    **启动并验证**
+
+    ```bash
+    cd docker
+    docker compose up -d
+    docker compose ps
+    docker compose logs -f continew-server
+    ```
+
+    MySQL 与 Redis 配置了健康检查，后端会等两者就绪后启动。首次启动由 Liquibase 自动建表与灌入初始数据，看到启动日志后访问 `https://<前端域名>` 验证。
+  </Step>
+</Steps>
+
+后端镜像基于 `bellsoft/liberica-openjdk-debian:17.0.14`，JVM 参数预置 ZGC、Metaspace 上限 256MB，并在 OOM 时自动向 `/app/logs/oom.hprof` 写堆转储（该目录已挂载到宿主，容器重建后仍可拿到现场）。
+
+<Callout type="warn">
+compose 中 `SCHEDULE_PORT: 1788` 与 schedule-server 实际监听的 17888 不一致，启用任务调度前请核对修正为 `17888`，否则后端客户端注册不到调度中心。
+</Callout>
+
+不使用任务调度时，可以不启动 schedule-server，并把 `application-prod.yml` 中 `snail-job.enabled` 改为 `false`（prod 默认 `true`，缺失调度中心会导致相关功能报错）。调度中心本身即 `continew-extension/continew-extension-schedule-server` 模块，独立打包部署，建表脚本为其内置的 `snail-job_table.sql`。
+
+## Nginx 配置
+
+`docker/nginx/conf/nginx.conf` 采用双站点结构，前后端各一个 server 块，共用一套 SSL 证书。
+
+后端站点（`api.continew.top`）把全部请求反代到 `upstream admin-server`（`172.17.0.1:18000`），要点有三个。
+
+- `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作；
+- `X-Forwarded-For` 被显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
+- `client_max_body_size 100m`，要大于等于后端 `spring.servlet.multipart` 的 20MB 上限，分片上传场景按需再调大。
+
+```nginx
+location / {
+    proxy_pass http://admin-server/;
+    proxy_ignore_client_abort on;
+    proxy_http_version 1.1;
+
+    proxy_set_header Upgrade           $http_upgrade;
+    proxy_set_header Connection        "Upgrade";
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+前端站点（`admin.continew.top`）是标准的 SPA 托管，`try_files $uri $uri/ /index.html` 保证 history 路由刷新不 404。两个站点的 80 端口都 301 到 HTTPS。
+
+如果不用独立 API 域名，可以改用前端站点内 `/api/` 前缀代理后端，配置文件里留了注释样例。此时前端的 `VITE_API_BASE_URL` 改为同源相对路径，Refresh Token Cookie 也天然同源，跨域与 `cookie-allowed-origins` 的配置压力最小。
+
+<Callout type="warn">
+后端经过 Nginx 反代后，务必在 `continew-starter.refresh-token` 中配置 `trusted-proxy-addresses` 指向 Nginx 出口地址。不配置的话，后端按连接对端地址限流，全站用户共享 Nginx 这一个 IP 的限流桶，`/auth/refresh` 容易被打满返回 429。详见 [配置说明](/docs/admin/configuration.mdx#refresh-token)。
+</Callout>
+
+## 生产检查清单
+
+上线前逐项过一遍，全部来自 prod 配置与安全相关的硬约束。
+
+**凭据与密钥**
+
+- [ ] `DB_PWD`、`REDIS_PWD` 已通过环境变量注入，prod 无默认值，缺失即启动失败
+- [ ] `ACCESS_TOKEN_JWT_SECRET` 与 `REFRESH_TOKEN_SECRET` 为两个不同的高熵随机值（至少 32 字符）
+- [ ] `FIELD_ENCRYPT_PASSWORD` 与 RSA 密钥对（`FIELD_ENCRYPT_PUBLIC_KEY` / `FIELD_ENCRYPT_PRIVATE_KEY`）已注入，且不与 dev 示例密钥复用
+- [ ] `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN` 已注入（启用任务调度时）
+
+**配置**
+
+- [ ] `PROFILES_ACTIVE=prod`，`application.url` 指向真实前端域名
+- [ ] 跨域白名单仅放行 `${application.url}`，不再是 `*`
+- [ ] `cookie-secure: true` 已生效，站点全量 HTTPS
+- [ ] `trusted-proxy-addresses` 已按反代拓扑配置
+- [ ] 接口文档已随 `application.production: true` 进入屏蔽模式
+- [ ] `VITE_CLIENT_ID` 与后端客户端配置一致
+
+**基础设施**
+
+- [ ] MySQL 已建库（默认 `continew_admin`），字符集 utf8mb4；Liquibase 首次启动自动建表
+- [ ] Redis 已设置密码，`bind` 不暴露公网
+- [ ] Nginx `client_max_body_size` 不小于后端上传上限
+- [ ] 日志目录（`/app/logs`）已挂载持久化，OOM 堆转储可回取
+
+## 相关源码
+
+- [docker/docker-compose.yml](https://github.com/continew-org/continew-admin/blob/dev/docker/docker-compose.yml)
+- [docker/continew-admin/Dockerfile](https://github.com/continew-org/continew-admin/blob/dev/docker/continew-admin/Dockerfile)
+- [docker/nginx/conf/nginx.conf](https://github.com/continew-org/continew-admin/blob/dev/docker/nginx/conf/nginx.conf)
+- [continew-server/pom.xml（胖瘦包 profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/pom.xml)

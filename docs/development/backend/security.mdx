@@ -1,0 +1,84 @@
+---
+title: 认证与安全
+description: 说明 ContiNew Admin 的 Sa-Token + JWT 认证、Refresh Token 双令牌轮换、RSA 密码加密传输与登录处理器扩展方式。
+---
+
+认证链路分两层。Access Token 由 Sa-Token 1.45.0（jwt-simple 模式）签发与管理，负责短期接口访问；Refresh Token 由 ContiNew Starter 的 `continew-starter-auth-refresh-token` 模块以独立 Redis 会话管理，负责在 Access Token 过期后安全轮换新令牌（自 4.2.0 起引入，对应 `SessionController`）。两类凭证职责分离，互不替代。
+
+## 令牌模型
+
+### Access Token
+
+登录成功后 `AuthTokenService.issue` 调用 `StpUtil.login` 签发 Access Token，JWT 密钥来自环境变量 `ACCESS_TOKEN_JWT_SECRET`（配置键 `sa-token.jwt-secret-key`），令牌名（即请求头名）为 `Authorization`，前端按 `Bearer <token>` 携带。用户上下文（权限、角色、部门、租户）随 `SaLoginParameter.setExtraData` 写入 SaSession，后续请求经 `UserContextHolder.getContext()` 直接读取，不再查库。
+
+有效期与活跃频率不在配置文件写死。`sa-token.timeout`、`active-timeout`、并发登录数量等策略改由「系统管理 → 系统配置 → 客户端配置」页面按客户端动态管理（存 `sys_client` 表），登录时 `SaLoginParameter` 从客户端配置逐值设置。同一账号可以同时持有 Web、App 等多个不同客户端的会话，各自的过期策略互不影响。
+
+### Refresh Token
+
+Refresh Token 的密钥来自独立环境变量 `REFRESH_TOKEN_SECRET`，配置注释明确要求与 Access Token 的 JWT 密钥不复用。浏览器端令牌明文只进 HttpOnly Cookie（`continew-starter.refresh-token.cookie-name` 为 `refresh_token`，`cookie-path` 必须为 `/` 以覆盖前端代理路径），App 与小程序走 BODY 模式由客户端自行持有。
+
+刷新接口是 `POST /auth/refresh`（`SessionController`），标注 `@SaIgnore` 匿名可访问。刷新做四件事：解析令牌、按 IP 与会话限流（默认 `ip-rate-limit` 60 次/60 秒、`session-rate-limit` 10 次/60 秒）、Cookie 来源校验、原子轮换。轮换成功后旧 Refresh Token 立即失效并签发新 Access Token，`rotation-grace-period` 给 5 秒宽限吸收并发重试。生产环境 `application-prod.yml` 把 `cookie-secure` 覆盖为 `true`，Cookie 名改为 `__Host-refresh_token`。
+
+<Callout type="warn">
+经 Nginx 或网关部署时，必须配置 `continew-starter.refresh-token.trusted-proxy-addresses` 与 `trusted-proxy-hops`，否则所有用户共享网关这一个 IP 的限流桶，`/auth/refresh` 容易被刷成全站 429。配置块内的注释有完整说明。
+</Callout>
+
+### 注销
+
+`POST /auth/logout` 同时撤销 Refresh Session 与当前 Access Token，并清除 Cookie。只丢 Access Token 不撤销 Refresh Session 等于没退出，前端仍能静默换新令牌。
+
+## 密码加密传输
+
+登录、注册、重置密码等接口不接收明文密码。前端用 RSA 公钥加密后传输，后端用 `SecureUtils.decryptPasswordByRsaPrivateKey` 以私钥解密，解密失败抛传入的错误信息（如「密码解密失败」）。重置密码等设置新密码的场景用三参重载并传 `isVerifyPattern = true`，解密后顺带校验密码格式（8-32 位，字母与数字至少各一）。
+
+密钥对走 `continew-starter.encrypt.field` 配置，生产环境由 `FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY` 环境变量注入，dev 环境配置文件里有仅供本地使用的示例密钥。入库使用 BCrypt（`continew-starter.encrypt.password-encoder` 的 `algorithm: BCRYPT`），`PasswordEncoder.matches` 完成比对。
+
+## 登录处理器
+
+四种内置登录方式各占一个处理器，都继承 `AbstractLoginHandler<T extends LoginReq>`。
+
+| 处理器 | 认证类型 | 说明 |
+|:-------|:---------|:-----|
+| `AccountLoginHandler` | `ACCOUNT` | 账号密码，前置校验图形验证码，按「系统配置 → 安全设置」的密码错误锁定策略（`PASSWORD_ERROR_LOCK_COUNT` / `PASSWORD_ERROR_LOCK_MINUTES`）计数锁定 |
+| `EmailLoginHandler` | `EMAIL` | 邮箱验证码 |
+| `PhoneLoginHandler` | `PHONE` | 手机验证码 |
+| `SocialLoginHandler` | `SOCIAL` | JustAuth 第三方（Gitee、GitHub、微信开放平台） |
+
+`AuthController.login` 接收统一的 `LoginReq`，`AuthService` 按 `authType` 交给 `LoginHandlerFactory` 路由到对应处理器。每个处理器走 `preLogin`（参数校验、验证码）→ `login`（认证）→ `postLogin` 三段，`AbstractLoginHandler.authenticate` 把签发令牌的环节统一收口到 `AuthTokenService.issue`，任何登录方式都不会漏发 Refresh Token。
+
+### 新增一种登录方式
+
+<Steps>
+<Step>
+
+在 `AuthTypeEnum` 增加认证类型枚举值，并在 `model/req` 新增继承 `LoginReq` 的请求类，字段上声明校验注解。
+
+</Step>
+<Step>
+
+在 `auth/handler` 新建处理器，继承 `AbstractLoginHandler<你的请求类>`，标注 `@Component`，实现 `login` 与 `getAuthType`。需要验证码等前置检查时重写 `preLogin`，参考 `AccountLoginHandler` 的 Redis 验证码读取与一次性删除写法。
+
+</Step>
+<Step>
+
+`login` 方法内完成认证后调用 `super.authenticate(user, client, request, response)`，令牌签发、租户上下文、Refresh Session 创建全部由基类收口，处理器不直接碰 Sa-Token API。
+
+</Step>
+<Step>
+
+在「客户端配置」中为支持该方式的客户端勾选对应认证类型（`sys_client.auth_type`），否则登录时按客户端策略拒绝。
+
+</Step>
+</Steps>
+
+## 会话与并发登录
+
+同一账号的并发会话数、顶人下线范围、溢出处理方式全部来自客户端配置，由 Refresh Session 层执行。`AuthTokenServiceImpl` 里 Sa-Token 的 `isConcurrent` 固定为 `true`、`maxLoginCount` 固定为 `-1`，注释说明这是有意为之：并发控制只有一个事实源，避免 Sa-Token 与 Refresh Session 两套计数互相误淘汰。登录时 `reloadLoginState` 还会复查客户端配置与用户状态，客户端被禁用、认证配置变更或用户密码重置后，旧会话直接拒绝刷新。
+
+## 完整参考实现
+
+- [AuthTokenServiceImpl（令牌签发与刷新复查）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/AuthTokenServiceImpl.java)
+- [SessionController（刷新与注销）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/controller/SessionController.java)
+- [AccountLoginHandler（账号密码登录）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/handler/AccountLoginHandler.java)
+- [AbstractLoginHandler（处理器基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/AbstractLoginHandler.java)
+- [SecureUtils（RSA 加解密）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/util/SecureUtils.java)

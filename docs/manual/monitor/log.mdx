@@ -1,0 +1,54 @@
+---
+title: 系统日志
+description: 系统日志页面集中查询登录日志与操作日志，支持多条件筛选、详情查看与 Excel 导出，日志落库于 sys_log 表。
+---
+
+「系统监控 → 系统日志」页面分为「登录日志」与「操作日志」两个页签，两者共用同一张 `sys_log` 表与同一套查询接口，按日志所属模块区分。登录日志记录账号登录、注销等认证行为，操作日志记录各业务接口的调用情况。
+
+## 日志怎么产生
+
+后端依赖 ContiNew Starter 的日志组件，通过 `@Log` 注解声明式记录接口日志。注解可标注在类或方法上，例如 `AuthController` 类上的 `@Log(module = "登录")` 将该控制器下所有接口归入「登录」模块。方法级标注支持两类调整：`@Log(ignore = true)` 整体跳过记录，`@Log(excludes = {...})` 剔除请求头、响应体等敏感或冗长字段。
+
+记录哪些信息由 `continew-starter.log.includes` 配置统一控制，ContiNew Admin 默认全量开启。
+
+```yaml
+continew-starter.log:
+  includes:
+    - DESCRIPTION
+    - MODULE
+    - REQUEST_HEADERS
+    - REQUEST_BODY
+    - IP_ADDRESS
+    - BROWSER
+    - OS
+    - RESPONSE_HEADERS
+    - RESPONSE_BODY
+```
+
+`sys_log` 表对应的实体 `LogDO` 包含以下字段：链路 ID（`traceId`，与请求头 `X-Trace-Id` 对应）、日志描述、所属模块、请求 URL 与方式、请求头与请求体、状态码、响应头与响应体、耗时（毫秒）、IP 与归属地、浏览器、操作系统、状态（成功或失败）、错误信息、创建人与创建时间。
+
+## 查询与筛选
+
+两个页签共用 `GET /system/log` 接口，权限码 `monitor:log:list`。筛选条件在 `LogServiceImpl.buildQueryWrapper` 中组装。
+
+- 操作内容：同时模糊匹配日志描述与所属模块；
+- IP：同时模糊匹配 IP 与归属地；
+- 操作人：同时模糊匹配用户名与昵称；
+- 状态：成功或失败精确匹配；
+- 操作时间：创建时间的起止区间。
+
+点击单条日志的「详情」调用 `GET /system/log/{id}`，权限码 `monitor:log:get`，抽屉中展示请求与响应的完整报文，配合 `traceId` 可在应用日志中定位同一次请求的全部输出。
+
+## 导出
+
+登录日志与操作日志各自提供导出接口：`GET /system/log/export/login` 与 `GET /system/log/export/operation`，权限码均为 `monitor:log:export`。导出基于 FastExcel，按当前筛选与排序条件生成 Excel 文件，导出字段分别由 `LoginLogExportResp` 与 `OperationLogExportResp` 定义。
+
+<Callout type="warn">
+日志包含请求体与响应体，可能夹带业务敏感数据。导出权限应只授予确有审计需要的角色；不需要全量报文的场景，可在方法级用 `@Log(excludes = {...})` 收窄记录范围。
+</Callout>
+
+## 相关源码
+
+- [LogController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/LogController.java)：系统日志 API，查询、详情与导出
+- [LogServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/LogServiceImpl.java)：查询条件组装与导出实现
+- [continew-admin-ui/src/views/monitor/log/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/monitor/log)：登录日志与操作日志前端页面

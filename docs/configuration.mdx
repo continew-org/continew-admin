@@ -1,0 +1,177 @@
+---
+title: 配置说明
+description: 了解 ContiNew Admin 后端 application.yml 各配置块的用途、环境变量注入方式与多环境 profile 的组织原则。
+icon: Settings
+---
+
+ContiNew Admin 后端的配置文件全部位于 `continew-server` 模块的 `src/main/resources/config/` 目录，共四份。`application.yml` 存放与环境无关的通用配置，其余三份按环境或用途拆分，通过 profile 机制叠加生效。
+
+| 文件 | 激活方式 | 内容 |
+|:-----|:---------|:-----|
+| `application.yml` | 始终加载 | 通用配置，不含端口与凭据 |
+| `application-dev.yml` | 默认 profile（`PROFILES_ACTIVE` 缺省为 `dev`） | 本地开发，端口 8000，凭据带示例默认值 |
+| `application-prod.yml` | `PROFILES_ACTIVE=prod` | 生产环境，端口 18000，凭据无默认值 |
+| `application-generator.yml` | `spring.profiles.include: generator` 固定引入 | 代码生成器排除表与类型映射 |
+
+<Callout type="info">
+以下各节按配置块说明键的含义与 admin 侧填的值。配置键本身的完整定义（全部可选项、类型、默认值）以 [ContiNew Starter 配置项参考](/docs/starter/reference/properties)为准。
+</Callout>
+
+## 应用与服务器
+
+`application` 块集中声明项目品牌信息（名称、版本、描述、作者、许可协议），被 banner、接口文档、日志等多处引用。二开时优先改这里而不是逐个文件替换。
+
+`application.url` 比较特殊，它在 dev / prod 中分别定义为前端站点地址，跨域白名单与第三方登录回调地址都引用它，改前端域名只需改这一处。
+
+```yaml
+application:
+  name: ContiNew Admin
+  version: 4.2.0-SNAPSHOT
+  url: https://admin.continew.top   # application-prod.yml
+```
+
+`server` 块使用 Undertow 作为 Web 容器，`context-path` 为 `/`，`max-http-post-size` 设为 `-1`（不限制），IO 线程 8、worker 线程 256。端口不在 `application.yml` 中出现，dev 为 8000，prod 为 18000。
+
+```yaml
+server:
+  servlet:
+    context-path: /
+  undertow:
+    max-http-post-size: -1
+    buffer-size: 512
+    direct-buffers: true
+    threads:
+      io: 8
+      worker: 256
+```
+
+## Spring 与线程池
+
+`spring.profiles.active` 从环境变量 `PROFILES_ACTIVE` 读取，缺省 `dev`；`spring.profiles.include` 固定引入 `generator` 配置。`spring.main` 允许 Bean 覆盖与循环依赖，兼容部分历史扩展写法。`spring.jackson` 设置大数值序列化模式为 `FLEXIBLE`，超出 JS 安全整数范围的 `Long` 会序列化为字符串，避免前端精度丢失。
+
+`spring.task.execution` 与 `spring.task.scheduling` 两个线程池默认按机器配置自动计算核心与最大线程数，admin 只调整了拒绝策略（`CALLER_RUNS`）、线程名前缀与优雅停机参数（等待任务执行完成再关闭，最长 30 秒）。
+
+`spring.servlet.multipart` 把单文件上限设为 10MB、单次请求上限设为 20MB，与文件管理的分片上传阈值（10MB）配套，属有意放宽。`avatar` 块定义头像存储路径 `user/avatar/` 与允许的后缀。
+
+## 接口文档
+
+`springdoc` 开启 `/v3/api-docs` 与 `/swagger-ui`，`default-flat-param-object: true` 让对象型查询参数在文档中平铺展示。`nextdoc4j` 块配置品牌 logo、页脚与枚举、权限码展示插件。
+
+prod 环境额外设置 `nextdoc4j.production: ${application.production}`，接口文档在生产环境自动进入屏蔽模式。
+
+## 全局响应与日志
+
+`continew-starter.web.response` 统一全局响应封装，成功码 `0`、失败码 `1`，响应类为 `top.continew.starter.web.model.R`，i18n 关闭。
+
+`continew-starter.log` 的 `includes` 声明操作日志记录哪些内容（描述、模块、请求/响应头与体、IP、浏览器、操作系统）。访问日志（类似 Nginx access log）由 `continew-starter.log.access-log.enabled` 控制，dev 开启、prod 关闭。
+
+## 链路追踪
+
+`continew-starter.trace` 开启链路追踪，响应头与日志中的 Trace ID 键名为 `X-Trace-Id`，底层使用 TLog，日志模板为 `[$spanId][$traceId]`。
+
+## CRUD 与租户
+
+`continew-starter.crud.tree-dict-model` 声明树型字典结构映射（`key` / `title` / `sort`），对应前端下拉树组件的数据形态。
+
+`continew-starter.tenant` 开启行级多租户隔离（`isolation-level: LINE`），租户 ID 经请求头 `X-Tenant-Id` 传递，默认租户 ID 为 `0`。`ignore-tables` 列出不参与租户拼接的表（租户自身三表、代码生成两表，以及菜单、字典、参数、存储、短信、客户端、应用等全局表），`ignore-menus` 列出不对租户开放的菜单 ID。完整机制见 [多租户](/docs/starter/modules/extension/tenant) 文档。
+
+## 限流器
+
+`continew-starter.rate-limiter` 开启全局限流支持，Redis 键前缀为 `RateLimiter`。具体限流规则通过 `@RateLimiter` 注解在接口上声明。
+
+## Sa-Token 认证
+
+`sa-token` 块中 Token 名称为 `Authorization`，`is-share: false`（jwt-simple 模式下每次登录独立签发 Token），JWT 密钥从环境变量 `ACCESS_TOKEN_JWT_SECRET` 读取，`dao.type: REDIS` 把会话持久化到 Redis。
+
+```yaml
+sa-token:
+  token-name: Authorization
+  dynamic-active-timeout: true
+  is-share: false
+  is-log: false
+  jwt-secret-key: ${ACCESS_TOKEN_JWT_SECRET}
+  extension:
+    enabled: true
+    jwt-enabled: true
+    dao.type: REDIS
+```
+
+`timeout`、`active-timeout`、`is-concurrent` 等会话策略配置在 `application.yml` 中被有意注释，改由「系统管理 → 系统配置 → 客户端配置」页面按客户端动态管理，存储在 `sys_client` 表。如需改回静态配置，取消注释并移除登录处理中的动态化代码（`adapter/` 包下的 `RefreshClientPolicyMapper` 等）。
+
+## MyBatis Plus 与 CosId
+
+`mybatis-plus` 块配置主键策略 `ASSIGN_ID`（自行赋值，由 ID 生成器供给）、逻辑删除字段 `deleted`（未删 `0`，已删取 `id` 值以适配唯一索引）、ID 生成器 `COSID` 与 MySQL 分页插件。`database-id: mysql` 区分多数据库方言，切换 PostgreSQL 时改为 `pgsql`。
+
+`cosid` 块配置雪花算法（epoch 为 1577203200000，即 2019-12-25，开启时钟回拨同步），机器号经 Redis 分配。`provider.tenant-code` 额外声明一个 RADIX 转换器的 ID 生成器，前缀 `T`，用于生成租户编码。
+
+## Refresh Token
+
+`continew-starter.refresh-token` 配置双令牌机制中的刷新令牌。浏览器端走 HttpOnly Cookie，密钥从 `REFRESH_TOKEN_SECRET` 读取，且必须与 Access Token 的 JWT 密钥不同。
+
+```yaml
+continew-starter.refresh-token:
+  secret: ${REFRESH_TOKEN_SECRET}
+  cookie-name: refresh_token
+  cookie-path: /
+  cookie-secure: false
+  cookie-same-site: Lax
+  ip-rate-limit: 60
+  session-rate-limit: 10
+  access-session-cache-enabled: true
+```
+
+`cookie-path` 必须覆盖前端代理路径（如 `/dev-api`），否则浏览器刷新请求不会携带 Cookie，配置为 `/` 是最稳妥的选择。prod 环境中 `cookie-secure` 覆盖为 `true`，`cookie-name` 改为带 `__Host-` 前缀的 `__Host-refresh_token`。
+
+<Callout type="warn">
+经 Nginx 或网关部署时，必须显式配置 `trusted-proxy-addresses`，否则所有用户共享网关这一个 IP 的限流桶，`ip-rate-limit`（默认 60 次/分钟）会变成全站共享，`/auth/refresh` 匿名接口容易被填满导致全站 429。
+</Callout>
+
+## 密码历史校验
+
+`auth.password.excludes` 列出跳过密码过期校验的路径（`/auth/user/route`、`/auth/user/info`、`/auth/logout`、`/system/user/password`）。这些接口在密码已过期的情况下仍需可访问，否则用户无法完成改密流程。
+
+## dev 与 prod 的差异
+
+两份环境文件的差异集中在四类内容上。
+
+| 维度 | dev | prod |
+|:-----|:----|:-----|
+| 端口 | 8000 | 18000 |
+| 凭据 | 带示例默认值（如 `DB_PWD:123456`） | 无默认值，缺失即启动失败 |
+| SQL 监控 | 数据源经 P6Spy 代理（`jdbc:p6spy:mysql://`） | 直连驱动 `com.mysql.cj.jdbc.Driver` |
+| 跨域 | `allowed-origins: '*'` | 白名单化，仅 `${application.url}` |
+
+dev 环境预置了字段加密的示例 RSA 密钥对与 AES 密钥，仅供本地联调。prod 环境这些值全部改为环境变量注入，且不得与 dev 共用同一密钥对。
+
+任务调度的默认开关也随环境变化。`snail-job.enabled` 在 dev 中为 `false`（不依赖调度中心即可启动），prod 中为 `true`，同时 prod 的 OpenAPI 端口为 18001、Snail Job 服务端密码与 Token 无默认值。
+
+## 环境变量注入
+
+配置文件中所有 `${VAR}` 形式的值都来自环境变量。非凭据类变量在 dev 中带默认值，可以不改；凭据类变量在 prod 中强制注入，缺失即启动失败。
+
+本地用 IDEA 启动时，在运行配置的 Environment variables 中追加即可。Docker 部署时通过 compose 文件的 `environment` 段注入，见 [部署](/docs/admin/reference/deployment.mdx)。
+
+完整的环境变量清单（含每个变量的用途、dev 默认值、prod 是否必填）见 [环境变量参考](/docs/admin/reference/environment)。
+
+## 新增环境 profile
+
+需要增加测试环境等新 profile 时，复制 `application-dev.yml` 为 `application-test.yml`，修改端口与连接信息，然后以 `PROFILES_ACTIVE=test` 启动。多 profile 可以逗号分隔组合激活（如 `prod,generator` 中 `generator` 已由 include 固定引入，无需重复）。
+
+<Callout type="info">
+环境变量名统一大写下划线风格，与配置文件中的 `${...}` 占位一一对应。新增凭据时沿用同一模式，在 prod 中不给默认值，让缺失在启动期就暴露。
+</Callout>
+
+## 配置项归属原则
+
+项目里的配置键分属两个层面，写新功能时按下表决定配置放哪里。
+
+- **框架级配置键**（`continew-starter.*`、`sa-token.*`、`mybatis-plus.*` 等）由 ContiNew Starter 定义，全部可选项与默认值见 [配置项参考](/docs/starter/reference/properties)，admin 文档只说明 admin 侧填的值。
+- **应用级配置键**（`application.*`、`avatar.*`、`captcha.mail.*`、`generator.*` 等）由 admin 自身定义，直接在对应 `application-*.yml` 中维护。
+- 能在页面维护的运行时配置（网站、安全、登录、邮件、短信、存储、客户端）优先用「系统管理 → 系统配置」页面管理，不再写进配置文件。配置文件中的 `spring.mail` 与 `sms` 块与页面配置二选一，实际开发时注释或删除另一方，避免两处配置漂移。
+
+## 相关源码
+
+- [continew-server/src/main/resources/config/application.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application.yml)
+- [continew-server/src/main/resources/config/application-dev.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-dev.yml)
+- [continew-server/src/main/resources/config/application-prod.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-prod.yml)
+- [continew-server/src/main/resources/config/application-generator.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-generator.yml)

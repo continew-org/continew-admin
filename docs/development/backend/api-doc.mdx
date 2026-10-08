@@ -1,0 +1,70 @@
+---
+title: 接口文档
+description: NextDoc4j 与 springdoc 的集成方式、接口分组规则、CRUD 权限码自动展示与新增模块的分组配置。
+---
+
+接口文档由 springdoc-openapi 生成 OpenAPI 数据，NextDoc4j 1.4.1 提供前端界面并全面替代 Swagger UI。依赖经 `continew-starter-extension-crud-core` 传递到 admin 工程（内含 `continew-starter-api-doc`，聚合 `nextdoc4j-spring-boot-starter` 与枚举、安全插件），admin 侧在 `continew-common` 补充了 Sa-Token 权限展示插件 `nextdoc4j-plugin-security-satoken`。文档界面与静态资源挂在 `/doc.html` 与 `/nextdoc/**` 路径下（均在 `sa-token.extension.security.excludes` 放行清单中），本地启动后访问 `http://localhost:8000/doc.html`，线上演示为 `https://api.continew.top`。
+
+## 配置块
+
+`application.yml` 有两段相关配置。`springdoc` 块固定 OpenAPI 与 Swagger UI 路径（`/v3/api-docs`、`/swagger-ui`），`default-flat-param-object: true` 把查询条件对象平铺为独立参数，`components.security-schemes.Authorization` 声明鉴权头（取值复用 `sa-token.token-name` 与 token 前缀）。`nextdoc4j` 块控制界面增强。
+
+```yaml
+nextdoc4j:
+  enabled: true
+  extension:
+    enabled: true
+    brand:
+      logo: classpath:favicon.ico
+      title: ${application.name}
+      footer-text: 'Copyright © 2022-present ...'
+  plugin:
+    enum:
+      enabled: true
+    security:
+      enabled: true
+```
+
+`plugin.enum` 在文档页展示枚举字段的可选值与含义，`plugin.security` 展示接口要求的认证方式与权限码。两者默认开启，关闭后文档数据照常生成，只是界面少了对应面板。
+
+## 接口分组
+
+文档左侧的分组由 `GroupedOpenApi` Bean 声明。`GlobalSpringDocConfiguration` 注册了两个全局组：`all`（`/**`，全部接口）与 `common`（`/captcha/**`、`/dashboard/**`，通用接口）。各业务模块在自己的配置类里按路径前缀注册分组，租户插件的写法是参照。
+
+```java
+@Bean
+public GroupedOpenApi tenantModuleApi() {
+    return GroupedOpenApi.builder().group("tenant").displayName("租户管理")
+        .pathsToMatch("/tenant/**").build();
+}
+```
+
+新增业务模块时在同一模块的配置类里照此声明一个 Bean，分组即出现在文档界面。组名（`group`）影响 `/v3/api-docs/<group>` 的数据地址，`displayName` 是界面展示名。
+
+## 权限码展示
+
+CRUD 接口的权限码不需要手写注解也能出现在文档里。`NextDoc4jCustomPermissionDisplay` 实现 NextDoc4j 的 `NextDoc4jSecurityMetadataResolver`，对「类上有 `@CrudRequestMapping`、方法上有 `@CrudApi`」的端点按与运行时一致的规则推导权限码（前缀解析复用 `CrudApiPermissionPrefixCache`，API 名归并复用 `BaseController.getApiName`），写入文档元数据。三类情况跳过：方法或类上有 `@SaIgnore`、开发者手写了 `@SaCheckPermission` / `@SaCheckRole`（交给 Sa-Token 插件处理）、`DICT` 与 `TREE_DICT` 两类不鉴权接口。
+
+手写的自定义接口用 `@SaCheckPermission` 标注后，NextDoc4j 的 Sa-Token 插件直接读取注解值展示，不需要额外配置。
+
+`NextDoc4jCustomPathFiltering` 做另一件事：把 `sa-token.extension.security.excludes` 的放行清单同步为文档排除路径，登录、验证码、静态资源等匿名端点不会出现在文档里。新增放行路径时只改 `application-dev.yml` / `application-prod.yml` 的 excludes 清单，文档侧自动跟随。
+
+## 全局响应结构
+
+`GlobalSpringDocResponseOperationCustomizer` 把每个接口的响应类型在文档层改写为 `R<T>` 包装（`code`、`data`、`msg`、`success`、`timestamp`），与 Graceful Response 运行时包装保持一致。文档里看到的响应结构就是前端实际收到的结构，`void` 返回的方法展示为 `R<Void>`。
+
+## 常用注解
+
+Controller 层的文档注解沿用 swagger-annotations（jakarta 版）。`@Tag(name = "用户管理 API")` 定组内标题，`@Operation(summary = "...", description = "...")` 定接口名与说明，`@Parameter(name = "id", in = ParameterIn.PATH)` 补路径参数说明，模型字段用 `@Schema(description = "...", example = "...")`。`UserController` 与 `AbstractCrudController` 里全是现成例子。
+
+<Callout type="info">
+接口文档页面同时被前端「关于 → 接口文档」菜单内嵌（`views/about/document/api/index.vue` 用 iframe 引入 `${apiBaseUrl}/doc.html`），不需要单独部署文档服务。
+</Callout>
+
+## 完整参考实现
+
+- [GlobalSpringDocConfiguration（全局分组）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/doc/GlobalSpringDocConfiguration.java)
+- [NextDoc4jCustomPermissionDisplay（CRUD 权限码展示）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/doc/NextDoc4jCustomPermissionDisplay.java)
+- [NextDoc4jCustomPathFiltering（放行路径同步）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/doc/NextDoc4jCustomPathFiltering.java)
+- [GlobalSpringDocResponseOperationCustomizer（R 包装改写）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/doc/GlobalSpringDocResponseOperationCustomizer.java)
+- [TenantConfiguration（模块分组示例）](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/config/TenantConfiguration.java)

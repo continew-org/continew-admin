@@ -182,6 +182,35 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 不得通过 GitHub Issue 报告安全漏洞。请使用 GitHub 私有漏洞报告——详见 [SECURITY.md](./SECURITY.md)。
 
+## 文档（docs/）
+
+本仓库 `docs/` 目录是 ContiNew Admin（含前端 continew-admin-ui）官方文档的**唯一权威源**，经 [continew.top](https://github.com/continew-org/continew.top) 官网仓库在构建时汇聚渲染为 `/docs/admin/*`。AI 智能体被指派编写或更新本文档时，**在此目录工作**。以下为关键约定；完整写作规范以 continew.top 仓库 `.agents/skills/ocn-doc-writing/SKILL.md` 为**事实源全本**。
+
+### 目录与结构
+
+- **「介绍」分组置顶（固定风格，与 starter 一致）**：`index.mdx`（快速开始，icon Rocket）+ `introduction.mdx`（什么是 ContiNew Admin，icon CircleQuestionMark）+ `configuration.mdx`（配置说明，icon Settings），三页带 icon，构成学习路径前三步。
+- **双视角叙事路径**：`manual/`（功能手册，面向**使用者**讲「怎么用」）+ `development/`（开发指南，面向**二开者**讲「怎么扩展」，含项目结构 structure）+ `reference/`（环境变量/部署/常见问题/更新日志）。
+- **功能手册与开发指南分家**：同一能力（如数据权限、多租户）分两篇——`manual/` 讲页面操作与配置，`development/` 讲源码扩展点，互不重复。
+- **Root Folder**：`docs/meta.json` 标 `root: true`，构成官网侧边栏顶部的项目切换器；每个目录含 `meta.json` 声明页面顺序。
+
+### frontmatter 与命名
+
+- 每个 `.mdx` 顶部含 `title` 与 `description`（一句话说明本页解决什么问题）；`title` 用**纯中文**，技术术语保留英文原文。
+- 链接策略：**跨模块/跨分区引用用绝对路径** `/docs/admin/...` 或 `/docs/starter/...`；**同目录内引用用相对链接**（GitHub 裸看也能跳转）。
+
+### 内容与准确性
+
+- **事实源优先级**：admin 源码（类名/默认值/枚举/表结构/报错串）> continew-starter 源码 > 上游官方文档。类名、配置键、默认值、URL 前缀、权限码必须以源码为准；示例场景去业务化（不贴演示站业务数据）。
+- **配置项归 starter，配置值归 admin**：框架级配置项（`continew-starter.*`）的定义链接到 [starter 文档](https://continew.top/docs/starter)；admin 文档只写 admin 给这些键填的具体值与环境变量注入方式。
+- 版本号给**具体值**（如 4.2.0-SNAPSHOT、ContiNew Starter 2.17.0）；文末「相关源码」链接指向 GitHub continew-org 对应仓库 `dev` 分支的具体路径。
+- **文档-代码同步**：修改某功能代码（尤其接口、配置、行为）时，**必须在同一 PR 中同步更新对应文档**；纯文档改动无需跑 `./mvnw verify` 门禁。
+
+### 写作风格（活人感 · 硬禁令）
+
+- 不用破折号 `——`（改分句、括号或另起一句）；不用提示性冒号（「说明：」「通用模式：」，代码块与配置键除外）。
+- 不写翻案腔（「不是 A 而是 B」「值得注意的是」「说白了」「先说结论」）；不写商业黑话（赋能、一站式、无缝、极致、助力、综上所述）。
+- 不把动词名词化；不在末段摘要全文；每个判断后面跟依据（类名/配置键/默认值/报错串/真实用法）。
+
 ## Agent Skills
 
 各 agent 工具（DeepSeek Harness / Claude Code / Codex）共用的技能统一存放在 `.agents/skills/` 作为唯一事实源——每个技能一个目录、含 `SKILL.md`。新增技能沿用 `ocn-` 命名前缀。

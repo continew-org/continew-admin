@@ -1,0 +1,69 @@
+---
+title: 客户端配置
+description: 多端认证客户端的维护，包括 Token 有效期、Refresh Token 策略与并发登录控制。
+---
+
+客户端配置为每种接入端（PC 浏览器、安卓、小程序）定义独立的认证策略，功能入口在「系统管理 -> 客户端配置」（前端位于系统配置的客户端页签），后端接口前缀为 `/system/client`，对应 `ClientController`。配置存储在 `sys_client` 表，登录时按请求头携带的客户端 ID 匹配策略。
+
+## 客户端字段
+
+`sys_client` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `client_id` | 客户端 ID，唯一，前端经 `VITE_CLIENT_ID` 环境变量携带 |
+| `client_type` | 客户端类型，取值来自字典 `client_type`（PC、ANDROID、XCX） |
+| `auth_type` | 允许的认证方式（JSON 数组），取值见 `AuthTypeEnum` |
+| `active_timeout` | Token 最低活跃频率（秒），-1 表示不限制 |
+| `timeout` | Token 有效期（秒），-1 表示永不过期，默认 2592000 |
+| `refresh_token_timeout` | Refresh Token 绝对有效期（秒），60 到 315360000 |
+| `refresh_token_mode` | Refresh Token 传输模式（COOKIE / BODY） |
+| `is_concurrent` | 是否允许同一账号多地同时登录 |
+| `replaced_range` | 顶人下线范围（CURR_DEVICE_TYPE / ALL_DEVICE_TYPE） |
+| `max_login_count` | 同一账号最大登录数量，-1 不限制 |
+| `overflow_logout_mode` | 溢出下线方式（LOGOUT / KICKOUT / REPLACED） |
+| `status` | 状态（1：启用；2：禁用） |
+
+## 认证方式
+
+`auth_type` 数组控制该客户端允许的登录方式，取值来自 `AuthTypeEnum`。
+
+| 取值 | 登录方式 | 处理器 |
+|:-----|:---------|:-------|
+| `ACCOUNT` | 账号密码 | `AccountLoginHandler` |
+| `EMAIL` | 邮箱验证码 | `EmailLoginHandler` |
+| `PHONE` | 手机验证码 | `PhoneLoginHandler` |
+| `SOCIAL` | 第三方账号 | `SocialLoginHandler`（JustAuth） |
+
+初始化脚本预置一条 PC 客户端记录（`client_id` 为 `ef51c9a3e9046c4f2ea45142c8a8344a`，四种认证方式全开，活跃频率 1800 秒、有效期 86400 秒）。前端 `.env.development` 的 `VITE_CLIENT_ID` 与该 ID 对应，更换客户端 ID 时两端要同步。
+
+## Token 策略
+
+Token 有效期与活跃频率在 4.2 起由配置文件迁移到本页面动态管理（Sa-Token 的 `sa-token.timeout` / `active-timeout` 不再硬编码）。`active_timeout` 表示 Token 在该秒数内无请求则被冻结；`timeout` 是 Token 的绝对有效期。
+
+Refresh Token 是 4.2 引入的双令牌机制（`continew-starter-auth-refresh-token`）。`refresh_token_mode` 区分两端形态。
+
+| 模式 | 适用端 | 传输方式 |
+|:-----|:-------|:---------|
+| `COOKIE` | 浏览器 | Refresh Token 写 HttpOnly Cookie，刷新接口自动携带 |
+| `BODY` | App、小程序 | Refresh Token 在响应体下发，刷新时放请求体 |
+
+存量 `ANDROID`、`XCX` 类型的客户端在升级脚本中被批量置为 `BODY`，避免移动端升级后拿不到 Refresh Token。
+
+## 并发登录控制
+
+三个字段组合决定同一账号的登录会话策略。
+
+- `is_concurrent = true`：允许多地同时在线；`max_login_count` 限制最大会话数，超出时按 `overflow_logout_mode` 处理（`LOGOUT` 注销、`KICKOUT` 踢人、`REPLACED` 顶人）；
+- `is_concurrent = false`：新登录挤掉旧登录，`replaced_range` 控制挤下线范围（仅当前客户端类型或所有客户端类型）。
+
+<Callout type="warn">
+`max_login_count` 只在允许并发且 Sa-Token 未开 `is-share` 时生效，admin 默认 `sa-token.is-share: false`，满足条件。溢出下线方式留空时超过上限的新登录会被直接拒绝。
+</Callout>
+
+## 相关源码
+
+- [ClientController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/ClientController.java)（/system/client 接口）
+- [ClientReq](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/model/req/ClientReq.java)（字段校验规则）
+- [AuthTypeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/enums/AuthTypeEnum.java)（认证方式枚举）
+- [前端页面 src/views/system/config/client](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/config/client)

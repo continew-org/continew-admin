@@ -1,0 +1,97 @@
+---
+title: 字典使用
+description: 讲解字典数据在后端的存储与缓存机制，以及前端 useDict hook 的加载、缓存与渲染方式。
+---
+
+字典解决「状态、类型这类固定取值集合」的展示问题：数据库存值（如 `1`），页面显示文案（如「启用」）。ContiNew Admin 的字典分两类，数据库字典在「字典管理」页面维护，枚举字典由后端 Java 枚举自动生成，两类走同一个查询接口，前端用同一个 hook 消费。
+
+## 后端机制
+
+数据落在两张表：`sys_dict`（字典定义，含编码 `code`）和 `sys_dict_item`（字典项，含 `label`/`value`/`color`）。
+
+业务查询走 `GET /system/common/dict/{code}`（`CommonController`），返回 `[{ label, value, extra }]` 结构的列表，`extra` 是字典项颜色，用于标签渲染。这个接口有两级加速。
+
+- **枚举字典优先**：`DictItemServiceImpl` 启动时扫描实现了 `BaseEnum` 的枚举类，按「类名转下划线小写」生成字典编码（如 `NoticeStatusEnum` → `notice_status_enum`），缓存进内存 Map。查询时先查这个 Map，命中就不查数据库。
+- **数据库字典走 JetCache**：`DictItemMapper.listByDictCode` 上有 `@Cached(key = "#dictCode", name = "DICT:")` 注解，查询结果进 Redis 二级缓存。
+
+字典项增删改时（`DictItemServiceImpl.beforeCreate` / `beforeUpdate` 等）按 `DICT:*` 模式清缓存。改了枚举类或者想强制刷新某个字典，可以调 `DELETE /system/dict/cache/{code}`（需要 `system:dict:clearCache` 权限）。
+
+<Callout type="info">
+数据库字典与枚举字典编码冲突时枚举优先。自定义枚举想暴露成字典，实现 `BaseEnum` 接口即可，启动时自动注册，编码规则是类名转下划线小写。
+</Callout>
+
+## 前端 useDict hook
+
+页面消费字典统一用 `useDict`（`src/hooks/app/useDict.ts`），传编码返回响应式字典项数组。
+
+```vue
+<script setup lang="ts">
+import { useDict } from '@/hooks/app'
+
+const { notice_type, notice_status_enum } = useDict('notice_type', 'notice_status_enum')
+</script>
+```
+
+返回对象的键与传入的编码一一对应，值是 `Ref<App.DictItem[]>`，初始为空数组，数据到达后自动填充，模板里直接用不用判空。
+
+hook 内部有三级处理（`src/hooks/app/useDict.ts`）。
+
+1. 先查 Pinia 的 `dict` store，命中缓存直接返回，不发请求；
+2. 未命中则调 `listCommonDict(code)`，拿到数据后写进 store；
+3. 同一编码的并发请求共用一个 Promise（`pendingRequests` Map），一个页面多次 `useDict('xxx')` 不会重复发请求。
+
+`dict` store（`src/stores/modules/dict.ts`）只存内存、不做持久化，刷新页面后重新拉取，保证字典变更能及时生效。
+
+## 渲染字典
+
+列表页的枚举列用 `GiCellTag` 按 `extra` 颜色渲染标签，`GiCellTags` 渲染多值。
+
+```vue
+<template>
+  <GiTable :columns="columns" :data="dataList">
+    <template #type="{ record }">
+      <GiCellTag :value="record.type" :dict="notice_type" />
+    </template>
+    <template #status="{ record }">
+      <GiCellTag :value="record.status" :dict="notice_status_enum" />
+    </template>
+  </GiTable>
+</template>
+```
+
+搜索表单的选项直接把字典数组喂给 `options`。
+
+```ts
+const queryFormColumns: ColumnItem[] = [
+  {
+    type: 'select',
+    label: '分类',
+    field: 'type',
+    props: { options: notice_type, placeholder: '请选择分类' },
+  },
+]
+```
+
+字典项上没有颜色（`extra` 为空）时 `GiCellTag` 渲染纯文本。`extra` 的可选值对应 Arco 标签配色：`primary`（arcoblue）、`success`（green）、`warning`（orangered）、`error`（red）、`default`（gray）。
+
+## 新增一个数据库字典
+
+<Steps>
+  <Step>
+    「系统管理 → 字典管理」新增字典，编码按模块语义命名（如 `announce_type`）。
+  </Step>
+  <Step>
+    在字典详情里维护字典项，填名称、值、颜色。
+  </Step>
+  <Step>
+    页面里 `useDict('announce_type')` 取用，配合 `GiCellTag` 或表单 `options` 渲染。
+  </Step>
+</Steps>
+
+## 相关源码
+
+- [src/hooks/app/useDict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/hooks/app/useDict.ts)：前端字典 hook
+- [src/stores/modules/dict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/dict.ts)：字典内存缓存 store
+- [DictItemServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/DictItemServiceImpl.java)：枚举字典扫描与缓存清理
+- [DictItemMapper.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/mapper/DictItemMapper.java)：JetCache 注解的数据库字典查询
+- [src/views/system/notice/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/system/notice/index.vue)：多字典混用的完整页面示例

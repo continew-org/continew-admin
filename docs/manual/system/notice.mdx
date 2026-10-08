@@ -1,0 +1,63 @@
+---
+title: 通知公告
+description: 公告的草稿、定时发布与状态流转，以及系统消息、登录弹窗两种触达方式的配置。
+---
+
+通知公告用于向系统用户发布通知类内容，功能入口在「系统管理 -> 通知公告」，后端接口前缀为 `/system/notice`，对应 `NoticeController`。公告数据存储在 `sys_notice` 表，用户已读记录存储在 `sys_notice_log` 表。
+
+## 公告字段
+
+`sys_notice` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `title` | 标题 |
+| `content` | 内容，支持富文本（mediumtext） |
+| `type` | 分类，取值来自字典 `notice_type` |
+| `notice_scope` | 通知范围（1：所有人；2：指定用户） |
+| `notice_users` | 通知用户 ID 集合（JSON），范围为指定用户时生效 |
+| `notice_methods` | 通知方式（JSON 数组），可多选 |
+| `is_timing` | 是否定时发布 |
+| `publish_time` | 发布时间；定时发布时为计划时间 |
+| `is_top` | 是否置顶 |
+| `status` | 状态（1：草稿；2：待发布；3：已发布） |
+
+## 通知方式
+
+通知方式由 `NoticeMethodEnum` 定义，两种可以同时勾选。
+
+| 方式 | 值 | 触达形式 |
+|:-----|:---|:---------|
+| 系统消息 | 1 | 发布时向目标用户写入一条站内信（`sys_message`），消息中心可见 |
+| 登录弹窗 | 2 | 用户登录后弹窗展示未读公告 |
+
+系统消息方式由 `NoticeServiceImpl.publish` 实现，按 `MessageTemplateEnum.NOTICE_PUBLISH` 模板生成消息标题与跳转路径，经 `MessageService.add` 写入，详见[消息中心](./message.mdx)。
+
+## 通知范围
+
+通知范围由 `NoticeScopeEnum` 定义。「所有人」对全量用户可见；「指定用户」把用户 ID 列表存入 `notice_users`，接口侧在查询详情时校验当前用户是否在名单内，不在则返回「公告不存在或无权限访问」。
+
+## 发布流程
+
+公告状态流转由 `NoticeServiceImpl` 控制。
+
+<Steps>
+  <Step>保存为草稿（`status = 1`），内容可反复编辑，不对用户可见。</Step>
+  <Step>发布时若不定时，状态直接置为已发布（`status = 3`），按勾选的通知方式触达；勾选定时（`is_timing = true`）则置为待发布（`status = 2`），到达 `publish_time` 后发布。</Step>
+  <Step>已发布公告不允许再改状态与定时标记，仅可修改内容或删除。</Step>
+</Steps>
+
+<Callout type="info">
+非定时公告在发布接口调用时立即记录发布时间并触达；已发布公告删除时会连带清理 `sys_notice_log` 中的已读记录。
+</Callout>
+
+## 用户侧入口
+
+用户在消息中心的「公告」页签查看公告列表与详情，接口走 `/user/message/notice`（`UserMessageController`）。查询详情时自动写入已读记录；`GET /user/message/notice/unread/{method}` 返回指定通知方式下的未读公告 ID，登录弹窗方式据此弹窗。
+
+## 相关源码
+
+- [NoticeController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/NoticeController.java)（/system/notice 接口）
+- [NoticeServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/NoticeServiceImpl.java)（发布与状态流转）
+- [NoticeMethodEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/NoticeMethodEnum.java) / [NoticeScopeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/NoticeScopeEnum.java)（通知方式与范围枚举）
+- [前端页面 src/views/system/notice](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/notice)

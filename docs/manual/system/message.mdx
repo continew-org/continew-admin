@@ -1,0 +1,64 @@
+---
+title: 消息中心
+description: 站内信的产生方式、未读统计与已读管理，以及用户侧消息中心的使用。
+---
+
+消息中心是站内信能力的总称，覆盖消息的写入、未读提醒与用户侧查阅。消息数据存储在 `sys_message` 表，用户已读记录存储在 `sys_message_log` 表。消息没有独立的管理端页面，内容来源于系统事件（如公告发布、第三方注册），用户在顶部导航的消息入口进入消息中心查阅。
+
+## 消息类型与模板
+
+消息类型由 `MessageTypeEnum` 定义。
+
+| 类型 | 值 | 说明 |
+|:-----|:---|:-----|
+| 系统消息 | 1 | 系统事件通知，如公告发布 |
+| 安全消息 | 2 | 账号安全相关，如第三方账号注册成功 |
+
+内置消息模板见 `MessageTemplateEnum`，例如公告发布时按模板 `NOTICE_PUBLISH` 生成「您有一条新的公告」消息并携带跳转路径 `/user/notice?id=%s`；第三方账号注册时按 `SOCIAL_REGISTER` 模板引导用户配置密码。
+
+## 消息字段
+
+`sys_message` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `title` | 标题 |
+| `content` | 内容 |
+| `type` | 类型（1：系统消息；2：安全消息） |
+| `path` | 跳转路径，点击消息跳转到对应页面 |
+| `scope` | 通知范围（1：所有人；2：指定用户） |
+| `users` | 通知用户 ID 集合（JSON），范围为指定用户时生效 |
+
+## 用户侧接口
+
+用户侧接口前缀为 `/user/message`，对应 `UserMessageController`，按当前登录用户隔离数据。
+
+| 功能 | 接口 |
+|:-----|:-----|
+| 查询未读消息数量 | `GET /user/message/unread` |
+| 分页查询消息列表 | `GET /user/message` |
+| 查询消息详情 | `GET /user/message/{id}` |
+| 删除消息 | `DELETE /user/message` |
+| 标记已读 | `PATCH /user/message/read` |
+| 全部已读 | `PATCH /user/message/readAll` |
+
+查询详情接口会自动写入已读记录（`sys_message_log`），未读数随查询动作收敛。指定用户范围的消息在查询时校验当前用户是否在 `users` 名单内，不在则返回「消息不存在或无权限访问」。
+
+## 未读提醒
+
+前端通过 `GET /user/message/unread?detail=true` 拉取未读数量与分类明细，在顶部导航的消息图标上展示角标。公告的未读数单独走 `GET /user/message/notice/unread`，与消息未读数分开统计，见[通知公告](./notice.mdx)。
+
+<Callout type="info">
+消息的删除是用户级操作，只清理当前用户与消息的关联记录，不影响其他接收人。消息本体（`sys_message`）由系统事件写入，用户无法在消息中心编辑。
+</Callout>
+
+## 业务接入
+
+后端业务需要触达用户时，构造 `MessageReq` 并调用 `MessageService.add(req, userIdList)`，`userIdList` 为 `null` 表示发给所有人。公告发布走的就是这条路径（`NoticeServiceImpl.publish`）。
+
+## 相关源码
+
+- [UserMessageController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/UserMessageController.java)（/user/message 接口）
+- [MessageServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/MessageServiceImpl.java)（消息写入与已读管理）
+- [MessageTemplateEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/MessageTemplateEnum.java)（内置消息模板）
+- [前端页面 src/views/user/message](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/user/message)

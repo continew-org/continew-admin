@@ -1,0 +1,47 @@
+---
+title: 租户管理
+description: 租户管理页面维护租户档案，创建租户时自动生成编码并初始化角色、管理员等基础数据，支持绑定套餐与重置管理员密码。
+---
+
+「租户管理 → 租户管理」页面维护平台内全部租户档案，数据存于 `tenant` 表。对应接口前缀 `/tenant/management`，基于 CRUD 套件提供分页、详情、新增、修改、删除五个标准接口。
+
+## 租户字段
+
+`TenantDO` 定义的租户档案字段：名称、编码、域名、过期时间、描述、状态（启用或禁用）、管理员用户 ID、管理员用户名、套餐 ID。其中编码由系统生成，管理员账号在创建时一并初始化。
+
+## 创建租户
+
+新增租户时 `TenantServiceImpl.create` 按以下顺序执行，整体包裹在事务中。
+
+<Steps>
+  <Step>
+    校验名称与域名全局唯一，重复时抛出「名称为 [xxx] 的租户已存在」类错误。
+  </Step>
+  <Step>
+    校验所绑套餐状态，套餐被禁用时拒绝创建。
+  </Step>
+  <Step>
+    生成租户编码。编码由 CosID 的 `tenant-code` 生成器产出，RADIX 进制、固定 `T` 前缀，生成后查库去重。
+  </Step>
+  <Step>
+    写入租户记录，然后遍历所有 `TenantDataApi` 实现完成租户数据初始化：创建租户管理员角色与账号、按套餐菜单授权等。删除租户时同样经 `TenantDataApi` 在对应租户上下文内逐模块清理数据。
+  </Step>
+</Steps>
+
+## 状态检查与登录拦截
+
+租户在每次请求进入时经受 `TenantServiceImpl.checkStatus` 校验，依次检查租户存在、未被禁用、未超过过期时间、所绑套餐未被禁用，任一不满足即拒绝请求。默认租户（ID 0，超级管理员所在租户）直接放行，不做状态与过期检查。`DefaultTenantProvider` 负责从请求头解析租户：普通请求读 `X-Tenant-Id`，登录相关接口读 `X-Tenant-Code` 并换算为租户 ID，`/auth/refresh` 与 `/auth/logout` 忽略请求头统一回落到默认租户。
+
+<Callout type="info">
+租户修改或删除后，后端会清空以 `TENANT:` 为前缀的租户缓存，并使该租户下全部在线会话失效，租户用户需要重新登录才能继续操作。对应逻辑在 `TenantServiceImpl.afterUpdate`。
+</Callout>
+
+## 修改租户管理员密码
+
+列表操作列的「重置密码」调用 `PUT /tenant/management/{id}/admin/pwd`，权限码 `tenant:management:updateAdminUserPwd`。前端使用 RSA 公钥加密新密码提交，后端 `SecureUtils.decryptPasswordByRsaPrivateKey` 解密后在目标租户上下文内调用用户模块的重置密码接口，全程不触碰平台管理员的账号体系。
+
+## 相关源码
+
+- [TenantController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/controller/TenantController.java)：租户管理 API
+- [TenantServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/service/impl/TenantServiceImpl.java)：创建、初始化、状态检查与会话失效逻辑
+- [continew-admin-ui/src/views/tenant/management/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/tenant/management)：前端页面

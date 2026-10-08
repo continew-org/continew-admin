@@ -1,0 +1,123 @@
+---
+title: 快速开始
+description: 从克隆仓库到登录后台，跑通 ContiNew Admin 后端与前端的本地开发环境。
+icon: Rocket
+---
+
+**ContiNew Admin** 是基于 Spring Boot 3（Java 17）与 Vue 3（Arco Design、TypeScript、Vite）构建的多租户中后台管理系统框架，后端脚手架能力由 [ContiNew Starter](/docs/starter) 供给。本页目标是把 ContiNew Admin 在本机跑起来：先装齐依赖环境，再启动后端（`continew-server`，端口 8000），最后启动前端（`continew-admin-ui`，端口 5173）并登录。
+
+<Callout type="info">
+想先不动手、直接看效果，可以访问在线演示。前台 [admin.continew.top](https://admin.continew.top)（账号 admin / admin123），接口文档 [api.continew.top](https://api.continew.top)。
+</Callout>
+
+## 环境准备
+
+| 软件 | 版本要求 | 用途 |
+|:-----|:---------|:-----|
+| JDK | 17 | 后端运行时（Spring Boot 3.x 最低要求 JDK 17） |
+| Maven | 3.9.16 | 后端构建，仓库自带 `mvnw`，无需单独安装 |
+| Node.js | 与 pnpm 9.3.0 兼容的版本 | 前端运行与构建 |
+| pnpm | 9.3.0 | 前端包管理（`packageManager` 字段已锁定） |
+| MySQL | 8.0.42 | 业务数据库（也支持 PostgreSQL，脚本在 `db/changelog/postgresql`） |
+| Redis | 7.2.8 | 缓存、会话、验证码存储 |
+
+开始前先建好数据库。表结构由 Liquibase 在首次启动时自动初始化，不用手工执行 SQL。
+
+```sql
+CREATE DATABASE continew_admin DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+```
+
+## 后端启动
+
+<Steps>
+  <Step>
+    克隆后端仓库。
+
+    ```bash
+    git clone https://github.com/continew-org/continew-admin.git
+    ```
+  </Step>
+  <Step>
+    检查连接配置。开发环境配置在 `continew-server/src/main/resources/config/application-dev.yml`，数据源默认连 `127.0.0.1:3306` 的 `continew_admin` 库，账号 `root` / `123456`；Redis 默认连 `127.0.0.1:6379`，密码 `123456`。与本机不一致时，用环境变量覆盖，不要直接改配置文件。
+
+    | 环境变量 | 默认值 | 说明 |
+    |:---------|:-------|:-----|
+    | `DB_HOST` / `DB_PORT` | `127.0.0.1` / `3306` | MySQL 地址 |
+    | `DB_NAME` | `continew_admin` | 数据库名 |
+    | `DB_USER` / `DB_PWD` | `root` / `123456` | 数据库账号 |
+    | `REDIS_HOST` / `REDIS_PORT` | `127.0.0.1` / `6379` | Redis 地址 |
+    | `REDIS_PWD` / `REDIS_DB` | `123456` / `0` | Redis 密码与库索引 |
+  </Step>
+  <Step>
+    用 IDE 运行启动类 `top.continew.admin.ContiNewAdminApplication`，或命令行启动。
+
+    ```bash
+    ./mvnw spring-boot:run -pl continew-server
+    ```
+
+    启动成功后控制台输出 `ContiNew Admin server started successfully.`，并打印 API 地址与接口文档地址。首次启动 Liquibase 会自动执行 `db/changelog` 下的脚本，完成建表与初始化数据。
+  </Step>
+  <Step>
+    验证后端。浏览器打开 `http://localhost:8000/swagger-ui`（由 NextDoc4j 提供），能看到接口分组即启动正常。
+  </Step>
+</Steps>
+
+<Callout type="warn">
+任务调度（Snail Job）在 dev 环境默认关闭（`snail-job.enabled: false`）。如需联调任务调度，还要额外启动 `continew-extension-schedule-server`，部署方式见[部署](/docs/admin/reference/deployment.mdx)。
+</Callout>
+
+## 前端启动
+
+前端是独立仓库 continew-admin-ui，基于 Vue 3.5.4 + Vite 5.1.5。
+
+<Steps>
+  <Step>
+    克隆前端仓库并安装依赖。
+
+    ```bash
+    git clone https://github.com/continew-org/continew-admin-ui.git
+    cd continew-admin-ui
+    pnpm install
+    ```
+  </Step>
+  <Step>
+    确认代理配置。`.env.development` 中 `VITE_API_PREFIX` 为 `/dev-api`，`VITE_API_BASE_URL` 为 `http://localhost:8000`。`vite.config.ts` 会把 `/dev-api` 前缀的请求代理到该地址并去掉前缀，与后端 dev 端口 8000 对应。
+  </Step>
+  <Step>
+    启动开发服务器。
+
+    ```bash
+    pnpm dev
+    ```
+
+    默认监听 5173 端口并自动打开浏览器。访问 `http://localhost:5173`，看到登录页即前后端联通。
+  </Step>
+</Steps>
+
+## 默认账号
+
+Liquibase 初始化数据内置两个账号（`db/changelog/mysql/main_data.sql`）。
+
+| 账号 | 密码 | 说明 |
+|:-----|:-----|:-----|
+| `admin` | `admin123` | 超级管理员，系统初始用户，不可禁用或删除 |
+| `test` | `test123` | 测试账号 |
+
+<Callout type="warn">
+这两个密码只适用于本地全新初始化的库。演示站与生产环境的密码以实际部署为准；生产部署时请务必首次登录后立即修改默认密码。
+</Callout>
+
+## 接下来
+
+<Cards>
+  <Card title="什么是 ContiNew Admin" description="项目定位、核心特性与技术栈基线。" href="/docs/admin/introduction" />
+  <Card title="配置说明" description="application.yml 各配置块、环境变量注入与多环境 profile。" href="/docs/admin/configuration" />
+  <Card title="功能手册" description="系统管理、多租户、任务调度、代码生成等内置功能的使用说明。" href="/docs/admin/manual/system" />
+  <Card title="开发指南" description="后端与前端工程结构、分层约定与二次开发方式。" href="/docs/admin/development/backend" />
+</Cards>
+
+## 相关源码
+
+- 后端仓库 [continew-org/continew-admin](https://github.com/continew-org/continew-admin/tree/dev)（启动类在 `continew-server/src/main/java/top/continew/admin/ContiNewAdminApplication.java`）
+- 前端仓库 [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui/tree/dev)
+- 初始化数据脚本 [main_data.sql](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/db/changelog/mysql/main_data.sql)

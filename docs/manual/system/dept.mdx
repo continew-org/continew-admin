@@ -1,0 +1,42 @@
+---
+title: 部门管理
+description: 树形组织架构的维护，支撑用户归属、数据权限与部门级联查询。
+---
+
+部门管理维护组织架构树，功能入口在「系统管理 -> 部门管理」，后端接口前缀为 `/system/dept`，对应 `DeptController`。部门数据存储在 `sys_dept` 表，是用户归属（`sys_user.dept_id`）与角色数据权限（`sys_role_dept`）的基础。
+
+## 功能概览
+
+`DeptController` 通过 `@CrudRequestMapping("/system/dept", api = {Api.TREE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE, Api.EXPORT, Api.TREE_DICT})` 提供树查询、详情、新增、修改、批量删除、导出与树字典接口，权限码按 API 类型自动生成（如 `system:dept:create`）。树字典接口供用户管理等页面的部门下拉树使用。
+
+## 部门字段
+
+`sys_dept` 表的主要字段如下。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `name` | 部门名称，同一上级下唯一（`uk_name_parent_id` 联合唯一索引） |
+| `parent_id` | 上级部门 ID，根节点为 0 |
+| `ancestors` | 祖级列表，按层级记录全部祖先 ID，用于「本部门及以下」的快速匹配 |
+| `description` | 描述 |
+| `sort` | 排序，默认 999 |
+| `status` | 状态（1：启用；2：禁用） |
+| `is_system` | 是否系统内置数据 |
+
+## 树维护与级联影响
+
+部门支持任意层级嵌套。`ancestors` 字段在新增、调整层级时由后端重算，数据权限取值为「本部门及以下」（`DataScopeEnum.DEPT_AND_CHILD`）时依赖该字段做前缀匹配，避免逐层递归查询。
+
+<Callout type="warn">
+删除部门前需要确认两件事：部门下没有子部门，且没有用户挂在该部门（`sys_user.dept_id`）。禁用部门不影响用户登录，但该部门在部门下拉树中不再可选。
+</Callout>
+
+## 与数据权限的关系
+
+角色的数据权限取值为 2（本部门及以下）、3（本部门）时，以用户所属部门为起点计算可见范围；取值为 5（自定义）时，可见部门集合来自 `sys_role_dept` 表勾选的部门。部门树的准确性直接决定数据权限边界，配置方式见[角色管理](./role.mdx)，机制细节见 [ContiNew Starter 数据权限文档](/docs/starter/modules/extension/data-permission)。
+
+## 相关源码
+
+- [DeptController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/DeptController.java)（/system/dept 接口）
+- [DeptServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/DeptServiceImpl.java)（树维护与祖级列表计算）
+- [前端页面 src/views/system/dept](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/dept)

@@ -1,0 +1,57 @@
+---
+title: 字典管理
+description: 字典与字典项的维护，供下拉选项、状态标签等场景复用，并支持缓存清理。
+---
+
+字典管理把「枚举型」数据（如公告分类、客户端类型）从代码里抽到数据库维护，功能入口在「系统管理 -> 字典管理」。字典本身与字典项分两级，后端接口前缀分别为 `/system/dict`（`DictController`）与 `/system/dict/item`（`DictItemController`），数据存储在 `sys_dict`、`sys_dict_item` 表。
+
+## 两级结构
+
+字典（`sys_dict`）描述一类数据，字段有名称、编码、描述、`is_system`（是否内置）。编码全局唯一，是前后端引用字典的 key。
+
+字典项（`sys_dict_item`）是字典下的具体取值。
+
+| 字段 | 说明 |
+|:-----|:-----|
+| `label` | 展示文本 |
+| `value` | 实际值，同一字典下唯一（`uk_value_dict_id` 联合唯一索引） |
+| `color` | 标签颜色，用于 Arco Tag 等着色 |
+| `sort` | 排序，默认 999 |
+| `status` | 状态（1：启用；2：禁用） |
+
+## 内置字典
+
+初始化脚本预置三个字典（`is_system = 1`），删除受限制。
+
+| 编码 | 用途 |
+|:-----|:-----|
+| `notice_type` | 公告分类，供通知公告页使用 |
+| `client_type` | 客户端类型（PC、ANDROID、XCX），供客户端配置页使用 |
+| `sms_supplier` | 短信厂商（alibaba、tencent、cloopen），供短信配置页使用 |
+
+## 业务使用方式
+
+前端通过 `useDict` hook 按编码拉取字典项，结果缓存在 Pinia 的 dict store（仅内存，不持久化），同一次会话内重复引用同一编码不会重复请求。
+
+```ts
+import { useDict } from '@/hooks/app'
+
+const { notice_type } = useDict('notice_type')
+```
+
+后端通过 `GET /system/common/dict/{code}` 提供公共字典数据（`CommonController`），不需要逐个模块写查询接口。字典项同时被 CRUD 套件的树字典模型消费，配置见 `continew-starter.crud.tree-dict-model`。
+
+## 缓存清理
+
+字典数据在 Redis 有缓存（键前缀见 `CacheConstants.DICT_KEY_PREFIX`）。直接改库或未走接口的变更不会刷新缓存，此时调用 `DELETE /system/dict/cache/{code}`（权限码 `system:dict:clearCache`）按编码清理对应缓存键。
+
+<Callout type="warn">
+字典编码一旦写入业务数据（如表字段保存了字典项 value），修改编码或删除字典项会造成存量数据无法回显。调整前先全局检索编码的引用点。
+</Callout>
+
+## 相关源码
+
+- [DictController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/DictController.java)（/system/dict 接口）
+- [DictItemController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/DictItemController.java)（/system/dict/item 接口）
+- [前端 useDict hook](https://github.com/continew-org/continew-admin-ui/blob/dev/src/hooks/app/useDict.ts)（按编码加载与缓存）
+- [前端页面 src/views/system/dict](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/dict)

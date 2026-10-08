@@ -1,0 +1,94 @@
+---
+title: 多租户接入
+description: 新业务表如何加 tenant_id 字段并继承 TenantBaseDO 纳入行级租户隔离，以及 ignore-tables 白名单的使用边界。
+---
+
+多租户由 `continew-plugin-tenant` 插件与 ContiNew Starter 的 `continew-starter-extension-tenant-mp` 共同实现，隔离级别为 `LINE`（行级隔离）：每个请求解析出当前租户 ID，MyBatis-Plus 租户拦截器给 SQL 自动追加 `tenant_id = ?` 条件，插入时自动回填。`application.yml` 的 `continew-starter.tenant.enabled` 默认 `true`，`default-tenant-id` 为 `0`（超级管理员所在租户）。
+
+## 租户 ID 从哪里来
+
+请求入口由 `TenantInterceptor` 从请求头解析租户。ID 头为 `X-Tenant-Id`，编码头为 `X-Tenant-Code`（登录场景前端只持有编码），`DefaultTenantProvider` 负责把头值翻译成租户 ID 并校验状态（禁用、过期直接拒绝）。两个头都没有时回落到默认租户 `0`。
+
+两个例外。`/auth/refresh` 与 `/auth/logout` 会忽略前端残留的租户头，统一按 Refresh Session 里记录的租户执行（`DefaultTenantProvider.isTenantIndependentAuthRequest`）；异步任务没有请求上下文，用 `TenantUtils.execute(tenantId, () -> ...)` 显式进入租户上下文。
+
+## 新业务表接入
+
+<Steps>
+<Step>
+
+建表时加租户列。列定义与内置表保持一致，`plugin_tenant.sql` 给存量表加列的标准写法如下。
+
+```sql
+ALTER TABLE `biz_goods`
+    ADD COLUMN `tenant_id` BIGINT NOT NULL DEFAULT 0 COMMENT '租户ID',
+    ADD INDEX `idx_tenant_id` (`tenant_id`);
+```
+
+</Step>
+<Step>
+
+检查唯一索引。行级隔离后同一业务键在不同租户下允许重复，唯一索引要把 `tenant_id` 拼进去。内置脚本对 `sys_user` 的处理是参照。
+
+```sql
+ALTER TABLE `sys_user`
+    DROP INDEX `uk_username`,
+    ADD UNIQUE INDEX `uk_username` (`username`, `deleted`, `tenant_id`);
+```
+
+</Step>
+<Step>
+
+实体继承 `TenantBaseDO`。它自带 `tenantId` 字段（在 `BaseDO` 公共字段之上），插入时由租户拦截器回填当前租户 ID。
+
+```java
+@Data
+@TableName("biz_goods")
+public class GoodsDO extends TenantBaseDO {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 名称
+     */
+    private String name;
+}
+```
+
+</Step>
+<Step>
+
+正常写业务代码。查询、更新、删除不需要任何租户相关代码，拦截器自动追加条件。确认该表不进 `ignore-tables` 白名单（默认不会进），接入即完成。
+
+</Step>
+</Steps>
+
+Liquibase 脚本放进 `continew-server` 的 `db/changelog/mysql` 与 `db/changelog/postgresql` 两个目录，与存量脚本同一套 changeset 约定。PostgreSQL 侧同样要加 `tenant_id` 列，`plugin_tenant.sql` 的 postgresql 版本可对照。
+
+## ignore-tables 白名单
+
+全租户共享的表加进 `continew-starter.tenant.ignore-tables`，拦截器对这些表不拼租户条件。`application.yml` 已内置的名单按用途分四类。
+
+| 类别 | 表 |
+|:-----|:---|
+| 租户自身 | `tenant`、`tenant_package`、`tenant_package_menu` |
+| 代码生成 | `gen_config`、`gen_field_config` |
+| 全局配置 | `sys_menu`、`sys_dict`、`sys_dict_item`、`sys_option`、`sys_storage`、`sys_sms_config`、`sys_sms_log`、`sys_client` |
+| 能力开放 | `sys_app`（注：`sys_app` 实体含 `tenant_id` 但在白名单中，由插件自行控制租户语义） |
+
+判断标准只有一条：这张表的数据是否对所有租户语义一致。菜单、字典、系统参数是平台级数据，各租户读同一份，进白名单；业务数据各租户互不可见，不进。把业务表加进白名单等于对所有租户开放全表，改之前先确认语义。
+
+<Callout type="warn">
+表进了白名单就不再有行级隔离兜底，跨租户越权只能靠业务代码自己防。`sys_menu`、`sys_dict` 这类表对应的操作接口同时出现在 `continew-starter.tenant.ignore-menus`（1050、1130、1140、1150 等菜单 ID）里，租户套餐不含这些菜单，普通租户连入口都看不到。新增平台级共享表时两个名单要一起考虑。
+</Callout>
+
+## 配套行为
+
+新增租户时 `TenantService` 会按套餐复制角色、菜单授权并初始化租户管理员，租户编码由 CosID 的 `tenant-code` 生成器产出（RADIX 转换，11 位定长，前缀 `T`）。租户套餐可圈定可用菜单，`ignore-menus` 清单内的菜单对租户不可选。这些属于租户运营侧功能，使用说明见 [租户管理](/docs/admin/manual/tenant/management) 与 [套餐管理](/docs/admin/manual/tenant/package)。
+
+## 完整参考实现
+
+- [DefaultTenantProvider（租户解析）](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/config/DefaultTenantProvider.java)
+- [TenantConfiguration（租户装配）](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/config/TenantConfiguration.java)
+- [TenantBaseDO（租户实体基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/base/model/entity/TenantBaseDO.java)
+- [plugin_tenant.sql（存量表加列与索引调整）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/db/changelog/mysql/plugin/plugin_tenant.sql)

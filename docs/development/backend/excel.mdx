@@ -1,0 +1,90 @@
+---
+title: Excel 导入导出
+description: 基于 FastExcel 的导入导出接入方式，字典字段用 DictExcelProperty 与 ExcelDictConverter 完成值与标签互转。
+---
+
+Excel 能力由 ContiNew Starter 的 `continew-starter-excel-fastexcel` 提供（FastExcel 1.3.0，`cn.idev.excel` 包），经 `continew-starter-extension-crud-core` 传入 admin 工程。导出走 CRUD 套件内置的 `EXPORT` 接口或 `ExcelUtils.export`，导入按「下载模板 → 解析校验 → 确认导入」三段式实现，用户管理的导入导出是完整样板。
+
+## 导出
+
+### CRUD 内置导出
+
+`@CrudRequestMapping` 的 `api` 数组声明 `Api.EXPORT` 后，`GET /<路径>/export` 自动可用，权限码按 `模块:资源:export` 校验。`CrudServiceImpl.export` 用查询条件查出详情列表，做 Crane4j 数据填充后交给 `ExcelUtils.export` 写流，响应模型类上的 `@ExcelProperty` 决定列与表头。
+
+```java
+@Data
+@ExcelIgnoreUnannotated
+@Schema(description = "登录日志导出响应参数")
+public class LoginLogExportResp implements Serializable {
+
+    @Schema(description = "ID", example = "1")
+    @ExcelProperty(value = "ID")
+    private Long id;
+
+    @Schema(description = "状态", example = "1")
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class)
+    private LogStatusEnum status;
+}
+```
+
+`@ExcelIgnoreUnannotated` 让未标注的字段不进表格。枚举字段挂 `ExcelBaseEnumConverter`，写出枚举的 `description` 而不是编码值；集合字段挂 `ExcelListConverter`；大数值 ID 由 `ExcelUtils` 内置注册的 `ExcelBigNumberConverter` 自动转字符串，避免 Excel 科学计数法截断。`ExcelUtils.export` 还会注册 `LongestMatchColumnWidthStyleStrategy` 做列宽自适应，响应头输出 `附件名_yyyyMMddHHmmss.xlsx`。
+
+### 手动导出
+
+不走 CRUD 套件的场景直接调 `ExcelUtils.export(list, fileName, clazz, response)`，或五参重载自定义 sheet 名与排除字段。Controller 方法返回 `void` 并标注 `@ExcludeFromGracefulResponse`，防止文件流被全局响应包装污染。
+
+## 字典转换
+
+业务库里存字典值（如 `gender` 存 `1`），Excel 里要展示与接收标签（如「男」）。admin 在 common 提供了一对配套组件：`@DictExcelProperty` 注解声明字段对应的字典编码，`ExcelDictConverter` 在读写两个方向做转换。
+
+```java
+@ExcelProperty(value = "客户端类型", converter = ExcelDictConverter.class, order = 5)
+@DictExcelProperty("client_type")
+private String clientType;
+```
+
+写出时 `ExcelDictConverter.convertToExcelData` 按字典编码经 `DictItemApi.listByDictCode` 取字典项，把值翻译成标签；读入时 `convertToJavaData` 反向把标签翻译回值，并用 Hutool `Convert` 转成字段声明的类型。字典数据来自 `sys_dict` / `sys_dict_item` 表，与「字典管理」页面维护的是同一份，标签改了导出内容跟着变。
+
+<Callout type="warn">
+`ExcelDictConverter` 每次转换都会按字段注解取一次字典项列表。导出大列表时为每行每字典字段执行一次查询，数据量大的导出接口建议在 Service 层先批量取好字典再手动翻译，或给 `DictItemApi` 实现加缓存。
+</Callout>
+
+## 导入
+
+导入没有通用框架，按资源的校验规则各不相同，admin 采用三段式流程，以用户导入为例。
+
+<Steps>
+<Step>
+
+下载模板。`UserServiceImpl.downloadImportTemplate` 把 `continew-server` 资源目录 `templates/import/user.xlsx` 的静态模板写给客户端，模板列与导入行模型一一对应。
+
+</Step>
+<Step>
+
+解析校验。`parseImport` 接收上传文件，用 `EasyExcel.read(...).head(UserImportRowReq.class).doReadSync()` 同步读成行模型列表，随后做四类检查：表内去重（邮箱、手机）、引用有效性（角色名、部门路径是否存在）、库内冲突（用户名、邮箱、手机是否已存在，加密字段先经 `EncryptHelper` 处理再比对）、格式过滤。通过的行数据序列化后存入 Redis（键前缀 `CacheConstants.DATA_IMPORT_KEY`，有效期 10 分钟），返回 `importKey` 与各项统计行数。
+
+```java
+importRowList = EasyExcel.read(file.getInputStream())
+    .head(UserImportRowReq.class)
+    .sheet()
+    .headRowNumber(1)
+    .doReadSync();
+```
+
+</Step>
+<Step>
+
+确认导入。前端展示解析统计后由用户确认，`importUser` 按 `importKey` 从 Redis 取回行数据（过期直接报「导入已过期，请重新上传」），逐行通过参数校验后落库，方法标注 `@Transactional(rollbackFor = Exception.class)` 保证整批原子性。导入行模型（`UserImportRowReq`）上的校验注解在落库前再次生效，密码字段只在 `CrudValidationGroup.Create` 分组下强制非空。
+
+</Step>
+</Steps>
+
+行模型的字段都是字符串形态（部门名、角色名、性别标签），Service 层负责翻译成 ID 与枚举。这样做模板对最终用户可读，校验错误也能用业务语言提示，导入解析层不出现数据库字段。
+
+## 完整参考实现
+
+- [UserController（导入导出接口）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/UserController.java)
+- [UserServiceImpl（parseImport / importUser）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/UserServiceImpl.java)
+- [LoginLogExportResp（导出模型）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/model/resp/log/LoginLogExportResp.java)
+- [DictExcelProperty 与 ExcelDictConverter](https://github.com/continew-org/continew-admin/tree/dev/continew-common/src/main/java/top/continew/admin/common/config/excel)
+- [ExcelUtils（starter，导出工具）](https://github.com/continew-org/continew-starter/blob/dev/continew-starter-excel/continew-starter-excel-fastexcel/src/main/java/top/continew/starter/excel/util/ExcelUtils.java)

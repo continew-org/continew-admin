@@ -1,0 +1,132 @@
+---
+title: 常见问题
+description: 按症状组织后端二次开发的常见问题，覆盖 CRUD、权限、租户、数据权限、Excel 与接口文档六类。
+---
+
+本文收集后端二次开发阶段的高频问题，按「症状 → 原因 → 处理」组织。环境与启动类问题见 [常见问题](/docs/admin/reference/faq.mdx)。
+
+## CRUD 与接口
+
+### 新增资源的接口全部 404
+
+控制器只写了 `@RequestMapping` 没写 `@CrudRequestMapping`，或 `api` 数组没声明对应类型。CRUD 端点由 `@CrudRequestMapping` 在启动时注册，普通 `@RequestMapping` 不会触发注册逻辑，`api` 数组之外的类型一律不注册。
+
+对照 [CRUD 开发](./crud.mdx) 检查注解与 `api` 数组；启动日志里能看到实际注册的路径，先确认目标路径在列。
+
+### 调用接口返回 403，权限码不存在
+
+`BaseController.preHandle` 按「路径推导前缀 + API 名」校验权限码（如 `POST /biz/goods` → `biz:goods:create`），非超级管理员必须在「菜单管理」里录入了对应按钮权限并授给当前角色。
+
+在菜单管理中为资源补齐按钮权限码，重新登录或刷新令牌后重试。权限码的推导规则见 [CRUD 开发 · 权限码生成](./crud.mdx)，与代码里写的字符串不一致时以推导规则为准。
+
+### 字典接口（/dict）不需要权限但业务接口要
+
+这是有意设计。`BaseController.preHandle` 对 `Api.DICT` 与 `Api.TREE_DICT` 直接放行，下拉选项不鉴权；其余类型照常校验。排查 403 时先确认请求命中的到底是哪一类端点。
+
+### 新增字段后查询条件不生效
+
+查询条件类的字段没有标注 `@Query`。`CrudServiceImpl` 只把标注了 `@Query` 的字段翻译成 MyBatis-Plus 条件，未标注的字段被忽略，不报错也不生效。
+
+给字段补 `@Query(type = QueryType.LIKE)` 等注解，`columns` 留空时按字段名转下划线匹配列名；多列模糊查询用 `columns = {"name", "description"}` 并配 OR 关系。
+
+## 认证与权限
+
+### 新写的接口绕过不了鉴权
+
+`@SaIgnore` 加在了方法上但接口仍走 `preHandle` 的 CRUD 校验，或放行路径没配进 `sa-token.extension.security.excludes`。`preHandle` 只在三种情况下跳过 CRUD 权限码校验：带 Sign 签名参数、`@SaIgnore` 标注、命中 excludes 清单。
+
+自定义接口（非 CRUD 方法）本来就不进 `preHandle` 的自动校验，这类接口缺的是 `@SaCheckPermission` 声明，补上即可；匿名接口把路径加进 `application-dev.yml` / `application-prod.yml` 的 excludes，两个环境要同步。
+
+### 改了角色或权限后行为没变化
+
+用户上下文（权限、角色、数据范围）在登录时写入 SaSession，运行期改角色授权不影响已签发的会话。
+
+让用户重新登录，或调 `POST /auth/refresh` 刷新令牌。`AuthTokenServiceImpl.buildUserContext` 在刷新时重新加载权限与角色，刷新后即生效。
+
+### 刷新令牌报「登录状态已失效」
+
+Refresh Session 过期、被撤销，或 Cookie 没带。浏览器端 Refresh Token 只存在于 HttpOnly Cookie，前端代理或 Nginx 把 Cookie 剥离后刷新必然失败。
+
+排查顺序与 [常见问题](/docs/admin/reference/faq.mdx) 的「刷新页面掉线」一致：先看 `cookie-path` 是否覆盖代理前缀，再看 `Set-Cookie` 是否到达浏览器，最后查 Redis 中会话是否还存在。
+
+## 多租户
+
+### 新业务表查询返回全部租户的数据
+
+实体继承了 `BaseDO` 而不是 `TenantBaseDO`，且表没加 `tenant_id` 列。租户拦截器只对包含 `tenant_id` 列的实体拼条件，缺列的表静默跳过，表现为不过滤。
+
+按 [多租户接入](./tenant.mdx) 补齐 `tenant_id` 列与索引，实体改继承 `TenantBaseDO`；存量数据回填 `tenant_id = 0` 后再观察。
+
+### 新业务表一个租户都查不到数据
+
+表被加进了 `continew-starter.tenant.ignore-tables`，或实体没有 `tenantId` 字段导致插入时没回填。白名单表不拼条件、不回填，行为与预期相反。
+
+先从 `ignore-tables` 移除该表；确认实体继承 `TenantBaseDO`；已插入的行手动核对 `tenant_id` 值。
+
+### 登录后接口全部走默认租户
+
+前端没传 `X-Tenant-Id` 或传了 `X-Tenant-Code` 但租户不存在。`DefaultTenantProvider` 解析不到头值时回落默认租户 `0`，不报错。
+
+浏览器 Network 面板确认请求头；用租户编码登录时确认 `tenant.code` 与库中一致，`getIdByCode` 找不到会直接抛「编码为 [x] 的租户不存在」。
+
+## 数据权限
+
+### 配了数据范围但查询结果没变化
+
+三种高频原因。当前用户是超级管理员或租户管理员（`isFilter` 返回 `false` 直接短路）；Mapper 继承的是普通 `BaseMapper` 而不是 `DataPermissionMapper`；自定义查询方法忘了加 `@DataPermission`。
+
+先确认用户角色类型，再检查 Mapper 继承链与自定义方法的注解。注解缺失不会报错，过滤静默不生效。
+
+### 自定义 SQL 拼出来列名冲突或条件拼错表
+
+多表 JOIN 的语句没给 `@DataPermission` 指定 `tableAlias`，拦截器按无别名拼 `dept_id`，命中了错误的表或列。
+
+给注解补 `tableAlias = "t1"` 指向持有 `dept_id` 的那张表，`UserMapper.selectUserPage` 是参照写法。列名与默认值不同的（如用户列不叫 `create_user`）在注解参数里显式改写。
+
+### 自定义数据权限查不到该看的部门数据
+
+角色的「数据权限」选了自定义但没勾选部门，或勾选后没保存进 `sys_role_dept`。`CUSTOM` 的子查询就是这张关联表，表里没有该角色的行，结果自然为空。
+
+在角色管理中重新勾选部门并保存，直接查 `sys_role_dept` 确认有对应 `role_id` 的行。
+
+## Excel
+
+### 导出 Excel 打开后 ID 变成科学计数法或精度丢失
+
+旧写法绕过了 `ExcelUtils.export` 自己拼 FastExcel 写入。`ExcelUtils` 内置注册了 `ExcelBigNumberConverter`，大数值 ID 写出为字符串。
+
+统一走 `ExcelUtils.export`；特殊场景自写 FastExcel 代码时手动 `registerConverter(new ExcelBigNumberConverter())`。
+
+### 字典列导出是值不是标签
+
+字段只写了 `@ExcelProperty` 没配 `converter = ExcelDictConverter.class` 和 `@DictExcelProperty("字典编码")`。两个注解缺一，转换器要么不执行要么报「请为字段添加 @DictExcelProperty 注解」。
+
+按 [Excel 导入导出 · 字典转换](./excel.mdx) 的写法补齐两个注解，字典编码与「字典管理」中的编码一致。
+
+### 导入报「数据文件解析异常」
+
+上传文件的表头与行模型（如 `UserImportRowReq`）顺序或名称对不上，或文件是从别处导出后手改过的。解析阶段直接抛异常，不进入校验环节。
+
+重新下载导入模板，在模板基础上填数据；列的顺序、表头文字都不要动。
+
+## 接口文档
+
+### 新模块的接口没出现在文档分组里
+
+没注册 `GroupedOpenApi` Bean。`all` 分组虽然能覆盖全部路径，但模块独立分组需要按路径前缀显式声明。
+
+在该模块的配置类中加一个 `GroupedOpenApi.builder().group(...).pathsToMatch("/<前缀>/**").build()` 的 Bean，`TenantConfiguration.tenantModuleApi` 是参照。
+
+### CRUD 接口文档里看不到权限码
+
+权限码展示由 `NextDoc4jCustomPermissionDisplay` 推导，三类情况跳过：标了 `@SaIgnore`、手写了 `@SaCheckPermission`（交给 Sa-Token 插件展示）、`DICT` / `TREE_DICT` 接口。确认接口不在这三类里再查 `nextdoc4j.plugin.security.enabled` 是否被关。
+
+### 匿名接口也出现在文档里
+
+`sa-token.extension.security.excludes` 加了路径，但接口文档没同步。`NextDoc4jCustomPathFiltering` 只在启动时把 excludes 清单同步为文档排除路径，改完配置要重启生效；确认路径写法与 excludes 里的模式一致（含通配符）。
+
+## 相关源码
+
+- [BaseController（CRUD 权限校验）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/base/controller/BaseController.java)
+- [DefaultTenantProvider（租户解析）](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-tenant/src/main/java/top/continew/admin/tenant/config/DefaultTenantProvider.java)
+- [DefaultDataPermissionUserDataProvider（数据权限过滤开关）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/mybatis/DefaultDataPermissionUserDataProvider.java)

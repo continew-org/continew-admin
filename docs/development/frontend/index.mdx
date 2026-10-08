@@ -1,0 +1,82 @@
+---
+title: 前端开发
+description: ContiNew Admin 前端工程的技术栈、环境变量与开发入口导航。
+---
+
+ContiNew Admin 前端是独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui)，基于 Vue 3 + Arco Design 的单页应用，与后端通过 REST 接口交互。本分组按主题讲解前端工程的封装机制，帮助你在既有约定下开发新页面。
+
+## 技术栈
+
+| 技术 | 版本 | 用途 |
+|:-----|:-----|:-----|
+| Vue | 3.5.4 | 框架（Composition API + `<script setup>`） |
+| Vite | 5.1.5 | 构建工具 |
+| TypeScript | 5.0.4 | 类型系统 |
+| Arco Design Vue | 2.57.0 | UI 组件库（`@arco-design/web-vue`） |
+| vue-router | 4.3.3 | 路由 |
+| Pinia | 2.0.16 | 状态管理（配 `pinia-plugin-persistedstate` 持久化） |
+| axios | 0.27.2 | HTTP 客户端（统一封装在 `src/utils/http.ts`） |
+| ECharts | 5.4.2 | 图表 |
+
+包管理器锁定 pnpm 9.3.0（`package.json` 的 `packageManager` 字段）。常用脚本如下。
+
+```bash
+pnpm install        # 安装依赖
+pnpm dev            # 开发服务器（vite --host，默认 5173 端口）
+pnpm build          # 类型检查 + 生产构建（vue-tsc --noEmit && vite build）
+pnpm typecheck      # 仅类型检查
+pnpm lint           # ESLint
+pnpm preview        # 预览构建产物（5050 端口）
+```
+
+## 源码目录
+
+`src/` 下各目录的职责如下。
+
+| 目录 | 职责 |
+|:-----|:-----|
+| `apis/` | 接口定义，按后端模块分文件（`system/`、`auth/`、`tenant/` 等） |
+| `components/` | 全局组件，Gi 组件库与通用业务组件 |
+| `config/setting.ts` | 应用默认配置（主题、布局、页签） |
+| `directives/` | 自定义指令（`v-permission`、`v-role`） |
+| `features/` | 认证会话、Access Token 管理 |
+| `hooks/` | 组合式函数（`useTable`、`useDict`、`useDownload` 等） |
+| `layout/` | 布局组件（4 套布局 + 页签、菜单、头部） |
+| `router/` | 路由定义与全局守卫 |
+| `stores/` | Pinia 仓库（app、user、route、tabs、dict、tenant） |
+| `utils/` | 工具函数（`http.ts`、`has.ts` 等） |
+| `views/` | 页面，目录结构与动态路由的 `component` 字段对应 |
+
+<Callout type="info">
+项目未做 i18n 国际化，`src/` 下没有 locale 目录。站点标题、Logo、版权等不走环境变量，由后端「网站配置」接口动态下发（见 [布局与主题](./layout.mdx)）。
+</Callout>
+
+## 环境变量
+
+环境变量文件在仓库根目录，命名必须以 `VITE_` 开头（`vite.config.ts` 还配置了 `FILE` 前缀），通过 `import.meta.env.XXX` 访问。
+
+| 变量 | 开发环境 | 生产环境 | 说明 |
+|:-----|:-----|:-----|:-----|
+| `VITE_API_PREFIX` | `/dev-api` | 不设置 | 接口前缀，仅开发环境用于 Vite 代理 |
+| `VITE_API_BASE_URL` | `http://localhost:8000` | `https://api.continew.top` | 后端接口地址 |
+| `VITE_API_WS_URL` | `ws://localhost:8000` | `wss://api.continew.top` | WebSocket 地址 |
+| `VITE_BASE` | `/` | `/` | 应用部署基础路径（`.env.test` 中为 `/test`） |
+| `VITE_CLIENT_ID` | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 | 客户端 ID，登录请求体携带，对应后端 `sys_client` 表配置 |
+| `VITE_APP_SETTING` | `true` | `true` | 是否显示应用配置面板 |
+| `VITE_OPEN_DEVTOOLS` | `false` | 不设置 | 是否开启 Vue DevTools |
+| `VITE_BUILD_MOCK` | 不设置 | `false` | 打包时是否启用 Mock（`.env.test` 中为 `true`） |
+
+开发环境下 `VITE_API_PREFIX` 存在的意义是让请求先打到同源前缀，再由 `vite.config.ts` 的 `server.proxy` 转发到 `VITE_API_BASE_URL` 并去掉前缀，绕开浏览器跨域限制。生产环境不设置该变量，axios 实例直接以 `VITE_API_BASE_URL` 为 `baseURL`，跨域由后端 CORS 配置处理。
+
+构建测试环境产物使用 `pnpm build:test`，对应 `.env.test`；生产构建用 `pnpm build`，对应 `.env.production`。
+
+## 本组内容
+
+<Cards>
+  <Card title="HTTP 请求" description="axios 封装、401 刷新重试、租户请求头注入" href="./request" />
+  <Card title="路由与页签" description="静态路由与动态路由注册、全局守卫、页签缓存" href="./route" />
+  <Card title="权限控制" description="v-permission / v-role 指令与 hasPerm 编程式判断" href="./permission" />
+  <Card title="字典使用" description="字典数据在前后端的加载、缓存与渲染" href="./dict" />
+  <Card title="组件库" description="Gi 组件库与通用业务组件的选用" href="./components" />
+  <Card title="布局与主题" description="布局模式、主题色、页签与 setting.ts 配置" href="./layout" />
+</Cards>

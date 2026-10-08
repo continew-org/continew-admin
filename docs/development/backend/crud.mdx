@@ -1,0 +1,142 @@
+---
+title: CRUD 开发
+description: 用 @CrudRequestMapping 与 BaseController 跑通一个资源的增删改查全套接口，权限码由框架按路径自动生成并校验。
+---
+
+一个标准资源（分页、列表、详情、创建、修改、批量删除、导出、字典）在 ContiNew Admin 里只需要四类文件：实体、查询条件、请求/响应模型、一个继承 `BaseController` 的控制器。接口映射与权限校验由 `@CrudRequestMapping` 注解和 `BaseController.preHandle` 完成，不需要为每个接口单独写映射和鉴权代码。本页以通用的「商品」资源为例走一遍流程。
+
+## 工作原理
+
+`@CrudRequestMapping`（`top.continew.starter.extension.crud` 包）声明在控制器类上，`value` 是资源路径，`api` 是要开放的 API 类型数组，默认开放 `{PAGE, GET, CREATE, UPDATE, BATCH_DELETE, EXPORT, DICT}`。框架在启动时把声明的 API 逐一注册为 Spring MVC 端点，路径规则固定。
+
+| API 类型 | 方法与路径（以 `/biz/goods` 为例） | 说明 |
+|:---------|:-----------|:-----|
+| `PAGE` | `GET /biz/goods` | 分页查询，参数为查询条件 + `PageQuery` |
+| `LIST` | `GET /biz/goods/list` | 不分页列表，参数为查询条件 + `SortQuery` |
+| `TREE` | `GET /biz/goods/tree` | 树列表 |
+| `GET` | `GET /biz/goods/{id}` | 详情 |
+| `CREATE` | `POST /biz/goods` | 创建，返回 `IdResp` |
+| `UPDATE` | `PUT /biz/goods/{id}` | 修改 |
+| `DELETE` | `DELETE /biz/goods/{id}` | 单个删除 |
+| `BATCH_DELETE` | `DELETE /biz/goods` | 批量删除，请求体为 `IdsReq` |
+| `EXPORT` | `GET /biz/goods/export` | 导出 Excel |
+| `DICT` | `GET /biz/goods/dict` | 字典列表（下拉选项） |
+| `TREE_DICT` | `GET /biz/goods/dict/tree` | 树型字典列表 |
+
+不在 `api` 数组里声明的类型不会被注册，访问对应路径返回 404。
+
+## 权限码生成
+
+`BaseController.preHandle` 在每个 CRUD 接口执行前做权限校验，规则是「路径推导前缀 + API 名小写」。
+
+前缀由 `CrudApiPermissionPrefixCache.parsePermissionPrefix` 从 `@CrudRequestMapping` 的 `value` 解析：首段做模块名，其余各段转驼峰拼接做资源名，用冒号连接。例如 `/system/user` 得 `system:user`，`/system/dict/item` 得 `system:dictItem`。
+
+API 名先经过 `BaseController.getApiName` 归并，再转小写拼到前缀后。归并规则是 `PAGE`、`TREE`、`LIST` 统一记为 `list`，`DELETE`、`BATCH_DELETE` 统一记为 `delete`，其余用原名。因此 `POST /system/user` 校验 `system:user:create`，`GET /system/user`（分页）校验 `system:user:list`。
+
+三类请求跳过校验：带 Sa-Token Sign 签名参数的请求（能力开放场景）、类或方法上标注 `@SaIgnore` 的接口、命中 `sa-token.extension.security.excludes` 放行清单的路径。`DICT` 与 `TREE_DICT` 两类接口一律不校验，下拉选项不需要授权。
+
+CRUD 接口的权限码不需要在代码里登记，但要在「菜单管理」里作为按钮权限录入并授给角色，非超级管理员调用时才能通过 `StpUtil.checkPermission`。
+
+## 新增一个资源
+
+<Steps>
+<Step>
+
+建表与实体。表遵循公共字段约定（`id`、`create_user`、`create_time`、`update_user`、`update_time`、`deleted`），脚本放进 `continew-server` 的 Liquibase changelog。实体继承 `BaseDO` 即获得全部公共字段。
+
+```java
+@Data
+@TableName("biz_goods")
+public class GoodsDO extends BaseDO {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 名称
+     */
+    private String name;
+
+    /**
+     * 状态（1：上架；2：下架）
+     */
+    private DisEnableStatusEnum status;
+}
+```
+
+</Step>
+<Step>
+
+定义模型。`model.query` 放查询条件，`model.req` 放创建/修改请求参数，`model.resp` 放列表与详情响应。
+
+```java
+@Data
+public class GoodsQuery implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 名称（模糊）
+     */
+    @Query(type = QueryType.LIKE)
+    private String name;
+}
+```
+
+</Step>
+<Step>
+
+声明 Service 与 Mapper。Service 接口继承 `BaseService<L, D, Q, C>`，实现类继承 `BaseServiceImpl` 并把 Mapper、实体泛型补齐；Mapper 继承 common 的 `DataPermissionMapper`（见 [数据权限](./data-permission.mdx)）或 starter 的 `BaseMapper`。`BaseServiceImpl` 已内置 Crane4j 数据填充，响应对象上的填充注解开箱即用。
+
+</Step>
+<Step>
+
+写控制器。继承 `BaseController<S, L, D, Q, C>` 五个泛型依次是 Service、列表响应、详情响应、查询条件、请求参数，类上标注 `@CrudRequestMapping`。
+
+```java
+@Tag(name = "商品管理 API")
+@Validated
+@RestController
+@RequiredArgsConstructor
+@CrudRequestMapping(value = "/biz/goods",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE, Api.EXPORT})
+public class GoodsController extends BaseController<GoodsService, GoodsResp, GoodsDetailResp, GoodsQuery, GoodsReq> {
+}
+```
+
+至此 `GET /biz/goods`、`POST /biz/goods` 等接口已可用，权限码按 `biz:goods:list`、`biz:goods:create` 自动生成。
+
+</Step>
+<Step>
+
+登记菜单与按钮权限。在「菜单管理」为资源建目录菜单，按钮类型菜单的权限码填第 4 步推导出的值（如 `biz:goods:create`），授给目标角色。使用代码生成器时这一步由 `Menu.ftl` 模板生成 SQL 自动完成，见 [代码生成](/docs/admin/manual/generator)。
+
+</Step>
+</Steps>
+
+## 自定义接口
+
+资源特有的接口直接写在同一个控制器里，用常规 Spring MVC 注解映射，并用 `@SaCheckPermission` 显式声明权限码。`UserController` 的重置密码接口是标准写法。
+
+```java
+@Operation(summary = "重置密码", description = "重置用户登录密码")
+@SaCheckPermission("system:user:resetPwd")
+@PatchMapping("/{id}/password")
+public void resetPassword(@RequestBody @Valid UserPasswordResetReq req, @PathVariable Long id) {
+    baseService.resetPassword(req, id);
+}
+```
+
+控制器内通过 `baseService` 访问注入的 Service 实例（`AbstractCrudController` 的 `@Autowired protected S baseService`）。
+
+## 重写 CRUD 接口
+
+要改某个内置接口的行为，在控制器里声明同名方法覆盖 `AbstractCrudController` 的实现。重写方法上标注了 `@SaCheckPermission` 或 `@SaCheckRole` 时，`preHandle` 的自动校验照常执行（权限码仍按路径推导），接口文档侧则跳过 CRUD 自动推导、展示手写注解，见 [接口文档](./api-doc.mdx)。`EXPORT` 接口返回文件流，`AbstractCrudController.export` 上的 `@ExcludeFromGracefulResponse` 让响应绕过全局包装，重写导出方法时保留这个注解。
+
+## 完整参考实现
+
+- [UserController（含自定义接口）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/UserController.java)
+- [BaseController（权限校验入口）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/base/controller/BaseController.java)
+- [CrudApiPermissionPrefixCache（权限前缀解析）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/crud/CrudApiPermissionPrefixCache.java)
+- [AbstractCrudController（starter，接口注册与默认实现）](https://github.com/continew-org/continew-starter/blob/dev/continew-starter-extension/continew-starter-extension-crud/continew-starter-extension-crud-core/src/main/java/top/continew/starter/extension/crud/controller/AbstractCrudController.java)

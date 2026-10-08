@@ -1,0 +1,122 @@
+---
+title: 项目结构
+description: 介绍 ContiNew Admin 后端 Maven 多模块划分、业务分层子包约定与前端 src 目录组织，帮助你在改代码前找对位置。
+---
+
+ContiNew Admin 分两个仓库。后端 continew-admin 是 Maven 多模块工程，前端 continew-admin-ui 是独立 Vite 工程。本页分别说明两边的目录组织，读完后能回答「这段代码该放哪」这类问题。
+
+## 后端 Maven 模块
+
+根 `pom.xml` 用 `${revision}`（当前 4.2.0-SNAPSHOT）统一管理版本，flatten-maven-plugin 在打包时展开。模块间依赖自上而下：`continew-server` → `continew-system` → `continew-common`，插件与扩展模块独立挂载。
+
+| 模块 | 职责 |
+|:-----|:-----|
+| `continew-server` | 打包部署入口：启动类 `top.continew.admin.ContiNewAdminApplication`、通用 Controller（验证码、工作台）、Liquibase 脚本、全部环境配置文件。dev 端口 8000，prod 端口 18000 |
+| `continew-system` | 核心业务：`auth`（系统认证）+ `system`（部门、角色、用户、菜单、字典、文件、公告、系统配置等） |
+| `continew-common` | 公共基类、工具与配置：CRUD 基类（`base`）、MyBatis、接口文档、Excel、全局异常（`config` 下对应子包） |
+| `continew-plugin` | 可插拔插件：`continew-plugin-open`（能力开放 AK/SK）、`continew-plugin-tenant`（多租户）、`continew-plugin-schedule`（任务调度）、`continew-plugin-generator`（代码生成器） |
+| `continew-extension` | 可独立部署的扩展服务：`continew-extension-schedule-server`（Snail Job 调度中心服务端，可选部署） |
+
+整体目录骨架如下。
+
+```text
+continew-admin
+├─ continew-server
+│  └─ src/main
+│     ├─ java/top/continew/admin
+│     │  ├─ config（log 操作日志、satoken 认证配置）
+│     │  ├─ controller（CaptchaController、DashboardController）
+│     │  ├─ job（定时任务，如 NoticePublishJob）
+│     │  └─ ContiNewAdminApplication.java
+│     └─ resources
+│        ├─ config（application.yml、application-dev.yml、application-prod.yml、application-generator.yml）
+│        ├─ db/changelog（mysql/ 与 postgresql/ 脚本、db.changelog-master.yaml）
+│        ├─ templates（邮件等模板）
+│        ├─ banner.txt
+│        └─ logback-spring.xml
+├─ continew-system
+│  └─ src/main
+│     ├─ java/top/continew/admin
+│     │  ├─ auth（系统认证）
+│     │  └─ system（系统管理）
+│     └─ resources/mapper（Mapper XML）
+├─ continew-plugin
+│  ├─ continew-plugin-open
+│  ├─ continew-plugin-tenant
+│  ├─ continew-plugin-schedule
+│  └─ continew-plugin-generator（resources/templates 下放 backend/ 与 frontend/ 代码生成 .ftl 模板）
+├─ continew-common
+│  └─ src/main/java/top/continew/admin/common
+│     ├─ api（公共业务 API 接口）
+│     ├─ base（controller/mapper/service/model 公共基类）
+│     ├─ config（crud、doc、excel、exception、mybatis）
+│     ├─ context、enums、constant、model、util
+├─ continew-extension
+│  └─ continew-extension-schedule-server（独立启动类 ScheduleServerApplication，独立 changelog 管理 sj_* 表）
+└─ docker（Dockerfile、docker-compose.yml、nginx 与 redis 配置）
+```
+
+### 业务分层子包
+
+`continew-system` 的 `auth` 与 `system` 两个包按同一套分层约定组织，`continew-plugin` 下各插件也沿用。加一个业务功能时对照下表落位。
+
+| 子包 | 放什么 |
+|:-----|:-------|
+| `controller` | REST 接口，CRUD 类继承 common 的 `BaseController` 并用 `@CrudRequestMapping` 声明 |
+| `service`（含 `impl`） | 业务接口与实现 |
+| `mapper` | MyBatis Mapper 接口，XML 放 `resources/mapper` |
+| `model.entity` / `model.query` / `model.req` / `model.resp` | 实体、查询条件、请求参数、响应参数 |
+| `enums` / `constant` | 枚举与常量 |
+| `config` | Spring 配置类 |
+| `util` / `validation` | 工具类与参数校验 |
+| `container` | Crane4j 数据填充容器（`system` 包） |
+| `handler` | 登录处理器（`auth` 包，如 `AccountLoginHandler`、`SocialLoginHandler`） |
+| `api` | 对外公共 API 的实现，配合 common 的 `top.continew.admin.common.api` 接口包 |
+
+跨模块调用走「内部 API」模式：被调方在 common 的 `api` 包定义接口，业务模块在自己的 `api/` 子包提供实现。调用方只依赖接口，模块之间不出现循环依赖。
+
+## 前端 src 目录
+
+前端 continew-admin-ui 基于 Vue 3 + TypeScript + Vite，路径别名 `@` 指向 `src`，`~` 指向仓库根。项目未接入 i18n，没有 `locale` 目录；站点标题从后端「网站配置」接口动态获取。
+
+```text
+src
+├─ apis            # 后端接口封装（按 system/auth/monitor/tenant 等域分目录）
+├─ assets          # 静态资源（fonts、icons、images）
+├─ components      # Gi 组件库（GiTable、GiForm、GiPageLayout、Verify、FilePreview 等）与通用组件
+├─ config          # 全局配置（setting.ts，主题、布局、页签默认值）
+├─ constant        # 常量（common.ts、file.ts）
+├─ directives      # 自定义指令（permission，即 v-permission / v-role）
+├─ features        # 特性模块（auth-session：access-token 内存持有与会话恢复）
+├─ hooks           # 组合式函数（app、modules 两级）
+├─ layout          # 布局组件（LayoutMix、LayoutTop、LayoutDefault、LayoutColumns 四套）
+├─ mock            # 本地 mock 数据
+├─ router          # 路由（index.ts、guard.ts 守卫、route.ts 常量路由、asyncModules.ts 动态路由）
+├─ stores          # Pinia（modules 下 app、user、route、tabs、tenant、dict）
+├─ styles          # 全局样式（SCSS，Arco 主题定制在 arco-ui 子目录）
+├─ types           # 全局类型声明（api.d.ts、router.d.ts、env.d.ts 等）
+├─ utils           # 工具（http.ts 请求封装、has.ts 权限判断、encrypt.ts 加密等）
+└─ views           # 页面，按一级菜单分目录
+```
+
+`views` 的目录与菜单一一对应，动态路由按 `import.meta.glob('@/views/**/*.vue')` 匹配后端返回的组件路径。
+
+| 目录 | 页面 |
+|:-----|:-----|
+| `dashboard` | 工作台（workplace）、分析页（analysis） |
+| `system` | 用户、角色、菜单、部门、字典、通知公告、文件、系统配置（config 下 site/security/login/mail/sms/storage/client 七组） |
+| `monitor` | 在线用户、登录日志、操作日志、短信日志 |
+| `tenant` | 租户管理、套餐管理 |
+| `schedule` | 任务管理、任务日志 |
+| `code/generator` | 代码生成 |
+| `open/app` | 应用管理（AK/SK） |
+| `user` | 个人中心（profile）、消息中心（message） |
+| `login` | 登录页、第三方回调（social）、密码过期（pwdExpired） |
+| `about` | 接口文档、更新日志（内嵌页） |
+| `default` | 错误页（403/404/500）与跳转页 |
+
+## 相关源码
+
+- 后端模块定义 [pom.xml](https://github.com/continew-org/continew-admin/blob/dev/pom.xml)
+- 后端仓库 [continew-org/continew-admin](https://github.com/continew-org/continew-admin/tree/dev)
+- 前端仓库 [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui/tree/dev)（`src/` 目录）

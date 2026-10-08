@@ -1,0 +1,111 @@
+---
+title: 数据权限
+description: 通过 DataPermissionMapper 与角色数据范围配置，让查询与删除自动按部门、本人或自定义部门集合过滤行级数据。
+---
+
+功能权限管「能不能调接口」，数据权限管「能看哪些行」。ContiNew Admin 的数据权限由 ContiNew Starter 的 `continew-starter-extension-datapermission-mp` 提供 MyBatis-Plus 拦截器实现，admin 侧负责提供当前用户的数据范围。业务表接入只需让 Mapper 继承 common 的 `DataPermissionMapper`，不需要改 Service 与 XML。
+
+## 五种数据范围
+
+`DataScopeEnum`（common `enums` 包）定义五种数据范围，在「角色管理」按角色配置。
+
+| 枚举 | 值 | 含义 | 拼接到 SQL 的条件 |
+|:-----|:---|:-----|:------------------|
+| `ALL` | 1 | 全部数据权限 | 不拼接任何条件 |
+| `DEPT_AND_CHILD` | 2 | 本部门及以下 | `dept_id IN (SELECT id FROM sys_dept WHERE id = ? OR find_in_set(?, ancestors))` |
+| `DEPT` | 3 | 本部门 | `dept_id = 当前用户部门` |
+| `SELF` | 4 | 仅本人 | `create_user = 当前用户 ID` |
+| `CUSTOM` | 5 | 自定义 | `dept_id IN (SELECT dept_id FROM sys_role_dept WHERE role_id = ?)` |
+
+`CUSTOM` 的部门集合来自角色的「数据权限」配置，保存时写入 `sys_role_dept` 关联表（`RoleDeptService`），登录后角色与数据范围随 `RoleContext` 进入 `UserContext`。用户持多个角色时，各角色的条件按 OR 归并；任一角色为 `ALL` 时直接放行全部数据。
+
+## 过滤入口
+
+`DefaultDataPermissionHandler`（starter 侧）实现 MyBatis-Plus 的 `DataPermissionHandler`，对每个标注 `@DataPermission` 的 Mapper 方法在 SQL 解析后追加 WHERE 条件。admin 侧在 `MybatisPlusConfiguration` 注册 `DefaultDataPermissionUserDataProvider` 提供两类输入。
+
+```java
+@Override
+public boolean isFilter() {
+    return !UserContextHolder.isSuperAdmin() && !UserContextHolder.isTenantAdmin();
+}
+
+@Override
+public UserData getUserData() {
+    UserContext userContext = UserContextHolder.getContext();
+    UserData userData = new UserData();
+    userData.setUserId(userContext.getId());
+    userData.setDeptId(userContext.getDeptId());
+    userData.setRoles(CollUtils.mapToSet(userContext.getRoles(),
+        r -> new RoleData(r.getId(), DataScope.valueOf(r.getDataScope().name()))));
+    return userData;
+}
+```
+
+`isFilter` 返回 `false` 时整个拦截器短路。admin 的实现让超级管理员与租户管理员两种内置角色跳过过滤，这与界面上的「全部数据」语义一致。`getUserData` 返回空或非法时拦截器抛 `DataPermissionException`，查询直接失败而不是退回全量，不会出现越权兜底。
+
+## 业务表接入
+
+<Steps>
+<Step>
+
+确认表结构。数据权限按 `dept_id` 与 `create_user` 两列过滤，业务表至少要有其中一列，列名不同则在注解参数里改写。
+
+</Step>
+<Step>
+
+Mapper 继承 `DataPermissionMapper<T>`。基类已对 `selectList`（两个重载）与 `deleteById` 标注 `@DataPermission`，继承后这三个方法的查询与删除自动过滤。
+
+```java
+public interface GoodsMapper extends DataPermissionMapper<GoodsDO> {
+}
+```
+
+</Step>
+<Step>
+
+自定义查询方法按需加注解。XML 里写了别名的语句用 `tableAlias` 指定主表别名，拦截器拼条件时会带上别名前缀，多表 JOIN 不会拼错列。
+
+```java
+@DataPermission(tableAlias = "t1")
+IPage<GoodsDetailResp> selectGoodsPage(@Param("page") IPage<GoodsDO> page,
+    @Param(Constants.WRAPPER) Wrapper<GoodsDO> queryWrapper);
+```
+
+`UserMapper.selectUserPage` 就是这样标注的。未加注解的自定义方法不过滤，写新方法时默认都要加，除非确认该语句不该受数据范围约束。
+
+</Step>
+<Step>
+
+配置角色数据范围。在「角色管理」编辑角色，「数据权限」选五种范围之一；选「自定义」时勾选可见部门，保存进 `sys_role_dept`。重新登录或刷新令牌后生效（数据范围随 `UserContext` 缓存）。
+
+</Step>
+</Steps>
+
+## 注解参数与默认列名
+
+`@DataPermission` 的全部参数都有默认值，列名与 admin 建表约定一致时才可省略。
+
+| 参数 | 默认值 | 用途 |
+|:-----|:-------|:-----|
+| `tableAlias` | 空 | 主表别名 |
+| `id` | `id` | 部门表主键列名（`DEPT_AND_CHILD` 子查询用） |
+| `deptId` | `dept_id` | 部门 ID 列名 |
+| `userId` | `create_user` | 用户 ID 列名（`SELF` 用） |
+| `roleId` | `role_id` | 角色 ID 列名（`CUSTOM` 子查询用） |
+| `deptTableAlias` | `sys_dept` | 部门表表名 |
+| `roleDeptTableAlias` | `sys_role_dept` | 角色-部门关联表表名 |
+
+<Callout type="info">
+`DEPT_AND_CHILD` 依赖 `sys_dept.ancestors` 列做层级匹配，MySQL 用 `find_in_set`，PostgreSQL 自动换成 `concat + LIKE`，两种数据库都支持（见 starter 的 `DefaultDataPermissionHandler.buildDeptAndChildExpression`）。
+</Callout>
+
+## 使用现状
+
+admin 内置两处使用方。`UserMapper` 让用户列表按角色的数据范围过滤，`AppMapper`（能力开放插件）让应用列表受同一套规则约束。新增业务模块时按上面的接入步骤套用即可，不需要再写过滤逻辑。
+
+## 完整参考实现
+
+- [DataPermissionMapper（Mapper 基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/base/mapper/DataPermissionMapper.java)
+- [DefaultDataPermissionUserDataProvider（用户数据提供）](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/config/mybatis/DefaultDataPermissionUserDataProvider.java)
+- [UserMapper（@DataPermission 实际用法）](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/mapper/user/UserMapper.java)
+- [DefaultDataPermissionHandler（starter，SQL 拼接）](https://github.com/continew-org/continew-starter/blob/dev/continew-starter-extension/continew-starter-extension-datapermission/continew-starter-extension-datapermission-mp/src/main/java/top/continew/starter/extension/datapermission/handler/DefaultDataPermissionHandler.java)
