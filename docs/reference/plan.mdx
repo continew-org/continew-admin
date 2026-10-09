@@ -1,0 +1,113 @@
+---
+title: 开发计划
+description: ContiNew Admin 的需求处理方式与规划来源（AtomGit 看板），以及各版本已完成的主要历史任务清单。
+---
+
+我们深知一个优秀的项目不能闭门造车，它需要拥抱变化、海纳百川。正如项目的名字一样 ContiNew Admin（Continue New Admin），它将持续迭代优化，致力于提供开箱即用、持续舒适的开发体验。也许它现在不够完善，但请给它多一点时间。🍻
+
+我们将慎重对待每一位关注者的星星之火💖：
+
+- 对框架新增特性功能且比较简单，会在第一时间进行开发。
+- 对框架新增特性功能但比较复杂，会延后几个版本制定相应的计划后进行开发。
+- 与框架设计理念不太相符，或超出中后台管理框架范畴，将会视需求人数决定是否开发或建立独立分支。
+
+<Callout type="info">
+规划中的事项与实时进展以 [AtomGit 看板](https://atomgit.com/org/continew/kanban/1) 为准，本页不另维护一份待办——两份清单必然不同步，而看板才是我们实际排期的地方。
+
+下方「历史任务」只记录**已完成**的事项，用于回看项目是怎么一步步长起来的。
+</Callout>
+
+## 历史任务
+
+<Callout type="warn">
+下方任务列表仅记录了对应版本的主要任务，更多优化或修复变更请查看 [更新日志](/docs/admin/reference/changelog.mdx)。
+</Callout>
+
+| 版本 | 任务 | 开发者 | 状态 |
+|:-----|:-----|:-------|:----:|
+| 4.1.0 | 全局逻辑删除 + 文件管理增加数据回收站 | Charles7c | ✅ |
+| | 文件管理支持文件分片上传 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 支持双列布局等更多布局模式 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| 4.0.0 | 多租户：租户管理、租户套餐 | [小熊](https://github.com/xtanyu)、[莫愁](https://gitee.com/kiki1373639299)、Charles7c | ✅ |
+| | 定义 BaseController、BaseService 方便使用者自由定义扩展 | Charles7c | ✅ |
+| | 适配 ContiNew Starter CRUD API 支持 Service 层校验，新增字典、字典树 CRUD API | Charles7c | ✅ |
+| 3.7.0 | 增加发送通知入口，允许设置全局通知、公告弹窗 | Charles7c | ✅ |
+| | 文件管理支持文件夹 | Charles7c、[老罗](https://github.com/luoqiz) | ✅ |
+| 3.6.0 | 奇安信代码卫士、墨菲安全扫描问题整改 | Charles7c | ✅ |
+| | 重构消息中心支持展示个人公告 | Charles7c | ✅ |
+| | 系统配置/短信配置 | [老罗](https://github.com/luoqiz)、Charles7c | ✅ |
+| | 重构系统配置布局，融合存储、短信、终端等配置 | Charles7c | ✅ |
+| 3.5.0 | 重构认证体系，多端认证鉴权控制 | [莫愁](https://gitee.com/kiki1373639299)、Charles7c | ✅ |
+| | 重构前端左树组件并支持响应式 | [莫愁](https://gitee.com/kiki1373639299)、[秋帆](https://gitee.com/AutumnSail) | ✅ |
+| | 重构存储管理页面，列表调整为卡片 | Charles7c | ✅ |
+| | 重构角色管理，角色详情增加用户管理，功能权限扁平化 | Charles7c | ✅ |
+| | 部门管理支持组织架构视图展示 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 最新墨菲安全及 Sonar 问题处理 | Charles7c | ✅ |
+| 3.4.1 | 系统配置/登录配置：验证码支持配置关闭 | [Gyq灬明](https://gitee.com/aiming317)、Charles7c | ✅ |
+| 3.4.0 | 重构前端首页，拆分为工作台、分析页面 | Charles7c、[秋帆](https://gitee.com/AutumnSail) | ✅ |
+| | 支持 CRON 表达式配置生成 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 公告支持选择通知范围到指定用户 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 角色管理支持批量分配角色给用户 | 孤独奋斗者、Charles7c | ✅ |
+| | 能力开放/应用管理 + Open API | YANG、Charles7c | ✅ |
+| 3.3.0 | 重构全局响应处理方案，并支持国际化 | [Jasmine](https://gitee.com/httpsjt)、Charles7c | ✅ |
+| | 代码生成支持配置字典关联及排序 | Charles7c | ✅ |
+| | 修改角色功能权限、数据权限支持衔接新增角色时的父子联动选项 | Charles7c | ✅ |
+| | 角色管理重构：分步骤配置角色 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| 3.2.0 | 用户导入功能 | [Kils](https://gitee.com/jskils) | ✅ |
+| | 集成分布式定时任务 | [莫愁](https://gitee.com/kiki1373639299)、Charles7c | ✅ |
+| | 限流器注解 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 重构公告编辑、查看 | [秋帆](https://gitee.com/AutumnSail) | ✅ |
+| | 文件管理支持 PDF、Office 文档预览 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| 3.1.0 | 重构消息中心 | [未然](https://github.com/weirantongxue)、Charles7c | ✅ |
+| | 动态邮件配置 | [莫愁](https://gitee.com/kiki1373639299) | ✅ |
+| | 安全配置/密码策略（次数锁定、有效期等） | [Kils](https://github.com/jskils)、Charles7c、[秋帆](https://gitee.com/AutumnSail) | ✅ |
+| | 代码生成预览重构 | [罗敬](https://gitee.com/Luo_Jing98358)、Charles7c | ✅ |
+| 3.0.0 | 新前端脚手架适配 | Charles7c | ✅ |
+| | 项目地址升级 | Charles7c | ✅ |
+| 2.5.0 | 适配 PostgreSQL | Charles7c | ✅ |
+| | 抽取代码生成器组件并优化 | Charles7c、Bull-BCLS | ✅ |
+| 2.4.0 | CI 集成质量分析工具 | Charles7c | ✅ |
+| | 集成链路追踪，增加 TraceId 记录 | Jasmine、Charles7c | ✅ |
+| | 自增 ID 调整为分布式 ID | Charles7c | ✅ |
+| | 数据库字段加密存储及解密 | Charles7c | ✅ |
+| | 支持 JSON 数据脱敏 | Charles7c | ✅ |
+| 2.3.0 | 使用 JetCache 替换 Spring Cache | Charles7c | ✅ |
+| | 集成 Crane4j 数据填充组件 | Charles7c | ✅ |
+| | 前端项目拆分到独立仓库 | Charles7c | ✅ |
+| | Base 基类能力完善 | Charles7c | ✅ |
+| 2.2.0 | 开发系统管理/文件管理相关接口 | Charles7c | ✅ |
+| | 集成 AJ-Captcha，升级短信、邮箱验证码组件 | Bull-BCLS | ✅ |
+| | 开发代码生成预览功能 | Charles7c | ✅ |
+| | 短信验证码增加防刷处理 | Charles7c | ✅ |
+| | 数据权限抽离到 ContiNew Starter | Charles7c | ✅ |
+| | 系统日志重构（日志组件重构） | Charles7c | ✅ |
+| 2.1.0 | 后端抽取 continew-starter 组件项目并适配 | Charles7c | ✅ |
+| 2.0.0 | 后端升级并适配 Spring Boot 3.x | Charles7c | ✅ |
+| 1.3.0 | 支持第三方登录及个人中心绑定、解绑 | Charles7c | ✅ |
+| | 支持邮箱、短信登录 | Charles7c | ✅ |
+| | 重构登录页面，支持多维度登录 | Charles7c | ✅ |
+| | 上传头像支持头像裁剪 | Bull-BCLS | ✅ |
+| | 开发系统管理/消息管理相关接口 | Bull-BCLS | ✅ |
+| 1.2.0 | 完善仪表盘各区块 | Charles7c | ✅ |
+| | 开发系统管理/字典管理相关接口 | Charles7c | ✅ |
+| | 开发系统管理/系统配置相关接口 | Bull-BCLS、Charles7c | ✅ |
+| | 完善前、后端表单校验 | Charles7c | ✅ |
+| 1.1.0 | 开发系统工具/代码生成器 | Charles7c | ✅ |
+| | 仪表盘公告区块优化 | Charles7c | ✅ |
+| | 开发系统管理/公告管理相关接口 | Charles7c | ✅ |
+| 1.0.0 | 开发系统管理/菜单管理相关接口 | Charles7c | ✅ |
+| | 开发系统管理/角色管理相关接口 | Charles7c | ✅ |
+| | 开发系统管理/用户管理相关接口 | Charles7c | ✅ |
+| | 开发系统管理/部门管理相关接口 | Charles7c | ✅ |
+| | 开发系统管理/岗位管理相关接口 | Charles7c | ✅ |
+| | 初步封装前、后端 CRUD 公共组件 | Charles7c | ✅ |
+| | 开发在线用户相关接口 | Charles7c | ✅ |
+| | 开发操作日志、登录日志、系统日志相关接口 | Charles7c | ✅ |
+| | 开发个人中心相关接口 | Charles7c | ✅ |
+| | 开发获取用户信息接口 | Charles7c | ✅ |
+| | 初步搭建前端框架 | Charles7c | ✅ |
+| | 开发操作日志引擎 | Charles7c | ✅ |
+| | 开发用户登录、退出接口 | Charles7c | ✅ |
+| | 开发获取图片验证码接口 | Charles7c | ✅ |
+| | 初步完成部署脚本 | Charles7c | ✅ |
+| | 初步搭建后端框架 | Charles7c | ✅ |

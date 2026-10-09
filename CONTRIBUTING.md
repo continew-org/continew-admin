@@ -59,8 +59,8 @@ ContiNew Admin 遵循阿里巴巴《Java 开发手册(黄山版)》，代码格�
 在提交 Issue 之前，请先：
 
 1. 确认使用的是[最新版本](https://github.com/continew-org/continew-admin/releases)，项目由维护者利用业余时间维护，没有额外精力回溯修复历史版本的问题；
-2. 搜索 [Issue 广场](https://continew.top/docs/admin/issue-hub.html) 与 [已有 Issue](https://github.com/continew-org/continew-admin/issues)，避免重复提交；
-3. 查阅 [使用指南](https://continew.top/docs/admin/guide/quick-start.html)。
+2. 搜索 [已有 Issue](https://github.com/continew-org/continew-admin/issues)，避免重复提交；
+3. 查阅 [使用指南](https://continew.top/docs/admin)。
 
 一份好的 Bug 报告应当做到：
 
@@ -206,8 +206,8 @@ git push --force-with-lease
 
 ## 社区
 
-- **Issue 广场**：https://continew.top/docs/admin/issue-hub.html
-- **官方交流群**：[入群方式](https://continew.top/discussion.html)。欢迎先提交 Issue 沉淀问题，再将 Issue 链接分享至交流群并 @ 我们，即可与维护团队及其他大佬用户直接交流探讨
+- **Issue 列表**：https://github.com/continew-org/continew-admin/issues
+- **官方交流群**：[入群方式](https://continew.top/)。欢迎先提交 Issue 沉淀问题，再将 Issue 链接分享至交流群并 @ 我们，即可与维护团队及其他大佬用户直接交流探讨
 
 ## 许可
 

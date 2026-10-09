@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        提问前建议先查阅[使用指南](https://continew.top/docs/admin/guide/quick-start.html)，多数使用问题都能快速找到答案。
+        提问前建议先查阅[使用指南](https://continew.top/docs/admin)，多数使用问题都能快速找到答案。
 
         > 前端相关问题请提交至 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 仓库；依赖组件自身的问题（如 MyBatis-Plus、Sa-Token 等）请提交至对应组件仓库。
   - type: checkboxes
@@ -15,7 +15,7 @@ body:
       options:
         - label: 我确认这是使用咨询而非 Bug 报告（Bug 请使用 Bug 报告模板）
           required: true
-        - label: 我确认已搜索 Issue 广场，没有类似问题
+        - label: 我确认已搜索已有 Issue，没有类似问题
           required: true
         - label: 我确认这是 ContiNew Admin 自身的问题，而非前端项目或依赖组件的问题
           required: true

@@ -15,7 +15,7 @@ body:
     attributes:
       label: 提交前确认
       options:
-        - label: 我确认已搜索 Issue 广场与已有 Feature，不存在重复建议
+        - label: 我确认已搜索已有 Issue 与 Feature，不存在重复建议
           required: true
         - label: 我确认该功能具有通用性，而非特定业务场景的定制需求
           required: true

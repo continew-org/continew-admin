@@ -1,0 +1,59 @@
+---
+title: 为什么选我们
+description: 选型 ContiNew Admin 的十条理由：长期迭代、Starter 组件、CRUD 套件、代码规范、工程化与质量安全保障。
+icon: Sparkles
+---
+
+选中后台框架时，功能清单只能回答「能做什么」，回答不了「值不值得长期押注」。本页从迭代历史、组件复用、开发效率、代码规范、质量保障五个角度说明 ContiNew Admin 的选型理由，每条都给出可核实的依据。
+
+## 长期稳定迭代
+
+项目自 2022 年 12 月创建，2023 年 3 月发布 v1.0.0。截至 4.1.0，ContiNew Admin 已累计发布 25 个版本，ContiNew Starter 已累计发布 43 个版本，版本历史见 [更新日志](/docs/admin/reference/changelog.mdx) 与各仓库 Releases。持续的大版本演进（3.x → 4.x 引入多租户与 Refresh Token）说明项目仍在活跃维护，不是一次性开源。
+
+## 甄选技术栈
+
+技术栈选型经过调研，按流行度、成熟度、发展潜力三个维度筛选，并随版本持续跟进升级。当前基线：Spring Boot 3.5（Java 17）、Vue 3 + Arco Design + TypeScript + Vite、Sa-Token 鉴权、MyBatis Plus、JetCache + Redisson 缓存、Snail Job 调度。完整清单见 [项目介绍](/docs/admin/introduction.mdx) 的技术栈基线一节。
+
+## Starter 组件可独立复用
+
+自 2.1.0 起，后端基础组件与各框架集成配置被抽取为独立的 [ContiNew Starter](/docs/starter) 项目，并[发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)。即使不使用完整的中后台框架，也可以在任意 Spring Boot 项目中单独引入所需 Starter（加密、脱敏、限流、幂等、日志、异常响应等），按需取用。这让框架能力不再绑死在整套系统上。
+
+## CRUD 套件
+
+通用增删改查套件适配后端各分层架构。Controller 标注 `@CrudRequestMapping` 即可提供一套完整 CRUD API，覆盖新增、修改、批量删除、查询详情、分页列表、全部列表、树型列表、Excel 导出、字典列表（下拉选项场景）。权限码由 `BaseController.preHandle` 按 API 类型自动生成并校验，无需逐接口手写鉴权注解。详见 [CRUD 开发](/docs/admin/development/backend/crud.mdx)。
+
+## 代码生成器
+
+配套的代码生成器覆盖前后端。数据表设计完成后，配置即可生成 CRUD API、权限控制、参数校验、接口文档，后端 11 个模板（Controller/Service/ServiceImpl/Mapper/MapperXml/Entity/Req/Resp/DetailResp/Query/Menu）加前端 4 个模板（列表页/新增弹窗/详情抽屉/API），产物与工程分层约定一致，常规业务可覆盖 80% 以上代码量。详见 [代码生成](/docs/admin/manual/generator.mdx)。
+
+## 开发体验组件
+
+持续集成能直接改善日常开发体验的组件：
+
+- **Crane4j** 数据填充，按注解完成字段映射，减少因单个字段（如用户名）产生的联表查询；
+- **SpEL Validator**，基于 SpEL 表达式的参数校验，覆盖「某字段为特定值时另一字段必填」这类复杂场景；
+- **P6Spy** SQL 性能分析，开发期监控 SQL 执行；
+- **TLog** 链路追踪，按 Trace ID 串联一次请求的完整日志；
+- **JetCache** 缓存框架，注解实现方法级缓存，支持二级缓存与多 JVM 本地缓存失效广播。
+
+## 代码规范
+
+后端遵循阿里巴巴 Java 开发手册，注释覆盖率超过 45%，接口参数示例 100%。代码分层清晰（controller/service/mapper/model 等子包约定），变量与方法命名统一。前端采用 ESLint 等检查与 pre-commit 钩子。规范的意义在协作与维护阶段体现：新成员按既有约定即可上手，AI 辅助编码也能从一致的代码风格中学到正确的写法。
+
+## 工程化实践
+
+后端为 Maven 多模块工程，集成统一版本管理（`${revision}`）与编译期代码格式化（Spotless）。提供胖瘦两种打包模式，配置文件、第三方依赖与主程序可分离部署，并附全套 Docker Compose 部署脚本。前端为独立 Vite 工程，pnpm 锁定包管理版本。详见 [部署](/docs/admin/reference/deployment.mdx)。
+
+## 全业务脚手架
+
+支持 SaaS 多租户架构（行级隔离），基于 RBAC 的功能权限与通用数据权限管理。内置完整的通用业务闭环：第三方登录、邮箱与短信服务、个人中心、消息中心、用户、角色、菜单、部门、字典、系统配置、文件管理（含回收站与分片上传）、通知公告、在线用户、系统日志。这些功能开箱即用，详见 [功能手册](/docs/admin/manual/system)。
+
+## 质量与安全
+
+CI 集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描质量问题，并定期扫描 CVE 漏洞。框架层封装了数据库字段加密（AES + RSA）、JSON 脱敏、XSS 过滤等安全工具。对需要满足 SonarQube 等质量指标的交付场景，这些内置能力能把质量门槛前置到开发期，而不是交付前补救。
+
+## 相关源码
+
+- 后端仓库：[continew-org/continew-admin](https://github.com/continew-org/continew-admin/tree/dev)
+- 基础能力：[continew-org/continew-starter](https://github.com/continew-org/continew-starter/tree/dev)
+- Maven 中央仓库：[top.continew.starter](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)
