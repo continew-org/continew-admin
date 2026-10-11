@@ -78,6 +78,12 @@ git log ${PREV_TAG}..HEAD --format='%h %aI %an %s'
 行格式**沿用 `CHANGELOG.md` 既有版本段**（对齐 v4.1.0 段写法）：`- 描述 ([短哈希](commit_url))`，
 外部贡献者在描述前带 `平台#编号@用户名`，PR 合并在末尾补 `(#PR)`。
 
+**贡献者署名防误引（4.2.0 发版教训）**：GitHub 用户用裸 `@用户名` 结尾（mention 到本人，正确归因）；
+**非 GitHub 平台贡献者禁止裸 `@`**，用 `Gitee@用户名` / `GitCode@用户名` 前缀——GitHub 会把裸 @ 解析为
+mention，@ 到同名的无关账号（liquor、KAI 先例）。`(GitHub#PR@用户名)` 括号内格式不受 mention 解析影响；
+正文中 `@since` 等非用户名的 @ 词用反引号包裹。判断依据：贡献历史里的平台前缀（如 4.1.0 的
+`(GitHub#76@ali-pay)` 说明 ali-pay 是真 GitHub 用户，可裸 @）。
+
 **依赖升级以父 POM 实际变更为准**：升级可能内嵌在 feat 提交里（如 4.2.0 周期 `continew-starter
 2.16.1 => 2.17.0` 藏在 58803b5d），用 `git log ${PREV_TAG}..HEAD -p -- pom.xml` 中 parent
 version 的变化推导，不全靠 `build(dependencies):` 前缀。
