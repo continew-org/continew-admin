@@ -3,7 +3,7 @@ title: 环境与配置
 description: 汇总 ContiNew Admin 后端环境变量、profile 差异与前端 .env 配置项，供部署与本地开发时逐项对照。
 ---
 
-ContiNew Admin 的配置分两侧。后端在 `continew-server/src/main/resources/config/` 下按 profile 拆分 YAML，前端在仓库根目录按 `.env.<mode>` 拆分环境变量。本页把两侧需要注入的变量和关键配置块列全，默认值与源码保持一致。各配置块的语义讲解见 [配置说明](/docs/admin/configuration.mdx)，本页只做对照参考。
+ContiNew Admin 的配置分两侧。后端在 `continew-server/src/main/resources/config/` 下按 profile 拆分 YAML，前端在仓库根目录按 `.env.<mode>` 拆分环境变量。本页把两侧需要注入的变量和关键配置块列全，默认值与源码保持一致。各配置块的语义讲解见 [配置说明](/docs/admin/configuration)，本页只做对照参考。
 
 ## 后端配置
 
@@ -23,7 +23,7 @@ spring:
 
 ### 环境变量
 
-dev 环境的所有变量都有默认值，不注入也能启动。prod 环境的凭据类变量没有默认值，缺失即启动失败，这是有意设计。
+dev 环境的必需变量都有默认值，不注入也能启动。prod 环境的核心凭据没有默认值，缺失即启动失败；可选能力（第三方登录）默认关闭，只在开启后要求对应平台凭据。
 
 | 变量 | 作用 | dev 默认值 | prod |
 |:-----|:-----|:-----------|:-----|
@@ -48,7 +48,10 @@ dev 环境的所有变量都有默认值，不注入也能启动。prod 环境�
 | `SCHEDULE_PASSWORD` | Snail Job OpenAPI 密码 | dev 为 `admin` | 必填，无默认值 |
 | `SCHEDULE_NAMESPACE` | Snail Job 命名空间 | 内置默认值 | 有回退 |
 | `SCHEDULE_GROUP` | Snail Job 接入组名 | `continew-admin` | 有回退 |
-| `SCHEDULE_TOKEN` | Snail Job 接入组 token | dev 有示例值 | 必填，无默认值 |
+| `SCHEDULE_TOKEN` | Snail Job 接入组 token | dev 有示例值 | 启用任务调度时必填，无默认值 |
+| `JUSTAUTH_ENABLED` | 是否启用第三方登录 | 配置中默认开启（凭据为空时对应平台不可用） | 默认 `false` |
+| `JUSTAUTH_<平台>_CLIENT_ID` | 第三方平台 Client ID | 空 | 启用该平台时必填 |
+| `JUSTAUTH_<平台>_SECRET` | 第三方平台 Client Secret | 空 | 启用该平台时必填 |
 
 <Callout type="warn">
 `REFRESH_TOKEN_SECRET` 必须是独立的高熵随机值，禁止与 `ACCESS_TOKEN_JWT_SECRET` 复用。dev 配置里的示例密钥只用于本地联调，生产环境必须全部替换。
@@ -98,16 +101,16 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 
 ### 环境变量文件
 
-前端用 Vite 的 mode 机制，仓库根目录放 `.env.development`、`.env.test`、`.env.production` 三份文件，分别对应 `pnpm dev`、`pnpm build:test`、`pnpm build`。`vite.config.ts` 里 `envPrefix: ['VITE', 'FILE']`，变量必须以 `VITE_` 开头才会暴露给客户端代码，经 `import.meta.env.<KEY>` 读取。
+前端用 Vite 的 mode 机制，仓库根目录放 `.env.development`、`.env.test`、`.env.production` 三份文件，分别对应 `pnpm dev`、`pnpm build:test`、`pnpm build`。`vite.config.ts` 里 `envPrefix: ['VITE', 'FILE']`，以 `VITE` 或 `FILE` 开头的变量都会暴露给客户端代码（`import.meta.env.<KEY>`），两个前缀下都不能放敏感信息。
 
 | 变量 | 作用 | development | production |
 |:-----|:-----|:------------|:-----------|
 | `VITE_API_PREFIX` | 接口前缀，dev 下由 Vite 代理转发 | `/dev-api` | 不设置 |
 | `VITE_API_BASE_URL` | 后端接口地址 | `http://localhost:8000` | `https://api.continew.top` |
-| `VITE_API_WS_URL` | WebSocket 地址 | `ws://localhost:8000` | `wss://api.continew.top` |
+| `VITE_API_WS_URL` | WebSocket 地址。`.env.test` 未预置，test 模式需自行补上，否则登录后消息通知不可用 | `ws://localhost:8000` | `wss://api.continew.top` |
 | `VITE_BASE` | 部署基础路径 | `/` | `/` |
 | `VITE_CLIENT_ID` | 登录时上报的客户端 ID，对应后端「客户端配置」 | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 |
-| `VITE_APP_SETTING` | 是否显示应用配置面板入口 | `true` | `true` |
+| `VITE_APP_SETTING` | 控制配置抽屉内的外观区块，不隐藏齿轮入口 | `true` | `true` |
 | `VITE_OPEN_DEVTOOLS` | 是否加载 Vue DevTools 插件 | `false` | 不设置 |
 | `VITE_BUILD_MOCK` | 打包时是否启用 Mock | 不设置 | `false`（test 为 `true`） |
 

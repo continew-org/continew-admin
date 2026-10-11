@@ -1,4 +1,10 @@
 {
   "title": "参考",
-  "pages": ["environment", "deployment", "faq", "changelog", "plan"]
+  "pages": [
+    "environment",
+    "security",
+    "plan",
+    "faq",
+    "external:[更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)"
+  ]
 }

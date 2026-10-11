@@ -87,7 +87,7 @@ public class GoodsQuery implements Serializable {
 </Step>
 <Step>
 
-声明 Service 与 Mapper。Service 接口继承 `BaseService<L, D, Q, C>`，实现类继承 `BaseServiceImpl` 并把 Mapper、实体泛型补齐；Mapper 继承 common 的 `DataPermissionMapper`（见 [数据权限](./data-permission.mdx)）或 starter 的 `BaseMapper`。`BaseServiceImpl` 已内置 Crane4j 数据填充，响应对象上的填充注解开箱即用。
+声明 Service 与 Mapper。Service 接口继承 `BaseService<L, D, Q, C>`，实现类继承 `BaseServiceImpl` 并把 Mapper、实体泛型补齐；Mapper 继承 common 的 `DataPermissionMapper`（见 [数据权限](./data-permission)）或 starter 的 `BaseMapper`。`BaseServiceImpl` 已内置 Crane4j 数据填充，响应对象上的填充注解开箱即用。
 
 </Step>
 <Step>
@@ -132,7 +132,7 @@ public void resetPassword(@RequestBody @Valid UserPasswordResetReq req, @PathVar
 
 ## 重写 CRUD 接口
 
-要改某个内置接口的行为，在控制器里声明同名方法覆盖 `AbstractCrudController` 的实现。重写方法上标注了 `@SaCheckPermission` 或 `@SaCheckRole` 时，`preHandle` 的自动校验照常执行（权限码仍按路径推导），接口文档侧则跳过 CRUD 自动推导、展示手写注解，见 [接口文档](./api-doc.mdx)。`EXPORT` 接口返回文件流，`AbstractCrudController.export` 上的 `@ExcludeFromGracefulResponse` 让响应绕过全局包装，重写导出方法时保留这个注解。
+要改某个内置接口的行为，在控制器里声明同名方法覆盖 `AbstractCrudController` 的实现。重写方法上标注了 `@SaCheckPermission` 或 `@SaCheckRole` 时，`preHandle` 的自动校验照常执行（权限码仍按路径推导），接口文档侧则跳过 CRUD 自动推导、展示手写注解，见 [接口文档](./api-doc)。`EXPORT` 接口返回文件流，`AbstractCrudController.export` 上的 `@ExcludeFromGracefulResponse` 让响应绕过全局包装，重写导出方法时保留这个注解。
 
 ## 完整参考实现
 

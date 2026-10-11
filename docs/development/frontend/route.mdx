@@ -37,12 +37,14 @@ description: 讲解前端路由的静态与动态注册机制、全局守卫的�
 
 组件映射的规则在 `transformComponentView`（`src/stores/modules/route.ts:17`）：`component` 字段是 `Layout` 或 `ParentView` 时映射到布局组件，否则去 `asyncRouteModules` 里按路径查找。`asyncRouteModules` 由 `import.meta.glob('@/views/**/*.vue')` 生成（`src/router/asyncModules.ts`），剔除了 `views/login` 和任何 `components` 目录。
 
-这意味着新增页面的约定是：`.vue` 文件放进 `src/views/` 后，菜单的「组件路径」填相对 `src/views/` 且不带扩展名的路径。例如文件 `src/views/system/user/index.vue` 对应组件路径 `system/user`。
+这意味着新增页面的约定是：`.vue` 文件放进 `src/views/` 后，菜单的「组件路径」填相对 `src/views/`、不带扩展名、且**包含 `index` 文件名**的路径。`import.meta.glob` 生成的 key 是完整文件路径（`asyncModules.ts` 只去掉 `/src/views/` 前缀与 `.vue` 后缀），初始数据也按这个形态登记（如 `system/user/index`）。
 
 ```text
-src/views/system/user/index.vue  →  component 填 system/user
-src/views/monitor/online/index.vue →  component 填 monitor/online
+src/views/system/user/index.vue   →  component 填 system/user/index
+src/views/monitor/online/index.vue →  component 填 monitor/online/index
 ```
+
+漏掉 `/index` 时 `asyncRouteModules[component]` 查不到模块，页面能进菜单但加载失败，排查时直接对照 glob 规则即可定位。
 
 菜单字段到路由 `meta` 的映射如下。
 
@@ -68,7 +70,7 @@ src/views/monitor/online/index.vue →  component 填 monitor/online
 会话恢复只认明确的 401 作为「无会话」终态。限流、网络抖动、服务端临时故障不会清掉 Cookie，守卫给出「登录状态恢复失败」提示并允许重试，避免把临时故障误判成踢下线。
 </Callout>
 
-登出或会话失效时调用 `resetRouter()`（`src/router/index.ts:19`）按 `name` 移除所有动态路由。动态路由必须带 `name`，否则移除不干净，这也是菜单「路由名称」字段必填的原因。
+登出或会话失效时调用 `resetRouter()`（`src/router/index.ts:19`）按 `name` 移除所有动态路由。路由最终必须有 `name`，否则移除不干净；菜单里「路由名称」留空时前端会按路径自动生成（`transformPathToName`），但生成值不如手写的稳定可读，建议菜单上显式填写。
 
 ## 页签与页面缓存
 

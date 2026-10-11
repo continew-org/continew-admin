@@ -30,7 +30,7 @@ description: 租户管理页面维护租户档案，创建租户时自动生成�
 
 ## 状态检查与登录拦截
 
-租户在每次请求进入时经受 `TenantServiceImpl.checkStatus` 校验，依次检查租户存在、未被禁用、未超过过期时间、所绑套餐未被禁用，任一不满足即拒绝请求。默认租户（ID 0，超级管理员所在租户）直接放行，不做状态与过期检查。`DefaultTenantProvider` 负责从请求头解析租户：普通请求读 `X-Tenant-Id`，登录相关接口读 `X-Tenant-Code` 并换算为租户 ID，`/auth/refresh` 与 `/auth/logout` 忽略请求头统一回落到默认租户。
+租户在每次请求进入时经受 `TenantServiceImpl.checkStatus` 校验，依次检查租户存在、未被禁用、未超过过期时间、所绑套餐未被禁用，任一不满足即拒绝请求。默认租户（ID 0，超级管理员所在租户）直接放行，不做状态与过期检查。`DefaultTenantProvider` 负责从请求头解析租户：普通请求读 `X-Tenant-Id`，登录相关接口读 `X-Tenant-Code` 并换算为租户 ID。`/auth/refresh` 与 `/auth/logout` 不经过租户拦截器（`@TenantIgnore`），租户上下文取自 Refresh Session 中保存的 `tenantId`，因此跨租户用户的会话轮换与登出不受请求头影响。
 
 <Callout type="info">
 租户修改或删除后，后端会清空以 `TENANT:` 为前缀的租户缓存，并使该租户下全部在线会话失效，租户用户需要重新登录才能继续操作。对应逻辑在 `TenantServiceImpl.afterUpdate`。

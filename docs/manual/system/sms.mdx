@@ -30,7 +30,7 @@ description: 短信厂商配置的维护、负载均衡与默认配置切换，�
 同一厂商可以建多条配置，SMS4J 按 `weight` 做负载均衡分流，`maximum` 控制单配置的发送上限，超限后自动退出分流。发送失败按 `retry_interval` 与 `max_retries` 重试。「设为默认」调 `PUT /system/sms/config/{id}/default`（权限码 `system:smsConfig:setDefault`）。
 
 <Callout type="info">
-手机验证码登录（`PhoneLoginHandler`）与短信验证码（`continew-starter.captcha.sms`，6 位、5 分钟有效期）复用这里的发送通道。未配置任何启用的短信配置时，短信验证码发送失败。
+手机验证码登录（`PhoneLoginHandler`）与短信验证码（根级 `captcha.sms` 前缀，admin 自定义于 `CaptchaProperties`，默认 6 位、5 分钟有效期）复用这里的发送通道。注意它与 Starter 行为验证码的 `continew-starter.captcha.behavior` 是两个命名空间，后者只管滑动拼图/文字点选。未配置任何启用的短信配置时，短信验证码发送失败。
 </Callout>
 
 ## 发送日志

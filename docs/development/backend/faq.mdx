@@ -3,7 +3,34 @@ title: 常见问题
 description: 按症状组织后端二次开发的常见问题，覆盖 CRUD、权限、租户、数据权限、Excel 与接口文档六类。
 ---
 
-本文收集后端二次开发阶段的高频问题，按「症状 → 原因 → 处理」组织。环境与启动类问题见 [常见问题](/docs/admin/reference/faq.mdx)。
+本文收集后端二次开发阶段的高频问题，按「症状 → 原因 → 处理」组织。环境与启动类问题见 [常见问题](/docs/admin/reference/faq)。
+
+## Spring Bean 与接口扫描
+
+### 启动找不到 Bean，或访问接口提示 No endpoint
+
+两类症状通常指向同一个根因：对应的 Bean（包括 Controller）没有进入 Spring 容器。
+
+常见报错：
+
+```text
+Consider defining a bean of type 'com.example.XxxService' in your configuration.
+```
+
+```text
+org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /xxx
+```
+
+按下面顺序排查，不要一开始就怀疑框架：
+
+1. **原版能否启动**：在没有改包名、模块与配置的原版代码上复现。原版正常，问题就在定制差异里；原版也失败再提交 Issue；
+2. **包扫描边界**：启动类 `top.continew.admin.ContiNewAdminApplication` 默认扫描 `top.continew.admin` 及其子包。把业务包移到平级的 `com.example.biz` 后不会自动扫描，要么放回启动类根包下，要么显式配置 `@ComponentScan`；
+3. **模块是否进入运行时依赖**：新增 Maven 模块后，在根 POM 的 `<modules>` 与 `dependencyManagement` 登记，并让 `continew-server` 依赖它；只聚合、不被 server 依赖的模块不会进最终应用；
+4. **组件注解是否完整**：实现类要有 `@Service` / `@Component`，配置类要有 `@Configuration`，Mapper 按项目约定扫描；接口本身不是 Bean，必须有实现；
+5. **自动配置是否注册**：Starter 模块的自动配置类要登记在 `AutoConfiguration.imports`，并确认没有被 `spring.autoconfigure.exclude` 或 `@ConditionalOnProperty` 条件关闭；
+6. **应用基础包配置**：改包名时同步修改 `application.base-package`。它用于全局枚举字典、接口文档等扫描，虽不等同于 Spring `@ComponentScan`，但漏改会造成“Bean 在，扩展功能找不到”的另一类问题。
+
+排查时用 IDE 的 Bean 查找、Spring Boot 条件评估报告（`--debug`）与启动日志确认，不要靠反复加 `@ComponentScan("*")` 扩大扫描范围来掩盖模块依赖错误。
 
 ## CRUD 与接口
 
@@ -11,13 +38,13 @@ description: 按症状组织后端二次开发的常见问题，覆盖 CRUD、�
 
 控制器只写了 `@RequestMapping` 没写 `@CrudRequestMapping`，或 `api` 数组没声明对应类型。CRUD 端点由 `@CrudRequestMapping` 在启动时注册，普通 `@RequestMapping` 不会触发注册逻辑，`api` 数组之外的类型一律不注册。
 
-对照 [CRUD 开发](./crud.mdx) 检查注解与 `api` 数组；启动日志里能看到实际注册的路径，先确认目标路径在列。
+对照 [CRUD 开发](./crud) 检查注解与 `api` 数组；启动日志里能看到实际注册的路径，先确认目标路径在列。
 
 ### 调用接口返回 403，权限码不存在
 
 `BaseController.preHandle` 按「路径推导前缀 + API 名」校验权限码（如 `POST /biz/goods` → `biz:goods:create`），非超级管理员必须在「菜单管理」里录入了对应按钮权限并授给当前角色。
 
-在菜单管理中为资源补齐按钮权限码，重新登录或刷新令牌后重试。权限码的推导规则见 [CRUD 开发 · 权限码生成](./crud.mdx)，与代码里写的字符串不一致时以推导规则为准。
+在菜单管理中为资源补齐按钮权限码，重新登录或刷新令牌后重试。权限码的推导规则见 [CRUD 开发 · 权限码生成](./crud)，与代码里写的字符串不一致时以推导规则为准。
 
 ### 字典接口（/dict）不需要权限但业务接口要
 
@@ -47,7 +74,7 @@ description: 按症状组织后端二次开发的常见问题，覆盖 CRUD、�
 
 Refresh Session 过期、被撤销，或 Cookie 没带。浏览器端 Refresh Token 只存在于 HttpOnly Cookie，前端代理或 Nginx 把 Cookie 剥离后刷新必然失败。
 
-排查顺序与 [常见问题](/docs/admin/reference/faq.mdx) 的「刷新页面掉线」一致：先看 `cookie-path` 是否覆盖代理前缀，再看 `Set-Cookie` 是否到达浏览器，最后查 Redis 中会话是否还存在。
+排查顺序与 [常见问题](/docs/admin/reference/faq) 的「刷新页面掉线」一致：先看 `cookie-path` 是否覆盖代理前缀，再看 `Set-Cookie` 是否到达浏览器，最后查 Redis 中会话是否还存在。
 
 ## 多租户
 
@@ -55,7 +82,7 @@ Refresh Session 过期、被撤销，或 Cookie 没带。浏览器端 Refresh To
 
 实体继承了 `BaseDO` 而不是 `TenantBaseDO`，且表没加 `tenant_id` 列。租户拦截器只对包含 `tenant_id` 列的实体拼条件，缺列的表静默跳过，表现为不过滤。
 
-按 [多租户接入](./tenant.mdx) 补齐 `tenant_id` 列与索引，实体改继承 `TenantBaseDO`；存量数据回填 `tenant_id = 0` 后再观察。
+按 [多租户接入](./tenant) 补齐 `tenant_id` 列与索引，实体改继承 `TenantBaseDO`；存量数据回填 `tenant_id = 0` 后再观察。
 
 ### 新业务表一个租户都查不到数据
 
@@ -101,7 +128,7 @@ Refresh Session 过期、被撤销，或 Cookie 没带。浏览器端 Refresh To
 
 字段只写了 `@ExcelProperty` 没配 `converter = ExcelDictConverter.class` 和 `@DictExcelProperty("字典编码")`。两个注解缺一，转换器要么不执行要么报「请为字段添加 @DictExcelProperty 注解」。
 
-按 [Excel 导入导出 · 字典转换](./excel.mdx) 的写法补齐两个注解，字典编码与「字典管理」中的编码一致。
+按 [Excel 导入导出 · 字典转换](./excel) 的写法补齐两个注解，字典编码与「字典管理」中的编码一致。
 
 ### 导入报「数据文件解析异常」
 

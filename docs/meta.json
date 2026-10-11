@@ -9,10 +9,12 @@
     "introduction",
     "why-choose-us",
     "configuration",
-    "---功能手册---",
-    "...manual",
+    "...guide",
+    "reference/deployment",
     "---开发指南---",
     "...development",
+    "---功能手册---",
+    "...manual",
     "---参考---",
     "...reference"
   ]

@@ -31,7 +31,7 @@ description: 公告的草稿、定时发布与状态流转，以及系统消息�
 | 系统消息 | 1 | 发布时向目标用户写入一条站内信（`sys_message`），消息中心可见 |
 | 登录弹窗 | 2 | 用户登录后弹窗展示未读公告 |
 
-系统消息方式由 `NoticeServiceImpl.publish` 实现，按 `MessageTemplateEnum.NOTICE_PUBLISH` 模板生成消息标题与跳转路径，经 `MessageService.add` 写入，详见[消息中心](./message.mdx)。
+系统消息方式由 `NoticeServiceImpl.publish` 实现，按 `MessageTemplateEnum.NOTICE_PUBLISH` 模板生成消息标题与跳转路径，经 `MessageService.add` 写入，详见[消息中心](./message)。
 
 ## 通知范围
 

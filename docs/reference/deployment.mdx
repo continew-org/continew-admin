@@ -1,27 +1,58 @@
 ---
-title: 部署
+title: 快速部署
 description: 从环境准备、打包到 Docker Compose 与 Nginx 配置，完成 ContiNew Admin 的生产部署，并附上线前检查清单。
+icon: Server
 ---
 
-本文以仓库自带的 `docker/` 目录为主线，走通「打包 → Docker Compose 编排 → Nginx 反向代理」的完整部署路径。不使用 Docker 的场景可以只参考打包与 Nginx 两节。
+本文以仓库自带的 `docker/` 目录为主线，走「打包 → 产物落位 → Docker Compose 编排 → Nginx 反向代理 → 验收」的完整路径。不使用 Docker 的场景可以只参考打包与 Nginx 两节。
+
+部署前先确认你已经能在本机跑通并登录（见[快速开始](/docs/admin)）。生产环境首次启动请留足观察时间：Liquibase 会自动建表并灌入初始数据，首次启动比平时慢。
 
 ## 环境要求
 
 | 组件 | 版本 | 说明 |
 |:-----|:-----|:-----|
 | JDK | 17 | Spring Boot 3 的最低要求，打包与运行都需要 |
-| Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` 即可 |
-| Node.js / pnpm | pnpm 9.3.0 | 仅构建前端时需要 |
-| MySQL | 8.0.42 | 也支持 PostgreSQL，Liquibase 脚本在 `db/changelog/postgresql` |
+| Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` |
+| Node.js / pnpm | Node 22 / pnpm 9.3.0 | 仅构建前端时需要 |
+| MySQL | 8.0.42 | 也支持 PostgreSQL，见下方切换步骤 |
 | Redis | 7.2.8 | 会话、缓存、验证码、限流共用 |
 | Nginx | 1.27.0 | 前端静态资源托管与后端反向代理 |
 | Docker / Docker Compose | 任意近期版本 | 仅容器化部署需要 |
 
-## 打包
+## 第 1 步：生产配置
 
 ### 后端
 
-后端提供胖瘦两种打包方式，由 `continew-server/pom.xml` 中的 Maven profile 控制，默认激活 `thin-jar`。
+后端 Dockerfile 基于 `application-prod.yml` 运行，部署前逐项确认：
+
+- 数据源连接池配置；
+- SQL 日志（prod 默认关闭）；
+- 接口文档随 `nextdoc4j.production: ${application.production}` 进入屏蔽模式；
+- 日志级别（prod 默认 INFO），需要改日志保留策略时同步改 `logback-spring.xml` 的 `<springProfile name="prod">` 段；
+- 跨域白名单。`continew-starter.web.cors` 只放行 `${application.url}`，改了前端域名就要改 `application.url`：
+
+```yaml
+continew-starter.web.cors:
+  enabled: true
+  allowed-origins:
+    - ${application.url}
+  allowed-methods: '*'
+  allowed-headers: '*'
+  exposed-headers: '*'
+```
+
+### 前端
+
+`pnpm build` 使用 `.env.production`，确认 `VITE_API_BASE_URL` 与 `VITE_API_WS_URL` 指向实际后端地址（开启 SSL 用 `https` / `wss`）。前后端同域名部署时改用 `VITE_API_PREFIX=/api` + 后端地址，并放开 Nginx 里 `/api/` 的代理配置；同源部署下 Refresh Token Cookie 天然同源，`cookie-allowed-origins` 的配置压力最小。
+
+前端环境变量要点见[前端开发](/docs/admin/development/frontend)，完整清单见[环境变量参考](/docs/admin/reference/environment)。
+
+## 第 2 步：打包
+
+### 后端
+
+后端提供胖瘦两种打包方式，由 `continew-server/pom.xml` 的 Maven profile 控制，默认激活 `thin-jar`。
 
 <Tabs items={['瘦包（生产推荐）', '胖包']}>
   <Tab value="瘦包（生产推荐）">
@@ -30,7 +61,7 @@ description: 从环境准备、打包到 Docker Compose 与 Nginx 配置，完�
 ./mvnw clean package
 ```
 
-瘦包把主程序、依赖、配置文件拆到三个目录，产物在 `continew-server/target/app/`。
+瘦包把主程序、依赖、配置文件拆到三个目录，产物在 `continew-server/target/app/`：
 
 ```
 app/
@@ -39,7 +70,7 @@ app/
 └── lib/                      # 全部第三方依赖 jar
 ```
 
-配置文件外置后，改配置不需要重新打包，docker-compose 也正是把宿主目录挂载到 `/app/config/` 来覆盖配置。
+配置文件外置后改配置不用重新打包，compose 也是把宿主目录挂载到 `/app/config/` 来覆盖配置。
 
   </Tab>
   <Tab value="胖包">
@@ -48,29 +79,44 @@ app/
 ./mvnw clean package -P fat-jar
 ```
 
-胖包把依赖与配置全部打进单个可执行 jar（`continew-server/target/continew-admin.jar`），`java -jar` 即可运行，适合快速验证。
+胖包把依赖与配置全部打进单个可执行 jar（`continew-server/target/continew-admin.jar`），`java -jar` 即可运行，适合快速验证或不想维护外置目录的场景。
 
   </Tab>
 </Tabs>
 
 ### 前端
 
-前端在独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 中。生产构建前先确认 `.env.production` 中的 `VITE_API_BASE_URL` 与 `VITE_API_WS_URL` 指向实际后端地址。
+前端在独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 中：
 
 ```bash
 pnpm install
 pnpm build
 ```
 
-产物在 `dist/`，部署时把整个目录交给 Nginx（docker-compose 中挂载到 `/usr/share/nginx/html/`）。
+产物在 `dist/`，部署时把整个目录交给 Nginx（compose 中挂载到 `/usr/share/nginx/html/`）。
 
 <Callout type="info">
 `pnpm build` 会先跑 `vue-tsc --noEmit` 做类型检查再执行 `vite build`，类型错误会直接中断构建。`VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」中某条启用状态的客户端 ID 一致，否则登录会被拒绝。
 </Callout>
 
-## Docker Compose 部署
+## 第 3 步：产物落位
 
-仓库根目录的 `docker/` 提供了完整编排样例，包含五个服务。
+瘦包模式下这一步最关键，漏掉依赖目录会导致容器起不来。把 `continew-server/target/app/` 下的三个目录整体复制到 `docker/continew-admin/`：
+
+```
+docker/continew-admin/
+├── bin/continew-admin.jar    # 来自 app/bin
+├── config/                   # 来自 app/config（外置配置放这里）
+└── lib/                      # 来自 app/lib（必须复制，缺了会 ClassNotFound）
+```
+
+`docker/continew-admin/Dockerfile` 只把 `./bin/*.jar` 复制进镜像，依赖与配置靠 compose 的 volumes 挂载（`/docker/continew-admin/lib/:/app/lib/`）。**宿主目录 `/docker/continew-admin/lib/` 必须是上面复制过来的真实依赖目录，只创建空目录会让主程序加载不到任何依赖。**
+
+需要定时任务时，把 `continew-extension/continew-extension-schedule-server/target/continew-extension-schedule-server.jar` 复制到 `docker/schedule-server/` 下（也可以直接用 Snail Job 官方镜像部署，二者等价）。前端 `dist/` 内容复制到 `/docker/continew-admin/web/`。
+
+## 第 4 步：编排与启动
+
+`docker/` 提供完整编排样例，包含五个服务。
 
 | 服务 | 镜像 | 端口 | 职责 |
 |:-----|:-----|:-----|:-----|
@@ -78,54 +124,49 @@ pnpm build
 | redis | redis:7.2.8 | 6379 | 缓存与会话 |
 | continew-server | continew-server:4.2.0-SNAPSHOT（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
 | continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
-| schedule-server | schedule-server:1.8.0（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |
+| schedule-server | schedule-server（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |
 
 <Steps>
-  <Step>
-    **构建后端瘦包**
+<Step>
 
-    在仓库根目录执行 `./mvnw clean package`，产物落到 `continew-server/target/app/`。`docker/continew-admin/Dockerfile` 以 `./bin/*.jar` 为构建上下文入口，构建前把 `app/` 目录内容复制到 `docker/continew-admin/` 下（`bin/`、`config/`、`lib/` 齐备），或按需调整 Dockerfile 的 `JAR_FILE` 路径。
-  </Step>
-  <Step>
-    **准备宿主目录与配置**
+按上一步把产物放到宿主目录，并补齐 `docker/redis/conf/redis.conf` 的 `requirepass`、`docker/nginx/conf/nginx.conf` 的 `upstream admin-server.server`、监听端口、`server_name` 与 SSL 证书路径。端口修改后，所有涉及的配置文件都要同步改。
 
-    按 compose 文件中的挂载约定，在宿主创建 `/docker/continew-admin/{config,data/file,logs,lib}`、`/docker/nginx/{conf,cert,logs}`、`/docker/continew-admin/web` 等目录，把外置配置放进 `/docker/continew-admin/config/`，前端 `dist/` 内容放进 `/docker/continew-admin/web/`，SSL 证书放进 `/docker/nginx/cert/`。
-  </Step>
-  <Step>
-    **填写环境变量**
+</Step>
+<Step>
 
-    编辑 `docker/docker-compose.yml`，把 `DB_USER`、`DB_PWD`、`REDIS_PWD`、`SCHEDULE_TOKEN`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET` 等占位值替换为真实值。两个 Token 密钥都要求高熵随机、至少 32 字符，且互不相同。
-  </Step>
-  <Step>
-    **启动并验证**
+编辑 `docker/docker-compose.yml` 的 `environment`，把占位值换成真实值。必填的凭据与密钥包括 `DB_USER`、`DB_PWD`、`REDIS_PWD`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`，启用任务调度还要 `SCHEDULE_TOKEN`、`SCHEDULE_PASSWORD`。两个 Token 密钥都要高熵随机、至少 32 字符且互不相同。
 
-    ```bash
-    cd docker
-    docker compose up -d
-    docker compose ps
-    docker compose logs -f continew-server
-    ```
+调度相关的地址按容器拓扑配置：`SCHEDULE_HOST: schedule-server`、`SCHEDULE_PORT: 17888`、`SCHEDULE_API_URL: http://schedule-server:18001/snail-job`。`SCHEDULE_API_URL` 缺省是 `http://127.0.0.1:18001/snail-job`，在容器里会指向后端自身而不是调度中心，必须显式覆盖。
 
-    MySQL 与 Redis 配置了健康检查，后端会等两者就绪后启动。首次启动由 Liquibase 自动建表与灌入初始数据，看到启动日志后访问 `https://<前端域名>` 验证。
-  </Step>
+</Step>
+<Step>
+
+启动并验收：
+
+```bash
+cd docker
+docker compose up -d
+docker compose ps
+docker compose logs -f continew-server
+```
+
+MySQL 与 Redis 配了健康检查，后端会等两者就绪后启动。首次启动由 Liquibase 自动建表与灌入初始数据，看到 `ContiNew Admin server started successfully.` 后访问前端域名验证，用初始账号 `admin` / `admin123` 登录并立即改密码。
+
+</Step>
 </Steps>
 
-后端镜像基于 `bellsoft/liberica-openjdk-debian:17.0.14`，JVM 参数预置 ZGC、Metaspace 上限 256MB，并在 OOM 时自动向 `/app/logs/oom.hprof` 写堆转储（该目录已挂载到宿主，容器重建后仍可拿到现场）。
+后端镜像基于 `bellsoft/liberica-openjdk-debian:17.0.14`，JVM 参数预置 ZGC、Metaspace 上限 256MB，OOM 时自动向 `/app/logs/oom.hprof` 写堆转储（该目录已挂载到宿主，容器重建后仍可拿到现场）。
 
-<Callout type="warn">
-compose 中 `SCHEDULE_PORT: 1788` 与 schedule-server 实际监听的 17888 不一致，启用任务调度前请核对修正为 `17888`，否则后端客户端注册不到调度中心。
-</Callout>
-
-不使用任务调度时，可以不启动 schedule-server，并把 `application-prod.yml` 中 `snail-job.enabled` 改为 `false`（prod 默认 `true`，缺失调度中心会导致相关功能报错）。调度中心本身即 `continew-extension/continew-extension-schedule-server` 模块，独立打包部署，建表脚本为其内置的 `snail-job_table.sql`。
+不使用任务调度时可以不启动 schedule-server，并把 `application-prod.yml` 的 `snail-job.enabled` 改为 `false`；prod 默认为 `true`，缺失调度中心会让任务相关功能报错。
 
 ## Nginx 配置
 
 `docker/nginx/conf/nginx.conf` 采用双站点结构，前后端各一个 server 块，共用一套 SSL 证书。
 
-后端站点（`api.continew.top`）把全部请求反代到 `upstream admin-server`（`172.17.0.1:18000`），要点有三个。
+后端站点（`api.continew.top`）把请求反代到 `upstream admin-server`（`172.17.0.1:18000`），三个要点：
 
 - `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作；
-- `X-Forwarded-For` 被显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
+- `X-Forwarded-For` 显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
 - `client_max_body_size 100m`，要大于等于后端 `spring.servlet.multipart` 的 20MB 上限，分片上传场景按需再调大。
 
 ```nginx
@@ -143,12 +184,23 @@ location / {
 }
 ```
 
-前端站点（`admin.continew.top`）是标准的 SPA 托管，`try_files $uri $uri/ /index.html` 保证 history 路由刷新不 404。两个站点的 80 端口都 301 到 HTTPS。
-
-如果不用独立 API 域名，可以改用前端站点内 `/api/` 前缀代理后端，配置文件里留了注释样例。此时前端的 `VITE_API_BASE_URL` 改为同源相对路径，Refresh Token Cookie 也天然同源，跨域与 `cookie-allowed-origins` 的配置压力最小。
+前端站点（`admin.continew.top`）是标准 SPA 托管，`try_files $uri $uri/ /index.html` 保证 history 路由刷新不 404。两个站点的 80 端口都 301 到 HTTPS。不用独立 API 域名时，改用前端站点内 `/api/` 前缀代理后端，配置文件里留了注释样例。
 
 <Callout type="warn">
-后端经过 Nginx 反代后，务必在 `continew-starter.refresh-token` 中配置 `trusted-proxy-addresses` 指向 Nginx 出口地址。不配置的话，后端按连接对端地址限流，全站用户共享 Nginx 这一个 IP 的限流桶，`/auth/refresh` 容易被打满返回 429。详见 [配置说明](/docs/admin/configuration.mdx#refresh-token)。
+后端经 Nginx 反代后，必须在 `continew-starter.refresh-token` 中配置 `trusted-proxy-addresses` 指向 Nginx 出口地址。不配置的话后端按连接对端地址限流，全站用户共享 Nginx 这一个 IP 的限流桶，`/auth/refresh` 容易被打满返回 429。
+</Callout>
+
+## 切换到 PostgreSQL
+
+新项目直接选择 PostgreSQL 时，需要改四处，只改 `database-id` 不够：
+
+1. `application.yml` 的 `mybatis-plus.database-id` 改为 `pgsql`（分页方言靠它区分）；
+2. 数据源 URL 与驱动：`jdbc:postgresql://host:5432/db`，驱动 `org.postgresql.Driver`，`application-prod.yml` 与 `application-dev.yml` 都要改；
+3. Liquibase 的 `db.changelog-master.yaml` 把 MySQL 的 include 切到 PostgreSQL 的 include，两份脚本在 `db/changelog/mysql` 与 `db/changelog/postgresql`；
+4. 代码生成器的类型映射按 PostgreSQL 方言提供（`application-generator.yml` 已内置 `int2` / `int4` / `int8` 等映射）。
+
+<Callout type="info">
+已有 MySQL 库迁移到 PostgreSQL 属于数据迁移，不在文档范围。建库字符集建议 UTF8，排序规则与 MySQL 场景保持一致再校验分页与排序行为。
 </Callout>
 
 ## 生产检查清单
@@ -160,6 +212,7 @@ location / {
 - [ ] `DB_PWD`、`REDIS_PWD` 已通过环境变量注入，prod 无默认值，缺失即启动失败
 - [ ] `ACCESS_TOKEN_JWT_SECRET` 与 `REFRESH_TOKEN_SECRET` 为两个不同的高熵随机值（至少 32 字符）
 - [ ] `FIELD_ENCRYPT_PASSWORD` 与 RSA 密钥对（`FIELD_ENCRYPT_PUBLIC_KEY` / `FIELD_ENCRYPT_PRIVATE_KEY`）已注入，且不与 dev 示例密钥复用
+- [ ] 第三方登录默认关闭；启用时设置 `JUSTAUTH_ENABLED=true`，并只为实际使用的平台注入 `JUSTAUTH_<平台>_CLIENT_ID` 与 `JUSTAUTH_<平台>_SECRET`
 - [ ] `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN` 已注入（启用任务调度时）
 
 **配置**
@@ -177,10 +230,12 @@ location / {
 - [ ] Redis 已设置密码，`bind` 不暴露公网
 - [ ] Nginx `client_max_body_size` 不小于后端上传上限
 - [ ] 日志目录（`/app/logs`）已挂载持久化，OOM 堆转储可回取
+- [ ] 部署目录权限按最小可用原则设置（不要用 777）
 
 ## 相关源码
 
 - [docker/docker-compose.yml](https://github.com/continew-org/continew-admin/blob/dev/docker/docker-compose.yml)
 - [docker/continew-admin/Dockerfile](https://github.com/continew-org/continew-admin/blob/dev/docker/continew-admin/Dockerfile)
+- [docker/schedule-server/Dockerfile](https://github.com/continew-org/continew-admin/blob/dev/docker/schedule-server/Dockerfile)
 - [docker/nginx/conf/nginx.conf](https://github.com/continew-org/continew-admin/blob/dev/docker/nginx/conf/nginx.conf)
 - [continew-server/pom.xml（胖瘦包 profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/pom.xml)

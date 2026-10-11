@@ -1,0 +1,127 @@
+---
+title: 正式开发
+description: 以岗位管理为完整案例，从建表到页面可用走一遍基于框架的业务开发：建模块、建表、代码生成、菜单授权、验证。
+icon: Hammer
+---
+
+读完[快速开始](/docs/admin)并成功登录之后，本页带你完整开发第一个业务功能。案例是「岗位管理」，流程与任何真实业务资源一致：建表 → 代码生成 → 前后端产物落位 → 菜单与按钮授权 → 页面验证。走完这一条线，你就能回答「在 ContiNew Admin 里加一个业务功能，从哪开始、到哪结束」。
+
+每一步都给出验收点。建议先照做把岗位管理跑通，再开始做自己的功能；第一次定制就失败的话，很难分清是框架问题还是自己的改法问题。
+
+## 方式选择：代码生成还是手写
+
+框架内置代码生成器，读取表结构后产出前后端整套 CRUD 代码（15 个模板）与菜单 SQL。两条路都通：
+
+- **代码生成**：标准单表 CRUD 场景推荐，样板代码全免，生成后再补业务逻辑与调整样式；
+- **手写**：需要理解每个类的职责时走一遍，写完再对照生成产物校验理解。
+
+下面的流程以代码生成为主线，每个环节同时说明手写时对应的文件，两类需求都覆盖。CRUD 套件的机制细节（API 类型、权限码推导）见[CRUD 开发](/docs/admin/development/backend/crud)。
+
+## 第 1 步：建表
+
+业务表遵循公共字段约定（`id`、`create_user`、`create_time`、`update_user`、`update_time`、`deleted`），实体继承 `BaseDO` 后这些字段自动填充。在目标库执行：
+
+```sql
+CREATE TABLE IF NOT EXISTS `sys_post` (
+    `id`          bigint(20)   AUTO_INCREMENT              COMMENT 'ID',
+    `name`        varchar(30)  NOT NULL                    COMMENT '名称',
+    `description` varchar(200) DEFAULT NULL                COMMENT '描述',
+    `sort`        int          NOT NULL DEFAULT 999        COMMENT '排序',
+    `status`      tinyint(1)   UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+    `create_user` bigint(20)   NOT NULL                    COMMENT '创建人',
+    `create_time` datetime     NOT NULL                    COMMENT '创建时间',
+    `update_user` bigint(20)   DEFAULT NULL                COMMENT '修改人',
+    `update_time` datetime     DEFAULT NULL                COMMENT '修改时间',
+    `tenant_id`   bigint(20)   NOT NULL DEFAULT 0          COMMENT '租户ID',
+    `deleted`     bigint(20)   NOT NULL DEFAULT 0          COMMENT '是否已删除（0：否；id：是）',
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `uk_name_tenant_id_deleted` (`name`, `tenant_id`, `deleted`),
+    INDEX `idx_create_user`(`create_user`),
+    INDEX `idx_update_user`(`update_user`),
+    INDEX `idx_tenant_id` (`tenant_id`),
+    INDEX `idx_deleted` (`deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岗位表';
+```
+
+字段注释会成为生成代码的类注释与文档描述，认真写。走正式变更管理时，把建表语句加入 `continew-server/src/main/resources/db/changelog/mysql` 并在 `db.changelog-master.yaml` 登记；仓库约定数据库结构变更同时提供 MySQL 与 PostgreSQL 两套 SQL（见 AGENTS.md）。上面的 DDL 是 MySQL 方言，PostgreSQL 版本需另写到 `db/changelog/postgresql`。`db.changelog-master.yaml` 默认启用 MySQL includes；选择 PostgreSQL 部署时按[部署](/docs/admin/reference/deployment#切换到-postgresql)的步骤切换 includes。
+
+<Callout type="warn">
+表名带 `tenant_id` 列即纳入行级租户隔离（继承 `TenantBaseDO` 的实体自动带出）。不需要租户隔离的公共表，要把表名加入 `continew-starter.tenant.ignore-tables` 白名单，机制见[多租户接入](/docs/admin/development/backend/tenant)。
+</Callout>
+
+## 第 2 步：代码生成
+
+启动前后端并登录后，进入「开发工具 → 代码生成」。
+
+<Steps>
+<Step>
+
+列表中找到 `sys_post`，点「配置」。在配置页补全生成信息：模块名、包名、业务名、作者、表前缀（`sys_`，用于推导类名 `Post`）。字段配置页逐列调整：勾选是否进列表/表单/查询区、选择表单类型（输入框、开关等 12 种）与查询方式（等于、LIKE 等 14 种），字典字段绑定字典编码。
+
+</Step>
+<Step>
+
+点「生成」。产物共 15 个模板（FreeMarker）：
+
+- 后端 11 个：Controller / Service / ServiceImpl / Mapper / MapperXml / Entity / Req / Resp / DetailResp / Query / 菜单 SQL；
+- 前端 4 个：API 封装（`src/apis`）、列表页、新增弹窗、详情抽屉（`src/views`）。
+
+也可以点「下载」拿 zip，评审或跨机交付时用下载更稳妥；「生成」按 `user.dir` 相对路径直接落盘，要求后端以工程根目录为工作目录启动。
+
+</Step>
+<Step>
+
+把产物放到正确位置。后端文件按配置的模块与包名落位（如放进 `continew-system` 的对应子包）；前端 `api.ts` 放 `src/apis/<模块>/` 并在聚合出口透传，页面放 `src/views/<模块>/post/`。新生成的页面组件路径形如 `post/index`，后续配菜单要用。
+
+</Step>
+</Steps>
+
+<Callout type="info">
+生成器产出的是标准骨架，复杂页面（联动、布局）生成后参考 `src/views/system/user` 等成熟页面调整。手写路线对应的文件与[CRUD 开发](/docs/admin/development/backend/crud)的「新增一个资源」五步一致。
+</Callout>
+
+## 第 3 步：菜单与按钮授权
+
+<Steps>
+<Step>
+
+执行生成的菜单 SQL（或手工在「系统管理 → 菜单管理」录入）：一条目录/菜单记录（组件路径填 `post/index`，规则见[菜单管理](/docs/admin/manual/system/menu)），若干按钮记录（`permission` 填 `system:post:create` 这类权限码，与后端自动生成的保持一致）。
+
+</Step>
+<Step>
+
+清菜单缓存。角色-菜单关联结果缓存在 Redis，菜单管理页点「清除缓存」（`DELETE /system/menu/cache`）。
+
+</Step>
+<Step>
+
+把新菜单授权给目标角色（角色管理 → 修改权限），刷新页面即可看到入口。动态路由由后端按角色过滤下发，前端不做二次拦截。
+
+</Step>
+</Steps>
+
+## 第 4 步：验证
+
+进入「岗位管理」页面，依次验证：
+
+1. 列表能打开（分页接口 `GET /system/post` 通，权限码 `system:post:list` 已生效）；
+2. 新增一条岗位并能在列表看到（`POST /system/post`，`system:post:create`）；
+3. 用一个未授权该菜单的测试账号登录，确认看不到入口、直调接口返回无权限。
+
+到这一步功能就算完整落地了。之后再把包名、模块名、品牌元素改成你自己的项目信息；改完跑一遍 `./mvnw verify`（后端四道门禁）与 `pnpm lint && pnpm typecheck && pnpm build`（前端三道门禁）确认没有被定制破坏。
+
+## 常见卡点
+
+| 症状 | 原因与处理 |
+|:-----|:-----------|
+| 生成页看不到刚建的表 | 表在 `generator.excludeTables` 排除清单里，或连的库不对；默认只排除 `DATABASECHANGELOG*` 与生成器自身表 |
+| 菜单配了，页面白屏 | 组件路径漏了 `/index`，对照[路由与页签](/docs/admin/development/frontend/route)的映射规则修正 |
+| 接口全部 403 | 按钮权限码与后端推导不一致，见[CRUD 开发](/docs/admin/development/backend/crud)的权限码生成规则 |
+| 前端构建类型报错 | `pnpm typecheck` 定位；对照仓库同版本页面修，不要用 `@ts-ignore` 绕过 |
+
+## 相关源码
+
+- [GeneratorController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-generator/src/main/java/top/continew/admin/generator/controller/GeneratorController.java)：生成 API 与落盘逻辑
+- [templates/backend](https://github.com/continew-org/continew-admin/tree/dev/continew-plugin/continew-plugin-generator/src/main/resources/templates/backend) / [templates/frontend](https://github.com/continew-org/continew-admin/tree/dev/continew-plugin/continew-plugin-generator/src/main/resources/templates/frontend)：15 个模板
+- [application-generator.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-generator.yml)：模板登记与类型映射
+- [continew-admin-ui/src/views/system/user](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/user)：成熟列表页参考

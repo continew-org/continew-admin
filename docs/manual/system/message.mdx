@@ -46,7 +46,7 @@ description: 站内信的产生方式、未读统计与已读管理，以及用�
 
 ## 未读提醒
 
-前端通过 `GET /user/message/unread?detail=true` 拉取未读数量与分类明细，在顶部导航的消息图标上展示角标。公告的未读数单独走 `GET /user/message/notice/unread`，与消息未读数分开统计，见[通知公告](./notice.mdx)。
+前端通过 `GET /user/message/unread?detail=true` 拉取未读数量与分类明细，在顶部导航的消息图标上展示角标。公告的未读数单独走 `GET /user/message/notice/unread`，与消息未读数分开统计，见[通知公告](./notice)。
 
 <Callout type="info">
 消息的删除是用户级操作，只清理当前用户与消息的关联记录，不影响其他接收人。消息本体（`sys_message`）由系统事件写入，用户无法在消息中心编辑。

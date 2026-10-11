@@ -48,21 +48,21 @@ pnpm preview        # 预览构建产物（5050 端口）
 | `views/` | 页面，目录结构与动态路由的 `component` 字段对应 |
 
 <Callout type="info">
-项目未做 i18n 国际化，`src/` 下没有 locale 目录。站点标题、Logo、版权等不走环境变量，由后端「网站配置」接口动态下发（见 [布局与主题](./layout.mdx)）。
+项目未做 i18n 国际化，`src/` 下没有 locale 目录。站点标题、Logo、版权等不走环境变量，由后端「网站配置」接口动态下发（见 [布局与主题](/docs/admin/development/frontend/layout)）。
 </Callout>
 
 ## 环境变量
 
-环境变量文件在仓库根目录，命名必须以 `VITE_` 开头（`vite.config.ts` 还配置了 `FILE` 前缀），通过 `import.meta.env.XXX` 访问。
+环境变量文件在仓库根目录。`vite.config.ts` 的 `envPrefix` 配置为 `['VITE', 'FILE']`，以 `VITE_` 或 `FILE` 开头的变量都会暴露给客户端代码（`import.meta.env.XXX`），因此任何以这两个前缀命名的值都不能放敏感信息。
 
 | 变量 | 开发环境 | 生产环境 | 说明 |
 |:-----|:-----|:-----|:-----|
 | `VITE_API_PREFIX` | `/dev-api` | 不设置 | 接口前缀，仅开发环境用于 Vite 代理 |
 | `VITE_API_BASE_URL` | `http://localhost:8000` | `https://api.continew.top` | 后端接口地址 |
-| `VITE_API_WS_URL` | `ws://localhost:8000` | `wss://api.continew.top` | WebSocket 地址 |
+| `VITE_API_WS_URL` | `ws://localhost:8000` | `wss://api.continew.top` | WebSocket 地址。注意 `.env.test` 未预置此变量，`pnpm build:test` 的产物登录后会因连不上 WebSocket 而收不到消息通知，使用 test 模式时需自行补上 |
 | `VITE_BASE` | `/` | `/` | 应用部署基础路径（`.env.test` 中为 `/test`） |
 | `VITE_CLIENT_ID` | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 | 客户端 ID，登录请求体携带，对应后端 `sys_client` 表配置 |
-| `VITE_APP_SETTING` | `true` | `true` | 是否显示应用配置面板 |
+| `VITE_APP_SETTING` | `true` | `true` | 控制配置抽屉内的外观区块（主题色、色弱模式等），不隐藏右上角齿轮入口，详见[布局与主题](/docs/admin/development/frontend/layout) |
 | `VITE_OPEN_DEVTOOLS` | `false` | 不设置 | 是否开启 Vue DevTools |
 | `VITE_BUILD_MOCK` | 不设置 | `false` | 打包时是否启用 Mock（`.env.test` 中为 `true`） |
 
@@ -73,10 +73,10 @@ pnpm preview        # 预览构建产物（5050 端口）
 ## 本组内容
 
 <Cards>
-  <Card title="HTTP 请求" description="axios 封装、401 刷新重试、租户请求头注入" href="./request" />
-  <Card title="路由与页签" description="静态路由与动态路由注册、全局守卫、页签缓存" href="./route" />
-  <Card title="权限控制" description="v-permission / v-role 指令与 hasPerm 编程式判断" href="./permission" />
-  <Card title="字典使用" description="字典数据在前后端的加载、缓存与渲染" href="./dict" />
-  <Card title="组件库" description="Gi 组件库与通用业务组件的选用" href="./components" />
-  <Card title="布局与主题" description="布局模式、主题色、页签与 setting.ts 配置" href="./layout" />
+  <Card title="HTTP 请求" description="axios 封装、401 刷新重试、租户请求头注入" href="/docs/admin/development/frontend/request" />
+  <Card title="路由与页签" description="静态路由与动态路由注册、全局守卫、页签缓存" href="/docs/admin/development/frontend/route" />
+  <Card title="权限控制" description="v-permission / v-role 指令与 hasPerm 编程式判断" href="/docs/admin/development/frontend/permission" />
+  <Card title="字典使用" description="字典数据在前后端的加载、缓存与渲染" href="/docs/admin/development/frontend/dict" />
+  <Card title="组件库" description="Gi 组件库与通用业务组件的选用" href="/docs/admin/development/frontend/components" />
+  <Card title="布局与主题" description="布局模式、主题色、页签与 setting.ts 配置" href="/docs/admin/development/frontend/layout" />
 </Cards>

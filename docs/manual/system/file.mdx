@@ -3,7 +3,7 @@ title: 文件管理
 description: 文件的上传、预览、分片上传、秒传与回收站，以及文件资源的统计。
 ---
 
-文件管理提供统一的文件上传与查阅能力，功能入口在「系统管理 -> 文件管理」，后端接口前缀为 `/system/file`，对应 `FileController`。文件元数据存储在 `sys_file` 表，实际内容落在[存储管理](./storage.mdx)配置的存储平台上，底层基于 X File Storage 2.3.0。
+文件管理提供统一的文件上传与查阅能力，功能入口在「系统管理 -> 文件管理」，后端接口前缀为 `/system/file`，对应 `FileController`。文件元数据存储在 `sys_file` 表，实际内容落在[存储管理](./storage)配置的存储平台上，底层基于 X File Storage 2.3.0。
 
 ## 功能概览
 
@@ -48,7 +48,7 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
   <Step>`GET /system/multipart-upload/complete/{uploadId}` 合并分片，生成文件记录。</Step>
 </Steps>
 
-中途放弃可调 `GET /system/multipart-upload/cancel/{uploadId}` 清理缓存与临时分片。是否触发分片以及分片大小由默认存储的「分片上传阈值」与「分片上传大小」决定（默认 10MB 阈值、5MB 分片），配置见[存储管理](./storage.mdx)。前端大文件上传使用 `MultipartUpload` 组件，进度经 `GET /system/file/upload/progress/{uploadTaskId}` 轮询。
+中途放弃可调 `GET /system/multipart-upload/cancel/{uploadId}` 清理缓存与临时分片。是否触发分片以及分片大小由默认存储的「分片上传阈值」与「分片上传大小」决定（默认 10MB 阈值、5MB 分片），配置见[存储管理](./storage)。前端大文件上传使用 `MultipartUpload` 组件，进度经 `GET /system/file/upload/progress/{uploadTaskId}` 轮询。
 
 ## 预览与统计
 

@@ -41,7 +41,7 @@ public UserData getUserData() {
 }
 ```
 
-`isFilter` 返回 `false` 时整个拦截器短路。admin 的实现让超级管理员与租户管理员两种内置角色跳过过滤，这与界面上的「全部数据」语义一致。`getUserData` 返回空或非法时拦截器抛 `DataPermissionException`，查询直接失败而不是退回全量，不会出现越权兜底。
+`isFilter` 返回 `false` 时整个拦截器短路。admin 的实现让超级管理员与租户管理员两种内置角色跳过过滤，这与界面上的「全部数据」语义一致。数据权限属于安全边界：`getUserData` 返回空或非法、Mapper 反射失败、数据范围或数据库不受支持、表达式构造发生异常时，拦截器统一抛 `DataPermissionException` 并中断查询（fail-close），不会退回未过滤的原始 SQL。
 
 ## 业务表接入
 
@@ -96,7 +96,7 @@ IPage<GoodsDetailResp> selectGoodsPage(@Param("page") IPage<GoodsDO> page,
 | `roleDeptTableAlias` | `sys_role_dept` | 角色-部门关联表表名 |
 
 <Callout type="info">
-`DEPT_AND_CHILD` 依赖 `sys_dept.ancestors` 列做层级匹配，MySQL 用 `find_in_set`，PostgreSQL 自动换成 `concat + LIKE`，两种数据库都支持（见 starter 的 `DefaultDataPermissionHandler.buildDeptAndChildExpression`）。
+`DEPT_AND_CHILD` 依赖 `sys_dept.ancestors` 列做层级匹配，MySQL 用 `find_in_set`，PostgreSQL用 `concat + LIKE`。默认处理器目前只支持这两种数据库；其他数据库使用该范围时会抛 `DataPermissionException` 并中断查询，需要自定义 `DataPermissionHandler` 实现对应方言。
 </Callout>
 
 ## 使用现状

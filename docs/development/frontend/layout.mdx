@@ -35,12 +35,12 @@ description: 讲解布局模式切换、主题色与暗黑模式、页签样式�
 
 | 值 | 组件 | 形态 |
 |:---|:-----|:-----|
-| `default` | `LayoutDefault` | 经典左侧菜单 |
+| `left` | `LayoutDefault` | 经典左侧菜单（`layoutMap` 的兜底键是 `default`，配置面板写入的值是 `left`，查不到时回退到经典布局） |
 | `mix` | `LayoutMix` | 混合布局（默认），顶部一级菜单 + 左侧二级菜单 |
 | `columns` | `LayoutColumns` | 双栏布局，一级菜单窄栏 + 二级菜单栏 |
 | `top` | `LayoutTop` | 顶部菜单，无侧边栏 |
 
-布局本体之外的公共件（头部、页签栏、主内容区）在 `src/layout/components/` 下复用。主内容区 `Main.vue` 是 `<transition>` 套 `<keep-alive>` 再套 `<router-view>` 的结构（`src/layout/components/Main.vue:3`），动画名取 `appStore.transitionName`，`keep-alive` 的 `include` 绑定 `tabsStore.cacheList`（页签缓存机制见 [路由与页签](./route.mdx)）。
+布局本体之外的公共件（头部、页签栏、主内容区）在 `src/layout/components/` 下复用。主内容区 `Main.vue` 是 `<transition>` 套 `<keep-alive>` 再套 `<router-view>` 的结构（`src/layout/components/Main.vue:3`），动画名取 `appStore.transitionName`，`keep-alive` 的 `include` 绑定 `tabsStore.cacheList`（页签缓存机制见 [路由与页签](./route)）。
 
 ## 主题与暗黑模式
 
@@ -52,7 +52,7 @@ description: 讲解布局模式切换、主题色与暗黑模式、页签样式�
 
 ## 页签栏
 
-页签栏的显隐由 `tab` 控制，样式由 `tabMode` 控制（卡片、卡片间隔、圆角）。页签的打开、关闭、固定、缓存行为由 `tabs` store 与路由 `meta` 决定，数据流转见 [路由与页签](./route.mdx)，这里只列配置入口。
+页签栏的显隐由 `tab` 控制，样式由 `tabMode` 控制（卡片、卡片间隔、圆角）。页签的打开、关闭、固定、缓存行为由 `tabs` store 与路由 `meta` 决定，数据流转见 [路由与页签](./route)，这里只列配置入口。
 
 页签数据持久化到 `sessionStorage`，关掉浏览器标签页即清空；`localStorage` 里的 `app` store 只存样式偏好，不存页签。
 
@@ -60,7 +60,7 @@ description: 讲解布局模式切换、主题色与暗黑模式、页签样式�
 
 右上角齿轮图标打开配置抽屉（`src/layout/components/HeaderRightBar/SettingDrawer.vue`），实时修改上述字段并即时生效。抽屉底部「复制配置」按钮把当前设置导出为 JSON，方便把一套调好的外观写回 `setting.ts` 作为新默认值。
 
-面板的显示受环境变量 `VITE_APP_SETTING` 控制（`SettingDrawer.vue:94`），值为 `false` 时入口隐藏。
+齿轮入口是固定渲染的，环境变量 `VITE_APP_SETTING` 并不能隐藏它；该变量只在抽屉内部生效（`SettingDrawer.vue:94`），值为 `false` 时隐藏「主题色、色弱模式」等外观区块，布局、页签等其余设置仍然显示。想彻底去掉配置入口，需要自行移除 `HeaderRightBar` 中的齿轮按钮。
 
 ## 站点信息的来源
 

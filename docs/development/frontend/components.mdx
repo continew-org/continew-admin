@@ -58,7 +58,7 @@ const queryFormColumns: ColumnItem[] = [
 | `GiCellAvatar` | 头像 + 名称组合 |
 | `GiCellGender` | 性别图标 |
 | `GiCellStatus` | 启用/禁用状态点 |
-| `GiCellTag` | 单值字典标签（按字典项 `extra` 配色，见 [字典使用](./dict.mdx)） |
+| `GiCellTag` | 单值字典标签（按字典项 `extra` 配色，见 [字典使用](./dict)） |
 | `GiCellTags` | 多值标签列表 |
 
 ## 布局类组件
@@ -66,8 +66,7 @@ const queryFormColumns: ColumnItem[] = [
 | 组件 | 场景 |
 |:-----|:-----|
 | `GiPageLayout` | 页面骨架，提供头部、左侧、内容区插槽，列表页的标准外壳 |
-| `GiLeftRightPane` | 左树右表分栏容器（用户管理页的部门树 + 用户表实际用 `GiPageLayout` 的 `#left` 插槽实现，本组件目前无页面使用，可按需引入） |
-| `GiSplitPane` / `SplitPanel` | 可拖拽分割的双栏 |
+| `GiSplitPane` / `SplitPanel` | 可拖拽分割的双栏（左树右表分栏实际用 `GiPageLayout` 的 `#left` 插槽实现，见用户管理页） |
 | `GiEditTable` | 可编辑表格，单元格内嵌表单控件 |
 | `GiFooter` | 页脚（版权、备案号） |
 | `ParentView` | 多级菜单的中间占位组件，动态路由 `component` 填 `ParentView` 时映射到它 |
@@ -90,7 +89,7 @@ const queryFormColumns: ColumnItem[] = [
 
 ## 选用建议
 
-新页面优先复用既有组合而不是重写：`GiPageLayout` + `GiForm` + `GiTable` 覆盖九成列表页；左树右表结构用 `GiPageLayout` 的 `#left` 插槽放树组件（参考用户管理页）；详情展示用抽屉（`a-drawer`）而非新路由页，配合路由 `meta.activeMenu` 保持父菜单高亮。通用性足够的新组件放进 `src/components/` 并按 `Gi` 前缀命名，一次性组件留在页面目录的 `components/` 下（动态路由扫描会剔除页面内 `components` 目录，见 [路由与页签](./route.mdx)）。
+新页面优先复用既有组合而不是重写：`GiPageLayout` + `GiForm` + `GiTable` 覆盖九成列表页；左树右表结构用 `GiPageLayout` 的 `#left` 插槽放树组件（参考用户管理页）；详情展示用抽屉（`a-drawer`）而非新路由页，配合路由 `meta.activeMenu` 保持父菜单高亮。通用性足够的新组件放进 `src/components/` 并按 `Gi` 前缀命名，一次性组件留在页面目录的 `components/` 下（动态路由扫描会剔除页面内 `components` 目录，见 [路由与页签](./route)）。
 
 ## 相关源码
 

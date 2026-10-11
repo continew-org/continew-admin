@@ -20,9 +20,9 @@ export function listUser(query: UserPageQuery) {
   return http.get<PageRes<UserResp[]>>(`${BASE_URL}`, query)
 }
 
-/** @desc 查询所有用户（无分页） */
-export function listAllUser() {
-  return http.get<UserResp[]>(`${BASE_URL}/list`)
+/** @desc 查询所有用户（无分页，入参为可选的分页过滤条件） */
+export function listAllUser(query: Partial<UserPageQuery> = {}) {
+  return http.get<UserResp[]>(`${BASE_URL}/list`, query)
 }
 
 /** @desc 新增用户 */
@@ -96,7 +96,7 @@ HTTP 状态 401 走 `retryAfterRefresh` 分支（`src/utils/http.ts:165`），�
 刷新请求遇到 403、429、5xx 或网络故障时不算终态失败，Cookie 会保留，下一次请求继续尝试刷新。只有刷新返回 401 或业务层明确拒绝（HTTP 200 但 `success: false`）才引导重新登录。
 
 <Callout type="warn">
-401 的重登弹窗只对应用内操作出现。浏览器刷新后首次进入页面时没有会话，由路由守卫直接跳转登录页，不弹窗（见 [路由与页签](./route.mdx)）。
+401 的重登弹窗只对应用内操作出现。浏览器刷新后首次进入页面时没有会话，由路由守卫直接跳转登录页，不弹窗（见 [路由与页签](./route)）。
 </Callout>
 
 ## 错误提示

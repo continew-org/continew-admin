@@ -1,0 +1,185 @@
+---
+title: 安全通告
+description: ContiNew Admin 已公开披露的安全漏洞通告：编号、影响范围、修复版本、临时缓解方案与跟进渠道。
+---
+
+本页汇总 ContiNew Admin 已公开的安全漏洞通告与修复情况，按披露时间倒序。标 ⚠️ 的条目建议影响范围内的用户尽快升级，或先按文中给出的临时缓解方案处置。
+
+## 报告漏洞
+
+发现安全漏洞时，**不要在任何代码托管平台通过公开 Issue、Pull Request 或讨论区披露**。请通过 [GitHub 私有漏洞报告](https://github.com/continew-org/continew-admin/security/advisories/new) 提交（无论你在哪个平台发现问题，都请统一走这个渠道）。通告发布前只有维护者与报告者可见。
+
+完整的安全策略（支持版本范围、响应时间线、报告范围）见项目 [SECURITY.md](https://github.com/continew-org/continew-admin/blob/dev/SECURITY.md)。
+
+## GHSA-g8qc-r85v-gqpp · CRUD 排序参数 ORDER BY SQL 注入
+
+| 项目 | 说明 |
+|:-----|:-----|
+| 编号 | [GHSA-g8qc-r85v-gqpp](https://github.com/continew-org/continew-admin/security/advisories/GHSA-g8qc-r85v-gqpp)（GitHub 未分配 CVE 编号） |
+| 类型 | SQL 注入（CWE-89）：排序字段被拼接进 `ORDER BY`，原有的关键字黑名单与实体字段校验可被同时绕过，认证用户可通过布尔盲注读取接口未返回的数据列（如密码散列） |
+| 严重性 | Medium（CVSS 3.1：6.5） |
+| 影响范围 | ContiNew Starter ≤ 2.16.0（根因组件）；ContiNew Admin ≤ 4.1.0（各发布版本内置的 Starter 均低于 2.16.1，如 4.1.0 内置 2.14.0） |
+| 前置条件 | 需要有效登录凭证 |
+| 修复版本 | ContiNew Starter [2.16.1](https://github.com/continew-org/continew-starter/releases/tag/v2.16.1)（已发布，根因修复）；ContiNew Admin v4.2.0（内置依赖随版升至 2.16.1） |
+| 披露时间 | 2026-09-29 |
+| 报告者 | [tonghuaroot](https://github.com/tonghuaroot) |
+
+Admin 以源码形式分发，版本号仅作参考。是否受影响以项目中**实际生效的 ContiNew Starter 依赖版本**为准（`mvn dependency:tree -Dincludes=top.continew.starter` 可查），≥ 2.16.1 即已修复；直接跟进 dev 分支最新源码的用户已包含此修复。
+
+**升级建议**
+
+1. 使用 ContiNew Admin 的项目：升级到内置 Starter ≥ 2.16.1 的版本；自行管理 Starter 依赖的项目不受 Admin 发版节奏限制，可先将 Starter 升至 2.16.1+。
+2. 基于 ContiNew Starter 二次开发的项目：将 Starter 升至 [2.16.1](https://central.sonatype.com/artifact/top.continew.starter/continew-starter) 或更高。
+3. 暂时无法升级：按下文临时缓解方案处置。
+4. 该漏洞可被用于读取接口未返回的字段（如密码散列），建议升级后排查历史异常访问日志，并视情况轮换管理员密码等敏感凭证。
+
+**临时缓解方案**
+
+在自己工程中新增下面两个类（包名按需调整），以与 Starter 2.16.1 相同的口径（标识符白名单）在 HTTP 入口拦截注入向量。升级后可移除。
+
+```java
+// SortParameterSecurityFilter.java
+package com.example.security;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+/**
+ * 排序参数 SQL 注入临时防护过滤器（对应 GHSA-g8qc-r85v-gqpp）
+ */
+public class SortParameterSecurityFilter extends OncePerRequestFilter {
+
+    /** CRUD 套件排序参数名（如有自定义请同步调整） */
+    private static final String SORT_PARAMETER_NAME = "sort";
+
+    /** 合法排序字段：仅允许字母、数字、下划线，可携带表别名（如 u.create_time） */
+    private static final Pattern PROPERTY_PATTERN = Pattern
+        .compile("[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*");
+
+    /** 合法排序方向 */
+    private static final Pattern DIRECTION_PATTERN = Pattern.compile("(?i:asc|desc)");
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+        String[] values = request.getParameterValues(SORT_PARAMETER_NAME);
+        if (values != null) {
+            for (String value : values) {
+                if (!isValid(value)) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"code\":400,\"msg\":\"无效的排序参数\"}");
+                    return;
+                }
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    /** 校验单个排序参数值，例如：name,desc / u.create_time,asc / id */
+    private boolean isValid(String value) {
+        if (value == null || value.isBlank()) {
+            return true;
+        }
+        return Arrays.stream(value.split(","))
+            .allMatch(segment -> PROPERTY_PATTERN.matcher(segment).matches()
+                || DIRECTION_PATTERN.matcher(segment).matches());
+    }
+}
+```
+
+```java
+// SortSecurityFilterConfiguration.java
+package com.example.security;
+
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+
+@Configuration
+public class SortSecurityFilterConfiguration {
+
+    @Bean
+    public FilterRegistrationBean<SortParameterSecurityFilter> sortParameterSecurityFilter() {
+        FilterRegistrationBean<SortParameterSecurityFilter> registration = new FilterRegistrationBean<>(
+            new SortParameterSecurityFilter());
+        registration.addUrlPatterns("/*");
+        // 尽早执行，在业务处理前完成校验
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 100);
+        return registration;
+    }
+}
+```
+
+过滤器覆盖的是 HTTP 入口的 `sort` 参数，也就是 CRUD 排序链路的外部输入入口。代码内部直接调用 `QueryWrapperHelper` 等工具拼接排序的场景，仍需升级依赖才能覆盖。ContiNew Admin 自带页面只会发送合法排序参数，正常使用不受影响。
+
+## GHSA-j7qm-qprw-c53w · 分片上传绕过权限与扩展名白名单
+
+| 项目 | 说明 |
+|:-----|:-----|
+| 编号 | [GHSA-j7qm-qprw-c53w](https://github.com/continew-org/continew-admin/security/advisories/GHSA-j7qm-qprw-c53w) |
+| 类型 | 权限校验缺失 + 文件类型白名单绕过（CWE-434）：`/system/multipart-upload/` 四个分片上传端点缺少权限注解，且未做扩展名白名单校验，低权限登录用户可上传任意类型文件 |
+| 严重性 | High（CVSS 3.1：8.5） |
+| 影响范围 | ContiNew Admin **仅 4.1.0**（分片上传在 4.1.0 引入，更早版本无此功能） |
+| 修复版本 | ContiNew Admin v4.2.0（修复已合入） |
+| 披露时间 | 2026-09-29 |
+| 报告者 | [geo-chen](https://github.com/geo-chen) |
+
+**临时缓解方案**（升级前任选其一）
+
+1. 在网关 / 反向代理层限制 `/system/multipart-upload/` 路径访问（分片上传是 4.1.0 新增能力，下线后不影响普通文件上传）；
+2. 源码中为 `MultipartUploadController` 的四个端点补权限注解，并在 `MultipartUploadServiceImpl#initMultipartUpload` 开头按 `FileTypeEnum.getAllExtensions()` 做扩展名白名单校验（建议先对扩展名做小写归一，防止大小写绕过）。
+
+## GHSA-fpcv-53f8-hj7p · 消息删除接口水平越权（IDOR）
+
+| 项目 | 说明 |
+|:-----|:-----|
+| 编号 | [GHSA-fpcv-53f8-hj7p](https://github.com/continew-org/continew-admin/security/advisories/GHSA-fpcv-53f8-hj7p) |
+| 类型 | 水平越权（CWE-639）：删除消息时未校验归属，任何登录用户可凭他人消息 ID 删除其通知/公告，并连带清除所有用户的已读回执 |
+| 严重性 | Medium（CVSS 3.1：6.5） |
+| 影响范围 | ContiNew Admin 4.0.0、4.1.0（个人消息功能在 4.0.0 引入） |
+| 修复版本 | ContiNew Admin v4.2.0（修复已合入：删除时按当前登录用户 ID 过滤） |
+| 披露时间 | 2026-09-29 |
+| 报告者 | [geo-chen](https://github.com/geo-chen) |
+
+**临时缓解方案**
+
+1. 在 `MessageServiceImpl#delete()` 中增加 `userId` 归属过滤（追加 `in(MessageDO::getId, ids)` 与 `eq(MessageDO::getUserId, 当前登录用户 ID)`），并为已读回执清理同步加上 `userId` 过滤；
+2. 或在网关层临时下线消息删除接口（影响：用户暂时无法删除自己的消息）。
+
+## CVE-2025-4551 · 文件上传存储型 XSS
+
+| 项目 | 说明 |
+|:-----|:-----|
+| 编号 | [CVE-2025-4551](https://github.com/advisories/GHSA-72q7-jwjp-6w34) |
+| 类型 | 跨站脚本（CWE-79）：文件上传接口处理不当时可能引入存储型 XSS |
+| 严重性 | Medium（CVSS 3.1：3.5） |
+| 影响范围 | ContiNew Admin ≤ 3.6.0 |
+| 修复情况 | 存储模块重构后引入文件类型白名单等防护（ContiNew Starter 2.14.0+），ContiNew Admin 4.x 随依赖升级获得防护 |
+
+文件上传此前只从「提供示例」的角度处理，被披露后考虑到多数使用者不会做脚手架删减，这类防护由框架层提前处理更合适。
+
+## CVE-2024-8150 / CVE-2024-8155 · sort 参数 SQL 注入
+
+| 项目 | 说明 |
+|:-----|:-----|
+| 编号 | [CVE-2024-8150](https://github.com/advisories/GHSA-cvgw-fpmw-hr5x)、[CVE-2024-8155](https://github.com/advisories/GHSA-xwrp-v4f7-2hq3) |
+| 类型 | SQL 注入（CWE-89）：列表、树型接口的 `sort` 排序参数存在 SQL 注入 |
+| 严重性 | Medium（CVSS 3.1：6.5 上下） |
+| 影响范围 | ContiNew Admin ≤ 3.2.0（根因组件 ContiNew Starter ≤ 2.5.1） |
+| 修复版本 | 根因修复随 ContiNew Starter [2.5.2](https://github.com/continew-org/continew-starter/releases/tag/v2.5.2) 发布；ContiNew Admin [v3.3.0](https://github.com/continew-org/continew-admin/releases/tag/v3.3.0) 随依赖升级完成修复 |
+| 披露时间 | 2024-08-24 / 2024-08-26 |
+
+## 跟进渠道
+
+- 关注 GitHub 仓库的 Release（Watch → Custom → Releases）
+- 定期查看本页与[更新日志（CHANGELOG.md）](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)
+- ContiNew Starter 的通告见 [Starter 安全通告](/docs/starter/reference/security)

@@ -1,0 +1,110 @@
+---
+title: 版本升级
+description: 说明为什么 ContiNew Admin 不能像普通依赖一样整体升级，以及定制项目如何安全地选择、跟进和迁移版本。
+icon: CircleArrowUp
+---
+
+ContiNew Admin 是可直接运行的项目模板，不是 Hutool、Vue 这类只需改一个版本号的组件库。项目投入使用后会加入大量业务代码、改包名、裁剪模块、调整表结构；从那时起，你的代码与上游就已经分叉。
+
+<Callout type="warn">
+选择的初始版本很大程度上会成为项目的基础版本。稳定运行的业务项目不必为了“保持最新”频繁整体升级；多数情况下，只同步自己需要的安全修复、Bug 修复和局部改进更稳妥。
+</Callout>
+
+## 开始项目前选哪个版本
+
+- **正式业务项目**：选择最新正式 Release，并让后端与 `continew-admin-ui` 使用匹配版本；
+- **跟进开发版**：只有能持续处理变更时才使用 `dev`。开发初期和发版前通常较稳定，开发中期可能有模块改名、数据库 changeset 与接口契约调整；
+- **在线演示**：演示环境由 `dev` 自动构建，展示的功能可能尚未正式发布，不能反推正式版一定包含。
+
+版本入口：
+
+- [ContiNew Admin Releases](https://github.com/continew-org/continew-admin/releases)
+- [ContiNew Admin UI Releases](https://github.com/continew-org/continew-admin-ui/releases)
+- [CHANGELOG.md（更新日志）](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)
+
+## 哪些内容可以直接升级
+
+### ContiNew Starter
+
+通用组件和配置已抽到 ContiNew Starter，并发布到 Maven Central。它的升级方式与普通依赖类似：修改 Admin 根 POM 的 parent 版本，阅读目标版本之间全部 Changelog，修正破坏性变更后执行完整门禁。
+
+```xml
+<parent>
+    <groupId>top.continew.starter</groupId>
+    <artifactId>continew-starter</artifactId>
+    <version>目标版本</version>
+</parent>
+```
+
+不要单独升级 Sa-Token、MyBatis Plus、Snail Job 等由 Starter 统一管理的依赖，除非已经验证过兼容性。版本冲突排查见[常见问题](/docs/admin/reference/faq#依赖)。
+
+### Admin 本体与前端
+
+Admin 后端、前端与数据库脚本需要按差异迁移，不能直接覆盖。推荐按小提交选择性同步：
+
+1. 找到上游修复或功能对应的单一提交；
+2. 阅读 diff，区分 Starter 能力、Admin 通用业务代码、数据库变更与前端联动；
+3. 在自己的分支上手工迁移或 `cherry-pick`，冲突处以自己的业务改动为准；
+4. 数据库变更通过 Liquibase changeset 合入，禁止改写已在生产执行过的历史 changeset；
+5. 执行回归测试和提交前门禁。
+
+## 降低后续迁移成本
+
+- 尽量不要大规模改写 `continew-system`、`continew-common` 等原生通用模块；业务代码放独立模块，通过 common API 接口调用公共能力；
+- 必须修改原生模块时，用小提交记录动机与影响范围，避免把品牌替换、格式化和业务改动混成一个提交；
+- 建立自己的变更日志，记录删除了哪些插件、改了哪些配置前缀、扩展了哪些表字段；
+- 品牌信息优先通过 `application.*` 与「系统配置」页面修改，不全仓搜索替换；
+- 部署配置与代码一起版本化，数据库、Redis、Nginx、前后端版本形成一组可回滚物料。
+
+## 一次升级怎么做
+
+<Steps>
+<Step>
+
+确定起点和目标。记录当前 Admin、Admin UI、Starter 版本及自己的 commit，通读区间内每个版本的破坏性变更、安全通告与依赖升级。
+
+</Step>
+<Step>
+
+先升级 Starter。修正编译错误与配置变更，执行：
+
+```bash
+./mvnw verify
+```
+
+这一步不混入 Admin 本体功能迁移，便于定位问题。
+
+</Step>
+<Step>
+
+按需求迁移 Admin 后端、数据库 changeset 和前端提交。后端接口有变更时同步修改 UI API、类型与页面；菜单 component、权限码与按钮指令一起核对。
+
+</Step>
+<Step>
+
+执行前端门禁与真实业务回归：
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
+至少覆盖登录/刷新/退出、菜单权限、数据权限、文件上传、定时任务（如启用）、自己项目的核心业务流程。
+
+</Step>
+<Step>
+
+在测试环境演练数据库变更与回滚，再安排生产升级。升级后核对 Liquibase `DATABASECHANGELOG`、应用版本、Starter 版本、健康检查与错误日志。
+
+</Step>
+</Steps>
+
+## 什么时候不要升级
+
+- 当前版本没有影响你的安全问题和 Bug；
+- 目标版本的收益小于迁移与回归成本；
+- 没有完整测试环境或回滚方案；
+- 项目已深度定制，上游对应模块几乎全部重写。
+
+这种情况下继续维护当前基础版本完全合理。需要某个修复时单独迁移对应提交，比整体追新更可控。

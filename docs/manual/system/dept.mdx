@@ -28,12 +28,12 @@ description: 树形组织架构的维护，支撑用户归属、数据权限与�
 部门支持任意层级嵌套。`ancestors` 字段在新增、调整层级时由后端重算，数据权限取值为「本部门及以下」（`DataScopeEnum.DEPT_AND_CHILD`）时依赖该字段做前缀匹配，避免逐层递归查询。
 
 <Callout type="warn">
-删除部门前需要确认两件事：部门下没有子部门，且没有用户挂在该部门（`sys_user.dept_id`）。禁用部门不影响用户登录，但该部门在部门下拉树中不再可选。
+删除部门前需要确认两件事：部门下没有子部门，且没有用户挂在该部门（`sys_user.dept_id`）。禁用部门会立即强退其直属用户的在线会话（`DeptServiceImpl`），且登录、令牌刷新时都会校验部门状态（`AuthTokenServiceImpl#checkUserStatus`），所属部门被禁用的账号无法登录。该部门也会在部门下拉树中不再可选。
 </Callout>
 
 ## 与数据权限的关系
 
-角色的数据权限取值为 2（本部门及以下）、3（本部门）时，以用户所属部门为起点计算可见范围；取值为 5（自定义）时，可见部门集合来自 `sys_role_dept` 表勾选的部门。部门树的准确性直接决定数据权限边界，配置方式见[角色管理](./role.mdx)，机制细节见 [ContiNew Starter 数据权限文档](/docs/starter/modules/extension/data-permission)。
+角色的数据权限取值为 2（本部门及以下）、3（本部门）时，以用户所属部门为起点计算可见范围；取值为 5（自定义）时，可见部门集合来自 `sys_role_dept` 表勾选的部门。部门树的准确性直接决定数据权限边界，配置方式见[角色管理](./role)，机制细节见 [ContiNew Starter 数据权限文档](/docs/starter/modules/extension/data-permission)。
 
 ## 相关源码
 

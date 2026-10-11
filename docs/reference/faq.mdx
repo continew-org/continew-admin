@@ -3,7 +3,7 @@ title: 常见问题
 description: 按症状排查 ContiNew Admin 入门阶段的常见问题，覆盖环境、启动、登录、端口与依赖五类。
 ---
 
-本文按「症状 → 原因 → 处理」组织入门阶段的常见问题，定位到具体配置键与报错特征。配置细节见 [配置说明](/docs/admin/configuration.mdx)，部署细节见 [部署](./deployment.mdx)。
+本文按「症状 → 原因 → 处理」组织入门阶段的常见问题，定位到具体配置键与报错特征。配置细节见 [配置说明](/docs/admin/configuration)，部署细节见 [部署](./deployment)。
 
 ## 环境
 
@@ -57,9 +57,9 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 ### prod 启动即失败，报占位符无法解析
 
-报错特征为 `Could not resolve placeholder 'ACCESS_TOKEN_JWT_SECRET'` 之类。prod 环境所有凭据无默认值，这是有意设计，缺失即启动失败。
+报错特征为 `Could not resolve placeholder 'ACCESS_TOKEN_JWT_SECRET'` 之类。prod 环境的核心凭据无默认值，这是有意设计，缺失即启动失败。
 
-对照 [环境变量参考](/docs/admin/reference/environment.mdx) 的凭据清单逐项注入，至少包括 `DB_PWD`、`REDIS_PWD`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`，启用任务调度还要 `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`。
+对照[环境变量参考](/docs/admin/reference/environment)的凭据清单逐项注入，至少包括 `DB_PWD`、`REDIS_PWD`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`；启用任务调度还要 `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`；设置 `JUSTAUTH_ENABLED=true` 后，只为实际使用的平台补 `JUSTAUTH_<平台>_CLIENT_ID` 与 `JUSTAUTH_<平台>_SECRET`。
 
 ### 任务调度相关报错
 

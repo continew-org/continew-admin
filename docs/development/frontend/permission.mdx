@@ -3,7 +3,7 @@ title: 权限控制
 description: 讲解前端按钮级权限的两种用法（v-permission / v-role 指令与 hasPerm / hasRole 编程式判断）及其判定规则。
 ---
 
-页面级权限由动态路由控制（没权限的菜单根本不下发，见 [路由与页签](./route.mdx)），本页讲页面内部的按钮级权限。前端提供指令式与编程式两套 API，判定数据都来自 `userStore` 的 `roles` 和 `permissions`，在用户登录后的 `getInfo()` 里赋值（`src/stores/modules/user.ts:143`）。
+页面级权限由动态路由控制（没权限的菜单根本不下发，见 [路由与页签](./route)），本页讲页面内部的按钮级权限。前端提供指令式与编程式两套 API，判定数据都来自 `userStore` 的 `roles` 和 `permissions`，在用户登录后的 `getInfo()` 里赋值（`src/stores/modules/user.ts:143`）。
 
 ## 权限码与角色标识
 

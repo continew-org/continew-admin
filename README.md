@@ -40,7 +40,7 @@
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=dark" alt="Gitee Forks" />
 </a>
 
-📚 [在线文档](https://continew.top) | 🚀 [演示地址](https://continew.top/demo) | 💬 [提交 Issue](https://github.com/continew-org/continew-admin/issues)
+📚 [在线文档](https://continew.top/docs/admin) | 🚀 [演示地址](https://continew.top/demo) | 💬 [提交 Issue](https://github.com/continew-org/continew-admin/issues)
 
 ## 简介
 
@@ -145,8 +145,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 ##  系统功能
 
 > [!TIP]
-> 更多功能和优化正在赶来💦，最新项目计划、进展请查看 [开发计划](https://continew.top/docs/admin/reference/plan) 和 [更新日志](https://continew.top/docs/admin/reference/changelog)。
-> 功能不会用？请查看 [功能手册](https://continew.top/docs/admin/manual/tenant/management)。
+> 更多功能和优化正在赶来💦，最新项目计划、进展请查看 [开发计划](https://continew.top/docs/admin/reference/plan) 和 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
+> 功能不会用？请查看 [功能手册](https://continew.top/docs/admin/manual/system)。
 
 - 仪表盘：提供工作台、分析页，工作台提供功能快捷导航入口、最新公告、动态；分析页提供全面数据可视化能力
 - 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑（微信登录）、头像裁剪上传
@@ -525,7 +525,7 @@ ContiNew（Continue New）系列项目致力于通过持续迭代，为开发者
 
 ### 分支说明
 
-ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序进行。提交 PR 前，请确认目标分支是否处于活跃维护状态，版本支持情况请查看 [更新日志#版本支持](https://continew.top/docs/admin/reference/changelog)。
+ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序进行。提交 PR 前，请确认目标分支是否处于活跃维护状态，版本支持情况请查看 [升级指南](https://continew.top/docs/admin/guide/upgrade)。
 
 | 分支  | 说明                                                         |
 | ----- | ------------------------------------------------------------ |

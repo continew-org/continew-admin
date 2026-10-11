@@ -53,7 +53,7 @@ description: 角色的功能权限、数据权限与关联用户分配，以及�
 
 ## 分配用户
 
-角色页提供「分配用户」能力，支持从角色视角批量绑定（`POST /system/role/{id}/user`）与解绑（`DELETE /system/role/user`）用户。从用户视角调整角色则使用用户管理的「分配角色」，见[用户管理](./user.mdx)。
+角色页提供「分配用户」能力，支持从角色视角批量绑定（`POST /system/role/{id}/user`）与解绑（`DELETE /system/role/user`）用户。从用户视角调整角色则使用用户管理的「分配角色」，见[用户管理](./user)。
 
 <Callout type="warn">
 初始化脚本内置超级管理员角色（`super_admin`，`is_system = 1`），系统内置角色与用户禁止变更。普通角色若仍有关联用户，删除前请先解除关联。
