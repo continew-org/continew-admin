@@ -43,7 +43,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 **多租户行级隔离**：基于 ContiNew Starter 的 `continew-starter-extension-tenant-mp`（MyBatis-Plus 行级隔离），租户 ID 经 `X-Tenant-Id` 请求头传递，默认租户 ID 为 0。租户管理、套餐管理由 `continew-plugin-tenant` 插件提供。
 
-**认证与多方式登录**：基于 Sa-Token（1.45.0）+ JWT，Token 名 `Authorization`。内置账号密码、邮箱验证码、手机验证码、JustAuth 第三方登录四种处理器。自 4.2.0-SNAPSHOT 起引入 `continew-starter-auth-refresh-token`，采用 Access Token（内存持有）+ Refresh Token（HttpOnly Cookie）双令牌轮换。Token 有效期在「客户端配置」页面按端动态管理。
+**认证与多方式登录**：基于 Sa-Token（1.45.0）+ JWT，Token 名 `Authorization`。内置账号密码、邮箱验证码、手机验证码、JustAuth 第三方登录四种处理器。自 4.2.0 起引入 `continew-starter-auth-refresh-token`，采用 Access Token（内存持有）+ Refresh Token（HttpOnly Cookie）双令牌轮换。Token 有效期在「客户端配置」页面按端动态管理。
 
 **数据权限**：基于 `continew-starter-extension-datapermission-mp`，Mapper 继承 `DataPermissionMapper`（`continew-common` 的 `base/mapper` 包），由 `DefaultDataPermissionUserDataProvider` 提供当前用户数据范围，角色与部门的数据权限关联存于 `sys_role_dept` 表。
 

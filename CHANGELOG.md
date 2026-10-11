@@ -1,3 +1,59 @@
+## [v4.2.0](https://github.com/continew-org/continew-admin/compare/v4.1.0...v4.2.0) (2026-10-11)
+
+### ✨ 新特性
+
+- 【system/auth】新增可轮换的 Refresh Token 会话体系与多端认证适配 ([0877b3e8](https://github.com/continew-org/continew-admin/commit/0877b3e8097156ae54bf087934f59a79a1428ef1)) ([58803b5d](https://github.com/continew-org/continew-admin/commit/58803b5d27ea9900e9a497dd97868f3a0696bc7c)) (GitHub#229@luoqiz) (GitHub#231@Charles7c)
+- 分片上传和基础上传适配 starter 存储模块 ([0397af75](https://github.com/continew-org/continew-admin/commit/0397af75c8dc663283e1be3940608d6e030d91c5)) @liquor
+- 【system/file】添加文件名冲突检测和自动重命名功能 ([dc6c96a4](https://github.com/continew-org/continew-admin/commit/dc6c96a42f09da3fe99c626812bdc0a9f0eb459d)) (GitHub#206@fjwupeng)
+- 【system/client】客户端管理扩展登录配置 ([0ab31ba9](https://github.com/continew-org/continew-admin/commit/0ab31ba9f94903f0a83be6493010d64ad04f5f21)) @KAI
+
+### 💎 功能优化
+
+- 新增 ContiNew Admin 官方文档（docs/ 目录） ([5356a07d](https://github.com/continew-org/continew-admin/commit/5356a07d8a859e31b6a6dd0eacbea455e0033bde)) @Charles7c
+- 类级 @since 统一为发布版本号 ([00bd60ea](https://github.com/continew-org/continew-admin/commit/00bd60eab5fdb3baf5e25434e345aeae654bfde7)) @Charles7c
+- 放开单元测试门禁并接入 JaCoCo 覆盖率采集 ([ce5d3aa2](https://github.com/continew-org/continew-admin/commit/ce5d3aa2a7dc7d7ab97551a499776c70b8820954)) @Charles7c
+- docker compose 日志轮转、密钥占位符与服务依赖强化 ([003884b2](https://github.com/continew-org/continew-admin/commit/003884b28b3a59c2a9e8bd2c1cf0d96c9eb63f0f)) @Charles7c
+- 消除分片上传与存储引擎的同名模型，新增内联全限定类名检查 ([d8e91454](https://github.com/continew-org/continew-admin/commit/d8e914542adba44993f51b41410c6f65ff967262)) @Charles7c
+- 内部模块依赖 groupId 统一改为 ${project.groupId} ([f8497b42](https://github.com/continew-org/continew-admin/commit/f8497b429756bdbf82071dd10d22be42b6d12cf3)) @Charles7c
+- 接入 Enforcer/Spotless/Checkstyle/SpotBugs 四道门禁并全量重排清零存量 ([7dc9dcfd](https://github.com/continew-org/continew-admin/commit/7dc9dcfd46f2894e5de6db4d84972e717a0773b2)) @Charles7c
+- 新增 OCN-CodeStyle 代码风格配置 ([082581d2](https://github.com/continew-org/continew-admin/commit/082581d2ef5d3d4c43be916ea3f26967c797a113)) ([83d5dc87](https://github.com/continew-org/continew-admin/commit/83d5dc87180ca731227634fa5f616efb52950317)) @Charles7c
+- 添加 Maven Wrapper 并锁定 Maven 3.9.16 ([6ca60453](https://github.com/continew-org/continew-admin/commit/6ca60453629805c544809fdc396f19fa7602d7f4)) @Charles7c
+- docker limit Metaspace and enable OOM heap dump ([bb091c1e](https://github.com/continew-org/continew-admin/commit/bb091c1ec87318e5cfc71741d47e295985bb15e3)) @Charles7c
+- 应用管理添加数据权限访问控制 ([d5eeaaf0](https://github.com/continew-org/continew-admin/commit/d5eeaaf002eab809bf3bf1a17e07b6595bf6710c)) (GitHub#215@luoqiz)
+- 移除 commons-logging 依赖，消除项目启动提示 ([c0a1defb](https://github.com/continew-org/continew-admin/commit/c0a1defbbc0036cad60bde6a5d24639011e00fb1)) @Charles7c
+- 优化数据库初始化脚本，消除 liquibase 项目启动警告 ([ca3d22f0](https://github.com/continew-org/continew-admin/commit/ca3d22f0e9399f12a8cc55218b3ea89ca9cf4a47)) @Charles7c
+- 优化模块 API 分组配置命名，消除项目启动 openApi bean 覆盖警告 ([66b8a3f8](https://github.com/continew-org/continew-admin/commit/66b8a3f8e8e9a33fb2da72e080980a2495fb826b)) @Charles7c
+- 显式声明 MapperScan 注解，消除项目启动 mybatis-spring 警告 ([99c40f13](https://github.com/continew-org/continew-admin/commit/99c40f1389f4f456f2d7e4a4214d8dc26d5f2e78)) @Charles7c
+- 适配新版 NextDoc4j 权限展示逻辑 ([7d96de3a](https://github.com/continew-org/continew-admin/commit/7d96de3a94edc0dca506463bc8396a22b824d5b8)) @liquor
+- 禁用 AWS SDK v1 弃用提示 ([58f7070f](https://github.com/continew-org/continew-admin/commit/58f7070f32938e5619437dcb91fa07caacc9ed10)) (GitHub#204@Zhihui Zheng)
+- 新增 PROFILES_ACTIVE 环境变量用于 Spring Profiles 配置 ([4b5fa9b1](https://github.com/continew-org/continew-admin/commit/4b5fa9b199eba50c552c84ee5315673cd744a008)) @Charles7c
+
+### 🐛 问题修复
+
+- 修复调度部署链与字典导入转换器 ([c817c92a](https://github.com/continew-org/continew-admin/commit/c817c92a13882bf94fe6b0333559560e5b7e2393)) @Charles7c
+- 【extension】SnailJob 服务端升级 1.10.0 并补齐表结构增量 ([d0344cb3](https://github.com/continew-org/continew-admin/commit/d0344cb302f459c050009e1444d5405f6f4de8a4)) @Charles7c
+- 【system】清理菜单 2020-2023 的悬空角色关联 ([97cecefd](https://github.com/continew-org/continew-admin/commit/97cecefd709780cc83ebef35498f261a28a4a09c)) (GitHub#230@luoqiz)
+- 修复审计发现的路径穿越、并发与时区问题 ([f42b039a](https://github.com/continew-org/continew-admin/commit/f42b039a5e309e0dac2e7a66bbf0827c2007c750)) @kiki1373639299
+- 【tenant】调整租户关联表索引 ([35324d06](https://github.com/continew-org/continew-admin/commit/35324d0677d7db9906b177691c98cfb944e96053)) (GitHub#224@luoqiz)
+- SonarCloud 问题集中治理（安全修复、凭据外置、代码异味清理） ([eee83f29](https://github.com/continew-org/continew-admin/commit/eee83f29f150ba358895a6195ecf2a8073882c88)) ([8f2ad720](https://github.com/continew-org/continew-admin/commit/8f2ad720389a49e3bd338e3c9eff61eeaa090ce8)) @Charles7c
+- 【tenant】修复创建租户接口未加事务导致残留孤儿租户 ([cff69e3f](https://github.com/continew-org/continew-admin/commit/cff69e3f690d0902ee6a7135c0f35543ee16cbb2)) @Charles7c
+- 【system】修复分片上传绕过权限与扩展名白名单漏洞 ([a79bdbcc](https://github.com/continew-org/continew-admin/commit/a79bdbcc26c164fe84385dbcad9782402ebb75b5)) (#221) @Charles7c
+- 【system】修复消息删除接口水平越权漏洞 ([665ea2c7](https://github.com/continew-org/continew-admin/commit/665ea2c757a3f1246db62fb139fec1aac3cca296)) (#220) @Charles7c
+- 【system】三方用户设置初始密码时跳过空密码校验 ([e3a6f999](https://github.com/continew-org/continew-admin/commit/e3a6f999bf6fe7e430a2615a6630f1fa09868ed4)) @Charles7c
+- 解决 Spring Doc 类型不兼容导致的 WARN 警告问题 ([40407f13](https://github.com/continew-org/continew-admin/commit/40407f13df2944eccca9ee2b781da1e923e10989)) @Charles7c
+- 【file】添加上传源对象规范化处理，支持将 File 转换为 EnhancedMultipartFile ([68d3ddf6](https://github.com/continew-org/continew-admin/commit/68d3ddf6f48ddf6221997479e56bbe31bac8e168)) (GitHub#211@fjwupeng)
+- 修复 freemarker 生成代码错误 ([f6075ca1](https://github.com/continew-org/continew-admin/commit/f6075ca10465fb228086857714317dd4a0af1d6a)) (GitHub#210@luoqiz)
+- 【logback】修复 Spring Boot 3.5.x LogBack 日志配置启动检查报错 ([bb6fa89d](https://github.com/continew-org/continew-admin/commit/bb6fa89d97ba49bb2b03fd5ce35addd83433582a)) @Charles7c
+- 修复同一个厂商多个短信配置时加载默认短信配置错误 ([1e9b8f4a](https://github.com/continew-org/continew-admin/commit/1e9b8f4ae40291153c75e2c7562d9d68e0bb8061)) @KAI
+- 【system/file】修复回收站为空或 MyBatis Plus 触发防全表更新插件拦截导致清空回收站报错的问题 ([971e392f](https://github.com/continew-org/continew-admin/commit/971e392f7d0286532ce9bf5e7089194350aa81c3)) @Charles7c
+- 修复 SnailJob 1.8.0 配置错误引起的启用/禁用任务无效的问题 ([7ac51243](https://github.com/continew-org/continew-admin/commit/7ac512434f8e8886c197b3c4c193142e8fd6b42e)) @Charles7c
+- 修复重置演示环境数据未清理用户角色、用户第三方账号绑定问题 ([3bee4f22](https://github.com/continew-org/continew-admin/commit/3bee4f222c85c05299c1e9a55af57e007f9097d3)) @Charles7c
+- 【extension/schedule-server】修复升级 snail job 1.8.0 任务调度中心配置错误 ([e4b12935](https://github.com/continew-org/continew-admin/commit/e4b1293538ad2b684c14f7cbd5c21c9a2cf604cb)) @Charles7c
+
+### 📦 依赖升级
+
+- continew-starter 2.14.0 => 2.17.0 ([58803b5d](https://github.com/continew-org/continew-admin/commit/58803b5d27ea9900e9a497dd97868f3a0696bc7c))
+
 ## [v4.1.0](https://github.com/continew-org/continew-admin/compare/v4.0.0...v4.1.0) (2025-11-17)
 
 ### ✨ 新特性

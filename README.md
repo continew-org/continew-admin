@@ -1,7 +1,7 @@
 # ContiNew Admin 多租户中后台管理框架
 
 <a href="https://github.com/continew-org/continew-admin" title="Current Version" target="_blank">
-<img src="https://img.shields.io/badge/SNAPSHOT-v4.2.0-%23ff3f59.svg" alt="Current Version" />
+<img src="https://img.shields.io/badge/RELEASE-v4.2.0-%23ff3f59.svg" alt="Current Version" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
 <img src="https://img.shields.io/badge/ContiNew Starter-2.17.0-%236CB52D.svg" alt="ContiNew Starter" />
@@ -165,7 +165,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
   - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
   - 短信配置：提供系统短信服务配置，也支持通过配置文件指定
   - 存储配置：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
-  - 客户端配置：多端（PC端、小程序端等）认证管理，可设置不同的 token 有效期
+  - 客户端配置：多端（PC端、小程序端等）认证管理，可设置不同的 token 有效期，支持可轮换的 Refresh Token 双令牌会话
 - 在线用户：管理当前登录用户，可一键踢除下线
 - 日志管理：管理系统登录日志、操作日志，支持查看日志详情，包含请求头、响应头等报文信息
 - 短信日志：管理系统短信发送日志，支持删除、导出 
