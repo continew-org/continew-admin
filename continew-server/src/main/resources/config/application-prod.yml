@@ -238,20 +238,22 @@ continew-starter.messaging.websocket:
     - ${application.url}
 
 --- ### Just Auth 配置
+## 第三方登录为可选能力，生产环境默认关闭；启用后仅需注入实际使用平台的凭据
+##（命名规则：JUSTAUTH_<平台>_CLIENT_ID / JUSTAUTH_<平台>_SECRET）
 continew-starter.justauth:
-  enabled: true
+  enabled: ${JUSTAUTH_ENABLED:false}
   type:
     WECHAT_OPEN:
-      client-id: wx4a**********bcc2
-      client-secret: 32e5*************************1ef
+      client-id: ${JUSTAUTH_WECHAT_OPEN_CLIENT_ID:}
+      client-secret: ${JUSTAUTH_WECHAT_OPEN_SECRET:}
       redirect-uri: ${application.url}/social/callback?source=wechat_open
     GITEE:
-      client-id: 5d271b7f638941812aaf8bfc2e2f08f06d6235ef934e0e39537e2364eb8452c4
-      client-secret: 1f7d08**********5b7**********29e
+      client-id: ${JUSTAUTH_GITEE_CLIENT_ID:}
+      client-secret: ${JUSTAUTH_GITEE_SECRET:}
       redirect-uri: ${application.url}/social/callback?source=gitee
     GITHUB:
-      client-id: 38080dad08cfbdfacca9
-      client-secret: 1f7d08**********5b7**********29e
+      client-id: ${JUSTAUTH_GITHUB_CLIENT_ID:}
+      client-secret: ${JUSTAUTH_GITHUB_SECRET:}
       redirect-uri: ${application.url}/social/callback?source=github
   cache:
     type: REDIS
@@ -284,8 +286,8 @@ snail-job:
     port: ${SCHEDULE_PORT:17888}
     # API 配置
     api:
-      # URL
-      url: http://127.0.0.1:8001/snail-job
+      # URL（Snail Job OpenAPI 地址；容器化部署时指向调度中心服务，端口与 schedule-server 的 Web 端口一致）
+      url: ${SCHEDULE_API_URL:http://127.0.0.1:18001/snail-job}
       # 用户名
       username: ${SCHEDULE_USERNAME:admin}
       # 密码

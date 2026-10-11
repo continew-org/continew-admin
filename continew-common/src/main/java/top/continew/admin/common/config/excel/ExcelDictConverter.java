@@ -45,11 +45,12 @@ public class ExcelDictConverter implements Converter<Object> {
         GlobalConfiguration globalConfiguration) {
         // 获取字典项数据
         List<LabelValueResp> dictItemList = this.getDictCode(contentProperty);
-        // 转换字典标签为字典值
+        // 单元格中填写的是字典标签，转换为字典值
         String value = dictItemList.stream()
-            .filter(item -> Objects.equals(cellData.getStringValue(), item.getValue()))
+            .filter(item -> Objects.equals(cellData.getStringValue(), item.getLabel()))
             .findFirst()
-            .map(LabelValueResp::getLabel)
+            .map(LabelValueResp::getValue)
+            .map(String::valueOf)
             .orElse(null);
         // 转换字典值为对应类型
         return Convert.convert(contentProperty.getField().getType(), value);

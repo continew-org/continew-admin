@@ -100,10 +100,17 @@ services:
       REDIS_PWD: 你的 Redis 密码
       REDIS_DB: 0
       SCHEDULE_HOST: schedule-server
-      SCHEDULE_PORT: 1788
+      SCHEDULE_PORT: 17888
+      SCHEDULE_API_URL: http://schedule-server:18001/snail-job
       SCHEDULE_TOKEN: 任务调度服务端 Token
+      SCHEDULE_PASSWORD: 任务调度控制台密码
       ACCESS_TOKEN_JWT_SECRET: 你的访问令牌 JWT 密钥（至少 32 字符）
       REFRESH_TOKEN_SECRET: 你的刷新令牌密钥（至少 32 字符，且与前者不同）
+      FIELD_ENCRYPT_PASSWORD: 你的字段加密 AES 密钥
+      FIELD_ENCRYPT_PUBLIC_KEY: 你的字段加密 RSA 公钥
+      FIELD_ENCRYPT_PRIVATE_KEY: 你的字段加密 RSA 私钥
+      # 第三方登录默认关闭。启用后设置为 true，并按实际使用平台补充 JUSTAUTH_<平台>_CLIENT_ID / SECRET
+      JUSTAUTH_ENABLED: false
     depends_on:
       redis:
         condition: service_healthy
