@@ -49,7 +49,7 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 | `SCHEDULE_NAMESPACE` | Snail Job 命名空间 | 内置默认值 | 有回退 |
 | `SCHEDULE_GROUP` | Snail Job 接入组名 | `continew-admin` | 有回退 |
 | `SCHEDULE_TOKEN` | Snail Job 接入组 token | dev 有示例值 | 启用任务调度时必填，无默认值 |
-| `JUSTAUTH_ENABLED` | 是否启用第三方登录 | 配置中默认开启（凭据为空时对应平台不可用） | 默认 `false` |
+| `JUSTAUTH_ENABLED` | 是否启用第三方登录 | dev 为 `true`，prod 为 `false` | 默认 `false` |
 | `JUSTAUTH_<平台>_CLIENT_ID` | 第三方平台 Client ID | 空 | 启用该平台时必填 |
 | `JUSTAUTH_<平台>_SECRET` | 第三方平台 Client Secret | 空 | 启用该平台时必填 |
 

@@ -28,6 +28,7 @@ import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.auth.AbstractLoginHandler;
@@ -68,6 +69,10 @@ import java.util.Collections;
  */
 @Component
 @RequiredArgsConstructor
+// 第三方登录为可选能力：条件与 Starter 的 JustAuthAutoConfiguration 保持一致，
+// 未启用时 AuthRequestFactory 不会注册，本处理器需同步跳过，否则容器启动时注入失败
+@ConditionalOnProperty(prefix = "continew-starter.justauth", name = "enabled", havingValue = "true",
+    matchIfMissing = true)
 public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
     private final AuthRequestFactory authRequestFactory;

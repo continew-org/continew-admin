@@ -26,6 +26,7 @@ import me.zhyd.oauth.model.AuthCallback;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,7 +78,8 @@ public class UserProfileController {
     private static final String CAPTCHA_EXPIRED = "验证码已失效";
     private final UserService userService;
     private final UserSocialService userSocialService;
-    private final AuthRequestFactory authRequestFactory;
+    // 第三方登录为可选能力，未启用时 Starter 不注册 AuthRequestFactory，故惰性获取
+    private final ObjectProvider<AuthRequestFactory> authRequestFactoryProvider;
 
     /**
      * 修改头像
@@ -191,6 +193,8 @@ public class UserProfileController {
     public void bindSocial(
         @PathVariable @EnumValue(value = SocialSourceEnum.class, message = "第三方平台无效") String source,
         @RequestBody AuthCallback callback) {
+        AuthRequestFactory authRequestFactory = authRequestFactoryProvider.getIfAvailable();
+        ValidationUtils.throwIf(authRequestFactory == null, "暂未启用第三方登录");
         AuthRequest authRequest = authRequestFactory.getAuthRequest(source);
         AuthResponse<AuthUser> response = authRequest.login(callback);
         ValidationUtils.throwIf(!response.ok(), response.getMsg());

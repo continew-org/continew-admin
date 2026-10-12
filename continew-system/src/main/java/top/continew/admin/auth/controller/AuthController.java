@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,7 @@ import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.auth.justauth.AuthRequestFactory;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.log.enums.Include;
 import top.continew.starter.validation.constraints.EnumValue;
@@ -69,7 +71,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final AuthRequestFactory authRequestFactory;
+    // 第三方登录为可选能力，未启用时 Starter 不注册 AuthRequestFactory，故惰性获取
+    private final ObjectProvider<AuthRequestFactory> authRequestFactoryProvider;
 
     /**
      * 用户登录
@@ -100,6 +103,8 @@ public class AuthController {
     @GetMapping("/{source}")
     public SocialAuthAuthorizeResp authorize(@PathVariable @EnumValue(
         value = SocialSourceEnum.class, message = "第三方平台无效") String source) {
+        AuthRequestFactory authRequestFactory = authRequestFactoryProvider.getIfAvailable();
+        ValidationUtils.throwIf(authRequestFactory == null, "暂未启用第三方登录");
         AuthRequest authRequest = authRequestFactory.getAuthRequest(source);
         return SocialAuthAuthorizeResp.builder()
             .authorizeUrl(authRequest.authorize(AuthStateUtils.createState()))
