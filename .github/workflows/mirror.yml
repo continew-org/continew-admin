@@ -1,0 +1,187 @@
+name: Mirror
+
+# 单向镜像到 Gitee 与 AtomGit：GitHub 是唯一写入点，镜像平台只读。
+#
+# 范围：main、dev、形如 4.2.x 的版本分支 + 全部标签；feat/fix 等 PR 分支不镜像。
+# 推送带 --prune，镜像侧多余的分支与上游已删的标签会被删除（删除项打印在日志里）。
+# 白名单内的分支或同名标签若在镜像侧有上游没有的提交，预检会报错停下，不覆盖。
+# 镜像仓的默认分支必须与 GitHub 一致，否则平台禁止删除，整次推送会被拒绝。
+#
+# secrets：GITEE_USER/GITEE_TOKEN、ATOMGIT_USER/ATOMGIT_TOKEN；缺哪组就跳过哪个平台。
+
+on:
+  # 不用 branches 过滤：镜像的是白名单内的全部分支，且各仓库默认分支不同，
+  # 写成 branches: [main] 在 dev 仓会静默不触发。
+  push:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '只演练：校验凭据与分叉，列出将要推送/删除的 ref 但不改动远端'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror
+  cancel-in-progress: true
+
+jobs:
+  mirror:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      # 镜像平台上的组织名（GitHub 是 continew-org）；仓库名沿用 GitHub，复制到各仓库无需改
+      MIRROR_OWNER: continew
+      GIT_TERMINAL_PROMPT: '0'
+    steps:
+      - name: 克隆 GitHub 侧仓库
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # 用 --bare 不用 --mirror：后者会把 refs/pull/*、refs/remotes/*、notes 也拉下来推过去
+          git clone --bare \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo.git
+
+      - name: 过滤镜像分支
+        run: |
+          set -euo pipefail
+          # refspec 不支持 [0-9] 字符类；逐分支写死 refspec 时，仓库缺某个分支会让整次 push 失败，
+          # 所以白名单在 shell 里判定，推送用全量 glob。
+          while read -r b; do
+            case "$b" in
+              main|dev|[0-9]*.x) ;;
+              *) git -C repo.git update-ref -d "refs/heads/$b"; echo "  不镜像分支: $b" ;;
+            esac
+          done < <(git -C repo.git for-each-ref --format='%(refname:short)' refs/heads/)
+
+      - name: 镜像到 Gitee 与 AtomGit
+        env:
+          GITEE_USER: ${{ secrets.GITEE_USER }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          ATOMGIT_USER: ${{ secrets.ATOMGIT_USER }}
+          ATOMGIT_TOKEN: ${{ secrets.ATOMGIT_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: |
+          set -euo pipefail
+
+          DRY=""
+          if [ "$DRY_RUN" = "true" ]; then
+            DRY="--dry-run"
+            echo "::notice::dry-run 模式：本次不会改动镜像平台"
+          fi
+
+          # 凭据由 GIT_ASKPASS 在认证时读取：不出现在进程命令行、URL 或仓库配置里
+          askpass="$(mktemp)"
+          cat > "$askpass" <<'EOF'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' "$MIRROR_USER" ;;
+            *) printf '%s\n' "$MIRROR_TOKEN" ;;
+          esac
+          EOF
+          chmod 700 "$askpass"
+          export GIT_ASKPASS="$askpass"
+
+          sync() {
+            local label="$1" user="${2:-}" token="${3:-}" host="$4"
+            if [ -z "$token" ]; then
+              echo "::warning::未配置 ${label} 凭据，本平台不会同步"
+              return 0
+            fi
+            local remote="https://${host}/${MIRROR_OWNER}/${GITHUB_REPOSITORY#*/}.git"
+            export MIRROR_USER="$user" MIRROR_TOKEN="$token"
+
+            # 一次取回 heads、tags 与默认分支（--symref），供两项预检共用
+            local remote_refs
+            remote_refs="$(git ls-remote --symref "$remote" HEAD 'refs/heads/*' 'refs/tags/*' 2>/dev/null)" || {
+              echo "::error::${label} 不可达（网络、仓库不存在或权限不足）"
+              return 1
+            }
+            local default_branch remote_heads remote_tags
+            default_branch="$(awk '/^ref:/{sub("refs/heads/", "", $2); print $2}' <<<"$remote_refs")"
+            remote_heads="$(awk '$1 != "ref:" && $2 ~ /^refs\/heads\//{print $1" "$2}' <<<"$remote_refs")"
+            remote_tags="$(awk '$1 != "ref:" && $2 ~ /^refs\/tags\// && $2 !~ /\^\{\}$/{print $1" "$2}' <<<"$remote_refs")"
+
+            local diverged="" sha ref branch
+            while read -r sha ref; do
+              [ -n "$ref" ] || continue
+              branch="${ref#refs/heads/}"
+              git -C repo.git rev-parse --verify --quiet "refs/heads/${branch}" >/dev/null || continue
+              if ! git -C repo.git cat-file -e "${sha}^{commit}" 2>/dev/null \
+                 || ! git -C repo.git merge-base --is-ancestor "$sha" "refs/heads/${branch}"; then
+                diverged="${diverged} ${branch}"
+              fi
+            done <<<"$remote_heads"
+
+            local diverged_tags="" tag local_sha
+            while read -r sha ref; do
+              [ -n "$ref" ] || continue
+              tag="${ref#refs/tags/}"
+              local_sha="$(git -C repo.git rev-parse --verify --quiet "refs/tags/${tag}")" || continue
+              [ "$local_sha" = "$sha" ] || diverged_tags="${diverged_tags} ${tag}"
+            done <<<"$remote_tags"
+
+            if [ -n "${diverged}${diverged_tags}" ]; then
+              echo "::error::${label} 上这些 ref 含 GitHub 没有的提交，已停止镜像以免覆盖。分支:${diverged:- 无} 标签:${diverged_tags:- 无}"
+              echo "请先把它们回流到 GitHub，或重置镜像侧 ref 后重跑本工作流。"
+              return 1
+            fi
+
+            if [ -n "$default_branch" ]; then
+              if git -C repo.git rev-parse --verify --quiet "refs/heads/${default_branch}" >/dev/null; then
+                :
+              elif grep -q "refs/heads/${default_branch}$" <<<"$remote_heads"; then
+                echo "::error::${label} 的默认分支 ${default_branch} 不在镜像白名单内；--prune 会删除它但平台禁止"
+                echo "请先在 ${label} 把默认分支改为 dev/main 后重跑本工作流。"
+                return 1
+              else
+                echo "::warning::${label} 的默认分支 ${default_branch} 在镜像侧不存在，推送后请在平台确认默认分支"
+              fi
+            elif [ -n "$remote_heads" ]; then
+              echo "::warning::${label} 的 HEAD 未指向任何分支，推送后请在平台确认默认分支"
+            fi
+
+            # $DRY 不加引号：为空时不产生参数
+            local attempt out deleted
+            for attempt in 1 2 3; do
+              if out="$(git -C repo.git push --prune $DRY "$remote" \
+                   '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*' 2>&1)"; then
+                printf '%s\n' "$out"
+                if [ -n "$DRY" ]; then
+                  echo "🧪 ${label} 演练完成，未改动远端"
+                else
+                  deleted="$(grep -c '\[deleted\]' <<<"$out" || true)"
+                  if [ "${deleted:-0}" -gt 0 ]; then
+                    echo "✅ ${label} 已同步（删除 ${deleted} 个 ref）"
+                  else
+                    echo "✅ ${label} 已同步"
+                  fi
+                fi
+                return 0
+              fi
+              printf '%s\n' "$out"
+              if grep -qiE 'authentication failed|permission denied|could not read (username|password)|error: 40[13]|HTTP 40[13]' <<<"$out"; then
+                echo "::error::${label} 认证失败：检查 token 是否过期或权限不足"
+                return 1
+              fi
+              if grep -qiE 'remote rejected|non-fast-forward|protected branch' <<<"$out"; then
+                echo "::error::${label} 推送被平台拒绝（分支保护或非快进），已停止重试"
+                return 1
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                echo "::warning::${label} 第 ${attempt} 次推送失败，$((attempt * 5)) 秒后重试"
+                sleep "$((attempt * 5))"
+              fi
+            done
+            echo "::error::${label} 重试三次后仍推送失败"
+            return 1
+          }
+
+          # 两个平台互不阻塞：任一失败只影响最终退出码
+          rc=0
+          sync Gitee   "${GITEE_USER:-}"   "${GITEE_TOKEN:-}"   gitee.com   || rc=1
+          sync AtomGit "${ATOMGIT_USER:-}" "${ATOMGIT_TOKEN:-}" atomgit.com || rc=1
+          exit "$rc"
