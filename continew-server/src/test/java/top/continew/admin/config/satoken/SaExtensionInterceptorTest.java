@@ -19,7 +19,6 @@ package top.continew.admin.config.satoken;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
@@ -76,8 +75,7 @@ class SaExtensionInterceptorTest {
         stpUtil.when(StpUtil::getTokenValue).thenReturn("access-token");
         cachedContext = new UserContext();
         SaSession saSession = mock(SaSession.class);
-        when(saSession.getModel(eq(SaSession.USER), eq(UserContext.class))).thenReturn(
-            cachedContext);
+        when(saSession.getModel(SaSession.USER, UserContext.class)).thenReturn(cachedContext);
         stpUtil.when(StpUtil::getSession).thenReturn(saSession);
     }
 
@@ -110,7 +108,7 @@ class SaExtensionInterceptorTest {
                 // preHandle 内已写入过一次上下文（getContext），短路后必须清除；若残留，
                 // 第二次读取会命中线程本地（getSession 仅 1 次），清除后为 2 次。
                 UserContextHolder.getContext();
-                stpUtil.verify(() -> StpUtil.getSession(), times(2));
+                stpUtil.verify(StpUtil::getSession, times(2));
             }
         }
     }
@@ -137,7 +135,7 @@ class SaExtensionInterceptorTest {
                 assertFalse(flag);
                 assertEquals(403, response.getStatus());
                 UserContextHolder.getContext();
-                stpUtil.verify(() -> StpUtil.getSession(), times(2));
+                stpUtil.verify(StpUtil::getSession, times(2));
             }
         }
     }
@@ -162,7 +160,7 @@ class SaExtensionInterceptorTest {
 
                 assertTrue(flag);
                 UserContextHolder.getContext();
-                stpUtil.verify(() -> StpUtil.getSession(), times(2));
+                stpUtil.verify(StpUtil::getSession, times(2));
             }
         }
     }

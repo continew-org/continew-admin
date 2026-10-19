@@ -30,7 +30,7 @@ import top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonRes
 import top.continew.admin.system.model.resp.log.LogResp;
 import top.continew.starter.data.mapper.BaseMapper;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -112,12 +112,12 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * 查询仪表盘访问趋势信息
      *
      * @param startTime 开始时间
-     * @param endTime   结束时间
+     * @param endTime   结束时间（不含）
      * @return 仪表盘访问趋势信息
      */
     List<DashboardAccessTrendResp> selectListDashboardAccessTrend(
-        @Param("startTime") Date startTime,
-        @Param("endTime") Date endTime);
+        @Param("startTime") LocalDateTime startTime,
+        @Param("endTime") LocalDateTime endTime);
 
     /**
      * 查询仪表盘访问时段分析信息

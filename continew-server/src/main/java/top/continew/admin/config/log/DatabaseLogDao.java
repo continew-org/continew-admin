@@ -20,7 +20,6 @@ import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -166,66 +165,110 @@ public class DatabaseLogDao implements LogDao {
      */
     private void setCreateUser(LogDO logDO, LogRequest logRequest, LogResponse logResponse) {
         String requestUri = URLUtil.getPath(logDO.getRequestUrl());
-        // 解析退出接口信息
         String responseBody = logResponse == null ? null : logResponse.getBody();
-        if (AuthConstants.LOGOUT_URI.equals(requestUri) && StrUtil.isNotBlank(responseBody)) {
-            R result = JSONUtil.toBean(responseBody, R.class);
-            Long userId = Convert.toLong(result.getData(), null);
-            if (userId != null && userId > 0) {
-                logDO.setCreateUser(userId);
-            }
+        // 解析退出接口信息
+        if (this.trySetCreateUserByLogout(logDO, requestUri, responseBody)) {
             return;
         }
         // 解析登录接口信息
-        if (AuthConstants.LOGIN_URI.equals(requestUri)
-            && LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
-            String requestBody = logRequest.getBody();
-            LoginReq loginReq = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
-                LoginReq.class));
-            AuthTypeEnum authType = loginReq == null ? null : loginReq.getAuthType();
-            // 登录接口已配置脱敏，不同日志实现或旧管理端可能没有保留 authType。操作日志
-            // 不能因附加信息不完整而覆盖真实登录结果。
-            if (authType == null) {
-                logDO.setDescription("登录");
-                return;
-            }
-            logDO.setDescription(authType.getDescription() + "登录");
-            // 解析账号登录用户为操作人
-            if (AuthTypeEnum.ACCOUNT.equals(authType)) {
-                AccountLoginReq authReq = JSONUtil.toBean(requestBody, AccountLoginReq.class);
-                logDO.setCreateUser(
-                    ExceptionUtils.exToNull(() -> userService.getByUsername(authReq.getUsername())
-                        .getId()));
-                return;
-            } else if (AuthTypeEnum.EMAIL.equals(authType)) {
-                EmailLoginReq authReq = JSONUtil.toBean(requestBody, EmailLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils
-                    .exToNull(() -> userService.getByEmail(authReq.getEmail()).getId()));
-                return;
-            } else if (AuthTypeEnum.PHONE.equals(authType)) {
-                PhoneLoginReq authReq = JSONUtil.toBean(requestBody, PhoneLoginReq.class);
-                logDO.setCreateUser(ExceptionUtils
-                    .exToNull(() -> userService.getByPhone(authReq.getPhone()).getId()));
-                return;
-            }
+        if (this.trySetCreateUserByLogin(logDO, logRequest, requestUri)) {
+            return;
         }
         // 解析 Token 信息
+        this.setCreateUserByToken(logDO, logRequest);
+    }
+
+    /**
+     * 解析退出接口响应中的操作人
+     *
+     * @param logDO        日志信息
+     * @param requestUri   请求路径
+     * @param responseBody 响应信息
+     * @return 是否命中退出接口
+     */
+    private boolean trySetCreateUserByLogout(LogDO logDO, String requestUri,
+        String responseBody) {
+        if (!AuthConstants.LOGOUT_URI.equals(requestUri) || StrUtil.isBlank(responseBody)) {
+            return false;
+        }
+        R result = JSONUtil.toBean(responseBody, R.class);
+        Long userId = Convert.toLong(result.getData(), null);
+        if (userId != null && userId > 0) {
+            logDO.setCreateUser(userId);
+        }
+        return true;
+    }
+
+    /**
+     * 解析登录接口请求中的操作人
+     *
+     * @param logDO      日志信息
+     * @param logRequest 请求信息
+     * @param requestUri 请求路径
+     * @return 是否命中登录接口
+     */
+    private boolean trySetCreateUserByLogin(LogDO logDO, LogRequest logRequest,
+        String requestUri) {
+        if (!AuthConstants.LOGIN_URI.equals(requestUri)
+            || !LogStatusEnum.SUCCESS.equals(logDO.getStatus())) {
+            return false;
+        }
+        String requestBody = logRequest.getBody();
+        LoginReq loginReq = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
+            LoginReq.class));
+        AuthTypeEnum authType = loginReq == null ? null : loginReq.getAuthType();
+        // 登录接口已配置脱敏，不同日志实现或旧管理端可能没有保留 authType。操作日志
+        // 不能因附加信息不完整而覆盖真实登录结果。
+        if (authType == null) {
+            logDO.setDescription("登录");
+            return true;
+        }
+        logDO.setDescription(authType.getDescription() + "登录");
+        // 解析登录用户为操作人
+        if (AuthTypeEnum.ACCOUNT.equals(authType)) {
+            logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByUsername(JSONUtil
+                .toBean(requestBody, AccountLoginReq.class)
+                .getUsername()).getId()));
+            return true;
+        }
+        if (AuthTypeEnum.EMAIL.equals(authType)) {
+            logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByEmail(JSONUtil
+                .toBean(requestBody, EmailLoginReq.class)
+                .getEmail()).getId()));
+            return true;
+        }
+        if (AuthTypeEnum.PHONE.equals(authType)) {
+            logDO.setCreateUser(ExceptionUtils.exToNull(() -> userService.getByPhone(JSONUtil
+                .toBean(requestBody, PhoneLoginReq.class)
+                .getPhone()).getId()));
+            return true;
+        }
+        // 第三方登录请求体不含用户标识，操作人继续交由 Token 解析
+        return false;
+    }
+
+    /**
+     * 解析请求头 Token 中的操作人
+     *
+     * @param logDO      日志信息
+     * @param logRequest 请求信息
+     */
+    private void setCreateUserByToken(LogDO logDO, LogRequest logRequest) {
         Map<String, String> requestHeaders = this.getRequestHeaders(logRequest);
         String headerName = HttpHeaders.AUTHORIZATION;
-        boolean isContainsAuthHeader =
-            CollUtil.containsAny(requestHeaders.keySet(), Set.of(headerName, headerName
-                .toLowerCase()));
-        if (MapUtil.isNotEmpty(requestHeaders) && isContainsAuthHeader) {
-            String authorization =
-                requestHeaders.getOrDefault(headerName, requestHeaders.get(headerName
-                    .toLowerCase()));
-            if (StrUtil.isBlank(authorization)) {
-                return;
-            }
-            String token = authorization.replace(SaManager.getConfig()
-                .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
-            logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
+        boolean isContainsAuthHeader = CollUtil.containsAny(requestHeaders.keySet(), Set
+            .of(headerName, headerName.toLowerCase()));
+        if (!isContainsAuthHeader) {
+            return;
         }
+        String authorization = requestHeaders.getOrDefault(headerName, requestHeaders
+            .get(headerName.toLowerCase()));
+        if (StrUtil.isBlank(authorization)) {
+            return;
+        }
+        String token = authorization.replace(SaManager.getConfig()
+            .getTokenPrefix() + StringConstants.SPACE, StringConstants.EMPTY);
+        logDO.setCreateUser(Convert.toLong(StpUtil.getLoginIdByToken(token)));
     }
 
     private Map<String, String> getRequestHeaders(LogRequest logRequest) {

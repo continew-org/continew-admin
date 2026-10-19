@@ -39,13 +39,13 @@ import top.continew.starter.core.util.CollUtils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -130,12 +130,14 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardAccessTrendResp> listAccessTrend(Integer days) {
-        // 按业务时区确定自然日边界，避免 JVM 默认时区与业务时区不一致时落入错误的日期分桶
+        // 按业务时区确定自然日边界；create_time 为无时区类型且按业务时区写入，故直接用
+        // LocalDateTime 比较，避免 Date 经 JDBC 按 JVM 默认时区二次转换导致分桶偏移
         ZoneId zoneId = GlobalConstants.DEFAULT_ZONE_ID;
         LocalDate today = LocalDate.now(zoneId);
         LocalDate startDate = today.minusDays(days);
-        Date startTime = Date.from(startDate.atStartOfDay(zoneId).toInstant());
-        Date endTime = Date.from(today.atStartOfDay(zoneId).toInstant().minusMillis(1));
+        // 查询区间为左闭右开 [startDate, today)，不依赖数据库时间精度
+        LocalDateTime startTime = startDate.atStartOfDay();
+        LocalDateTime endTime = today.atStartOfDay();
         List<DashboardAccessTrendResp> list =
             logMapper.selectListDashboardAccessTrend(startTime, endTime);
         if (list.size() < days) {

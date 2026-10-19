@@ -102,6 +102,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     public LoginResp issueAccessToken(UserDO user, ClientResp client, Long tenantId,
         RefreshSession refreshSession, HttpServletRequest request, HttpServletResponse response) {
         // 刷新场景只重新签发短期 Access Token，Refresh Session 的轮换由专门服务完成。
+        Objects.requireNonNull(refreshSession, "刷新场景必须提供 Refresh Session");
         return this.issueInternal(user, client, tenantId, request, response, false,
             refreshSession);
     }
@@ -123,7 +124,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         TenantUtils.execute(tenantId,
             () -> {
                 this.checkUserStatus(user, true);
-                result.set(this.issueInTenant(user, client, tenantId, request, response, false,
+                result.set(this.issueInTenant(user, client, tenantId, request, response,
                     refreshSession, null));
             });
         return result.get();
@@ -155,13 +156,15 @@ public class AuthTokenServiceImpl implements AuthTokenService {
                     currentAccessToken, currentRefreshToken,
                     () -> this.executeInTenant(tenantId,
                         () -> this.issueInTenant(loginState.user(), loginState.client(), tenantId,
-                            request, response, true, null, securityVersion)));
+                            request, response, null, securityVersion)));
             });
     }
 
     private LoginResp issueInTenant(UserDO user, ClientResp client, Long tenantId,
-        HttpServletRequest request, HttpServletResponse response, boolean issueRefreshToken,
-        RefreshSession refreshSession, AuthSecurityVersion securityVersion) {
+        HttpServletRequest request, HttpServletResponse response, RefreshSession refreshSession,
+        AuthSecurityVersion securityVersion) {
+        // 新登录需要创建 Refresh Session；刷新场景传入既有会话，不得再新建
+        boolean issueRefreshToken = refreshSession == null;
         UserContext userContext = this.buildUserContext(user, tenantId);
 
         String sessionId = issueRefreshToken ? refreshTokenService.newSessionId()

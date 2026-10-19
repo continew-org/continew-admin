@@ -312,12 +312,15 @@
                 <sonar.exclusions>**/src/main/resources/db/changelog/**/*.sql</sonar.exclusions>
                 <!-- S3252：项目统一使用 Hutool 门面类 StrUtil/ValidationUtils 调用静态方法，其父类
                      CharSequenceUtil/Validator 属实现细节，经门面访问是 Hutool 官方推荐用法，故关闭该规则。 -->
-                <sonar.issue.ignore.multicriteria>S3252,S2068-regex</sonar.issue.ignore.multicriteria>
+                <sonar.issue.ignore.multicriteria>S3252,S2068-regex,S1135-regex</sonar.issue.ignore.multicriteria>
                 <sonar.issue.ignore.multicriteria.S3252.ruleKey>java:S3252</sonar.issue.ignore.multicriteria.S3252.ruleKey>
                 <sonar.issue.ignore.multicriteria.S3252.resourceKey>**/*</sonar.issue.ignore.multicriteria.S3252.resourceKey>
                 <!-- S2068：RegexConstants 中的 PASSWORD 是密码强度校验正则常量，并非硬编码凭据，属误报。 -->
                 <sonar.issue.ignore.multicriteria.S2068-regex.ruleKey>java:S2068</sonar.issue.ignore.multicriteria.S2068-regex.ruleKey>
                 <sonar.issue.ignore.multicriteria.S2068-regex.resourceKey>**/constant/RegexConstants.java</sonar.issue.ignore.multicriteria.S2068-regex.resourceKey>
+                <!-- S1135：TODO/FIXME 注释是开发期的正常标记，不作为扫描阻断项。 -->
+                <sonar.issue.ignore.multicriteria.S1135-regex.ruleKey>java:S1135</sonar.issue.ignore.multicriteria.S1135-regex.ruleKey>
+                <sonar.issue.ignore.multicriteria.S1135-regex.resourceKey>**/*</sonar.issue.ignore.multicriteria.S1135-regex.resourceKey>
             </properties>
             <activation>
                 <activeByDefault>false</activeByDefault>

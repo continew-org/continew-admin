@@ -40,14 +40,28 @@ public final class RefreshClientPolicyMapper {
      * @return 认证会话客户端策略
      */
     public static RefreshClientPolicy from(ClientResp client) {
-        SessionReplacementScope replacementScope = client.getReplacedRange() == null ? null
-            : ReplacedRangeEnum.ALL_DEVICE_TYPE.equals(client.getReplacedRange())
-                ? SessionReplacementScope.ALL_CLIENT_TYPES
-                : SessionReplacementScope.CURRENT_CLIENT_TYPE;
+        SessionReplacementScope replacementScope = toSessionReplacementScope(client
+            .getReplacedRange());
         return new RefreshClientPolicy(client.getClientId(), client.getClientType(),
             client.getRefreshTokenTimeout(), client.getRefreshTokenMode(),
             Boolean.TRUE.equals(client.getIsConcurrent()), replacementScope,
             client.getMaxLoginCount(), toLogoutReason(client.getOverflowLogoutMode()));
+    }
+
+    /**
+     * 将系统客户端的替换范围转换为认证会话模块的替换范围
+     *
+     * @param replacedRange 系统客户端替换范围
+     * @return 认证会话模块的替换范围
+     */
+    private static SessionReplacementScope toSessionReplacementScope(
+        ReplacedRangeEnum replacedRange) {
+        if (replacedRange == null) {
+            return null;
+        }
+        return ReplacedRangeEnum.ALL_DEVICE_TYPE.equals(replacedRange)
+            ? SessionReplacementScope.ALL_CLIENT_TYPES
+            : SessionReplacementScope.CURRENT_CLIENT_TYPE;
     }
 
     /**

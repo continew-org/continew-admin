@@ -141,7 +141,7 @@
             COUNT(*) AS pvCount,
             COUNT(DISTINCT ip) AS ipCount
         FROM sys_log
-        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+        WHERE create_time >= #{startTime} AND create_time <![CDATA[ < ]]> #{endTime}
         GROUP BY date
         ORDER BY date
     </select>

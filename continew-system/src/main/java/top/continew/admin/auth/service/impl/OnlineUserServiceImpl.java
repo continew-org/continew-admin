@@ -66,13 +66,8 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         // Refresh Session 才是可恢复登录态的事实源。Access Token 即使已经自然过期，
         // 只要长期会话仍有效，管理员就必须能够看到并撤销该设备登录。
         for (SessionView session : sessionQueryService.listSessions(tenantId)) {
-            if (query.getUserId() != null && !Objects.equals(query.getUserId(), session.getUserId())
-                || !this.isMatchNickname(query.getNickname(), session)
-                || !this.isMatchClientId(query.getClientId(), session.getClientId())) {
-                continue;
-            }
             LocalDateTime loginTime = DateUtil.date(session.getCreatedAt()).toLocalDateTime();
-            if (!this.isMatchLoginTime(query.getLoginTime(), loginTime)) {
+            if (!this.isMatch(query, session, loginTime)) {
                 continue;
             }
             OnlineUserResp resp = new OnlineUserResp();
@@ -100,6 +95,25 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     public void kickOut(Long userId) {
         // 认证会话在事务提交后统一失效；Access Token 校验会立即拒绝已失效会话。
         sessionInvalidationService.invalidateUser(userId);
+    }
+
+    /**
+     * 是否匹配查询条件
+     *
+     * @param query     查询条件
+     * @param session   登录会话
+     * @param loginTime 登录时间
+     * @return 是否匹配
+     */
+    private boolean isMatch(OnlineUserQuery query, SessionView session,
+        LocalDateTime loginTime) {
+        if (query.getUserId() != null
+            && !Objects.equals(query.getUserId(), session.getUserId())) {
+            return false;
+        }
+        return this.isMatchNickname(query.getNickname(), session)
+            && this.isMatchClientId(query.getClientId(), session.getClientId())
+            && this.isMatchLoginTime(query.getLoginTime(), loginTime);
     }
 
     /**

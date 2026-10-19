@@ -256,9 +256,7 @@ public class UserServiceImpl
         // 删除用户
         super.delete(ids);
         // 踢出在线用户
-        ids.forEach(id -> {
-            onlineUserService.kickOut(id);
-        });
+        ids.forEach(onlineUserService::kickOut);
     }
 
     @Override
