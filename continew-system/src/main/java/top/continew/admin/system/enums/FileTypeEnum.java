@@ -24,6 +24,7 @@ import top.continew.starter.core.enums.BaseEnum;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 文件类型枚举
@@ -81,7 +82,8 @@ public enum FileTypeEnum implements BaseEnum<Integer> {
      */
     public static FileTypeEnum getByExtension(String extension) {
         return Arrays.stream(FileTypeEnum.values())
-            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase()))
+            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension)
+                .toLowerCase(Locale.ROOT)))
             .findFirst()
             .orElse(FileTypeEnum.UNKNOWN);
     }
