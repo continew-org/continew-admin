@@ -101,7 +101,6 @@ import top.continew.starter.encrypt.field.util.EncryptHelper;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import jakarta.annotation.Resource;
@@ -142,7 +141,6 @@ public class UserServiceImpl
     private final RoleService roleService;
     private final OnlineUserService onlineUserService;
     private final FileService fileService;
-    private final FileStorageService fileStorageService;
 
     @Resource
     private DeptService deptService;
@@ -166,6 +164,26 @@ public class UserServiceImpl
         PageResp<UserResp> pageResp = PageResp.build(page, super.getListClass());
         pageResp.getList().forEach(this::fill);
         return pageResp;
+    }
+
+    /**
+     * 填充数据：头像装配为完整访问 URL
+     *
+     * <p>
+     * 头像库内存储相对存储根的路径，出口统一按当前存储配置装配，保证存储迁移后存量引用
+     * 仍可直接访问。
+     * </p>
+     *
+     * @param obj 待填充信息
+     */
+    @Override
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof UserResp userResp) {
+            userResp.setAvatar(fileService.resolveUrl(userResp.getAvatar()));
+        } else if (obj instanceof UserDetailResp detailResp) {
+            detailResp.setAvatar(fileService.resolveUrl(detailResp.getAvatar()));
+        }
     }
 
     @Override
@@ -444,18 +462,19 @@ public class UserServiceImpl
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix),
             "头像仅支持 {} 格式的图片", String
                 .join(StringConstants.COMMA, avatarSupportSuffix));
-        // 上传新头像
         UserDO user = super.getById(id);
+        CheckUtils.throwIfNull(user, "用户不存在");
+        // 上传新头像：库内存储相对存储根的路径（不含域名），存储迁移后引用仍可直接访问
         FileInfo fileInfo = fileService.upload(avatarFile, avatarPath);
-        // 更新用户头像
-        String newAvatar = fileInfo.getUrl();
+        String newAvatar = fileInfo.getPath();
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
-        // 删除原头像
+        // 删除原头像：按 path 精确删除（外部 URL 属第三方头像，不做处理）
         String oldAvatar = user.getAvatar();
-        if (StrUtil.isNotBlank(oldAvatar)) {
-            fileStorageService.delete(oldAvatar);
+        if (StrUtil.isNotBlank(oldAvatar) && !StrUtil.equals(oldAvatar, newAvatar)) {
+            fileService.deleteByPath(oldAvatar);
         }
-        return newAvatar;
+        // 出口按当前存储配置装配完整 URL，前端契约不变
+        return fileService.resolveUrl(newAvatar);
     }
 
     @Override

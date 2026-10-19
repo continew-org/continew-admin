@@ -178,6 +178,33 @@ public interface FileService
     Long countByStorageIds(List<Long> storageIds);
 
     /**
+     * 解析文件完整访问 URL
+     *
+     * <p>
+     * 库内存储的是相对存储根的文件路径（不含域名），URL 统一在出口按当前存储配置装配，
+     * 保证存储迁移（复制目录树 + 更改配置）后存量引用仍可直接访问。外部 URL（如第三方
+     * OAuth 头像）原样返回。
+     * </p>
+     *
+     * @param path 相对存储根的文件路径（前导斜杠可选），或外部 URL
+     * @return 完整访问 URL；外部 URL 原样返回，空值返回 null
+     */
+    String resolveUrl(String path);
+
+    /**
+     * 按存储路径删除物理文件及记录（含回收站语义）
+     *
+     * <p>
+     * 按 path 精确匹配记录，替代按 URL 反查删除；记录不存在或同路径跨存储存在多条时
+     * 跳过并告警，避免误删。
+     * </p>
+     *
+     * @param path 相对存储根的文件路径（前导斜杠可选）
+     * @return 是否执行了删除
+     */
+    boolean deleteByPath(String path);
+
+    /**
      * 创建上级文件夹（支持多级）
      *
      * <p>

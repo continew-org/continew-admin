@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.constant.GlobalConstants;
@@ -43,6 +44,7 @@ import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.storage.core.FileStorageService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -54,6 +56,7 @@ import java.util.stream.Collectors;
  * @author Charles7c
  * @since 4.1.0
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileRecycleServiceImpl implements FileRecycleService {
@@ -87,6 +90,37 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
         fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
             .getBucketName(), sourcePath, targetPath);
+        // 缩略图随主文件一并移回原目录
+        this.moveThumbnailBack(file, storage);
+    }
+
+    /**
+     * 将缩略图从回收站目录移回原目录
+     *
+     * <p>
+     * 历史数据可能未随主文件移入回收站，源文件不存在时跳过；缩略图为附属文件，
+     * 操作失败仅记录告警，不阻断主文件还原。
+     * </p>
+     *
+     * @param file    文件
+     * @param storage 存储配置
+     */
+    private void moveThumbnailBack(FileDO file, StorageDO storage) {
+        if (StrUtil.isBlank(file.getThumbnailName())) {
+            return;
+        }
+        String targetPath = normalizeStoragePath(file.getParentPath() + StringConstants.SLASH + file
+            .getThumbnailName());
+        String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
+        if (!fileStorageService.exists(storage.getCode(), storage.getBucketName(), sourcePath)) {
+            return;
+        }
+        try {
+            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+                .getBucketName(), sourcePath, targetPath);
+        } catch (Exception e) {
+            log.warn("缩略图 [{}] 移回原目录失败", sourcePath, e);
+        }
     }
 
     @Override
@@ -104,6 +138,18 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         String sourcePath = normalizeStoragePath(
             storage.getRecycleBinPath() + normalizeStoragePath(file.getPath()));
         fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
+        // 缩略图随主文件一并删除（附属文件，失败仅告警，不阻断主文件删除）
+        if (StrUtil.isNotBlank(file.getThumbnailName())) {
+            String thumbnailPath = normalizeStoragePath(storage.getRecycleBinPath()
+                + normalizeStoragePath(file.getParentPath() + StringConstants.SLASH + file
+                    .getThumbnailName()));
+            try {
+                fileStorageService
+                    .delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
+            } catch (Exception e) {
+                log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
+            }
+        }
     }
 
     @Override
@@ -133,9 +179,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
                 List<String> deletePaths = entry.getValue()
                     .stream()
                     .filter(file -> !FileTypeEnum.DIR.equals(file.getType()))
-                    .map(file -> normalizeStoragePath(
-                        storage.getRecycleBinPath() + normalizeStoragePath(file
-                            .getPath())))
+                    .map(file -> this.buildRecycleFilePaths(storage, file))
+                    .flatMap(List::stream)
                     .toList();
                 if (CollUtil.isNotEmpty(deletePaths)) {
                     fileStorageService.batchDelete(storage.getCode(), storage.getBucketName(),
@@ -150,6 +195,25 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     private String normalizeStoragePath(String path) {
         return StrUtil.removePrefix(path.replace("\\", StringConstants.SLASH)
             .replaceAll("/+", StringConstants.SLASH), StringConstants.SLASH);
+    }
+
+    /**
+     * 构建回收站中文件待删除的物理路径列表（主文件 + 缩略图）
+     *
+     * @param storage 存储配置
+     * @param file    文件
+     * @return 物理路径列表
+     */
+    private List<String> buildRecycleFilePaths(StorageDO storage, FileDO file) {
+        List<String> paths = new ArrayList<>();
+        paths.add(normalizeStoragePath(storage.getRecycleBinPath() + normalizeStoragePath(file
+            .getPath())));
+        if (StrUtil.isNotBlank(file.getThumbnailName())) {
+            paths.add(normalizeStoragePath(storage.getRecycleBinPath()
+                + normalizeStoragePath(file.getParentPath() + StringConstants.SLASH + file
+                    .getThumbnailName())));
+        }
+        return paths;
     }
 
     /**

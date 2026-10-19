@@ -708,3 +708,9 @@ COMMENT ON COLUMN "sys_client"."refresh_token_mode"
 UPDATE "sys_client"
     SET "refresh_token_mode" = 'BODY'
     WHERE "client_type" IN ('ANDROID', 'XCX');
+
+-- changeset luoqiz:file-path-index-postgresql
+-- comment 文件路径索引（URL 出口装配与按 path 精确删除均按 path 等值查询）
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM pg_indexes WHERE schemaname = current_schema() AND tablename = 'sys_file' AND indexname = 'idx_file_path'
+CREATE INDEX "idx_file_path" ON "sys_file" ("path");

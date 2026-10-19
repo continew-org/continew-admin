@@ -52,6 +52,7 @@ import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.StrUtils;
+import top.continew.starter.core.util.UrlUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.storage.core.FileStorageService;
@@ -258,6 +259,60 @@ public class FileServiceImpl
             return 0L;
         }
         return baseMapper.lambdaQuery().in(FileDO::getStorageId, storageIds).count();
+    }
+
+    @Override
+    public String resolveUrl(String path) {
+        if (StrUtil.isBlank(path)) {
+            return null;
+        }
+        if (UrlUtils.isHttpUrl(path)) {
+            // 外部 URL（如第三方 OAuth 头像），不属于本系统管辖的存储，原样返回
+            return path;
+        }
+        String dbPath = StringConstants.SLASH + normalizeStoragePath(path);
+        List<FileDO> files = baseMapper.lambdaQuery().eq(FileDO::getPath, dbPath).list();
+        String prefix;
+        if (CollUtil.isEmpty(files)) {
+            // 未找到文件记录（如记录已被清理），回退默认存储前缀
+            prefix = storageService.getDefaultStorage().getUrlPrefix();
+        } else {
+            FileDO file = files.get(0);
+            if (files.size() > 1) {
+                // 同一路径跨存储存在多条记录：优先取默认存储
+                Long defaultStorageId = storageService.getDefaultStorage().getId();
+                file = files.stream()
+                    .filter(item -> defaultStorageId.equals(item.getStorageId()))
+                    .findFirst()
+                    .orElse(file);
+            }
+            StorageDO storage = storageService.getById(file.getStorageId());
+            prefix = storage == null
+                ? storageService.getDefaultStorage().getUrlPrefix()
+                : storage.getUrlPrefix();
+        }
+        return URLUtil.normalize(prefix + dbPath, false, true);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteByPath(String path) {
+        if (StrUtil.isBlank(path) || UrlUtils.isHttpUrl(path)) {
+            // 空值或外部 URL（如第三方 OAuth 头像）：不属于本系统管辖的存储，不删除
+            return false;
+        }
+        String dbPath = StringConstants.SLASH + normalizeStoragePath(path);
+        List<FileDO> files = baseMapper.lambdaQuery().eq(FileDO::getPath, dbPath).list();
+        if (CollUtil.isEmpty(files)) {
+            log.warn("未找到路径为 [{}] 的文件记录，跳过文件删除", path);
+            return false;
+        }
+        if (files.size() > 1) {
+            log.warn("路径为 [{}] 的文件记录存在多条（跨存储），跳过删除以避免误删", path);
+            return false;
+        }
+        this.delete(List.of(files.get(0).getId()));
+        return true;
     }
 
     @Override
@@ -509,9 +564,78 @@ public class FileServiceImpl
             String targetPath = normalizeStoragePath(storage.getRecycleBinPath() + sourcePath);
             fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
                 .getBucketName(), sourcePath, targetPath);
+            // 缩略图随主文件一并移入回收站
+            this.moveThumbnailToRecycleBin(file, storage);
         } else {
             // 删除文件
             fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
+            // 缩略图随主文件一并删除
+            this.deleteThumbnail(file, storage);
+        }
+    }
+
+    /**
+     * 构建缩略图的存储路径
+     *
+     * <p>
+     * 缩略图与主文件同目录（见 {@link FileDO#getThumbnailName()}）。starter 存储模块删除
+     * 主文件时不会联动缩略图，需由业务侧自行处理，否则产生缩略图孤儿文件。
+     * </p>
+     *
+     * @param file 文件
+     * @return 缩略图存储路径
+     */
+    private String buildThumbnailPath(FileDO file) {
+        return normalizeStoragePath(file.getParentPath() + StringConstants.SLASH + file
+            .getThumbnailName());
+    }
+
+    /**
+     * 将缩略图移入回收站目录
+     *
+     * <p>
+     * 缩略图为附属文件，操作失败仅记录告警，不阻断主文件的回收站流程。
+     * </p>
+     *
+     * @param file    文件
+     * @param storage 存储配置
+     */
+    private void moveThumbnailToRecycleBin(FileDO file, StorageDO storage) {
+        if (StrUtil.isBlank(file.getThumbnailName())) {
+            return;
+        }
+        String thumbnailPath = this.buildThumbnailPath(file);
+        if (!fileStorageService.exists(storage.getCode(), storage.getBucketName(), thumbnailPath)) {
+            return;
+        }
+        String targetPath = normalizeStoragePath(storage.getRecycleBinPath() + thumbnailPath);
+        try {
+            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+                .getBucketName(), thumbnailPath, targetPath);
+        } catch (Exception e) {
+            log.warn("缩略图 [{}] 移入回收站失败", thumbnailPath, e);
+        }
+    }
+
+    /**
+     * 删除原目录下的缩略图
+     *
+     * <p>
+     * 缩略图为附属文件，删除失败仅记录告警，不阻断主文件删除。
+     * </p>
+     *
+     * @param file    文件
+     * @param storage 存储配置
+     */
+    private void deleteThumbnail(FileDO file, StorageDO storage) {
+        if (StrUtil.isBlank(file.getThumbnailName())) {
+            return;
+        }
+        String thumbnailPath = this.buildThumbnailPath(file);
+        try {
+            fileStorageService.delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
+        } catch (Exception e) {
+            log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
         }
     }
 
