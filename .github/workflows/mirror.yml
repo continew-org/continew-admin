@@ -4,7 +4,8 @@ name: Mirror
 #
 # 范围：main、dev、形如 4.2.x 的版本分支 + 全部标签；feat/fix 等 PR 分支不镜像。
 # 推送带 --prune，镜像侧多余的分支与上游已删的标签会被删除（删除项打印在日志里）。
-# 白名单内的分支或同名标签若在镜像侧有上游没有的提交，预检会报错停下，不覆盖。
+# 镜像侧出现上游没有的提交（多为 GitHub 侧强推改写历史）时，默认打印将被丢弃的提交后
+# 强制覆盖白名单分支与同名标签；设仓库变量 MIRROR_STRICT=true 改为发现分叉即中止。
 # 镜像仓的默认分支必须与 GitHub 一致，否则平台禁止删除，整次推送会被拒绝。
 #
 # secrets：GITEE_USER/GITEE_TOKEN、ATOMGIT_USER/ATOMGIT_TOKEN；缺哪组就跳过哪个平台。
@@ -35,6 +36,7 @@ jobs:
       # 镜像平台上的组织名（GitHub 是 continew-org）；仓库名沿用 GitHub，复制到各仓库无需改
       MIRROR_OWNER: continew
       GIT_TERMINAL_PROMPT: '0'
+      MIRROR_STRICT: ${{ vars.MIRROR_STRICT }}
     steps:
       - name: 克隆 GitHub 侧仓库
         env:
@@ -112,7 +114,7 @@ jobs:
               git -C repo.git rev-parse --verify --quiet "refs/heads/${branch}" >/dev/null || continue
               if ! git -C repo.git cat-file -e "${sha}^{commit}" 2>/dev/null \
                  || ! git -C repo.git merge-base --is-ancestor "$sha" "refs/heads/${branch}"; then
-                diverged="${diverged} ${branch}"
+                diverged="${diverged} ${branch}=${sha}"
               fi
             done <<<"$remote_heads"
 
@@ -121,13 +123,30 @@ jobs:
               [ -n "$ref" ] || continue
               tag="${ref#refs/tags/}"
               local_sha="$(git -C repo.git rev-parse --verify --quiet "refs/tags/${tag}")" || continue
-              [ "$local_sha" = "$sha" ] || diverged_tags="${diverged_tags} ${tag}"
+              [ "$local_sha" = "$sha" ] || diverged_tags="${diverged_tags} ${tag}=${sha}"
             done <<<"$remote_tags"
 
             if [ -n "${diverged}${diverged_tags}" ]; then
-              echo "::error::${label} 上这些 ref 含 GitHub 没有的提交，已停止镜像以免覆盖。分支:${diverged:- 无} 标签:${diverged_tags:- 无}"
-              echo "请先把它们回流到 GitHub，或重置镜像侧 ref 后重跑本工作流。"
-              return 1
+              echo "::warning::${label} 上这些 ref 含 GitHub 没有的提交，多为 GitHub 侧强推改写历史"
+              local item name mirror_sha
+              for item in $diverged; do
+                name="${item%%=*}" mirror_sha="${item#*=}"
+                echo "  分支 ${name}：镜像侧 ${mirror_sha:0:9}，将重置为 GitHub 版本"
+                if git -C repo.git cat-file -e "${mirror_sha}^{commit}" 2>/dev/null; then
+                  git -C repo.git log --oneline -n 10 "refs/heads/${name}..${mirror_sha}" 2>/dev/null || true
+                else
+                  echo "    （提交对象不在本地克隆中，无法列出被丢弃的提交）"
+                fi
+              done
+              for item in $diverged_tags; do
+                name="${item%%=*}" mirror_sha="${item#*=}"
+                echo "  标签 ${name}：镜像侧 ${mirror_sha:0:9}，将重置为 GitHub 版本"
+              done
+              if [ "${MIRROR_STRICT:-false}" = "true" ]; then
+                echo "::error::${label} 检测到分叉，MIRROR_STRICT=true 已中止镜像以免覆盖"
+                return 1
+              fi
+              echo "将以 GitHub 为准覆盖上述 ref；如需保留镜像侧提交，设 MIRROR_STRICT=true 后重跑"
             fi
 
             if [ -n "$default_branch" ]; then
@@ -167,7 +186,7 @@ jobs:
                 echo "::error::${label} 认证失败：检查 token 是否过期或权限不足"
                 return 1
               fi
-              if grep -qiE 'remote rejected|non-fast-forward|protected branch' <<<"$out"; then
+              if grep -qiE 'remote rejected|non-fast-forward|protect' <<<"$out"; then
                 echo "::error::${label} 推送被平台拒绝（分支保护或非快进），已停止重试"
                 return 1
               fi
