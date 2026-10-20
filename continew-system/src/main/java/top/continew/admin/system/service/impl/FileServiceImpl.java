@@ -295,8 +295,10 @@ public class FileServiceImpl
         StoragePathValidator.validate(parentPath);
         String originalFileName = getOriginalFileName(file);
         StoragePathValidator.validateName(originalFileName);
+        // 按扩展名归类一次（内部大小写不敏感），白名单与缩略图判定共用
+        FileTypeEnum fileType = FileTypeEnum.getByExtension(extName);
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
-        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
+        CheckUtils.throwIf(fileType == FileTypeEnum.UNKNOWN, "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 构建上传预处理对象
         StorageDO storage = storageService.getByCode(storageCode);
@@ -326,7 +328,7 @@ public class FileServiceImpl
             .metadata("storageCode", storage.getCode())
             .metadata("storageId", String.valueOf(storage.getId()));
         // 图片文件生成缩略图
-        if (FileTypeEnum.IMAGE.getExtensions().contains(extName)) {
+        if (FileTypeEnum.IMAGE == fileType) {
             uploadPretreatment.thumbnail(100, 100);
         }
         uploadPretreatment.onProgress((progressSize, allSize, percentage) -> {
