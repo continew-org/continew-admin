@@ -430,3 +430,9 @@ ALTER TABLE `sys_client`
 UPDATE `sys_client`
     SET `refresh_token_mode` = 'BODY'
     WHERE `client_type` IN ('ANDROID', 'XCX');
+
+-- changeset luoqiz:file-path-index-mysql
+-- comment 文件路径索引（URL 出口装配与按 path 精确删除均按 path 等值查询）
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'sys_file' AND index_name = 'idx_file_path'
+CREATE INDEX `idx_file_path` ON `sys_file` (`path`);

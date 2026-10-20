@@ -80,7 +80,7 @@ public class UserDO extends BaseDO {
     private String phone;
 
     /**
-     * 头像地址
+     * 头像：本系统库内路径（如 {@code /user/avatar/x.png}）或 http(s) 第三方完整链接
      */
     private String avatar;
 

@@ -89,6 +89,7 @@ import top.continew.admin.system.service.UserPasswordHistoryService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.admin.system.service.UserService;
 import top.continew.admin.system.service.UserSocialService;
+import top.continew.admin.system.util.StoragePathUtils;
 import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.starter.auth.refresh.token.support.UserArgumentPolicyLockTargetResolver;
 import top.continew.starter.cache.redisson.util.RedisUtils;
@@ -98,10 +99,10 @@ import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.FileUploadUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.encrypt.field.util.EncryptHelper;
+import top.continew.starter.excel.util.ExcelUtils;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.storage.core.FileStorageService;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import jakarta.annotation.Resource;
@@ -142,7 +143,6 @@ public class UserServiceImpl
     private final RoleService roleService;
     private final OnlineUserService onlineUserService;
     private final FileService fileService;
-    private final FileStorageService fileStorageService;
 
     @Resource
     private DeptService deptService;
@@ -164,8 +164,77 @@ public class UserServiceImpl
             baseMapper.selectUserPage(new Page<>(pageQuery.getPage(), pageQuery
                 .getSize()), queryWrapper);
         PageResp<UserResp> pageResp = PageResp.build(page, super.getListClass());
-        pageResp.getList().forEach(this::fill);
+        pageResp.getList().forEach(super::fill);
+        // 头像批量装配：一次性解析全部头像 URL，避免分页逐行 N+1 查询
+        this.fillAvatars(pageResp.getList());
         return pageResp;
+    }
+
+    /**
+     * 导出列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序参数
+     * @param response  响应对象
+     * @since 4.2.0
+     */
+    @Override
+    public void export(UserQuery query, SortQuery sortQuery, HttpServletResponse response) {
+        List<UserDetailResp> list = this.list(query, sortQuery, this.getDetailClass());
+        list.forEach(super::fill);
+        this.fillAvatars(list);
+        ExcelUtils.export(list, "导出数据", this.getDetailClass(), response);
+    }
+
+    /**
+     * 批量装配头像访问 URL
+     *
+     * <p>分页、列表、导出等批量出口统一走这里，一次性解析全部头像，避免逐行调用 resolveUrl
+     * 重复加载存储配置。</p>
+     *
+     * @param list 用户响应列表
+     */
+    private void fillAvatars(Collection<?> list) {
+        if (CollUtil.isEmpty(list)) {
+            return;
+        }
+        List<String> avatars = new ArrayList<>(list.size());
+        for (Object item : list) {
+            if (item instanceof UserResp userResp) {
+                avatars.add(userResp.getAvatar());
+            } else if (item instanceof UserDetailResp detailResp) {
+                avatars.add(detailResp.getAvatar());
+            }
+        }
+        Map<String, String> urlMap = fileService.resolveUrls(avatars);
+        for (Object item : list) {
+            if (item instanceof UserResp userResp) {
+                userResp.setAvatar(urlMap.getOrDefault(userResp.getAvatar(), userResp
+                    .getAvatar()));
+            } else if (item instanceof UserDetailResp detailResp) {
+                detailResp.setAvatar(urlMap.getOrDefault(detailResp.getAvatar(), detailResp
+                    .getAvatar()));
+            }
+        }
+    }
+
+    /**
+     * 填充数据：头像装配为完整访问 URL
+     *
+     * <p>头像支持两种形态：本系统库内路径按默认存储配置装配为完整 URL，http(s) 第三方
+     * 完整链接原样返回。分页、列表、导出等批量出口使用批量装配（见
+     * {@link #fillAvatars(Collection)}），本方法服务单条详情等场景。</p>
+     *
+     * @param obj 待填充信息
+     */
+    @Override
+    protected void fill(Object obj) {
+        super.fill(obj);
+        if (obj instanceof UserResp userResp) {
+            userResp.setAvatar(fileService.resolveUrl(userResp.getAvatar()));
+        } else if (obj instanceof UserDetailResp detailResp) {
+            detailResp.setAvatar(fileService.resolveUrl(detailResp.getAvatar()));
+        }
     }
 
     @Override
@@ -444,18 +513,28 @@ public class UserServiceImpl
         CheckUtils.throwIf(!StrUtil.equalsAnyIgnoreCase(avatarImageType, avatarSupportSuffix),
             "头像仅支持 {} 格式的图片", String
                 .join(StringConstants.COMMA, avatarSupportSuffix));
-        // 上传新头像
         UserDO user = super.getById(id);
+        CheckUtils.throwIfNull(user, "用户不存在");
+        // 上传新头像：库内存储相对存储根的路径（不含域名），存储迁移后引用仍可直接访问
         FileInfo fileInfo = fileService.upload(avatarFile, avatarPath);
-        // 更新用户头像
-        String newAvatar = fileInfo.getUrl();
+        String newAvatar = StoragePathUtils.toDbPath(fileInfo.getPath());
+        String newUrl = fileInfo.getUrl();
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
-        // 删除原头像
+        // 删除原头像：先解析为完整 URL 再比较，避免同一文件被误判导致刚上传的新头像记录
+        // 被删除。旧头像为 http(s) 第三方完整链接时不落入本系统存储，deleteByPath 会跳过
         String oldAvatar = user.getAvatar();
         if (StrUtil.isNotBlank(oldAvatar)) {
-            fileStorageService.delete(oldAvatar);
+            try {
+                if (!StrUtil.equals(fileService.resolveUrl(oldAvatar), newUrl)) {
+                    fileService.deleteByPath(oldAvatar);
+                }
+            } catch (Exception e) {
+                // 头像已更新成功，旧头像清理失败不回滚、不影响本次响应
+                log.warn("原头像 [{}] 清理失败", oldAvatar, e);
+            }
         }
-        return newAvatar;
+        // 出口直接使用上传结果中的 URL，避免再查一次文件记录
+        return newUrl;
     }
 
     @Override
@@ -554,6 +633,22 @@ public class UserServiceImpl
             .stream()
             .map(UserDO::getId)
             .toList();
+    }
+
+    /**
+     * 查询列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序参数
+     * @return 列表信息
+     * @since 4.2.0
+     */
+    @Override
+    public List<UserResp> list(UserQuery query, SortQuery sortQuery) {
+        List<UserResp> list = this.list(query, sortQuery, this.getListClass());
+        list.forEach(super::fill);
+        this.fillAvatars(list);
+        return list;
     }
 
     @Override

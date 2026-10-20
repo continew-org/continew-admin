@@ -34,7 +34,9 @@ import top.continew.starter.storage.domain.model.resp.FileInfo;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 文件业务接口
@@ -176,6 +178,47 @@ public interface FileService
      * @return 文件数量
      */
     Long countByStorageIds(List<Long> storageIds);
+
+    /**
+     * 解析文件完整访问 URL
+     *
+     * <p>
+     * 头像等业务字段允许两种形态：http(s) 开头的第三方完整链接原样返回；本系统库内路径
+     * （形如 {@code /user/avatar/x.png}，前导斜杠可选）统一按默认存储的 urlPrefix 装配。
+     * 未配置默认存储或前缀为空时返回原路径。data:、file: 等非 HTTP 外部地址同样原样返回。
+     * </p>
+     *
+     * @param path 库内路径或 http(s) 完整链接
+     * @return 完整访问 URL；空值返回 null
+     * @since 4.2.0
+     */
+    String resolveUrl(String path);
+
+    /**
+     * 批量解析文件完整访问 URL
+     *
+     * <p>行为同 {@link #resolveUrl(String)}，供分页等批量出口一次性装配，避免逐行查询。
+     * 仅在确实存在库内路径时才加载默认存储配置，全外链场景不产生任何查询。</p>
+     *
+     * @param paths 路径或完整链接集合
+     * @return 原始入参到完整访问 URL 的映射（不含空值）
+     * @since 4.2.0
+     */
+    Map<String, String> resolveUrls(Collection<String> paths);
+
+    /**
+     * 按存储路径删除物理文件及记录（含回收站语义）
+     *
+     * <p>
+     * 头像等业务字段允许保存 http(s) 第三方完整链接，此类非本系统存储值不做删除处理。
+     * 库内路径按 path 精确匹配记录，记录不存在或同路径存在多条时跳过并告警，避免误删。
+     * </p>
+     *
+     * @param path 库内路径（前导斜杠可选）或 http(s) 完整链接
+     * @return 是否执行了删除
+     * @since 4.2.0
+     */
+    boolean deleteByPath(String path);
 
     /**
      * 创建上级文件夹（支持多级）

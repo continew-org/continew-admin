@@ -3,7 +3,7 @@ title: 文件管理
 description: 文件的上传、预览、分片上传、秒传与回收站，以及文件资源的统计。
 ---
 
-文件管理提供统一的文件上传与查阅能力，功能入口在「系统管理 -> 文件管理」，后端接口前缀为 `/system/file`，对应 `FileController`。文件元数据存储在 `sys_file` 表，实际内容落在[存储管理](./storage)配置的存储平台上，底层基于 X File Storage 2.3.0。
+文件管理提供统一的文件上传与查阅能力，功能入口在「系统管理 -> 文件管理」，后端接口前缀为 `/system/file`，对应 `FileController`。文件元数据存储在 `sys_file` 表，实际内容落在[存储管理](./storage)配置的存储平台上，底层为 ContiNew Starter 存储模块（本地存储基于 JDK NIO，S3 兼容对象存储基于 AWS SDK for Java v2，缩略图由 Thumbnailator 生成）。
 
 ## 功能概览
 
@@ -56,7 +56,7 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 
 ## 回收站
 
-删除文件时不直接移除物理文件，而是移动到存储配置中的回收站路径（`recycle_bin_path`），自 4.1.0 起提供。回收站接口前缀为 `/system/file/recycle`，对应 `FileRecycleController`。
+删除文件时不直接移除物理文件，而是移动到存储配置中的回收站路径（`recycle_bin_path`），图片缩略图随主文件一并移动、还原或清除，自 4.1.0 起提供。回收站接口前缀为 `/system/file/recycle`，对应 `FileRecycleController`。
 
 | 功能 | 接口 | 权限码 |
 |:-----|:-----|:-------|

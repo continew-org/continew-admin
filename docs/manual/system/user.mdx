@@ -29,7 +29,7 @@ CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成
 | `password` | 密码，BCrypt 加密存储，前缀 `{bcrypt}` |
 | `gender` | 性别（0：未知；1：男；2：女） |
 | `email` / `phone` | 邮箱、手机号，均带唯一索引，可用于对应方式登录 |
-| `avatar` | 头像地址 |
+| `avatar` | 头像，支持本系统库内路径（如 `/user/avatar/x.png`，出口按默认存储配置解析为访问 URL）或 http(s) 第三方完整链接（原样透传） |
 | `status` | 状态（1：启用；2：禁用），禁用后无法登录 |
 | `is_system` | 是否系统内置数据 |
 | `pwd_reset_time` | 最后一次修改密码时间，用于密码有效期策略 |

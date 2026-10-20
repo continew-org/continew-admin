@@ -116,6 +116,7 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             if (authUser.getGender() != null) {
                 user.setGender(GenderEnum.valueOf(authUser.getGender().name()));
             }
+            // 第三方头像为 http(s) 外域完整链接，原样保存，出口直接透传（见 FileService#resolveUrl）
             user.setAvatar(authUser.getAvatar());
             // 默认设置为系统内置数据的根部门 如果需要设置其他部门自行替换查询条件
             DeptDO deptDO =
