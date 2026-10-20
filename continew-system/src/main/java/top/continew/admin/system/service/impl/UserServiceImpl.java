@@ -221,7 +221,7 @@ public class UserServiceImpl
     /**
      * 填充数据：头像装配为完整访问 URL
      *
-     * <p>头像支持两种形态：本系统库内路径按默认存储配置装配为完整 URL，http(s) 第三方
+     * <p>头像支持两种形态：本系统库内路径按文件记录所属存储装配为完整 URL，http(s) 第三方
      * 完整链接原样返回。分页、列表、导出等批量出口使用批量装配（见
      * {@link #fillAvatars(Collection)}），本方法服务单条详情等场景。</p>
      *
@@ -521,7 +521,8 @@ public class UserServiceImpl
         String newUrl = fileInfo.getUrl();
         baseMapper.lambdaUpdate().set(UserDO::getAvatar, newAvatar).eq(UserDO::getId, id).update();
         // 删除原头像：先解析为完整 URL 再比较，避免同一文件被误判导致刚上传的新头像记录
-        // 被删除。旧头像为 http(s) 第三方完整链接时不落入本系统存储，deleteByPath 会跳过
+        // 被删除。旧头像为 http(s) 第三方完整链接时不属于本系统存储，deleteByPath 会跳过；
+        // 升级前保存的本系统完整 URL 由 deleteByPath 按存储前缀识别后清理
         String oldAvatar = user.getAvatar();
         if (StrUtil.isNotBlank(oldAvatar)) {
             try {

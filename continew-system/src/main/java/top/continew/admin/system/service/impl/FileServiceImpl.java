@@ -92,6 +92,7 @@ public class FileServiceImpl
 
     private static final String FILE_UPLOAD_PROGRESS_PREFIX = "file:upload:progress:";
     private static final Duration FILE_UPLOAD_PROGRESS_EXPIRE = Duration.ofHours(1);
+    private static final int STORAGE_PATH_QUERY_BATCH_SIZE = 500;
 
     private final FileStorageService fileStorageService;
     @Lazy
@@ -296,50 +297,117 @@ public class FileServiceImpl
         if (CollUtil.isEmpty(paths)) {
             return urlMap;
         }
-        // 头像等业务字段允许两种形态：http(s) 开头的第三方完整链接原样保留，本系统库内
-        // 路径统一按默认存储配置装配。仅在确实存在库内路径时才加载存储配置，全外链场景
-        // 不产生任何查询。
-        boolean hasStoredPath = paths.stream()
-            .anyMatch(path -> StrUtil.isNotBlank(path) && this.isStoredPath(path));
-        String prefix = hasStoredPath ? this.resolveDefaultUrlPrefix() : null;
+        // 头像等业务字段允许两种形态：http(s) 完整链接（第三方或升级前遗留）原样透传，本系统
+        // 库内路径按文件记录所属存储装配。默认存储可被切换且不会迁移旧文件，若统一按当前默认
+        // 存储装配，切换到其他存储后上传到原存储的历史头像将失效。仅在确实存在库内路径时才
+        // 加载存储配置与文件记录，全外链场景不产生任何查询。
+        Map<String, String> dbPathByInput = new HashMap<>();
         for (String path : paths) {
             if (StrUtil.isBlank(path)) {
                 continue;
             }
-            if (!this.isStoredPath(path)) {
+            if (this.isStoredPath(path)) {
+                dbPathByInput.put(path, StoragePathUtils.toDbPath(path));
+            } else {
                 // 完整链接等非本系统存储值原样返回
                 urlMap.put(path, path);
-                continue;
             }
-            urlMap.put(path, StrUtil.isBlank(prefix) ? path : URLUtil.normalize(prefix
-                + StoragePathUtils.toDbPath(path), false, true));
+        }
+        if (dbPathByInput.isEmpty()) {
+            return urlMap;
+        }
+        // 批量加载存储配置（单存储系统不存在归属歧义，无需再查文件记录）
+        List<StorageDO> storageList = storageService.list();
+        Map<Long, StorageDO> storageGroup = storageList.stream()
+            .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
+                (existing, replacement) -> existing));
+        Long defaultStorageId = storageList.stream()
+            .filter(storage -> Boolean.TRUE.equals(storage.getIsDefault()))
+            .map(StorageDO::getId)
+            .findFirst()
+            .orElse(null);
+        Map<String, Long> storageIdByPath = this.resolveStorageIdByPath(dbPathByInput.values(),
+            storageGroup.size(), defaultStorageId);
+        for (Map.Entry<String, String> entry : dbPathByInput.entrySet()) {
+            String dbPath = entry.getValue();
+            String prefix = this.resolvePrefix(dbPath, storageIdByPath, storageGroup,
+                defaultStorageId);
+            urlMap.put(entry.getKey(), StrUtil.isBlank(prefix) ? entry.getKey()
+                : URLUtil.normalize(prefix + dbPath, false, true));
         }
         return urlMap;
     }
 
     /**
-     * 解析默认存储的访问 URL 前缀（可空）
+     * 批量查询库内路径对应的文件记录所属存储
      *
-     * <p>不使用 {@link StorageService#getDefaultStorage()}：其在未配置默认存储时抛出异常，
-     * 会导致无默认存储环境下头像装配整体失败。</p>
+     * <p>同一路径可能存在于多个存储（文件名唯一性按存储隔离），优先归属默认存储（上传
+     * 入口即默认存储）；无默认存储命中时取首个匹配记录。单存储系统不存在归属歧义，
+     * 跳过查询，由调用方回退默认存储。</p>
      *
-     * @return 默认存储的 urlPrefix；未配置默认存储或前缀为空时返回 null
+     * @param dbPaths          库内路径集合
+     * @param storageCount     存储配置数量
+     * @param defaultStorageId 默认存储 ID
+     * @return 库内路径 → 存储 ID
      */
-    private String resolveDefaultUrlPrefix() {
-        return storageService.list()
-            .stream()
-            .filter(storage -> Boolean.TRUE.equals(storage.getIsDefault()))
-            .map(StorageDO::getUrlPrefix)
-            .filter(StrUtil::isNotBlank)
-            .findFirst()
-            .orElse(null);
+    private Map<String, Long> resolveStorageIdByPath(Collection<String> dbPaths, int storageCount,
+        Long defaultStorageId) {
+        if (storageCount <= 1 || CollUtil.isEmpty(dbPaths)) {
+            return Map.of();
+        }
+        Map<String, Long> storageIdByPath = new HashMap<>();
+        List<String> distinctPaths = dbPaths.stream().distinct().toList();
+        for (int i = 0; i < distinctPaths.size(); i += STORAGE_PATH_QUERY_BATCH_SIZE) {
+            List<String> batch = distinctPaths.subList(i,
+                Math.min(i + STORAGE_PATH_QUERY_BATCH_SIZE, distinctPaths.size()));
+            baseMapper.lambdaQuery()
+                .in(FileDO::getPath, batch)
+                .list()
+                .forEach(record -> {
+                    Long storageId = record.getStorageId();
+                    Long existing = storageIdByPath.get(record.getPath());
+                    // 默认存储优先，避免同路径跨存储时装配到非上传存储
+                    if (existing == null
+                        || (defaultStorageId != null && defaultStorageId.equals(storageId))) {
+                        storageIdByPath.put(record.getPath(), storageId);
+                    }
+                });
+        }
+        return storageIdByPath;
+    }
+
+    /**
+     * 解析库内路径的访问 URL 前缀
+     *
+     * <p>优先使用文件记录所属存储的前缀；无文件记录（如记录已删除）或所属存储未配置
+     * 前缀时，回退默认存储前缀。</p>
+     *
+     * @param dbPath           库内路径
+     * @param storageIdByPath  库内路径 → 存储 ID
+     * @param storageGroup     存储配置（ID → 配置）
+     * @param defaultStorageId 默认存储 ID
+     * @return URL 前缀；无可用前缀时返回 null
+     */
+    private String resolvePrefix(String dbPath, Map<String, Long> storageIdByPath,
+        Map<Long, StorageDO> storageGroup, Long defaultStorageId) {
+        Long storageId = storageIdByPath.get(dbPath);
+        if (storageId != null) {
+            StorageDO storage = storageGroup.get(storageId);
+            if (storage != null && StrUtil.isNotBlank(storage.getUrlPrefix())) {
+                return storage.getUrlPrefix();
+            }
+        }
+        StorageDO defaultStorage = defaultStorageId == null ? null : storageGroup
+            .get(defaultStorageId);
+        return defaultStorage == null ? null : defaultStorage.getUrlPrefix();
     }
 
     /**
      * 是否为本系统库内路径
      *
-     * <p>库内路径形如 {@code /user/avatar/x.png}（无前导斜杠的相对写法同样兼容），由默认
-     * 存储装配访问 URL；http(s) 完整链接与 data: 等外部地址不属于本系统存储管辖范围。</p>
+     * <p>库内路径形如 {@code /user/avatar/x.png}（无前导斜杠的相对写法同样兼容），按文件
+     * 记录所属存储装配访问 URL；http(s) 完整链接与 data: 等外部地址不属于本系统存储管辖
+     * 范围。</p>
      *
      * @param path 路径
      * @return 是否为本系统库内路径
@@ -372,22 +440,88 @@ public class FileServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByPath(String path) {
-        // 头像等业务字段允许保存 http(s) 第三方完整链接，非本系统存储值不做删除处理
-        if (StrUtil.isBlank(path) || !this.isStoredPath(path)) {
+        if (StrUtil.isBlank(path)) {
             return false;
         }
-        String dbPath = StoragePathUtils.toDbPath(path);
-        List<FileDO> files = baseMapper.lambdaQuery().eq(FileDO::getPath, dbPath).list();
-        if (CollUtil.isEmpty(files)) {
-            log.warn("未找到路径为 [{}] 的文件记录，跳过文件删除", path);
+        // 头像等业务字段允许两种形态：库内相对路径直接按路径匹配文件记录；http(s) 完整链接
+        // 需先按存储 URL 前缀识别是否为本系统历史 URL（升级前上传入口保存的是
+        // fileInfo.getUrl()），识别为内部 URL 时同样按文件记录删除，仅确认属于第三方时才跳过
+        FileDO file = this.findDeletableFile(path);
+        if (file == null) {
+            log.warn("路径 [{}] 未匹配到可删除的本系统文件记录，跳过文件删除", path);
             return false;
         }
-        if (files.size() > 1) {
-            log.warn("路径为 [{}] 的文件记录存在多条，跳过删除以避免误删", path);
-            return false;
-        }
-        this.delete(List.of(files.get(0).getId()));
+        this.delete(List.of(file.getId()));
         return true;
+    }
+
+    /**
+     * 查询待删除的文件记录
+     *
+     * @param path 库内路径或完整 URL
+     * @return 文件记录；无匹配或匹配多条时返回 null
+     */
+    private FileDO findDeletableFile(String path) {
+        if (!this.isStoredPath(path)) {
+            // data: 等非 HTTP(S) 外部地址不属于本系统存储；http(s) 完整链接按存储前缀反查
+            return this.isHttpPath(path) ? this.findFileByInternalUrl(path) : null;
+        }
+        return this.findUniqueFileByPath(StoragePathUtils.toDbPath(path));
+    }
+
+    /**
+     * 按完整 URL 反查本系统文件记录
+     *
+     * <p>升级前上传入口保存的是存储 urlPrefix 拼接的完整 URL，按各存储的 URL 前缀反解
+     * 库内路径后查询记录；无法匹配任何存储前缀时视为第三方链接，不做删除处理。</p>
+     *
+     * @param url 完整 URL
+     * @return 文件记录；非本系统 URL 或匹配多条时返回 null
+     */
+    private FileDO findFileByInternalUrl(String url) {
+        String normalizedUrl = URLUtil.normalize(url, false, true);
+        StorageDO matchedStorage = null;
+        String matchedPrefix = null;
+        for (StorageDO storage : storageService.list()) {
+            String prefix = storage.getUrlPrefix();
+            if (StrUtil.isBlank(prefix) || !normalizedUrl.startsWith(prefix)) {
+                continue;
+            }
+            // 多个存储前缀均可匹配时取最长前缀（最精确）
+            if (matchedPrefix == null || prefix.length() > matchedPrefix.length()) {
+                matchedStorage = storage;
+                matchedPrefix = prefix;
+            }
+        }
+        if (matchedStorage == null) {
+            return null;
+        }
+        String dbPath = StoragePathUtils.toDbPath(normalizedUrl.substring(matchedPrefix.length()));
+        List<FileDO> files = baseMapper.lambdaQuery()
+            .eq(FileDO::getPath, dbPath)
+            .eq(FileDO::getStorageId, matchedStorage.getId())
+            .list();
+        if (files.size() > 1) {
+            log.warn("URL [{}] 在存储 [{}] 下对应多条文件记录，跳过删除以避免误删", url,
+                matchedStorage.getCode());
+            return null;
+        }
+        return files.isEmpty() ? null : files.get(0);
+    }
+
+    /**
+     * 按库内路径查询唯一文件记录
+     *
+     * @param dbPath 库内路径
+     * @return 文件记录；无匹配或匹配多条时返回 null
+     */
+    private FileDO findUniqueFileByPath(String dbPath) {
+        List<FileDO> files = baseMapper.lambdaQuery().eq(FileDO::getPath, dbPath).list();
+        if (files.size() > 1) {
+            log.warn("路径为 [{}] 的文件记录存在多条，跳过删除以避免误删", dbPath);
+            return null;
+        }
+        return files.isEmpty() ? null : files.get(0);
     }
 
     @Override

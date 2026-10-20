@@ -17,6 +17,7 @@
 package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
@@ -37,6 +38,7 @@ import top.continew.admin.system.model.resp.file.FileResp;
 import top.continew.admin.system.service.FileRecycleService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.StoragePathUtils;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.data.util.QueryWrapperHelper;
 import top.continew.starter.extension.crud.model.query.PageQuery;
@@ -92,8 +94,17 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         StorageDO storage = storageService.getById(file.getStorageId());
         String targetPath = normalizeStoragePath(file.getPath());
         String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
-        fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-            .getBucketName(), sourcePath, targetPath);
+        // 回收站中的物理文件可能仍被其他回收记录共享（如 A 的缩略图路径等于 B 的主文件
+        // 路径，批量删除时只移动一次），此时采用复制而非移动，保留回收站副本供其他记录
+        // 后续还原，避免其因源文件被取走而失败
+        if (this.isReferencedInRecycleBin(storage, file.getPath(), file.getId())) {
+            log.warn("回收站主文件 [{}] 仍被其他回收记录引用，采用复制而非移动", sourcePath);
+            fileStorageService.copy(storage.getCode(), storage.getBucketName(), storage
+                .getBucketName(), sourcePath, targetPath);
+        } else {
+            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+                .getBucketName(), sourcePath, targetPath);
+        }
         // 缩略图随主文件一并移回原目录
         this.moveThumbnailBack(file, storage);
     }
@@ -102,8 +113,9 @@ public class FileRecycleServiceImpl implements FileRecycleService {
      * 将缩略图从回收站目录移回原目录
      *
      * <p>
-     * 历史数据可能未随主文件移入回收站，源文件不存在时跳过；缩略图为附属文件，
-     * 探测与移动的失败均仅记录告警，不阻断主文件还原。
+     * 历史数据可能未随主文件移入回收站，源文件不存在时跳过；缩略图路径可能同时是其他
+     * 回收记录的主文件路径，仍被引用时采用复制而非移动。缩略图为附属文件，探测与复制/
+     * 移动的失败均仅记录告警，不阻断主文件还原。
      * </p>
      *
      * @param file    文件
@@ -117,8 +129,14 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
         try {
             if (fileStorageService.exists(storage.getCode(), storage.getBucketName(), sourcePath)) {
-                fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-                    .getBucketName(), sourcePath, targetPath);
+                if (this.isReferencedInRecycleBin(storage, file.getThumbnailPath(), file.getId())) {
+                    log.warn("回收站缩略图 [{}] 仍被其他回收记录引用，采用复制而非移动", sourcePath);
+                    fileStorageService.copy(storage.getCode(), storage.getBucketName(), storage
+                        .getBucketName(), sourcePath, targetPath);
+                } else {
+                    fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
+                        .getBucketName(), sourcePath, targetPath);
+                }
             }
         } catch (Exception e) {
             log.warn("缩略图 [{}] 移回原目录失败", sourcePath, e);
@@ -139,20 +157,53 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         StorageDO storage = storageService.getById(file.getStorageId());
         String sourcePath = normalizeStoragePath(
             storage.getRecycleBinPath() + normalizeStoragePath(file.getPath()));
-        fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
-        // 缩略图随主文件一并删除（附属文件，失败仅告警，不阻断主文件删除）
+        // 回收站中的主文件可能仍被其他回收记录用作缩略图路径，保留供其还原/删除
+        if (this.isReferencedInRecycleBin(storage, file.getPath(), file.getId())) {
+            log.warn("回收站主文件 [{}] 仍被其他回收记录引用，跳过删除", sourcePath);
+        } else {
+            fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
+        }
+        // 缩略图随主文件一并删除（附属文件，失败仅告警，不阻断主文件删除）；
+        // 缩略图路径可能同时是其他回收记录的主文件路径（同批删除时只移动一次），
+        // 仍被引用时跳过删除，避免其他记录无法还原
         if (StrUtil.isNotBlank(file.getThumbnailName())) {
             String thumbnailPath = normalizeStoragePath(storage.getRecycleBinPath()
                 + normalizeStoragePath(file.getThumbnailPath()));
-            try {
-                fileStorageService
-                    .delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
-            } catch (Exception e) {
-                log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
+            if (this.isReferencedInRecycleBin(storage, file.getThumbnailPath(), file.getId())) {
+                log.warn("回收站缩略图 [{}] 仍被其他回收记录引用，跳过删除", thumbnailPath);
+            } else {
+                try {
+                    fileStorageService
+                        .delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
+                } catch (Exception e) {
+                    log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
+                }
             }
         }
         // 补偿清理遗留在原目录的缩略图（历史数据未随迁或移动失败被捕获的场景）
         this.cleanupOriginalThumbnail(file, storage);
+    }
+
+    /**
+     * 检查库内路径是否仍被其他回收站记录引用
+     *
+     * <p>
+     * 同存储下，同一物理路径可能被多条回收记录共享：A 的缩略图路径恰好等于 B 的主文件
+     * 路径时，批量删除只移动一次物理文件，两条记录共享回收站中的同一文件。此时对任一
+     * 记录的单独还原或永久删除都不能直接移动/删除该文件，需保留副本供另一条记录。
+     * </p>
+     *
+     * @param storage 存储配置
+     * @param dbPath  库内路径（主文件路径或缩略图路径）
+     * @param selfId  当前记录 ID（排除自身引用）
+     * @return 是否仍被其他回收站记录引用
+     */
+    private boolean isReferencedInRecycleBin(StorageDO storage, String dbPath, Long selfId) {
+        String name = FileNameUtil.getName(dbPath);
+        String parentPath = StrUtil.blankToDefault(
+            StrUtil.removeSuffix(dbPath, StringConstants.SLASH + name), StringConstants.SLASH);
+        return fileMapper.countRecycleBinReferences(storage.getId(), dbPath, parentPath, name,
+            selfId) > 0;
     }
 
     /**

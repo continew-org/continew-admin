@@ -75,6 +75,31 @@ public interface FileMapper extends BaseMapper<FileDO> {
     List<FileDO> selectListInRecycleBin();
 
     /**
+     * 统计回收站中（除自身外）将指定路径用作主文件路径或缩略图路径的记录数
+     *
+     * <p>
+     * 回收站中同一物理路径可能被多条记录共享（如 A 的缩略图路径恰好等于 B 的主文件路径，
+     * 批量删除时只移动一次），单独还原或永久删除任一记录前需确认该路径不再被其他回收
+     * 记录引用。
+     * </p>
+     *
+     * @param storageId     存储 ID
+     * @param dbPath        库内路径（主文件路径或缩略图路径）
+     * @param parentPath    dbPath 所在目录
+     * @param thumbnailName dbPath 文件名
+     * @param excludeId     排除的记录 ID（自身）
+     * @return 引用记录数
+     */
+    @Select("SELECT COUNT(1) FROM sys_file WHERE storage_id = #{storageId} AND deleted = 1"
+        + " AND id != #{excludeId} AND (path = #{dbPath} OR (parent_path = #{parentPath}"
+        + " AND thumbnail_name = #{thumbnailName}))")
+    long countRecycleBinReferences(@Param("storageId") Long storageId,
+        @Param("dbPath") String dbPath,
+        @Param("parentPath") String parentPath,
+        @Param("thumbnailName") String thumbnailName,
+        @Param("excludeId") Long excludeId);
+
+    /**
      * 从回收站恢复文件
      *
      * @param id         ID

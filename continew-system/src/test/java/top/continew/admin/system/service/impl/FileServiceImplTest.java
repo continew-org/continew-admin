@@ -93,7 +93,10 @@ class FileServiceImplTest {
         storage.setDomain("http://localhost:8080/file");
         StorageService storageService = mock(StorageService.class);
         when(storageService.list()).thenReturn(List.of(storage));
-        FileServiceImpl fileService = newFileService(storageService);
+        FileMapper baseMapper = mock(FileMapper.class);
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
 
         Map<String, String> urlMap =
             fileService.resolveUrls(List.of("http://third.party/avatar.png",
@@ -104,13 +107,87 @@ class FileServiceImplTest {
         assertEquals("http://localhost:8080/file/user/avatar/x.png", urlMap
             .get("/user/avatar/x.png"));
         assertEquals("data:image/png;base64,AAA", urlMap.get("data:image/png;base64,AAA"));
+        // 单存储系统无归属歧义，不查询文件记录
         verify(storageService, times(1)).list();
+        verify(baseMapper, never()).lambdaQuery();
+    }
+
+    @Test
+    void shouldResolveStoredPathByRecordStorageInsteadOfDefault() throws Exception {
+        // 默认存储已从 A 切换为 B，但头像文件仍在上传时所在的 A：应按记录所属存储装配，
+        // 避免切换默认存储后历史头像失效
+        StorageDO storageA = storage(1L, "local-a", "http://a.example.com/file", false);
+        StorageDO storageB = storage(2L, "local-b", "http://b.example.com/file", true);
+        StorageService storageService = mock(StorageService.class);
+        when(storageService.list()).thenReturn(List.of(storageA, storageB));
+        FileMapper baseMapper = mock(FileMapper.class);
+        LambdaQueryChainWrapper<FileDO> wrapper = mock(LambdaQueryChainWrapper.class);
+        when(baseMapper.lambdaQuery()).thenReturn(wrapper);
+        when(wrapper.in(any(), anyList())).thenReturn(wrapper);
+        FileDO record = file(10L, "/user/avatar/x.png", "/user/avatar", null);
+        record.setStorageId(1L);
+        when(wrapper.list()).thenReturn(List.of(record));
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
+
+        Map<String, String> urlMap = fileService.resolveUrls(List.of("/user/avatar/x.png"));
+
+        assertEquals("http://a.example.com/file/user/avatar/x.png", urlMap
+            .get("/user/avatar/x.png"));
+    }
+
+    @Test
+    void shouldPreferDefaultStorageWhenPathExistsInMultipleStorages() throws Exception {
+        // 同一路径同时存在于多个存储（唯一性按存储隔离）时，优先归属默认存储（上传入口）
+        StorageDO storageA = storage(1L, "local-a", "http://a.example.com/file", false);
+        StorageDO storageB = storage(2L, "local-b", "http://b.example.com/file", true);
+        StorageService storageService = mock(StorageService.class);
+        when(storageService.list()).thenReturn(List.of(storageA, storageB));
+        FileMapper baseMapper = mock(FileMapper.class);
+        LambdaQueryChainWrapper<FileDO> wrapper = mock(LambdaQueryChainWrapper.class);
+        when(baseMapper.lambdaQuery()).thenReturn(wrapper);
+        when(wrapper.in(any(), anyList())).thenReturn(wrapper);
+        FileDO recordA = file(10L, "/user/avatar/x.png", "/user/avatar", null);
+        recordA.setStorageId(1L);
+        FileDO recordB = file(11L, "/user/avatar/x.png", "/user/avatar", null);
+        recordB.setStorageId(2L);
+        when(wrapper.list()).thenReturn(List.of(recordA, recordB));
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
+
+        assertEquals("http://b.example.com/file/user/avatar/x.png", fileService
+            .resolveUrl("/user/avatar/x.png"));
+    }
+
+    @Test
+    void shouldFallbackToDefaultStoragePrefixWhenNoRecord() throws Exception {
+        // 无文件记录（如记录已删除）时回退默认存储前缀
+        StorageDO storageA = storage(1L, "local-a", "http://a.example.com/file", false);
+        StorageDO storageB = storage(2L, "local-b", "http://b.example.com/file", true);
+        StorageService storageService = mock(StorageService.class);
+        when(storageService.list()).thenReturn(List.of(storageA, storageB));
+        FileMapper baseMapper = mock(FileMapper.class);
+        LambdaQueryChainWrapper<FileDO> wrapper = mock(LambdaQueryChainWrapper.class);
+        when(baseMapper.lambdaQuery()).thenReturn(wrapper);
+        when(wrapper.in(any(), anyList())).thenReturn(wrapper);
+        when(wrapper.list()).thenReturn(List.of());
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
+
+        assertEquals("http://b.example.com/file/user/avatar/y.png", fileService
+            .resolveUrl("/user/avatar/y.png"));
     }
 
     @Test
     void shouldNotLoadStorageConfigWhenAllAvatarsAreExternal() throws Exception {
         StorageService storageService = mock(StorageService.class);
-        FileServiceImpl fileService = newFileService(storageService);
+        FileMapper baseMapper = mock(FileMapper.class);
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
 
         Map<String, String> urlMap = fileService.resolveUrls(List.of("https://third.party/a.png",
             "http://third.party/b.png", "data:image/png;base64,AAA"));
@@ -118,6 +195,7 @@ class FileServiceImplTest {
         // 全外链场景不产生任何存储配置查询，空值不计入结果
         assertEquals(3, urlMap.size());
         verify(storageService, never()).list();
+        verify(baseMapper, never()).lambdaQuery();
     }
 
     @Test
@@ -127,19 +205,90 @@ class FileServiceImplTest {
         storage.setIsDefault(false);
         StorageService storageService = mock(StorageService.class);
         when(storageService.list()).thenReturn(List.of(storage));
-        FileServiceImpl fileService = newFileService(storageService);
+        FileMapper baseMapper = mock(FileMapper.class);
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
 
         // 未配置默认存储时返回原路径，不报错
         assertEquals("/user/avatar/x.png", fileService.resolveUrl("/user/avatar/x.png"));
+        verify(baseMapper, never()).lambdaQuery();
     }
 
     @Test
     void shouldSkipDeleteForExternalAvatarLink() throws Exception {
-        FileServiceImpl fileService = newFileService(mock(StorageService.class));
+        StorageService storageService = mock(StorageService.class);
+        when(storageService.list()).thenReturn(List.of());
+        FileMapper baseMapper = mock(FileMapper.class);
+        FileServiceImpl fileService =
+            newFileService(mock(FileStorageService.class), storageService);
+        injectBaseMapper(fileService, baseMapper);
 
-        // 第三方完整链接不落入本系统存储，不做删除处理
+        // 第三方完整链接与 data: 等外部地址不落入本系统存储，不做删除处理
         assertFalse(fileService.deleteByPath("http://third.party/avatar.png"));
         assertFalse(fileService.deleteByPath("https://third.party/avatar.png"));
+        assertFalse(fileService.deleteByPath("data:image/png;base64,AAA"));
+        verify(baseMapper, never()).lambdaQuery();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldDeleteLegacyInternalUrlByStoragePrefix() throws Exception {
+        // 升级前上传入口保存的是 fileInfo.getUrl()（完整 URL），按存储前缀识别为内部头像后删除
+        FileStorageService fileStorageService = mock(FileStorageService.class);
+        FileMapper baseMapper = mock(FileMapper.class);
+        StorageService storageService = mock(StorageService.class);
+        FileServiceImpl fileService = newFileService(fileStorageService, storageService);
+        injectBaseMapper(fileService, baseMapper);
+
+        StorageDO storage = new StorageDO();
+        storage.setId(1L);
+        storage.setCode("local");
+        storage.setBucketName("bucket");
+        storage.setDomain("http://localhost:8080/file");
+        storage.setRecycleBinEnabled(false);
+        when(storageService.list()).thenReturn(List.of(storage));
+        when(storageService.listByIds(any())).thenReturn(List.of(storage));
+
+        FileDO avatar = new FileDO();
+        avatar.setId(10L);
+        // setParentPath 会按 name 重算 path，先设置 name
+        avatar.setName("old.png");
+        avatar.setParentPath("/user/avatar");
+        avatar.setType(FileTypeEnum.IMAGE);
+        avatar.setStorageId(1L);
+
+        LambdaQueryChainWrapper<FileDO> wrapper = mock(LambdaQueryChainWrapper.class);
+        when(baseMapper.lambdaQuery()).thenReturn(wrapper);
+        when(wrapper.eq(any(), any())).thenReturn(wrapper);
+        when(wrapper.in(any(), anyList())).thenReturn(wrapper);
+        when(wrapper.list()).thenReturn(List.of(avatar));
+
+        assertTrue(fileService.deleteByPath("http://localhost:8080/file/user/avatar/old.png"));
+
+        // 按存储前缀反解库内路径并命中记录，物理文件按不带前导斜杠的形态删除
+        verify(fileStorageService).delete("local", "bucket", "user/avatar/old.png");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldSkipDeleteWhenLegacyInternalUrlMatchesNoStorage() throws Exception {
+        FileStorageService fileStorageService = mock(FileStorageService.class);
+        FileMapper baseMapper = mock(FileMapper.class);
+        StorageService storageService = mock(StorageService.class);
+        FileServiceImpl fileService = newFileService(fileStorageService, storageService);
+        injectBaseMapper(fileService, baseMapper);
+
+        StorageDO storage = new StorageDO();
+        storage.setId(1L);
+        storage.setCode("local");
+        storage.setDomain("http://localhost:8080/file");
+        when(storageService.list()).thenReturn(List.of(storage));
+
+        // 域名与任何存储前缀都不匹配（如旧域名已废弃），无法确认归属，跳过删除
+        assertFalse(fileService.deleteByPath("http://old.example.com/file/user/avatar/x.png"));
+        verify(fileStorageService, never()).delete(any(), any(), any());
+        verify(baseMapper, never()).lambdaQuery();
     }
 
     @Test
@@ -247,6 +396,15 @@ class FileServiceImplTest {
             }
         }
         throw new IllegalStateException("未找到 baseMapper 字段");
+    }
+
+    private StorageDO storage(Long id, String code, String domain, boolean isDefault) {
+        StorageDO storage = new StorageDO();
+        storage.setId(id);
+        storage.setCode(code);
+        storage.setDomain(domain);
+        storage.setIsDefault(isDefault);
+        return storage;
     }
 
     private FileDO file(Long id, String path, String parentPath, String thumbnailName) {
