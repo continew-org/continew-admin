@@ -308,10 +308,8 @@ public class FileServiceImpl
         // 创建父级目录
         this.createParentDir(parentPath, storage);
 
-        // 生成唯一文件名（处理重名情况）
-        String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
-                .getId(), baseMapper);
+        // 落盘文件名使用唯一 ID（扩展名不变），原始文件名仅作为展示名，避免同名文件互相覆盖
+        String storedFileName = FileNameGenerator.generateStoredName(originalFileName);
         String sha256 = calculateSha256(file);
         String normalizedUploadTaskId = StrUtil.emptyToNull(StrUtil.trim(uploadTaskId));
         long totalBytes = this.getFileSize(file);
@@ -323,7 +321,7 @@ public class FileServiceImpl
         UploadPretreatment uploadPretreatment = fileStorageService.of(normalizeUploadSource(file))
             .platform(storage.getCode())
             .path(this.pretreatmentPath(parentPath))
-            .fileName(uniqueFileName)
+            .fileName(storedFileName)
             .metadata("sha256", sha256)
             .metadata("storageCode", storage.getCode())
             .metadata("storageId", String.valueOf(storage.getId()));
@@ -332,8 +330,8 @@ public class FileServiceImpl
             uploadPretreatment.thumbnail(100, 100);
         }
         uploadPretreatment.onProgress((progressSize, allSize, percentage) -> {
-            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", uniqueFileName, progressSize, allSize,
-                percentage);
+            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", originalFileName, progressSize,
+                allSize, percentage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 FileUploadProgressStatusEnum status =
                     (allSize > 0 && progressSize >= allSize) || percentage >= 100
@@ -345,9 +343,9 @@ public class FileServiceImpl
         });
         try {
             // 上传
-            log.info("开始上传文件: {}", uniqueFileName);
+            log.info("开始上传文件: {}", originalFileName);
             FileInfo fileInfo = uploadPretreatment.upload();
-            log.info("文件 [{}] 上传完成", uniqueFileName);
+            log.info("文件 [{}] 上传完成", originalFileName);
             FileInfo result = this.postProcessUploadResult(fileInfo, storage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 long completedSize = result.getSize() == null ? totalBytes : result.getSize();

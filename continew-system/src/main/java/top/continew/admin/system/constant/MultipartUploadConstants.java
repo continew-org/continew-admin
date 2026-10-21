@@ -76,6 +76,16 @@ public class MultipartUploadConstants {
     public static final String MULTIPART_EXPIRE_PREFIX = "multipart:expire:";
 
     /**
+     * 原始文件名前缀
+     * <p>
+     * 用于暂存分片上传的原始文件名。分片上传的落盘文件名为唯一 ID，完成上传时需据此回填文件记录的展示名。
+     * 键格式：multipart:original-name:{uploadId}
+     * 值格式：String，即用户上传时的原始文件名
+     * </p>
+     */
+    public static final String MULTIPART_ORIGINAL_NAME_PREFIX = "multipart:original-name:";
+
+    /**
      * 默认过期时间（小时）
      * <p>
      * 分片上传缓存数据的默认过期时间，超过此时间的数据会被自动清理。

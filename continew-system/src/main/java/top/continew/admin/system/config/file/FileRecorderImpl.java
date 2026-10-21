@@ -31,6 +31,7 @@ import top.continew.admin.system.mapper.StorageMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
+import top.continew.admin.system.util.MultipartOriginalNameStore;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
@@ -127,6 +128,12 @@ public class FileRecorderImpl implements FileRecorder {
         }
         FileDO file = new FileDO(fileInfo);
         file.setStorageId(storage.getId());
+        // 分片上传的落盘文件名是唯一 ID，展示名需取回原始文件名，避免退化为存储名
+        String originalFileName = MultipartOriginalNameStore.resolveByMetadata(fileInfo
+            .getMetadata());
+        if (StrUtil.isNotBlank(originalFileName)) {
+            file.setOriginalName(originalFileName);
+        }
         FileDO existFile = fileMapper.lambdaQuery()
             .eq(FileDO::getStorageId, storage.getId())
             .eq(FileDO::getPath, file.getPath())
@@ -136,6 +143,11 @@ public class FileRecorderImpl implements FileRecorder {
             fileInfo.setFileId(String.valueOf(file.getId()));
             return true;
         } else {
+            // 暂存缺失时沿用已有展示名，避免用存储名覆盖原记录
+            if (StrUtil.isBlank(originalFileName) && StrUtil.isNotBlank(existFile
+                .getOriginalName())) {
+                file.setOriginalName(existFile.getOriginalName());
+            }
             file.setId(existFile.getId());
             boolean updated = fileMapper.updateById(file) > 0;
             fileInfo.setFileId(String.valueOf(existFile.getId()));
@@ -230,6 +242,8 @@ public class FileRecorderImpl implements FileRecorder {
         target.setUploadId(initResp.getUploadId());
         target.setBucket(initResp.getBucket());
         target.setPlatform(initResp.getPlatform());
+        // TODO 升级 starter 后需为 MultipartUploadCreateResp 补 originalFileName，并在 save/get 双向拷贝，
+        // 否则会话中的原始文件名会在 Redis 往返时丢失
         target.setFileName(initResp.getFileName());
         target.setFileMd5(initResp.getFileMd5());
         target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
@@ -306,6 +320,7 @@ public class FileRecorderImpl implements FileRecorder {
             RedisUtils.delete(key);
             RedisUtils.delete(metadataKey);
             RedisUtils.delete(expireKey);
+            MultipartOriginalNameStore.delete(uploadId);
             log.debug("删除分片上传信息: uploadId={}", uploadId);
         } catch (Exception e) {
             log.error("删除分片上传信息失败: uploadId={}", uploadId, e);

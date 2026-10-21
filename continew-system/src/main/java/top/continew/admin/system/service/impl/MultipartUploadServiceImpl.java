@@ -32,6 +32,7 @@ import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.MultipartUploadService;
 import top.continew.admin.system.service.StorageService;
 import top.continew.admin.system.util.FileNameGenerator;
+import top.continew.admin.system.util.MultipartOriginalNameStore;
 import top.continew.admin.system.util.StoragePathValidator;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BaseException;
@@ -64,45 +65,34 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
     public MultipartUploadCreateResp initMultipartUpload(
         MultipartUploadCreateReq multiPartUploadInitReq) {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
-        String extName = FileUtil.extName(multiPartUploadInitReq.getFileName()).toLowerCase();
+        String originalFileName = multiPartUploadInitReq.getFileName();
+        FileTypeEnum fileType = FileTypeEnum.getByExtension(FileUtil.extName(originalFileName));
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
-        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
+        CheckUtils.throwIf(fileType == FileTypeEnum.UNKNOWN, "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
         StoragePathValidator.validate(multiPartUploadInitReq.getParentPath());
-        StoragePathValidator.validateName(multiPartUploadInitReq.getFileName());
+        StoragePathValidator.validateName(originalFileName);
         StorageDO storageDO = storageService.getByCode(null);
-        // 检测文件名是否已存在（同一目录下文件名不能重复）
-        String originalFileName = multiPartUploadInitReq.getFileName();
         String parentPath = multiPartUploadInitReq.getParentPath();
-        boolean exists = fileMapper.lambdaQuery()
-            .eq(FileDO::getParentPath, parentPath)
-            .eq(FileDO::getStorageId, storageDO.getId())
-            .eq(FileDO::getName, originalFileName)
-            .ne(FileDO::getType, FileTypeEnum.DIR)
-            .exists();
-        if (exists) {
-            throw new BaseException("文件名已存在：" + originalFileName);
-        }
-
-        // 生成唯一文件名（处理重名情况）
-        String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
-                .getId(), fileMapper);
-        multiPartUploadInitReq.setFileName(uniqueFileName);
         fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
             storageDO);
 
+        // 落盘文件名使用唯一 ID（扩展名不变），原始文件名单独暂存，待完成上传时回填到文件记录
+        // TODO 升级到支持 originalFileName 的 starter 版本后，改为 storageReq.setOriginalFileName(originalFileName)，
+        // 并移除 MultipartOriginalNameStore 的暂存与 FileRecorderImpl 的回填
+        String storedFileName = FileNameGenerator.generateStoredName(originalFileName);
         MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
         storageReq.setPlatform(storageDO.getCode());
         storageReq.setBucket(storageDO.getBucketName());
-        storageReq.setFileName(uniqueFileName);
+        storageReq.setFileName(storedFileName);
         storageReq.setFileSize(multiPartUploadInitReq.getFileSize());
         storageReq.setFileMd5(multiPartUploadInitReq.getFileMd5());
         storageReq.setContentType(multiPartUploadInitReq.getContentType());
         storageReq.setParentPath(StrUtil.blankToDefault(parentPath, StringConstants.SLASH));
         storageReq.setMetadata(multiPartUploadInitReq.getMetaData());
         MultipartInitResp initResp = fileStorageService.initMultipartUpload(storageReq);
+        MultipartOriginalNameStore.save(initResp.getUploadId(), originalFileName);
         return this.toAdminInitResp(initResp);
     }
 
@@ -139,6 +129,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         if (session == null) {
             throw new BaseException("无效的 uploadId: " + uploadId);
         }
+        // 分片会话在启动器完成上传后即被清理，原始文件名必须在此之前取出
+        String originalFileName = MultipartOriginalNameStore.resolve(uploadId);
         FileInfo fileInfo = fileStorageService.completeMultipartUpload(uploadId, null);
         StorageDO storageDO = storageService.getByCode(session.getPlatform());
         FileDO file = fileMapper.lambdaQuery()
@@ -151,6 +143,9 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         // 兼容兜底：记录器未完成落库时补录
         FileDO fallback = new FileDO(fileInfo);
         fallback.setStorageId(storageDO.getId());
+        if (StrUtil.isNotBlank(originalFileName)) {
+            fallback.setOriginalName(originalFileName);
+        }
         fallback.setType(FileTypeEnum.getByExtension(FileUtil.extName(fallback.getName())));
         fileService.save(fallback);
         return fallback;
