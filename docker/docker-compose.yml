@@ -71,7 +71,7 @@ services:
       start_period: 5s
   continew-server:
     build: ./continew-admin
-    image: continew-server:4.2.0-SNAPSHOT
+    image: continew-server:5.0.0-SNAPSHOT
     container_name: continew-server
     restart: always
     logging:

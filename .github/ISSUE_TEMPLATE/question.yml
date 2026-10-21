@@ -23,7 +23,7 @@ body:
     id: version
     attributes:
       label: ContiNew Admin 版本
-      placeholder: 例如：4.1.0
+      placeholder: 例如：5.0.0-SNAPSHOT
     validations:
       required: true
   - type: textarea

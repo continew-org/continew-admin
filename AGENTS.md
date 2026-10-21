@@ -23,7 +23,7 @@
 
 ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：本仓库为后端（Spring Boot 3.5 / Java 17 的 Maven 多模块工程），前端为独立仓库 `continew-admin-ui`（Vue3 & Arco Design & TS & Vite）。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
 
-**当前版本**：4.2.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：JDK 17 | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
+**当前版本**：5.0.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：JDK 17 | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
 
 ## 核心架构
 
@@ -133,7 +133,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 | 大括号 | `if/else/for/while/do-while` 必须加大括号（`NeedBraces`） |
 | 空行 | 连续空行最多保留 1 行（`EmptyLineSeparator`） |
 | 类注释 | 必须包含 `@author` 与 `@since` 标签；公共方法需有 Javadoc |
-| @since 取值 | 标注**当前形态首次发布的版本**（如 `@since 3.3.0`），禁止日期；新类取当前开发版本（如 `4.2.0`）；类发布后新增的 public/protected 方法在方法 Javadoc 补方法级 `@since`（存量不补，private 不标）；迁移或删除后重加的类按"宁新勿旧"取最新形态的版本 |
+| @since 取值 | 标注**当前形态首次发布的版本**，禁止日期；新类取当前开发版本（如 `5.0.0`）；类发布后新增的 public/protected 方法在方法 Javadoc 补方法级 `@since`（存量不补，private 不标）；迁移或删除后重加的类按"宁新勿旧"取最新形态的版本 |
 | @author 署名 | 类级必填：创建者一行在前，实质贡献者（新功能/核心重构/关键修复）按贡献顺序追加；**方法级禁止**（第三方改编代码的来源署名除外，如 Hutool 的 `Looly`/`looly`，保留以示出处）；AI 辅助创建或重写的类，`@author` 仍署**使用该 AI 的用户**（提交作者本人），AI 辅助信息只体现在 commit trailer `Assisted-by`，不进入源码署名 |
 | 重载方法 | 同一组重载必须相邻声明（`OverloadMethodsDeclarationOrder`） |
 | 内联全限定名 | **禁止**（`InlineFullyQualifiedName`：与依赖库同名时应调整类名，而非内联全限定名绕过） |
@@ -202,7 +202,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 - **事实源优先级**：admin 源码（类名/默认值/枚举/表结构/报错串）> continew-starter 源码 > 上游官方文档。类名、配置键、默认值、URL 前缀、权限码必须以源码为准；示例场景去业务化（不贴演示站业务数据）。
 - **配置项归 starter，配置值归 admin**：框架级配置项（`continew-starter.*`）的定义链接到 [starter 文档](https://continew.top/docs/starter)；admin 文档只写 admin 给这些键填的具体值与环境变量注入方式。
-- 版本号给**具体值**（如 4.2.0-SNAPSHOT、ContiNew Starter 2.17.0）；文末「相关源码」链接指向 GitHub continew-org 对应仓库 `dev` 分支的具体路径。
+- 版本号给**具体值**（如 5.0.0-SNAPSHOT、ContiNew Starter 2.17.0）；文末「相关源码」链接指向 GitHub continew-org 对应仓库 `dev` 分支的具体路径。
 - **文档-代码同步**：修改某功能代码（尤其接口、配置、行为）时，**必须在同一 PR 中同步更新对应文档**；纯文档改动无需跑 `./mvnw verify` 门禁。
 
 ### 写作风格（活人感 · 硬禁令）

@@ -6,7 +6,7 @@ application:
   # 描述
   description: 持续迭代优化的前后端分离中后台管理系统框架，开箱即用，持续提供舒适的开发体验。
   # 版本
-  version: 4.2.0
+  version: 5.0.0-SNAPSHOT
   # 基本包
   base-package: top.continew.admin
   ## 作者信息配置

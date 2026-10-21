@@ -121,7 +121,7 @@ WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:8000`。经 Ng
 
 ### 拉不到 `top.continew.starter` 相关依赖
 
-ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），admin 4.2.0 适配的版本为 2.17.0，可在 [Maven Central](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew) 查询。拉不到通常是本地仓库缓存损坏或镜像配置问题。
+ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），admin 5.0.0-SNAPSHOT 适配的版本为 2.17.0，可在 [Maven Central](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew) 查询。拉不到通常是本地仓库缓存损坏或镜像配置问题。
 
 `./mvnw -U clean package` 强制更新；检查 `settings.xml` 镜像是否把 `central` 也代理到了不通的内网源；公司内网代理仓库需要确认已代理 Maven Central。
 

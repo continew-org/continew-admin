@@ -36,7 +36,7 @@ body:
     attributes:
       label: ContiNew Admin 版本
       description: 产生问题的版本号（前端 ContiNew Admin UI 版本也请一并说明）
-      placeholder: 例如：4.1.0
+      placeholder: 例如：5.0.0-SNAPSHOT
     validations:
       required: true
   - type: textarea
