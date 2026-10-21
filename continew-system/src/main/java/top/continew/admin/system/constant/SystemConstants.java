@@ -30,6 +30,11 @@ public class SystemConstants {
     public static final Long SUPER_ADMIN_ROLE_ID = 1L;
 
     /**
+     * 分配角色权限码
+     */
+    public static final String USER_UPDATE_ROLE_PERMISSION = "system:user:updateRole";
+
+    /**
      * 全部权限标识
      */
     public static final String ALL_PERMISSION = "*:*:*";

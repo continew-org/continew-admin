@@ -17,6 +17,7 @@
 package top.continew.admin.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.admin.common.base.controller.BaseController;
 import top.continew.admin.common.util.SecureUtils;
+import top.continew.admin.system.constant.SystemConstants;
 import top.continew.admin.system.model.query.UserQuery;
 import top.continew.admin.system.model.req.user.UserImportReq;
 import top.continew.admin.system.model.req.user.UserPasswordResetReq;
@@ -92,7 +94,8 @@ public class UserController
      * @return 导入结果
      */
     @Operation(summary = "导入数据", description = "导入数据")
-    @SaCheckPermission("system:user:import")
+    @SaCheckPermission(value = {"system:user:import",
+        SystemConstants.USER_UPDATE_ROLE_PERMISSION}, mode = SaMode.AND)
     @PostMapping(value = "/import")
     public UserImportResp importUser(@RequestBody @Valid UserImportReq req) {
         return baseService.importUser(req);
