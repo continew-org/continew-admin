@@ -20,35 +20,30 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 import top.continew.admin.system.mapper.FileMapper;
 import top.continew.admin.system.mapper.StorageMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
-import top.continew.admin.system.util.MultipartOriginalNameStore;
+import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 文件记录回填展示名测试
+ * 文件记录展示名测试
  *
  * <p>
- * 分片上传的落盘文件名是唯一 ID，启动器在完成上传时会把会话中的文件名（即唯一 ID）写入展示名，因此记录器必须用暂存的原始文件名覆盖它。
- * 这里固定两条契约：回填同时覆盖「新增」与「更新」两条落库分支；暂存缺失时保留原值，绝不写入空值。
- * </p>
- *
- * <p>
- * {@link MultipartOriginalNameStore} 的静态初始化只有日志器，不依赖 Spring 容器，因此可以直接静态 mock；这也是此处能写单元测试而
- * {@code RedisUtils} 不能的原因。
+ * 分片上传的落盘文件名是唯一 ID，原始文件名由 starter 会话携带并在完成时回填到 {@link FileInfo}。这里固定三条契约：
+ * 新增与更新都使用回填后的原始名；原始名为空时新增保留存储名、更新沿用已有展示名；会话 JSON 往返不丢原始名。
  * </p>
  *
  * @author luoqiz
@@ -76,76 +71,71 @@ class FileRecorderImplTest {
     }
 
     @Test
-    void shouldBackfillOriginalNameWhenInserting() {
+    void shouldUseOriginalNameWhenInserting() {
         this.stubFileQuery(null);
         ArgumentCaptor<FileDO> captor = ArgumentCaptor.forClass(FileDO.class);
         when(this.fileMapper.insert(captor.capture())).thenReturn(1);
 
-        try (MockedStatic<MultipartOriginalNameStore> store =
-            mockStatic(MultipartOriginalNameStore.class)) {
-            store.when(() -> MultipartOriginalNameStore.resolveByMetadata(any()))
-                .thenReturn(ORIGINAL_NAME);
-            assertTrue(this.fileRecorder.update(this.buildFileInfo()));
-        }
+        assertTrue(this.fileRecorder.update(this.buildFileInfo(ORIGINAL_NAME)));
 
         assertEquals(ORIGINAL_NAME, captor.getValue().getOriginalName());
         assertEquals(STORED_NAME, captor.getValue().getName());
     }
 
     @Test
-    void shouldBackfillOriginalNameWhenUpdatingExistingRecord() {
+    void shouldUseOriginalNameWhenUpdatingExistingRecord() {
         FileDO existFile = new FileDO();
         existFile.setId(9L);
         this.stubFileQuery(existFile);
         ArgumentCaptor<FileDO> captor = ArgumentCaptor.forClass(FileDO.class);
         when(this.fileMapper.updateById(captor.capture())).thenReturn(1);
 
-        try (MockedStatic<MultipartOriginalNameStore> store =
-            mockStatic(MultipartOriginalNameStore.class)) {
-            store.when(() -> MultipartOriginalNameStore.resolveByMetadata(any()))
-                .thenReturn(ORIGINAL_NAME);
-            assertTrue(this.fileRecorder.update(this.buildFileInfo()));
-        }
+        assertTrue(this.fileRecorder.update(this.buildFileInfo(ORIGINAL_NAME)));
 
         assertEquals(9L, captor.getValue().getId());
         assertEquals(ORIGINAL_NAME, captor.getValue().getOriginalName());
     }
 
     @Test
-    void shouldKeepStoredNameWhenOriginalNameMissing() {
+    void shouldKeepStoredNameWhenOriginalNameMissingOnInsert() {
         this.stubFileQuery(null);
         ArgumentCaptor<FileDO> captor = ArgumentCaptor.forClass(FileDO.class);
         when(this.fileMapper.insert(captor.capture())).thenReturn(1);
-        FileInfo fileInfo = this.buildFileInfo();
-        fileInfo.getMetadata().remove("uploadId");
 
-        try (MockedStatic<MultipartOriginalNameStore> store =
-            mockStatic(MultipartOriginalNameStore.class)) {
-            store.when(() -> MultipartOriginalNameStore.resolveByMetadata(any())).thenReturn(null);
-            assertTrue(this.fileRecorder.update(fileInfo));
-        }
+        assertTrue(this.fileRecorder.update(this.buildFileInfo(null)));
 
         assertEquals(STORED_NAME, captor.getValue().getOriginalName());
     }
 
     @Test
-    void shouldKeepExistingOriginalNameWhenOriginalNameMissing() {
+    void shouldKeepExistingOriginalNameWhenOriginalNameMissingOnUpdate() {
         FileDO existFile = new FileDO();
         existFile.setId(9L);
         existFile.setOriginalName(ORIGINAL_NAME);
         this.stubFileQuery(existFile);
         ArgumentCaptor<FileDO> captor = ArgumentCaptor.forClass(FileDO.class);
         when(this.fileMapper.updateById(captor.capture())).thenReturn(1);
-        FileInfo fileInfo = this.buildFileInfo();
-        fileInfo.getMetadata().remove("uploadId");
 
-        try (MockedStatic<MultipartOriginalNameStore> store =
-            mockStatic(MultipartOriginalNameStore.class)) {
-            store.when(() -> MultipartOriginalNameStore.resolveByMetadata(any())).thenReturn(null);
-            assertTrue(this.fileRecorder.update(fileInfo));
-        }
+        assertTrue(this.fileRecorder.update(this.buildFileInfo(null)));
 
         assertEquals(ORIGINAL_NAME, captor.getValue().getOriginalName());
+    }
+
+    @Test
+    void shouldPreserveOriginalNameAcrossSessionJsonRoundTrip() {
+        MultipartInitResp session = new MultipartInitResp();
+        session.setUploadId("upload-1");
+        session.setFileName(STORED_NAME);
+        session.setOriginalFileName(ORIGINAL_NAME);
+        session.setFileSize(1024L);
+
+        MultipartUploadCreateResp stored = FileRecorderImpl.toCreateResp(session);
+        MultipartUploadCreateResp restored = JSONUtil.toBean(JSONUtil.toJsonStr(stored),
+            MultipartUploadCreateResp.class);
+        MultipartInitResp actual = FileRecorderImpl.toInitResp(restored);
+
+        assertEquals(ORIGINAL_NAME, actual.getOriginalFileName());
+        assertEquals(STORED_NAME, actual.getFileName());
     }
 
     @SuppressWarnings("unchecked")
@@ -164,13 +154,13 @@ class FileRecorderImplTest {
         when(query.one()).thenReturn(existFile);
     }
 
-    private FileInfo buildFileInfo() {
+    private FileInfo buildFileInfo(String originalFileName) {
         FileInfo fileInfo = new FileInfo();
         fileInfo.setPlatform("local");
         fileInfo.setBucket("test");
         fileInfo.setName(STORED_NAME);
         fileInfo.setPath("2026/10/21/" + STORED_NAME);
-        fileInfo.setOriginalFileName(STORED_NAME);
+        fileInfo.setOriginalFileName(originalFileName);
         fileInfo.setSize(1024L);
         Map<String, String> metadata = new HashMap<>();
         metadata.put("uploadId", "upload-1");

@@ -63,6 +63,12 @@ public class MultipartUploadCreateResp implements Serializable {
     private String fileName;
 
     /**
+     * 原始文件名
+     */
+    @Schema(description = "原始文件名", example = "年度报告.zip")
+    private String originalFileName;
+
+    /**
      * 文件MD5
      */
     @Schema(description = "文件MD5")

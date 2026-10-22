@@ -31,7 +31,6 @@ import top.continew.admin.system.mapper.StorageMapper;
 import top.continew.admin.system.model.entity.FileDO;
 import top.continew.admin.system.model.entity.StorageDO;
 import top.continew.admin.system.model.resp.file.MultipartUploadCreateResp;
-import top.continew.admin.system.util.MultipartOriginalNameStore;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
@@ -128,12 +127,6 @@ public class FileRecorderImpl implements FileRecorder {
         }
         FileDO file = new FileDO(fileInfo);
         file.setStorageId(storage.getId());
-        // 分片上传的落盘文件名是唯一 ID，展示名需取回原始文件名，避免退化为存储名
-        String originalFileName = MultipartOriginalNameStore.resolveByMetadata(fileInfo
-            .getMetadata());
-        if (StrUtil.isNotBlank(originalFileName)) {
-            file.setOriginalName(originalFileName);
-        }
         FileDO existFile = fileMapper.lambdaQuery()
             .eq(FileDO::getStorageId, storage.getId())
             .eq(FileDO::getPath, file.getPath())
@@ -143,8 +136,8 @@ public class FileRecorderImpl implements FileRecorder {
             fileInfo.setFileId(String.valueOf(file.getId()));
             return true;
         } else {
-            // 暂存缺失时沿用已有展示名，避免用存储名覆盖原记录
-            if (StrUtil.isBlank(originalFileName) && StrUtil.isNotBlank(existFile
+            // 完成分片时原始文件名已由 starter 从会话回填；为空时沿用已有展示名，避免用存储名覆盖
+            if (StrUtil.isBlank(fileInfo.getOriginalFileName()) && StrUtil.isNotBlank(existFile
                 .getOriginalName())) {
                 file.setOriginalName(existFile.getOriginalName());
             }
@@ -237,22 +230,7 @@ public class FileRecorderImpl implements FileRecorder {
     @Override
     public void saveMultipartSession(String uploadId, MultipartInitResp initResp,
         Map<String, String> metadata) {
-        MultipartUploadCreateResp target = new MultipartUploadCreateResp();
-        target.setFileId(initResp.getFileId());
-        target.setUploadId(initResp.getUploadId());
-        target.setBucket(initResp.getBucket());
-        target.setPlatform(initResp.getPlatform());
-        // TODO 升级 starter 后需为 MultipartUploadCreateResp 补 originalFileName，并在 save/get 双向拷贝，
-        // 否则会话中的原始文件名会在 Redis 往返时丢失
-        target.setFileName(initResp.getFileName());
-        target.setFileMd5(initResp.getFileMd5());
-        target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
-        target.setExtension(initResp.getExtension());
-        target.setContentType(initResp.getContentType());
-        target.setParentPath(initResp.getParentPath());
-        target.setPath(initResp.getPath());
-        target.setPartSize(initResp.getPartSize());
-        target.setUploadedPartNumbers(initResp.getUploadedPartNumbers());
+        MultipartUploadCreateResp target = toCreateResp(initResp);
         String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
         String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
         try {
@@ -289,12 +267,48 @@ public class FileRecorderImpl implements FileRecorder {
         if (source == null) {
             return null;
         }
+        return toInitResp(source);
+    }
+
+    /**
+     * 会话转换为 Redis 存储对象
+     *
+     * @param source 分片上传会话
+     * @return Redis 存储对象
+     */
+    static MultipartUploadCreateResp toCreateResp(MultipartInitResp source) {
+        MultipartUploadCreateResp target = new MultipartUploadCreateResp();
+        target.setFileId(source.getFileId());
+        target.setUploadId(source.getUploadId());
+        target.setBucket(source.getBucket());
+        target.setPlatform(source.getPlatform());
+        target.setFileName(source.getFileName());
+        target.setOriginalFileName(source.getOriginalFileName());
+        target.setFileMd5(source.getFileMd5());
+        target.setFileSize(ObjectUtil.defaultIfNull(source.getFileSize(), 0L));
+        target.setExtension(source.getExtension());
+        target.setContentType(source.getContentType());
+        target.setParentPath(source.getParentPath());
+        target.setPath(source.getPath());
+        target.setPartSize(source.getPartSize());
+        target.setUploadedPartNumbers(source.getUploadedPartNumbers());
+        return target;
+    }
+
+    /**
+     * Redis 存储对象转换为会话
+     *
+     * @param source Redis 存储对象
+     * @return 分片上传会话
+     */
+    static MultipartInitResp toInitResp(MultipartUploadCreateResp source) {
         MultipartInitResp target = new MultipartInitResp();
         target.setFileId(source.getFileId());
         target.setUploadId(source.getUploadId());
         target.setBucket(source.getBucket());
         target.setPlatform(source.getPlatform());
         target.setFileName(source.getFileName());
+        target.setOriginalFileName(source.getOriginalFileName());
         target.setFileMd5(source.getFileMd5());
         target.setFileSize(source.getFileSize());
         target.setExtension(source.getExtension());
@@ -312,15 +326,10 @@ public class FileRecorderImpl implements FileRecorder {
             String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
             String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
             String expireKey = MultipartUploadConstants.MULTIPART_EXPIRE_PREFIX + uploadId;
-            MultipartInitResp initResp = getMultipartSession(uploadId);
-            String fileMd5 = initResp != null ? initResp.getFileMd5() : null;
-            if (StrUtil.isNotBlank(fileMd5)) {
-                deleteMd5Mapping(fileMd5);
-            }
             RedisUtils.delete(key);
             RedisUtils.delete(metadataKey);
             RedisUtils.delete(expireKey);
-            MultipartOriginalNameStore.delete(uploadId);
+            // 会话键映射由 starter 在 cleanup 中调用 deleteSessionKeyMapping 条件删除
             log.debug("删除分片上传信息: uploadId={}", uploadId);
         } catch (Exception e) {
             log.error("删除分片上传信息失败: uploadId={}", uploadId, e);
