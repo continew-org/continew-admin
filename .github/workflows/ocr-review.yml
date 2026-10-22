@@ -47,6 +47,8 @@ on:
     types: [opened, synchronize, reopened]
     paths-ignore:
       - '**.md'
+      - '**.mdx'
+      - 'docs/**'
   issue_comment:
     types: [created]
 
@@ -63,9 +65,9 @@ jobs:
       # ocr 的 npm 启动器会后台自更新（npm i -g 覆盖安装），替换 bin 链接的瞬间
       # /usr/local/bin/ocr 会悬空，同一 job 后续的 ocr 调用直接失败，CI 里必须禁用。
       OCR_NO_UPDATE: '1'
-      # 网关把 action 默认的 thinking:disabled 翻成 reasoning_effort="none"，
-      # 当前模型不接受该值；显式给值（可选 low/medium/high/xhigh/max）。评审请求与诊断探针共用此值。
-      OCR_REASONING_EFFORT: 'medium'
+      # 推理深度（low/medium/high/xhigh/max），默认发送 thinking:disabled，
+      # 端点不接受该值时需在此显式指定；评审请求与诊断探针共用此值
+      # OCR_REASONING_EFFORT: 'low'
     # 评论触发仅限维护者发送 /continew-code-review 或 @continew-code-review
     if: |
       github.event_name == 'pull_request_target'
@@ -109,9 +111,9 @@ jobs:
           private-key: ${{ secrets.CR_BOT_APP_PRIVATE_KEY }}
 
       - name: Run OpenCodeReview
-        uses: alibaba/open-code-review@8eb83340a487b1150af00701b94f01af97e4b4d6 # v1.13.1
+        uses: alibaba/open-code-review@375f64cd6f67a48a135da83cfcf59c52669a09cb # v1.13.3
         with:
-          ocr_version: '1.13.1'
+          ocr_version: '1.13.3'
           llm_url: ${{ secrets.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
           llm_model: ${{ secrets.OCR_LLM_MODEL || vars.OCR_LLM_MODEL }}
@@ -123,7 +125,15 @@ jobs:
           github_token: ${{ steps.app-token.outputs.token || secrets.GITHUB_TOKEN }}
           language: Chinese
           sticky_summary: 'true'
-          incremental: 'false'
+          # 只追加不与已有评论重叠的行内评论
+          incremental: 'true'
+          # 跨推送检查点：只评审 <上次覆盖的 head>..<新 head>，而非每次从 merge-base 全量重审；
+          # 依赖 sticky_summary，任何不确定情况自动退回全量
+          checkpoint_range: 'true'
+          # 评审投入档位：low = 1 轮主循环，medium = 2 轮（默认），high = 3 轮
+          effort: 'low'
+          # medium 及以下级别的发现从行内评论路由到 PR 摘要，减少 GitHub API 调用与评论噪音
+          route_severity_below: 'medium'
           llm_extra_body: '{"reasoning_effort": "${{ env.OCR_REASONING_EFFORT }}"}'
           # 失败/取消时也上传原始输出，便于排错
           upload_artifacts: 'true'

@@ -1,0 +1,35 @@
+{
+  "include": [
+    "**/src/test/java/**/*.java"
+  ],
+  "exclude": [
+    "docs/**",
+    "**/*.md",
+    "**/*.mdx",
+    "**/target/**",
+    "**/.flattened-pom.xml",
+    "**/src/test/resources/**"
+  ],
+  "rules": [
+    {
+      "path": "**/src/main/java/**/*.java",
+      "rule": "本项目是 ContiNew Admin 应用项目，基于 ContiNew Starter。格式、License Header、@author、内联全限定名等已由 Spotless/Checkstyle 强制，不要重复报告。重点检查只有语义审查能发现的问题：\n1. 类级 Javadoc 的 @since 必须取当前形态首次发布的版本号（如 5.0.0），禁止写日期。\n2. 配置项遵循「框架级配置项归 starter，配置值归 admin」：框架级键使用 continew-starter.* 并引用 starter 的 PropertiesConstants；admin 自身配置使用业务前缀（如 captcha、generator、auth.password）。\n3. Lombok 约定：继承场景的 @EqualsAndHashCode/@ToString 由 lombok.config 自动补 callSuper，不要手工重复；禁止 @val、@Log4j、@Log4j2，日志统一用 @Slf4j。\n4. 修改接口、配置或行为时，必须在同一 PR 同步更新 docs/ 下对应文档。\n5. 语义级检查：事务边界与回滚、权限注解、数据权限与多租户隔离是否可能被绕过、API 兼容性变更、@Deprecated 标注是否规范。",
+      "merge_system_rule": true
+    },
+    {
+      "path": "**/src/test/java/**/*.java",
+      "rule": "这是单元测试代码。重点检查测试本身是否可信：断言是否与预期行为一致（反向断言、缺少断言、断言了错误的对象）、是否 Mock 了被测对象本身、异常分支是否真正被验证、是否依赖执行顺序或共享可变状态、边界条件是否覆盖。格式与命名问题无需报告。",
+      "merge_system_rule": true
+    },
+    {
+      "path": "**/pom.xml",
+      "rule": "这是 ContiNew Admin 的 Maven POM。重点检查：\n1. 第三方依赖版本由 continew-starter 的 dependencies BOM 管理，禁止在模块 POM 中硬编码版本。\n2. 内部模块依赖的 groupId 必须写 ${project.groupId}，版本在根 pom 的 dependencyManagement 中用 ${revision} 统一供给，模块 POM 免写 version。\n3. 新增模块必须在根 pom.xml 的 <modules> 与 dependencyManagement 中同时注册。",
+      "merge_system_rule": true
+    },
+    {
+      "path": "**/src/main/resources/**",
+      "rule": "这是应用运行时配置。重点检查配置键与 docs/reference/environment.mdx 及 starter 配置参考是否一致；框架级配置项使用 continew-starter.* 前缀，admin 只提供具体值。",
+      "merge_system_rule": true
+    }
+  ]
+}
