@@ -185,8 +185,9 @@ git push --force-with-lease
 提交 PR 前，请对照以下清单自检：
 
 - [ ] 一个 PR 只解决一个 Issue（只做一件事），不夹带无关改动
-- [ ] 代码遵循已有风格，注释完善（含接口文档和参数示例），符合阿里巴巴《Java 开发手册(黄山版)》
+- [ ] 代码遵循已有风格，注释克制（解释意图与约束，不复述实现），符合阿里巴巴《Java 开发手册(黄山版)》
 - [ ] 本地 `./mvnw verify` 四道静态门禁与单元测试全部通过
+- [ ] （可选）已在本地完成 AI 自检。安装 `ocr` CLI 后，在 AI 编码工具中调用 `open-code-review-delegate`；该检查为建议项，不阻塞合并
 - [ ] 如有行为变更，已同步更新相关文档（含 Liquibase 变更日志）
 - [ ] 按 PR 模板完整填写 Changelog 表格，并关联相关 Issue（Closes/Fixes/Resolves #<issue号>）
 - [ ] commit message 符合 Conventional Commits（约定式提交）规范

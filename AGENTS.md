@@ -70,7 +70,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 # 完整构建（validate 阶段 Enforcer -> Spotless -> Checkstyle，编译 + 单元测试，verify 阶段 SpotBugs）
 ./mvnw verify
 
-# 仅编译（含 validate 阶段三道门禁，不含 SpotBugs）——仅用于快速迭代，不可作为提交前自检
+# 仅编译（含 validate 阶段三道门禁，不含 SpotBugs），仅用于快速迭代，不可作为提交前自检
 ./mvnw compile
 
 # 编译单个模块（含依赖模块）
@@ -94,7 +94,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 运行时配置通过环境变量注入，配置文件位于 `continew-server/src/main/resources/config/`（application.yml 通用，application-dev.yml / application-prod.yml 分环境）。
 
 - **非凭据项**（dev/prod 均有默认值）：`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_NAME`；`REDIS_HOST`、`REDIS_PORT`、`REDIS_DB`。
-- **凭据项**：dev 保留弱默认值便于本地启动；**prod 无默认值、必须注入，缺失即启动失败**——`DB_PWD`（数据库密码）、`REDIS_PWD`（Redis 密码）、`FIELD_ENCRYPT_PASSWORD`（字段加密 AES 密钥）、`FIELD_ENCRYPT_PUBLIC_KEY` / `FIELD_ENCRYPT_PRIVATE_KEY`（字段加密 RSA 密钥对）；`SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`（Snail Job 控制台密码与接入组 token，仅启用调度时需要，prod 默认 `snail-job.enabled: true`）。
+- **凭据项**：dev 保留弱默认值便于本地启动；**prod 无默认值、必须注入，缺失即启动失败**。涉及 `DB_PWD`、`REDIS_PWD`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY` / `FIELD_ENCRYPT_PRIVATE_KEY`，以及启用调度时需要的 `SCHEDULE_PASSWORD`、`SCHEDULE_TOKEN`（Snail Job 控制台密码与接入组 token）。
 
 ### 提交前门禁（必须通过）
 
@@ -106,11 +106,9 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 > **无需跑门禁**：四道静态门禁与单元测试只作用于 Java 源码与 POM。仅改文档（`*.md`）、运行时配置（`application*.yml`、`*.properties`）、CI workflow 或脚本时，不触发任何门禁，可直接提交，无需执行 `./mvnw verify`。
 
-构建过程**不会修改任何源码文件**；`-Pformat` 是唯一会修改源码的 profile。不要用 IDE 格式化或 `git diff --check` 替代 Spotless 门禁——IDE 格式化引擎是另一套实现，可能放行项目格式化器拒绝的代码。
+构建过程**不会修改任何源码文件**；`-Pformat` 是唯一会修改源码的 profile。不要用 IDE 格式化或 `git diff --check` 替代 Spotless 门禁。IDE 格式化引擎是另一套实现，可能放行项目格式化器拒绝的代码。
 
-> **Sonar 覆盖率**：`./mvnw verify -Psonar` 会激活 JaCoCo（prepare-agent + report），Sonar 分析自动读取各模块 `target/site/jacoco/jacoco.xml`；日常 `./mvnw verify` 不激活该 profile，无额外开销。
-
-> **Windows 注意**：提交前执行 `./mvnw verify` 后勿再在 IDE 中打开代码窗口，避免不同 IDE 配置导致的格式差异。
+Sonar 分析使用 `./mvnw verify -Psonar`（激活 JaCoCo），日常 `./mvnw verify` 不激活。
 
 ## 代码风格
 
@@ -133,12 +131,20 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 | 大括号 | `if/else/for/while/do-while` 必须加大括号（`NeedBraces`） |
 | 空行 | 连续空行最多保留 1 行（`EmptyLineSeparator`） |
 | 类注释 | 必须包含 `@author` 与 `@since` 标签；公共方法需有 Javadoc |
-| @since 取值 | 标注**当前形态首次发布的版本**，禁止日期；新类取当前开发版本（如 `5.0.0`）；类发布后新增的 public/protected 方法在方法 Javadoc 补方法级 `@since`（存量不补，private 不标）；迁移或删除后重加的类按"宁新勿旧"取最新形态的版本 |
-| @author 署名 | 类级必填：创建者一行在前，实质贡献者（新功能/核心重构/关键修复）按贡献顺序追加；**方法级禁止**（第三方改编代码的来源署名除外，如 Hutool 的 `Looly`/`looly`，保留以示出处）；AI 辅助创建或重写的类，`@author` 仍署**使用该 AI 的用户**（提交作者本人），AI 辅助信息只体现在 commit trailer `Assisted-by`，不进入源码署名 |
+| @since 取值 | 取当前形态首次发布的版本号（如 `5.0.0`），禁止日期；发布后新增的 public/protected 方法补方法级 `@since`，存量不补、private 不标；迁移或重加按"宁新勿旧"取最新版本 |
+| @author 署名 | 类级必填，创建者在前、实质贡献者按顺序追加；方法级禁止（第三方来源署名除外）；AI 辅助的类署使用者本人，AI 信息只进 commit trailer |
 | 重载方法 | 同一组重载必须相邻声明（`OverloadMethodsDeclarationOrder`） |
 | 内联全限定名 | **禁止**（`InlineFullyQualifiedName`：与依赖库同名时应调整类名，而非内联全限定名绕过） |
 | 格式化豁免 | `// @formatter:off` 与 `// @formatter:on` 之间的代码不参与格式化 |
 | 命名 | `style/` 配置文件与 agent 技能统一使用 `ocn-` 前缀（OCN = OpenContiNew） |
+
+### 注释风格
+
+注释解释意图、约束与权衡，不复述实现。
+
+- 不写变更痕迹（"新增""原逻辑"）和对话腔（"我们""这里"）。
+- 不为自解释代码加注释，密度与周围代码一致。
+- 公共 API 用 Javadoc 写契约，实现内部只解释非显然决策。
 
 ### License Header
 
@@ -180,7 +186,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 ## 安全漏洞
 
-不得通过 GitHub Issue 报告安全漏洞。请使用 GitHub 私有漏洞报告——详见 [SECURITY.md](./SECURITY.md)。
+不得通过 GitHub Issue 报告安全漏洞。请使用 GitHub 私有漏洞报告，详见 [SECURITY.md](./SECURITY.md)。
 
 ## 文档（docs/）
 
@@ -190,7 +196,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 - **「介绍」分组置顶（固定风格，与 starter 一致）**：`index.mdx`（快速开始，icon Rocket）+ `introduction.mdx`（什么是 ContiNew Admin，icon CircleQuestionMark）+ `configuration.mdx`（配置说明，icon Settings），三页带 icon，构成学习路径前三步。
 - **双视角叙事路径**：`manual/`（功能手册，面向**使用者**讲「怎么用」）+ `development/`（开发指南，面向**二开者**讲「怎么扩展」，含项目结构 structure）+ `reference/`（环境变量/部署/常见问题/更新日志）。
-- **功能手册与开发指南分家**：同一能力（如数据权限、多租户）分两篇——`manual/` 讲页面操作与配置，`development/` 讲源码扩展点，互不重复。
+- **功能手册与开发指南分家**：同一能力（如数据权限、多租户）分两篇，`manual/` 讲页面操作与配置，`development/` 讲源码扩展点，互不重复。
 - **Root Folder**：`docs/meta.json` 标 `root: true`，构成官网侧边栏顶部的项目切换器；每个目录含 `meta.json` 声明页面顺序。
 
 ### frontmatter 与命名
@@ -213,4 +219,4 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 ## Agent Skills
 
-各 agent 工具（DeepSeek Harness / Claude Code / Codex）共用的技能统一存放在 `.agents/skills/` 作为唯一事实源——每个技能一个目录、含 `SKILL.md`。新增技能沿用 `ocn-` 命名前缀。
+各 agent 工具（DeepSeek Harness / Claude Code / Codex）共用的技能统一存放在 `.agents/skills/` 作为唯一事实源，每个技能一个目录、含 `SKILL.md`。新增技能沿用 `ocn-` 命名前缀。
