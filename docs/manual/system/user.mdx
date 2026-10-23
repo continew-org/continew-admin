@@ -67,7 +67,7 @@ CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成
 
 ## 密码策略联动
 
-用户的密码行为受「系统配置 -> 密码配置」分组控制，包括错误锁定阈值（`PASSWORD_ERROR_LOCK_COUNT`，默认 5 次）、锁定时长（`PASSWORD_ERROR_LOCK_MINUTES`，默认 5 分钟）、密码有效期（`PASSWORD_EXPIRATION_DAYS`）、历史密码重复校验（`PASSWORD_REPETITION_TIMES`，默认 3 次）与最小长度（`PASSWORD_MIN_LENGTH`，默认 8）。密码过期后登录会被强制跳转到修改密码页。配置项详见[系统配置](./option)。
+用户的密码行为受「系统配置 -> 密码配置」分组控制，包括错误锁定阈值（`PASSWORD_ERROR_LOCK_COUNT`，默认 5 次）、锁定时长（`PASSWORD_ERROR_LOCK_MINUTES`，默认 5 分钟）、密码有效期（`PASSWORD_EXPIRATION_DAYS`）、到期前提醒（`PASSWORD_EXPIRATION_WARNING_DAYS`）、历史密码重复校验（`PASSWORD_REPETITION_TIMES`，默认 3 次）与最小长度（`PASSWORD_MIN_LENGTH`，默认 8）。密码过期后登录会被强制跳转到修改密码页，修改成功后需使用新密码重新登录。配置项详见[系统配置](./option)。
 
 ## 相关源码
 

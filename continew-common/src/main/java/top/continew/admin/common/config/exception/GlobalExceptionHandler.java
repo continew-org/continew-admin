@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import top.continew.admin.common.exception.PasswordExpiredException;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.core.exception.BaseException;
@@ -92,6 +93,24 @@ public class GlobalExceptionHandler {
     public R handleBusinessException(BusinessException e, HttpServletRequest request) {
         log.error(LOG_REQUEST_TEMPLATE, request.getMethod(), request.getRequestURI(), e);
         return R.fail(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), e.getMessage());
+    }
+
+    /**
+     * 密码过期异常
+     * <p>
+     * 属于可预期的客户端状态（开启密码有效期策略后必然出现），用 WARN 且不打堆栈，避免刷满错误日志。
+     * </p>
+     *
+     * @param e       密码过期异常
+     * @param request 当前请求
+     * @return 统一错误响应
+     */
+    @ExceptionHandler(PasswordExpiredException.class)
+    public R handlePasswordExpiredException(PasswordExpiredException e,
+        HttpServletRequest request) {
+        log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
+            .getMessage());
+        return R.fail(PasswordExpiredException.CODE, e.getMessage());
     }
 
     /**

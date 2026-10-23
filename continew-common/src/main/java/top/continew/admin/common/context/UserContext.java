@@ -27,6 +27,7 @@ import top.continew.starter.core.util.CollUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -42,6 +43,11 @@ public class UserContext implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 一天的分钟数（把剩余分钟向上取整为天）
+     */
+    private static final int MINUTES_PER_DAY = 24 * 60;
 
     /**
      * ID
@@ -72,6 +78,11 @@ public class UserContext implements Serializable {
      * 登录时系统设置的密码过期天数
      */
     private Integer passwordExpirationDays;
+
+    /**
+     * 登录时系统设置的密码到期提醒天数
+     */
+    private Integer passwordExpirationWarningDays;
 
     /**
      * 权限码集合
@@ -121,22 +132,51 @@ public class UserContext implements Serializable {
     }
 
     /**
+     * 密码过期时间
+     *
+     * @return 密码过期时间（策略关闭或未设置密码时为 null）
+     */
+    private LocalDateTime pwdExpireTime() {
+        // 永久有效
+        if (this.passwordExpirationDays == null
+            || this.passwordExpirationDays <= GlobalConstants.Boolean.NO) {
+            return null;
+        }
+        // 未设置密码（第三方登录用户）视为永不过期，不做提示
+        if (this.pwdResetTime == null) {
+            return null;
+        }
+        return this.pwdResetTime.plusDays(this.passwordExpirationDays);
+    }
+
+    /**
      * 密码是否已过期
      *
      * @return 是否过期
      */
     public boolean isPasswordExpired() {
-        // 永久有效
-        if (this.passwordExpirationDays == null
-            || this.passwordExpirationDays <= GlobalConstants.Boolean.NO) {
-            return false;
+        LocalDateTime expireTime = this.pwdExpireTime();
+        return expireTime != null
+            && expireTime.isBefore(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
+    }
+
+    /**
+     * 距密码过期的剩余天数
+     *
+     * @return 策略关闭或未设置密码时为 null；已过期为 0；否则为剩余天数（向上取整）
+     */
+    public Integer getPwdExpireDays() {
+        LocalDateTime expireTime = this.pwdExpireTime();
+        if (expireTime == null) {
+            return null;
         }
-        // 初始密码（第三方登录用户）暂不提示修改
-        if (this.pwdResetTime == null) {
-            return false;
+        LocalDateTime now = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
+        // 与 isPasswordExpired() 使用同一判据，避免出现「未过期但剩余 0 天」的自相矛盾
+        if (expireTime.isBefore(now)) {
+            return 0;
         }
-        return this.pwdResetTime.plusDays(this.passwordExpirationDays)
-            .isBefore(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
+        long minutes = Duration.between(now, expireTime).toMinutes();
+        return Math.max(1, (int) Math.ceil(minutes / (double) MINUTES_PER_DAY));
     }
 
     /**

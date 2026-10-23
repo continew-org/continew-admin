@@ -107,6 +107,18 @@ public class UserInfoResp implements Serializable {
     private Boolean pwdExpired;
 
     /**
+     * 距密码过期的剩余天数（null：策略关闭或未设置密码；0：已过期；大于 0：剩余天数）
+     */
+    @Schema(description = "距密码过期的剩余天数", example = "7")
+    private Integer pwdExpireDays;
+
+    /**
+     * 密码到期前提醒天数（null 或 0：不提醒）
+     */
+    @Schema(description = "密码到期前提醒天数", example = "7")
+    private Integer pwdWarningDays;
+
+    /**
      * 创建时间
      */
     @JsonIgnore
