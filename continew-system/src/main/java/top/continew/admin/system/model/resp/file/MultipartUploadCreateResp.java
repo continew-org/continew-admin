@@ -57,10 +57,16 @@ public class MultipartUploadCreateResp implements Serializable {
     private String platform;
 
     /**
-     * 文件名称
+     * 存储文件名
      */
-    @Schema(description = "文件名称")
+    @Schema(description = "存储文件名（唯一 ID + 原扩展名）", example = "3f2a1c9e5b7d4a6f8c0e1d2b3a4c5d6e.zip")
     private String fileName;
+
+    /**
+     * 原始文件名
+     */
+    @Schema(description = "原始文件名", example = "年度报告.zip")
+    private String originalFileName;
 
     /**
      * 文件MD5

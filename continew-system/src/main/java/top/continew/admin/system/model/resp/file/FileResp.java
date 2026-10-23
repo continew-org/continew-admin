@@ -40,8 +40,12 @@ public class FileResp extends BaseDetailResp {
 
     /**
      * 名称
+     *
+     * <p>
+     * 存储中的实际文件名，文件为「唯一 ID + 原扩展名」，展示请使用 {@link #originalName}。
+     * </p>
      */
-    @Schema(description = "名称", example = "6824afe8408da079832dcfb6.jpg")
+    @Schema(description = "名称（存储名）", example = "3f2a1c9e5b7d4a6f8c0e1d2b3a4c5d6e.jpg")
     private String name;
 
     /**

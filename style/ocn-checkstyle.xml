@@ -112,7 +112,7 @@
         <!-- The rule became stricter in Checkstyle 11.0, enable it when refactoring javadoc -->
         <!--<module name="JavadocParagraph"/>-->
         <module name="NonEmptyAtclauseDescription">
-            <property name="javadocTokens" value="PARAM_LITERAL"/>
+            <property name="javadocTokens" value="PARAM_BLOCK_TAG"/>
         </module>
         
         <!-- Coding Checker -->
