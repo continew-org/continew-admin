@@ -389,9 +389,11 @@ continew-starter.refresh-token:
 auth:
   ## 密码配置
   password:
+    # 密码过期后仍放行的路径（用于让过期用户能自助修改密码）
     excludes:
       - /auth/user/route
       - /auth/user/info
       - /auth/logout
-      - /system/user/password
+      # 必须与 UserProfileController#updatePassword 一致，写错会导致过期用户无法自助改密
+      - /user/profile/password
 
