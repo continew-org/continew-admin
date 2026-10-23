@@ -17,6 +17,7 @@
 package top.continew.admin.auth.service.impl;
 
 import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_DAYS;
+import static top.continew.admin.system.enums.PasswordPolicyEnum.PASSWORD_EXPIRATION_WARNING_DAYS;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.stp.parameter.SaLoginParameter;
@@ -30,6 +31,7 @@ import top.continew.admin.auth.adapter.RefreshSessionPrincipalAdapter;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
 import top.continew.admin.common.api.tenant.TenantApi;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.context.RoleContext;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
@@ -269,6 +271,14 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         UserContext context = new UserContext(permissionFuture.join(), roleFuture.join(),
             passwordExpirationDaysFuture.join());
         BeanUtil.copyProperties(user, context);
+        // 到期前提醒天数只影响提示，读取失败按不提醒处理，不能因此影响登录
+        try {
+            context.setPasswordExpirationWarningDays(optionService
+                .getValueByCode2Int(PASSWORD_EXPIRATION_WARNING_DAYS.name()));
+        } catch (Exception e) {
+            log.warn("读取密码到期提醒天数失败，按不提醒处理", e);
+            context.setPasswordExpirationWarningDays(GlobalConstants.Boolean.NO);
+        }
         return context;
     }
 

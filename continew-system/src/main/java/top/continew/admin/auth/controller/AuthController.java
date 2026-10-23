@@ -125,7 +125,11 @@ public class AuthController {
         UserInfoResp userInfoResp = BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
         userInfoResp.setPermissions(userContext.getPermissions());
         userInfoResp.setRoles(userContext.getRoleCodes());
-        userInfoResp.setPwdExpired(userContext.isPasswordExpired());
+        // 两个字段同源推导，避免各自取 now 落在到期点两侧时出现「未过期 + 剩余 0 天」
+        Integer pwdExpireDays = userContext.getPwdExpireDays();
+        userInfoResp.setPwdExpired(pwdExpireDays != null && pwdExpireDays == 0);
+        userInfoResp.setPwdExpireDays(pwdExpireDays);
+        userInfoResp.setPwdWarningDays(userContext.getPasswordExpirationWarningDays());
         return userInfoResp;
     }
 
