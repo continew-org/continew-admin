@@ -17,6 +17,7 @@ description: 多端认证客户端的维护，包括 Token 有效期、Refresh T
 | `active_timeout` | Token 最低活跃频率（秒），-1 表示不限制 |
 | `timeout` | Token 有效期（秒），-1 表示永不过期，默认 2592000 |
 | `refresh_token_timeout` | Refresh Token 绝对有效期（秒），60 到 315360000 |
+| `refresh_token_idle_timeout` | Refresh Token 闲置失效（秒），0 表示不限制 |
 | `refresh_token_mode` | Refresh Token 传输模式（COOKIE / BODY） |
 | `is_concurrent` | 是否允许同一账号多地同时登录 |
 | `replaced_range` | 顶人下线范围（CURR_DEVICE_TYPE / ALL_DEVICE_TYPE） |
@@ -49,6 +50,19 @@ Refresh Token 是 4.2 引入的双令牌机制（`continew-starter-auth-refresh-
 | `BODY` | App、小程序 | Refresh Token 在响应体下发，刷新时放请求体 |
 
 存量 `ANDROID`、`XCX` 类型的客户端在升级脚本中被批量置为 `BODY`，避免移动端升级后拿不到 Refresh Token。
+
+### 闲置失效
+
+`refresh_token_idle_timeout` 控制会话的闲置失效：最后活跃时间（只统计业务请求，页面挂机、WebSocket 消息与令牌刷新都不算）超过该时长后，下一次业务请求会被拒绝，并在随后的令牌刷新中撤销会话。
+
+- 默认 0，表示不限制，存量部署行为不变；
+- 可填 0 或不小于 60 秒。1~59 秒属于手误，保存时会被拒绝；
+- 建议不小于 `active_timeout`：阈值比 Token 冻结时间还短时，用户短暂离开就会掉线，通常不是期望行为；
+- 参考档位：常规后台 4 小时（14400），运维、财务类 30 分钟（1800）。
+
+<Callout type="warn">
+保存客户端配置会立即撤销该客户端的全部会话（配置即认证策略），调整闲置阈值请选在低峰期，并提前告知使用者。策略缓存最长 60 秒刷新一次；集群滚动发布期间新旧实例的判定会短暂不一致，建议发布完成后再开启闲置失效。
+</Callout>
 
 ## 并发登录控制
 

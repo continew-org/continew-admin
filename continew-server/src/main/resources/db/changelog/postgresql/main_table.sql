@@ -708,3 +708,13 @@ COMMENT ON COLUMN "sys_client"."refresh_token_mode"
 UPDATE "sys_client"
     SET "refresh_token_mode" = 'BODY'
     WHERE "client_type" IN ('ANDROID', 'XCX');
+
+-- changeset luoqiz:refresh-token-idle-timeout-client-field-postgresql
+-- comment 客户端 Refresh Token 闲置失效字段（0：不限制，沿用绝对有效期）
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'sys_client' AND column_name = 'refresh_token_idle_timeout'
+ALTER TABLE "sys_client"
+    ADD COLUMN "refresh_token_idle_timeout" int8 NOT NULL DEFAULT 0;
+
+COMMENT ON COLUMN "sys_client"."refresh_token_idle_timeout"
+    IS 'Refresh Token 闲置失效（单位：秒，0：不限制）';

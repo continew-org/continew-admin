@@ -56,6 +56,14 @@ public class OnlineUserQuery implements Serializable {
     private List<LocalDateTime> loginTime;
 
     /**
+     * 是否在线
+     *
+     * <p>为空表示不过滤。在线是按活跃时间派生的展示口径，与「会话是否有效」不是一回事。</p>
+     */
+    @Schema(description = "是否在线（为空表示不过滤）", example = "true")
+    private Boolean online;
+
+    /**
      * 用户 ID
      */
     @Schema(hidden = true)

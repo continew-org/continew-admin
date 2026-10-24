@@ -92,45 +92,52 @@ public class ClientResp extends BaseDetailResp {
     private Long refreshTokenTimeout;
 
     /**
+     * Refresh Token 闲置失效（单位：秒，0：不限制）
+     */
+    @Schema(description = "Refresh Token 闲置失效（单位：秒，0：不限制）", example = "14400")
+    @ExcelProperty(value = "Refresh Token 闲置失效", order = 9)
+    private Long refreshTokenIdleTimeout;
+
+    /**
      * Refresh Token 传输模式
      */
     @Schema(description = "Refresh Token 传输模式", example = "COOKIE")
     @ExcelProperty(value = "Refresh Token 传输模式", converter = ExcelBaseEnumConverter.class,
-        order = 9)
+        order = 10)
     private RefreshTokenModeEnum refreshTokenMode;
 
     /**
      * 是否允许同一账号多地同时登录（true：允许；false：新登录挤掉旧登录）
      */
     @Schema(description = "是否允许同一账号多地同时登录", example = "true")
-    @ExcelProperty(value = "是否允许同一账号多地同时登录", order = 10)
+    @ExcelProperty(value = "是否允许同一账号多地同时登录", order = 11)
     private Boolean isConcurrent;
 
     /**
      * 顶人下线的范围
      */
     @Schema(description = "顶人下线的范围", example = "ALL_DEVICE_TYPE")
-    @ExcelProperty(value = "顶人下线的范围", converter = ExcelBaseEnumConverter.class, order = 11)
+    @ExcelProperty(value = "顶人下线的范围", converter = ExcelBaseEnumConverter.class, order = 12)
     private ReplacedRangeEnum replacedRange;
 
     /**
      * 同一账号最大登录数量（-1：不限制，只有在 isConcurrent=true，isShare=false 时才有效）
      */
     @Schema(description = "同一账号最大登录数量", example = "-1")
-    @ExcelProperty(value = "同一账号最大登录数量", order = 12)
+    @ExcelProperty(value = "同一账号最大登录数量", order = 13)
     private Integer maxLoginCount;
 
     /**
      * 溢出人数的下线方式
      */
     @Schema(description = "溢出人数的下线方式", example = "KICKOUT")
-    @ExcelProperty(value = "溢出人数的下线方式", converter = ExcelBaseEnumConverter.class, order = 13)
+    @ExcelProperty(value = "溢出人数的下线方式", converter = ExcelBaseEnumConverter.class, order = 14)
     private LogoutModeEnum overflowLogoutMode;
 
     /**
      * 状态
      */
     @Schema(description = "状态", example = "1")
-    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 14)
+    @ExcelProperty(value = "状态", converter = ExcelBaseEnumConverter.class, order = 15)
     private DisEnableStatusEnum status;
 }

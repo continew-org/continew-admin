@@ -107,4 +107,51 @@ public class OnlineUserResp implements Serializable {
      */
     @Schema(description = "最后刷新时间", example = "2023-08-08 08:08:08", type = "string")
     private LocalDateTime lastRefreshTime;
+
+    /**
+     * 最后活跃时间
+     *
+     * <p>只统计业务请求。WebSocket 消息、令牌刷新和退出登录不计入活跃，页面挂着不代表人在操作。</p>
+     */
+    @Schema(description = "最后活跃时间", example = "2023-08-08 08:08:08", type = "string")
+    private LocalDateTime lastActiveTime;
+
+    /**
+     * 会话到期时间
+     *
+     * <p>这是登录后最长能维持的时间（绝对有效期），不会因令牌轮换而延长。</p>
+     */
+    @Schema(description = "会话到期时间（绝对有效期）", example = "2023-09-07 08:08:08", type = "string")
+    private LocalDateTime sessionExpireTime;
+
+    /**
+     * 预计因闲置失效的时间
+     *
+     * <p>客户端未配置闲置失效阈值时为 null。</p>
+     */
+    @Schema(description = "预计因闲置失效的时间，未配置闲置失效时为 null", example = "2023-08-08 12:08:08",
+        type = "string")
+    private LocalDateTime idleExpireTime;
+
+    /**
+     * 是否已闲置超时
+     *
+     * <p>由服务端判定，客户端不要用本地时钟与 {@code idleExpireTime} 比较。</p>
+     */
+    @Schema(description = "是否已闲置超时", example = "false")
+    private Boolean idleExpired;
+
+    /**
+     * 是否在线
+     */
+    @Schema(description = "是否在线", example = "true")
+    private Boolean online;
+
+    /**
+     * 最后活跃时间是否精确
+     *
+     * <p>为 false 表示该会话没有活跃记录，时间按最近刷新时间推算，展示时需要提示是估算值。</p>
+     */
+    @Schema(description = "最后活跃时间是否精确（false 表示按最近刷新时间推算）", example = "true")
+    private Boolean activeTimeExact;
 }

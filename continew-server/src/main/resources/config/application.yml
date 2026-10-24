@@ -387,6 +387,10 @@ continew-starter.refresh-token:
 
 --- ### 认证配置
 auth:
+  ## 在线用户配置
+  online:
+    # 最后活跃时间落在该窗口内才展示为「在线」，只影响展示与筛选，不参与失效判断
+    presence-window: 5m
   ## 密码配置
   password:
     # 密码过期后仍放行的路径（用于让过期用户能自助修改密码）

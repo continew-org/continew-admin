@@ -75,6 +75,11 @@ public class ClientDO extends BaseDO {
     private Long refreshTokenTimeout;
 
     /**
+     * Refresh Token 闲置失效（单位：秒，0：不限制）
+     */
+    private Long refreshTokenIdleTimeout;
+
+    /**
      * Refresh Token 传输模式：浏览器使用 COOKIE，App / 小程序使用 BODY
      */
     private RefreshTokenModeEnum refreshTokenMode;
