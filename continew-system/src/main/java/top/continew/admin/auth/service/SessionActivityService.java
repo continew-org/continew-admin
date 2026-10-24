@@ -59,6 +59,13 @@ public interface SessionActivityService {
     /**
      * 会话是否已经闲置到该失效
      *
+     * <p>实现约定：阈值 0 或会话 ID 为空时直接返回 false；活跃时间严格「大于」阈值才算失效；
+     * 读不到活跃记录（含缓存读取异常）时一律返回 false——「无法判断」不等于「长期未活跃」，
+     * 否则缓存抖动或升级瞬间会踢掉一批正常会话。</p>
+     *
+     * <p>本方法只给结论，不写任何缓存；记录活跃由 {@link #touch(String, String)} 负责，
+     * 调用方必须先判定、后记录，顺序反了闲置永远判不出来。</p>
+     *
      * @param sessionId          登录会话 ID
      * @param idleTimeoutSeconds 闲置失效阈值（单位：秒，0：不限制）
      * @return 是否已闲置失效；没有活跃记录时一律返回 false

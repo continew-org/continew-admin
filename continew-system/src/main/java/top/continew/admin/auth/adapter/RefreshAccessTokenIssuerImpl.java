@@ -84,10 +84,18 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
     }
 
     /**
-     * 检查会话是否已闲置超时
+     * 检查会话是否已闲置超时。
      *
-     * <p>拦截器已经在每个业务请求上做了同样的判定，这里再判一次是为了真正撤销会话：拦截器只拒绝
-     * 当次请求，会话本身还需要清掉，否则它会一直留在在线列表里。</p>
+     * <p>调用时机：刷新流程完成令牌轮换（{@code advanceTokenGeneration} 已改写
+     * {@code lastRefreshAt}）之后、签发新 Access Token 之前。此处抛出的 401 会被认证组件
+     * 捕获并撤销整个会话（{@code issueAndCompleteRotation} → {@code revokeSessionLocked}），
+     * 是闲置会话真正下线的唯一入口；拦截器只拒绝当次请求，不删除会话记录。</p>
+     *
+     * <p>判定依据是活跃时间缓存（与会话记录分开存放，避免轮换的「读-改-写」互相覆盖）。
+     * 没有活跃记录时按 {@code createdAt} 兜底，原因见下方行内注释。</p>
+     *
+     * <p>边界：严格「大于」阈值才算闲置（{@code now - base > 阈值}）；阈值 0 表示不限制，
+     * 直接跳过，连缓存都不读。</p>
      *
      * @param session 登录会话
      * @param client  客户端
@@ -98,12 +106,16 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
             return;
         }
         Long lastActive = sessionActivityService.getLastActiveTime(session.getSessionId());
-        // 没有活跃记录时按会话创建时间兜底：轮换流程在调用本回调之前已经把 lastRefreshAt
-        // 改写成本次刷新时间，用它会让闲置判定永远不成立。
+        // 兜底口径与拦截器的差异是已知取舍：拦截器对「无活跃记录」一律不判定，这里必须判定，
+        // 否则「只刷新、从不调业务接口」的会话永远不会被回收。浏览器场景下刷新前必然已有
+        // 活跃记录，只有上述客户端才会走到 createdAt 兜底。代价是 Redis 在 maxmemory 压力下
+        // 淘汰活跃键、且恰好落在节流窗口（最长 60 秒）内时，可能撤掉刚活跃过的会话，
+        // 概率极低，接受。
         long baseTime = lastActive == null ? session.getCreatedAt() : lastActive;
-        if (System.currentTimeMillis() - baseTime > idleTimeoutSeconds * 1000) {
-            log.info("会话闲置超时，撤销登录：sessionId={}，userId={}，闲置阈值={}秒", session
-                .getSessionId(), session.getUserId(), idleTimeoutSeconds);
+        long idleMillis = System.currentTimeMillis() - baseTime;
+        if (idleMillis > idleTimeoutSeconds * 1000) {
+            log.info("会话闲置超时，撤销登录：sessionId={}，userId={}，闲置时长={}秒，闲置阈值={}秒",
+                session.getSessionId(), session.getUserId(), idleMillis / 1000, idleTimeoutSeconds);
             throw RefreshTokenException.unauthorized("长时间未操作，请重新登录");
         }
     }

@@ -102,15 +102,25 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
                 return false;
             }
-            // 闲置判定必须放在记录活跃之前：先记录会把最后活跃时间刷成当前时间，闲置永远判不出来。
+            // —— 闲置失效判定 ——
+            // 顺序要求：先判定、后记录活跃。先 touch 会把最后活跃时间刷成本次请求时间，
+            // 而判定读的正是这个时间，闲置将永远判不出来。
+            //
+            // 这里只拒绝当次请求，不撤销会话：撤销统一由刷新路径的兜底判定完成（见
+            // RefreshAccessTokenIssuerImpl#checkIdleTimeout）。若在这里撤销，一个停在页面上
+            // 持续轮询的标签页就可能把「只是本次被拒、仍可通过放行路径继续使用」的会话清掉。
             String sessionId = AccessTokenClaimsReader.resolveSessionIdQuietly(tokenValue);
             String clientId = this.resolveClientId(tokenValue, userContext);
             long idleTimeoutSeconds = clientPolicyCache.get(clientId).idleTimeoutSeconds();
             // 密码过期放行的路径（改密、拉路由、取用户信息）同时也是自助通道，不参与闲置判定：
-            // 密码过期和闲置超时同时成立时，若这里再拦一次，用户只能重新登录才能改密。
-            // 这些请求本身要求完整凭据，放行不会放大风险，活跃时间仍照常记录。
+            // 两个策略同时成立时，若这里再拦一次，用户只能重新登录才能改密。这些请求本身
+            // 要求完整凭据，放行不会放大风险；活跃时间仍照常记录（touch 不在判定分支内）。
+            //
+            // 未配置闲置失效（阈值 0）时直接短路：isIdleExpired 对 0 本来就直接返回 false，
+            // 短路可省去每个请求一次的路径模式匹配（excludes 中的 Ant 风格路径）。
             boolean selfServicePath =
-                SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes());
+                idleTimeoutSeconds > 0
+                    && SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes());
             if (!selfServicePath && sessionActivityService
                 .isIdleExpired(sessionId, idleTimeoutSeconds)) {
                 // 这里只拒绝本次请求，不撤销会话：会话撤销统一由刷新时的兜底判定完成，
