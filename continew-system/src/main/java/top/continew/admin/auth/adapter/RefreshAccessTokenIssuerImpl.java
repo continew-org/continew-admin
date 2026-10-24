@@ -16,11 +16,14 @@
 
 package top.continew.admin.auth.adapter;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import top.continew.admin.auth.model.resp.LoginResp;
 import top.continew.admin.auth.service.AuthTokenService;
+import top.continew.admin.auth.service.SessionActivityService;
 import top.continew.admin.common.api.tenant.TenantApi;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.system.model.entity.user.UserDO;
@@ -44,6 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author luoqiz
  * @since 4.2.0
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
@@ -52,6 +56,7 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
     private final ClientService clientService;
     private final TenantApi tenantApi;
     private final UserService userService;
+    private final SessionActivityService sessionActivityService;
 
     @Override
     public IssuedAccessToken issue(RefreshSession session, HttpServletRequest request,
@@ -60,6 +65,7 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
         if (client == null || DisEnableStatusEnum.DISABLE.equals(client.getStatus())) {
             throw RefreshTokenException.unauthorized("登录状态已失效，请重新登录");
         }
+        this.checkIdleTimeout(session, client);
         try {
             tenantApi.checkStatus(session.getTenantId());
         } catch (BusinessException e) {
@@ -75,5 +81,30 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
             session.getTenantId(), session, request, response);
         return new IssuedAccessToken(loginResp.getAccessToken(), loginResp.getExpiresIn(),
             loginResp.getTenantId());
+    }
+
+    /**
+     * 检查会话是否已闲置超时
+     *
+     * <p>拦截器已经在每个业务请求上做了同样的判定，这里再判一次是为了真正撤销会话：拦截器只拒绝
+     * 当次请求，会话本身还需要清掉，否则它会一直留在在线列表里。</p>
+     *
+     * @param session 登录会话
+     * @param client  客户端
+     */
+    private void checkIdleTimeout(RefreshSession session, ClientResp client) {
+        long idleTimeoutSeconds = ObjectUtil.defaultIfNull(client.getRefreshTokenIdleTimeout(), 0L);
+        if (idleTimeoutSeconds <= 0) {
+            return;
+        }
+        Long lastActive = sessionActivityService.getLastActiveTime(session.getSessionId());
+        // 没有活跃记录时按会话创建时间兜底：轮换流程在调用本回调之前已经把 lastRefreshAt
+        // 改写成本次刷新时间，用它会让闲置判定永远不成立。
+        long baseTime = lastActive == null ? session.getCreatedAt() : lastActive;
+        if (System.currentTimeMillis() - baseTime > idleTimeoutSeconds * 1000) {
+            log.info("会话闲置超时，撤销登录：sessionId={}，userId={}，闲置阈值={}秒", session
+                .getSessionId(), session.getUserId(), idleTimeoutSeconds);
+            throw RefreshTokenException.unauthorized("长时间未操作，请重新登录");
+        }
     }
 }

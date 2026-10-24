@@ -19,13 +19,19 @@ package top.continew.admin.config.satoken;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.context.SaTokenContextForThreadLocal;
+import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.servlet.model.SaRequestForServlet;
 import cn.dev33.satoken.servlet.model.SaResponseForServlet;
 import cn.dev33.satoken.servlet.model.SaStorageForServlet;
@@ -41,6 +47,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import top.continew.admin.auth.service.SessionActivityService;
+import top.continew.admin.auth.support.ClientPolicyCache;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.starter.auth.refresh.token.api.AccessSessionValidator;
@@ -60,16 +68,28 @@ import top.continew.starter.extension.tenant.context.TenantContextHolder;
 class SaExtensionInterceptorTest {
 
     private AccessSessionValidator accessSessionValidator;
+    private SessionActivityService sessionActivityService;
+    private ClientPolicyCache clientPolicyCache;
     private SaExtensionInterceptor interceptor;
     private MockedStatic<StpUtil> stpUtil;
+    private MockedStatic<SaRouter> saRouter;
     private UserContext cachedContext;
 
     @BeforeEach
     void setUp() {
         SaManager.setSaTokenContext(new SaTokenContextForThreadLocal());
         accessSessionValidator = mock(AccessSessionValidator.class);
+        sessionActivityService = mock(SessionActivityService.class);
+        clientPolicyCache = mock(ClientPolicyCache.class);
+        when(clientPolicyCache.get(any()))
+            .thenReturn(ClientPolicyCache.ClientPolicy.DEFAULT);
+        LoginPasswordProperties passwordProperties = new LoginPasswordProperties();
+        passwordProperties.setExcludes(new String[] {"/user/profile/password", "/auth/user/info"});
         interceptor = new SaExtensionInterceptor(handle -> {
-        }, accessSessionValidator);
+        }, accessSessionValidator, sessionActivityService, clientPolicyCache, passwordProperties);
+        // 路由匹配策略由 sa-token 的 Spring 集成注入，纯单元测试需要自己给出结果
+        saRouter = mockStatic(SaRouter.class);
+        saRouter.when(() -> SaRouter.isMatchCurrURI(any(String[].class))).thenReturn(false);
         stpUtil = mockStatic(StpUtil.class);
         stpUtil.when(StpUtil::isLogin).thenReturn(true);
         stpUtil.when(StpUtil::getTokenValue).thenReturn("access-token");
@@ -81,6 +101,7 @@ class SaExtensionInterceptorTest {
 
     @AfterEach
     void tearDown() {
+        saRouter.close();
         stpUtil.close();
         UserContextHolder.clearContext();
         SaManager.setSaTokenContext(null);
@@ -161,6 +182,84 @@ class SaExtensionInterceptorTest {
                 assertTrue(flag);
                 UserContextHolder.getContext();
                 stpUtil.verify(StpUtil::getSession, times(2));
+            }
+        }
+    }
+
+    @Test
+    void shouldRejectWhenIdleExpiredOnBusinessPath() throws Exception {
+        when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
+        when(sessionActivityService.isIdleExpired(any(), anyLong())).thenReturn(true);
+        try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
+            ResponseStatusFactory factory = this.statusFactory();
+            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
+                .thenReturn(factory);
+            springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
+                .thenReturn(new ObjectMapper());
+            try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
+                TenantContextHolder.class)) {
+                tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
+                MockHttpServletResponse response = new MockHttpServletResponse();
+
+                boolean flag = interceptor.preHandle(this.request("/system/user"), response,
+                    new Object());
+
+                assertFalse(flag);
+                assertEquals(401, response.getStatus());
+            }
+        }
+    }
+
+    @Test
+    void shouldAllowSelfServicePathWhenIdleExpired() throws Exception {
+        when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
+        saRouter.when(() -> SaRouter.isMatchCurrURI(any(String[].class))).thenReturn(true);
+        try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
+            ResponseStatusFactory factory = this.statusFactory();
+            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
+                .thenReturn(factory);
+            springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
+                .thenReturn(new ObjectMapper());
+            try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
+                TenantContextHolder.class)) {
+                tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
+                MockHttpServletResponse response = new MockHttpServletResponse();
+
+                // 密码过期放行的改密路径：即使已闲置也不能拦，否则用户只能重新登录才能改密
+                boolean flag = interceptor.preHandle(this
+                    .request("/user/profile/password"), response, new Object());
+
+                assertTrue(flag);
+                // 短路求值：自助路径不查闲置，但活跃时间仍要记录
+                verify(sessionActivityService, never()).isIdleExpired(any(), anyLong());
+                verify(sessionActivityService).touch(any(), any());
+            }
+        }
+    }
+
+    @Test
+    void shouldPreferClientIdFromTokenClaim() throws Exception {
+        when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
+        // 用户级 SaSession 里的客户端是 A 端（会被同账号的其它登录覆盖），令牌声明才是本端
+        cachedContext.setClientId("client-a");
+        stpUtil.when(() -> StpUtil.getExtra("access-token", "clientId")).thenReturn("client-b");
+        try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
+            ResponseStatusFactory factory = this.statusFactory();
+            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
+                .thenReturn(factory);
+            springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
+                .thenReturn(new ObjectMapper());
+            try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
+                TenantContextHolder.class)) {
+                tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
+
+                boolean flag = interceptor.preHandle(this.request("/system/user"),
+                    new MockHttpServletResponse(), new Object());
+
+                assertTrue(flag);
+                // 闲置策略与活跃时间都必须按令牌所属客户端取
+                verify(clientPolicyCache).get("client-b");
+                verify(sessionActivityService).touch(any(), eq("client-b"));
             }
         }
     }

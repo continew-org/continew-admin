@@ -36,6 +36,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotationUtils;
+import top.continew.admin.auth.service.SessionActivityService;
+import top.continew.admin.auth.support.ClientPolicyCache;
 import top.continew.admin.common.config.crud.CrudApiPermissionPrefixCache;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
@@ -71,6 +73,8 @@ public class SaTokenConfiguration {
     private final OpenApiSignTemplate signTemplate;
     private final ApplicationContext applicationContext;
     private final AccessSessionValidator accessSessionValidator;
+    private final SessionActivityService sessionActivityService;
+    private final ClientPolicyCache clientPolicyCache;
 
     /**
      * Sa-Token 权限认证配置
@@ -109,7 +113,8 @@ public class SaTokenConfiguration {
                 if (userContext.isPasswordExpired()) {
                     rejectExpiredPassword();
                 }
-            }), accessSessionValidator);
+            }), accessSessionValidator, sessionActivityService, clientPolicyCache,
+            loginPasswordProperties);
     }
 
     /**

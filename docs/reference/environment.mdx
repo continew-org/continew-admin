@@ -76,6 +76,7 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 | `cosid` | 雪花算法，epoch `1577203200000`，开启时钟回拨同步；租户编码生成器前缀 `T` |
 | `continew-starter.refresh-token` | `cookie-name: refresh_token`、`cookie-path: /`、`cookie-secure: false`、`cookie-same-site: Lax` |
 | `auth.password.excludes` | 密码过期拦截放行 `/auth/user/route`、`/auth/user/info`、`/auth/logout`、`/user/profile/password` |
+| `auth.online.presence-window` | 在线用户页面的「在线」判定窗口，默认 `5m`；只影响展示与筛选，不参与会话失效 |
 
 Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改由「系统管理 → 系统配置 → 客户端配置」页面按客户端动态管理，application.yml 中对应配置已注释。
 

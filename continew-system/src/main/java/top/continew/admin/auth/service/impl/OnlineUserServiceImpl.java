@@ -21,9 +21,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import top.continew.admin.auth.config.OnlineUserProperties;
 import top.continew.admin.auth.model.query.OnlineUserQuery;
 import top.continew.admin.auth.model.resp.OnlineUserResp;
 import top.continew.admin.auth.service.OnlineUserService;
+import top.continew.admin.auth.service.SessionActivityService;
+import top.continew.admin.auth.support.ClientPolicyCache;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.starter.auth.refresh.token.model.SessionView;
 import top.continew.starter.auth.refresh.token.service.SessionInvalidationService;
@@ -36,6 +39,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -50,6 +54,9 @@ public class OnlineUserServiceImpl implements OnlineUserService {
 
     private final SessionInvalidationService sessionInvalidationService;
     private final SessionQueryService sessionQueryService;
+    private final SessionActivityService sessionActivityService;
+    private final ClientPolicyCache clientPolicyCache;
+    private final OnlineUserProperties onlineUserProperties;
 
     @Override
     public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
@@ -63,11 +70,41 @@ public class OnlineUserServiceImpl implements OnlineUserService {
         Long tenantId = TenantContextHolder.isTenantEnabled() && !UserContextHolder.isSuperAdmin()
             ? TenantContextHolder.getTenantId()
             : null;
+        long now = System.currentTimeMillis();
         // Refresh Session 才是可恢复登录态的事实源。Access Token 即使已经自然过期，
         // 只要长期会话仍有效，管理员就必须能够看到并撤销该设备登录。
-        for (SessionView session : sessionQueryService.listSessions(tenantId)) {
-            LocalDateTime loginTime = DateUtil.date(session.getCreatedAt()).toLocalDateTime();
-            if (!this.isMatch(query, session, loginTime)) {
+        List<SessionView> sessions = sessionQueryService.listSessions(tenantId).stream()
+            // 只有绝对有效期到期才隐藏：此时会话确实不可用。闲置超时的会话要等到下一次请求
+            // （刷新时判定并撤销）才消失，在此之前它仍占用登录名额，必须继续展示，否则管理员
+            // 既看不到、也没法强退这台还没被回收的设备。
+            .filter(session -> session.getExpiresAt() > now)
+            .filter(session -> this.isMatch(query, session, DateUtil.date(session.getCreatedAt())
+                .toLocalDateTime()))
+            .toList();
+        Map<String, Long> lastActiveTimes = sessionActivityService.getLastActiveTimes(sessions
+            .stream()
+            .map(SessionView::getSessionId)
+            .toList());
+        Map<String, ClientPolicyCache.ClientPolicy> policies = clientPolicyCache.all();
+        long presenceWindowMillis = onlineUserProperties.getPresenceWindow().toMillis();
+        for (SessionView session : sessions) {
+            Long recordedActiveTime = lastActiveTimes.get(session.getSessionId());
+            // 没有活跃记录时按最近刷新时间推算，并标记为估算值：不能当作「从未活跃」。
+            long lastActiveTime = recordedActiveTime == null
+                ? session.getLastRefreshAt()
+                : recordedActiveTime;
+            final long idleTimeoutMillis =
+                policies.getOrDefault(session.getClientId(), ClientPolicyCache.ClientPolicy.DEFAULT)
+                    .idleTimeoutSeconds() * 1000;
+            // 没有活跃记录时不判「已闲置」：此时时间是按最近刷新推算出来的，断言过期会误标；
+            // 与拦截器、刷新兜底两处「无记录不判定」的口径保持一致。
+            final boolean hasActiveRecord = recordedActiveTime != null;
+            final boolean idleExpired = hasActiveRecord && idleTimeoutMillis > 0
+                && now - lastActiveTime > idleTimeoutMillis;
+            // 已经闲置超时的会话不再计入在线：闲置阈值可能比在线展示窗口还短，
+            // 若只按活跃时间判断，会出现「闲置超时待失效」和「在线」同时成立的矛盾展示。
+            boolean online = !idleExpired && now - lastActiveTime <= presenceWindowMillis;
+            if (query.getOnline() != null && query.getOnline() != online) {
                 continue;
             }
             OnlineUserResp resp = new OnlineUserResp();
@@ -81,8 +118,18 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             resp.setAddress(session.getAddress());
             resp.setBrowser(session.getBrowser());
             resp.setOs(session.getOs());
-            resp.setLoginTime(loginTime);
+            resp.setLoginTime(DateUtil.date(session.getCreatedAt()).toLocalDateTime());
             resp.setLastRefreshTime(DateUtil.date(session.getLastRefreshAt()).toLocalDateTime());
+            resp.setLastActiveTime(DateUtil.date(lastActiveTime).toLocalDateTime());
+            resp.setActiveTimeExact(hasActiveRecord);
+            resp.setSessionExpireTime(DateUtil.date(session.getExpiresAt()).toLocalDateTime());
+            // 没有活跃记录时不给出「预计失效」：时间本身是推算的，算出来的阈值时刻可能已过去，
+            // 会让人误以为这台设备马上要掉线。此时前端回落到会话的绝对到期时间。
+            resp.setIdleExpireTime(hasActiveRecord && idleTimeoutMillis > 0
+                ? DateUtil.date(lastActiveTime + idleTimeoutMillis).toLocalDateTime()
+                : null);
+            resp.setIdleExpired(idleExpired);
+            resp.setOnline(online);
             list.add(resp);
         }
         // 登录时间可能缺失，排序必须空值安全。

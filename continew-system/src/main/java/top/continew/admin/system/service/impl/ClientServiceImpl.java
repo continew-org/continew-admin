@@ -62,6 +62,26 @@ public class ClientServiceImpl
         req.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())
             .replace(StringConstants.SLASH, StringConstants.EMPTY)
             .replace(StringConstants.PLUS, StringConstants.EMPTY)));
+        this.checkIdleTimeout(req);
+    }
+
+    @Override
+    protected void beforeUpdate(ClientReq req, Long id) {
+        this.checkIdleTimeout(req);
+    }
+
+    /**
+     * 校验闲置失效阈值
+     *
+     * <p>1~59 秒虽然语法上合法，但保存配置会立刻撤销该客户端的全部会话，用户重新登录后不到一分钟
+     * 又会再次闲置失效，等同于把客户端锁死。这类值基本是「想填小时却填了秒」的手误，直接挡在入口。</p>
+     *
+     * @param req 客户端请求参数
+     */
+    private void checkIdleTimeout(ClientReq req) {
+        Long idleTimeout = req.getRefreshTokenIdleTimeout();
+        CheckUtils.throwIf(idleTimeout != null && idleTimeout > 0 && idleTimeout < 60,
+            "Refresh Token 闲置失效需为 0（不限制）或不小于 60 秒");
     }
 
     @Override

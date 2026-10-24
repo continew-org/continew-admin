@@ -89,6 +89,15 @@ public class ClientReq implements Serializable {
     private Long refreshTokenTimeout;
 
     /**
+     * Refresh Token 闲置失效（单位：秒，0：不限制）
+     */
+    @Schema(description = "Refresh Token 闲置失效（单位：秒，0：不限制，建议不小于 Token 最低活跃频率）",
+        example = "14400")
+    @Min(value = 0, message = "Refresh Token 闲置失效不能小于 0")
+    @Max(value = 315360000, message = "Refresh Token 闲置失效不能超过 10 年")
+    private Long refreshTokenIdleTimeout;
+
+    /**
      * Refresh Token 传输模式
      */
     @Schema(description = "Refresh Token 传输模式", example = "COOKIE")

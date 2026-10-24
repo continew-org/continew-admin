@@ -1,6 +1,6 @@
 ---
 title: 在线用户
-description: 在线用户页面展示当前全部有效登录会话，支持按用户、昵称、客户端筛选，并可强退指定会话强制用户重新登录。
+description: 在线用户页面展示当前全部有效登录会话，支持按用户、昵称、客户端与在线状态筛选，并可强退指定会话强制用户重新登录。
 ---
 
 「系统监控 → 在线用户」页面展示系统中当前有效的登录会话。数据不走数据库，直接来自认证框架维护的会话（Session）记录，列表按登录时间倒序排列。
@@ -9,17 +9,37 @@ description: 在线用户页面展示当前全部有效登录会话，支持按�
 
 自 4.2 版本起，ContiNew Admin 采用「Access Token + Refresh Token」双令牌模型。Access Token 存活时间短且可以自然过期，Refresh Token 对应的长期会话（Refresh Session）才是登录态的事实源。在线用户列表遍历的是 `SessionQueryService.listSessions` 返回的会话视图，所以即使某个用户的 Access Token 已经过期，只要他的长期会话仍有效，管理员依然能在列表中看到这台设备并执行强退。对应实现见 `OnlineUserServiceImpl`。
 
-每条会话展示以下字段：用户名、昵称、客户端类型、客户端 ID、登录 IP 与归属地、浏览器、操作系统、登录时间、最后刷新时间。
+「会话有效」不等于「人在操作」。因此从 5.0 版本起，列表额外展示会话的活跃情况：只有最后活跃时间落在 5 分钟（`auth.online.presence-window`）内的会话才标记为「在线」，其余标记为「闲置」。已经超过客户端闲置阈值的会话，即使活跃时间还在 5 分钟窗口内，也一律标为「闲置超时待失效」，不会显示为在线。这是展示口径，不影响会话是否可用。
+
+每条会话展示以下字段：用户名、昵称、客户端类型、客户端 ID、登录 IP 与归属地、浏览器、操作系统、登录时间、最后活跃时间、预计失效时间、在线状态、最近令牌刷新时间。
+
+- **最后活跃时间**：只统计业务请求。WebSocket 消息、令牌刷新（`/auth/refresh`）与退出登录（`/auth/logout`）都不计入，因为连接还在不代表人在操作。升级前的存量会话没有活跃记录，此时按最近刷新时间推算，展示为 `约 …`。
+- **预计失效时间**：客户端配置了闲置失效、且该会话有活跃记录时取「最后活跃时间 + 闲置阈值」，否则回落到会话的绝对到期时间。没有活跃记录时不会给出闲置失效时间——时间是按最近刷新推算的，算出来的时刻可能已经过去，标出来反而误导。
+- **在线状态**：在线、闲置、闲置超时待失效三种。最后一种表示会话已经超过闲置阈值，但还没被真正撤销（撤销发生在下一次令牌刷新）。
 
 ## 查询与筛选
 
-页面支持三类筛选条件，在服务端内存中匹配会话。
+页面支持四类筛选条件，在服务端内存中匹配会话。
 
 - 昵称：模糊匹配用户名或昵称（`contains` 语义）；
 - 登录时间：起止时间段，仅保留区间内登录的会话；
+- 在线状态：在线或闲置，不选表示不过滤；
 - 客户端：按客户端 ID 精确匹配，客户端清单来自「系统管理 → 系统配置 → 客户端配置」。
 
 对应接口为 `GET /monitor/online`，权限码 `monitor:online:list`。
+
+## 闲置失效
+
+长期挂着不操作的会话会一直占用「同一账号最大登录数量」的名额，也无法从界面上区分「人在用」和「页面开着」。为此客户端配置提供了「Refresh Token 闲置失效」（`sys_client.refresh_token_idle_timeout`，单位：秒，默认 0 表示不限制）：
+
+- 最后活跃时间超过该阈值的会话在下一次业务请求时被拒绝（HTTP 401，提示「长时间未操作，请重新登录」），并在随后的令牌刷新中真正撤销；
+- 密码过期放行的路径（改密、拉取路由、获取用户信息）不参与闲置判定：两个策略同时成立时，用户仍然可以进入改密页完成自助修改，不会被迫先重新登录一次；
+- 该值需为 0 或不小于 60 秒；保存客户端配置会立即撤销该客户端的全部会话，建议在低峰期调整；
+- 建议取值不小于「Token 最低活跃频率」：阈值过小时，用户短暂离开就会掉线，通常不是期望行为。参考档位：常规后台 4 小时（14400），运维/财务类 30 分钟（1800）。
+
+<Callout type="info">
+闲置失效只改变会话的有效期，不改变令牌本身的寿命。开启后，超过阈值的存量会话会在用户下一次操作时要求重新登录，这是预期行为。
+</Callout>
 
 ## 强退会话
 
@@ -38,5 +58,6 @@ description: 在线用户页面展示当前全部有效登录会话，支持按�
 ## 相关源码
 
 - [OnlineUserController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/controller/OnlineUserController.java)：在线用户 API，分页查询与强退入口
-- [OnlineUserServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/OnlineUserServiceImpl.java)：会话遍历、筛选与强退逻辑
+- [OnlineUserServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/OnlineUserServiceImpl.java)：会话遍历、筛选与在线状态派生
+- [SessionActivityServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/SessionActivityServiceImpl.java)：活跃时间记录与闲置判定
 - [continew-admin-ui/src/views/monitor/online/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/monitor/online/index.vue)：前端页面
