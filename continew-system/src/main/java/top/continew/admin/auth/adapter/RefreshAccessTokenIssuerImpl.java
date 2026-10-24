@@ -84,10 +84,7 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
     }
 
     /**
-     * 检查会话是否已闲置超时
-     *
-     * <p>拦截器已经在每个业务请求上做了同样的判定，这里再判一次是为了真正撤销会话：拦截器只拒绝
-     * 当次请求，会话本身还需要清掉，否则它会一直留在在线列表里。</p>
+     * 检查会话是否已闲置超时，命中抛 401，由刷新流程撤销整个会话（拦截器只拒绝当次请求）。
      *
      * @param session 登录会话
      * @param client  客户端
@@ -98,12 +95,12 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
             return;
         }
         Long lastActive = sessionActivityService.getLastActiveTime(session.getSessionId());
-        // 没有活跃记录时按会话创建时间兜底：轮换流程在调用本回调之前已经把 lastRefreshAt
-        // 改写成本次刷新时间，用它会让闲置判定永远不成立。
+        // 没有活跃记录按创建时间兜底：轮换已改写 lastRefreshAt，用它会让闲置判定永远不成立。
         long baseTime = lastActive == null ? session.getCreatedAt() : lastActive;
-        if (System.currentTimeMillis() - baseTime > idleTimeoutSeconds * 1000) {
-            log.info("会话闲置超时，撤销登录：sessionId={}，userId={}，闲置阈值={}秒", session
-                .getSessionId(), session.getUserId(), idleTimeoutSeconds);
+        long idleMillis = System.currentTimeMillis() - baseTime;
+        if (idleMillis > idleTimeoutSeconds * 1000) {
+            log.info("会话闲置超时，撤销登录：sessionId={}，userId={}，闲置时长={}秒，闲置阈值={}秒",
+                session.getSessionId(), session.getUserId(), idleMillis / 1000, idleTimeoutSeconds);
             throw RefreshTokenException.unauthorized("长时间未操作，请重新登录");
         }
     }

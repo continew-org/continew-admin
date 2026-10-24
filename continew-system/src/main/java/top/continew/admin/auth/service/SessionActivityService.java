@@ -59,6 +59,9 @@ public interface SessionActivityService {
     /**
      * 会话是否已经闲置到该失效
      *
+     * <p>阈值 0、会话 ID 为空或读不到活跃记录时返回 false；调用方需先判定，再用
+     * {@link #touch(String, String)} 记录活跃。</p>
+     *
      * @param sessionId          登录会话 ID
      * @param idleTimeoutSeconds 闲置失效阈值（单位：秒，0：不限制）
      * @return 是否已闲置失效；没有活跃记录时一律返回 false
