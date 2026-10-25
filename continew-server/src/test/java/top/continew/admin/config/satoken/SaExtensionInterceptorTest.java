@@ -213,6 +213,9 @@ class SaExtensionInterceptorTest {
     @Test
     void shouldAllowSelfServicePathWhenIdleExpired() throws Exception {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
+        // 已配置闲置失效，才会进入放行路径匹配
+        when(clientPolicyCache.get(any())).thenReturn(new ClientPolicyCache.ClientPolicy(3600L,
+            2_592_000L));
         saRouter.when(() -> SaRouter.isMatchCurrURI(any(String[].class))).thenReturn(true);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
             ResponseStatusFactory factory = this.statusFactory();
@@ -233,6 +236,30 @@ class SaExtensionInterceptorTest {
                 // 短路求值：自助路径不查闲置，但活跃时间仍要记录
                 verify(sessionActivityService, never()).isIdleExpired(any(), anyLong());
                 verify(sessionActivityService).touch(any(), any());
+            }
+        }
+    }
+
+    @Test
+    void shouldSkipSelfServiceMatchWhenIdleDisabled() throws Exception {
+        when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
+        try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
+            ResponseStatusFactory factory = this.statusFactory();
+            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
+                .thenReturn(factory);
+            springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
+                .thenReturn(new ObjectMapper());
+            try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
+                TenantContextHolder.class)) {
+                tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
+                MockHttpServletResponse response = new MockHttpServletResponse();
+
+                boolean flag = interceptor.preHandle(this.request("/user/profile/password"),
+                    response, new Object());
+
+                assertTrue(flag);
+                // 未配置闲置失效时直接短路，不做放行路径匹配（setUp 默认策略 idle=0）
+                saRouter.verify(() -> SaRouter.isMatchCurrURI(any(String[].class)), never());
             }
         }
     }

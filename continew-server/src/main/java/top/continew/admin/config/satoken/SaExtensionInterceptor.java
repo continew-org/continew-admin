@@ -102,19 +102,17 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
                 return false;
             }
-            // 闲置判定必须放在记录活跃之前：先记录会把最后活跃时间刷成当前时间，闲置永远判不出来。
+            // 先判定、后记录活跃，顺序反了会把最后活跃时间刷成本次请求时间，闲置永远判不出来。
             String sessionId = AccessTokenClaimsReader.resolveSessionIdQuietly(tokenValue);
             String clientId = this.resolveClientId(tokenValue, userContext);
             long idleTimeoutSeconds = clientPolicyCache.get(clientId).idleTimeoutSeconds();
-            // 密码过期放行的路径（改密、拉路由、取用户信息）同时也是自助通道，不参与闲置判定：
-            // 密码过期和闲置超时同时成立时，若这里再拦一次，用户只能重新登录才能改密。
-            // 这些请求本身要求完整凭据，放行不会放大风险，活跃时间仍照常记录。
+            // 自助通道（改密、拉路由、取用户信息）不参与闲置判定，但仍记录活跃；阈值 0 直接短路。
             boolean selfServicePath =
-                SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes());
+                idleTimeoutSeconds > 0
+                    && SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes());
             if (!selfServicePath && sessionActivityService
                 .isIdleExpired(sessionId, idleTimeoutSeconds)) {
-                // 这里只拒绝本次请求，不撤销会话：会话撤销统一由刷新时的兜底判定完成，
-                // 否则一个后台轮询请求就可能把还能恢复的会话直接清掉。
+                // 只拒绝本次请求，会话撤销统一由刷新路径完成。
                 UserContextHolder.clearContext();
                 R r = R.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "长时间未操作，请重新登录");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());

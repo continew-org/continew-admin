@@ -33,6 +33,7 @@ description: 在线用户页面展示当前全部有效登录会话，支持按�
 长期挂着不操作的会话会一直占用「同一账号最大登录数量」的名额，也无法从界面上区分「人在用」和「页面开着」。为此客户端配置提供了「Refresh Token 闲置失效」（`sys_client.refresh_token_idle_timeout`，单位：秒，默认 0 表示不限制）：
 
 - 最后活跃时间超过该阈值的会话在下一次业务请求时被拒绝（HTTP 401，提示「长时间未操作，请重新登录」），并在随后的令牌刷新中真正撤销；
+- 闲置超时后需要重新登录，重新打开页面不会恢复会话（页面启动时先刷新令牌，刷新即触发撤销）；只有仍持有效 Access Token 时命中放行路径（改密、拉取用户信息/路由）的请求才会被放行并计入活跃；
 - 密码过期放行的路径（改密、拉取路由、获取用户信息）不参与闲置判定：两个策略同时成立时，用户仍然可以进入改密页完成自助修改，不会被迫先重新登录一次；
 - 该值需为 0 或不小于 60 秒；保存客户端配置会立即撤销该客户端的全部会话，建议在低峰期调整；
 - 建议取值不小于「Token 最低活跃频率」：阈值过小时，用户短暂离开就会掉线，通常不是期望行为。参考档位：常规后台 4 小时（14400），运维/财务类 30 分钟（1800）。
@@ -40,6 +41,28 @@ description: 在线用户页面展示当前全部有效登录会话，支持按�
 <Callout type="info">
 闲置失效只改变会话的有效期，不改变令牌本身的寿命。开启后，超过阈值的存量会话会在用户下一次操作时要求重新登录，这是预期行为。
 </Callout>
+
+### 实现说明
+
+闲置判定分散在三处，职责不同，改代码时不要混用：
+
+| 位置 | 触发时机 | 命中后的行为 |
+| --- | --- | --- |
+| `SaExtensionInterceptor#preHandle` | 每个非认证请求 | 只返回 401 拒绝当次请求，不撤销会话 |
+| `RefreshAccessTokenIssuerImpl#checkIdleTimeout` | 令牌轮换完成、签发新 Access Token 之前 | 抛 401，由认证组件撤销整个会话 |
+| `OnlineUserServiceImpl` | 列表查询 | 只派生展示状态，不读活跃缓存、不影响可用性 |
+
+**活跃时间**单独存放在 `AUTH:ACTIVITY:{sessionId}`（值为 epoch 毫秒），刻意不使用 Refresh Session 的键空间：轮换是「读-改-写」，混在一起会互相覆盖。写入按客户端阈值节流，窗口取 `min(60 秒, 阈值 / 4)`，保证缓存里的活跃时间最多落后一个窗口、且明显小于阈值；键的 TTL 取 `max(客户端 Refresh Token 绝对有效期, 1 天)`，必须比会话活得久，否则活跃键先过期会把活跃用户误判成「没有记录」。
+
+判定的边界约定：
+
+- 严格「大于」阈值才算闲置（`now - lastActive > 阈值`），刚好等于阈值仍放行；
+- 拦截器遇到「没有活跃记录」（新会话、升级前的存量会话、键过期或被淘汰）一律不判定，宁可放行；刷新侧则回落到会话创建时间 `createdAt`——轮换在回调前已把 `lastRefreshAt` 改写成本次刷新时间，用它计算闲置恒为 0；
+- 两处口径的差异是有意为之：浏览器场景下刷新前必然已有活跃记录，只有「只刷新、从不调业务接口」的客户端才会走到 `createdAt` 兜底。代价是 Redis 在 `maxmemory` 压力下淘汰活跃键、且恰好落在节流窗口内时，可能撤掉刚活跃过的会话，概率极低，接受；
+- Redis 读失败按「无法判断」处理：业务请求放行而不是返回 500，刷新侧交给认证组件的异常分支（保留轮换快照、不撤销会话）；写失败只记 warn，列表退化为「按最近刷新时间估算」；
+- 客户端策略由 `ClientPolicyCache` 整表缓存 60 秒，配置修改最多 60 秒后对所有实例生效；保存配置本身会立即撤销该客户端的全部会话。
+
+**为什么「重新打开页面」不能恢复闲置会话**：Access Token 不持久化，页面启动时必然先调用 `/auth/refresh`，而刷新一旦命中闲置判定就会撤销会话。只有仍持有有效 Access Token 时命中放行路径（改密、`/auth/user/info`、`/auth/user/route`）的请求才会被放行并计入活跃——这也是「密码过期 + 闲置超时」同时成立时用户仍能自助改密的原因。
 
 ## 强退会话
 
@@ -59,5 +82,8 @@ description: 在线用户页面展示当前全部有效登录会话，支持按�
 
 - [OnlineUserController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/controller/OnlineUserController.java)：在线用户 API，分页查询与强退入口
 - [OnlineUserServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/OnlineUserServiceImpl.java)：会话遍历、筛选与在线状态派生
-- [SessionActivityServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/SessionActivityServiceImpl.java)：活跃时间记录与闲置判定
+- [SessionActivityServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/service/impl/SessionActivityServiceImpl.java)：活跃时间记录、节流与闲置判定
+- [ClientPolicyCache.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/support/ClientPolicyCache.java)：客户端认证策略的整表缓存（闲置阈值、绝对有效期）
+- [SaExtensionInterceptor.java](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/java/top/continew/admin/config/satoken/SaExtensionInterceptor.java)：业务请求上的闲置判定（先判后记、放行路径）
+- [RefreshAccessTokenIssuerImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/auth/adapter/RefreshAccessTokenIssuerImpl.java)：刷新前的兜底判定与会话撤销
 - [continew-admin-ui/src/views/monitor/online/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/monitor/online/index.vue)：前端页面
