@@ -12,11 +12,13 @@ description: 系统用户的查询、新增、导入导出、重置密码与分�
 | 分页/列表/详情/新增/修改/删除/导出 | `@CrudRequestMapping("/system/user")` 自动生成 | `system:user:list` 等 |
 | 下载导入模板 | `GET /system/user/import/template` | `system:user:import` |
 | 解析导入数据 | `POST /system/user/import/parse` | `system:user:import` |
-| 导入数据 | `POST /system/user/import` | `system:user:import` |
+| 导入数据 | `POST /system/user/import` | `system:user:import` + `system:user:updateRole` |
 | 重置密码 | `PATCH /system/user/{id}/password` | `system:user:resetPwd` |
 | 分配角色 | `PATCH /system/user/{id}/role` | `system:user:updateRole` |
 
 CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成，例如新增用户对应 `system:user:create`，删除对应 `system:user:delete`。
+
+新增、修改接口本身只要求 `system:user:create` / `system:user:update`。请求体中的 `roleIds` 一旦与用户当前角色不同，会额外校验 `system:user:updateRole`；创建用户必须分配角色，因此同样要求该权限。修改用户时原样回传当前角色不会触发额外校验。
 
 ## 用户字段
 
@@ -41,6 +43,8 @@ CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成
 
 用户名、邮箱、手机号分别带唯一索引，重复时直接报错。邮箱、手机号字段经过 `continew-starter.encrypt.field` 的 AES 字段加密，数据库中保存密文。
 
+修改用户时请求体中的 `password` 会被忽略，导入更新也不会修改已有用户的密码；密码只能通过新增、重置密码或修改密码接口变更。
+
 ## 导入与导出
 
 用户导入分三步走，先下载模板，再解析校验，最后确认导入。
@@ -51,6 +55,8 @@ CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成
   <Step>确认无误后提交导入，`POST /system/user/import` 执行实际写入并返回导入结果。</Step>
 </Steps>
 
+导入会写入用户角色关联，因此 `POST /system/user/import` 同时要求 `system:user:import` 与 `system:user:updateRole`。实际参与导入的行中，角色不能是超级管理员（`super_admin`）或租户管理员（`admin`），否则整批导入会被拒绝。选择「修改数据」策略时，导入只更新昵称、性别、部门、邮箱、手机号、描述与角色，不会修改已有用户的密码和状态；系统内置用户不允许通过导入更新。
+
 导出使用 `GET /system/user/export`，按当前查询条件生成 Excel，基于 FastExcel 实现。
 
 ## 重置密码
@@ -60,6 +66,8 @@ CRUD 接口的权限码由 `BaseController.preHandle` 按 API 类型自动生成
 ## 分配角色
 
 用户与角色为多对多关系，通过 `PATCH /system/user/{id}/role` 整体调整某个用户的角色集合。角色决定用户的功能权限（菜单、按钮）与数据权限，详见[角色管理](./role)。
+
+`UserRoleServiceImpl.assignRolesToUser` 会校验本次提交的 `roleIds`，超级管理员角色与租户管理员角色不允许分配；系统内置用户的角色不允许变更。
 
 <Callout type="warn">
 初始化脚本中 `admin` 用户（`is_system = 1`）与内置角色为系统内置数据，禁止变更与删除，避免把系统的最后入口关掉。
