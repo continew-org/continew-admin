@@ -63,7 +63,7 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 
 | 配置块 | 关键值 |
 |:-------|:-------|
-| `server.undertow` | `max-http-post-size: -1`、`buffer-size: 512`、`io: 8`、`worker: 256` |
+| `server.tomcat` | `max-http-form-post-size: -1`（表单体不限）、`threads.max: 256`；`max-connections`、`accept-count` 保持 Spring Boot 默认 |
 | `spring.servlet.multipart` | `max-file-size: 10MB`、`max-request-size: 20MB`，与分片上传阈值 10MB 配套 |
 | `springdoc` / `nextdoc4j` | 接口文档路径 `/v3/api-docs` 与 `/swagger-ui`，NextDoc4j 增强开启 |
 | `continew-starter.web.response` | `default-success-code: 0`、`default-error-code: 1`，响应类 `top.continew.starter.web.model.R` |
