@@ -13,7 +13,7 @@
     <parent>
         <groupId>top.continew.starter</groupId>
         <artifactId>continew-starter</artifactId>
-        <version>2.17.0</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>top.continew.admin</groupId>
@@ -115,6 +115,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <compilerArgument>-parameters</compilerArgument>
+                    <!-- JDK 23 起 javac 默认不再执行仅存在于 classpath 的注解处理器（Lombok），
+                         构建基线 JDK 25 下需显式开启，否则所有 Lombok 生成的成员都会报 cannot find symbol -->
+                    <proc>full</proc>
                 </configuration>
             </plugin>
             <!-- 单元测试相关插件 -->
