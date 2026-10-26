@@ -38,15 +38,14 @@ import cn.dev33.satoken.servlet.model.SaStorageForServlet;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.feiniaojin.gracefulresponse.api.ResponseStatusFactory;
-import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import top.continew.admin.auth.service.SessionActivityService;
 import top.continew.admin.auth.support.ClientPolicyCache;
 import top.continew.admin.common.context.UserContext;
@@ -111,11 +110,8 @@ class SaExtensionInterceptorTest {
     void shouldClearThreadLocalBefore401ShortCircuit() throws Exception {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn("已强制下线");
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -138,11 +134,8 @@ class SaExtensionInterceptorTest {
     void shouldClearThreadLocalBefore403ShortCircuit() throws Exception {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(true);
@@ -165,11 +158,8 @@ class SaExtensionInterceptorTest {
     void shouldClearThreadLocalInAfterCompletionOnNormalPath() throws Exception {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -191,11 +181,8 @@ class SaExtensionInterceptorTest {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
         when(sessionActivityService.isIdleExpired(any(), anyLong())).thenReturn(true);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -218,11 +205,8 @@ class SaExtensionInterceptorTest {
             2_592_000L));
         saRouter.when(() -> SaRouter.isMatchCurrURI(any(String[].class))).thenReturn(true);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -244,11 +228,8 @@ class SaExtensionInterceptorTest {
     void shouldSkipSelfServiceMatchWhenIdleDisabled() throws Exception {
         when(accessSessionValidator.getInvalidReason("access-token")).thenReturn(null);
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -271,11 +252,8 @@ class SaExtensionInterceptorTest {
         cachedContext.setClientId("client-a");
         stpUtil.when(() -> StpUtil.getExtra("access-token", "clientId")).thenReturn("client-b");
         try (MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class)) {
-            ResponseStatusFactory factory = this.statusFactory();
-            springUtil.when(() -> SpringUtil.getBean(ResponseStatusFactory.class))
-                .thenReturn(factory);
             springUtil.when(() -> SpringUtil.getBean(ObjectMapper.class))
-                .thenReturn(new ObjectMapper());
+                .thenReturn(new JsonMapper());
             try (MockedStatic<TenantContextHolder> tenantHolder = mockStatic(
                 TenantContextHolder.class)) {
                 tenantHolder.when(TenantContextHolder::isTenantEnabled).thenReturn(false);
@@ -289,13 +267,6 @@ class SaExtensionInterceptorTest {
                 verify(sessionActivityService).touch(any(), eq("client-b"));
             }
         }
-    }
-
-    private ResponseStatusFactory statusFactory() {
-        ResponseStatusFactory factory = mock(ResponseStatusFactory.class);
-        when(factory.defaultSuccess()).thenReturn(new DefaultResponseStatus("0", "操作成功"));
-        when(factory.defaultError()).thenReturn(new DefaultResponseStatus("1", "操作失败"));
-        return factory;
     }
 
     private MockHttpServletRequest request(String uri) {

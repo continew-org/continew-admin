@@ -17,7 +17,6 @@
 package top.continew.admin.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -70,7 +69,7 @@ public class LogController {
         return baseService.get(id);
     }
 
-    @ExcludeFromGracefulResponse
+    // 返回类型为 void，直接写入响应流，不会被全局响应包装
     @Operation(summary = "导出登录日志", description = "导出登录日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/login")
@@ -79,7 +78,7 @@ public class LogController {
         baseService.exportLoginLog(query, sortQuery, response);
     }
 
-    @ExcludeFromGracefulResponse
+    // 返回类型为 void，直接写入响应流，不会被全局响应包装
     @Operation(summary = "导出操作日志", description = "导出操作日志")
     @SaCheckPermission("monitor:log:export")
     @GetMapping("/export/operation")

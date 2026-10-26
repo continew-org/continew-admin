@@ -164,8 +164,6 @@ continew-starter.web.response:
   default-error-msg: 服务器异常，请联系管理员
   # 是否将原生异常错误信息填充到状态信息中
   origin-exception-using-detail-message: false
-  # 响应类全名（配置后 response-style 将不再生效）
-  response-class-full-name: top.continew.starter.web.model.R
 
 --- ### 日志配置
 ## API 请求/响应日志配置
