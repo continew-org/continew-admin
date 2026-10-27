@@ -48,7 +48,7 @@
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot3（Java17）、Vue3 & Arco Design & TS & Vite、Sa-Token、MyBatis Plus、Redisson、FastExcel、CosId、JetCache、JustAuth、Crane4j、Spring Doc、Hutool 等。
+当前采用的技术栈：Spring Boot 4（Java17）、Vue3 & Arco Design & TS & Vite、Sa-Token、MyBatis Plus、Redisson、FastExcel、CosId、JetCache、JustAuth、Crane4j、Spring Doc、Hutool 等。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -251,10 +251,10 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a>                                                      | 2.57.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://vite.dev/" target="_blank">Vite</a>                                                                              | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 2.17.0        | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 3.5.16       | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 3.0.0-SNAPSHOT | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 4.1.1        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://tomcat.apache.org/" target="_blank">Tomcat</a>                                                                   | 11.0.24      | 采用 Java 开发的 Servlet 容器，Spring Boot 4 起内置并作为默认 Web 服务器。 |
-| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.45.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
+| <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.46.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a>                                                                  | 3.5.17       | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
 | <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.5.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
 | Hikari                                                                                                                            | 6.2.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
@@ -274,8 +274,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | Easy Captcha                                                                                                                      | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
 | [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)                                                                         | 2.10.0       | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
 | [SpEL Validator](https://spel-validator.sticki.cn/)                                                                               | 0.7.0        | 基于 SpEL 的 jakarta.validation-api 扩展增强包。             |
-| [CosID](https://cosid.ahoo.me/guide/getting-started.html)                                                                         | 2.13.3       | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
-| [Graceful Response](https://doc.feiniaojin.com/graceful-response/home.html)                                                       | 5.0.5-boot3  | 一个Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量。 |
+| [CosID](https://cosid.ahoo.me/guide/getting-started.html)                                                                         | 4.0.2        | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
 | <a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>                                                                | 1.4.1        | 现代化 API 文档 UI 工具，全面替代 Swagger UI。 |
 | [OpenFeign](https://springdoc.cn/spring-cloud-openfeign/)                                                                         | 2025.0.3     | Spring Cloud OpenFeign 是一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程。 |
 | <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.47       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
