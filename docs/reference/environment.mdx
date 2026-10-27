@@ -68,7 +68,7 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 | `springdoc` / `nextdoc4j` | 接口文档路径 `/v3/api-docs` 与 `/swagger-ui`，NextDoc4j 增强开启 |
 | `continew-starter.web.response` | `default-success-code: 0`、`default-error-code: 1`，响应类 `top.continew.starter.web.model.R` |
 | `continew-starter.log` | 记录请求/响应头、请求/响应体、IP、浏览器、OS 等 |
-| `continew-starter.trace` | 链路头 `X-Trace-Id`，日志经 TLog 输出 |
+| `continew-starter.trace` | 链路头 `X-Trace-Id`，日志经 Micrometer Tracing 的 MDC `traceId` 输出 |
 | `continew-starter.tenant` | `isolation-level: LINE`，租户头 `X-Tenant-Id`，默认租户 `0` |
 | `continew-starter.rate-limiter` | 开启，key 前缀 `RateLimiter` |
 | `sa-token` | token 名 `Authorization`，`jwt-secret-key: ${ACCESS_TOKEN_JWT_SECRET}`，持久层 `dao.type: REDIS` |
