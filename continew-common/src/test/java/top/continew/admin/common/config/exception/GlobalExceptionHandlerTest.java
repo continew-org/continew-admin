@@ -17,6 +17,7 @@
 package top.continew.admin.common.config.exception;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,10 +31,13 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -41,6 +45,8 @@ import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.web.annotation.EnableGlobalResponse;
 import top.continew.starter.web.model.R;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Map;
 
 /**
@@ -120,6 +126,17 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    @DisplayName("参数校验异常返回字段提示")
+    void shouldKeepValidationMessage() throws Exception {
+        mockMvc
+            .perform(post("/test/exception/validation").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"\"}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.msg").value("用户名不能为空"));
+    }
+
+    @Test
     @DisplayName("未分类异常仍由 Starter 兜底处理器接管")
     void shouldFallbackToStarterHandler() throws Exception {
         mockMvc
@@ -161,6 +178,19 @@ class GlobalExceptionHandlerTest {
             R unknown() {
                 throw new IllegalStateException("内部细节不应对用户可见");
             }
+
+            @PostMapping("/test/exception/validation")
+            R validation(@Valid @RequestBody ValidationReq req) {
+                return R.ok();
+            }
         }
+    }
+
+    /**
+     * 参数校验请求体
+     *
+     * @param username 用户名
+     */
+    record ValidationReq(@NotBlank(message = "用户名不能为空") String username) {
     }
 }
