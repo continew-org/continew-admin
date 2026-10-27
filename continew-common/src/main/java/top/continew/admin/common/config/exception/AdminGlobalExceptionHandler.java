@@ -45,6 +45,18 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * 全局异常处理器
  *
+ * <p>
+ * 类名（即默认 bean 名 {@code adminGlobalExceptionHandler}）刻意区别于 Starter 的
+ * {@code top.continew.starter.web.autoconfigure.response.GlobalExceptionHandler}：后者由
+ * {@code GlobalResponseAutoConfiguration#globalExceptionHandler} 注册为同名 bean，且启动配置开启了
+ * {@code spring.main.allow-bean-definition-overriding}，同名时本类会被静默覆盖，导致所有业务异常都退化成
+ * 「服务器异常，请联系管理员」。改名前请先确认 Starter 侧不再产生同名 bean。
+ * </p>
+ *
+ * <p>
+ * 保留 {@code @Order(99)}：优先级高于 Starter 兜底处理器的 200，异常类型相同时由本类接管。
+ * </p>
+ *
  * @author Charles7c
  * @author echo
  * @since 3.3.0
@@ -52,7 +64,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Slf4j
 @Order(99)
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class AdminGlobalExceptionHandler {
 
     /**
      * 异常日志模板：[请求方法] 请求路径
