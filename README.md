@@ -4,10 +4,10 @@
 <img src="https://img.shields.io/badge/SNAPSHOT-v5.0.0-%23ff3f59.svg" alt="Current Version" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-2.17.0-%236CB52D.svg" alt="ContiNew Starter" />
+<img src="https://img.shields.io/badge/ContiNew Starter-3.0.0--SNAPSHOT-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" title="Spring Boot" target="_blank">
-<img src="https://img.shields.io/badge/Spring Boot-3.5.16-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
+<img src="https://img.shields.io/badge/Spring Boot-4.1.1-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
 </a>
 <a href="https://github.com/continew-org/continew-admin" title="Open JDK" target="_blank">
 <img src="https://img.shields.io/badge/Open JDK-17-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
