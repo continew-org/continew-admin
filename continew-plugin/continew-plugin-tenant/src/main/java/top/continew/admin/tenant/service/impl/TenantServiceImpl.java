@@ -123,8 +123,10 @@ public class TenantServiceImpl extends
 
     @Override
     public void afterUpdate(TenantReq req, TenantDO entity) {
+        // 租户域名/编码可变更，需同时清 L2 与各节点 L1，否则旧域名会继续解析到本租户
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(TenantCacheConstants.TENANT_KEY_PREFIX);
         this.invalidateSessions(entity.getId());
     }
 
