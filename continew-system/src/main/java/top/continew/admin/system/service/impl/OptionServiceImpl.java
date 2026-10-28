@@ -21,9 +21,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.enums.OptionCategoryEnum;
@@ -35,6 +35,7 @@ import top.continew.admin.system.model.req.OptionReq;
 import top.continew.admin.system.model.req.OptionValueResetReq;
 import top.continew.admin.system.model.resp.OptionResp;
 import top.continew.admin.system.service.OptionService;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
@@ -66,7 +67,8 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    @Cached(key = "#category", name = CacheConstants.OPTION_KEY_PREFIX + "MAP:")
+    @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX + "MAP:", key = "#category.name()",
+        unless = "#result == null")
     public Map<String, String> getByCategory(OptionCategoryEnum category) {
         return baseMapper.selectByCategory(category.name())
             .stream()
@@ -105,13 +107,12 @@ public class OptionServiceImpl implements OptionService {
             PasswordPolicyEnum passwordPolicy = PasswordPolicyEnum.valueOf(code);
             passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyOptionMap);
         }
-        RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
         baseMapper.updateById(BeanUtil.copyToList(options, OptionDO.class));
+        this.clearCache();
     }
 
     @Override
     public void resetValue(OptionValueResetReq req) {
-        RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
         String category = req.getCategory();
         List<String> codeList = req.getCode();
         ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codeList), "键列表不能为空");
@@ -123,6 +124,21 @@ public class OptionServiceImpl implements OptionService {
             updateWrapper.in(OptionDO::getCode, req.getCode());
         }
         updateWrapper.update();
+        this.clearCache();
+    }
+
+    /**
+     * 清除参数缓存
+     *
+     * <p>
+     * 参数值（OPTION:{code}）由 RedisUtils 直接写入，多级缓存则需按 cacheName 清理才能同步失效各节点 L1；
+     * 两者共用 OPTION: 前缀，需一并清理。
+     * </p>
+     */
+    private void clearCache() {
+        RedisUtils.deleteByPattern(CacheConstants.OPTION_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.OPTION_KEY_PREFIX);
+        CacheUtils.evictAll(CacheConstants.OPTION_KEY_PREFIX + "MAP:");
     }
 
     @Override

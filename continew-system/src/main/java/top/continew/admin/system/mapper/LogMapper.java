@@ -16,13 +16,11 @@
 
 package top.continew.admin.system.mapper;
 
-import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.system.model.entity.LogDO;
 import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp;
@@ -87,7 +85,6 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @param months 近 N 月月份列表
      * @return 仪表盘 PV 近 N 月各月份信息
      */
-    @Cached(key = "#months[0]", name = CacheConstants.DASHBOARD_KEY_PREFIX + "PV:")
     List<DashboardChartCommonResp> selectListDashboardAnalysisPv(
         @Param("months") List<String> months);
 
@@ -97,7 +94,6 @@ public interface LogMapper extends BaseMapper<LogDO> {
      * @param months 近 N 月月份列表
      * @return 仪表盘 IP 近 N 月各月份信息
      */
-    @Cached(key = "#months[0]", name = CacheConstants.DASHBOARD_KEY_PREFIX + "IP:")
     List<DashboardChartCommonResp> selectListDashboardAnalysisIp(
         @Param("months") List<String> months);
 

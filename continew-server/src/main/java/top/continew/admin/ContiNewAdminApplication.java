@@ -21,7 +21,6 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.net.NetUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.alicp.jetcache.anno.config.EnableMethodCache;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +59,6 @@ import top.nextdoc4j.core.configuration.NextDoc4jProperties;
 @EnableGlobalResponse
 @EnableFeignClients
 @MapperScan(basePackages = {"top.continew.admin.**.mapper"})
-@EnableMethodCache(basePackages = {"top.continew.admin"})
 public class ContiNewAdminApplication implements ApplicationRunner {
 
     private final ApplicationProperties applicationProperties;

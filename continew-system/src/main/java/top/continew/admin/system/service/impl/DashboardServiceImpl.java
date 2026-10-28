@@ -25,6 +25,7 @@ import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.model.resp.dashboard.DashboardAccessTrendResp;
@@ -33,6 +34,7 @@ import top.continew.admin.system.model.resp.dashboard.DashboardNoticeResp;
 import top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp;
 import top.continew.admin.system.service.DashboardService;
 import top.continew.admin.system.service.NoticeService;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
 
@@ -78,8 +80,9 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewPv();
         resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList =
-            logMapper.selectListDashboardAnalysisPv(last12MonthList);
+        List<DashboardChartCommonResp> dataList = CacheUtils.get(CacheConstants.DASHBOARD_KEY_PREFIX
+            + "PV:", last12MonthList.get(0),
+            () -> logMapper.selectListDashboardAnalysisPv(last12MonthList));
         if (dataList.size() < 12) {
             // 填充缺失的数据
             this.fillMissingDateData(last12MonthList, dataList);
@@ -93,8 +96,9 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewIp();
         resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList =
-            logMapper.selectListDashboardAnalysisIp(last12MonthList);
+        List<DashboardChartCommonResp> dataList = CacheUtils.get(CacheConstants.DASHBOARD_KEY_PREFIX
+            + "IP:", last12MonthList.get(0),
+            () -> logMapper.selectListDashboardAnalysisIp(last12MonthList));
         if (dataList.size() < 12) {
             // 填充缺失的数据
             this.fillMissingDateData(last12MonthList, dataList);
