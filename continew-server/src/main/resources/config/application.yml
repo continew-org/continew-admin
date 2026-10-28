@@ -393,7 +393,8 @@ auth:
     presence-window: 5m
   ## 密码配置
   password:
-    # 密码过期后仍放行的路径（用于让过期用户能自助修改密码）
+    # 过期与闲置两类判定共用的自助通道路径：密码过期用户可继续访问以自助改密，
+    # 闲置失效判定同样豁免这些路径。见 SaExtensionInterceptor 闲置判定。
     excludes:
       - /auth/user/route
       - /auth/user/info
