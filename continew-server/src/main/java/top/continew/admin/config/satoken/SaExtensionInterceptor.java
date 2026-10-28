@@ -107,6 +107,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
             String clientId = this.resolveClientId(tokenValue, userContext);
             long idleTimeoutSeconds = clientPolicyCache.get(clientId).idleTimeoutSeconds();
             // 自助通道（改密、拉路由、取用户信息）不参与闲置判定，但仍记录活跃；阈值 0 直接短路。
+            // 路径清单与密码过期放行共用（auth.password.excludes），维护时两者天然同步。
             boolean selfServicePath =
                 idleTimeoutSeconds > 0
                     && SaRouter.isMatchCurrURI(loginPasswordProperties.getExcludes());

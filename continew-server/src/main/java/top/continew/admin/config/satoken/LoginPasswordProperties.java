@@ -32,7 +32,11 @@ import org.springframework.stereotype.Component;
 public class LoginPasswordProperties {
 
     /**
-     * 排除（放行）路径配置
+     * 过期与闲置两类判定共用的自助通道路径
+     *
+     * <p>密码过期拦截（SaTokenConfiguration）与闲置失效判定（SaExtensionInterceptor）
+     * 共用本清单：自助请求要求完整凭据，放行不放大风险。增删路径时两类用户同时生效；
+     * 闲置豁免需覆盖全部密码豁免路径，否则密码过期且闲置的用户无法完成自助操作。</p>
      */
     private String[] excludes = new String[0];
 }
