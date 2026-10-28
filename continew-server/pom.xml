@@ -59,6 +59,12 @@
             </exclusions>
         </dependency>
 
+        <!-- Micrometer Tracing Brave 桥接实现（Boot 4 的 spring-boot-micrometer-tracing-brave 只提供自动装配，桥接实现不再传递引入，版本由 Spring Boot BOM 管理） -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
         <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
         <dependency>
             <groupId>org.liquibase</groupId>

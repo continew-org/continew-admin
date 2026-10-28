@@ -20,8 +20,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +39,7 @@ import top.continew.admin.system.model.req.MenuReq;
 import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.MenuService;
 import top.continew.admin.system.service.RoleService;
-import top.continew.starter.cache.redisson.util.RedisUtils;
-import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.query.SortQuery;
@@ -88,7 +87,7 @@ public class MenuServiceImpl
         if (MenuTypeEnum.DIR.equals(req.getType())) {
             req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
         }
-        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
         return super.create(req);
     }
 
@@ -102,7 +101,7 @@ public class MenuServiceImpl
         MenuDO oldMenu = super.getById(id);
         CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
         super.update(req, id);
-        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
     @Override
@@ -111,7 +110,7 @@ public class MenuServiceImpl
         // 级联删除菜单（包含子菜单）
         List<Long> allDeleteIdList = this.listCascadingDeleteMenuIds(ids);
         baseMapper.deleteByIds(allDeleteIdList);
-        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
     @Override
@@ -120,7 +119,8 @@ public class MenuServiceImpl
     }
 
     @Override
-    @Cached(key = "#roleId", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
+    @Cacheable(cacheNames = CacheConstants.ROLE_MENU_KEY_PREFIX, key = "#roleId",
+        unless = "#result == null")
     public List<MenuResp> listByRoleId(Long roleId) {
         if (SystemConstants.SUPER_ADMIN_ROLE_ID.equals(roleId)) {
             return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);

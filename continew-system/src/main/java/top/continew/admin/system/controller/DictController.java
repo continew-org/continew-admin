@@ -28,7 +28,7 @@ import top.continew.admin.system.model.query.DictQuery;
 import top.continew.admin.system.model.req.DictReq;
 import top.continew.admin.system.model.resp.DictResp;
 import top.continew.admin.system.service.DictService;
-import top.continew.starter.cache.redisson.util.RedisUtils;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 
@@ -49,6 +49,6 @@ public class DictController
     @SaCheckPermission("system:dict:clearCache")
     @DeleteMapping("/cache/{code}")
     public void clearCache(@PathVariable String code) {
-        RedisUtils.deleteByPattern(CacheConstants.DICT_KEY_PREFIX + code);
+        CacheUtils.evict(CacheConstants.DICT_KEY_PREFIX, code);
     }
 }

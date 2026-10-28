@@ -16,9 +16,8 @@
 
 package top.continew.admin.system.api;
 
-import com.alicp.jetcache.anno.CacheType;
-import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.api.system.UserApi;
 import top.continew.admin.common.constant.CacheConstants;
@@ -40,8 +39,8 @@ public class UserApiImpl implements UserApi {
     private final UserMapper baseMapper;
 
     @Override
-    @Cached(key = "#id", name = CacheConstants.USER_KEY_PREFIX, cacheType = CacheType.BOTH,
-        syncLocal = true)
+    @Cacheable(cacheNames = CacheConstants.USER_KEY_PREFIX, key = "#id",
+        unless = "#result == null")
     public String getNicknameById(Long id) {
         return baseMapper.selectNicknameById(id);
     }

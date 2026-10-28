@@ -12,9 +12,9 @@ description: 讲解字典数据在后端的存储与缓存机制，以及前端 
 业务查询走 `GET /system/common/dict/{code}`（`CommonController`），返回 `[{ label, value, extra }]` 结构的列表，`extra` 是字典项颜色，用于标签渲染。这个接口有两级加速。
 
 - **枚举字典优先**：`DictItemServiceImpl` 启动时扫描实现了 `BaseEnum` 的枚举类，按「类名转下划线小写」生成字典编码（如 `NoticeStatusEnum` → `notice_status_enum`），缓存进内存 Map。查询时先查这个 Map，命中就不查数据库。
-- **数据库字典走 JetCache**：`DictItemMapper.listByDictCode` 上有 `@Cached(key = "#dictCode", name = "DICT:")` 注解，查询结果进 Redis 二级缓存。
+- **数据库字典走多级缓存**：`DictItemServiceImpl.listByDictCode` 通过 `CacheUtils.get("DICT:", dictCode, ...)` 编程式缓存，结果同时进 Caffeine（L1）与 Redis（L2）。
 
-字典项增删改时（`DictItemServiceImpl.beforeCreate` / `beforeUpdate` 等）按 `DICT:*` 模式清缓存。改了枚举类或者想强制刷新某个字典，可以调 `DELETE /system/dict/cache/{code}`（需要 `system:dict:clearCache` 权限）。
+字典项增删改时（`DictItemServiceImpl.beforeCreate` / `beforeUpdate` 等）按 cacheName 清空 `DICT:` 缓存，L1 与 L2 一并失效并向集群广播。改了枚举类或者想强制刷新某个字典，可以调 `DELETE /system/dict/cache/{code}`（需要 `system:dict:clearCache` 权限）。
 
 <Callout type="info">
 数据库字典与枚举字典编码冲突时枚举优先。自定义枚举想暴露成字典，实现 `BaseEnum` 接口即可，启动时自动注册，编码规则是类名转下划线小写。
@@ -92,6 +92,6 @@ const queryFormColumns: ColumnItem[] = [
 
 - [src/hooks/app/useDict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/hooks/app/useDict.ts)：前端字典 hook
 - [src/stores/modules/dict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/dict.ts)：字典内存缓存 store
-- [DictItemServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/DictItemServiceImpl.java)：枚举字典扫描与缓存清理
-- [DictItemMapper.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/mapper/DictItemMapper.java)：JetCache 注解的数据库字典查询
+- [DictItemServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/DictItemServiceImpl.java)：枚举字典扫描、数据库字典的多级缓存与缓存清理
+- [DictItemMapper.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/mapper/DictItemMapper.java)：数据库字典查询（缓存由 Service 层承担）
 - [src/views/system/notice/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/system/notice/index.vue)：多字典混用的完整页面示例

@@ -45,8 +45,8 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - Crane4j 数据填充组件：减少因单个字段（如用户名）而产生的联表查询；
 - SpEL Validator：基于 SpEL 表达式的参数校验，强化复杂场景下的参数验证（如：当某字段为特定值时，另一字段不能为空）；
 - P6Spy SQL 性能分析：开发期间可方便地监控 SQL 执行性能；
-- TLog 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
-- JetCache 缓存框架：通过注解即可实现方法级缓存，支持灵活的二级缓存配置和分布式自动刷新。
+- Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
+- 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新。
 
 ## 7. Almost 最佳后端规范
 

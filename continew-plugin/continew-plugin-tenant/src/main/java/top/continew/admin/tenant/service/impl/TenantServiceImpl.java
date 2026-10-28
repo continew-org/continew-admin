@@ -19,9 +19,9 @@ package top.continew.admin.tenant.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.alicp.jetcache.anno.Cached;
 import lombok.RequiredArgsConstructor;
 import me.ahoo.cosid.provider.IdGeneratorProvider;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.api.system.RoleApi;
@@ -46,6 +46,7 @@ import top.continew.admin.tenant.service.PackageService;
 import top.continew.admin.tenant.service.TenantService;
 import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.starter.auth.refresh.token.support.TenantArgumentPolicyLockTargetResolver;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.validation.CheckUtils;
@@ -122,8 +123,10 @@ public class TenantServiceImpl extends
 
     @Override
     public void afterUpdate(TenantReq req, TenantDO entity) {
+        // 租户域名/编码可变更，需同时清 L2 与各节点 L1，否则旧域名会继续解析到本租户
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(TenantCacheConstants.TENANT_KEY_PREFIX);
         this.invalidateSessions(entity.getId());
     }
 
@@ -137,12 +140,15 @@ public class TenantServiceImpl extends
 
     @Override
     public void afterDelete(List<Long> ids) {
+        // 租户详情（TENANT:{id}）由 RedisUtils 直接写入，租户 ID 缓存则由多级缓存托管，两者需一并清理
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(TenantCacheConstants.TENANT_KEY_PREFIX);
     }
 
     @Override
-    @Cached(name = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#domain")
+    @Cacheable(cacheNames = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#domain",
+        unless = "#result == null")
     public Long getIdByDomain(String domain) {
         return baseMapper.lambdaQuery()
             .select(TenantDO::getId)
@@ -153,7 +159,8 @@ public class TenantServiceImpl extends
     }
 
     @Override
-    @Cached(name = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#code")
+    @Cacheable(cacheNames = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#code",
+        unless = "#result == null")
     public Long getIdByCode(String code) {
         return baseMapper.lambdaQuery()
             .select(TenantDO::getId)
@@ -202,7 +209,7 @@ public class TenantServiceImpl extends
             roleApi.updateUserContext(roleId);
         }));
         // 删除缓存
-        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
     @Override
