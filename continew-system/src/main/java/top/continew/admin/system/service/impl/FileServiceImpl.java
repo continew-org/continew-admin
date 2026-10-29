@@ -184,6 +184,20 @@ public class FileServiceImpl
         // 需与新建入口做同样的路径穿越校验，避免通过修改接口改写出存储根目录之外的路径
         StoragePathValidator.validate(req.getParentPath());
         StoragePathValidator.validateName(req.getOriginalName());
+        // 修改上级目录只会改写记录中的路径，并不会搬运存储中的实体文件，改完即失效，故拒绝实际变更；
+        // null 表示未提交该字段（如仅重命名），空白值则视为要改到根目录，同样需要参与比较
+        if (req.getParentPath() != null) {
+            String targetParentPath = StoragePathValidator.normalizeParentPath(req.getParentPath());
+            // TODO 此处与基类 update 各查一次 getById，如后续基类支持回传实体可合并为一次
+            FileDO existFile = this.getById(id);
+            if (existFile != null) {
+                CheckUtils
+                    .throwIf(!StoragePathValidator.isSameParentPath(targetParentPath, existFile
+                        .getParentPath()), "暂不支持移动文件或文件夹");
+            }
+            // 统一根目录表示，避免空白值被写入记录后又按另一种形式拼出路径
+            req.setParentPath(targetParentPath);
+        }
     }
 
     @Override
@@ -308,10 +322,8 @@ public class FileServiceImpl
         // 创建父级目录
         this.createParentDir(parentPath, storage);
 
-        // 生成唯一文件名（处理重名情况）
-        String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
-                .getId(), baseMapper);
+        // 落盘文件名使用唯一 ID（扩展名不变），原始文件名仅作为展示名，避免同名文件互相覆盖
+        String storedFileName = FileNameGenerator.generateStoredName(originalFileName);
         String sha256 = calculateSha256(file);
         String normalizedUploadTaskId = StrUtil.emptyToNull(StrUtil.trim(uploadTaskId));
         long totalBytes = this.getFileSize(file);
@@ -323,7 +335,7 @@ public class FileServiceImpl
         UploadPretreatment uploadPretreatment = fileStorageService.of(normalizeUploadSource(file))
             .platform(storage.getCode())
             .path(this.pretreatmentPath(parentPath))
-            .fileName(uniqueFileName)
+            .fileName(storedFileName)
             .metadata("sha256", sha256)
             .metadata("storageCode", storage.getCode())
             .metadata("storageId", String.valueOf(storage.getId()));
@@ -332,8 +344,8 @@ public class FileServiceImpl
             uploadPretreatment.thumbnail(100, 100);
         }
         uploadPretreatment.onProgress((progressSize, allSize, percentage) -> {
-            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", uniqueFileName, progressSize, allSize,
-                percentage);
+            log.info("文件 [{}] 已上传 [{}]，总大小 [{}]，进度 [{}%]", originalFileName, progressSize,
+                allSize, percentage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 FileUploadProgressStatusEnum status =
                     (allSize > 0 && progressSize >= allSize) || percentage >= 100
@@ -345,9 +357,9 @@ public class FileServiceImpl
         });
         try {
             // 上传
-            log.info("开始上传文件: {}", uniqueFileName);
+            log.info("开始上传文件: {}", originalFileName);
             FileInfo fileInfo = uploadPretreatment.upload();
-            log.info("文件 [{}] 上传完成", uniqueFileName);
+            log.info("文件 [{}] 上传完成", originalFileName);
             FileInfo result = this.postProcessUploadResult(fileInfo, storage);
             if (StrUtil.isNotBlank(normalizedUploadTaskId)) {
                 long completedSize = result.getSize() == null ? totalBytes : result.getSize();
