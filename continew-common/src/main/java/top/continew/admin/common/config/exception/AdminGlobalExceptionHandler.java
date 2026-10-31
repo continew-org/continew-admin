@@ -18,7 +18,6 @@ package top.continew.admin.common.config.exception;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.Order;
@@ -33,6 +32,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import tools.jackson.databind.exc.InvalidFormatException;
 import top.continew.admin.common.exception.PasswordExpiredException;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BadRequestException;
@@ -46,15 +46,18 @@ import jakarta.servlet.http.HttpServletRequest;
  * 全局异常处理器
  *
  * <p>
- * 类名（即默认 bean 名 {@code adminGlobalExceptionHandler}）刻意区别于 Starter 的
- * {@code top.continew.starter.web.autoconfigure.response.GlobalExceptionHandler}：后者由
- * {@code GlobalResponseAutoConfiguration#globalExceptionHandler} 注册为同名 bean，且启动配置开启了
- * {@code spring.main.allow-bean-definition-overriding}，同名时本类会被静默覆盖，导致所有业务异常都退化成
- * 「服务器异常，请联系管理员」。改名前请先确认 Starter 侧不再产生同名 bean。
+ * 本类覆盖 Starter 的全局兜底处理器，两个机制缺一不可：
  * </p>
- *
  * <p>
- * 保留 {@code @Order(99)}：优先级高于 Starter 兜底处理器的 200，异常类型相同时由本类接管。
+ * 1. bean 名解耦：本类 bean 名（默认 {@code adminGlobalExceptionHandler}）必须区别于 Starter 的
+ * {@code top.continew.starter.web.autoconfigure.response.GlobalExceptionHandler}（由
+ * {@code GlobalResponseAutoConfiguration} 注册），启动配置开启了
+ * {@code spring.main.allow-bean-definition-overriding}，同名时本类会被 Starter 定义静默覆盖，
+ * 导致所有业务异常都退化成「服务器异常，请联系管理员」。
+ * </p>
+ * <p>
+ * 2. {@code @Order(99)} 优先于 Starter 兜底处理器的 200：该优先级只在两者声明了相同异常类型时
+ * 决定由哪个 handler 接管，不参与异常类型本身的匹配。
  * </p>
  *
  * @author Charles7c
@@ -221,7 +224,8 @@ public class AdminGlobalExceptionHandler {
         HttpServletRequest request) {
         log.warn(LOG_CLIENT_ERROR_TEMPLATE, request.getMethod(), request.getRequestURI(), e
             .getMessage());
-        // @RequestBody 实体内参数类型不匹配
+        // Jackson 3 反序列化参数类型不匹配时抛 InvalidFormatException，Spring MVC 将其包装为
+        // HttpMessageNotReadableException 且 cause 链保留原始异常，据此还原出出错的具体取值
         if (e.getCause() instanceof InvalidFormatException invalidFormatException) {
             return R.fail(String.valueOf(HttpStatus.BAD_REQUEST.value()), "参数 '%s' 类型不匹配"
                 .formatted(invalidFormatException.getValue()));

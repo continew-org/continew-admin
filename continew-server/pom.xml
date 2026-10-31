@@ -65,10 +65,10 @@
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
         </dependency>
 
-        <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
+        <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化；Boot 4 起自动配置拆分至独立模块，starter 负责引入 liquibase-core 与自动配置） -->
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
         </dependency>
 
         <dependency>

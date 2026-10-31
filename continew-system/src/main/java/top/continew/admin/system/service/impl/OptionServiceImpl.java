@@ -131,8 +131,12 @@ public class OptionServiceImpl implements OptionService {
      * 清除参数缓存
      *
      * <p>
-     * 参数值（OPTION:{code}）由 RedisUtils 直接写入，多级缓存则需按 cacheName 清理才能同步失效各节点 L1；
-     * 两者共用 OPTION: 前缀，需一并清理。
+     * 参数数据分布在三个位置：参数值（OPTION:{code}）由 RedisUtils 直接写入 Redis；
+     * 公共列表（SITE/TENANT，system CommonController 的 @Cacheable）挂在 cacheName
+     * {@code OPTION:} 下；分类参数 Map（{@link #getByCategory}）挂在 cacheName
+     * {@code OPTION:MAP:} 下。多级缓存的 cacheName 按名称精确匹配、不做前缀递归，
+     * 两个 cacheName 必须各自显式 {@code evictAll} 才能同步失效各节点 L1；
+     * Redis 侧的 L2 则由 {@code deleteByPattern} 统一清理。
      * </p>
      */
     private void clearCache() {

@@ -21,7 +21,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 import me.ahoo.cosid.provider.IdGeneratorProvider;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.api.system.RoleApi;
@@ -56,6 +55,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * 租户业务实现
@@ -147,27 +147,48 @@ public class TenantServiceImpl extends
     }
 
     @Override
-    @Cacheable(cacheNames = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#domain",
-        unless = "#result == null")
     public Long getIdByDomain(String domain) {
-        return baseMapper.lambdaQuery()
+        return this.getCachedId(domain, () -> baseMapper.lambdaQuery()
             .select(TenantDO::getId)
             .eq(TenantDO::getDomain, domain)
             .oneOpt()
             .map(TenantDO::getId)
-            .orElse(null);
+            .orElse(null));
     }
 
     @Override
-    @Cacheable(cacheNames = TenantCacheConstants.TENANT_KEY_PREFIX, key = "#code",
-        unless = "#result == null")
     public Long getIdByCode(String code) {
-        return baseMapper.lambdaQuery()
+        return this.getCachedId(code, () -> baseMapper.lambdaQuery()
             .select(TenantDO::getId)
             .eq(TenantDO::getCode, code)
             .oneOpt()
             .map(TenantDO::getId)
-            .orElse(null);
+            .orElse(null));
+    }
+
+    /**
+     * 带多级缓存的租户 ID 查询
+     *
+     * <p>
+     * 缓存值以 String 形式存取：L2 的 JSON 反序列化会把 int 取值范围内的数字还原为 Integer，
+     * 直接缓存 Long 会在缓存命中时发生 ClassCastException，以 String 形式往返可保证类型精确。
+     * 查询结果为 null 时不写缓存，与 {@code @Cacheable} 的 unless 语义一致。
+     * </p>
+     *
+     * @param key    缓存键（域名或编码）
+     * @param loader 回源查询
+     * @return 租户 ID（不存在时为 null）
+     */
+    private Long getCachedId(String key, Supplier<Long> loader) {
+        String cachedId = CacheUtils.get(TenantCacheConstants.TENANT_KEY_PREFIX, key);
+        if (cachedId != null) {
+            return Long.valueOf(cachedId);
+        }
+        Long id = loader.get();
+        if (id != null) {
+            CacheUtils.put(TenantCacheConstants.TENANT_KEY_PREFIX, key, String.valueOf(id));
+        }
+        return id;
     }
 
     @Override
