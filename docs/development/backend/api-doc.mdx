@@ -51,7 +51,7 @@ CRUD 接口的权限码不需要手写注解也能出现在文档里。`NextDoc4
 
 ## 全局响应结构
 
-`GlobalSpringDocResponseOperationCustomizer` 把每个接口的响应类型在文档层改写为 `R<T>` 包装（`code`、`data`、`msg`、`success`、`timestamp`），与 Graceful Response 运行时包装保持一致。文档里看到的响应结构就是前端实际收到的结构，`void` 返回的方法展示为 `R<Void>`。
+`GlobalSpringDocResponseOperationCustomizer` 把每个接口的响应类型在文档层改写为 `R<T>` 包装（`code`、`data`、`msg`、`success`、`timestamp`），与 Starter 全局响应的运行时包装保持一致。文档里看到的响应结构就是前端实际收到的结构，`void` 返回的方法展示为 `R<Void>`。
 
 ## 常用注解
 

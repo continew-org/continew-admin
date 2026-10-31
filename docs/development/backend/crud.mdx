@@ -132,7 +132,7 @@ public void resetPassword(@RequestBody @Valid UserPasswordResetReq req, @PathVar
 
 ## 重写 CRUD 接口
 
-要改某个内置接口的行为，在控制器里声明同名方法覆盖 `AbstractCrudController` 的实现。重写方法上标注了 `@SaCheckPermission` 或 `@SaCheckRole` 时，`preHandle` 的自动校验照常执行（权限码仍按路径推导），接口文档侧则跳过 CRUD 自动推导、展示手写注解，见 [接口文档](./api-doc)。`EXPORT` 接口返回文件流，`AbstractCrudController.export` 上的 `@ExcludeFromGracefulResponse` 让响应绕过全局包装，重写导出方法时保留这个注解。
+要改某个内置接口的行为，在控制器里声明同名方法覆盖 `AbstractCrudController` 的实现。重写方法上标注了 `@SaCheckPermission` 或 `@SaCheckRole` 时，`preHandle` 的自动校验照常执行（权限码仍按路径推导），接口文档侧则跳过 CRUD 自动推导、展示手写注解，见 [接口文档](./api-doc)。`EXPORT` 接口返回文件流，`AbstractCrudController.export` 上的 `@ExcludeFromGlobalResponse` 让响应绕过全局包装，重写导出方法时保留这个注解。
 
 ## 完整参考实现
 

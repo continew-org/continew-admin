@@ -19,7 +19,7 @@ ContiNew Admin 后端基于 Spring Boot 3.5.16（Java 17），脚手架能力由
 
 ### 全局响应
 
-Controller 直接返回业务对象，Graceful Response（5.0.5-boot3）在出口统一包装为 `top.continew.starter.web.model.R`，字段为 `code`、`data`、`msg`、`success`、`timestamp`。成功码 `0`、失败码 `1`、错误时 HTTP 状态码仍为 200，这些默认值由 `application.yml` 的 `continew-starter.web.response` 配置块固定。导出文件等需要绕过包装的场景，在方法上加 `@ExcludeFromGracefulResponse`（`AbstractCrudController` 的 `export` 方法即如此）。前端约定见 [请求封装](/docs/admin/development/frontend/request)。
+Controller 直接返回业务对象，Starter 全局响应（`GlobalResponseBodyAdvice`）在出口统一包装为 `top.continew.starter.web.model.R`，字段为 `code`、`data`、`msg`、`success`、`timestamp`。成功码 `0`、失败码 `1`、错误时 HTTP 状态码仍为 200，这些默认值由 `application.yml` 的 `continew-starter.web.response` 配置块固定。导出文件等需要绕过包装的场景，在方法上加 `@ExcludeFromGlobalResponse`（`AbstractCrudController` 的 `export` 方法即如此）。前端约定见 [请求封装](/docs/admin/development/frontend/request)。
 
 ## 专题导航
 
