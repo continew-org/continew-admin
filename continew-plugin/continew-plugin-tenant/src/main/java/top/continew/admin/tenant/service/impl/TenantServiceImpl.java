@@ -177,6 +177,8 @@ public class TenantServiceImpl extends
      * @param loader 回源查询
      * @return 租户 ID（不存在时为 null）
      */
+    // S4276：loader 需以 null 表示「租户不存在」，无法换成原生 LongSupplier
+    @SuppressWarnings("java:S4276")
     private Long getCachedId(String key, Supplier<Long> loader) {
         Long cachedId = CacheUtils.get(TenantCacheConstants.TENANT_KEY_PREFIX, key);
         if (cachedId != null) {

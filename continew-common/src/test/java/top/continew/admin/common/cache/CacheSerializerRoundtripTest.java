@@ -155,13 +155,11 @@ class CacheSerializerRoundtripTest {
     @Test
     void longWithinIntRangeKeepsLong() {
         Object smallLong = serializerPair.read(serializerPair.write(Long.valueOf(1L)));
-        assertThat(smallLong).isInstanceOf(Long.class);
-        assertThat(smallLong).isEqualTo(1L);
+        assertThat(smallLong).isInstanceOf(Long.class).isEqualTo(1L);
 
         Object maxLong = serializerPair.read(serializerPair.write(Long
             .valueOf(Integer.MAX_VALUE)));
-        assertThat(maxLong).isInstanceOf(Long.class);
-        assertThat(maxLong).isEqualTo((long) Integer.MAX_VALUE);
+        assertThat(maxLong).isInstanceOf(Long.class).isEqualTo((long) Integer.MAX_VALUE);
     }
 
     /**
@@ -170,8 +168,7 @@ class CacheSerializerRoundtripTest {
     @Test
     void snowflakeLongRoundtripKeepsLong() {
         Object result = serializerPair.read(serializerPair.write(SNOWFLAKE_ID));
-        assertThat(result).isInstanceOf(Long.class);
-        assertThat(result).isEqualTo(SNOWFLAKE_ID);
+        assertThat(result).isInstanceOf(Long.class).isEqualTo(SNOWFLAKE_ID);
     }
 
     /**
@@ -215,12 +212,10 @@ class CacheSerializerRoundtripTest {
     @Test
     void flexibleBigNumberModeRoundtripKeepsLong() {
         Object rootSmall = flexiblePair.read(flexiblePair.write(Long.valueOf(1L)));
-        assertThat(rootSmall).isInstanceOf(Long.class);
-        assertThat(rootSmall).isEqualTo(1L);
+        assertThat(rootSmall).isInstanceOf(Long.class).isEqualTo(1L);
 
         Object rootSnowflake = flexiblePair.read(flexiblePair.write(SNOWFLAKE_ID));
-        assertThat(rootSnowflake).isInstanceOf(Long.class);
-        assertThat(rootSnowflake).isEqualTo(SNOWFLAKE_ID);
+        assertThat(rootSnowflake).isInstanceOf(Long.class).isEqualTo(SNOWFLAKE_ID);
 
         Object nestedSnowflake = flexiblePair.read(flexiblePair.write(new ArrayList<>(List
             .of(SNOWFLAKE_ID))));
