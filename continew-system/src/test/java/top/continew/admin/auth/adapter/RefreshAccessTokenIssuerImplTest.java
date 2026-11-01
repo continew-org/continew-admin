@@ -90,8 +90,9 @@ class RefreshAccessTokenIssuerImplTest {
     void shouldRejectWhenClientMissing() {
         when(clientService.getByClientId(CLIENT_ID)).thenReturn(null);
 
+        RefreshSession session = this.session(System.currentTimeMillis());
         RefreshTokenException exception = assertThrows(RefreshTokenException.class,
-            () -> issuer.issue(this.session(System.currentTimeMillis()), request, response));
+            () -> issuer.issue(session, request, response));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
         assertEquals(INVALID_MESSAGE, exception.getMessage());
@@ -102,8 +103,9 @@ class RefreshAccessTokenIssuerImplTest {
         when(clientService.getByClientId(CLIENT_ID))
             .thenReturn(this.client(0L, DisEnableStatusEnum.DISABLE));
 
+        RefreshSession session = this.session(System.currentTimeMillis());
         RefreshTokenException exception = assertThrows(RefreshTokenException.class,
-            () -> issuer.issue(this.session(System.currentTimeMillis()), request, response));
+            () -> issuer.issue(session, request, response));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
         assertEquals(INVALID_MESSAGE, exception.getMessage());
@@ -116,8 +118,9 @@ class RefreshAccessTokenIssuerImplTest {
         when(sessionActivityService.getLastActiveTime(SESSION_ID))
             .thenReturn(System.currentTimeMillis() - 120_000L);
 
+        RefreshSession session = this.session(System.currentTimeMillis());
         RefreshTokenException exception = assertThrows(RefreshTokenException.class,
-            () -> issuer.issue(this.session(System.currentTimeMillis()), request, response));
+            () -> issuer.issue(session, request, response));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
         assertEquals(IDLE_MESSAGE, exception.getMessage());
@@ -152,8 +155,9 @@ class RefreshAccessTokenIssuerImplTest {
         // 活跃键被淘汰（如 Redis maxmemory）时没有活跃记录，按会话创建时间兜底
         when(sessionActivityService.getLastActiveTime(SESSION_ID)).thenReturn(null);
 
-        RefreshTokenException exception = assertThrows(RefreshTokenException.class, () -> issuer
-            .issue(this.session(System.currentTimeMillis() - 120_000L), request, response));
+        RefreshSession session = this.session(System.currentTimeMillis() - 120_000L);
+        RefreshTokenException exception = assertThrows(RefreshTokenException.class,
+            () -> issuer.issue(session, request, response));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
         assertEquals(IDLE_MESSAGE, exception.getMessage());
@@ -199,8 +203,9 @@ class RefreshAccessTokenIssuerImplTest {
             .thenReturn(this.client(0L, DisEnableStatusEnum.ENABLE));
         doThrow(new BusinessException("租户已停用")).when(tenantApi).checkStatus(TENANT_ID);
 
+        RefreshSession session = this.session(System.currentTimeMillis());
         RefreshTokenException exception = assertThrows(RefreshTokenException.class,
-            () -> issuer.issue(this.session(System.currentTimeMillis()), request, response));
+            () -> issuer.issue(session, request, response));
 
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
         assertEquals("租户已停用", exception.getMessage());
@@ -213,8 +218,9 @@ class RefreshAccessTokenIssuerImplTest {
         when(userService.getById(USER_ID)).thenReturn(null);
 
         try (MockedStatic<TenantUtils> tenantUtils = this.tenantUtils()) {
-            RefreshTokenException exception = assertThrows(RefreshTokenException.class, () -> issuer
-                .issue(this.session(System.currentTimeMillis()), request, response));
+            RefreshSession session = this.session(System.currentTimeMillis());
+            RefreshTokenException exception = assertThrows(RefreshTokenException.class,
+                () -> issuer.issue(session, request, response));
 
             assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
             assertEquals(INVALID_MESSAGE, exception.getMessage());

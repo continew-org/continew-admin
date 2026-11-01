@@ -175,7 +175,8 @@ public class UserContext implements Serializable {
         if (expireTime.isBefore(now)) {
             return 0;
         }
-        long minutes = Duration.between(now, expireTime).toMinutes();
+        long minutes = Duration.between(now.atZone(GlobalConstants.DEFAULT_ZONE_ID),
+            expireTime.atZone(GlobalConstants.DEFAULT_ZONE_ID)).toMinutes();
         return Math.max(1, (int) Math.ceil(minutes / (double) MINUTES_PER_DAY));
     }
 
