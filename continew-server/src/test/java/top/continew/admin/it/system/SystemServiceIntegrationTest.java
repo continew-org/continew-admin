@@ -133,7 +133,7 @@ class SystemServiceIntegrationTest extends BaseIntegrationTest {
             userDO.setDeptId(1L);
             userMapper.insert(userDO);
 
-            // 库中密文证据与 ORM 解密读回同处一个租户上下文内完成
+            // 库中密文校验与 ORM 解密读回在同一租户上下文内完成
             dbPhoneRef.set(jdbcTemplate.queryForObject(
                 "SELECT phone FROM sys_user WHERE username = ?", String.class, probeUsername));
             ormPhoneRef.set(userService.getByUsername(probeUsername).getPhone());

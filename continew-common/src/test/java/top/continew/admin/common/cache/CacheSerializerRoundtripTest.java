@@ -65,8 +65,8 @@ class CacheSerializerRoundtripTest {
     static void initSerializer() {
         // 默认 mapper 对应未启用大数值序列化模式的生产配置
         serializerPair = newPair(JsonMapper.builder().build());
-        // FLEXIBLE 模式对应生产 spring.jackson.big-number-serialize-mode=FLEXIBLE 的容器 mapper，
-        // 此处复刻 starter JacksonAutoConfiguration#bigNumberModule 的 FLEXIBLE 分支
+        // FLEXIBLE 模式复刻 starter JacksonAutoConfiguration#bigNumberModule 的对应分支，
+        // 构造与生产配置 spring.jackson.big-number-serialize-mode=FLEXIBLE 一致的容器 mapper
         SimpleModule bigNumberModule = new SimpleModule();
         bigNumberModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
         bigNumberModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
@@ -113,8 +113,8 @@ class CacheSerializerRoundtripTest {
      * <p>
      * 依据：写侧以 Object 声明（RootTypedWriter），根值与嵌套元素携带多态类型标记，
      * List.of/Stream.toList 产物不再缺失类型信息，缓存命中可正确反序列化。
-     * 读侧对集合统一以可变实现承载（JDK 不可变集合无反序列化构造器），断言聚焦元素类型
-     * 恢复而非集合实现；元素强转失败即代表类型标记丢失，回归旧缺陷。
+    * 读侧对集合统一以可变实现承载（JDK 不可变集合无反序列化构造器），断言聚焦元素类型
+    * 恢复而非集合实现；元素强转失败即代表类型标记丢失。
      * </p>
      */
     @Test

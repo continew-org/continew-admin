@@ -53,9 +53,9 @@ import java.util.Map;
  * 全局异常处理器回归测试。
  *
  * <p>
- * 回归：Starter 3.0 的 {@code globalExceptionHandler} 与 Admin 同名处理器在 bean 定义层面冲突，
- * Starter 的兜底处理器覆盖了 Admin 的处理器，导致所有业务异常都被改写成「服务器异常，请联系管理员」。
- * 这里用真实组件扫描 + Starter 自动配置复现同名冲突，断言业务异常仍返回自身文案。
+ * Starter 3.0 的 {@code globalExceptionHandler} 与 Admin 同名处理器在 bean 定义层面冲突，
+ * Starter 的兜底处理器会覆盖 Admin 的处理器，导致所有业务异常都被改写成「服务器异常，请联系管理员」。
+ * 测试以真实组件扫描与 Starter 自动配置复现同名冲突，断言业务异常仍返回自身文案。
  * </p>
  *
  * @author Charles7c

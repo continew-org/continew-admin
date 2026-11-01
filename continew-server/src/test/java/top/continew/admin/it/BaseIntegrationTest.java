@@ -36,7 +36,7 @@ import org.testcontainers.utility.DockerImageName;
  * </p>
  * <p>
  * 容器不使用 {@code @Container} 注解管理（该注解会在每个测试类结束后停止容器，破坏
- * singleton 复用），改由 {@link #startContainers()} 在首个测试类启动，JVM 退出后由
+ * singleton 复用），由 {@link #startContainers()} 在首个测试类启动，JVM 退出后由
  * Ryuk 守护容器自动回收。测试上下文沿用 dev 配置（凭据均为仓库内声明的开发示例值），
  * 仅覆盖容器相关的数据源与 Redis 连接项。
  * </p>
