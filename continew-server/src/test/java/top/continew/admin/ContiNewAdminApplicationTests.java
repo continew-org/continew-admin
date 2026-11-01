@@ -17,10 +17,20 @@
 package top.continew.admin;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import top.continew.admin.it.BaseIntegrationTest;
 
-@SpringBootTest
-class ContiNewAdminApplicationTests {
+/**
+ * 上下文加载测试
+ *
+ * <p>
+ * 验证 Spring Boot 4 + 多级缓存 + Redisson + Sa-Token + CosID + Crane4j 全链路装配，
+ * 以及 Liquibase 数据库结构初始化；依赖真实 MySQL/Redis 容器，无 Docker 环境自动跳过。
+ * </p>
+ *
+ * @author Charles7c
+ * @since 5.0.0
+ */
+class ContiNewAdminApplicationTests extends BaseIntegrationTest {
 
     @Test
     void contextLoads() {
