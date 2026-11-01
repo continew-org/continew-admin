@@ -18,12 +18,12 @@ package top.continew.admin.system.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.util.StrUtil;
-import com.alicp.jetcache.anno.Cached;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,7 +107,8 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询系统配置参数", description = "查询系统配置参数")
     @GetMapping("/dict/option/site")
-    @Cached(key = "'SITE'", name = CacheConstants.OPTION_KEY_PREFIX)
+    @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX, key = "'SITE'",
+        unless = "#result == null")
     public List<LabelValueResp<String>> listSiteOptionDict() {
         OptionQuery optionQuery = new OptionQuery();
         optionQuery.setCategory(OptionCategoryEnum.SITE.name());
@@ -123,7 +124,8 @@ public class CommonController {
     @SaIgnore
     @Operation(summary = "查询租户开启状态", description = "查询租户开启状态")
     @GetMapping("/dict/option/tenant")
-    @Cached(key = "'TENANT'", name = CacheConstants.OPTION_KEY_PREFIX)
+    @Cacheable(cacheNames = CacheConstants.OPTION_KEY_PREFIX, key = "'TENANT'",
+        unless = "#result == null")
     public Boolean tenantEnabled() {
         return TenantContextHolder.isTenantEnabled();
     }

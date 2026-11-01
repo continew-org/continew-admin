@@ -70,7 +70,7 @@ public class SessionActivityServiceImpl implements SessionActivityService {
     /**
      * 本地记录视为陈旧的时长（毫秒）
      */
-    private static final long STALE_MILLIS = 10 * 60_000;
+    private static final long STALE_MILLIS = 10 * 60_000L;
 
     /**
      * 缓存键的最小存活时间（秒）
@@ -129,15 +129,7 @@ public class SessionActivityServiceImpl implements SessionActivityService {
 
     @Override
     public Map<String, Long> getLastActiveTimes(Collection<String> sessionIds) {
-        if (sessionIds == null || sessionIds.isEmpty()) {
-            return Collections.emptyMap();
-        }
-        List<String> validIds = new ArrayList<>(sessionIds.size());
-        for (String sessionId : sessionIds) {
-            if (StrUtil.isNotBlank(sessionId)) {
-                validIds.add(sessionId);
-            }
-        }
+        List<String> validIds = this.filterValidIds(sessionIds);
         if (validIds.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -147,24 +139,54 @@ public class SessionActivityServiceImpl implements SessionActivityService {
         for (int from = 0; from < validIds.size(); from += BATCH_SIZE) {
             List<String> chunk = validIds.subList(from, Math.min(from + BATCH_SIZE, validIds
                 .size()));
-            try {
-                RBatch batch = RedisUtils.getClient().createBatch();
-                for (String sessionId : chunk) {
-                    batch.getBucket(this.key(sessionId)).getAsync();
-                }
-                List<?> responses = batch.execute().getResponses();
-                for (int i = 0; i < chunk.size() && i < responses.size(); i++) {
-                    Long lastActive = this.parse(responses.get(i));
-                    if (lastActive != null) {
-                        result.put(chunk.get(i), lastActive);
-                    }
-                }
-            } catch (Exception e) {
-                // 读不到活跃时间只会让列表回退为「按最近刷新时间估算」，不能影响列表本身。
-                log.warn("批量查询会话活跃时间失败（偏移 {}）：{}", from, e.getMessage());
-            }
+            this.fetchChunk(chunk, from, result);
         }
         return result;
+    }
+
+    /**
+     * 过滤空白会话 ID
+     *
+     * @param sessionIds 会话 ID 集合，可为 null
+     * @return 非空白会话 ID 列表
+     */
+    private List<String> filterValidIds(Collection<String> sessionIds) {
+        if (sessionIds == null || sessionIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<String> validIds = new ArrayList<>(sessionIds.size());
+        for (String sessionId : sessionIds) {
+            if (StrUtil.isNotBlank(sessionId)) {
+                validIds.add(sessionId);
+            }
+        }
+        return validIds;
+    }
+
+    /**
+     * 批量读取一批会话的活跃时间并合并入结果，单批失败只丢这一批的数据
+     *
+     * @param chunk 一批会话 ID
+     * @param from  本批在全集中的起始偏移（用于失败日志定位）
+     * @param result 活跃时间结果集
+     */
+    private void fetchChunk(List<String> chunk, int from, Map<String, Long> result) {
+        try {
+            RBatch batch = RedisUtils.getClient().createBatch();
+            for (String sessionId : chunk) {
+                batch.getBucket(this.key(sessionId)).getAsync();
+            }
+            List<?> responses = batch.execute().getResponses();
+            for (int i = 0; i < chunk.size() && i < responses.size(); i++) {
+                Long lastActive = this.parse(responses.get(i));
+                if (lastActive != null) {
+                    result.put(chunk.get(i), lastActive);
+                }
+            }
+        } catch (Exception e) {
+            // 读不到活跃时间只会让列表回退为「按最近刷新时间估算」，不能影响列表本身。
+            log.warn("批量查询会话活跃时间失败（偏移 {}）：{}", from, e.getMessage());
+        }
     }
 
     @Override

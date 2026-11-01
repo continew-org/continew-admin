@@ -31,7 +31,7 @@ public class LoginLogExportResp implements Serializable {
 
 ### 手动导出
 
-不走 CRUD 套件的场景直接调 `ExcelUtils.export(list, fileName, clazz, response)`，或五参重载自定义 sheet 名与排除字段。Controller 方法返回 `void` 并标注 `@ExcludeFromGracefulResponse`，防止文件流被全局响应包装污染。
+不走 CRUD 套件的场景直接调 `ExcelUtils.export(list, fileName, clazz, response)`，或五参重载自定义 sheet 名与排除字段。Controller 方法返回 `void` 并标注 `@ExcludeFromGlobalResponse`（`top.continew.starter.web.annotation`），防止文件流被全局响应包装污染。
 
 ## 字典转换
 

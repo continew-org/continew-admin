@@ -59,15 +59,43 @@
             </exclusions>
         </dependency>
 
-        <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化） -->
+        <!-- Micrometer Tracing Brave 桥接实现（Boot 4 的 spring-boot-micrometer-tracing-brave 只提供自动装配，桥接实现不再传递引入，版本由 Spring Boot BOM 管理） -->
         <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
+        <!-- Liquibase（用于管理数据库版本，跟踪、管理和应用数据库变化；Boot 4 起自动配置拆分至独立模块，starter 负责引入 liquibase-core 与自动配置） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers 集成测试（仅测试期使用；版本由 parent 依赖链的 spring-boot-dependencies 管理，不声明版本号） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -94,18 +122,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 本模块的纯单元测试（拦截器线程本地清理、在线用户）需在 CI 中实际运行；
-                 Spring 上下文测试（ContiNewAdminApplicationTests）依赖 MySQL/Redis，继续排除 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                    <excludes>
-                        <exclude>**/ContiNewAdminApplicationTests.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
+            <!-- 纯单元测试与 Testcontainers 集成测试均随默认 surefire 配置执行，无需排除 -->
         </plugins>
     </build>
 

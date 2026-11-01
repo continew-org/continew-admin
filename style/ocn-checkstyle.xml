@@ -112,7 +112,8 @@
         <!-- The rule became stricter in Checkstyle 11.0, enable it when refactoring javadoc -->
         <!--<module name="JavadocParagraph"/>-->
         <module name="NonEmptyAtclauseDescription">
-            <property name="javadocTokens" value="PARAM_LITERAL"/>
+            <!-- Checkstyle 14 将 javadoc token 由 PARAM_LITERAL 更名为 PARAM_BLOCK_TAG -->
+            <property name="javadocTokens" value="PARAM_BLOCK_TAG"/>
         </module>
         
         <!-- Coding Checker -->

@@ -31,7 +31,7 @@ jobs:
           docker run --rm
           --memory=6g --cpus=4
           -v "$PWD":/ws -v /root/.m2:/root/.m2 -w /ws
-          maven:3.9-eclipse-temurin-17
+          maven:3.9-eclipse-temurin-25
           ./mvnw -B package
       # 3、同步到服务器部署目录（runner 与部署机同机，本地 rsync 即可）
       #    lib/ 与 bin/ 为纯构建产物，用 --delete 清理升级后遗留的旧依赖/旧 jar，

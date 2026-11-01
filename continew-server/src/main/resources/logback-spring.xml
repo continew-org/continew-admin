@@ -16,10 +16,11 @@
     <!-- 字符集 -->
     <property name="LOG_CHARSET" value="utf-8"/>
     <!-- 格式化输出：%d 表示日期；%thread 表示线程名；%-5level：级别从左显示 5 个字符宽度；%msg：日志消息；%n 是换行符 -->
+    <!-- 链路 ID：Micrometer Tracing 将当前 Span 的 traceId/spanId 写入 MDC，无链路上下文时（如启动阶段）留空 -->
     <!-- 控制台输出格式（带颜色） -->
-    <property name="CONSOLE_LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %green([%thread]) %boldMagenta(%logger{50}) - %msg%n"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %green([%thread]) %boldMagenta([%X{traceId:-}]) %boldMagenta(%logger{50}) - %msg%n"/>
     <!-- 文件输出格式 -->
-    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{50} - %msg%n"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [%X{traceId:-}] %logger{50} - %msg%n"/>
     <!-- 单个日志文件大小上限 -->
     <property name="FILE_MAX_SIZE" value="20MB"/>
 
@@ -27,7 +28,7 @@
     <springProfile name="dev">
         <!-- 输出日志到控制台 -->
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                 <pattern>${CONSOLE_LOG_PATTERN}</pattern>
                 <charset>${LOG_CHARSET}</charset>
             </encoder>
@@ -46,7 +47,7 @@
 
         <!-- 输出日志到控制台（不带颜色） -->
         <appender name="CONSOLE_PROD" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                 <pattern>${FILE_LOG_PATTERN}</pattern>
                 <charset>${LOG_CHARSET}</charset>
             </encoder>
@@ -65,14 +66,14 @@
                 <!-- 日志保留天数 -->
                 <maxHistory>${FILE_MAX_HISTORY}</maxHistory>
             </rollingPolicy>
-            <encoder class="com.yomahub.tlog.core.enhance.logback.AspectLogbackEncoder">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                 <pattern>${FILE_LOG_PATTERN}</pattern>
                 <charset>${LOG_CHARSET}</charset>
             </encoder>
         </appender>
 
         <!-- 输出日志到文件（异步） -->
-        <appender name="ASYNC_FILE" class="com.yomahub.tlog.core.enhance.logback.async.AspectLogbackAsyncAppender">
+        <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
             <!-- 不丢失日志，默认：如果队列的 80% 已满，则会丢弃 TRACT、DEBUG、INFO 级别的日志 -->
             <discardingThreshold>0</discardingThreshold>
             <!-- 更改默认的队列的深度，该值会影响性能，默认：256 -->

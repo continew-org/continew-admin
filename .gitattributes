@@ -1,0 +1,5 @@
+# 统一行尾：文本文件统一 LF 存储、LF 检出（Spotless 期望与仓库存储一致）
+* text=auto eol=lf
+# Windows 脚本必须 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf

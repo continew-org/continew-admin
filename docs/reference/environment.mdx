@@ -63,12 +63,12 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 
 | 配置块 | 关键值 |
 |:-------|:-------|
-| `server.undertow` | `max-http-post-size: -1`、`buffer-size: 512`、`io: 8`、`worker: 256` |
+| `server.tomcat` | `max-http-form-post-size: -1`（表单体不限）、`threads.max: 256`；`max-connections`、`accept-count` 保持 Spring Boot 默认 |
 | `spring.servlet.multipart` | `max-file-size: 10MB`、`max-request-size: 20MB`，与分片上传阈值 10MB 配套 |
 | `springdoc` / `nextdoc4j` | 接口文档路径 `/v3/api-docs` 与 `/swagger-ui`，NextDoc4j 增强开启 |
 | `continew-starter.web.response` | `default-success-code: 0`、`default-error-code: 1`，响应类 `top.continew.starter.web.model.R` |
 | `continew-starter.log` | 记录请求/响应头、请求/响应体、IP、浏览器、OS 等 |
-| `continew-starter.trace` | 链路头 `X-Trace-Id`，日志经 TLog 输出 |
+| `continew-starter.trace` | 链路头 `X-Trace-Id`，日志经 Micrometer Tracing 的 MDC `traceId` 输出 |
 | `continew-starter.tenant` | `isolation-level: LINE`，租户头 `X-Tenant-Id`，默认租户 `0` |
 | `continew-starter.rate-limiter` | 开启，key 前缀 `RateLimiter` |
 | `sa-token` | token 名 `Authorization`，`jwt-secret-key: ${ACCESS_TOKEN_JWT_SECRET}`，持久层 `dao.type: REDIS` |
@@ -122,6 +122,23 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 <Callout type="info">
 `VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」里某条客户端记录的 ID 一致，否则登录时会匹配不到客户端策略。默认值对应初始脚本里的 PC 端配置。
 </Callout>
+
+## 从 2.x 升级到 3.0.0
+
+### 清空 Redis 存量键
+
+升级前必须清空（FLUSHDB）Redis 存量键，或等待其自然过期。3.0.0 把 L2 缓存与 Sa-Token 会话的 JSON 编码从 Jackson 2 迁到 Jackson 3，两者对 Long 等类型的编码不兼容（Jackson 2 的 WRAPPER_ARRAY 是主因），存量键在新版本下反序列化失败，表现为缓存命中接口报错、会话状态异常。清库后所有用户需重新登录。
+
+### 链路采样率
+
+Spring Boot 4 的 Micrometer Tracing 默认采样率为 `management.tracing.sampling.probability=0.1`（十采一）。默认值下多数请求的日志不带 `traceId`，生产排障需要全采样时显式配置：
+
+```yaml
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+```
 
 ## 相关源码
 

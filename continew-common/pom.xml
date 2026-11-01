@@ -80,10 +80,10 @@
             <artifactId>continew-starter-storage</artifactId>
         </dependency>
 
-        <!-- ContiNew Starter 缓存模块 - JetCache -->
+        <!-- ContiNew Starter 缓存模块 - 多级缓存（Caffeine L1 + Redis L2） -->
         <dependency>
             <groupId>top.continew.starter</groupId>
-            <artifactId>continew-starter-cache-jetcache</artifactId>
+            <artifactId>continew-starter-cache-multicache</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 认证模块 - SaToken -->

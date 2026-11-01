@@ -30,7 +30,7 @@ import top.continew.admin.system.model.query.MenuQuery;
 import top.continew.admin.system.model.req.MenuReq;
 import top.continew.admin.system.model.resp.MenuResp;
 import top.continew.admin.system.service.MenuService;
-import top.continew.starter.cache.redisson.util.RedisUtils;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.UrlUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
@@ -59,7 +59,7 @@ public class MenuController
     @SaCheckPermission("system:menu:clearCache")
     @DeleteMapping("/cache")
     public void clearCache() {
-        RedisUtils.deleteByPattern(CacheConstants.ROLE_MENU_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
     @Override

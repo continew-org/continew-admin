@@ -18,9 +18,9 @@ package top.continew.admin.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.base.service.BaseServiceImpl;
@@ -153,7 +153,7 @@ public class RoleServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheInvalidate(key = "#id", name = CacheConstants.ROLE_MENU_KEY_PREFIX)
+    @CacheEvict(cacheNames = CacheConstants.ROLE_MENU_KEY_PREFIX, key = "#id")
     public void updatePermission(Long id, RolePermissionUpdateReq req) {
         RoleDO role = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许修改角色功能权限",

@@ -63,7 +63,7 @@ const http: AxiosInstance = axios.create({
 
 `baseURL` 优先取 `VITE_API_PREFIX`（开发环境走 Vite 代理），没有则取 `VITE_API_BASE_URL`（生产环境直连接口域名）。`withCredentials: true` 让跨域请求携带 HttpOnly Cookie，双令牌刷新依赖这一点。
 
-后端统一响应结构由 Graceful Response 封装，形如 `{ "code": 0, "data": ..., "msg": "...", "success": true, "timestamp": ... }`。响应拦截器检查 `success` 字段：`true` 直接放行，`false` 弹出错误提示并 reject。`get` 类请求会自动用 `query-string` 序列化参数，数组参数不会被 axios 默认格式序列化坏。
+后端统一响应结构由 Starter 全局响应封装，形如 `{ "code": 0, "data": ..., "msg": "...", "success": true, "timestamp": ... }`。响应拦截器检查 `success` 字段：`true` 直接放行，`false` 弹出错误提示并 reject。`get` 类请求会自动用 `query-string` 序列化参数，数组参数不会被 axios 默认格式序列化坏。
 
 ## 请求头注入
 

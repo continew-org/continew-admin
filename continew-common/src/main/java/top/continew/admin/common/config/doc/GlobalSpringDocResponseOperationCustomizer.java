@@ -19,7 +19,6 @@ package top.continew.admin.common.config.doc;
 import static org.springdoc.core.converters.ConverterUtils.isResponseTypeWrapper;
 import static org.springdoc.core.utils.SpringDocAnnotationsUtils.extractSchema;
 
-import cn.hutool.core.util.ClassUtil;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.media.Content;
@@ -33,7 +32,7 @@ import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springdoc.core.utils.SpringDocAnnotationsUtils;
 import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
-import top.continew.starter.web.autoconfigure.response.GlobalResponseProperties;
+import top.continew.starter.web.model.R;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -52,18 +51,17 @@ import java.util.Arrays;
 @Component
 public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseService {
 
-    private final GlobalResponseProperties globalResponseProperties;
-    private final Class<Object> responseClass;
+    /**
+     * 统一响应包装类（Starter 3.0 起固定为 R，不再支持配置）
+     */
+    private static final Class<?> RESPONSE_CLASS = R.class;
+
     private final PropertyResolverUtils propertyResolverUtils;
 
     public GlobalSpringDocResponseOperationCustomizer(OperationService operationService,
         SpringDocConfigProperties springDocConfigProperties,
-        PropertyResolverUtils propertyResolverUtils,
-        GlobalResponseProperties globalResponseProperties) {
+        PropertyResolverUtils propertyResolverUtils) {
         super(operationService, springDocConfigProperties, propertyResolverUtils);
-        this.globalResponseProperties = globalResponseProperties;
-        this.responseClass =
-            ClassUtil.loadClass(globalResponseProperties.getResponseClassFullName());
         this.propertyResolverUtils = propertyResolverUtils;
     }
 
@@ -111,8 +109,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      * @return 是否已被包装
      */
     private boolean isAlreadyWrapped(Type returnType) {
-        return returnType.getTypeName()
-            .contains(globalResponseProperties.getResponseClassFullName());
+        return returnType.getTypeName().contains(RESPONSE_CLASS.getName());
     }
 
     /**
@@ -123,9 +120,9 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
      */
     private Type wrapReturnType(Type returnType) {
         if (returnType == void.class || returnType == Void.class) {
-            return TypeUtils.parameterize(responseClass, Void.class);
+            return TypeUtils.parameterize(RESPONSE_CLASS, Void.class);
         }
-        return TypeUtils.parameterize(responseClass, returnType);
+        return TypeUtils.parameterize(RESPONSE_CLASS, returnType);
     }
 
     /**

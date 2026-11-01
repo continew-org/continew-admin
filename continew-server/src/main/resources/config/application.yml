@@ -24,20 +24,15 @@ server:
   servlet:
     # 应用访问路径
     context-path: /
-  ## Undertow 服务器配置
-  undertow:
-    # HTTP POST 请求内容的大小上限（默认 -1，不限制）
-    max-http-post-size: -1
-    # 以下的配置会影响 buffer，这些 buffer 会用于服务器连接的 IO 操作，有点类似 Netty 的池化内存管理
-    # 每块 buffer的空间大小（越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可）
-    buffer-size: 512
-    # 是否分配的直接内存（NIO 直接分配的堆外内存）
-    direct-buffers: true
+  ## Tomcat 服务器配置
+  tomcat:
+    # HTTP POST 表单请求内容的大小上限（默认 2MB，-1 不限制）
+    max-http-form-post-size: -1
     threads:
-      # 设置 IO 线程数，它主要执行非阻塞的任务，它们会负责多个连接（默认每个 CPU 核心一个线程）
-      io: 8
-      # 阻塞任务线程池，当执行类似 Servlet 请求阻塞操作，Undertow 会从这个线程池中取得线程（它的值设置取决于系统的负载）
-      worker: 256
+      # 最大工作线程数（默认 200）
+      max: 256
+    # 连接承载能力不在此显式配置：沿用 Spring Boot 默认 max-connections: 8192、
+    # accept-count: 100。缓冲区由连接器与 max-swallow-size（默认 2MB）管理。
 
 --- ### Spring 项目配置
 spring:
@@ -164,8 +159,6 @@ continew-starter.web.response:
   default-error-msg: 服务器异常，请联系管理员
   # 是否将原生异常错误信息填充到状态信息中
   origin-exception-using-detail-message: false
-  # 响应类全名（配置后 response-style 将不再生效）
-  response-class-full-name: top.continew.starter.web.model.R
 
 --- ### 日志配置
 ## API 请求/响应日志配置
@@ -189,11 +182,6 @@ logging:
 continew-starter.trace:
   enabled: true
   trace-id-name: X-Trace-Id
-  ## TLog 配置
-  tlog:
-    enable-invoke-time-print: false
-    pattern: '[$spanId][$traceId]'
-    mdc-enable: false
 
 --- ### CRUD 配置
 continew-starter.crud:

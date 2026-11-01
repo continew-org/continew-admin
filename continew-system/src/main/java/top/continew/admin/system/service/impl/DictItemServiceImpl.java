@@ -31,9 +31,8 @@ import top.continew.admin.system.model.query.DictItemQuery;
 import top.continew.admin.system.model.req.DictItemReq;
 import top.continew.admin.system.model.resp.DictItemResp;
 import top.continew.admin.system.service.DictItemService;
-import top.continew.starter.cache.redisson.util.RedisUtils;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
-import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
@@ -42,7 +41,6 @@ import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,19 +64,23 @@ public class DictItemServiceImpl extends
     @Override
     public void beforeCreate(DictItemReq req) {
         this.checkValueRepeat(req.getValue(), null, req.getDictId());
-        RedisUtils.deleteByPattern(CacheConstants.DICT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override
     public void beforeUpdate(DictItemReq req, Long id) {
         this.checkValueRepeat(req.getValue(), id, req.getDictId());
-        RedisUtils.deleteByPattern(CacheConstants.DICT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override
     public List<LabelValueResp> listByDictCode(String dictCode) {
-        return Optional.ofNullable(ENUM_DICT_CACHE.get(dictCode.toLowerCase()))
-            .orElseGet(() -> baseMapper.listByDictCode(dictCode));
+        List<LabelValueResp> enumDict = ENUM_DICT_CACHE.get(dictCode.toLowerCase());
+        if (enumDict != null) {
+            return enumDict;
+        }
+        return CacheUtils.get(CacheConstants.DICT_KEY_PREFIX, dictCode,
+            () -> baseMapper.listByDictCode(dictCode));
     }
 
     @Override
@@ -87,7 +89,7 @@ public class DictItemServiceImpl extends
             return;
         }
         baseMapper.lambdaUpdate().in(DictItemDO::getDictId, dictIds).remove();
-        RedisUtils.deleteByPattern(CacheConstants.DICT_KEY_PREFIX + StringConstants.ASTERISK);
+        CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override

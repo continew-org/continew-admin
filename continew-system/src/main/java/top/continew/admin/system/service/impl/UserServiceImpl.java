@@ -38,8 +38,6 @@ import cn.hutool.extra.validation.ValidationUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
 import cn.idev.excel.EasyExcel;
-import com.alicp.jetcache.anno.CacheInvalidate;
-import com.alicp.jetcache.anno.CacheUpdate;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -51,6 +49,7 @@ import me.ahoo.cosid.IdGenerator;
 import me.ahoo.cosid.provider.DefaultIdGeneratorProvider;
 import net.dreamlu.mica.core.result.R;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,6 +90,7 @@ import top.continew.admin.system.service.UserService;
 import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.auth.refresh.token.api.AuthPolicyWriteLocked;
 import top.continew.starter.auth.refresh.token.support.UserArgumentPolicyLockTargetResolver;
+import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
@@ -190,7 +190,7 @@ public class UserServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
+    @CacheEvict(cacheNames = CacheConstants.USER_KEY_PREFIX, key = "#id")
     @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void update(UserReq req, Long id) {
         this.checkUsernameRepeat(req.getUsername(), id);
@@ -231,7 +231,6 @@ public class UserServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @CacheInvalidate(key = "#ids", name = CacheConstants.USER_KEY_PREFIX, multi = true)
     @AuthPolicyWriteLocked(UserArgumentPolicyLockTargetResolver.class)
     public void delete(List<Long> ids) {
         CheckUtils.throwIf(CollUtil.contains(ids, UserContextHolder.getUserId()), "不允许删除当前用户");
@@ -255,6 +254,8 @@ public class UserServiceImpl
         userSocialService.deleteByUserIds(ids);
         // 删除用户
         super.delete(ids);
+        // 清除用户昵称缓存（逐个失效以广播各节点 L1）
+        ids.forEach(id -> CacheUtils.evict(CacheConstants.USER_KEY_PREFIX, id));
         // 踢出在线用户
         ids.forEach(onlineUserService::kickOut);
     }
@@ -459,7 +460,7 @@ public class UserServiceImpl
     }
 
     @Override
-    @CacheUpdate(key = "#id", value = "#req.nickname", name = CacheConstants.USER_KEY_PREFIX)
+    @CacheEvict(cacheNames = CacheConstants.USER_KEY_PREFIX, key = "#id")
     public void updateBasicInfo(UserBasicInfoUpdateReq req, Long id) {
         super.getById(id);
         baseMapper.lambdaUpdate()

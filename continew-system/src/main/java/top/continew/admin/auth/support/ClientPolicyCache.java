@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 客户端认证策略本地缓存
@@ -54,9 +55,11 @@ public class ClientPolicyCache {
 
     private final ClientMapper clientMapper;
 
-    private volatile Map<String, ClientPolicy> policies = Collections.emptyMap();
-
-    private volatile long expireAt;
+    /**
+     * 当前策略快照（策略映射 + 过期时刻），整体原子替换，读侧无锁
+     */
+    private final AtomicReference<Snapshot> snapshotRef =
+        new AtomicReference<>(new Snapshot(Collections.emptyMap(), 0L));
 
     /**
      * 查询客户端认证策略
@@ -82,23 +85,26 @@ public class ClientPolicyCache {
 
     private Map<String, ClientPolicy> snapshot() {
         long now = System.currentTimeMillis();
-        if (now < this.expireAt) {
-            return this.policies;
+        Snapshot current = this.snapshotRef.get();
+        if (now < current.expireAt()) {
+            return current.policies();
         }
         synchronized (this) {
-            if (now < this.expireAt) {
-                return this.policies;
+            current = this.snapshotRef.get();
+            if (now < current.expireAt()) {
+                return current.policies();
             }
+            Map<String, ClientPolicy> policies = current.policies();
             try {
-                this.policies = this.load();
+                policies = this.load();
             } catch (Exception e) {
                 // 数据库抖动时沿用上一次快照，宁可短暂使用旧策略，也不要让认证链路整体失败。
                 log.warn("加载客户端认证策略失败，沿用上一次缓存：{}", e.getMessage());
             } finally {
                 // 失败也要退避一个周期：否则数据库异常期间每个请求都会重试查询一次。
-                this.expireAt = now + EXPIRE_MILLIS;
+                this.snapshotRef.set(new Snapshot(policies, now + EXPIRE_MILLIS));
             }
-            return this.policies;
+            return policies;
         }
     }
 
@@ -135,5 +141,14 @@ public class ClientPolicyCache {
          * 默认策略：不限闲置失效
          */
         public static final ClientPolicy DEFAULT = new ClientPolicy(0L, DEFAULT_REFRESH_TIMEOUT);
+    }
+
+    /**
+     * 策略快照
+     *
+     * @param policies 客户端 ID 与认证策略的映射（不可变）
+     * @param expireAt 快照过期时刻（epoch 毫秒）
+     */
+    private record Snapshot(Map<String, ClientPolicy> policies, long expireAt) {
     }
 }
