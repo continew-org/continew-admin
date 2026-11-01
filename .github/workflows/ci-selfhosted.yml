@@ -1,0 +1,54 @@
+name: CI (self-hosted)
+
+# self-hosted 硬件不得执行来自 fork 的不可信代码，仅响应受信分支推送与手动触发，
+# 不声明 pull_request 触发；外部贡献与 fork PR 的门禁由云端 CI 工作流承担
+on:
+  push:
+    branches:
+      - dev
+      - 'feat/**'
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 与 Deploy Server 同机执行，排队避免资源互撞；构建不可中途取消，避免依赖目录与
+# 容器状态残留在半完成态
+concurrency:
+  group: ci-selfhosted
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Build and verify (self-hosted)
+    runs-on: self-hosted
+    timeout-minutes: 45
+    env:
+      # 使用宿主机已安装的 JDK 25（starter 3.0.0 构建基线），self-hosted 无需重复下载
+      JAVA_HOME: /opt/jdk-25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build and verify
+        # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) ->
+        # 编译 -> 单元测试与 Testcontainers 集成测试 (test) -> SpotBugs (verify)；
+        # 复用宿主机 Maven 仓库缓存，构建对象为 runner 检出的代码而非开发工作区
+        run: ./mvnw -B -Dmaven.repo.local=/mnt/data/workspace/.mvn-repo verify
+      - name: Archive surefire reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: surefire-reports
+          path: '**/target/surefire-reports/**'
+          retention-days: 14
+      - name: Print failed tests
+        if: failure()
+        run: |
+          for f in $(find . -path '*/target/surefire-reports/*.xml' ! -name '*.txt'); do
+            if grep -q -E '<(failure|error)' "$f"; then
+              echo "===== $f ====="
+              grep -E '<testcase|<(failure|error)' "$f" | head -20
+            fi
+          done
