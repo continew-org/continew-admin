@@ -49,7 +49,6 @@ import top.continew.starter.storage.domain.model.resp.FileInfo;
 
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,15 +112,12 @@ public class CommonController {
     public List<LabelValueResp<String>> listSiteOptionDict() {
         OptionQuery optionQuery = new OptionQuery();
         optionQuery.setCategory(OptionCategoryEnum.SITE.name());
-        // 返回值会进入多级缓存（@Cacheable），必须使用可变集合：
-        // Stream.toList()/List.of() 等不可变集合经 L2 JSON 反序列化时缺少 @class 类型标记，
-        // 缓存命中阶段会抛 SerializationException
-        return new ArrayList<>(optionService.list(optionQuery)
+        return optionService.list(optionQuery)
             .stream()
             .map(option -> new LabelValueResp<>(option.getCode(),
                 StrUtil.nullToDefault(option.getValue(), option
                     .getDefaultValue())))
-            .toList());
+            .toList();
     }
 
     @TenantIgnore

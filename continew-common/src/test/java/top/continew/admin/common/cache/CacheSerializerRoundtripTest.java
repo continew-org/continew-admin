@@ -17,17 +17,17 @@
 package top.continew.admin.common.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer;
-import org.springframework.data.redis.serializer.SerializationException;
+import org.springframework.boot.cache.autoconfigure.CacheProperties;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.databind.module.SimpleModule;
+import top.continew.starter.cache.springcache.autoconfigure.SpringCacheAutoConfiguration;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
+import top.continew.starter.json.jackson.serializer.BigNumberSerializer;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,14 +38,16 @@ import java.util.stream.Stream;
  * 缓存值 JSON 序列化往返测试
  *
  * <p>
- * 复刻 starter SpringCacheAutoConfiguration 的 L2 序列化器配置
- * （GenericJacksonJsonRedisSerializer + enableDefaultTyping），固化多级缓存命中路径的取值约定：
+ * 直接调用 starter SpringCacheAutoConfiguration 的生产 Bean 构造（含 RootTypedWriter），
+ * 避免手工复刻序列化器配置与生产漂移，固化多级缓存 L2 命中路径的取值约定：
  * </p>
  * <ul>
- * <li>进入缓存的集合必须是可变集合（ArrayList/HashMap），不可变集合（List.of/Map.of/
- * Stream.toList 产物）序列化后不带 {@code @class} 类型标记，缓存命中反序列化必然失败；</li>
- * <li>int 取值范围内的 Long 反序列化退化为 Integer，长整型值（如各表主键）必须以 String
- * 形式缓存、读取处显式转回 Long。</li>
+ * <li>写侧固定以 Object 为声明类型，根值携带多态类型标记（WRAPPER_ARRAY 形态），
+ * 与读取侧对称；不可变集合（List.of/Stream.toList 产物）与不可变 Map 均可正确往返，
+ * 业务元素类型经类型标记恢复；</li>
+ * <li>Long 根值往返类型保持，int 取值范围内不再退化为 Integer；</li>
+ * <li>生产启用大数值序列化模式 FLEXIBLE（spring.jackson.big-number-serialize-mode）时，
+ * 超出 JS 安全范围的 Long 以字符串形态写入，读侧仍恢复为 Long，嵌套元素同样保持。</li>
  * </ul>
  *
  * @author Charles7c
@@ -55,17 +57,32 @@ class CacheSerializerRoundtripTest {
 
     private static final Long SNOWFLAKE_ID = 547889293968801822L;
 
-    private static GenericJacksonJsonRedisSerializer serializer;
+    private static RedisSerializationContext.SerializationPair<Object> serializerPair;
+
+    private static RedisSerializationContext.SerializationPair<Object> flexiblePair;
 
     @BeforeAll
     static void initSerializer() {
-        // 与 starter SpringCacheAutoConfiguration#redisCacheConfiguration 保持同一构造方式
-        JsonMapper mapper = JsonMapper.builder().build();
-        serializer = GenericJacksonJsonRedisSerializer.builder(mapper::rebuild)
-            .enableDefaultTyping(BasicPolymorphicTypeValidator.builder()
-                .allowIfBaseType(Object.class)
-                .build())
-            .build();
+        // 默认 mapper 对应未启用大数值序列化模式的生产配置
+        serializerPair = newPair(JsonMapper.builder().build());
+        // FLEXIBLE 模式对应生产 spring.jackson.big-number-serialize-mode=FLEXIBLE 的容器 mapper，
+        // 此处复刻 starter JacksonAutoConfiguration#bigNumberModule 的 FLEXIBLE 分支
+        SimpleModule bigNumberModule = new SimpleModule();
+        bigNumberModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+        bigNumberModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
+        flexiblePair = newPair(JsonMapper.builder().addModule(bigNumberModule).build());
+    }
+
+    /**
+     * 以 starter 生产 Bean 构造 L2 值序列化对
+     *
+     * @param mapper 容器 mapper
+     * @return 值序列化对
+     */
+    private static RedisSerializationContext.SerializationPair<Object> newPair(JsonMapper mapper) {
+        return new SpringCacheAutoConfiguration(mapper)
+            .redisCacheConfiguration(new CacheProperties())
+            .getValueSerializationPair();
     }
 
     /**
@@ -77,7 +94,7 @@ class CacheSerializerRoundtripTest {
         list.add(new LabelValueResp<>("k1", "v1"));
         list.add(new LabelValueResp<>("k2", null));
 
-        Object result = serializer.deserialize(serializer.serialize(list));
+        Object result = serializerPair.read(serializerPair.write(list));
 
         assertThat(result).isInstanceOf(ArrayList.class);
         List<?> resultList = (List<?>) result;
@@ -91,58 +108,68 @@ class CacheSerializerRoundtripTest {
     }
 
     /**
-     * 不可变集合序列化后不带 {@code @class} 类型标记，命中反序列化抛出 SerializationException
+     * 不可变集合（List.of/Stream.toList 产物）携带业务对象往返后元素类型与取值恢复
      *
      * <p>
-     * 依据：List.of/Stream.toList 产物序列化为纯 JSON 数组 {@code ["x","y"]}，缺失类型标记后
-     * 反序列化无法把元素解析为 java.lang.Object 的子类型。业务方法返回值进入缓存前必须转为可变集合。
+     * 依据：写侧以 Object 声明（RootTypedWriter），根值与嵌套元素携带多态类型标记，
+     * List.of/Stream.toList 产物不再缺失类型信息，缓存命中可正确反序列化。
+     * 读侧对集合统一以可变实现承载（JDK 不可变集合无反序列化构造器），断言聚焦元素类型
+     * 恢复而非集合实现；元素强转失败即代表类型标记丢失，回归旧缺陷。
      * </p>
      */
     @Test
-    void immutableListRoundtripFails() {
-        byte[] fromListOf = serializer.serialize(List.of("x", "y"));
-        assertThat(new String(fromListOf, StandardCharsets.UTF_8)).doesNotContain("@class");
-        assertThatThrownBy(() -> serializer.deserialize(fromListOf))
-            .isInstanceOf(SerializationException.class);
+    void immutableListRoundtripKeepsElementType() {
+        Object fromListOf = serializerPair.read(serializerPair.write(List
+            .of(new LabelValueResp<>("k1", "v1"), new LabelValueResp<>("k2", null))));
+        List<?> fromList = assertLabelValueList(fromListOf);
+        assertThat(fromList).hasSize(2);
 
-        byte[] fromStreamToList = serializer.serialize(Stream.of("x", "y").toList());
-        assertThatThrownBy(() -> serializer.deserialize(fromStreamToList))
-            .isInstanceOf(SerializationException.class);
+        Object fromStreamToList = serializerPair.read(serializerPair.write(Stream
+            .of(new LabelValueResp<>("k1", "v1"), new LabelValueResp<>("k2", null))
+            .toList()));
+        List<?> fromStream = assertLabelValueList(fromStreamToList);
+        assertThat(fromStream).hasSize(2);
     }
 
     /**
-     * int 取值范围内的 Long 反序列化退化为 Integer
+     * 断言往返结果为业务对象列表并返回，元素强转失败即类型标记丢失
      *
-     * <p>
-     * 依据：Long 标量以纯 JSON 数字写入，读取端按 int 范围就近还原。@Cacheable 方法直接返回
-     * Long 时，命中路径会因类型退化抛出 ClassCastException，这正是租户 ID 缓存改用 String
-     * 存取的原因。
-     * </p>
+     * @param value 往返结果
+     * @return 业务对象列表
+     */
+    private static List<?> assertLabelValueList(Object value) {
+        assertThat(value).isInstanceOf(List.class);
+        List<?> list = (List<?>) value;
+        LabelValueResp<?> first = (LabelValueResp<?>) list.get(0);
+        LabelValueResp<?> second = (LabelValueResp<?>) list.get(1);
+        assertThat(first.getLabel()).isEqualTo("k1");
+        assertThat(first.getValue()).isEqualTo("v1");
+        assertThat(second.getLabel()).isEqualTo("k2");
+        assertThat(second.getValue()).isNull();
+        return list;
+    }
+
+    /**
+     * int 取值范围内的 Long 根值往返类型保持，不再退化为 Integer
      */
     @Test
-    void longWithinIntRangeDegradesToInteger() {
-        // 入参必须是 Long：Integer.MAX_VALUE 本身即 Integer，断言恒真，覆盖不到类型退化
-        Object smallLong = serializer.deserialize(serializer.serialize(Long.valueOf(1L)));
-        assertThat(smallLong).isInstanceOf(Integer.class);
-        assertThat(smallLong).isEqualTo(1);
+    void longWithinIntRangeKeepsLong() {
+        Object smallLong = serializerPair.read(serializerPair.write(Long.valueOf(1L)));
+        assertThat(smallLong).isInstanceOf(Long.class);
+        assertThat(smallLong).isEqualTo(1L);
 
-        Object maxLong = serializer.deserialize(serializer.serialize(Long
+        Object maxLong = serializerPair.read(serializerPair.write(Long
             .valueOf(Integer.MAX_VALUE)));
-        assertThat(maxLong).isInstanceOf(Integer.class);
-        assertThat(maxLong).isEqualTo(Integer.MAX_VALUE);
-
-        // 命中路径按 Long 强转会失败，这正是租户 ID 缓存改用 String 存取的直接原因
-        assertThatThrownBy(() -> {
-            Long ignored = (Long) smallLong;
-        }).isInstanceOf(ClassCastException.class);
+        assertThat(maxLong).isInstanceOf(Long.class);
+        assertThat(maxLong).isEqualTo((long) Integer.MAX_VALUE);
     }
 
     /**
-     * 雪花 ID（超出 int 范围）往返后类型保持 Long
+     * 雪花 ID（超出 int 范围）根值往返后类型保持 Long
      */
     @Test
     void snowflakeLongRoundtripKeepsLong() {
-        Object result = serializer.deserialize(serializer.serialize(SNOWFLAKE_ID));
+        Object result = serializerPair.read(serializerPair.write(SNOWFLAKE_ID));
         assertThat(result).isInstanceOf(Long.class);
         assertThat(result).isEqualTo(SNOWFLAKE_ID);
     }
@@ -153,26 +180,51 @@ class CacheSerializerRoundtripTest {
     @Test
     void stringRoundtripKeepsExactValue() {
         String cachedId = String.valueOf(SNOWFLAKE_ID);
-        Object result = serializer.deserialize(serializer.serialize(cachedId));
+        Object result = serializerPair.read(serializerPair.write(cachedId));
         assertThat(result).isInstanceOf(String.class);
         assertThat(Long.valueOf((String) result)).isEqualTo(SNOWFLAKE_ID);
     }
 
     /**
-     * 不可变 Map 序列化后缺失 {@code @class}，命中反序列化抛出 SerializationException；
+     * 不可变 Map 根值往返内容与容量保持，类型标记不混入条目；
      * HashMap（Collectors.toMap 产物）往返类型保持
      */
     @Test
     @SuppressWarnings("unchecked")
-    void mapRoundtripDependsOnMutability() {
-        byte[] fromMapOf = serializer.serialize(Map.of("a", "1"));
-        assertThatThrownBy(() -> serializer.deserialize(fromMapOf))
-            .isInstanceOf(SerializationException.class);
+    void immutableMapRoundtripKeepsContent() {
+        Object fromMapOf = serializerPair.read(serializerPair.write(Map.of("a", "1", "b", "2")));
+        assertThat(fromMapOf).isEqualTo(Map.of("a", "1", "b", "2"));
+        assertThat(((Map<Object, Object>) fromMapOf)).hasSize(2);
 
-        Object result = serializer.deserialize(serializer.serialize(new HashMap<>(Map
+        Object fromHashMap = serializerPair.read(serializerPair.write(new HashMap<>(Map
             .of("a", "1", "b", "2"))));
-        assertThat(result).isInstanceOf(HashMap.class);
-        Map<String, String> resultMap = (Map<String, String>) result;
+        assertThat(fromHashMap).isInstanceOf(HashMap.class);
+        Map<String, String> resultMap = (Map<String, String>) fromHashMap;
         assertThat(resultMap).containsEntry("a", "1").containsEntry("b", "2");
+    }
+
+    /**
+     * FLEXIBLE 大数值模式下 Long 根值与嵌套元素往返保持 Long 类型
+     *
+     * <p>
+     * 生产配置 spring.jackson.big-number-serialize-mode=FLEXIBLE：超出 JS 安全范围的 Long
+     * 序列化为字符串形态（如 {@code ["java.lang.Long","547889293968801822"]}），读侧按类型
+     * 标记恢复为 Long；int 范围内的 Long 保持数字形态，读侧同样恢复为 Long。
+     * </p>
+     */
+    @Test
+    void flexibleBigNumberModeRoundtripKeepsLong() {
+        Object rootSmall = flexiblePair.read(flexiblePair.write(Long.valueOf(1L)));
+        assertThat(rootSmall).isInstanceOf(Long.class);
+        assertThat(rootSmall).isEqualTo(1L);
+
+        Object rootSnowflake = flexiblePair.read(flexiblePair.write(SNOWFLAKE_ID));
+        assertThat(rootSnowflake).isInstanceOf(Long.class);
+        assertThat(rootSnowflake).isEqualTo(SNOWFLAKE_ID);
+
+        Object nestedSnowflake = flexiblePair.read(flexiblePair.write(new ArrayList<>(List
+            .of(SNOWFLAKE_ID))));
+        assertThat(nestedSnowflake).isEqualTo(List.of(SNOWFLAKE_ID));
+        assertThat((List<?>) nestedSnowflake).first().isInstanceOf(Long.class);
     }
 }

@@ -170,8 +170,6 @@ public class TenantServiceImpl extends
      * 带多级缓存的租户 ID 查询
      *
      * <p>
-     * 缓存值以 String 形式存取：L2 的 JSON 反序列化会把 int 取值范围内的数字还原为 Integer，
-     * 直接缓存 Long 会在缓存命中时发生 ClassCastException，以 String 形式往返可保证类型精确。
      * 查询结果为 null 时不写缓存，与 {@code @Cacheable} 的 unless 语义一致。
      * </p>
      *
@@ -180,13 +178,13 @@ public class TenantServiceImpl extends
      * @return 租户 ID（不存在时为 null）
      */
     private Long getCachedId(String key, Supplier<Long> loader) {
-        String cachedId = CacheUtils.get(TenantCacheConstants.TENANT_KEY_PREFIX, key);
+        Long cachedId = CacheUtils.get(TenantCacheConstants.TENANT_KEY_PREFIX, key);
         if (cachedId != null) {
-            return Long.valueOf(cachedId);
+            return cachedId;
         }
         Long id = loader.get();
         if (id != null) {
-            CacheUtils.put(TenantCacheConstants.TENANT_KEY_PREFIX, key, String.valueOf(id));
+            CacheUtils.put(TenantCacheConstants.TENANT_KEY_PREFIX, key, id);
         }
         return id;
     }
