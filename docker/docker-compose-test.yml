@@ -1,0 +1,104 @@
+# L3 API 黑盒测试环境（脚本起的独立实例，与演示/生产环境完全隔离）
+# 消费方式：up.sh 统一以 `docker compose -f <本文件绝对路径> -p continew-admin-test` 调用，禁止裸命令
+# 变量来源：--env-file docker/test/.env（凭据等）与 --env-file docker/test/.ports.env（up.sh 探测的端口）
+# 应用端口默认 18020、Redis 默认 16379，以 .ports.env 实际值为准
+name: continew-admin-test
+
+# 两个应用服务仅启动方式不同（挂载宿主构建产物 / compose 多阶段构建），
+# 运行时镜像、端口、环境变量、依赖关系完全一致，公共部分收敛到锚点
+x-app-common: &app-common
+  image: bellsoft/liberica-openjdk-debian:17.0.14
+  restart: no
+  ports:
+    - "${APP_PORT:-18020}:18020"
+  environment:
+    TZ: ${TZ:-Asia/Shanghai}
+    # 测试环境走 dev 配置（仓库内公开的弱默认密钥），凭据相关值经环境变量覆盖
+    PROFILES_ACTIVE: dev
+    SERVER_PORT: 18020
+    DB_HOST: mysql-test
+    DB_PORT: 3306
+    DB_USER: root
+    DB_PWD: ${MYSQL_ROOT_PASSWORD}
+    DB_NAME: continew_admin
+    REDIS_HOST: redis-test
+    REDIS_PORT: 6379
+    REDIS_PWD: ${REDIS_PASSWORD}
+    REDIS_DB: 0
+    JAVA_OPTS: ${JAVA_OPTS:-}
+  depends_on:
+    mysql-test:
+      condition: service_healthy
+    redis-test:
+      condition: service_healthy
+  working_dir: /app
+  stop_grace_period: 30s
+
+services:
+  mysql-test:
+    image: mysql:8.0.42
+    restart: no
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # 首次启动自动建库，表结构由应用内置 Liquibase 初始化
+      MYSQL_DATABASE: continew_admin
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    # 仅 compose 内网可达，不映射宿主端口：L3 黑盒测试不直连 MySQL
+    volumes:
+      - continew-test-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 30s
+
+  redis-test:
+    image: redis:7.2.8
+    restart: no
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+      # 供健康检查与 up.sh 的 docker exec 使用，密码不在宿主命令行出现
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "${REDIS_PORT:-16379}:6379"
+    volumes:
+      - continew-test-redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+
+  # 默认模式：挂载宿主 ./mvnw package 产出的瘦包目录（bin + lib + config），
+  # 由 up.sh 先行构建；容器内不做 healthcheck（不依赖 curl），由 up.sh 宿主侧轮询探测
+  app-test:
+    <<: *app-common
+    profiles: ["mount"]
+    volumes:
+      - ../../continew-server/target/app:/app
+    command: ["sh", "-c", "exec java $$JAVA_OPTS -jar /app/bin/*.jar"]
+
+  # 自包含模式（--build）：docker compose up --build 经多阶段构建，无需宿主 Maven 环境，首次较慢
+  # image 必须覆盖锚点值：构建产物若 tag 成公共运行时镜像名会污染宿主上的官方镜像标签
+  app-test-built:
+    <<: *app-common
+    image: continew-admin-test/app-test-built:local
+    profiles: ["build"]
+    build:
+      context: ..
+      dockerfile: test/Dockerfile
+
+volumes:
+  mysql-data:
+    name: continew-test-mysql-data
+  redis-data:
+    name: continew-test-redis-data
