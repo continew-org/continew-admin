@@ -28,7 +28,8 @@ if [[ -f "$PORTS_FILE" ]]; then
     ENV_ARGS+=(--env-file "$(to_host_path "$PORTS_FILE")")
 fi
 
+# app 服务挂在 mount/build profile 下，down 必须显式展开两个 profile 才能清理全部容器
 echo "目标容器清单（project：$PROJECT，仅清理以下内容）："
-docker compose "${ENV_ARGS[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" ps || true
-docker compose "${ENV_ARGS[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" down -v --remove-orphans
+docker compose "${ENV_ARGS[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" --profile mount --profile build ps || true
+docker compose "${ENV_ARGS[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" --profile mount --profile build down -v --remove-orphans
 echo "测试环境已停止，数据卷已清理"

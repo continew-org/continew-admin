@@ -44,7 +44,9 @@ compose() {
     if [[ -f "$PORTS_FILE" ]]; then
         env_args+=(--env-file "$(to_host_path "$PORTS_FILE")")
     fi
-    docker compose "${env_args[@]}" "$@" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT"
+    # 全局选项（--env-file/-f/-p）必须全部位于子命令之前："$@" 里混有子命令（ps/up/exec），
+    # 若放在 -f/-p 之前，会展开成 "docker compose ... ps -f X"，子命令后的 -f 直接报错
+    docker compose "${env_args[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" "$@"
 }
 
 # 端口占用探测：宿主侧 TCP 连接测试（Git Bash 与 Linux 的 bash 均支持 /dev/tcp）
@@ -105,8 +107,9 @@ wait_app_healthy() {
 }
 
 # 容器状态清单（服务 状态 健康），无容器时输出为空
+# app 服务挂在 mount/build profile 下，不带 --profile 的 ps/down 看不到也清不掉它们
 compose_service_status() {
-    compose ps --format '{{.Service}} {{.State}} {{.Health}}' 2>/dev/null || true
+    compose --profile mount --profile build ps --format '{{.Service}} {{.State}} {{.Health}}' 2>/dev/null || true
 }
 
 print_ready_hint() {
@@ -175,8 +178,8 @@ else
 fi
 
 echo "[3/4] 清理既有测试环境（仅限 project：$PROJECT），当前容器清单："
-compose ps || true
-compose down -v --remove-orphans
+compose --profile mount --profile build ps || true
+compose --profile mount --profile build down -v --remove-orphans
 
 echo "[4/4] 启动测试环境..."
 if [[ "$MODE" == "mount" ]]; then

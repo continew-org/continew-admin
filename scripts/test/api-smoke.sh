@@ -31,7 +31,8 @@ compose() {
     if [[ -f "$PORTS_FILE" ]]; then
         env_args+=(--env-file "$(to_host_path "$PORTS_FILE")")
     fi
-    docker compose "${env_args[@]}" "$@" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT"
+    # 全局选项（--env-file/-f/-p）必须全部位于子命令之前，理由同 up.sh 的 compose()
+    docker compose "${env_args[@]}" -f "$(to_host_path "$COMPOSE_FILE")" -p "$PROJECT" "$@"
 }
 
 BASE_URL=""
@@ -57,7 +58,8 @@ echo "L3 测试目标：$BASE_URL"
 # 本地测试容器在运行时先重跑验证码关闭（--keep 复用场景，计划 T1.2）；
 # 指向外部实例时跳过，由实例自行保证验证码已关闭。
 # 原理与顺序约束见 scripts/test/up.sh 的 disable_login_captcha，两处保持同步。
-if compose ps --format '{{.Service}}' 2>/dev/null | grep -q '^app-test'; then
+# app 服务挂在 mount/build profile 下，ps 需展开 profile 才能探测到
+if compose --profile mount --profile build ps --format '{{.Service}}' 2>/dev/null | grep -q '^app-test'; then
     echo "关闭登录验证码（sys_option.LOGIN_CAPTCHA_ENABLED）..."
     compose exec -T mysql-test sh -c "mysql -uroot -p\"\$MYSQL_ROOT_PASSWORD\" continew_admin -e \"UPDATE sys_option SET value='0' WHERE code='LOGIN_CAPTCHA_ENABLED'\"" >/dev/null
     compose exec -T redis-test sh -c 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli DEL "OPTION:LOGIN_CAPTCHA_ENABLED"' >/dev/null

@@ -51,7 +51,8 @@ services:
       --lower_case_table_names=1
     # 仅 compose 内网可达，不映射宿主端口：L3 黑盒测试不直连 MySQL
     volumes:
-      - continew-test-mysql-data:/var/lib/mysql
+      # 引用顶层 volumes 的 key（mysql-data），实际卷名由 name: 提供 continew-test- 前缀
+      - mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
@@ -70,7 +71,8 @@ services:
     ports:
       - "${REDIS_PORT:-16379}:6379"
     volumes:
-      - continew-test-redis-data:/data
+      # 引用顶层 volumes 的 key（redis-data），实际卷名由 name: 提供 continew-test- 前缀
+      - redis-data:/data
     healthcheck:
       test: ["CMD-SHELL", "redis-cli --no-auth-warning -a \"$$REDIS_PASSWORD\" ping"]
       interval: 5s
@@ -84,7 +86,8 @@ services:
     <<: *app-common
     profiles: ["mount"]
     volumes:
-      - ../../continew-server/target/app:/app
+      # 相对路径以本 compose 文件所在目录（docker/）为基准，一层 .. 即仓库根
+      - ../continew-server/target/app:/app
     command: ["sh", "-c", "exec java $$JAVA_OPTS -jar /app/bin/*.jar"]
 
   # 自包含模式（--build）：docker compose up --build 经多阶段构建，无需宿主 Maven 环境，首次较慢
