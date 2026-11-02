@@ -82,7 +82,8 @@ detect_free_port() {
 # 与 scripts/test/api-smoke.sh 中的同逻辑保持同步。
 disable_login_captcha() {
     echo "关闭登录验证码（sys_option.LOGIN_CAPTCHA_ENABLED）..."
-    compose exec -T mysql-test sh -c "mysql -uroot -p\"\$MYSQL_ROOT_PASSWORD\" continew_admin -e \"UPDATE sys_option SET value='0' WHERE code='LOGIN_CAPTCHA_ENABLED'\"" >/dev/null
+    # 密码经 MYSQL_PWD 环境变量传入（与 Redis 侧 REDISCLI_AUTH 同理），不进 ps/命令行
+    compose exec -T mysql-test sh -c "MYSQL_PWD=\"\$MYSQL_ROOT_PASSWORD\" mysql -uroot continew_admin -e \"UPDATE sys_option SET value='0' WHERE code='LOGIN_CAPTCHA_ENABLED'\"" >/dev/null
     compose exec -T redis-test sh -c 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli DEL "OPTION:LOGIN_CAPTCHA_ENABLED"' >/dev/null
 }
 

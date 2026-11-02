@@ -61,7 +61,8 @@ echo "L3 测试目标：$BASE_URL"
 # app 服务挂在 mount/build profile 下，ps 需展开 profile 才能探测到
 if compose --profile mount --profile build ps --format '{{.Service}}' 2>/dev/null | grep -q '^app-test'; then
     echo "关闭登录验证码（sys_option.LOGIN_CAPTCHA_ENABLED）..."
-    compose exec -T mysql-test sh -c "mysql -uroot -p\"\$MYSQL_ROOT_PASSWORD\" continew_admin -e \"UPDATE sys_option SET value='0' WHERE code='LOGIN_CAPTCHA_ENABLED'\"" >/dev/null
+    # 密码经 MYSQL_PWD 环境变量传入（与 Redis 侧 REDISCLI_AUTH 同理），不进 ps/命令行
+    compose exec -T mysql-test sh -c "MYSQL_PWD=\"\$MYSQL_ROOT_PASSWORD\" mysql -uroot continew_admin -e \"UPDATE sys_option SET value='0' WHERE code='LOGIN_CAPTCHA_ENABLED'\"" >/dev/null
     compose exec -T redis-test sh -c 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli DEL "OPTION:LOGIN_CAPTCHA_ENABLED"' >/dev/null
 else
     echo "提示：本地测试容器未运行，跳过验证码关闭（外部实例需自行关闭验证码）"

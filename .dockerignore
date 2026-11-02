@@ -5,7 +5,12 @@
 .vscode
 .github
 docs
-docker
+# Dockerfile 位于被排除的 docker/ 下：父目录链必须逐级重新包含，
+# 否则 BuildKit 报 failed to read dockerfile（.dockerignore 规则：父目录被排除后子文件不可直接反包含）
+docker/*
+!docker/test
+docker/test/*
+!docker/test/Dockerfile
 scripts
 **/target
 **/logs

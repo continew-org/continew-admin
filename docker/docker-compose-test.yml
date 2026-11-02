@@ -98,7 +98,8 @@ services:
     profiles: ["build"]
     build:
       context: ..
-      dockerfile: test/Dockerfile
+      # dockerfile 相对 context（仓库根）解析，必须带 docker/ 目录段
+      dockerfile: docker/test/Dockerfile
 
 volumes:
   mysql-data:
