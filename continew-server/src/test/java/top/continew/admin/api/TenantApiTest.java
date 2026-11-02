@@ -120,7 +120,7 @@ class TenantApiTest extends ApiTestSupport {
             // 4. 租户管理员登录，拉取租户用户列表（登录请求须携带租户上下文，否则按默认租户定位不到用户）
             useTenant(tenantId);
             login(adminUsername, adminPassword);
-            // 列表验证用 LIST 端点：/system/user/page 命中 Starter CRUD 路由优先级缺陷（page 被 /{id} 吞掉），不作链路依赖
+            // 列表验证用 LIST 端点（LIST 显式声明 /list 后缀；分页契约映射根路径，见 docs/development/backend/crud.mdx）
             Response userList = givenAuth().get("/system/user/list");
             assertBizOk(userList);
             assertThat(userList.jsonPath().getList("data"))

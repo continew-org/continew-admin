@@ -34,8 +34,8 @@ import java.util.stream.Stream;
  * 端点与契约依据（评审 S-3：不只断言业务码，每个端点至少一条结构断言）：
  * 分页端点断言 data.list 为数组（BasePageResp：list + total），树/列表端点断言 data 为
  * 数组结构（BaseController CRUD 套件 TREE/LIST 返回 List），仪表盘对象端点断言 data 为对象。
- * 各端点路径以对应 Controller 源码为准（CrudRequestMapping 的 Api 枚举决定 /page、/list、
- * /tree 后缀，DashboardController 显式声明）。
+ * 各端点路径以契约文档 docs/development/backend/crud.mdx 为准（PAGE 映射根路径，
+ * LIST/TREE/GET 分别显式声明 /list、/tree、/{id} 后缀，DashboardController 端点为显式声明）。
  * </p>
  *
  * @author Charles7c
@@ -68,7 +68,7 @@ class CoreReadApiTest extends ApiTestSupport {
      * @return 参数流
      */
     static Stream<Arguments> listEndpoints() {
-        return Stream.of(Arguments.of("/system/user/page", DataShape.PAGED), Arguments
+        return Stream.of(Arguments.of("/system/user?page=1&size=10", DataShape.PAGED), Arguments
             .of("/system/dept/tree", DataShape.ARRAY),
             Arguments
                 .of("/system/role/list", DataShape.ARRAY),
@@ -79,9 +79,9 @@ class CoreReadApiTest extends ApiTestSupport {
             Arguments
                 .of("/system/option", DataShape.ARRAY),
             Arguments
-                .of("/system/notice/page", DataShape.PAGED),
+                .of("/system/notice?page=1&size=10", DataShape.PAGED),
             Arguments
-                .of("/system/client/page", DataShape.PAGED),
+                .of("/system/client?page=1&size=10", DataShape.PAGED),
             Arguments
                 .of("/system/storage/list", DataShape.ARRAY),
             Arguments
