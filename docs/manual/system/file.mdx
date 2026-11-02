@@ -26,7 +26,7 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 
 | 字段 | 说明 |
 |:-----|:-----|
-| `name` / `original_name` | 存储名与原始文件名 |
+| `name` / `original_name` | 存储名（唯一 ID + 原扩展名）与原始文件名，展示以 `original_name` 为准 |
 | `size` | 大小（字节） |
 | `parent_path` / `path` | 上级目录与完整路径，默认按 `/yyyy/MM/dd` 归档 |
 | `type` | 类型（0：目录；1：其他；2：图片；3：文档；4：视频；5：音频），按扩展名归入 `FileTypeEnum` |
@@ -35,6 +35,16 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 | `storage_id` | 所属存储，关联 `sys_storage` |
 
 上传时不指定 `parentPath` 则按日期目录归档。单文件大小受 Spring multipart 限制（`max-file-size` 默认 10MB），超出请走分片上传。
+
+## 存储命名规则
+
+文件落盘名不使用用户上传的原始文件名，统一为「32 位唯一 ID + 原扩展名」，例如 `3f2a1c9e5b7d4a6f8c0e1d2b3a4c5d6e.png`，扩展名保留原有大小写。原始文件名保存在 `sys_file.original_name`，列表、详情、重命名与下载名均以它为准。
+
+这样的好处是同一目录下可以存在多个同名文件，并发上传与回收站还原都不会互相覆盖存储中的实体文件。文件夹（`type = 0`）仍使用可读名称，不参与唯一 ID 命名。该规则只作用于新上传的文件，存量文件保留原有命名，其 URL 不受影响。
+
+<Callout type="info">
+直接访问存储直链时，浏览器保存的默认文件名即为唯一 ID 名；需要原始文件名时请从文件管理页面下载（页面按 `original_name` 命名）。对外的 `FileResp.name` 也随之变为唯一 ID 名，需要展示名称请使用 `originalName`。
+</Callout>
 
 ## 秒传与分片上传
 

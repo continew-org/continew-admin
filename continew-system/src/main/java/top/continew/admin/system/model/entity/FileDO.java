@@ -48,11 +48,19 @@ public class FileDO extends BaseDO {
 
     /**
      * 名称
+     *
+     * <p>
+     * 存储中的实际文件名：文件为「唯一 ID + 原扩展名」（见 {@code FileNameGenerator}），文件夹仍为可读名称。
+     * </p>
      */
     private String name;
 
     /**
      * 原始名称
+     *
+     * <p>
+     * 用户上传时的原始文件名，也是列表、详情等界面展示的名称。
+     * </p>
      */
     private String originalName;
 
