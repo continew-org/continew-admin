@@ -24,16 +24,22 @@ import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Assertions;
-import top.continew.admin.common.util.SecureUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.crypto.Cipher;
 
 /**
  * L3 API 黑盒测试基座：配置读取、登录、请求封装、响应断言与资源清理。
@@ -49,8 +55,10 @@ import java.util.TreeMap;
  * HTTP 401 且 {@code code} 为 {@code "401"}（GlobalSaTokenExceptionHandler）。
  * </p>
  * <p>
- * 登录密码按后端约定经 RSA 公钥加密（Hutool RSA，等价于 RSA/ECB/PKCS1Padding，Base64 输出），
- * 加密实现直接复用 continew-common 的 {@link SecureUtils}，与业务侧完全同源。
+ * 登录密码按后端约定经 RSA 公钥加密：JCE Cipher 直连 RSA/ECB/PKCS1Padding，输出标准 Base64。
+ * 后端解密链路（SecureUtils.decryptByRsaPrivateKey）对入参先做 Base64 解码，加密侧输出必须是
+ * Base64 密文字符串（与前端 JSEncrypt 的输出一致）；不可复用 SecureUtils.encryptByRsaPublicKey，
+ * 它把原始密文二进制直接转 UTF-8 字符串产生乱码，与解密侧的 Base64 前置约定不兼容。
  * 测试环境已由 up.sh 关闭验证码，登录请求不携带 captcha 与 uuid 字段。
  * </p>
  *
@@ -162,21 +170,33 @@ public abstract class ApiTestSupport {
                 throw new IllegalStateException("读取 RSA 公钥 PEM 文件失败: " + pemPath, e);
             }
         }
-        // 兼容 PEM 文本形态，转换为纯 Base64 后统一交给加密工具解析
+        // 兼容 PEM 文本形态，转换为纯 Base64 后统一交给 JCE 解析
         return value.replaceAll("-----BEGIN [^-]+-----", "")
             .replaceAll("-----END [^-]+-----", "")
             .replaceAll("\\s", "");
     }
 
     /**
-     * 用 RSA 公钥加密明文（与后端 SecureUtils 约定一致，Base64 输出）。
+     * 用 RSA 公钥加密明文：JCE Cipher 直连 RSA/ECB/PKCS1Padding，输出标准 Base64。
+     * 后端 SecureUtils.decryptByRsaPrivateKey 对入参先 Base64 解码再解密，
+     * 加密侧输出必须是 Base64 密文字符串（与前端 JSEncrypt 输出一致）。
      *
      * @param raw
      *            明文
-     * @return RSA 加密后的密文
+     * @return RSA 加密后的 Base64 密文
      */
     protected static String encryptByRsa(String raw) {
-        return SecureUtils.encryptByRsaPublicKey(raw, RSA_PUBLIC_KEY);
+        try {
+            byte[] publicKeyBytes = Base64.getDecoder().decode(RSA_PUBLIC_KEY);
+            PublicKey publicKey = KeyFactory.getInstance("RSA")
+                .generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            return Base64.getEncoder()
+                .encodeToString(cipher.doFinal(raw.getBytes(StandardCharsets.UTF_8)));
+        } catch (GeneralSecurityException e) {
+            throw new IllegalStateException("RSA 公钥加密失败，请检查 api.rsa-public-key 配置", e);
+        }
     }
 
     /**
