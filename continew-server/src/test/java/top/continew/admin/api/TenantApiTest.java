@@ -149,7 +149,8 @@ class TenantApiTest extends ApiTestSupport {
         Response response = givenAuth().get(PACKAGE_MENU_TREE_PATH);
         assertBizOk(response);
         List<Long> menuIds = new ArrayList<>(30);
-        collectIds(response.jsonPath().getList("$"), menuIds, 30);
+        // 菜单树在响应 data 字段（全局响应封装 code/msg/data），$ 是根对象会引发类型转换失败
+        collectIds(response.jsonPath().getList("data"), menuIds, 30);
         assertThat(menuIds).as("租户套餐菜单树不应为空").isNotEmpty();
         return menuIds;
     }
