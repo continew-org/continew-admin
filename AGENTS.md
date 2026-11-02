@@ -21,9 +21,9 @@
 
 ## 项目概述
 
-ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：本仓库为后端（Spring Boot 3.5 / Java 17 的 Maven 多模块工程），前端为独立仓库 `continew-admin-ui`（Vue3 & Arco Design & TS & Vite）。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
+ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：本仓库为后端（Spring Boot 4.1.1 / Java 17 的 Maven 多模块工程），前端为独立仓库 `continew-admin-ui`（Vue3 & Arco Design & TS & Vite）。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
 
-**当前版本**：5.0.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：JDK 17 | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
+**当前版本**：5.0.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：构建基线 JDK 25（产物字节码 17） | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
 
 ## 核心架构
 
@@ -67,7 +67,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 ## 构建与运行命令
 
 ```bash
-# 完整构建（validate 阶段 Enforcer -> Spotless -> Checkstyle，编译 + 单元测试，verify 阶段 SpotBugs）
+# 完整构建（validate 阶段 Enforcer -> Spotless -> Checkstyle，编译 + 单元测试与集成测试，verify 阶段 SpotBugs）
 ./mvnw verify
 
 # 仅编译（含 validate 阶段三道门禁，不含 SpotBugs），仅用于快速迭代，不可作为提交前自检
@@ -89,7 +89,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 ./mvnw clean
 ```
 
-单元测试随 `./mvnw verify` 一并执行（`ContiNewAdminApplicationTests` 上下文加载测试依赖 MySQL/Redis 等基础设施，已在 surefire 中排除，待引入 Testcontainers 后随集成测试启用）。代码改动的验证方式是执行 `./mvnw verify` 确保门禁与单元测试全部通过。
+单元测试与 Testcontainers 集成测试均随 `./mvnw verify` 一并执行（上下文加载测试 `ContiNewAdminApplicationTests` 继承 `it` 包的 `BaseIntegrationTest`，依赖真实 MySQL/Redis 容器，无 Docker 环境经 `@Testcontainers(disabledWithoutDocker)` 自动跳过）。代码改动的验证方式是执行 `./mvnw verify` 确保门禁与单元测试全部通过。
 
 运行时配置通过环境变量注入，配置文件位于 `continew-server/src/main/resources/config/`（application.yml 通用，application-dev.yml / application-prod.yml 分环境）。
 
@@ -100,7 +100,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 提交 Java 代码前，AI 智能体**必须**让门禁通过：
 
-1. 执行 `./mvnw verify`。门禁依次为：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），编译后 test 阶段的**单元测试**，以及 verify 阶段的 **SpotBugs**（字节码缺陷），任一不通过都会直接构建失败。
+1. 执行 `./mvnw verify`。门禁依次为：validate 阶段的 **Enforcer**（构建环境与依赖合规）、**Spotless check**（代码格式）、**Checkstyle**（代码规范），编译后 test 阶段的**单元测试与集成测试**，以及 verify 阶段的 **SpotBugs**（字节码缺陷），任一不通过都会直接构建失败。
 2. 若被 Spotless 拦截，执行 `./mvnw compile -Pformat` 自动修复，然后再执行一次 `./mvnw verify` 确认通过。
 3. 全部门禁与单元测试通过后才能提交。
 
