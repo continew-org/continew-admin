@@ -89,6 +89,14 @@
                 <artifactId>continew-plugin-generator</artifactId>
                 <version>${revision}</version>
             </dependency>
+
+            <!-- REST Assured（L3 API 黑盒测试 HTTP 客户端，continew-server 以 test scope 引入） -->
+            <!-- 版本暂由本项目管理，待 Starter 统一管理后移除 -->
+            <dependency>
+                <groupId>io.rest-assured</groupId>
+                <artifactId>rest-assured</artifactId>
+                <version>5.5.6</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

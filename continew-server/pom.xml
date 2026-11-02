@@ -98,6 +98,13 @@
             <artifactId>testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- REST Assured（L3 API 黑盒测试，对脚本起的独立实例发真实 HTTP；版本由根 POM 统一管理） -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -122,11 +129,37 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 纯单元测试与 Testcontainers 集成测试均随默认 surefire 配置执行，无需排除 -->
+            <!-- 纯单元测试与 Testcontainers 集成测试均随默认 surefire 配置执行；
+                 L3 API 黑盒测试以 @Tag("api") 标记，默认排除，-Papi-test 时反向只跑该组 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludedGroups>api</excludedGroups>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
+        <!-- L3 API 黑盒测试：只运行 @Tag("api") 组，配合 scripts/test/api-smoke.sh 对脚本起的独立实例发真实 HTTP；
+             命令行需加 -Dsurefire.failIfNoSpecifiedTests=false，避免无匹配用例时失败 -->
+        <profile>
+            <id>api-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>api</groups>
+                            <excludedGroups></excludedGroups>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <!-- 胖包模式：将依赖、配置文件等打包到 jar 包之内 -->
         <profile>
             <id>fat-jar</id>
