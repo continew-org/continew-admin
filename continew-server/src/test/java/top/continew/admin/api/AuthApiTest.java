@@ -101,12 +101,22 @@ class AuthApiTest extends ApiTestSupport {
     /**
      * 登出后原 token 失效。默认 PC 客户端为 COOKIE 模式，Refresh Token 在登录响应的
      * HttpOnly Cookie 中，登出时按浏览器行为原样回传。
+     *
+     * <p>
+     * 带回传 Cookie 必须同时携带同源 Origin 头（服务端对带 Cookie 的请求强制来源校验，
+     * same-origin 在自比对分支放行）；POST 需显式 JSON CT（rest-assured 默认 form CT 会
+     * 触发服务端对无 body POST 的静默拒绝，见基座约定）。
+     * </p>
      */
     @Test
     void logoutThenOriginalTokenInvalid() {
         loginAsDefaultAdmin();
         Map<String, String> cookies = getLoginCookies();
-        Response logoutResponse = givenAuth().cookies(cookies).post("/auth/logout");
+        Response logoutResponse = givenAuth().cookies(cookies)
+            .header("Origin", BASE_ORIGIN)
+            .contentType(ContentType.JSON)
+            .body("{}")
+            .post("/auth/logout");
         assertBizOk(logoutResponse);
         // 登出后带原 token 再访问，应被判定为未认证
         Response response = given().header("Authorization", "Bearer " + getAccessToken())

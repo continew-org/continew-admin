@@ -61,6 +61,12 @@ import javax.crypto.Cipher;
  * 它把原始密文二进制直接转 UTF-8 字符串产生乱码，与解密侧的 Base64 前置约定不兼容。
  * 测试环境已由 up.sh 关闭验证码，登录请求不携带 captcha 与 uuid 字段。
  * </p>
+ * <p>
+ * 请求 Content-Type 约定：所有 POST 必须显式声明 {@code contentType(JSON)}，无业务字段的
+ * POST 用 {@code body("{}")} 占位。rest-assured 对未声明 CT 的 POST 默认发送
+ * application/x-www-form-urlencoded，服务端 @RequestBody(required=false) 端点对该 CT 静默
+ * 返回 code=1（不走异常处理器、无日志无栈），171 实测教训；登出端点即因此失败。
+ * </p>
  *
  * @author Charles7c
  * @since 5.0.0
@@ -81,6 +87,12 @@ public abstract class ApiTestSupport {
      */
     protected static final String BASE_URL = config("api.base-url", "API_BASE_URL",
         "http://127.0.0.1:18020");
+
+    /**
+     * 服务同源 Origin（BASE_URL 去除尾斜杠）：用于登出等携带 Refresh Token Cookie 的请求。
+     * 服务端对带 Cookie 的请求强制 Origin 校验，same-origin 在自比对分支放行，不依赖白名单配置。
+     */
+    protected static final String BASE_ORIGIN = BASE_URL.replaceAll("/$", "");
 
     /**
      * 平台超管用户名，仅 dev 环境默认 admin。
