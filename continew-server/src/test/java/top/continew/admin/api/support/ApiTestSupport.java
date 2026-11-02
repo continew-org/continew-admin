@@ -366,6 +366,30 @@ public abstract class ApiTestSupport {
     }
 
     /**
+     * 发起带 JSON 请求体的 DELETE 清理请求并吞掉所有异常（批量删除端点的形态：
+     * DELETE {base}，请求体 IdsReq.ids）。清理失败只记 warning，不吞主断言。
+     *
+     * @param path 删除端点（如 /system/user）
+     * @param body JSON 请求体（如 Map.of("ids", List.of(1L))）
+     */
+    protected void deleteQuietly(String path, Object body) {
+        try {
+            Response response = givenAuth().contentType(ContentType.JSON)
+                .body(body)
+                .delete(path);
+            if (response.statusCode() == 200 && SUCCESS_CODE.equals(response.jsonPath()
+                .getString("code"))) {
+                log.info("L3 清理成功: {}", path);
+            } else {
+                log.warn("L3 清理未成功: {}，HTTP {}，业务码 {}", path, response.statusCode(), response
+                    .jsonPath().getString("code"));
+            }
+        } catch (Exception e) {
+            log.warn("L3 清理请求异常: {}，原因：{}", path, e.getMessage());
+        }
+    }
+
+    /**
      * 对响应体做脱敏：替换 accessToken、refreshToken 与 password 字段值为 ***。
      * 用于失败信息输出，避免 token 与密码进入测试日志。
      *
