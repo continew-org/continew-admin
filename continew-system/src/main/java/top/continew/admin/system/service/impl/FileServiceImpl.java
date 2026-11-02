@@ -184,6 +184,20 @@ public class FileServiceImpl
         // 需与新建入口做同样的路径穿越校验，避免通过修改接口改写出存储根目录之外的路径
         StoragePathValidator.validate(req.getParentPath());
         StoragePathValidator.validateName(req.getOriginalName());
+        // 修改上级目录只会改写记录中的路径，并不会搬运存储中的实体文件，改完即失效，故拒绝实际变更；
+        // null 表示未提交该字段（如仅重命名），空白值则视为要改到根目录，同样需要参与比较
+        if (req.getParentPath() != null) {
+            String targetParentPath = StoragePathValidator.normalizeParentPath(req.getParentPath());
+            // TODO 此处与基类 update 各查一次 getById，如后续基类支持回传实体可合并为一次
+            FileDO existFile = this.getById(id);
+            if (existFile != null) {
+                CheckUtils
+                    .throwIf(!StoragePathValidator.isSameParentPath(targetParentPath, existFile
+                        .getParentPath()), "暂不支持移动文件或文件夹");
+            }
+            // 统一根目录表示，避免空白值被写入记录后又按另一种形式拼出路径
+            req.setParentPath(targetParentPath);
+        }
     }
 
     @Override
