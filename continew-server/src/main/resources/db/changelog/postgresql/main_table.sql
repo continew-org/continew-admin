@@ -718,3 +718,15 @@ ALTER TABLE "sys_client"
 
 COMMENT ON COLUMN "sys_client"."refresh_token_idle_timeout"
     IS 'Refresh Token 闲置失效（单位：秒，0：不限制）';
+
+-- changeset luoqiz:file-path-index-postgresql
+-- comment 文件路径索引（URL 出口装配与按 path 精确删除均按 path 等值查询）
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM pg_indexes WHERE schemaname = current_schema() AND tablename = 'sys_file' AND indexname = 'idx_file_path'
+CREATE INDEX "idx_file_path" ON "sys_file" ("path");
+
+-- changeset luoqiz:file-thumbnail-index-postgresql
+-- comment 文件缩略图索引（回收站引用判定、缩略图共享保护与补偿清理均按 storage_id + thumbnail_name 查询）
+-- preconditions onFail:MARK_RAN
+-- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM pg_indexes WHERE schemaname = current_schema() AND tablename = 'sys_file' AND indexname = 'idx_storage_thumbnail'
+CREATE INDEX "idx_storage_thumbnail" ON "sys_file" ("storage_id", "thumbnail_name");
