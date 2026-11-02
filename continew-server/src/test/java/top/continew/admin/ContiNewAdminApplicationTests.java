@@ -16,8 +16,13 @@
 
 package top.continew.admin;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import top.continew.admin.it.BaseIntegrationTest;
+import top.continew.admin.system.service.UserService;
 
 /**
  * 上下文加载测试
@@ -32,7 +37,16 @@ import top.continew.admin.it.BaseIntegrationTest;
  */
 class ContiNewAdminApplicationTests extends BaseIntegrationTest {
 
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    private UserService userService;
+
     @Test
     void contextLoads() {
+        // 多级缓存管理器与核心业务 Service 装配成功，即代表全链路上下文可用
+        assertThat(cacheManager).as("多级缓存管理器应完成装配").isNotNull();
+        assertThat(userService).as("核心业务 Service 应完成装配").isNotNull();
     }
 }
