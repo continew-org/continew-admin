@@ -97,6 +97,25 @@
                 <artifactId>rest-assured</artifactId>
                 <version>5.5.6</version>
             </dependency>
+            <!-- Groovy（仅 rest-assured 5.5.6 的传递依赖） -->
+            <!-- 版本暂由本项目管理：Spring Boot 4.1.1 BOM 强制 Groovy 5.0.8，而 rest-assured 5.5.6 -->
+            <!-- 按官方声明仅支持 Groovy 4.x（parent pom groovy.version=4.0.22，OSGi range [4.0,5.0)）， -->
+            <!-- Groovy 5 运行时下 GET 请求在其 Groovy 分发层触发 NPE，待 Starter 统一管理后移除 -->
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>4.0.22</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-xml</artifactId>
+                <version>4.0.22</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-json</artifactId>
+                <version>4.0.22</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
