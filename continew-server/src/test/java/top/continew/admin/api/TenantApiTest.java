@@ -117,17 +117,18 @@ class TenantApiTest extends ApiTestSupport {
                     .as("第 %d 次域名解析应等于租户 ID", i + 1)
                     .isEqualTo(tenantId);
             }
-            // 4. 租户管理员登录，拉取租户用户列表
-            login(adminUsername, adminPassword);
+            // 4. 租户管理员登录，拉取租户用户列表（登录请求须携带租户上下文，否则按默认租户定位不到用户）
             useTenant(tenantId);
-            Response userPage = givenAuth().get("/system/user/page");
-            assertBizOk(userPage);
-            assertThat(userPage.jsonPath().getList("data.list"))
-                .as("租户用户列表 data.list 应为数组结构")
+            login(adminUsername, adminPassword);
+            // 列表验证用 LIST 端点：/system/user/page 命中 Starter CRUD 路由优先级缺陷（page 被 /{id} 吞掉），不作链路依赖
+            Response userList = givenAuth().get("/system/user/list");
+            assertBizOk(userList);
+            assertThat(userList.jsonPath().getList("data"))
+                .as("租户用户列表 data 应为数组结构")
                 .isNotNull();
-            // 5. 回平台侧更新租户域名，旧域名解析为空、新域名可解析
-            loginAsDefaultAdmin();
+            // 5. 回平台侧更新租户域名，旧域名解析为空、新域名可解析（登录前先切回默认租户，登录请求会携带当前租户上下文）
             useTenant(DEFAULT_TENANT_ID);
+            loginAsDefaultAdmin();
             updateTenantDomain(tenantId, tenantName(timestamp), domainV2, packageId);
             awaitConsistency(() -> assertThat(resolveDataByDomain(domainV1))
                 .as("旧域名解析结果应为空")
@@ -171,7 +172,7 @@ class TenantApiTest extends ApiTestSupport {
                 return;
             }
             Map<?, ?> nodeMap = (Map<?, ?>) node;
-            if (nodeMap.get("id") instanceof Number numberId) {
+            if (nodeMap.get("key") instanceof Number numberId) { // Tree 节点 id 键名为 key（hutool 默认 idKey，isSimple=true）
                 ids.add(numberId.longValue());
             }
             if (nodeMap.get("children") instanceof List<?> children) {

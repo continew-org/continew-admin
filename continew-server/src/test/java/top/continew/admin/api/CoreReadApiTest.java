@@ -89,15 +89,24 @@ class CoreReadApiTest extends ApiTestSupport {
     }
 
     /**
-     * 仪表盘 9 个端点（DashboardController 显式声明的全部 GET 端点）。
+     * 仪表盘稳定统计端点（DashboardController 显式声明的 GET 端点中，除 PV/IP 实时计数外
+     * 的全部端点，共 6 个）。这些端点返回图表/公告等缓存的固定统计，两次读取可断言一致。
      *
      * @return 端点路径流
      */
     static Stream<String> dashboardEndpoints() {
-        return Stream.of("/dashboard/notice", "/dashboard/analysis/overview/pv",
-            "/dashboard/analysis/overview/ip", "/dashboard/analysis/geo",
+        return Stream.of("/dashboard/notice", "/dashboard/analysis/geo",
             "/dashboard/analysis/timeslot", "/dashboard/analysis/module",
             "/dashboard/analysis/os", "/dashboard/analysis/browser");
+    }
+
+    /**
+     * 仪表盘实时计数端点（PV/IP 总览，DashboardOverviewCommonResp.total 为 sys_log 实时统计）。
+     *
+     * @return 端点路径流
+     */
+    static Stream<String> dashboardCounterEndpoints() {
+        return Stream.of("/dashboard/analysis/overview/pv", "/dashboard/analysis/overview/ip");
     }
 
     /**
@@ -142,7 +151,7 @@ class CoreReadApiTest extends ApiTestSupport {
     }
 
     /**
-     * 仪表盘端点各读两次：业务码为 0 且两次响应 data 的规范化 JSON 一致。
+     * 仪表盘稳定统计端点各读两次：业务码为 0 且两次响应 data 的规范化 JSON 一致。
      * 部分端点带 @Cacheable（多级缓存），两次读取覆盖缓存命中路径的响应一致性。
      *
      * @param path
@@ -158,6 +167,35 @@ class CoreReadApiTest extends ApiTestSupport {
         assertThat(canonicalJson(first.jsonPath().get("data")))
             .as("%s 连续两次读取的 data 应一致", path)
             .isEqualTo(canonicalJson(second.jsonPath().get("data")));
+    }
+
+    /**
+     * 仪表盘实时计数端点（PV/IP 总览）各读两次：业务码为 0、data 为对象结构，
+     * 且 total 非递减（第二次读 >= 第一次读）。
+     *
+     * <p>
+     * 不做相等断言的原因：total 由 sys_log 实时统计（DashboardService 的总览查询），
+     * 登录等行为异步写入登录日志，插入可能落在两次读取之间，幂等相等断言对实时
+     * 计数不成立（171 实测低频 flaky）。非递减断言保留「计数存在、单调合理、结构
+     * 完整」的契约强度，同时容忍统计来源的合法增量。
+     * </p>
+     *
+     * @param path
+     *            端点路径
+     */
+    @ParameterizedTest(name = "[{index}] GET {0} twice (non-decreasing)")
+    @MethodSource("dashboardCounterEndpoints")
+    void dashboardCounterEndpointNonDecreasingAcrossReads(String path) {
+        Response first = givenAuth().get(path);
+        assertBizOk(first);
+        long firstTotal = first.jsonPath().getLong("data.total");
+        assertThat(firstTotal).as("%s 首次读 total 应为非负数", path)
+            .isGreaterThanOrEqualTo(0);
+        Response second = givenAuth().get(path);
+        assertBizOk(second);
+        long secondTotal = second.jsonPath().getLong("data.total");
+        assertThat(secondTotal).as("%s 第二次读 total 应非递减（实时计数允许合法增量）", path)
+            .isGreaterThanOrEqualTo(firstTotal);
     }
 
     /**

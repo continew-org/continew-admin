@@ -170,7 +170,9 @@ class PermissionMatrixApiTest extends ApiTestSupport {
         body.put("username", username);
         body.put("nickname", nickname);
         body.put("password", encryptByRsa(rawPassword));
-        // 初始部门 id=1（sys_menu 初始数据的系统初始部门）
+        // 显式传性别（1=男，GenderEnum.value），不依赖服务端对缺省属性的隐式处理
+        body.put("gender", 1);
+        // 初始部门 id=1（main_data.sql:138 的 sys_dept 系统初始部门）
         body.put("deptId", 1L);
         body.put("roleIds", List.of(roleId));
         Response response = givenAuth().contentType(ContentType.JSON)

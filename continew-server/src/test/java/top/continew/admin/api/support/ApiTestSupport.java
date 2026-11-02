@@ -278,7 +278,8 @@ public abstract class ApiTestSupport {
     protected String login(String username, String rawPassword) {
         Map<String, Object> body = Map.of("clientId", CLIENT_ID, "authType", "ACCOUNT",
             "username", username, "password", encryptByRsa(rawPassword));
-        Response response = given().contentType(ContentType.JSON)
+        Response response = given().header("X-Tenant-Id", String.valueOf(tenantId))
+            .contentType(ContentType.JSON)
             .body(body)
             .post("/auth/login");
         if (response.statusCode() != 200 || !SUCCESS_CODE.equals(response.jsonPath()

@@ -64,7 +64,9 @@ class CacheEvictApiTest extends ApiTestSupport {
      */
     @Test
     void siteTitleUpdateVisibleAfterCacheEvictAndRestored() {
-        // 1. 读基线，记录原值与配置项 id
+        // 1. 读基线，记录原值与配置项 id。黑盒口径说明：初始数据 value 为 NULL 时接口
+        // 读取会回填 default_value，测试无法还原 DB 侧 NULL；清理目标定义为「接口可见
+        // 值回到本次读到的初始可见值」，黑盒可观测即达成清理目标
         Map<?, ?> baseline = findSiteTitleOption();
         String originalValue = String.valueOf(baseline.get("value"));
         assertThat(originalValue).as("SITE_TITLE 基线值不应为空").isNotBlank();
