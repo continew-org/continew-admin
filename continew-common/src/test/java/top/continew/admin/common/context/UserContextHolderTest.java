@@ -43,7 +43,7 @@ import org.mockito.MockedStatic;
  * ThreadLocal 中。{@code getContext()} 若不比对当前登录态，下一个请求（包括未登录请求）会把
  * 他人的上下文当作自己的读取，造成跨用户串用与越权。</p>
  *
- * @author luoqiz
+ * @author Charles7c
  * @since 5.0.0
  */
 class UserContextHolderTest {
@@ -54,7 +54,7 @@ class UserContextHolderTest {
     private UserContext residualContext;
 
     /**
-     * 当前会话中的上下文（属用户 3，模拟本次登录用户）
+     * 当前会话中的上下文（属用户 3，模拟当前请求的登录用户）
      */
     private UserContext sessionContext;
 
@@ -105,7 +105,7 @@ class UserContextHolderTest {
 
             assertSame(sessionContext, UserContextHolder.getContext());
 
-            // 回源结果已重新缓存：再次读取不再回源，且拿到的仍是当前用户上下文
+            // 回源结果写回缓存：再次读取直接命中缓存，仍是当前用户上下文
             assertSame(sessionContext, UserContextHolder.getContext());
             stpUtil.verify(StpUtil::getSession, times(1));
         }
@@ -123,7 +123,7 @@ class UserContextHolderTest {
 
             assertThrows(NotLoginException.class, UserContextHolder::getContext);
 
-            // 额外上下文一并丢弃，未登录线程取不到任何他人数据（修复前 getUserId() 会返回残留的用户 2）
+            // 额外上下文一并丢弃，未登录线程取不到任何他人数据
             assertNull(UserContextHolder.getUserId());
             assertNotSame(residualExtraContext, UserContextHolder.getExtraContext());
         }
@@ -150,14 +150,14 @@ class UserContextHolderTest {
             NotLoginException.INVALID_TOKEN);
         try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
             // 请求上下文存在但凭证校验失败（SaJwtException 亦此形态）：不属于"上下文缺失"，
-            // 缓存无有效登录态可比对，必须判归属不符、清缓存回源
+            // 无有效登录态可比对，走归属不符分支：清除缓存并回源
             stpUtil.when(StpUtil::getLoginIdDefaultNull).thenThrow(invalidToken);
             stpUtil.when(StpUtil::getSession).thenThrow(invalidToken);
             UserContextHolder.setContext(residualContext, false);
 
             assertThrows(NotLoginException.class, UserContextHolder::getContext);
 
-            // 缓存已在判定不符时清除：再读不再命中残留的用户 2（getUserId 返回 2L），而是回源并抛出
+            // 残留缓存不会被保留：再次读取仍会回源并抛出，getUserId 返回 null（getSession 共调用 2 次）
             assertNull(UserContextHolder.getUserId());
             stpUtil.verify(StpUtil::getSession, times(2));
         }

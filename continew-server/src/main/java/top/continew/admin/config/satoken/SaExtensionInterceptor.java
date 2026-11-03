@@ -79,9 +79,8 @@ public class SaExtensionInterceptor extends SaInterceptor {
         try {
             return this.doPreHandle(request, response, handler);
         } catch (Exception e) {
-            // Spring 只对 preHandle 返回 true 的拦截器回调 afterCompletion：抛异常时清理链路已断，
-            // 必须就地清除线程本地，否则本次写入的用户上下文会随池化线程残留到下一个请求，被下一
-            // 个请求当作自己的上下文读取。异常不吞、不包装，保持原有语义交给全局异常处理器。
+            // Spring 只对 preHandle 返回 true 的拦截器回调 afterCompletion：异常路径清理链路已断，此处
+            // 清除线程本地后原样抛出，避免上下文随池化线程残留；异常语义交由全局异常处理器
             UserContextHolder.clearContext();
             throw e;
         }

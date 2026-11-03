@@ -49,7 +49,7 @@ import java.util.Set;
  * {@code UserContextHolder.setContext} 写入会把他人上下文留在当前请求线程上，同一请求后续步骤
  * 把它当作自己的上下文读取（跨用户串用）。同步他人会话数据不应触碰线程本地。</p>
  *
- * @author luoqiz
+ * @author Charles7c
  * @since 5.0.0
  */
 class RoleServiceImplUpdateContextTest {
@@ -102,7 +102,7 @@ class RoleServiceImplUpdateContextTest {
 
             roleService.updateUserContext(ROLE_ID);
 
-            // 目标用户的会话仍被同步（原有行为保持）
+            // 目标用户的会话被同步，权限变更对其在线会话生效
             verify(targetSession).set(SaSession.USER, targetContext);
             // 当前线程未被写入：读到的还是自己的上下文，且没有因归属不符而回源会话
             assertSame(currentContext, UserContextHolder.getContext());

@@ -175,8 +175,8 @@ class SaExtensionInterceptorTest {
         assertThrows(NotLoginException.class,
             () -> throwingInterceptor.preHandle(request, response, handler));
 
-        // preHandle 抛异常时 Spring 不回调 afterCompletion，线程本地必须在抛出前清除：
-        // 再读取会回源会话（getSession 调用 1 次），且拿到的不是残留的用户 2 上下文
+        // 异常路径不触发 afterCompletion，清除发生在 preHandle 抛出前：
+        // 再读取会回源会话（getSession 调用 1 次），读不到残留的用户 2 上下文
         assertNotSame(residualContext, UserContextHolder.getContext());
         stpUtil.verify(StpUtil::getSession, times(1));
     }

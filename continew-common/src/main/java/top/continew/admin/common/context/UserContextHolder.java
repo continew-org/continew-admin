@@ -80,8 +80,8 @@ public class UserContextHolder {
     /**
      * 获取上下文
      *
-     * <p>线程本地缓存须先确认归属：容器线程会被复用，上一请求若在其清理逻辑执行前抛出异常，
-     * 缓存里留下的就是他人的上下文，直接返回即造成跨请求串用与越权。</p>
+     * <p>容器线程会被复用，上一请求若在其清理逻辑执行前抛出异常，缓存里可能留有他人的上下文，
+     * 故返回缓存前先比对当前登录态，归属不符时清除并按会话重新加载。</p>
      *
      * @return 上下文
      */
@@ -130,7 +130,7 @@ public class UserContextHolder {
             return true;
         } catch (SaTokenException e) {
             // NotLoginException、SaJwtException 等在此抛出（请求上下文存在但凭证无效）：
-            // 既非"无上下文可比对"也无有效登录态，缓存归属必然不符，清理后回源（回源同样抛出该异常）
+            // 无有效登录态可比对，缓存归属无法确认，清除后回源（回源同样抛出该异常）
             return false;
         }
         if (loginId == null || context.getId() == null) {
