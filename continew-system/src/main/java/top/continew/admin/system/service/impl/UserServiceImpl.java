@@ -818,7 +818,8 @@ public class UserServiceImpl
         if (userContext != null) {
             userContext.setRoles(roleService.listByUserId(id));
             userContext.setPermissions(roleService.listPermissionByUserId(id));
-            UserContextHolder.setContext(userContext);
+            // 目标是他人会话，只写会话不写线程本地，否则当前请求后续会把他人的上下文当作自己的
+            UserContextHolder.updateSessionContext(userContext);
         }
     }
 

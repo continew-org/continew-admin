@@ -27,6 +27,14 @@ Refresh Token 的密钥来自独立环境变量 `REFRESH_TOKEN_SECRET`，配置�
 
 `POST /auth/logout` 同时撤销 Refresh Session 与当前 Access Token，并清除 Cookie。只丢 Access Token 不撤销 Refresh Session 等于没退出，前端仍能静默换新令牌。
 
+### 用户上下文与线程本地
+
+`UserContextHolder.getContext()` 把当前登录用户的 `UserContext` 缓存在 `TransmittableThreadLocal` 中，同一请求内重复读取不再回源、不查库。返回缓存前先比对 Sa-Token 当前登录标识：容器线程会被复用，上一请求若在其清理逻辑执行前抛出异常，缓存里可能是他人的上下文，归属不符（含本次请求未登录）时连同额外上下文一并丢弃，并按当前会话重新加载。取不到登录标识的非 Web 线程（如经 `TransmittableThreadLocal` 传递上下文的异步任务）按原样返回缓存。
+
+清理入口在 `SaExtensionInterceptor`：`preHandle` 抛出异常时 Spring 不再回调该拦截器的 `afterCompletion`，异常分支就地 `UserContextHolder.clearContext()` 后原样抛出；401、403 短路分支返回 `false` 前同样清除；正常放行的请求由 `afterCompletion` 清除。
+
+需要同步在线用户权限数据时调用 `UserContextHolder.updateSessionContext(context)`，它只写用户级 SaSession，不改动当前线程。`setContext(context)` 会同时写线程本地，用于上下文属主就是本次登录用户的场景（如 `AuthTokenServiceImpl` 登录签发令牌）。
+
 ## 密码加密传输
 
 登录、注册、重置密码等接口不接收明文密码。前端用 RSA 公钥加密后传输，后端用 `SecureUtils.decryptPasswordByRsaPrivateKey` 以私钥解密，解密失败抛传入的错误信息（如「密码解密失败」）。重置密码等设置新密码的场景用三参重载并传 `isVerifyPattern = true`，解密后顺带校验密码格式（8-32 位，字母与数字至少各一）。

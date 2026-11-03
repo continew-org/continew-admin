@@ -76,6 +76,20 @@ public class SaExtensionInterceptor extends SaInterceptor {
     public boolean preHandle(HttpServletRequest request,
         HttpServletResponse response,
         Object handler) throws Exception {
+        try {
+            return this.doPreHandle(request, response, handler);
+        } catch (Exception e) {
+            // Spring 只对 preHandle 返回 true 的拦截器回调 afterCompletion：抛异常时清理链路已断，
+            // 必须就地清除线程本地，否则本次写入的用户上下文会随池化线程残留到下一个请求，被下一
+            // 个请求当作自己的上下文读取。异常不吞、不包装，保持原有语义交给全局异常处理器。
+            UserContextHolder.clearContext();
+            throw e;
+        }
+    }
+
+    private boolean doPreHandle(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler) throws Exception {
         boolean flag = super.preHandle(request, response, handler);
         // AK/SK 请求已经由签名认证完成，不属于交互式登录 Session。
         if (!flag || OpenApiUtils.isSignParamExists() || !StpUtil.isLogin()) {

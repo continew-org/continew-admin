@@ -18,6 +18,8 @@ package top.continew.admin.config.satoken;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.context.SaTokenContextForThreadLocal;
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.servlet.model.SaRequestForServlet;
 import cn.dev33.satoken.servlet.model.SaResponseForServlet;
@@ -54,12 +57,12 @@ import top.continew.starter.auth.refresh.token.api.AccessSessionValidator;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
 /**
- * SaExtensionInterceptor 短路路径线程本地清理测试。
+ * SaExtensionInterceptor 线程本地清理测试（短路路径与异常路径）。
  *
  * <p>回归 C1：preHandle 返回 false 时 afterCompletion 不再回调，若不在短路前清除
- * UserContext 线程本地，池化线程会残留上一请求的上下文被下一请求复用。断言方式是
- * 短路后再次读取上下文：若已清除则重新走 {@link StpUtil#getSession()}（调用 2 次），
- * 未清除则命中线程本地（仅 1 次）。</p>
+ * UserContext 线程本地，池化线程会残留上一请求的上下文被下一请求复用。preHandle 抛异常
+ * 时同理（Spring 只对已通过的拦截器回调 afterCompletion）。断言方式是清理后再次读取上下文：
+ * 若已清除则重新走 {@link StpUtil#getSession()}（调用 2 次），未清除则命中线程本地（仅 1 次）。</p>
  *
  * @author luoqiz
  * @since 4.2.0
@@ -152,6 +155,28 @@ class SaExtensionInterceptorTest {
                 stpUtil.verify(StpUtil::getSession, times(2));
             }
         }
+    }
+
+    @Test
+    void shouldClearThreadLocalWhenPreHandleThrows() {
+        UserContext residualContext = new UserContext();
+        residualContext.setId(2L);
+        LoginPasswordProperties passwordProperties = new LoginPasswordProperties();
+        SaExtensionInterceptor throwingInterceptor = new SaExtensionInterceptor(handle -> {
+            // 认证函数已把上下文写入线程本地，随后抛异常中断请求（密码过期拦截即此形态）
+            UserContextHolder.setContext(residualContext, false);
+            throw new NotLoginException("sys", "未提供有效 token", NotLoginException.NOT_TOKEN);
+        }, accessSessionValidator, sessionActivityService, clientPolicyCache, passwordProperties);
+        MockHttpServletRequest request = this.request("/system/user");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        assertThrows(NotLoginException.class,
+            () -> throwingInterceptor.preHandle(request, response, new Object()));
+
+        // preHandle 抛异常时 Spring 不回调 afterCompletion，线程本地必须在抛出前清除：
+        // 再读取会回源会话（getSession 调用 1 次），且拿到的不是残留的用户 2 上下文
+        assertNotSame(residualContext, UserContextHolder.getContext());
+        stpUtil.verify(StpUtil::getSession, times(1));
     }
 
     @Test
