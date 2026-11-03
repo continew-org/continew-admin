@@ -123,6 +123,7 @@ class TenantApiTest extends ApiTestSupport {
             // 列表验证用 LIST 端点（LIST 显式声明 /list 后缀；分页契约映射根路径，见 docs/development/backend/crud.mdx）。
             // 隔离断言（评审 F3）：只判「data 是数组」时空数组/混入其他租户用户也能通过，
             // 必须以用户名关键词过滤后既见自己、又不见平台 admin（跨租户混入即失败）
+            // 正断言：以租户管理员自己的用户名过滤，列表可见该账号
             Response userList =
                 givenAuth().queryParam("description", adminUsername).get("/system/user/list");
             assertBizOk(userList);
@@ -131,12 +132,16 @@ class TenantApiTest extends ApiTestSupport {
             assertThat(visibleUsers.stream().map(u -> String.valueOf(u.get("username"))))
                 .as("租户管理员登录后应能看到自己创建的账号")
                 .contains(adminUsername);
+            // 负断言：description 为 LIKE 子串过滤，不可断言空列表——租户初始管理员
+            // qa_smoke_admin<时间戳> 同样含 "admin" 子串。跨租户隔离的正确负断言是
+            // 结果里不出现平台超管的精确用户名，混入平台用户即失败
             Response platformLeakProbe =
                 givenAuth().queryParam("description", "admin").get("/system/user/list");
             assertBizOk(platformLeakProbe);
-            assertThat(platformLeakProbe.jsonPath().getList("data"))
-                .as("以平台超管用户名 admin 过滤租户用户列表，不应返回任何平台侧用户（跨租户隔离）")
-                .isEmpty();
+            assertThat(platformLeakProbe.jsonPath().getList("data").stream()
+                .map(u -> String.valueOf(((Map<?, ?>) u).get("username"))))
+                .as("过滤结果不应混入平台超管 admin（跨租户隔离）")
+                .doesNotContain("admin");
             // 5. 回平台侧更新租户域名，旧域名解析为空、新域名可解析（登录前先切回默认租户，登录请求会携带当前租户上下文）
             useTenant(DEFAULT_TENANT_ID);
             loginAsDefaultAdmin();
