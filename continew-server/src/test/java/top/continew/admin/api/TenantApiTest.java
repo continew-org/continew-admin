@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * 租户完整链路黑盒测试：创建套餐 → 创建租户（指定初始管理员凭据）→ 域名解析 →
- * 租户管理员登录拉取用户列表 → 更换域名 → 逆序清理。
+ * 租户管理员登录拉取用户列表（含租户隔离正/负断言）→ 更换域名 → 逆序清理。
  *
  * <p>
  * 端点依据：POST /tenant/package 与 /tenant/package/menu/tree（PackageController），
@@ -120,12 +120,23 @@ class TenantApiTest extends ApiTestSupport {
             // 4. 租户管理员登录，拉取租户用户列表（登录请求须携带租户上下文，否则按默认租户定位不到用户）
             useTenant(tenantId);
             login(adminUsername, adminPassword);
-            // 列表验证用 LIST 端点（LIST 显式声明 /list 后缀；分页契约映射根路径，见 docs/development/backend/crud.mdx）
-            Response userList = givenAuth().get("/system/user/list");
+            // 列表验证用 LIST 端点（LIST 显式声明 /list 后缀；分页契约映射根路径，见 docs/development/backend/crud.mdx）。
+            // 隔离断言（评审 F3）：只判「data 是数组」时空数组/混入其他租户用户也能通过，
+            // 必须以用户名关键词过滤后既见自己、又不见平台 admin（跨租户混入即失败）
+            Response userList =
+                givenAuth().queryParam("description", adminUsername).get("/system/user/list");
             assertBizOk(userList);
-            assertThat(userList.jsonPath().getList("data"))
-                .as("租户用户列表 data 应为数组结构")
-                .isNotNull();
+            List<Map<?, ?>> visibleUsers = userList.jsonPath().getList("data");
+            assertThat(visibleUsers).as("租户用户列表 data 应为数组结构").isNotNull();
+            assertThat(visibleUsers.stream().map(u -> String.valueOf(u.get("username"))))
+                .as("租户管理员登录后应能看到自己创建的账号")
+                .contains(adminUsername);
+            Response platformLeakProbe =
+                givenAuth().queryParam("description", "admin").get("/system/user/list");
+            assertBizOk(platformLeakProbe);
+            assertThat(platformLeakProbe.jsonPath().getList("data"))
+                .as("以平台超管用户名 admin 过滤租户用户列表，不应返回任何平台侧用户（跨租户隔离）")
+                .isEmpty();
             // 5. 回平台侧更新租户域名，旧域名解析为空、新域名可解析（登录前先切回默认租户，登录请求会携带当前租户上下文）
             useTenant(DEFAULT_TENANT_ID);
             loginAsDefaultAdmin();

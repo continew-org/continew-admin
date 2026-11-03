@@ -11,7 +11,8 @@ COMPOSE_FILE="$REPO_ROOT/docker/docker-compose-test.yml"
 TEST_DIR="$REPO_ROOT/docker/test"
 ENV_FILE="$TEST_DIR/.env"
 PORTS_FILE="$TEST_DIR/.ports.env"
-PROJECT="continew-admin-test"
+# 清理目标固定（评审 F4）：环境文件不可改写项目名，防止 down -v 清理到其他 compose project
+readonly PROJECT="continew-admin-test"
 
 MODE="mount"
 case "${1:-}" in
@@ -37,6 +38,27 @@ if [[ ! -f "$ENV_SOURCE" ]]; then
 fi
 ENV_FILE_DOCKER="$(to_host_path "$ENV_SOURCE")"
 
+# 按 Compose dotenv 语义读键（评审 F4）：.env 同时被 docker compose 与本脚本消费，
+# Bash source 会把整份文件当 shell 执行——额外键可覆盖脚本控制变量（如 PROJECT 改写
+# down 清理目标）、带空格的合法值（如 JAVA_OPTS）会被当命令执行。这里不做 source，
+# 只对已知配置键白名单解析：KEY=VALUE 单行、去除两端引号、# 开头为注释；
+# 可选第二参数指定读取文件（--keep 分支传 .ports.env，取实际探测端口而非 .env 起点）
+dotenv_get() {
+    local key="$1" file="${2:-$ENV_SOURCE}" line
+    [[ -f "$file" ]] || return 0
+    while IFS= read -r line; do
+        line="${line%%#*}"
+        [[ "$line" == "$key="* ]] || continue
+        line="${line#*=}"
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+        line="${line%\"}" && line="${line#\"}"
+        line="${line%\'}" && line="${line#\'}"
+        printf '%s\n' "$line"
+        return 0
+    done < "$file"
+}
+
 # 所有 compose 调用统一 -f 绝对路径 + -p 项目名，禁止裸命令（评审 P0-1：防误伤同机其他 project）
 compose() {
     local env_args=(--env-file "$ENV_FILE_DOCKER")
@@ -56,6 +78,7 @@ port_in_use() {
 
 # 从起点逐个 +1 探测空闲端口；被占端口跳过继续探测下一个，连续 10 个候选全被占才报错
 # （评审 R2：16380 已被演示 Redis 占用，遇占即停会误判；报错时打印已占用端口段）
+# Redis 自评审 F1 起不再映射宿主端口，只有应用端口需要探测
 detect_free_port() {
     local base="$1" label="$2"
     local occupied="" candidate i
@@ -116,8 +139,7 @@ compose_service_status() {
 print_ready_hint() {
     echo ""
     echo "测试环境已就绪（project：$PROJECT）"
-    echo "  应用  ：http://127.0.0.1:${APP_PORT}"
-    echo "  Redis ：127.0.0.1:${REDIS_PORT}"
+    echo "  应用  ：http://127.0.0.1:${APP_PORT}（仅本机可达）"
     echo "  验证码：已关闭（sys_option.LOGIN_CAPTCHA_ENABLED=0）"
     echo "运行 L3 测试：bash scripts/test/api-smoke.sh"
     echo "停止环境    ：bash scripts/test/down.sh"
@@ -133,8 +155,8 @@ if [[ ! -f "$ENV_FILE" ]]; then
     echo "已从 .env.example 生成 $ENV_FILE（默认弱密码仅用于测试环境）"
 fi
 
-# shellcheck disable=SC1090
-source "$ENV_SOURCE"
+# 用户可配置项经白名单读取（评审 F4）：调用者已导出的环境变量优先于文件值
+APP_PORT="${APP_PORT:-$(dotenv_get APP_PORT)}"
 
 # --keep：容器全部健康且端口文件存在才复用；存在但不健康直接报错，不自动修复（计划 4.6）
 if [[ "$MODE" == "keep" ]]; then
@@ -143,8 +165,12 @@ if [[ "$MODE" == "keep" ]]; then
         && grep -q '^mysql-test running healthy' <<<"$STATUS" \
         && grep -q '^redis-test running healthy' <<<"$STATUS" \
         && grep -Eq '^app-test(-built)? running' <<<"$STATUS"; then
-        # shellcheck disable=SC1090
-        source "$PORTS_FILE"
+        # 实际发布端口以 .ports.env 探测记录为准（.env 只是探测起点，可能已被 +1 偏移）
+        APP_PORT="$(dotenv_get APP_PORT "$PORTS_FILE")"
+        if [[ -z "$APP_PORT" ]]; then
+            echo "错误：$PORTS_FILE 缺少 APP_PORT 记录，无法确定复用端口，请先执行 bash scripts/test/down.sh 清理后重新启动" >&2
+            exit 1
+        fi
         echo "--keep：现有容器全部健康，复用（沿用 .ports.env 端口）"
         wait_app_healthy "$APP_PORT"
         disable_login_captcha
@@ -161,15 +187,13 @@ if [[ "$MODE" == "keep" ]]; then
     MODE="mount"
 fi
 
-echo "[1/4] 探测空闲端口（应用从 ${APP_PORT:-18020} 起、Redis 从 ${REDIS_PORT:-16379} 起）..."
+echo "[1/4] 探测空闲应用端口（从 ${APP_PORT:-18020} 起）..."
 APP_PORT="$(detect_free_port "${APP_PORT:-18020}" "应用端口")"
-REDIS_PORT="$(detect_free_port "${REDIS_PORT:-16379}" "Redis 端口")"
 cat > "$PORTS_FILE" <<EOF
 # 由 scripts/test/up.sh 探测生成（不入库），docker compose 与 scripts/test/api-smoke.sh 共同消费
 APP_PORT=$APP_PORT
-REDIS_PORT=$REDIS_PORT
 EOF
-echo "  应用端口：$APP_PORT，Redis 端口：$REDIS_PORT（已写入 docker/test/.ports.env）"
+echo "  应用端口：$APP_PORT（已写入 docker/test/.ports.env）"
 
 if [[ "$MODE" == "mount" ]]; then
     echo "[2/4] 宿主构建瘦包（-DskipTests，产物挂载进容器）..."
