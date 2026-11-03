@@ -16,6 +16,7 @@
 
 package top.continew.admin.common.context;
 
+import cn.dev33.satoken.exception.SaTokenContextException;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
@@ -116,16 +117,21 @@ public class UserContextHolder {
      * 判断线程本地上下文是否属于当前登录用户
      *
      * @param context 线程本地上下文
-     * @return true：属于当前登录用户，或当前线程无登录上下文可比对；false：归属不符，或当前请求未登录
+     * @return true：属于当前登录用户，或当前线程无请求上下文可比对；false：归属不符，或当前请求未登录 / 凭证无效
      */
     private static boolean isOwnedByCurrentLogin(UserContext context) {
         Object loginId;
         try {
             loginId = StpUtil.getLoginIdDefaultNull();
-        } catch (SaTokenException e) {
-            // 取不到 Sa-Token 请求上下文的线程（异步任务等）没有归属可比对，其上下文只能由代码经
-            // TransmittableThreadLocal 显式传递而来，不属于跨请求残留，保持返回缓存
+        } catch (SaTokenContextException e) {
+            // 取不到 Sa-Token 请求上下文的线程（异步任务等）没有归属可比对；此类线程的缓存多为
+            // 代码经 TransmittableThreadLocal 显式传递而来，或在线程创建时刻自动快照自父线程
+            // （TTL 继承 InheritableThreadLocal），均不属于跨请求残留，保持返回缓存
             return true;
+        } catch (SaTokenException e) {
+            // NotLoginException、SaJwtException 等在此抛出（请求上下文存在但凭证无效）：
+            // 既非"无上下文可比对"也无有效登录态，缓存归属必然不符，清理后回源（回源同样抛出该异常）
+            return false;
         }
         if (loginId == null || context.getId() == null) {
             return false;

@@ -132,7 +132,8 @@ class UserContextHolderTest {
     @Test
     void shouldKeepCachedContextWhenLoginStateIsUnavailable() {
         try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
-            // 异步线程没有 Sa-Token 请求上下文，其上下文由 TransmittableThreadLocal 显式传递而来
+            // 异步线程没有 Sa-Token 请求上下文，其缓存多为代码经 TransmittableThreadLocal
+            // 显式传递而来（或线程创建时刻自动快照自父线程）
             stpUtil.when(StpUtil::getLoginIdDefaultNull)
                 .thenThrow(new SaTokenContextException("未获取到 Request 对象"));
             UserContextHolder.setContext(residualContext, false);
@@ -140,6 +141,25 @@ class UserContextHolderTest {
             assertSame(residualContext, UserContextHolder.getContext());
 
             stpUtil.verify(StpUtil::getSession, never());
+        }
+    }
+
+    @Test
+    void shouldDiscardCachedContextWhenCredentialsAreInvalid() {
+        NotLoginException invalidToken = new NotLoginException("sys", "token 无效",
+            NotLoginException.INVALID_TOKEN);
+        try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
+            // 请求上下文存在但凭证校验失败（SaJwtException 亦此形态）：不属于"上下文缺失"，
+            // 缓存无有效登录态可比对，必须判归属不符、清缓存回源
+            stpUtil.when(StpUtil::getLoginIdDefaultNull).thenThrow(invalidToken);
+            stpUtil.when(StpUtil::getSession).thenThrow(invalidToken);
+            UserContextHolder.setContext(residualContext, false);
+
+            assertThrows(NotLoginException.class, UserContextHolder::getContext);
+
+            // 缓存已在判定不符时清除：再读不再命中残留的用户 2（getUserId 返回 2L），而是回源并抛出
+            assertNull(UserContextHolder.getUserId());
+            stpUtil.verify(StpUtil::getSession, times(2));
         }
     }
 

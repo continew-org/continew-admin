@@ -169,9 +169,11 @@ class SaExtensionInterceptorTest {
         }, accessSessionValidator, sessionActivityService, clientPolicyCache, passwordProperties);
         MockHttpServletRequest request = this.request("/system/user");
         MockHttpServletResponse response = new MockHttpServletResponse();
+        // assertThrows 的 lambda 内只保留可能抛异常的被测调用，参数对象提前构造
+        Object handler = new Object();
 
         assertThrows(NotLoginException.class,
-            () -> throwingInterceptor.preHandle(request, response, new Object()));
+            () -> throwingInterceptor.preHandle(request, response, handler));
 
         // preHandle 抛异常时 Spring 不回调 afterCompletion，线程本地必须在抛出前清除：
         // 再读取会回源会话（getSession 调用 1 次），且拿到的不是残留的用户 2 上下文
