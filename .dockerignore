@@ -1,0 +1,18 @@
+# 构建上下文瘦身：供 L3 测试镜像多阶段构建（docker/test/Dockerfile，上下文为仓库根）
+# 只保留源码与 Maven 构建所需文件（mvnw、.mvn、style/ 门禁配置、lombok.config 随源码保留）
+.git
+.idea
+.vscode
+.github
+docs
+# Dockerfile 位于被排除的 docker/ 下：父目录链必须逐级重新包含，
+# 否则 BuildKit 报 failed to read dockerfile（.dockerignore 规则：父目录被排除后子文件不可直接反包含）
+docker/*
+!docker/test
+docker/test/*
+!docker/test/Dockerfile
+scripts
+**/target
+**/logs
+**/*.md
+.flattened-pom.xml

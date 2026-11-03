@@ -1,5 +1,7 @@
 # 统一行尾：文本文件统一 LF 存储、LF 检出（Spotless 期望与仓库存储一致）
 * text=auto eol=lf
+# shell 脚本显式声明 LF（scripts/test/ 下脚本在 Linux 容器内执行，CRLF 会直接挂掉）
+*.sh text eol=lf
 # Windows 脚本必须 CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf

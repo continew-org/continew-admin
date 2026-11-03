@@ -15,6 +15,12 @@
     <name>${project.artifactId}</name>
     <description>API 及打包部署模块</description>
 
+    <properties>
+        <!-- L3 API 测试组过滤开关：默认不执行 api 组；-Papi-test 时反向只执行该组 -->
+        <surefire.groups></surefire.groups>
+        <surefire.excludedGroups>api</surefire.excludedGroups>
+    </properties>
+
     <dependencies>
         <!-- 系统管理模块 -->
         <dependency>
@@ -98,6 +104,13 @@
             <artifactId>testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- REST Assured（L3 API 黑盒测试，对脚本起的独立实例发真实 HTTP；版本由根 POM 统一管理） -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -122,11 +135,32 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- 纯单元测试与 Testcontainers 集成测试均随默认 surefire 配置执行，无需排除 -->
+            <!-- 纯单元测试与 Testcontainers 集成测试均随默认 surefire 配置执行；
+                 L3 API 黑盒测试以 @Tag("api") 标记，默认排除，-Papi-test 时反向只跑该组。
+                 组过滤经属性间接配置：profile 无法用空标签覆盖父配置值（Maven 合并保留父值），
+                 属性覆盖则是完全替换，故此处以属性占位 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <groups>${surefire.groups}</groups>
+                    <excludedGroups>${surefire.excludedGroups}</excludedGroups>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
+        <!-- L3 API 黑盒测试：只运行 @Tag("api") 组，配合 scripts/test/api-smoke.sh 对脚本起的独立实例发真实 HTTP；
+             命令行需加 -Dsurefire.failIfNoSpecifiedTests=false，避免无匹配用例时失败 -->
+        <profile>
+            <id>api-test</id>
+            <properties>
+                <surefire.groups>api</surefire.groups>
+                <surefire.excludedGroups></surefire.excludedGroups>
+            </properties>
+        </profile>
+
         <!-- 胖包模式：将依赖、配置文件等打包到 jar 包之内 -->
         <profile>
             <id>fat-jar</id>

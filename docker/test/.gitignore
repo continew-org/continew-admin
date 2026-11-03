@@ -1,0 +1,3 @@
+# 本地环境文件不入库：.env 由用户从 .env.example 复制生成，.ports.env 由 scripts/test/up.sh 生成
+.env
+.ports.env

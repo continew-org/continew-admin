@@ -1,0 +1,169 @@
+---
+title: 测试
+description: 四层自动化测试体系的分层边界、运行方式、api-test profile 配置、新增用例指引与常见问题。
+---
+
+ContiNew Admin 的自动化测试分四层，每层验证目标不同、对环境的依赖不同。本文给出各层的边界、运行命令、配置项与新增用例的落位方式，全部脚本与类名以仓库实际文件为准。
+
+## 四层体系
+
+| 层 | 名称 | 验证目标 | 是否启动 Spring | 依赖的真实资源 |
+|:--|:--|:--|:--|:--|
+| L1 | 单元测试 | 类与方法的纯逻辑分支 | 否 | 无，全部 Mock |
+| L2 | 集成测试 | Service/Mapper 与 MySQL、Redis 的协作 | 是 | Testcontainers 拉起的真实容器 |
+| L3 | API 黑盒测试 | 认证、权限、租户隔离、接口契约、缓存失效 | 否，对独立实例发真实 HTTP | 脚本起停的独立实例（MySQL、Redis、应用） |
+| L4 | E2E 测试 | 关键用户路径 | 否 | 浏览器与前后端服务 |
+
+L1 在本机毫秒级完成，是日常迭代的主力反馈。L2 经 Testcontainers 拉起真实 MySQL 8.0.42 与 Redis 7.2.8 容器（`BaseIntegrationTest`），验证 SQL、事务与缓存行为，CI 中真实执行。L3 对脚本起的独立实例发真实 HTTP 请求，验证整条链路对外暴露的行为，覆盖 L2 内部视角看不到的认证、租户与缓存失效问题。L4（Playwright）在前端并入本仓库后启动，当前未实施。
+
+## 分层判定
+
+落位依据是测试代码触碰的资源类型。出现以下任意一项，即为 L2 及以上：
+
+1. `@SpringBootTest`（启动 Spring 上下文）。
+2. `@Testcontainers`（拉起真实容器）。
+3. 直连真实 SQL、Redis 或 HTTP。
+
+测试里只有 `new`、Mock 与断言的，归入 L1。判断不确定时，看这条测试失败后你需要修的是「类的逻辑」还是「组件协作」，前者归 L1，后者归 L2。
+
+## 本地运行
+
+| 层 | 命令 | Docker 要求 |
+|:--|:--|:--|
+| L1 | `./mvnw test` 或 IDE 直接运行测试类 | 无 |
+| L2 | `./mvnw verify` | 需要 |
+| L3 | `scripts/test/` 四脚本（见下文） | 需要 |
+
+L2 容器由 `@Testcontainers(disabledWithoutDocker = true)` 管理，本机没有 Docker 时自动跳过全部集成测试，构建不会失败；CI（`ci.yml`）具备 Docker 环境，`./mvnw verify` 会真实启动容器执行。这也意味着无 Docker 的本机执行 `./mvnw test` 等价于只跑 L1。
+
+## L3 测试环境
+
+L3 的全部物料在 `scripts/test/` 与 `docker/docker-compose-test.yml`，社区用户 clone 后即可自建环境，不绑定任何特定机器。
+
+| 脚本 | 作用 |
+|:--|:--|
+| `scripts/test/up.sh` | 起全套环境（MySQL、Redis、应用独立实例），默认随用随走 |
+| `scripts/test/api-smoke.sh` | 以 Maven 执行 L3 套件（`@Tag("api")`） |
+| `scripts/test/down.sh` | 停止环境并清理数据卷 |
+| `scripts/test/reset.sh` | 强制重建（先 `down.sh` 再 `up.sh`，参数透传） |
+
+标准生命周期为随用随走：
+
+```bash
+bash scripts/test/up.sh          # 起环境
+bash scripts/test/api-smoke.sh   # 跑 L3
+bash scripts/test/down.sh        # 停环境并清卷
+```
+
+所有 compose 调用都限定 `-f <compose 文件绝对路径>` 与 `-p continew-admin-test`，`down.sh` 执行前先打印目标容器清单，保证只作用于测试环境自身的 project，不影响同机其他 compose 项目（如演示环境）。
+
+### 启动模式
+
+`up.sh` 支持三种模式，默认模式无需 Docker 之外的任何构建环境：
+
+1. 默认（宿主构建 + 挂载）：先执行 `./mvnw -pl :continew-server -am package -DskipTests` 构建瘦包，产物目录 `continew-server/target/app` 挂载进容器启动，速度最快。
+2. `--build`（自包含镜像）：经 `docker/test/Dockerfile` 多阶段构建，build 阶段用 `maven:3.9-eclipse-temurin-25`，运行时镜像 `bellsoft/liberica-openjdk-debian:17.0.14` 与生产部署一致。首次较慢，适合没有本地 Maven 缓存的环境。
+3. `--keep`（复用健康容器）：现有容器全部健康时直接复用，沿用 `docker/test/.ports.env` 中记录的端口。仅用于本地人工调试，不参与验收与 CI。容器存在但不健康时 `--keep` 直接报错退出，需先执行 `down.sh` 或 `reset.sh`。
+
+默认模式与 `--build` 每次启动都会重建环境（清理旧容器与数据卷后全新启动），测试数据不跨轮残留。
+
+### 端口探测
+
+应用端口默认从 18020 起、Redis 端口默认从 16379 起，逐个 +1 探测空闲端口，被占用的候选跳过，最多探测 10 个。MySQL 容器只在内网可达，不映射宿主端口，L3 黑盒测试不直连数据库。探测结果写入 `docker/test/.ports.env`（`.gitignore` 忽略，不入库），compose 与 `api-smoke.sh` 共同消费该文件。文档中的端口统一按默认 18020/16379 描述，实际以 `up.sh` 探测输出为准。
+
+### 凭据与环境文件
+
+首次执行 `up.sh` 时自动从 `docker/test/.env.example` 复制生成 `docker/test/.env`（默认弱密码仅用于测试环境），内含 `MYSQL_ROOT_PASSWORD`、`REDIS_PASSWORD` 等变量。`.env` 与 `.ports.env` 均不入库。
+
+## api-test profile
+
+L3 用例以 `@Tag("api")` 标记，经 Maven profile 与普通构建隔离，配置位于 `continew-server/pom.xml`：
+
+1. 默认构建：surefire 的 `excludedGroups` 为 `api`，L3 用例不执行，L1 与 L2 不受影响。
+2. `-Papi-test`：反向只执行 `api` 组，命令为 `./mvnw -pl :continew-server -am -Papi-test test -Dsurefire.failIfNoSpecifiedTests=false`。`api-smoke.sh` 内部执行的就是这条命令，并自动按 `--base-url` 参数与 `.ports.env` 注入目标地址。
+
+### 配置项
+
+测试基类 `ApiTestSupport` 按以下优先级读取配置：系统属性（`-Dapi.*`）> 环境变量（`API_*`）> 默认值。
+
+| 系统属性 | 环境变量 | 默认值 | 含义 |
+|:--|:--|:--|:--|
+| `api.base-url` | `API_BASE_URL` | `http://127.0.0.1:18020` | 被测实例地址 |
+| `api.username` | `API_USERNAME` | `admin` | 超管用户名 |
+| `api.password` | `API_PASSWORD` | `admin123` | 超管密码（dev 弱默认） |
+| `api.client-id` | `API_CLIENT_ID` | `ef51c9a3e9046c4f2ea45142c8a8344a` | 客户端 ID（Liquibase 初始数据 `sys_client`） |
+| `api.rsa-public-key` | `API_RSA_PUBLIC_KEY` | `application-dev.yml` 中的开发示例公钥 | 登录密码 RSA 加密公钥 |
+
+默认公钥是随仓库分发的开发环境示例值（`application-dev.yml` 的 `continew-starter.encrypt.field.public-key`），仅适用于以 dev 配置启动的实例。指向其他环境时通过环境变量覆盖。
+
+### 基类能力
+
+`ApiTestSupport`（`top.continew.admin.api.support`）提供四类能力，新增 L3 用例直接复用：
+
+1. 登录与请求封装：`login()` 向 `POST /auth/login` 发送 RSA 加密后的账号密码，后续请求自动携带 `Authorization: Bearer` 与 `X-Tenant-Id`（默认租户 `0`）。
+2. 断言工具：`assertBizOk()` 校验 HTTP 200 且业务码为字符串 `"0"`（全局响应 `R.code` 为 String 类型），失败时输出脱敏后的响应体。
+3. 等待工具：`awaitConsistency()` 基于 Awaitility 轮询断言（超时 5 秒、间隔 200 毫秒），用于缓存失效等最终一致场景，不使用固定 `sleep`。
+4. 清理工具：`deleteQuietly()` 发起 DELETE 并吞掉异常，清理失败只记 warning，不会掩盖主断言结果。
+
+## 新增用例
+
+### 新增一个 L1 用例
+
+L1 放在对应模块的 `src/test` 下（continew-common、continew-system、continew-server 均有），不启动 Spring、不连数据库，Mock 掉全部协作对象。参考 `continew-common/src/test` 下的 `GlobalExceptionHandlerTest` 与 `continew-system/src/test` 下的 `RefreshAccessTokenIssuerImplTest`。运行方式为 IDE 直接执行或 `./mvnw test`。
+
+### 新增一个 L2 用例
+
+L2 放在 `continew-server/src/test/java/top/continew/admin/it/` 包下，继承 `BaseIntegrationTest`。基类以 singleton 模式管理 MySQL 与 Redis 容器（跨测试类复用同一实例，Liquibase 建表与上下文启动成本只支付一次），并已注入容器连接信息，子类只需注入 Service 编写断言。现有示例为 `it/cache/CacheIntegrationTest`、`it/system/SystemServiceIntegrationTest`、`it/tenant/TenantIsolationIntegrationTest`。L2 聚焦 L3 黑盒覆盖不到的内部行为（事务回滚、唯一约束、软删除、数据权限），避免与 L3 重复验证同一面。
+
+### 新增一个 L3 用例
+
+L3 放在 `continew-server/src/test/java/top/continew/admin/api/` 包下，类上标注 `@Tag("api")` 并继承 `ApiTestSupport`，现有套件为 `AuthApiTest`、`CoreReadApiTest`、`TenantApiTest`、`CacheEvictApiTest`。执行方式为 `up.sh` 起环境后运行 `api-smoke.sh`，或直接执行 `-Papi-test` 命令指向目标实例。
+
+L3 用例应验证对外契约而非内部实现，每个端点至少带一条结构断言（如分页端点断言 `data.list` 为数组）。缓存相关断言一律走 `awaitConsistency()`。
+
+## 测试数据约定
+
+L3 会对被测实例产生真实写入，约定如下：
+
+1. 创建的对象一律使用 `qa_` 或 `QA-SMOKE-` 前缀并附加时间戳，便于识别与排查残留。
+2. 资源按创建的逆序删除（先删依赖方再删被依赖方），删除逻辑放在 `finally` 块中，用例失败也执行清理。
+3. 删除走 `deleteQuietly()`，清理失败不影响主断言的成败判定。
+4. 会改全局配置的用例（如 `CacheEvictApiTest` 修改站点标题）在 `finally` 中恢复原值并轮询确认。
+5. 环境默认随用随走，`down.sh` 以 `down -v` 清理数据卷，测试结束不留数据。
+
+## CI 触发
+
+| 工作流 | 触发方式 | 执行内容 | PR 必需 |
+|:--|:--|:--|:--|
+| `ci.yml` | push dev、pull_request | 四道静态门禁 + L1 + L2（Testcontainers 真实启动容器） | 是 |
+| `full-test.yml` | `workflow_dispatch` 手动触发 | L3 API 黑盒测试 | 否 |
+
+`ci.yml` 是唯一阻塞合并的自动化检查，L2 在 GitHub 云端 runner 上真实拉起容器执行。L3 只手动触发，不阻塞任何 PR，原因有两点：社区贡献者的 fork 没有 self-hosted runner，接入 `pull_request` 会让外部 PR 长期停在等待状态；缓存最终一致类断言存在偶发失败的可能，先经一段时间的运行观察，再评估是否收紧为必需检查。
+
+## 常见问题
+
+### 本机没有 Docker，`./mvnw verify` 时集成测试没跑
+
+属预期行为。L2 容器由 `@Testcontainers(disabledWithoutDocker = true)` 管理（`BaseIntegrationTest`），无 Docker 环境自动跳过，构建不会失败。L3 脚本则会在前置检查阶段直接报错（未找到 `docker` 命令或 compose 插件不可用），因为黑盒测试必须有真实实例。
+
+### 启动时提示端口被占用
+
+`up.sh` 探测端口时跳过被占用的候选，继续探测下一个，连续 10 个候选（如应用端口 18020 到 18029）全部被占才报错退出，错误信息会列出已占用的端口段。处理方式是释放对应段位的端口，或通过环境变量指定新的起始端口后重试。
+
+### 登录报错，怀疑 RSA 公钥不对
+
+L3 登录密码用 `api.rsa-public-key`（或 `API_RSA_PUBLIC_KEY`）指定的公钥加密，必须与被测实例配置的私钥（`continew-starter.encrypt.field.private-key`）配对。默认值只与 dev 配置的示例密钥对匹配，指向其他实例时支持 `file:` 前缀指定 PEM 文件，例如 `-Dapi.rsa-public-key=file:/path/to/public.pem`，基类会自动剥除 PEM 头尾标记。
+
+### L3 为什么不测验证码
+
+测试环境的应用实例已由 `up.sh` 在健康检查通过后关闭登录验证码（更新 `sys_option` 表的 `LOGIN_CAPTCHA_ENABLED` 为 `0` 并清除对应 Redis 键），L3 登录请求不携带 captcha 与 uuid 字段。黑盒层不覆盖验证码开关分支，该分支由 L1 单元测试覆盖，避免测试代码耦合 Redis 中的验证码存储结构。`api-smoke.sh` 每次执行前会对运行中的本地容器重跑同一关闭逻辑，保证 `--keep` 复用容器时状态依然正确。
+
+## 相关源码
+
+- [scripts/test/up.sh（环境启停与端口探测）](https://github.com/continew-org/continew-admin/blob/dev/scripts/test/up.sh)
+- [scripts/test/api-smoke.sh（L3 执行入口）](https://github.com/continew-org/continew-admin/blob/dev/scripts/test/api-smoke.sh)
+- [docker/docker-compose-test.yml（测试环境编排）](https://github.com/continew-org/continew-admin/blob/dev/docker/docker-compose-test.yml)
+- [continew-server/pom.xml（api-test profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/pom.xml)
+- [ApiTestSupport（L3 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/test/java/top/continew/admin/api/support/ApiTestSupport.java)
+- [BaseIntegrationTest（L2 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/test/java/top/continew/admin/it/BaseIntegrationTest.java)
+- [ci.yml（PR 检查）](https://github.com/continew-org/continew-admin/blob/dev/.github/workflows/ci.yml)

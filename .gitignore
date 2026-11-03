@@ -34,3 +34,7 @@ target/
 *.diff
 *.patch
 *.tmp
+
+# 测试环境本地文件（scripts/test/up.sh 探测的端口与本地凭据，不入库）
+docker/test/.ports.env
+docker/test/.env

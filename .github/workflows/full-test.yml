@@ -1,0 +1,66 @@
+name: Full Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: '测试套件：api 仅跑 L3 接口黑盒测试，all 先跑完整 verify 门禁再跑 L3'
+        type: choice
+        options:
+          - api
+          - all
+        default: api
+        required: true
+
+permissions:
+  contents: read
+
+# L3 测试环境独占固定端口段与 compose project（continew-admin-test），
+# 并发触发时排队执行、不可中途取消（同 deploy.yml 的部署并发约定）
+concurrency:
+  group: full-test
+  cancel-in-progress: false
+
+jobs:
+  full-test:
+    name: Full test (${{ inputs.suite }})
+    # 避免 fork 因没有 self-hosted runner 卡在 pending（落地计划 4.7）
+    if: github.repository == 'continew-org/continew-admin'
+    runs-on: self-hosted
+    timeout-minutes: 30
+    steps:
+      # 1、检出源码（runner 工作区为全新 checkout，脚本均基于自身位置解析路径，无需特殊处理）
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # 2、JDK 25（同 ci.yml：构建基线 JDK 25，产物字节码 17）
+      - name: Set up JDK 25
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          java-version: 25
+          distribution: temurin
+      # 3a、suite=all：先过完整门禁（Enforcer -> Spotless -> Checkstyle -> 编译 -> 单元测试 -> SpotBugs），
+      #     L1/L2 失败则不进入 L3；suite=api：跳过本步直接跑 L3
+      - name: Build and verify
+        if: inputs.suite == 'all'
+        run: ./mvnw -B verify
+      # 3b、启动 L3 测试环境：up.sh 内含宿主 Maven 打包（-DskipTests）、compose 启动与健康等待，
+      #     无需重复打包；脚本基于自身位置解析仓库根，Actions 工作区根即仓库根
+      - name: Start test environment
+        run: bash scripts/test/up.sh
+      # 4、执行 L3：api-smoke.sh 经 -Papi-test 跑 @Tag("api") 套件，目标为 up.sh 起的独立实例
+      - name: Run L3 API tests
+        run: bash scripts/test/api-smoke.sh
+      # 5、归档 surefire 报告（JUnit XML，计划 T1.9：从第一遍起归档，供 flaky 统计）；
+      #    always() 保证 L3 失败也上传
+      - name: Upload surefire reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: surefire-reports-${{ github.run_id }}
+          path: continew-server/target/surefire-reports
+          retention-days: 7
+      # 6、清理测试环境：down.sh 清空 project continew-admin-test 的容器与数据卷，
+      #    always() 保证失败也执行，防容器残留；up 未执行时幂等无害
+      - name: Stop test environment
+        if: always()
+        run: bash scripts/test/down.sh
