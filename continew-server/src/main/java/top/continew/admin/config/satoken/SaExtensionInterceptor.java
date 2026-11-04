@@ -39,6 +39,7 @@ import top.continew.starter.web.model.R;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -112,7 +113,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 UserContextHolder.clearContext();
                 R r = R.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), invalidReason);
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
+                this.writeShortCircuitResponse(response, r);
                 return false;
             }
             // 先判定、后记录活跃，顺序反了会把最后活跃时间刷成本次请求时间，闲置永远判不出来。
@@ -130,7 +131,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 UserContextHolder.clearContext();
                 R r = R.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "长时间未操作，请重新登录");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
+                this.writeShortCircuitResponse(response, r);
                 // 闲置用户可能停在某个页面持续轮询，这里只记 DEBUG，避免刷满日志。
                 log.debug("会话已闲置超时，拒绝访问：sessionId={}，闲置阈值={}秒", sessionId, idleTimeoutSeconds);
                 return false;
@@ -155,7 +156,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 UserContextHolder.clearContext();
                 R r = R.fail(String.valueOf(HttpStatus.FORBIDDEN.value()), "您当前没有访问该租户的权限");
                 response.setStatus(HttpStatus.FORBIDDEN.value());
-                ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
+                this.writeShortCircuitResponse(response, r);
                 return false;
             }
         }
@@ -169,6 +170,21 @@ public class SaExtensionInterceptor extends SaInterceptor {
         return AuthConstants.LOGIN_URI.equals(path)
             || AuthConstants.REFRESH_URI.equals(path)
             || AuthConstants.LOGOUT_URI.equals(path);
+    }
+
+    /**
+     * 写出拦截器短路响应
+     *
+     * <p>短路响应发生在 Spring 消息转换器介入之前，{@code ServletUtils.writeJson} 经 hutool write
+     * 路径写出的 content-type 不携带 charset，{@code getWriter()} 会落到容器默认编码（Tomcat 为
+     * ISO-8859-1），中文被替换为问号，必须在写出前显式指定 UTF-8。</p>
+     *
+     * @param response 响应对象
+     * @param r        短路响应体
+     */
+    private void writeShortCircuitResponse(HttpServletResponse response, R r) {
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        ServletUtils.writeJson(response, JsonUtils.toJsonStr(r));
     }
 
     /**
