@@ -125,17 +125,18 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
                 if (isOwner(respA, aId, "admin")) {
                     successA++;
                 } else {
-                    record(coreViolations, k, "A 自读属主异常（合法请求 401/403 或串读）", respA);
+                    recordViolation(coreViolations, k, "A 自读属主异常（合法请求 401/403 或串读）", respA);
                 }
                 // 步骤 2：B 自读属主恒为 B；撤销未同步（快照仍含 monitor:log:list）记 sync 桶
                 Response respB = userInfo(bToken);
                 if (!isOwner(respB, userId, username)) {
-                    record(coreViolations, k, "B 自读属主异常（串读/误清）", respB);
+                    recordViolation(coreViolations, k, "B 自读属主异常（串读/误清）", respB);
                 } else {
                     successB++;
                     if (permissionsOf(respB).contains(PERM_MONITOR_LOG_LIST)) {
                         snapshotStaleCount++;
-                        record(syncViolations, k, "撤销后 B 在线快照仍含 monitor:log:list（DEFECT-2）", respB);
+                        recordViolation(syncViolations, k,
+                            "撤销后 B 在线快照仍含 monitor:log:list（DEFECT-2）", respB);
                     }
                 }
                 // 步骤 3（每 10 次）：grant/revoke 扰动 + 扰动后双方自读 + 撤销残留访问探测
@@ -144,22 +145,24 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
                         List.of(MENU_ID_MONITOR_LOG_DIR, MENU_ID_MONITOR_LOG_LIST));
                     Response adminAfterGrant = userInfo(aToken);
                     if (!isOwner(adminAfterGrant, aId, "admin")) {
-                        record(coreViolations, k, "授权扰动后 A 自读属主异常（被他人上下文替换即此形态）", adminAfterGrant);
+                        recordViolation(coreViolations, k, "授权扰动后 A 自读属主异常（被他人上下文替换即此形态）",
+                            adminAfterGrant);
                     }
                     Response logByAdmin = asToken(aToken).get(LOG_PATH + "?page=1&size=10");
                     if (logByAdmin.statusCode() == 401 || logByAdmin.statusCode() == 403) {
-                        record(coreViolations, k, "授权扰动后 A 访问 /system/log 被 401/403", logByAdmin);
+                        recordViolation(coreViolations, k, "授权扰动后 A 访问 /system/log 被 401/403",
+                            logByAdmin);
                     }
                     updateRolePermission(roleId, List.of());
                     Response bAfterRevoke = userInfo(bToken);
                     if (!isOwner(bAfterRevoke, userId, username)) {
-                        record(coreViolations, k, "撤销扰动后 B 自读属主异常", bAfterRevoke);
+                        recordViolation(coreViolations, k, "撤销扰动后 B 自读属主异常", bAfterRevoke);
                     }
                     // DEFECT-2 安全影响证据：撤销接口成功后，在线 B 仍可通过已撤销权限访问 /system/log
                     Response logAfterRevoke = asToken(bToken).get(LOG_PATH + "?page=1&size=10");
                     if ("0".equals(safeCode(logAfterRevoke))) {
                         revokedStillAccessible++;
-                        record(syncViolations, k, "撤销后在线 B 仍可访问 /system/log（已撤销权限残留）",
+                        recordViolation(syncViolations, k, "撤销后在线 B 仍可访问 /system/log（已撤销权限残留）",
                             logAfterRevoke);
                     }
                 }
@@ -170,13 +173,14 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
                         && "401".equals(forged.jsonPath().getString("code"))) {
                         denied401++;
                     } else {
-                        record(coreViolations, k, "伪造 token 期望 HTTP 401 + code=401", forged);
+                        recordViolation(coreViolations, k, "伪造 token 期望 HTTP 401 + code=401",
+                            forged);
                     }
                     Response aAfterForged = userInfo(aToken);
                     if (isOwner(aAfterForged, aId, "admin")) {
                         successA++;
                     } else {
-                        record(coreViolations, k, "伪造 token 异常后 A 自读被误清", aAfterForged);
+                        recordViolation(coreViolations, k, "伪造 token 异常后 A 自读被误清", aAfterForged);
                     }
                 }
                 // 步骤 5（每 25 次）：跨租户夹带（真实存在的探测租户）——403 之后合法 A 请求必须完好
@@ -188,41 +192,43 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
                         denied403++;
                         if (isAllQuestionMarks(crossTenant.jsonPath().getString("msg"))) {
                             garbled403Count++;
-                            record(encodingViolations, k,
+                            recordViolation(encodingViolations, k,
                                 "跨租户 403 响应 msg 中文乱码（writeJson 未设 UTF-8，bodyHex="
                                     + hexPrefix(crossTenant, 64)
                                     + "）",
                                 crossTenant);
                         }
                     } else {
-                        record(coreViolations, k, "跨租户夹带期望 HTTP 403 + code=403", crossTenant);
+                        recordViolation(coreViolations, k, "跨租户夹带期望 HTTP 403 + code=403",
+                            crossTenant);
                     }
                     Response aAfterCross = userInfo(aToken);
                     if (isOwner(aAfterCross, aId, "admin")) {
                         successA++;
                     } else {
-                        record(coreViolations, k, "跨租户 403 后 A 自读被污染", aAfterCross);
+                        recordViolation(coreViolations, k, "跨租户 403 后 A 自读被污染", aAfterCross);
                     }
                 }
                 // 串读反向检查：A 的响应体不得出现 B 的用户名，反之亦然
                 if (respA.getBody().asString().contains(username)) {
-                    record(coreViolations, k, "A 响应体出现 B 的用户名（资料串读）", respA);
+                    recordViolation(coreViolations, k, "A 响应体出现 B 的用户名（资料串读）", respA);
                 }
                 if (respB.getBody().asString().contains("\"username\":\"admin\"")) {
-                    record(coreViolations, k, "B 响应体出现平台超管资料（资料串读）", respB);
+                    recordViolation(coreViolations, k, "B 响应体出现平台超管资料（资料串读）", respB);
                 }
             }
 
             // 附带断言（安全矩阵「/monitor/online 仅超管可见」）：B 无 monitor:online:list → 403
             Response onlineDenied = asToken(bToken).get(ONLINE_PATH + "?page=1&size=10");
             if (onlineDenied.statusCode() != 403) {
-                record(coreViolations, PROBE_ITERATIONS, "B 访问 /monitor/online 期望 403",
+                recordViolation(coreViolations, PROBE_ITERATIONS, "B 访问 /monitor/online 期望 403",
                     onlineDenied);
             }
             Response onlineAllowed = asToken(aToken).get(ONLINE_PATH + "?page=1&size=10");
             if (onlineAllowed.statusCode() != 200
                 || !"0".equals(onlineAllowed.jsonPath().getString("code"))) {
-                record(coreViolations, PROBE_ITERATIONS, "A 访问 /monitor/online 期望 200/code=0",
+                recordViolation(coreViolations, PROBE_ITERATIONS,
+                    "A 访问 /monitor/online 期望 200/code=0",
                     onlineAllowed);
             }
             log.info("C-101 计数汇总: iterations={} successA={} successB={} denied401={} denied403={} "
@@ -296,26 +302,27 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
                 // 步骤 2：夹带乱码令牌的未认证请求 → 401
                 Response garbage = asToken(TAMPERED_TOKEN).get(USER_PATH + "?page=1&size=10");
                 if (garbage.statusCode() != 401) {
-                    record(violations, k, "乱码令牌访问 /system/user 期望 401", garbage);
+                    recordViolation(violations, k, "乱码令牌访问 /system/user 期望 401", garbage);
                 }
                 // 步骤 3：夹带无 Authorization 头的未认证请求 → 401
                 Response noAuth = given().header("X-Tenant-Id", String.valueOf(DEFAULT_TENANT_ID))
                     .get(USER_INFO_PATH);
                 if (noAuth.statusCode() != 401) {
-                    record(violations, k, "无令牌访问 /auth/user/info 期望 401", noAuth);
+                    recordViolation(violations, k, "无令牌访问 /auth/user/info 期望 401", noAuth);
                 }
                 // 步骤 4：立即合法 A 自读 → 200、属主 A、快照与基线规范化 JSON 恒等（未误清、无需重登）
                 Response afterProbe = userInfo(aToken);
                 if (!isOwner(afterProbe, aId, "admin")) {
-                    record(violations, k, "未认证夹带后 A 自读被误清（被迫重登即此形态）", afterProbe);
+                    recordViolation(violations, k, "未认证夹带后 A 自读被误清（被迫重登即此形态）", afterProbe);
                 } else if (!canonicalJson(afterProbe.jsonPath().get("data")).equals(refJson)) {
-                    record(violations, k, "未认证夹带后 A 快照与基线不一致", afterProbe);
+                    recordViolation(violations, k, "未认证夹带后 A 快照与基线不一致", afterProbe);
                 }
                 // 步骤 5：会话完好（非豁免读路径仍可用）
                 Response userList = asToken(aToken).get(USER_PATH + "?page=1&size=10");
                 if (userList.statusCode() != 200
                     || !"0".equals(userList.jsonPath().getString("code"))) {
-                    record(violations, k, "未认证夹带后 A 访问 /system/user 期望 200/code=0", userList);
+                    recordViolation(violations, k, "未认证夹带后 A 访问 /system/user 期望 200/code=0",
+                        userList);
                 }
             }
             log.info("C-107 计数汇总: iterations={} violations={}", EXCLUDE_ITERATIONS,
@@ -367,7 +374,8 @@ class ContextResidualProbeApiTest extends L3FixtureSupport {
      * @param response
      *            触发现场响应
      */
-    private void record(List<String> violations, int iteration, String note, Response response) {
+    private void recordViolation(List<String> violations, int iteration, String note,
+        Response response) {
         if (violations.size() < MAX_EVIDENCE_PER_BUCKET) {
             String entry = String.format("[ts=%d iter=%d] %s：HTTP %s code=%s body=%s",
                 System.currentTimeMillis(),

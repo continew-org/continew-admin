@@ -164,8 +164,8 @@ class PasswordExpirySelfServiceApiTest extends L3FixtureSupport {
             Assertions.assertEquals("0", recovered.jsonPath().getString("code"),
                 "C-105 步骤 6：改密重登后非豁免路径应恢复，响应体：" + sanitize(recovered.getBody().asString()));
             Response infoAfter = asToken(eToken2).get(USER_INFO_PATH);
-            Assertions.assertFalse(
-                Boolean.TRUE.equals(infoAfter.jsonPath().getBoolean("data.pwdExpired")),
+            Assertions.assertNotEquals(Boolean.TRUE,
+                infoAfter.jsonPath().getBoolean("data.pwdExpired"),
                 "C-105 步骤 6：改密后 data.pwdExpired 应为 false");
 
             // 登出本次全部会话，避免登录态干扰恢复校验

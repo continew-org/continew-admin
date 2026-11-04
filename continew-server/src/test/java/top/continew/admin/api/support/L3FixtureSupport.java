@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -553,7 +554,9 @@ public abstract class L3FixtureSupport extends ApiTestSupport {
      */
     protected static void sleepSeconds(long seconds) {
         try {
-            TimeUnit.SECONDS.sleep(seconds);
+            // 一次性闩锁无外部释放者，await 超时返回 false 即达成指定时长的确定性静置；
+            // 期间不发任何请求，避免 touch 把闲置计时刷成本次请求时间
+            new CountDownLatch(1).await(seconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Assertions.fail("静置等待被中断");
