@@ -32,12 +32,15 @@ jobs:
       # 1、检出源码（runner 工作区为全新 checkout，脚本均基于自身位置解析路径，无需特殊处理）
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # 2、JDK 25（同 ci.yml：构建基线 JDK 25，产物字节码 17）
-      - name: Set up JDK 25
-        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
-        with:
-          java-version: 25
-          distribution: temurin
+      # 2、构建基线 JDK 25（同 ci.yml：构建基线 25，产物字节码 17）。
+      #    不用 actions/setup-java：self-hosted runner 到 codeload.github.com 的 action
+      #    归档下载链路不稳（HttpClient 100s × 3 次重试超时），且 setup-java 成功后还要
+      #    从 adoptium 下载 JDK。runner 本机已装 JDK 25（mvnw 经 PATH 找到 java），
+      #    这里仅显式解析并导出 JAVA_HOME 供后续步骤使用
+      - name: Set up JDK 25 (runner-local)
+        run: |
+          echo "JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")" >> "$GITHUB_ENV"
+          java -version
       # 3a、suite=all：先过完整门禁（Enforcer -> Spotless -> Checkstyle -> 编译 -> 单元测试 -> SpotBugs），
       #     L1/L2 失败则不进入 L3；suite=api：跳过本步直接跑 L3
       - name: Build and verify
@@ -51,14 +54,14 @@ jobs:
       - name: Run L3 API tests
         run: bash scripts/test/api-smoke.sh
       # 5、归档 surefire 报告（JUnit XML，计划 T1.9：从第一遍起归档，供 flaky 统计）；
-      #    always() 保证 L3 失败也上传
-      - name: Upload surefire reports
+      #    always() 保证 L3 失败也归档。不用 actions/upload-artifact：其 action 归档同样
+      #    经 codeload.github.com 下载（与 setup-java 同链路，本 runner 从未成功过），
+      #    改为 runner 本地归档，保留最近若干次 run 的报告供查阅与 flaky 统计
+      - name: Archive surefire reports (runner-local)
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: surefire-reports-${{ github.run_id }}
-          path: continew-server/target/surefire-reports
-          retention-days: 7
+        run: |
+          mkdir -p ~/full-test-artifacts/"${{ github.run_id }}"
+          cp -r continew-server/target/surefire-reports ~/full-test-artifacts/"${{ github.run_id }}"/
       # 6、清理测试环境：down.sh 清空 project continew-admin-test 的容器与数据卷，
       #    always() 保证失败也执行，防容器残留；up 未执行时幂等无害
       - name: Stop test environment
