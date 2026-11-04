@@ -30,7 +30,7 @@ public interface RoleMenuApi {
     /**
      * 根据菜单 ID 列表查询角色 ID 列表
      *
-     * @param menuIds 菜单 ID 列表（Not In）
+     * @param menuIds 菜单 ID 列表（Not In），空列表表示不排除任何菜单，返回全部
      * @return 角色 ID 列表
      */
     Set<Long> listRoleIdByNotInMenuIds(List<Long> menuIds);
@@ -46,7 +46,9 @@ public interface RoleMenuApi {
     /**
      * 根据菜单 ID 列表删除
      *
-     * @param menuIds 菜单 ID 列表（Not In）
+     * <p>调用方须处于租户上下文，行级租户隔离限定删除范围。</p>
+     *
+     * @param menuIds 菜单 ID 列表（Not In），空列表表示不排除任何菜单，删除全部关联
      */
     void deleteByNotInMenuIds(List<Long> menuIds);
 
@@ -55,7 +57,7 @@ public interface RoleMenuApi {
      *
      * @param menuIds 菜单 ID 列表
      * @param roleId  角色 ID
-     * @return 是否新增成功（true：成功；false：无变更/失败）
+     * @return 关联关系是否已变更（true：已变更，含置空撤销；false：无变更）
      */
     boolean add(List<Long> menuIds, Long roleId);
 }
