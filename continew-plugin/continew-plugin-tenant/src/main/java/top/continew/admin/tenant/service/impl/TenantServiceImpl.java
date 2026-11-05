@@ -214,12 +214,12 @@ public class TenantServiceImpl extends
         if (CollUtil.isEmpty(tenantIdList)) {
             return;
         }
-        // 所有租户角色：删除旧菜单
+        // 所有租户角色：先记录仍持有超套餐菜单的受影响角色，删除后再查恒为空集，在线刷新会失效
         tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             // 删除旧菜单
             roleMenuApi.deleteByNotInMenuIds(newMenuIds);
             // 更新在线用户上下文
-            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             roleIdSet.forEach(roleApi::updateUserContext);
         }));
         // 租户管理员：新增菜单

@@ -180,7 +180,7 @@ class UserContextHolderTest {
     void shouldUpdateSessionWithoutTouchingThreadLocal() {
         try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
             SaSession session = mock(SaSession.class);
-            stpUtil.when(() -> StpUtil.getSessionByLoginId(3L)).thenReturn(session);
+            stpUtil.when(() -> StpUtil.getSessionByLoginId(3L, false)).thenReturn(session);
             stpUtil.when(StpUtil::getLoginIdDefaultNull).thenReturn(2L);
             UserContextHolder.setContext(residualContext, false);
 
@@ -189,6 +189,18 @@ class UserContextHolderTest {
             // 他人会话被同步，当前线程仍持有自己的上下文
             verify(session).set(SaSession.USER, sessionContext);
             assertSame(residualContext, UserContextHolder.getContext());
+        }
+    }
+
+    @Test
+    void shouldNotCreateSessionWhenTargetUserAlreadyLoggedOut() {
+        try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
+            // 判空与刷新之间的间隙里目标用户登出：按需创建会话会留下无归属的孤儿会话
+            stpUtil.when(() -> StpUtil.getSessionByLoginId(3L, false)).thenReturn(null);
+
+            UserContextHolder.updateSessionContext(sessionContext);
+
+            stpUtil.verify(() -> StpUtil.getSessionByLoginId(3L), never());
         }
     }
 }
