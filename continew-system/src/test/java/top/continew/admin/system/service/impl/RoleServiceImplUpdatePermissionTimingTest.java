@@ -81,8 +81,8 @@ class RoleServiceImplUpdatePermissionTimingTest {
     void setUp() {
         // 校验工具的校验器实例取自 Spring 上下文，单测环境以 mock 供给
         springUtilMock = mockStatic(SpringUtil.class);
-        springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+        Validator validator = mock(Validator.class);
+        springUtilMock.when(() -> SpringUtil.getBean(Validator.class)).thenReturn(validator);
         userRoleService = mock(UserRoleService.class);
         roleMenuService = mock(RoleMenuService.class);
         roleService = spy(new RoleServiceImpl(roleMenuService, mock(RoleDeptService.class)));
