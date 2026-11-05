@@ -46,9 +46,7 @@ public interface RoleMenuApi {
     /**
      * 根据菜单 ID 列表删除
      *
-     * <p>调用方须处于租户上下文，行级租户隔离限定删除范围。</p>
-     *
-     * @param menuIds 菜单 ID 列表（Not In），空列表表示不排除任何菜单，删除全部关联
+     * @param menuIds 菜单 ID 列表（Not In），空列表表示删除全部关联
      */
     void deleteByNotInMenuIds(List<Long> menuIds);
 

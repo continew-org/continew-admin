@@ -41,16 +41,10 @@ public class RoleMenuApiImpl implements RoleMenuApi {
 
     @Override
     public Set<Long> listRoleIdByNotInMenuIds(List<Long> menuIds) {
-        // MP 对空集合 NOT IN 生成非法 SQL（NOT IN ()），空列表语义为不排除任何菜单
-        List<RoleMenuDO> roleMenuList;
-        if (CollUtil.isEmpty(menuIds)) {
-            roleMenuList = baseService.lambdaQuery().select(RoleMenuDO::getRoleId).list();
-        } else {
-            roleMenuList = baseService.lambdaQuery()
-                .select(RoleMenuDO::getRoleId)
-                .notIn(RoleMenuDO::getMenuId, menuIds)
-                .list();
-        }
+        List<RoleMenuDO> roleMenuList = baseService.lambdaQuery()
+            .select(RoleMenuDO::getRoleId)
+            .notIn(CollUtil.isNotEmpty(menuIds), RoleMenuDO::getMenuId, menuIds)
+            .list();
         return CollUtils.mapToSet(roleMenuList, RoleMenuDO::getRoleId);
     }
 
@@ -61,13 +55,9 @@ public class RoleMenuApiImpl implements RoleMenuApi {
 
     @Override
     public void deleteByNotInMenuIds(List<Long> menuIds) {
-        // MP 对空集合 NOT IN 生成非法 SQL（NOT IN ()），空列表语义为删除全部关联，
-        // 调用方须处于租户上下文（行级隔离限定本租户，如套餐菜单同步）
-        if (CollUtil.isEmpty(menuIds)) {
-            baseService.lambdaUpdate().remove();
-            return;
-        }
-        baseService.lambdaUpdate().notIn(RoleMenuDO::getMenuId, menuIds).remove();
+        baseService.lambdaUpdate()
+            .notIn(CollUtil.isNotEmpty(menuIds), RoleMenuDO::getMenuId, menuIds)
+            .remove();
     }
 
     @Override
