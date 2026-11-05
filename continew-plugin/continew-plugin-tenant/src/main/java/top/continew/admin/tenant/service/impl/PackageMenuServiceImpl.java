@@ -53,11 +53,15 @@ public class PackageMenuServiceImpl implements PackageMenuService {
         if (CollUtil.isEmpty(CollUtil.disjunction(menuIds, oldMenuIdList))) {
             return false;
         }
-        // 删除原有关联
+        // 删除原有关联，此后关联关系即视为已变更：置空撤销时没有新关联可插入，
+        // 但数据库撤销已生效，须返回变更结果以触发租户角色的关联菜单同步
         baseMapper.lambdaUpdate().eq(PackageMenuDO::getPackageId, packageId).remove();
         // 保存最新关联
         List<PackageMenuDO> newList =
             CollUtils.mapToList(menuIds, menuId -> new PackageMenuDO(packageId, menuId));
+        if (CollUtil.isEmpty(newList)) {
+            return true;
+        }
         return baseMapper.insertBatch(newList);
     }
 

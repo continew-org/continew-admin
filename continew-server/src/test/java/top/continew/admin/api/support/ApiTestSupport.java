@@ -276,7 +276,23 @@ public abstract class ApiTestSupport {
      * @return Access Token
      */
     protected String login(String username, String rawPassword) {
-        Map<String, Object> body = Map.of("clientId", CLIENT_ID, "authType", "ACCOUNT",
+        return login(username, rawPassword, CLIENT_ID);
+    }
+
+    /**
+     * 指定客户端的账号密码登录：多端并发会话用例（闲置策略归属、双令牌持有）需要以不同
+     * clientId 签发各自的 Access Token，登录链路其余逻辑与两参重载完全一致。
+     *
+     * @param username
+     *            用户名
+     * @param rawPassword
+     *            明文密码（方法内完成 RSA 加密）
+     * @param clientId
+     *            客户端 ID（sys_client.client_id）
+     * @return Access Token
+     */
+    protected String login(String username, String rawPassword, String clientId) {
+        Map<String, Object> body = Map.of("clientId", clientId, "authType", "ACCOUNT",
             "username", username, "password", encryptByRsa(rawPassword));
         Response response = given().header("X-Tenant-Id", String.valueOf(tenantId))
             .contentType(ContentType.JSON)

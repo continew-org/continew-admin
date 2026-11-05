@@ -16,6 +16,7 @@
 
 package top.continew.admin.system.api;
 
+import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import top.continew.admin.common.api.system.RoleMenuApi;
@@ -42,7 +43,7 @@ public class RoleMenuApiImpl implements RoleMenuApi {
     public Set<Long> listRoleIdByNotInMenuIds(List<Long> menuIds) {
         List<RoleMenuDO> roleMenuList = baseService.lambdaQuery()
             .select(RoleMenuDO::getRoleId)
-            .notIn(RoleMenuDO::getMenuId, menuIds)
+            .notIn(CollUtil.isNotEmpty(menuIds), RoleMenuDO::getMenuId, menuIds)
             .list();
         return CollUtils.mapToSet(roleMenuList, RoleMenuDO::getRoleId);
     }
@@ -54,7 +55,9 @@ public class RoleMenuApiImpl implements RoleMenuApi {
 
     @Override
     public void deleteByNotInMenuIds(List<Long> menuIds) {
-        baseService.lambdaUpdate().notIn(RoleMenuDO::getMenuId, menuIds).remove();
+        baseService.lambdaUpdate()
+            .notIn(CollUtil.isNotEmpty(menuIds), RoleMenuDO::getMenuId, menuIds)
+            .remove();
     }
 
     @Override

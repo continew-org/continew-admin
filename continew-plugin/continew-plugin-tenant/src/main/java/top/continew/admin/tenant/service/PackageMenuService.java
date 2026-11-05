@@ -31,7 +31,7 @@ public interface PackageMenuService {
      *
      * @param menuIds   菜单 ID 列表
      * @param packageId 套餐 ID
-     * @return 是否成功（true：成功；false：无变更/失败）
+     * @return 关联关系是否已变更（true：已变更，含置空撤销；false：无变更）
      */
     boolean add(List<Long> menuIds, Long packageId);
 

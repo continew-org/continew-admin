@@ -34,7 +34,7 @@ public interface RoleMenuService extends IService<RoleMenuDO> {
      *
      * @param menuIds 菜单 ID 列表
      * @param roleId  角色 ID
-     * @return 是否新增成功（true：成功；false：无变更/失败）
+     * @return 关联关系是否已变更（true：已变更，含置空撤销；false：无变更）
      */
     boolean add(List<Long> menuIds, Long roleId);
 
