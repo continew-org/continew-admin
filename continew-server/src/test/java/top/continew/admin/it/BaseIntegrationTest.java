@@ -37,15 +37,25 @@ import org.testcontainers.utility.DockerImageName;
  * <p>
  * 容器不使用 {@code @Container} 注解管理（该注解会在每个测试类结束后停止容器，破坏
  * singleton 复用），由 {@link #startContainers()} 在首个测试类启动，JVM 退出后由
- * Ryuk 守护容器自动回收。测试上下文沿用 dev 配置（凭据均为仓库内声明的开发示例值），
- * 仅覆盖容器相关的数据源与 Redis 连接项。
+ * Ryuk 守护容器自动回收。测试上下文沿用通用配置，容器连接与字段加密密钥经测试属性源注入。
  * </p>
  *
  * @author Charles7c
  * @since 5.0.0
  */
 @Testcontainers(disabledWithoutDocker = true)
-@SpringBootTest
+// 字段加解密 RSA 密钥（测试属性源注入）
+@SpringBootTest(properties = {
+    "continew-starter.encrypt.field.public-key="
+        + "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAM51dgYtMyF+tTQt80sfFOpSV27a7t9uaUVeFrdGiVxscuiz"
+        + "E7H8SMntYqfn9lp8a5GH5P1/GGehVjUD2gF/4kcCAwEAAQ==",
+    "continew-starter.encrypt.field.private-key="
+        + "MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAznV2Bi0zIX61NC3zSx8U6lJXbtru325p"
+        + "RV4Wt0aJXGxy6LMTsfxIye1ip+f2WnxrkYfk/X8YZ6FWNQPaAX/iRwIDAQABAkEAk/VcAusrpIqA5Ac2"
+        + "P5Tj0VX3cOuXmyouaVcXonr7f+6y2YTjLQuAnkcfKKocQI/juIRQBFQIqqW/m1nmz1wGeQIhAO8XaA/K"
+        + "xzOIgU0l/4lm0A2Wne6RokJ9HLs1YpOzIUmVAiEA3Q9DQrpAlIuiT1yWAGSxA9RxcjUM/1kdVLTkv0av"
+        + "XWsCIE0X8woEjK7lOSwzMG6RpEx9YHdopjViOj1zPVH61KTxAiBmv/dlhqkJ4rV46fIXELZur0pj6WC3"
+        + "N7a4brR8a+CLLQIhAMQyerWl2cPNVtE/8tkziHKbwW3ZUiBXU24wFxedT9iV"})
 public abstract class BaseIntegrationTest {
 
     private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(
