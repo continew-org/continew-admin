@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 引入每个请求的链路。</p>
  *
  * <p>直接使用 Mapper 而不是 ClientService：ClientService 依赖在线用户服务，在线用户服务又需要
- * 这里的策略，走 Service 会形成循环依赖。sys_client 属于全局表，不需要携带租户上下文。</p>
+ * 本缓存的策略，走 Service 会形成循环依赖。sys_client 属于全局表，不需要携带租户上下文。</p>
  *
  * @author luoqiz
  * @since 5.0.0

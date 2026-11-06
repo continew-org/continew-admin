@@ -104,7 +104,7 @@ public class StoragePathValidator {
      * 条件成立时抛出 400 异常
      *
      * <p>
-     * 这里不使用 {@code ValidationUtils}：其静态初始化依赖运行中的 Spring 容器，
+     * 不使用 {@code ValidationUtils}：其静态初始化依赖运行中的 Spring 容器，
      * 会让本工具类无法脱离容器使用与测试。
      * </p>
      *
@@ -122,7 +122,7 @@ public class StoragePathValidator {
      *
      * <p>
      * 直接比较 {@code "."}、{@code ".."} 并不充分：Windows 会剥离路径分量末尾的点号与空格，
-     * {@code ".. "} 在落盘时会还原为 {@code ".."}。因此这里将「仅由点号和空白字符组成」的路径段
+     * {@code ".. "} 在落盘时会还原为 {@code ".."}。因此将「仅由点号和空白字符组成」的路径段
      * 一律视为点号段，正常的文件名不会是这种形式。
      * </p>
      *

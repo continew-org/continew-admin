@@ -97,7 +97,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
         }
         // 设置上下文
         UserContext userContext = UserContextHolder.getContext();
-        // Sa-Token 只校验 Access Token 自身有效性；这里补充 Session 状态校验，确保用户、
+        // Sa-Token 只校验 Access Token 自身有效性；补充 Session 状态校验，确保用户、
         // 租户或客户端强制下线后，尚未自然过期的 Access Token 也不能继续访问。
         // 登录、刷新和退出都由认证服务依据请求体、Cookie 或令牌映射自行确定租户，不能
         // 使用当前请求残留的租户上下文做普通业务接口的跨租户校验。

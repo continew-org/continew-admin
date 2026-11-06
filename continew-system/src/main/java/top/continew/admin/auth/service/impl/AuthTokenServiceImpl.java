@@ -229,7 +229,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             return loginResp;
         } catch (Exception e) {
             // 登录响应组装、Refresh Session 写入或 Cookie 写入失败时，不能留下孤立的
-            // Access Token。这里覆盖 StpUtil.login 后的所有异常路径，而不只是 Redis 失败。
+            // Access Token。覆盖 StpUtil.login 后的所有异常路径，而不只是 Redis 失败。
             if (accessToken != null) {
                 try {
                     StpUtil.logoutByTokenValue(accessToken);
