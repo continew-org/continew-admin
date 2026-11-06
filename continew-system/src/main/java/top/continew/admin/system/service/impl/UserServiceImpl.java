@@ -63,6 +63,7 @@ import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.util.SecureUtils;
+import top.continew.admin.common.util.TransactionUtils;
 import top.continew.admin.system.enums.OptionCategoryEnum;
 import top.continew.admin.system.mapper.user.UserMapper;
 import top.continew.admin.system.model.entity.DeptDO;
@@ -223,9 +224,9 @@ public class UserServiceImpl
             onlineUserService.kickOut(id);
             return;
         }
-        // 如果角色有变更，则更新在线用户权限信息
+        // 角色有变更时同步在线用户权限信息
         if (isSaveUserRoleSuccess) {
-            this.updateContext(id);
+            TransactionUtils.afterCommit(() -> this.updateContext(id));
         }
     }
 

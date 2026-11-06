@@ -70,11 +70,16 @@ public class UserContextHolder {
      * <p>用于变更后同步在线用户的会话数据（如管理员调整他人权限）。此类场景只需写会话，
      * 写线程本地会把他人上下文留在当前线程上，被同一请求后续步骤当作自己的上下文读取。</p>
      *
+     * <p>仅更新已存在的会话，不新建会话。</p>
+     *
      * @param context 上下文
      * @since 5.0.0
      */
     public static void updateSessionContext(UserContext context) {
-        StpUtil.getSessionByLoginId(context.getId()).set(SaSession.USER, context);
+        SaSession session = StpUtil.getSessionByLoginId(context.getId(), false);
+        if (session != null) {
+            session.set(SaSession.USER, context);
+        }
     }
 
     /**

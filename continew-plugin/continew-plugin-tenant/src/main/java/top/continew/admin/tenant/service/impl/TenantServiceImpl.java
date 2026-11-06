@@ -216,10 +216,10 @@ public class TenantServiceImpl extends
         }
         // 所有租户角色：删除旧菜单
         tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             // 删除旧菜单
             roleMenuApi.deleteByNotInMenuIds(newMenuIds);
             // 更新在线用户上下文
-            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             roleIdSet.forEach(roleApi::updateUserContext);
         }));
         // 租户管理员：新增菜单
