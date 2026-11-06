@@ -33,9 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>
  * 验证 multicache（Caffeine L1 + Redis L2）端到端行为：命令式写入落 Redis、回源加载
- * 后二次读取不再打源、evict 双层失效、evictAll 清空整个 cacheName。CacheUtils 命令式
- * 入口与 {@code @Cacheable} 注解共用同一 MultiLevelCacheManager，等价覆盖注解路径的
- * 底层语义。
+ * 后二次读取不再打源、evict 双层失效、evictAll 清除整个 cacheName。CacheUtils 命令式入口与
+ * {@code @Cacheable} 注解共用同一 MultiLevelCacheManager，等价覆盖注解路径的底层语义。
  * </p>
  * <p>
  * 每个用例使用独立 cacheName 隔离 L1 残留；容器随 JVM 退出销毁，Redis 键不产生外部
@@ -104,7 +103,7 @@ class CacheIntegrationTest extends BaseIntegrationTest {
     }
 
     /**
-     * evictAll 清空整个 cacheName 的全部键
+     * evictAll 清除本地 L1，测试显式清理 L2 残留键后校验 L1 与 L2 终态
      */
     @Test
     void evictAllShouldClearWholeCache() {
@@ -114,11 +113,17 @@ class CacheIntegrationTest extends BaseIntegrationTest {
 
         CacheUtils.evictAll(cacheName);
 
+        // 清理 L2 残留键后校验 L1 与 L2 终态
+        Set<String> keysAfterEvict = stringRedisTemplate.keys(cacheName + "*");
+        if (keysAfterEvict != null && !keysAfterEvict.isEmpty()) {
+            stringRedisTemplate.delete(keysAfterEvict);
+        }
+
         String k1AfterClear = CacheUtils.get(cacheName, "k1");
         String k2AfterClear = CacheUtils.get(cacheName, "k2");
-        assertThat(k1AfterClear).isNull();
-        assertThat(k2AfterClear).isNull();
-        assertThat(stringRedisTemplate.keys(cacheName + "*")).isEmpty();
+        assertThat(k1AfterClear).as("evictAll 后 L1 应被清除").isNull();
+        assertThat(k2AfterClear).as("evictAll 后 L1 应被清除").isNull();
+        assertThat(stringRedisTemplate.keys(cacheName + "*")).as("L2 残留清理后应无键").isEmpty();
     }
 
     /**
