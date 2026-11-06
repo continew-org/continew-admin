@@ -65,7 +65,7 @@ import javax.crypto.Cipher;
  * 请求 Content-Type 约定：所有 POST 必须显式声明 {@code contentType(JSON)}，无业务字段的
  * POST 用 {@code body("{}")} 占位。rest-assured 对未声明 CT 的 POST 默认发送
  * application/x-www-form-urlencoded，服务端 @RequestBody(required=false) 端点对该 CT 静默
- * 返回 code=1（不走异常处理器、无日志无栈），171 实测教训；登出端点即因此失败。
+ * 返回 code=1（不走异常处理器、无日志无栈）。
  * </p>
  *
  * @author Charles7c

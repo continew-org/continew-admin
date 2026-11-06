@@ -76,7 +76,7 @@ class SessionActivityServiceImplTest {
 
         service.touch(SESSION_ID, "web");
 
-        // 若节流基准误用「上次请求时间」，这里会一直是 1 次，缓存永远不更新
+        // 若节流基准误用「上次请求时间」，writes 会一直是 1 次，缓存永远不更新
         assertEquals(2, service.writes);
     }
 
