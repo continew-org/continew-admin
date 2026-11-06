@@ -132,7 +132,7 @@ public class SaExtensionInterceptor extends SaInterceptor {
                 R r = R.fail(String.valueOf(HttpStatus.UNAUTHORIZED.value()), "长时间未操作，请重新登录");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 this.writeShortCircuitResponse(response, r);
-                // 闲置用户可能停在某个页面持续轮询，这里只记 DEBUG，避免刷满日志。
+                // 闲置用户可能停在某个页面持续轮询，仅记 DEBUG，避免刷满日志。
                 log.debug("会话已闲置超时，拒绝访问：sessionId={}，闲置阈值={}秒", sessionId, idleTimeoutSeconds);
                 return false;
             }

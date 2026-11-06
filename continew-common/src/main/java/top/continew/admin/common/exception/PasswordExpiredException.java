@@ -35,8 +35,7 @@ public class PasswordExpiredException extends BusinessException {
      * 稳定的错误码，前端按此值识别，不要依赖提示文案。
      * <p>
      * 取 428（Precondition Required，要求先满足前置条件再发起请求）。{@code R.code} 是 String，
-     * 前端会按数值解析，所以必须是数字形态的字符串；换成符号型错误码（如 PASSWORD_EXPIRED）
-     * 会被解析成 NaN，按 code 分流的逻辑就静默失效了。
+     * 前端按数值解析，必须使用数字形态的字符串。
      * </p>
      */
     public static final String CODE = "428";

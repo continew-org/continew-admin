@@ -124,7 +124,7 @@ public class DeptServiceImpl
     public void afterUpdate(DeptReq req, DeptDO entity) {
         if (DisEnableStatusEnum.DISABLE.equals(req.getStatus())) {
             // 部门禁用后，直属用户的 Access/Refresh Session 必须立即失效。下级部门要求
-            // 先逐级禁用，因此这里只处理当前部门即可。
+            // 先逐级禁用，因此只处理当前部门即可。
             userService.listIdByDeptId(entity.getId()).forEach(onlineUserService::kickOut);
         }
     }
