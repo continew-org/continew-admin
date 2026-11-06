@@ -214,7 +214,7 @@ public class TenantServiceImpl extends
         if (CollUtil.isEmpty(tenantIdList)) {
             return;
         }
-        // 所有租户角色：记录持有超套餐菜单的角色并删除旧菜单
+        // 所有租户角色：删除旧菜单
         tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
             Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             // 删除旧菜单
