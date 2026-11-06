@@ -136,6 +136,11 @@ public class FileRecorderImpl implements FileRecorder {
             fileInfo.setFileId(String.valueOf(file.getId()));
             return true;
         } else {
+            // 完成分片时原始文件名已由 starter 从会话回填；为空时沿用已有展示名，避免用存储名覆盖
+            if (StrUtil.isBlank(fileInfo.getOriginalFileName()) && StrUtil.isNotBlank(existFile
+                .getOriginalName())) {
+                file.setOriginalName(existFile.getOriginalName());
+            }
             file.setId(existFile.getId());
             boolean updated = fileMapper.updateById(file) > 0;
             fileInfo.setFileId(String.valueOf(existFile.getId()));
@@ -225,20 +230,7 @@ public class FileRecorderImpl implements FileRecorder {
     @Override
     public void saveMultipartSession(String uploadId, MultipartInitResp initResp,
         Map<String, String> metadata) {
-        MultipartUploadCreateResp target = new MultipartUploadCreateResp();
-        target.setFileId(initResp.getFileId());
-        target.setUploadId(initResp.getUploadId());
-        target.setBucket(initResp.getBucket());
-        target.setPlatform(initResp.getPlatform());
-        target.setFileName(initResp.getFileName());
-        target.setFileMd5(initResp.getFileMd5());
-        target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
-        target.setExtension(initResp.getExtension());
-        target.setContentType(initResp.getContentType());
-        target.setParentPath(initResp.getParentPath());
-        target.setPath(initResp.getPath());
-        target.setPartSize(initResp.getPartSize());
-        target.setUploadedPartNumbers(initResp.getUploadedPartNumbers());
+        MultipartUploadCreateResp target = toCreateResp(initResp);
         String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
         String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
         try {
@@ -275,12 +267,48 @@ public class FileRecorderImpl implements FileRecorder {
         if (source == null) {
             return null;
         }
+        return toInitResp(source);
+    }
+
+    /**
+     * 会话转换为 Redis 存储对象
+     *
+     * @param source 分片上传会话
+     * @return Redis 存储对象
+     */
+    static MultipartUploadCreateResp toCreateResp(MultipartInitResp source) {
+        MultipartUploadCreateResp target = new MultipartUploadCreateResp();
+        target.setFileId(source.getFileId());
+        target.setUploadId(source.getUploadId());
+        target.setBucket(source.getBucket());
+        target.setPlatform(source.getPlatform());
+        target.setFileName(source.getFileName());
+        target.setOriginalFileName(source.getOriginalFileName());
+        target.setFileMd5(source.getFileMd5());
+        target.setFileSize(ObjectUtil.defaultIfNull(source.getFileSize(), 0L));
+        target.setExtension(source.getExtension());
+        target.setContentType(source.getContentType());
+        target.setParentPath(source.getParentPath());
+        target.setPath(source.getPath());
+        target.setPartSize(source.getPartSize());
+        target.setUploadedPartNumbers(source.getUploadedPartNumbers());
+        return target;
+    }
+
+    /**
+     * Redis 存储对象转换为会话
+     *
+     * @param source Redis 存储对象
+     * @return 分片上传会话
+     */
+    static MultipartInitResp toInitResp(MultipartUploadCreateResp source) {
         MultipartInitResp target = new MultipartInitResp();
         target.setFileId(source.getFileId());
         target.setUploadId(source.getUploadId());
         target.setBucket(source.getBucket());
         target.setPlatform(source.getPlatform());
         target.setFileName(source.getFileName());
+        target.setOriginalFileName(source.getOriginalFileName());
         target.setFileMd5(source.getFileMd5());
         target.setFileSize(source.getFileSize());
         target.setExtension(source.getExtension());
@@ -298,14 +326,10 @@ public class FileRecorderImpl implements FileRecorder {
             String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
             String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
             String expireKey = MultipartUploadConstants.MULTIPART_EXPIRE_PREFIX + uploadId;
-            MultipartInitResp initResp = getMultipartSession(uploadId);
-            String fileMd5 = initResp != null ? initResp.getFileMd5() : null;
-            if (StrUtil.isNotBlank(fileMd5)) {
-                deleteMd5Mapping(fileMd5);
-            }
             RedisUtils.delete(key);
             RedisUtils.delete(metadataKey);
             RedisUtils.delete(expireKey);
+            // 会话键映射由 starter 在 cleanup 中调用 deleteSessionKeyMapping 条件删除
             log.debug("删除分片上传信息: uploadId={}", uploadId);
         } catch (Exception e) {
             log.error("删除分片上传信息失败: uploadId={}", uploadId, e);

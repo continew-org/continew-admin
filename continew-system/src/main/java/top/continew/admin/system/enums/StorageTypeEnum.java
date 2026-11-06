@@ -93,7 +93,7 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
      * @param req 请求参数
      */
     public void pretreatment(StorageReq req) {
-        // 域名需要以 “/” 结尾（x-file-storage 在拼接路径时都是直接 + 拼接，所以规范要求每一级都要以 “/” 结尾，且后面路径不能以 “/” 开头）
+        // 域名需要以 “/” 结尾（存储模块按 urlPrefix + 库内路径直接拼接，规范要求每一级都要以 “/” 结尾，且后面路径不能以 “/” 开头）
         if (StrUtil.isNotBlank(req.getDomain())) {
             req.setDomain(StrUtil.appendIfMissing(req.getDomain(), StringConstants.SLASH));
         }

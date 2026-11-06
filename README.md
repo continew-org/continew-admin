@@ -266,7 +266,6 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 3.52.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
 | <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 7.2.8        | 高性能的 key-value 数据库。                                  |
 | [Snail Job](https://snailjob.opensnail.com/)                                                                                      | 1.10.0       | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
-| [X File Storage](https://x-file-storage.xuyanwu.cn/#/)                                                                            | 2.3.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.3.5        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a>                                                                      | 1.16.7       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://github.com/fast-excel/fastexcel" target="_blank">Fast Excel</a>                                                  | 1.3.0        | （由原 EasyExcel 作者创建的新项目）一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |

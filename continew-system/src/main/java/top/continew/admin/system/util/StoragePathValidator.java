@@ -50,6 +50,17 @@ public class StoragePathValidator {
     }
 
     /**
+     * 名称最大长度
+     *
+     * <p>
+     * 与 {@code sys_file.name} / {@code sys_file.original_name} 的列长（varchar(255)）对齐。单文件上传的
+     * {@code MultipartFile#getOriginalFilename()} 与分片上传的 {@code fileName} 均无注解校验，必须在入口统一拦截：
+     * 超长名称若在落库时才抛 DataTooLong，此时存储实体已写入、启动器的会话清理不会执行，会留下无法重试的孤儿会话。
+     * </p>
+     */
+    private static final int MAX_NAME_LENGTH = 255;
+
+    /**
      * 校验上级目录路径是否合法
      *
      * <p>
@@ -69,6 +80,8 @@ public class StoragePathValidator {
         if (StrUtil.isBlank(parentPath) || StringConstants.SLASH.equals(parentPath)) {
             return;
         }
+        // TODO 尚未限制 parentPath 长度及其与名称的组合长度（sys_file.path 为 varchar(512)），
+        // 超深目录 + 长名称仍可能在落库时触发 DataTooLong
         String normalized = parentPath.replace(StringConstants.BACKSLASH, StringConstants.SLASH);
         throwIf(containsControlChar(normalized), "非法的目录路径：不允许包含控制字符");
         throwIf(OS_ABSOLUTE_PATH_PATTERN.matcher(normalized).matches(),
@@ -85,19 +98,58 @@ public class StoragePathValidator {
      *
      * <p>
      * 名称同样会参与存储路径拼接，因此不允许包含路径分隔符、盘符分隔符、控制字符，也不允许是
-     * {@code .}、{@code ..} 等纯点号形式。
+     * {@code .}、{@code ..} 等纯点号形式；长度不能超过 {@value #MAX_NAME_LENGTH} 个字符。
      * </p>
      *
      * @param name 文件或文件夹名称
      */
     public static void validateName(String name) {
         throwIf(StrUtil.isBlank(name), "名称不能为空");
+        throwIf(name.length() > MAX_NAME_LENGTH, "名称长度不能超过 " + MAX_NAME_LENGTH + " 个字符");
         throwIf(containsControlChar(name), "非法的名称：不允许包含控制字符");
         throwIf(StrUtil.containsAny(name, StringConstants.SLASH, StringConstants.BACKSLASH),
             "非法的名称：不允许包含路径分隔符");
         // 拒绝盘符与 NTFS 数据流形式，如 C:evil、file.txt:evil
         throwIf(StrUtil.contains(name, StringConstants.COLON), "非法的名称：不允许包含 :");
         throwIf(isDotSegment(name), "非法的名称：不允许为 . 或 .. 形式");
+    }
+
+    /**
+     * 规范化上级目录
+     *
+     * <p>
+     * 系统的目录路径统一以 {@code /} 开头（见 {@code FileDO(FileInfo)} 与 {@code createParentDir}），
+     * 因此这里先补前导斜杠，再把空白值与根目录 {@code /} 归一，最后去掉末尾斜杠：
+     * {@code user/}、{@code /user/} 都归一为 {@code /user}，避免存量路径比较时误判为目录变更，
+     * 也避免把不合规范的路径写回记录。
+     * </p>
+     *
+     * @param parentPath 上级目录路径
+     * @return 规范化后的上级目录路径
+     */
+    public static String normalizeParentPath(String parentPath) {
+        String normalized = StrUtil.blankToDefault(parentPath, StringConstants.SLASH);
+        normalized = StrUtil.prependIfMissing(normalized, StringConstants.SLASH);
+        while (normalized.length() > 1 && normalized.endsWith(StringConstants.SLASH)) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        return normalized;
+    }
+
+    /**
+     * 判断两个上级目录是否为同一个目录
+     *
+     * <p>
+     * 比较前会统一按 {@link #normalizeParentPath(String)} 归一，因此 {@code user/} 与 {@code /user}、
+     * 空白值与 {@code /} 均视为同一目录。
+     * </p>
+     *
+     * @param left  上级目录路径
+     * @param right 上级目录路径
+     * @return 是否为同一目录
+     */
+    public static boolean isSameParentPath(String left, String right) {
+        return StrUtil.equals(normalizeParentPath(left), normalizeParentPath(right));
     }
 
     /**
