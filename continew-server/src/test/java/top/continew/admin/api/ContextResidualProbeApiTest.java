@@ -31,7 +31,7 @@ import java.util.Map;
  * C-101 跨请求上下文残留探针 + C-107 异常夹带下的合法会话不误清。
  *
  * <p>
- * 针对修复点 {@code UserContextHolder.getContext()} 归属校验与
+ * 针对 {@code UserContextHolder.getContext()} 归属校验与
  * {@code SaExtensionInterceptor.preHandle} 异常路径清理：以高密度交替采样验证池化线程
  * 复用场景下任何一次自读都归属令牌属主（R1 越权），且异常请求（伪造 token 401、跨租户 403、
  * 未认证 401）之后合法请求不被迫重登、快照无损（R2 误清反向风险）。
@@ -45,9 +45,8 @@ import java.util.Map;
  * </p>
  * <p>
  * 判定强度：Tomcat NIO 不保证同一连接固定同一 worker 线程，本用例是高密度采样而非必然复现；
- * 放行判据是 3 轮 × 150 次 core 桶全部 0 违例。跨租户夹带使用真实存在的探测租户——设计稿的
- * 999999 会被上游租户存在性校验以业务码 500 拒绝，到不了 SaExtensionInterceptor 的 403 分支
- * （171 实测教训，测试侧修正）。
+ * 放行判据是 3 轮 × 150 次 core 桶全部 0 违例。跨租户夹带使用真实存在的探测租户，占位租户 ID
+ * 会被上游租户存在性校验以业务码 500 拒绝，到不了 SaExtensionInterceptor 的 403 分支。
  * </p>
  *
  * @author Charles7c

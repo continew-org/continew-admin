@@ -37,12 +37,6 @@ import java.util.concurrent.TimeUnit;
  * 原菜单接口被拒。
  *
  * <p>
- * 回归 PR #250 覆盖的缺陷面：套餐菜单撤销若不同步清理租户角色的关联菜单，撤销仅在会话层兜底
- * （invalidateSessionsByPackageId 强制重新认证），DB 层 sys_role_menu 残留，用户重登后仍按旧
- * 权限放行。PR #251 修复 updateTenantMenu 先删后查时序后，撤销在 DB 与在线刷新两个面均真实
- * 生效，本用例只对修复后行为做断言。
- * </p>
- * <p>
  * 边界说明：PackageReq.menuIds 标注 @NotEmpty（PUT 空集合被参数校验 400 拦截），黑盒层无法以
  * 字面空集合触发置空撤销；本用例以「套餐菜单收缩到单个目录」触达同一条撤销链路
  * （PackageServiceImpl.update → updateTenantMenu → deleteByNotInMenuIds），被撤销菜单的关联

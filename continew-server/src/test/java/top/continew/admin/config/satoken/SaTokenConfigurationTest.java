@@ -33,7 +33,7 @@ import top.continew.admin.common.exception.PasswordExpiredException;
 /**
  * 密码过期拦截分支测试。
  *
- * <p>回归：{@code preHandle} 抛出异常时 {@code afterCompletion} 不会回调，因此必须在抛出前清理
+ * <p>{@code preHandle} 抛出异常时 {@code afterCompletion} 不会回调，因此必须在抛出前清理
  * 线程本地上下文，否则池化线程会残留上一请求的用户上下文被下一请求复用。</p>
  *
  * @author luoqiz

@@ -34,7 +34,7 @@ import java.util.Map;
  * {@code RoleServiceImpl.updatePermission} 与 {@code UserServiceImpl.updateRole} 两处
  * 调用点经 {@code UserContextHolder.updateSessionContext} 对在线会话免重登生效
  * （docs/development/backend/security.mdx 行为契约，主理人裁定计入需求口径）。
- * 同时每步校验管理员自身身份未被替换为 B 的上下文——setContext 写当前线程的原缺陷形态。
+ * 同时每步校验管理员自身身份未被替换为 B 的上下文（setContext 写当前线程上下文）。
  * </p>
  * <p>
  * 撤销语义说明：UserController#updateRole 为 PATCH 且 roleIds 标注 @NotEmpty，
