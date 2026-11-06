@@ -52,10 +52,6 @@ import java.util.Set;
 /**
  * 套餐菜单变更同步租户角色菜单的测试。
  *
- * <p>回归：{@code updateTenantMenu} 先删除角色旧菜单再查询受影响角色，删除后查询恒为空集，
- * 在线用户权限刷新从未生效，旧权限只能依赖套餐变更后的强制重新认证兜底。受影响角色必须在
- * 删除前查询。</p>
- *
  * @author Charles7c
  * @since 5.0.0
  */
@@ -120,7 +116,7 @@ class TenantServiceImplUpdateTenantMenuTest {
             tenantService.updateTenantMenu(NEW_MENU_IDS, PACKAGE_ID);
         }
 
-        // 受影响角色查询必须先于删除执行，否则查询恒为空集、在线刷新失效
+        // 查询受影响角色与删除旧菜单的执行顺序
         InOrder inOrder = inOrder(roleMenuApi);
         inOrder.verify(roleMenuApi).listRoleIdByNotInMenuIds(NEW_MENU_IDS);
         inOrder.verify(roleMenuApi).deleteByNotInMenuIds(NEW_MENU_IDS);

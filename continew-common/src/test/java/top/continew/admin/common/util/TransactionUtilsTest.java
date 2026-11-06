@@ -31,10 +31,6 @@ import java.util.List;
 /**
  * 事务提交后回调注册的测试。
  *
- * <p>回归：管理员变更角色/用户权限时，在事务内直接同步在线用户会话快照，数据库回滚后已写入
- * Redis 的快照不随之回滚（授权场景放大权限窗口、撤销场景错误拒权）。快照同步必须等数据库
- * 提交后再执行。</p>
- *
  * @author Charles7c
  * @since 5.0.0
  */
@@ -64,7 +60,7 @@ class TransactionUtilsTest {
     void shouldDeferActionUntilAfterCommit() {
         TransactionSynchronizationManager.initSynchronization();
         TransactionUtils.afterCommit(() -> executed.add("run"));
-        // 事务未提交（含回滚）时不执行，动作仍待注册表触发
+        // 注册后动作不立即执行
         assertTrue(executed.isEmpty());
 
         List<TransactionSynchronization> synchronizations = TransactionSynchronizationManager
@@ -78,7 +74,7 @@ class TransactionUtilsTest {
     void shouldNotRunActionWhenTransactionRollsBack() {
         TransactionSynchronizationManager.initSynchronization();
         TransactionUtils.afterCommit(() -> executed.add("run"));
-        // 回滚场景：Spring 不会触发 afterCommit，同步随事务清理一并丢弃
+        // 清除事务同步后动作不执行
         TransactionSynchronizationManager.clearSynchronization();
         assertTrue(executed.isEmpty());
     }

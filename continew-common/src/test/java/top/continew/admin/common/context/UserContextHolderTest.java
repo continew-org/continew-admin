@@ -39,10 +39,6 @@ import org.mockito.MockedStatic;
 /**
  * 用户上下文归属校验测试。
  *
- * <p>回归：容器线程会被复用，上一请求在其清理逻辑执行前抛异常时，写入的用户上下文残留在
- * ThreadLocal 中。{@code getContext()} 若不比对当前登录态，下一个请求（包括未登录请求）会把
- * 他人的上下文当作自己的读取，造成跨用户串用与越权。</p>
- *
  * @author Charles7c
  * @since 5.0.0
  */
@@ -195,7 +191,7 @@ class UserContextHolderTest {
     @Test
     void shouldNotCreateSessionWhenTargetUserAlreadyLoggedOut() {
         try (MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
-            // 判空与刷新之间的间隙里目标用户登出：按需创建会话会留下无归属的孤儿会话
+            // 目标会话不存在时不新建会话
             stpUtil.when(() -> StpUtil.getSessionByLoginId(3L, false)).thenReturn(null);
 
             UserContextHolder.updateSessionContext(sessionContext);

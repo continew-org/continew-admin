@@ -56,10 +56,6 @@ import java.util.Set;
 /**
  * 角色功能权限变更时会话快照同步时机的测试。
  *
- * <p>回归：{@code updatePermission} 在事务内同步在线用户的会话快照，后续数据库操作异常回滚时，
- * 已写入 Redis 的快照不随之回滚（授权场景放大权限窗口直到重登，撤销场景错误拒权）。快照同步
- * 必须等事务提交后再执行。</p>
- *
  * @author Charles7c
  * @since 5.0.0
  */
@@ -143,7 +139,7 @@ class RoleServiceImplUpdatePermissionTimingTest {
         try (MockedStatic<StpUtil> stpUtil = stubOnlineTargetUser()) {
             roleService.updatePermission(ROLE_ID, req);
 
-            // 事务未提交（后续数据库操作异常回滚）时不写任何会话快照
+            // 事务未提交时不写会话快照
             stpUtil.verify(() -> StpUtil.getSessionByLoginId(TARGET_USER_ID, false), never());
         }
     }

@@ -109,7 +109,7 @@ public class RoleServiceImpl
         }
         // 保存角色和部门关联
         boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
-        // 数据权限有变更时同步在线用户权限信息；会话快照等事务提交后再写，回滚时不残留
+        // 数据权限有变更时同步在线用户权限信息
         if (isSaveDeptSuccess || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)) {
             TransactionUtils.afterCommit(() -> this.updateUserContext(id));
         }
@@ -165,7 +165,7 @@ public class RoleServiceImpl
             .set(RoleDO::getMenuCheckStrictly, req.getMenuCheckStrictly())
             .eq(RoleDO::getId, id)
             .update();
-        // 功能权限有变更时同步在线用户权限信息；会话快照等事务提交后再写，回滚时不残留
+        // 功能权限有变更时同步在线用户权限信息
         if (isSaveMenuSuccess) {
             TransactionUtils.afterCommit(() -> this.updateUserContext(id));
         }

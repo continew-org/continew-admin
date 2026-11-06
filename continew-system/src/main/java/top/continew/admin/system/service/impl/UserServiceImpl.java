@@ -224,7 +224,7 @@ public class UserServiceImpl
             onlineUserService.kickOut(id);
             return;
         }
-        // 角色有变更时同步在线用户权限信息；会话快照等事务提交后再写，回滚时不残留
+        // 角色有变更时同步在线用户权限信息
         if (isSaveUserRoleSuccess) {
             TransactionUtils.afterCommit(() -> this.updateContext(id));
         }

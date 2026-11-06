@@ -60,10 +60,6 @@ import java.util.Set;
 /**
  * 用户信息变更时会话快照同步时机的测试。
  *
- * <p>回归：{@code update} 在事务内同步目标用户的会话快照，后续数据库操作异常回滚时，已写入
- * Redis 的快照不随之回滚（角色授权回滚后快照多出角色、撤销后快照残留旧角色）。快照同步必须
- * 等事务提交后再执行。</p>
- *
  * @author Charles7c
  * @since 5.0.0
  */
@@ -161,7 +157,7 @@ class UserServiceImplUpdateContextTimingTest {
 
             userService.update(req, TARGET_USER_ID);
 
-            // 事务未提交（后续数据库操作异常回滚）时不写任何会话快照
+            // 事务未提交时不写会话快照
             stpUtil.verify(() -> StpUtil.getSessionByLoginId(TARGET_USER_ID, false), never());
         }
     }
