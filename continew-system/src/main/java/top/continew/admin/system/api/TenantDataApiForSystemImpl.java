@@ -34,6 +34,7 @@ import top.continew.admin.common.model.dto.TenantDTO;
 import top.continew.admin.common.util.SecureUtils;
 import top.continew.admin.system.mapper.DeptMapper;
 import top.continew.admin.system.mapper.LogMapper;
+import top.continew.admin.system.mapper.MessageLogMapper;
 import top.continew.admin.system.mapper.MessageMapper;
 import top.continew.admin.system.mapper.NoticeMapper;
 import top.continew.admin.system.mapper.RoleDeptMapper;
@@ -79,7 +80,7 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
     private final RoleMenuMapper roleMenuMapper;
     private final LogMapper logMapper;
     private final MessageMapper messageMapper;
-    private final MessageMapper messageUserMapper;
+    private final MessageLogMapper messageLogMapper;
     private final NoticeMapper noticeMapper;
     private final RoleDeptMapper roleDeptMapper;
     private final UserMapper userMapper;
@@ -127,7 +128,8 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
         logMapper.delete(queryWrapper);
         // 消息清除
         messageMapper.delete(queryWrapper);
-        messageUserMapper.delete(queryWrapper);
+        // 消息日志清除
+        messageLogMapper.delete(queryWrapper);
         // 通知清除
         noticeMapper.delete(queryWrapper);
         // 角色相关数据清除
