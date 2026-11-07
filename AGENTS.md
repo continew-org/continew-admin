@@ -140,36 +140,26 @@ Sonar 分析使用 `./mvnw verify -Psonar`（激活 JaCoCo），日常 `./mvnw v
 
 ### 注释风格
 
-块注释平实概括一段动作，单行注释解释非显然约束。
+注释只写当前代码的非显然约束。归属映射：修改历史归 commit message，修复原因与旧实现缺陷归 commit 正文或 PR 正文，两者都不进代码注释。
 
-- 修改历史归 commit message，修复原因与旧实现缺陷归 commit message 或 PR 正文，不进注释。
-- 不写以错误实现为前提的后果推演、变更痕迹（「新增」「原逻辑」）和对话腔（「我们」「这里」）。
-- 用代码里已有的词，不另造需要反推才能理解的概括；与相邻块注释同层概括，不重复下级注释。
+以下违规注释均出自本仓库 PR diff 或注释整改台账（前 3 例可在 #251、#255 对应分支核实）：
+
+| 违规注释 | 违规点 | 处置 |
+|:--|:--|:--|
+| `// 先记录仍持有超套餐菜单的受影响角色，删除后再查恒为空集，在线刷新会失效` | 时态拼贴，讲的是已修掉的旧缺陷，读者误以为当前仍有问题 | 改为 `// 受影响角色须在关联删除前查询，删除后无法反查需刷新的在线会话`，或直接删除（顺序已由 InOrder 单测锁定） |
+| ` * 回归：菜单权限置空撤销时没有新关联可插入，……已撤销权限在在线用户身上继续生效。` | 「回归：」前缀是变更叙事，正文其余是有效契约说明 | 删前缀，保留契约说明 |
+| `（用例设计稿的 3 秒会被入口校验挡掉，属测试侧设计修正，非产品缺陷）` | 设计稿修订叙事，读者看不到设计稿 | 整句删除；阈值与静置窗口的约束说明保留 |
+| 通用型：`// 输出调试日志` 置于 `log.debug(...)` 上方 | 复述自明代码 | 删除 |
+
+判定手法：写注释时不看 diff，只看当前文件；把注释单独抽出对着最新代码读，读起来像一段修复说明或旁白，即不合格。
+
+- 块注释平实概括一段动作，单行注释解释非显然约束；用代码里已有的词，不另造需要反推的概括；与相邻块注释同层概括，不重复下级注释。
 - 不为自解释代码逐行加注释，密度与周围代码一致。
 - 公共 API 用 Javadoc 写契约，实现内部只解释非显然决策。
-- 自检：写注释时不看 diff，只看当前文件；把注释单独抽出对着最新代码读，读起来像修复说明即为不合格。
 
 ### License Header
 
-每个新增 Java 源文件**必须**包含 Apache-2.0 License Header。Spotless 在 validate 阶段校验，`./mvnw compile -Pformat` 可自动补全。模板位于 [`style/license-header`](style/license-header)：
-
-```java
-/*
- * Copyright (c) 2022-present Charles7c Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
+每个新增 Java 源文件**必须**包含 Apache-2.0 License Header，模板见 [`style/license-header`](style/license-header)。Spotless 在 validate 阶段校验，`./mvnw compile -Pformat` 自动补全，无需手工复制。
 
 ### Lombok 约定
 
@@ -180,6 +170,8 @@ Sonar 分析使用 `./mvnw verify -Psonar`（激活 JaCoCo），日常 `./mvnw v
 所有 PR 必须提交到 `dev` 分支（新功能与功能优化）；维护分支 `x.x.x` 仅接受 bug 修复。请基于目标分支创建特性分支（如 `feat/new-feature`），不要直接修改源分支。遵循 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md)。
 
 **提交格式**：[Conventional Commits（约定式提交）1.0.0](https://www.conventionalcommits.org/zh-hans/v1.0.0/)规范，`<类型>[可选作用域]: <描述>`，破坏性变更在类型或作用域后追加 `!`，如 `feat(system): 新增 xxx`、`feat!:`。
+
+**PR 正文口吻**：以变更者第一人称视角直接陈述改了什么、为什么改，读者是几个月后另一台机器前的人。不写成对当前审查者的会话回复（「如您所问」「现已修复完成」「请查看」），不带汇报腔（「本 PR 完成了以下工作」）。修复原因与修复前后行为对比写在这里（「解决方案」段），不写进代码注释。
 
 **提交前检查**：
 
@@ -193,32 +185,11 @@ Sonar 分析使用 `./mvnw verify -Psonar`（激活 JaCoCo），日常 `./mvnw v
 
 ## 文档（docs/）
 
-本仓库 `docs/` 目录是 ContiNew Admin（含前端 continew-admin-ui）官方文档的**唯一权威源**，经 [continew.top](https://github.com/continew-org/continew.top) 官网仓库在构建时汇聚渲染为 `/docs/admin/*`。AI 智能体被指派编写或更新本文档时，**在此目录工作**。以下为关键约定；完整写作规范以 continew.top 仓库 `.agents/skills/ocn-doc-writing/SKILL.md` 为**事实源全本**。
+本仓库 `docs/` 目录是 ContiNew Admin（含前端 continew-admin-ui）官方文档的**唯一权威源**，经 [continew.top](https://github.com/continew-org/continew.top) 官网仓库构建时汇聚渲染为 `/docs/admin/*`。AI 智能体被指派编写或更新文档时在此目录工作，**开工前必须先读取 [`ocn-doc-writing/SKILL.md`](https://github.com/continew-org/continew.top/blob/main/.agents/skills/ocn-doc-writing/SKILL.md)**（continew.top 仓库，目录结构、frontmatter、链接策略、写作风格禁令的事实源全本），本文件只保留三条硬约束：
 
-### 目录与结构
-
-- **「介绍」分组置顶（固定风格，与 starter 一致）**：`index.mdx`（快速开始，icon Rocket）+ `introduction.mdx`（什么是 ContiNew Admin，icon CircleQuestionMark）+ `configuration.mdx`（配置说明，icon Settings），三页带 icon，构成学习路径前三步。
-- **双视角叙事路径**：`manual/`（功能手册，面向**使用者**讲「怎么用」）+ `development/`（开发指南，面向**二开者**讲「怎么扩展」，含项目结构 structure）+ `reference/`（环境变量/部署/常见问题/更新日志）。
-- **功能手册与开发指南分家**：同一能力（如数据权限、多租户）分两篇，`manual/` 讲页面操作与配置，`development/` 讲源码扩展点，互不重复。
-- **Root Folder**：`docs/meta.json` 标 `root: true`，构成官网侧边栏顶部的项目切换器；每个目录含 `meta.json` 声明页面顺序。
-
-### frontmatter 与命名
-
-- 每个 `.mdx` 顶部含 `title` 与 `description`（一句话说明本页解决什么问题）；`title` 用**纯中文**，技术术语保留英文原文。
-- 链接策略：**跨模块/跨分区引用用绝对路径** `/docs/admin/...` 或 `/docs/starter/...`；**同目录内引用用相对链接**（GitHub 裸看也能跳转）。
-
-### 内容与准确性
-
-- **事实源优先级**：admin 源码（类名/默认值/枚举/表结构/报错串）> continew-starter 源码 > 上游官方文档。类名、配置键、默认值、URL 前缀、权限码必须以源码为准；示例场景去业务化（不贴演示站业务数据）。
-- **配置项归 starter，配置值归 admin**：框架级配置项（`continew-starter.*`）的定义链接到 [starter 文档](https://continew.top/docs/starter)；admin 文档只写 admin 给这些键填的具体值与环境变量注入方式。
-- 版本号给**具体值**（如 5.0.0-SNAPSHOT、ContiNew Starter 3.0.0）；文末「相关源码」链接指向 GitHub continew-org 对应仓库 `dev` 分支的具体路径。
-- **文档-代码同步**：修改某功能代码（尤其接口、配置、行为）时，**必须在同一 PR 中同步更新对应文档**；纯文档改动无需跑 `./mvnw verify` 门禁。
-
-### 写作风格（活人感 · 硬禁令）
-
-- 不用破折号 `——`（改分句、括号或另起一句）；不用提示性冒号（「说明：」「通用模式：」，代码块与配置键除外）。
-- 不写翻案腔（「不是 A 而是 B」「值得注意的是」「说白了」「先说结论」）；不写商业黑话（赋能、一站式、无缝、极致、助力、综上所述）。
-- 不把动词名词化；不在末段摘要全文；每个判断后面跟依据（类名/配置键/默认值/报错串/真实用法）。
+- 修改功能代码（尤其接口、配置、行为）必须在**同一 PR** 中同步更新对应文档；纯文档改动无需跑 `./mvnw verify`。
+- 类名、配置键、默认值、URL 前缀、权限码、版本号必须以 **admin 源码的具体值**为准，禁止凭印象；示例场景去业务化。
+- 同一能力的使用视角（`manual/`）与扩展视角（`development/`）分篇撰写，互不重复。
 
 ## Agent Skills
 

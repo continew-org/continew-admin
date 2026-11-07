@@ -95,7 +95,7 @@ ContiNew 系列项目均由 OpenContiNew 开源社区维护，除本项目外还
 
 **AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
 
-**1.长期稳定：** 自 2022 年 12 月 8 日创建，2023 年 3 月 26 日发布 v1.0.0，截至今日，ContiNew Admin 已累计发布 25 个版本，ContiNew Starter 已累计发布 43 个版本。
+**1.长期稳定：** 自 2022 年 12 月 8 日创建，2023 年 3 月 26 日发布 v1.0.0，至今持续迭代优化，完整版本发布记录见 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
 
 **2.甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，确保技术栈紧跟时代。在技术选型时，我们进行了深度广泛的调研，从流行度、成熟度和发展潜力等多维度精心挑选技术栈。
 
@@ -562,7 +562,3 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 
 - 遵循 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" target="_blank">Apache-2.0</a> 开源许可协议
 - Copyright © 2022-present <a href="https://charles7c.top" target="_blank">Charles7c</a>
-
-## GitHub Star 趋势
-
-![GitHub Star 趋势](https://starchart.cc/charles7c/continew-admin.svg)

@@ -21,11 +21,12 @@
 
 ## 变更目的
 
-<!-- 描述本 PR 解决了什么问题。如果可以，请关联相关 Issue。 -->
+<!-- 描述本 PR 解决了什么问题。如果可以，请关联相关 Issue。
+     以变更者第一人称视角陈述变更本身，不写成对特定读者的解释或会话回复（「如您所问」「请查看」）。 -->
 
 ## 解决方案
 
-<!-- 描述是如何解决的。 -->
+<!-- 描述是如何解决的。修复原因、旧实现缺陷与修复前后的行为对比写在这里，不要写进代码注释。 -->
 
 ## 测试情况
 
@@ -44,6 +45,7 @@
 - [ ] 一个 PR 只解决一个 Issue，不夹带无关改动
 - [ ] 本地 `./mvnw verify` 四道静态门禁与单元测试全部通过（被 Spotless 拦截时使用 `-Pformat` 修复）
 - [ ] （可选）已在本地完成 AI 自检（`open-code-review-delegate`）
+- [ ] 代码注释只写当前约束；变更历史在 commit message，修复叙述在 PR 正文，均不混入注释
 - [ ] 已完整填写 Changelog，并关联相关 Issue
 - [ ] commit message 符合 [Conventional Commits（约定式提交）](https://www.conventionalcommits.org/zh-hans/v1.0.0/)规范
 - [ ] 如包含 AI 生成的较大改动，相关 commit 已添加 `Assisted-by: <智能体>` 标记
