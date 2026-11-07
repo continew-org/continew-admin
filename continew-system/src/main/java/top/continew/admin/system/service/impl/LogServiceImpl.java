@@ -26,7 +26,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.enums.LogStatusEnum;
 import top.continew.admin.system.mapper.LogMapper;
 import top.continew.admin.system.model.entity.LogDO;
 import top.continew.admin.system.model.query.LogQuery;
@@ -115,7 +115,7 @@ public class LogServiceImpl implements LogService {
         String module = query.getModule();
         String ip = query.getIp();
         String createUserString = query.getCreateUserString();
-        DisEnableStatusEnum status = query.getStatus();
+        LogStatusEnum status = query.getStatus();
         List<LocalDateTime> createTimeList = query.getCreateTime();
         return new QueryWrapper<LogDO>()
             .and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)

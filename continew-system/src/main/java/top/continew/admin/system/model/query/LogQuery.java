@@ -18,7 +18,7 @@ package top.continew.admin.system.model.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import top.continew.admin.common.enums.DisEnableStatusEnum;
+import top.continew.admin.system.enums.LogStatusEnum;
 
 import jakarta.validation.constraints.Size;
 import java.io.Serial;
@@ -74,5 +74,5 @@ public class LogQuery implements Serializable {
      * 状态
      */
     @Schema(description = "状态", example = "1")
-    private DisEnableStatusEnum status;
+    private LogStatusEnum status;
 }
