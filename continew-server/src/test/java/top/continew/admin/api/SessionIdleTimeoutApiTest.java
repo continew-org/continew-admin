@@ -33,10 +33,9 @@ import java.util.Map;
  *
  * <p>
  * 内置 PC 客户端 refresh_token_idle_timeout=0 无法触发闲置判定，本用例自建 APP 客户端。
- * 阈值取 API 最小合法值 60 秒：ClientServiceImpl#checkIdleTimeout 拒绝 1-59 秒（用例设计
- * 稿的 3 秒会被入口校验挡掉，属测试侧设计修正，非产品缺陷）。闲置静置窗口 65 秒同时覆盖
- * ClientPolicyCache 快照 60 秒 TTL——探针请求读取策略时快照必已过期重载，新客户端阈值
- * 必然参与判定，无需额外等待轮询。
+ * 阈值取 API 最小合法值 60 秒：ClientServiceImpl#checkIdleTimeout 拒绝 1-59 秒。闲置静置
+ * 窗口 65 秒同时覆盖 ClientPolicyCache 快照 60 秒 TTL，探针请求读取策略时快照必已过期重载，
+ * 新客户端阈值必然参与判定，无需额外等待轮询。
  * </p>
  * <p>
  * 非豁免路径改用 /system/log（自建角色授予 monitor:log:list）：/system/user 需

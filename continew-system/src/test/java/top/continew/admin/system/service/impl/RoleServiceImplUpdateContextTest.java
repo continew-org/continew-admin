@@ -45,7 +45,7 @@ import java.util.Set;
 /**
  * 角色权限变更后同步在线用户上下文的测试。
  *
- * <p>回归：{@code updateUserContext} 遍历的是目标用户的上下文，用
+ * <p>{@code updateUserContext} 遍历的是目标用户的上下文，用
  * {@code UserContextHolder.setContext} 写入会把他人上下文留在当前请求线程上，同一请求后续步骤
  * 把它当作自己的上下文读取（跨用户串用）。同步他人会话数据不应触碰线程本地。</p>
  *
