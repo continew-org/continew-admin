@@ -95,7 +95,7 @@ class TenantApiTest extends ApiTestSupport {
         // 域名需匹配 HTTP_HOST 正则（域名/IPv4/IPv6），用带多级标签的子域形态
         String domainV1 = "qa-smoke-" + timestamp + ".test.local";
         String domainV2 = "qa-smoke-2-" + timestamp + ".test.local";
-        // 管理员用户名需匹配 ^[a-zA-Z][a-zA-Z0-9_]{3,64}$（以字母开头）
+        // 管理员用户名需匹配 ^[a-zA-Z][a-zA-Z0-9_]{3,63}$（以字母开头）
         String adminUsername = "qa_smoke_admin" + timestamp;
         // 密码需匹配 PASSWORD 正则：8-32 位，至少含小写字母与数字
         String adminPassword = "QaSmoke" + timestamp;

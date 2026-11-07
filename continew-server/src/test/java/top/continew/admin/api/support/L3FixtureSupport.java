@@ -272,7 +272,7 @@ public abstract class L3FixtureSupport extends ApiTestSupport {
      * 创建用户并绑定角色集合（密码经 RSA 公钥加密传输）。
      *
      * @param username
-     *            用户名（^[a-zA-Z][a-zA-Z0-9_]{3,64}$）
+     *            用户名（^[a-zA-Z][a-zA-Z0-9_]{3,63}$）
      * @param nickname
      *            昵称
      * @param rawPassword
