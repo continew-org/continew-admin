@@ -71,7 +71,7 @@ public class UserMessageController {
 
     @Log(ignore = true)
     @Operation(summary = "查询未读消息数量", description = "查询当前用户的未读消息数量")
-    @Parameter(name = "isDetail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
+    @Parameter(name = "detail", description = "是否查询详情", example = "true", in = ParameterIn.QUERY)
     @GetMapping("/unread")
     public MessageUnreadResp countUnreadMessage(@RequestParam(required = false) Boolean detail) {
         return messageService.countUnreadByUserId(UserContextHolder.getUserId(), detail);

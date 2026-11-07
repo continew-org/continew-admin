@@ -233,7 +233,7 @@ public class UserContextHolder {
     /**
      * 获取用户昵称
      *
-     * @param userId 登录用户 ID
+     * @param userId 用户 ID
      * @return 用户昵称
      */
     public static String getNickname(Long userId) {

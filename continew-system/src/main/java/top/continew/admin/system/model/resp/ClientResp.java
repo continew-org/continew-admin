@@ -56,7 +56,7 @@ public class ClientResp extends BaseDetailResp {
     private String clientId;
 
     /**
-     * 客户端类型（取值于字典 client_type
+     * 客户端类型（取值于字典 client_type）
      */
     @Schema(description = "客户端类型（取值于字典 client_type）", example = "PC")
     @ExcelProperty(value = "客户端类型", converter = ExcelDictConverter.class, order = 5)

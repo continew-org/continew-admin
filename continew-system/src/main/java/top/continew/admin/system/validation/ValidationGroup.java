@@ -27,7 +27,7 @@ import jakarta.validation.groups.Default;
 public interface ValidationGroup extends Default {
 
     /**
-     * 分组校验-增删改查
+     * 分组校验-存储配置（本地/对象存储差异化）
      */
     interface Storage extends ValidationGroup {
 

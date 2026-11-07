@@ -839,8 +839,8 @@ public class UserServiceImpl
     /**
      * 统计有效的多级部门数量
      * <p>
-     * 支持多级部门路径解析，使用冒号(:)作为层级分隔符
-     * 例如：公司A:研发部:前端组 或 研发部
+     * 支持多级部门路径解析，使用左斜杠(/)作为层级分隔符
+     * 例如：公司A/研发部/前端组 或 研发部
      * </p>
      *
      * @param deptNames 部门名称集合
@@ -900,7 +900,7 @@ public class UserServiceImpl
      * </p>
      *
      * @param deptPath 部门路径
-     * @return 部门信息，未找到时返回null
+     * @return 部门信息，未找到或存在歧义时抛出业务异常
      */
     private DeptDO findDeptByHierarchicalPath(String deptPath) {
         CheckUtils.throwIfBlank(deptPath, "部门路径不能为空");
@@ -916,7 +916,7 @@ public class UserServiceImpl
      * </p>
      *
      * @param deptPath 多级部门路径
-     * @return 部门信息，未找到时返回null
+     * @return 部门信息，未找到时抛出业务异常
      */
     private DeptDO findMultiLevelDept(String deptPath) {
         String[] pathParts = deptPath.split(StringConstants.SLASH);
@@ -924,7 +924,7 @@ public class UserServiceImpl
 
         // 从根部门开始逐级查找
         DeptDO currentDept = null;
-        Long parentId = 0L; // 根部门的parentId为null
+        Long parentId = 0L; // 根部门的 parent_id 为 0
 
         for (String part : pathParts) {
             String trimmedPart = part.trim();
@@ -951,7 +951,7 @@ public class UserServiceImpl
      * </p>
      *
      * @param deptName 部门名称
-     * @return 部门信息，未找到或存在歧义时返回null
+     * @return 部门信息，未找到或存在歧义时抛出业务异常
      */
     private DeptDO findSingleLevelDept(String deptName) {
         // 查找所有同名部门

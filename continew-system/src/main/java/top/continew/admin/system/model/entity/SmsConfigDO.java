@@ -95,7 +95,7 @@ public class SmsConfigDO extends BaseDO {
     private String supplierConfig;
 
     /**
-     * 是否为默认存储
+     * 是否为默认配置
      */
     private Boolean isDefault;
 
