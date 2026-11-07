@@ -86,7 +86,7 @@ public enum FormTypeEnum implements BaseEnum<Integer> {
     DATE(11, "日期框"),
 
     /**
-     * 时间框
+     * 日期时间框
      */
     DATE_TIME(12, "日期时间框"),;
 

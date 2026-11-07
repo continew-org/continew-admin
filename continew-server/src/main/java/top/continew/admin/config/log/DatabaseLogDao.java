@@ -184,7 +184,7 @@ public class DatabaseLogDao implements LogDao {
      * @param logDO        日志信息
      * @param requestUri   请求路径
      * @param responseBody 响应信息
-     * @return 是否命中退出接口
+     * @return 是否处理完毕（false 时继续尝试其他方式）
      */
     private boolean trySetCreateUserByLogout(LogDO logDO, String requestUri,
         String responseBody) {
@@ -205,7 +205,7 @@ public class DatabaseLogDao implements LogDao {
      * @param logDO      日志信息
      * @param logRequest 请求信息
      * @param requestUri 请求路径
-     * @return 是否命中登录接口
+     * @return 是否处理完毕（false 时继续尝试其他方式）
      */
     private boolean trySetCreateUserByLogin(LogDO logDO, LogRequest logRequest,
         String requestUri) {

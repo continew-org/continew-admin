@@ -111,7 +111,7 @@ public enum JobExecuteReasonEnum implements BaseEnum<Integer> {
     TASK_FINISHED(15, "任务已完成"),
 
     /**
-     * 任务状态
+     * 任务正在执行
      */
     TASK_RUNNING(16, "任务正在执行"),
 

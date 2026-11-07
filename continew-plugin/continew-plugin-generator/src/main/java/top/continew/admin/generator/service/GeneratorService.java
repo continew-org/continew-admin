@@ -88,7 +88,7 @@ public interface GeneratorService {
     void downloadCode(List<String> tableNames, HttpServletResponse response);
 
     /**
-     * 生成下载代码
+     * 生成代码（写入当前项目目录）
      *
      * @param tableNames 表名称列表
      */

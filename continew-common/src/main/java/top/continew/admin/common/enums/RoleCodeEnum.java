@@ -58,9 +58,9 @@ public enum RoleCodeEnum {
     private final String description;
 
     /**
-     * 获取超级管理员角色编码列表
+     * 获取超级权限角色编码列表（多租户非默认租户场景包含租户管理员编码）
      *
-     * @return 超级管理员角色编码列表
+     * @return 超级权限角色编码列表
      */
     public static List<String> getSuperRoleCodes() {
         if (TenantContextHolder.isTenantDisabled()

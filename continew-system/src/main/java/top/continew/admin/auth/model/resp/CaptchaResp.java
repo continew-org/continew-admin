@@ -44,9 +44,9 @@ public class CaptchaResp implements Serializable {
     private String uuid;
 
     /**
-     * 验证码图片（Base64编码，带图片格式：data:image/gif;base64）
+     * 验证码图片（Base64编码，带图片格式：data:image/xxx;base64）
      */
-    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/gif;base64）",
+    @Schema(description = "验证码图片（Base64编码，带图片格式：data:image/xxx;base64）",
         example = "data:image/png;base64,iVBORw0KGgoAAAAN...")
     private String img;
 
@@ -66,7 +66,7 @@ public class CaptchaResp implements Serializable {
      * 构建验证码信息
      *
      * @param uuid       验证码标识
-     * @param img        验证码图片（Base64编码，带图片格式：data:image/gif;base64）
+     * @param img        验证码图片（Base64编码，带图片格式：data:image/xxx;base64）
      * @param expireTime 过期时间戳
      * @return 验证码信息
      */

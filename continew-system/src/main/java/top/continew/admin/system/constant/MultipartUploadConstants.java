@@ -30,7 +30,7 @@ public class MultipartUploadConstants {
      * <p>
      * 用于存储文件MD5到uploadId的映射关系，实现基于MD5的双列Map结构。
      * 键格式：multipart:md5_to_upload:{md5}
-     * 值格式：Hash结构，包含uploadId和fileInfo
+     * 值格式：Hash结构，仅含uploadId
      * </p>
      */
     public static final String MD5_TO_UPLOAD_ID_PREFIX = "multipart:md5_to_upload:";

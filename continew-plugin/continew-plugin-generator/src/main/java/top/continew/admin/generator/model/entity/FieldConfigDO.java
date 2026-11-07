@@ -101,7 +101,7 @@ public class FieldConfigDO implements Serializable {
     /**
      * 字段排序
      */
-    @Schema(description = "字段排序", example = "字段排序")
+    @Schema(description = "字段排序", example = "1")
     @NotNull(message = "字段排序不能为空")
     private Integer fieldSort;
 

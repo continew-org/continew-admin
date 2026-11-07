@@ -164,11 +164,11 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     }
 
     /**
-     * 是否匹配昵称
+     * 是否匹配昵称或用户名
      *
-     * @param nickname 昵称
+     * @param nickname 昵称或用户名
      * @param session  登录会话
-     * @return 是否匹配昵称
+     * @return 是否匹配昵称或用户名
      */
     private boolean isMatchNickname(String nickname, SessionView session) {
         if (StrUtil.isBlank(nickname)) {

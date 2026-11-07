@@ -58,9 +58,9 @@ public class UserImportParseResp implements Serializable {
     private Integer validRows;
 
     /**
-     * 重复行数
+     * 重复用户行数
      */
-    @Schema(description = "重复行数", example = "100")
+    @Schema(description = "重复用户行数", example = "100")
     private Integer duplicateUserRows;
 
     /**
