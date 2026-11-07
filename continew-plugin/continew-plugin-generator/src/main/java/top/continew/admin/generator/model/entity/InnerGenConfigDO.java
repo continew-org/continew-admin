@@ -114,7 +114,7 @@ public class InnerGenConfigDO extends GenConfigDO {
             .now(GlobalConstants.DEFAULT_ZONE_ID), "yyyy/MM/dd HH:mm"));
         // 父类的 classNamePrefix 是没有 backing 字段的计算属性（sys_user -> User），
         // 而 BeanUtil.beanToMap 只按字段发现属性，模板中的 ${classNamePrefix} 会取不到值，
-        // 因此这里在 copyProperties 之后显式落到本类字段上
+        // 因此在 copyProperties 之后显式落到本类字段上
         this.setClassNamePrefix(super.getClassNamePrefix());
         this.setApiName(StrUtil.lowerFirst(this.getClassNamePrefix()));
     }

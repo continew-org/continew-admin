@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>
  * 缓存由 {@code SaTokenConfiguration} 在 {@code ApplicationReadyEvent} 时批量写入，而此时 Web 容器
- * 已开始接收请求，因此读取方（{@code BaseController#preHandle}）可能落在写入完成之前。为此这里做两件事：
+ * 已开始接收请求，因此读取方（{@code BaseController#preHandle}）可能落在写入完成之前。为此做两件事：
  * 一是使用 {@link ConcurrentHashMap} 保证并发读写的可见性与安全性，二是在未命中时依据控制器自身的
  * {@link CrudRequestMapping} 注解懒解析，避免读到 {@code null} 导致权限码退化为 {@code null:xxx} 而误判 403。
  * </p>

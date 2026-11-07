@@ -51,7 +51,7 @@ public interface AuthTokenService {
      * 仅签发 Access Token，不创建新的 Refresh Session。
      *
      * <p>Refresh Token 轮换时必须复用原有 sessionId，由 RefreshTokenService 负责轮换
-     * Refresh Token；如果这里再次创建登录会话，会产生孤立会话。</p>
+     * Refresh Token；如果再次创建登录会话，会产生孤立会话。</p>
      *
      * @param user     用户信息
      * @param client   客户端配置
