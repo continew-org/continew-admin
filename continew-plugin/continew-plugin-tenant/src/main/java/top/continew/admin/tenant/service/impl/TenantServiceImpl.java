@@ -107,6 +107,10 @@ public class TenantServiceImpl extends
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(TenantArgumentPolicyLockTargetResolver.class)
     public void delete(List<Long> ids) {
+        // 默认租户承载平台内置用户与角色等种子数据，清除后平台侧失去管理入口
+        Long defaultTenantId = tenantExtensionProperties.getDefaultTenantId();
+        CheckUtils.throwIf(defaultTenantId != null && CollUtil.isNotEmpty(ids)
+            && ids.contains(defaultTenantId), "默认租户不允许删除");
         super.delete(ids);
     }
 
