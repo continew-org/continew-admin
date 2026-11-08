@@ -3,7 +3,7 @@ server:
 
 --- ### 数据源配置
 spring.datasource:
-  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin_job}?connectionTimeZone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
   driver-class-name: com.mysql.cj.jdbc.Driver

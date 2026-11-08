@@ -21,7 +21,7 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 ### JDK 版本不对导致编译失败或 `UnsupportedClassVersionError`
 
-项目基于 Spring Boot 3.5.16，最低 JDK 17，用 JDK 8/11 编译会直接失败，用低版本运行时启动会报类版本错误。
+项目基于 Spring Boot 4.1.1，最低 JDK 17，用 JDK 8/11 编译会直接失败，用低版本运行时启动会报类版本错误。
 
 `java -version` 确认 17，`JAVA_HOME` 指向 JDK 17；IDEA 的 Project SDK 与 Maven importer JDK 都要对齐到 17。
 
@@ -121,7 +121,7 @@ WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:8000`。经 Ng
 
 ### 拉不到 `top.continew.starter` 相关依赖
 
-ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），admin 5.0.0-SNAPSHOT 适配的版本为 2.17.0，可在 [Maven Central](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew) 查询。拉不到通常是本地仓库缓存损坏或镜像配置问题。
+ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），admin 5.0.0-SNAPSHOT 适配的版本为 3.0.0，可在 [Maven Central](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew) 查询。拉不到通常是本地仓库缓存损坏或镜像配置问题。
 
 `./mvnw -U clean package` 强制更新；检查 `settings.xml` 镜像是否把 `central` 也代理到了不通的内网源；公司内网代理仓库需要确认已代理 Maven Central。
 

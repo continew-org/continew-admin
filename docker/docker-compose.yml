@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0.42
+    image: mysql:8.4.13
     container_name: mysql
     restart: always
     logging:
@@ -21,7 +21,6 @@ services:
       #MYSQL_USER: 你的数据库用户名
       #MYSQL_PASSWORD: 你的数据库密码
     command:
-      --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
       --explicit_defaults_for_timestamp=true
@@ -33,7 +32,7 @@ services:
       retries: 20
       start_period: 30s
 #  postgresql:
-#    image: postgres:14.2
+#    image: postgres:16
 #    container_name: postgresql
 #    restart: always
 #    ports:
@@ -46,7 +45,7 @@ services:
 #      POSTGRES_PASSWORD: 你的用户密码
 #      POSTGRES_DB: continew_admin
   redis:
-    image: redis:7.2.8
+    image: redis:7.2.17
     container_name: redis
     restart: always
     logging:
@@ -117,7 +116,7 @@ services:
       mysql:
         condition: service_healthy
   continew-web:
-    image: nginx:1.27.0
+    image: nginx:1.29.1
     container_name: continew-web
     restart: always
     logging:

@@ -59,10 +59,10 @@ import org.testcontainers.utility.DockerImageName;
 public abstract class BaseIntegrationTest {
 
     private static final MySQLContainer<?> MYSQL = new MySQLContainer<>(
-        DockerImageName.parse("mysql:8.0.42")).withDatabaseName("continew_admin");
+        DockerImageName.parse("mysql:8.4.13")).withDatabaseName("continew_admin");
 
     private static final GenericContainer<?> REDIS = new GenericContainer<>(
-        DockerImageName.parse("redis:7.2.8")).withExposedPorts(6379)
+        DockerImageName.parse("redis:7.2.17")).withExposedPorts(6379)
         .withCommand("redis-server", "--requirepass", "123456");
 
     /**
@@ -102,7 +102,7 @@ public abstract class BaseIntegrationTest {
      * @return JDBC URL
      */
     private static String mysqlUrl() {
-        String params = "?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true"
+        String params = "?connectionTimeZone=Asia/Shanghai&useSSL=false&useUnicode=true"
             + "&characterEncoding=utf8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true";
         return "jdbc:p6spy:mysql://" + MYSQL.getHost() + ":" + MYSQL.getMappedPort(3306) + "/"
             + MYSQL.getDatabaseName() + params;

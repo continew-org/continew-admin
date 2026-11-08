@@ -14,7 +14,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 我们的愿景在于，当你将 ContiNew 系列项目应用到工作场景时，不仅仅是得到效率的提高，更可以得到舒适的开发体验，让更多开发者的编程工作多一点“甜”。
 
-工程形态上，后端为 Maven 多模块工程（依赖自上而下为 `continew-server` → `continew-system` → `continew-common`），基于 Spring Boot 3（Java 17），启动类为 `top.continew.admin.ContiNewAdminApplication`，dev 环境端口 8000；前端为独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui)，基于 Vue 3、Arco Design、TypeScript 与 Vite。框架的通用基础能力（CRUD 套件、认证、租户、数据权限、缓存、日志等）抽离在 [ContiNew Starter](/docs/starter) 中，以 BOM 方式引入（2.17.0），Admin 在其上做业务实现与工程级扩展。
+工程形态上，后端为 Maven 多模块工程（依赖自上而下为 `continew-server` → `continew-system` → `continew-common`），基于 Spring Boot 4（Java 17），启动类为 `top.continew.admin.ContiNewAdminApplication`，dev 环境端口 8000；前端为独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui)，基于 Vue 3、Arco Design、TypeScript 与 Vite。框架的通用基础能力（CRUD 套件、认证、租户、数据权限、缓存、日志等）抽离在 [ContiNew Starter](/docs/starter) 中，以 BOM 方式引入（3.0.0），Admin 在其上做业务实现与工程级扩展。
 
 ## 项目起源
 
@@ -43,7 +43,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 **多租户行级隔离**：基于 ContiNew Starter 的 `continew-starter-extension-tenant-mp`（MyBatis-Plus 行级隔离），租户 ID 经 `X-Tenant-Id` 请求头传递，默认租户 ID 为 0。租户管理、套餐管理由 `continew-plugin-tenant` 插件提供。
 
-**认证与多方式登录**：基于 Sa-Token（1.45.0）+ JWT，Token 名 `Authorization`。内置账号密码、邮箱验证码、手机验证码、JustAuth 第三方登录四种处理器。自 4.2.0 起引入 `continew-starter-auth-refresh-token`，采用 Access Token（内存持有）+ Refresh Token（HttpOnly Cookie）双令牌轮换。Token 有效期在「客户端配置」页面按端动态管理。
+**认证与多方式登录**：基于 Sa-Token（1.46.0）+ JWT，Token 名 `Authorization`。内置账号密码、邮箱验证码、手机验证码、JustAuth 第三方登录四种处理器。自 4.2.0 起引入 `continew-starter-auth-refresh-token`，采用 Access Token（内存持有）+ Refresh Token（HttpOnly Cookie）双令牌轮换。Token 有效期在「客户端配置」页面按端动态管理。
 
 **数据权限**：基于 `continew-starter-extension-datapermission-mp`，Mapper 继承 `DataPermissionMapper`（`continew-common` 的 `base/mapper` 包），由 `DefaultDataPermissionUserDataProvider` 提供当前用户数据范围，角色与部门的数据权限关联存于 `sys_role_dept` 表。
 
@@ -88,7 +88,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 | Pinia | 2.0.16 |
 | pnpm | 9.3.0 |
 
-运行环境要求（JDK 17 为 Spring Boot 4 的最低要求）：JDK 17、MySQL 8.0.42（亦支持 PostgreSQL，脚本位于 `db/changelog/postgresql`）、Redis 7.2.8、Maven 3.9+（仓库内置 `mvnw`）。
+运行环境要求（JDK 17 为 Spring Boot 4 的最低要求）：JDK 17、MySQL 8.4.13（亦支持 PostgreSQL 16+，脚本位于 `db/changelog/postgresql`）、Redis 7.2.17、Maven 3.9+（仓库内置 `mvnw`）。
 
 ## 下一步
 

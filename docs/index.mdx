@@ -4,7 +4,7 @@ description: 从克隆仓库到登录后台，跑通 ContiNew Admin 后端与前
 icon: Rocket
 ---
 
-**ContiNew Admin** 是基于 Spring Boot 3（Java 17）与 Vue 3（Arco Design、TypeScript、Vite）构建的多租户中后台管理系统框架，后端脚手架能力由 [ContiNew Starter](/docs/starter) 供给。本页的目标只有一个：把项目在本机完整跑起来并登录成功。
+**ContiNew Admin** 是基于 Spring Boot 4（Java 17）与 Vue 3（Arco Design、TypeScript、Vite）构建的多租户中后台管理系统框架，后端脚手架能力由 [ContiNew Starter](/docs/starter) 供给。本页的目标只有一个：把项目在本机完整跑起来并登录成功。
 
 请按步骤顺序操作，不要跳步。等整套环境确认可用之后，再去做改包名、裁剪模块这类定制动作；到时候出问题，才能确定不是定制引入的。第一次运行遇到报错，先到[常见问题](/docs/admin/reference/faq)按症状对号，大部分启动失败都在那里。
 
@@ -12,12 +12,12 @@ icon: Rocket
 
 | 软件 | 版本 | 用途 |
 |:-----|:-----|:-----|
-| JDK | 17 | 后端运行时（Spring Boot 3 的最低要求） |
+| JDK | 17 | 后端运行时（Spring Boot 4 的最低要求） |
 | Maven | 3.9.16 | 后端构建，仓库自带 `mvnw`，无需单独安装（enforcer 锁定 3.9.x，Maven 4 未适配） |
 | Node.js | 22 | 前端运行与构建（前端 CI 以 Node 22 为基线） |
 | pnpm | 9.3.0 | 前端包管理（`packageManager` 字段已锁定，`corepack enable` 后自动使用） |
-| MySQL | 8.0.42 | 业务数据库（也支持 PostgreSQL，脚本在 `db/changelog/postgresql`，切换步骤见[部署](/docs/admin/reference/deployment)） |
-| Redis | 7.2.8 | 缓存、会话、验证码、限流共用 |
+| MySQL | 8.4.13 | 业务数据库（也支持 PostgreSQL 16+，脚本在 `db/changelog/postgresql`，切换步骤见[部署](/docs/admin/reference/deployment)） |
+| Redis | 7.2.17 | 缓存、会话、验证码、限流共用 |
 
 开始前先建库。表结构和初始数据由 Liquibase 在首次启动时自动初始化，不需要手工执行任何 SQL。
 
