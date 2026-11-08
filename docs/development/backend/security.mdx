@@ -3,7 +3,7 @@ title: 认证与安全
 description: 说明 ContiNew Admin 的 Sa-Token + JWT 认证、Refresh Token 双令牌轮换、RSA 密码加密传输与登录处理器扩展方式。
 ---
 
-认证链路分两层。Access Token 由 Sa-Token 1.45.0（jwt-simple 模式）签发与管理，负责短期接口访问；Refresh Token 由 ContiNew Starter 的 `continew-starter-auth-refresh-token` 模块以独立 Redis 会话管理，负责在 Access Token 过期后安全轮换新令牌（自 4.2.0 起引入，对应 `SessionController`）。两类凭证职责分离，互不替代。
+认证链路分两层。Access Token 由 Sa-Token 1.46.0（jwt-simple 模式）签发与管理，负责短期接口访问；Refresh Token 由 ContiNew Starter 的 `continew-starter-auth-refresh-token` 模块以独立 Redis 会话管理，负责在 Access Token 过期后安全轮换新令牌（自 4.2.0 起引入，对应 `SessionController`）。两类凭证职责分离，互不替代。
 
 ## 令牌模型
 

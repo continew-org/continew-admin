@@ -12,11 +12,11 @@ icon: Server
 
 | 组件 | 版本 | 说明 |
 |:-----|:-----|:-----|
-| JDK | 17 | Spring Boot 3 的最低要求，打包与运行都需要 |
+| JDK | 17 | Spring Boot 4 的最低要求，打包与运行都需要 |
 | Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` |
 | Node.js / pnpm | Node 22 / pnpm 9.3.0 | 仅构建前端时需要 |
-| MySQL | 8.0.42 | 也支持 PostgreSQL，见下方切换步骤 |
-| Redis | 7.2.8 | 会话、缓存、验证码、限流共用 |
+| MySQL | 8.4.13 | 也支持 PostgreSQL 16+，见下方切换步骤 |
+| Redis | 7.2.17 | 会话、缓存、验证码、限流共用 |
 | Nginx | 1.27.0 | 前端静态资源托管与后端反向代理 |
 | Docker / Docker Compose | 任意近期版本 | 仅容器化部署需要 |
 
@@ -120,8 +120,8 @@ docker/continew-admin/
 
 | 服务 | 镜像 | 端口 | 职责 |
 |:-----|:-----|:-----|:-----|
-| mysql | mysql:8.0.42 | 3306 | 业务数据库（含注释掉的 postgres:14.2 备选） |
-| redis | redis:7.2.8 | 6379 | 缓存与会话 |
+| mysql | mysql:8.4.13 | 3306 | 业务数据库（含注释掉的 postgres:16 备选） |
+| redis | redis:7.2.17 | 6379 | 缓存与会话 |
 | continew-server | continew-server:5.0.0-SNAPSHOT（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
 | continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
 | schedule-server | schedule-server（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |

@@ -4,7 +4,7 @@
 <img src="https://img.shields.io/badge/SNAPSHOT-v5.0.0-%23ff3f59.svg" alt="Current Version" />
 </a>
 <a href="https://github.com/continew-org/continew-starter" title="ContiNew Starter" target="_blank">
-<img src="https://img.shields.io/badge/ContiNew Starter-3.0.0--SNAPSHOT-%236CB52D.svg" alt="ContiNew Starter" />
+<img src="https://img.shields.io/badge/ContiNew Starter-3.0.0-%236CB52D.svg" alt="ContiNew Starter" />
 </a>
 <a href="https://spring.io/projects/spring-boot" title="Spring Boot" target="_blank">
 <img src="https://img.shields.io/badge/Spring Boot-4.1.1-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
@@ -256,15 +256,15 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://tomcat.apache.org/" target="_blank">Tomcat</a>                                                                   | 11.0.24      | 采用 Java 开发的 Servlet 容器，Spring Boot 4 起内置并作为默认 Web 服务器。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.46.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a>                                                                  | 3.5.17       | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
-| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.5.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
-| Hikari                                                                                                                            | 6.2.1        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
-| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a>                                                        | 8.0.42       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
-| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a>                                     | 9.3.0        | MySQL Java 驱动。                                            |
+| <a href="https://www.kancloud.cn/tracy5546/dynamic-datasource/2264611" target="_blank">dynamic-datasource-spring-boot-starter</a> | 4.6.0        | 基于 Spring Boot 的快速集成多数据源的启动器。                |
+| Hikari                                                                                                                            | 7.0.2        | JDBC 连接池，号称 “史上最快连接池”，SpringBoot 在 2.0 之后，采用的默认数据库连接池就是 Hikari。 |
+| <a href="https://dev.mysql.com/downloads/mysql/" target="_blank">MySQL</a>                                                        | 8.4.13       | 体积小、速度快、总体拥有成本低，是最流行的关系型数据库管理系统之一。 |
+| <a href="https://dev.mysql.com/doc/connector-j/8.0/en/" target="_blank">mysql-connector-j</a>                                     | 9.7.0        | MySQL Java 驱动。                                            |
 | <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a>                                                                | 3.9.1        | SQL 性能分析组件。                                           |
-| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a>                                                    | 4.31.1       | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
+| <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a>                                                    | 5.0.3        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | <a href="https://github.com/ben-manes/caffeine" target="_blank">Caffeine</a>                                                       | 3.2.0        | 高性能 Java 本地缓存库，作为本项目多级缓存的 L1（本地）缓存。 |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 3.52.0       | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
-| <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 7.2.8        | 高性能的 key-value 数据库。                                  |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 4.8.0        | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
+| <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 7.2.17       | 高性能的 key-value 数据库。                                  |
 | [Snail Job](https://snailjob.opensnail.com/)                                                                                      | 1.10.0       | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
 | [X File Storage](https://x-file-storage.xuyanwu.cn/#/)                                                                            | 2.3.0        | 一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台。 |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.3.5        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
@@ -275,10 +275,10 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)                                                                         | 2.10.0       | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
 | [SpEL Validator](https://spel-validator.sticki.cn/)                                                                               | 0.7.0        | 基于 SpEL 的 jakarta.validation-api 扩展增强包。             |
 | [CosID](https://cosid.ahoo.me/guide/getting-started.html)                                                                         | 4.0.2        | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
-| <a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>                                                                | 1.4.1        | 现代化 API 文档 UI 工具，全面替代 Swagger UI。 |
-| [OpenFeign](https://springdoc.cn/spring-cloud-openfeign/)                                                                         | 2025.0.3     | Spring Cloud OpenFeign 是一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程。 |
+| <a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>                                                                | 1.5.0        | 现代化 API 文档 UI 工具，全面替代 Swagger UI。 |
+| [OpenFeign](https://springdoc.cn/spring-cloud-openfeign/)                                                                         | 2025.1.3     | Spring Cloud OpenFeign 是一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程。 |
 | <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.47       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
-| <a href="https://projectlombok.org/" target="_blank">Lombok</a>                                                                   | 1.18.42      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
+| <a href="https://projectlombok.org/" target="_blank">Lombok</a>                                                                   | 1.18.46      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 快速开始
 
