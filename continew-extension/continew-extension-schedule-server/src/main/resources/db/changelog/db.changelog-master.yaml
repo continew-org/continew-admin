@@ -1,5 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: db/changelog/mysql/snail-job_table.sql
-  - include:
-      file: db/changelog/mysql/snail-job_data.sql

@@ -112,11 +112,11 @@ docker/continew-admin/
 
 `docker/continew-admin/Dockerfile` 只把 `./bin/*.jar` 复制进镜像，依赖与配置靠 compose 的 volumes 挂载（`/docker/continew-admin/lib/:/app/lib/`）。**宿主目录 `/docker/continew-admin/lib/` 必须是上面复制过来的真实依赖目录，只创建空目录会让主程序加载不到任何依赖。**
 
-需要定时任务时，把 `continew-extension/continew-extension-schedule-server/target/continew-extension-schedule-server.jar` 复制到 `docker/schedule-server/` 下（也可以直接用 Snail Job 官方镜像部署，二者等价）。前端 `dist/` 内容复制到 `/docker/continew-admin/web/`。
+需要定时任务时，按 [Snail Job 官方文档](https://snailjob.opensnail.com/)自行部署调度服务端，可直接使用官方 Docker 镜像；客户端版本由 continew-starter 底座统一管理（见[技术栈基线](/docs/admin/introduction)），服务端版本需与客户端兼容。前端 `dist/` 内容复制到 `/docker/continew-admin/web/`。
 
 ## 第 4 步：编排与启动
 
-`docker/` 提供完整编排样例，包含五个服务。
+`docker/` 提供完整编排样例，包含四个服务。
 
 | 服务 | 镜像 | 端口 | 职责 |
 |:-----|:-----|:-----|:-----|
@@ -124,7 +124,6 @@ docker/continew-admin/
 | redis | redis:7.2.17 | 6379 | 缓存与会话 |
 | continew-server | continew-server:5.0.0-SNAPSHOT（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
 | continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
-| schedule-server | schedule-server（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |
 
 <Steps>
 <Step>
@@ -136,7 +135,7 @@ docker/continew-admin/
 
 编辑 `docker/docker-compose.yml` 的 `environment`，把占位值换成真实值。必填的凭据与密钥包括 `DB_USER`、`DB_PWD`、`REDIS_PWD`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`，启用任务调度还要 `SCHEDULE_TOKEN`、`SCHEDULE_PASSWORD`。两个 Token 密钥都要高熵随机、至少 32 字符且互不相同。
 
-调度相关的地址按容器拓扑配置：`SCHEDULE_HOST: schedule-server`、`SCHEDULE_PORT: 17888`、`SCHEDULE_API_URL: http://schedule-server:18001/snail-job`。`SCHEDULE_API_URL` 缺省是 `http://127.0.0.1:18001/snail-job`，在容器里会指向后端自身而不是调度中心，必须显式覆盖。
+调度相关的地址需指向自行部署的服务端：`SCHEDULE_HOST`（服务端主机名或 IP）、`SCHEDULE_PORT`（通讯端口 17888）、`SCHEDULE_API_URL`（OpenAPI 地址，如 `http://<服务端主机>:18001/snail-job`）。`SCHEDULE_API_URL` 缺省是 `http://127.0.0.1:18001/snail-job`，在容器里会指向后端自身而不是调度中心，必须显式覆盖。
 
 </Step>
 <Step>
@@ -157,7 +156,7 @@ MySQL 与 Redis 配了健康检查，后端会等两者就绪后启动。首次�
 
 后端镜像基于 `bellsoft/liberica-openjdk-debian:17.0.14`，JVM 参数预置 ZGC、Metaspace 上限 256MB，OOM 时自动向 `/app/logs/oom.hprof` 写堆转储（该目录已挂载到宿主，容器重建后仍可拿到现场）。
 
-不使用任务调度时可以不启动 schedule-server，并把 `application-prod.yml` 的 `snail-job.enabled` 改为 `false`；prod 默认为 `true`，缺失调度中心会让任务相关功能报错。
+不使用任务调度时把 `application-prod.yml` 的 `snail-job.enabled` 改为 `false`；prod 默认为 `true`，未部署调度服务端会让任务相关功能报错。
 
 ## Nginx 配置
 
@@ -236,6 +235,5 @@ location / {
 
 - [docker/docker-compose.yml](https://github.com/continew-org/continew-admin/blob/dev/docker/docker-compose.yml)
 - [docker/continew-admin/Dockerfile](https://github.com/continew-org/continew-admin/blob/dev/docker/continew-admin/Dockerfile)
-- [docker/schedule-server/Dockerfile](https://github.com/continew-org/continew-admin/blob/dev/docker/schedule-server/Dockerfile)
 - [docker/nginx/conf/nginx.conf](https://github.com/continew-org/continew-admin/blob/dev/docker/nginx/conf/nginx.conf)
 - [continew-server/pom.xml（胖瘦包 profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/pom.xml)

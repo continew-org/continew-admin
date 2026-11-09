@@ -30,7 +30,6 @@
         <module>continew-system</module>
         <module>continew-plugin</module>
         <module>continew-common</module>
-        <module>continew-extension</module>
     </modules>
 
     <properties>

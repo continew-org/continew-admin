@@ -130,7 +130,7 @@ git checkout -b feat/your-feature upstream/dev
 ```
 
 - **类型（type）**：说明变更性质。`feat` 表示新增功能，`fix` 表示 Bug 修复；其余常用类型：`docs`（文档）、`refactor`（重构）、`perf`（性能优化）、`test`（测试）、`style`（格式调整，不影响功能）、`build`（构建或依赖变更）、`ci`（CI 配置或脚本）、`chore`（其他杂项）、`revert`（回退提交）；
-- **作用域（scope）**：可选，表示变更影响的模块。可取值：`common` `system` `server` `plugin` `extension` `auth` `open` `tenant` `schedule` `generator` `docker`；
+- **作用域（scope）**：可选，表示变更影响的模块。可取值：`common` `system` `server` `plugin` `auth` `open` `tenant` `schedule` `generator` `docker`；
 - **描述（description）**：简短说明本次变更；
 - **破坏性变更（breaking change）**：在类型或作用域后追加 `!`（如 `feat!:`），或在脚注中以 `BREAKING CHANGE: <说明>` 标注（对应主版本）。
 

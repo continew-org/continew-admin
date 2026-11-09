@@ -15,7 +15,6 @@ ContiNew Admin 分两个仓库。后端 continew-admin 是 Maven 多模块工程
 | `continew-system` | 核心业务：`auth`（系统认证）+ `system`（部门、角色、用户、菜单、字典、文件、公告、系统配置等） |
 | `continew-common` | 公共基类、工具与配置：CRUD 基类（`base`）、MyBatis、接口文档、Excel、全局异常（`config` 下对应子包） |
 | `continew-plugin` | 可插拔插件：`continew-plugin-open`（能力开放 AK/SK）、`continew-plugin-tenant`（多租户）、`continew-plugin-schedule`（任务调度）、`continew-plugin-generator`（代码生成器） |
-| `continew-extension` | 可独立部署的扩展服务：`continew-extension-schedule-server`（Snail Job 调度中心服务端，可选部署） |
 
 整体目录骨架如下。
 
@@ -50,9 +49,7 @@ continew-admin
 │     ├─ api（公共业务 API 接口）
 │     ├─ base（controller/mapper/service/model 公共基类）
 │     ├─ config（crud、doc、excel、exception、mybatis）
-│     ├─ context、enums、constant、model、util
-├─ continew-extension
-│  └─ continew-extension-schedule-server（独立启动类 ScheduleServerApplication，独立 changelog 管理 sj_* 表）
+│     └─ context、enums、constant、model、util
 └─ docker（Dockerfile、docker-compose.yml、nginx 与 redis 配置）
 ```
 
