@@ -34,7 +34,7 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 | `thumbnail_*` | 图片缩略图信息 |
 | `storage_id` | 所属存储，关联 `sys_storage` |
 
-上传时不指定 `parentPath` 则按日期目录归档。单文件大小受 Spring multipart 限制（`max-file-size` 默认 10MB），超出请走分片上传。
+上传时不指定 `parentPath` 则按日期目录归档。单文件大小受 Spring multipart 限制（`max-file-size` 默认 10MB），超出请走分片上传。名称（含文件夹名）最长 255 个字符，与 `sys_file.name` 的列长对齐，自 5.0.0 起上传（含分片初始化）、创建文件夹与重命名统一校验，超出返回 400。
 
 ## 存储命名规则
 
@@ -45,6 +45,10 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 <Callout type="info">
 直接访问存储直链时，浏览器保存的默认文件名即为唯一 ID 名；需要原始文件名时请从文件管理页面下载（页面按 `original_name` 命名）。对外的 `FileResp.name` 也随之变为唯一 ID 名，需要展示名称请使用 `originalName`。
 </Callout>
+
+## 重命名与移动限制
+
+修改接口（`PUT /system/file`）只用于重命名，请求体中的 `parentPath` 必须与文件当前所在目录一致，自 5.0.0 起尝试移动到其他目录会被拒绝，提示「暂不支持移动文件或文件夹」；不提交该字段时仅按名称修改。目录比较前会先归一化：补前导斜杠、去末尾斜杠，因此 `user/`、`/user/` 与 `/user` 视为同一目录，原样提交不会触发拒绝。`parentPath` 留空等同于根目录 `/`。
 
 ## 秒传与分片上传
 

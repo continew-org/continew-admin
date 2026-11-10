@@ -25,7 +25,7 @@ import top.continew.starter.core.constant.StringConstants;
  * <p>统一处理库内路径、物理路径与缩略图路径的形态转换，避免各服务重复拼接。</p>
  *
  * @author luoqiz
- * @since 4.2.0
+ * @since 5.0.0
  */
 public final class StoragePathUtils {
 

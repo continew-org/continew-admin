@@ -192,7 +192,7 @@ public interface FileService
      *
      * @param path 库内路径或 http(s) 完整链接
      * @return 完整访问 URL；空值返回 null
-     * @since 4.2.0
+     * @since 5.0.0
      */
     String resolveUrl(String path);
 
@@ -205,7 +205,7 @@ public interface FileService
      *
      * @param paths 路径或完整链接集合
      * @return 原始入参到完整访问 URL 的映射（不含空值）
-     * @since 4.2.0
+     * @since 5.0.0
      */
     Map<String, String> resolveUrls(Collection<String> paths);
 
@@ -221,7 +221,7 @@ public interface FileService
      *
      * @param path 库内路径（前导斜杠可选）或 http(s) 完整链接
      * @return 是否执行了删除
-     * @since 4.2.0
+     * @since 5.0.0
      */
     boolean deleteByPath(String path);
 

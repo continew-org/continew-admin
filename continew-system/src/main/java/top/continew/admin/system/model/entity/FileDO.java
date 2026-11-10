@@ -186,7 +186,7 @@ public class FileDO extends BaseDO {
      * <p>派生属性，无对应数据库字段；忽略序列化，避免实体直接作为响应时多出冗余字段。</p>
      *
      * @return 缩略图库内路径（带前导斜杠）；无缩略图时返回 null
-     * @since 4.2.0
+     * @since 5.0.0
      */
     @JsonIgnore
     public String getThumbnailPath() {
