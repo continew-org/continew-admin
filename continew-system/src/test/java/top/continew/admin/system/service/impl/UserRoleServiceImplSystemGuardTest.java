@@ -100,8 +100,9 @@ class UserRoleServiceImplSystemGuardTest {
         when(userService.listByIds(Set.of(SYSTEM_USER_ID)))
             .thenReturn(List.of(this.user(SYSTEM_USER_ID, true)));
 
+        List<Long> associationIds = List.of(10L);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userRoleService.deleteByIds(List.of(10L)));
+            () -> userRoleService.deleteByIds(associationIds));
 
         assertEquals("[超级管理员] 是系统内置用户，不允许变更角色", exception.getMessage());
         verify(baseMapper, never()).deleteByIds(anyList());
@@ -116,8 +117,9 @@ class UserRoleServiceImplSystemGuardTest {
         when(roleService.listByIds(Set.of(SYSTEM_ROLE_ID)))
             .thenReturn(List.of(this.role(SYSTEM_ROLE_ID, true)));
 
+        List<Long> associationIds = List.of(10L);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userRoleService.deleteByIds(List.of(10L)));
+            () -> userRoleService.deleteByIds(associationIds));
 
         assertEquals("[超级管理员] 是系统内置角色，不允许变更用户关联", exception.getMessage());
         verify(baseMapper, never()).deleteByIds(anyList());
@@ -145,7 +147,8 @@ class UserRoleServiceImplSystemGuardTest {
         when(userService.listByIds(Set.of(NORMAL_USER_ID, SYSTEM_USER_ID)))
             .thenReturn(List.of(this.user(NORMAL_USER_ID, false), this.user(SYSTEM_USER_ID, true)));
 
-        assertThrows(BusinessException.class, () -> userRoleService.deleteByIds(List.of(10L, 11L)));
+        List<Long> associationIds = List.of(10L, 11L);
+        assertThrows(BusinessException.class, () -> userRoleService.deleteByIds(associationIds));
 
         verify(baseMapper, never()).deleteByIds(anyList());
     }
@@ -157,8 +160,9 @@ class UserRoleServiceImplSystemGuardTest {
         when(userService.listByIds(Set.of(SYSTEM_USER_ID)))
             .thenReturn(List.of(this.user(SYSTEM_USER_ID, true)));
 
+        List<Long> newRoleIds = List.of(NORMAL_ROLE_ID, 5L);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userRoleService.assignRolesToUser(List.of(NORMAL_ROLE_ID, 5L), SYSTEM_USER_ID));
+            () -> userRoleService.assignRolesToUser(newRoleIds, SYSTEM_USER_ID));
 
         assertEquals("[超级管理员] 是系统内置用户，不允许变更角色", exception.getMessage());
         verify(baseMapper, never()).lambdaUpdate();
