@@ -135,7 +135,7 @@ docker/continew-admin/
 
 编辑 `docker/docker-compose.yml` 的 `environment`，把占位值换成真实值。必填的凭据与密钥包括 `DB_USER`、`DB_PWD`、`REDIS_PWD`、`ACCESS_TOKEN_JWT_SECRET`、`REFRESH_TOKEN_SECRET`、`FIELD_ENCRYPT_PASSWORD`、`FIELD_ENCRYPT_PUBLIC_KEY`、`FIELD_ENCRYPT_PRIVATE_KEY`，启用任务调度还要 `SCHEDULE_TOKEN`、`SCHEDULE_PASSWORD`。两个 Token 密钥都要高熵随机、至少 32 字符且互不相同。
 
-调度相关的地址需指向自行部署的服务端：`SCHEDULE_HOST`（服务端主机名或 IP）、`SCHEDULE_PORT`（通讯端口 17888）、`SCHEDULE_API_URL`（OpenAPI 地址，如 `http://<服务端主机>:18001/snail-job`）。`SCHEDULE_API_URL` 缺省是 `http://127.0.0.1:18001/snail-job`，在容器里会指向后端自身而不是调度中心，必须显式覆盖。
+调度相关的地址需指向自行部署的服务端：`SCHEDULE_HOST`（服务端主机名或 IP）、`SCHEDULE_PORT`（通讯端口 17888）、`SCHEDULE_API_URL`（OpenAPI 地址，如 `http://<服务端主机>:8080/snail-job`）。`SCHEDULE_API_URL` 缺省是 `http://127.0.0.1:8080/snail-job`，在容器里会指向后端自身而不是调度中心，必须显式覆盖。
 
 </Step>
 <Step>

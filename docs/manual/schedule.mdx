@@ -27,11 +27,11 @@ snail-job:
     host: ${SCHEDULE_HOST:127.0.0.1}
     port: ${SCHEDULE_PORT:17888}
     api:
-      url: http://127.0.0.1:8001/snail-job
+      url: http://127.0.0.1:8080/snail-job
       username: ${SCHEDULE_USERNAME:admin}
       password: ${SCHEDULE_PASSWORD:admin}
   openapi:
-    port: 8001
+    port: 8080
   port: 17889
   namespace: ${SCHEDULE_NAMESPACE:764d604ec6fc45f68cd92514c40e9e1a}
   group: ${SCHEDULE_GROUP:continew-admin}

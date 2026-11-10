@@ -100,7 +100,7 @@ services:
       REDIS_DB: 0
       SCHEDULE_HOST: 你的调度服务端主机名
       SCHEDULE_PORT: 17888
-      SCHEDULE_API_URL: http://你的调度服务端主机名:18001/snail-job
+      SCHEDULE_API_URL: http://你的调度服务端主机名:8080/snail-job
       SCHEDULE_TOKEN: 任务调度服务端 Token
       SCHEDULE_PASSWORD: 任务调度控制台密码
       ACCESS_TOKEN_JWT_SECRET: 你的访问令牌 JWT 密钥（至少 32 字符）
