@@ -26,7 +26,7 @@ import top.continew.starter.storage.domain.model.resp.FileInfo;
  * 文件实体缩略图路径测试
  *
  * @author luoqiz
- * @since 4.2.0
+ * @since 5.0.0
  */
 class FileDoTest {
 

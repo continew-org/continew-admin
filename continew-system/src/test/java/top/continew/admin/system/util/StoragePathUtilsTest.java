@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  * 存储路径工具测试
  *
  * @author luoqiz
- * @since 4.2.0
+ * @since 5.0.0
  */
 class StoragePathUtilsTest {
 

@@ -178,7 +178,7 @@ public class UserServiceImpl
      * @param query     查询条件
      * @param sortQuery 排序参数
      * @param response  响应对象
-     * @since 4.2.0
+     * @since 5.0.0
      */
     @Override
     public void export(UserQuery query, SortQuery sortQuery, HttpServletResponse response) {
@@ -674,7 +674,7 @@ public class UserServiceImpl
      * @param query     查询条件
      * @param sortQuery 排序参数
      * @return 列表信息
-     * @since 4.2.0
+     * @since 5.0.0
      */
     @Override
     public List<UserResp> list(UserQuery query, SortQuery sortQuery) {

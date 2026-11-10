@@ -45,7 +45,7 @@ import java.util.Set;
  * 回收站缩略图清理测试
  *
  * @author luoqiz
- * @since 4.2.0
+ * @since 5.0.0
  */
 class FileRecycleServiceImplTest {
 
