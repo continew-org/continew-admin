@@ -33,7 +33,6 @@ jobs:
             system
             server
             plugin
-            extension
             auth
             open
             tenant

@@ -3,7 +3,7 @@ title: 任务调度
 description: 任务调度模块基于 Snail Job 实现分布式任务调度，管理端默认关闭，需部署调度服务端并配置启用后可在线管理任务与查看执行日志。
 ---
 
-任务调度模块位于 `continew-plugin-schedule`，底层调度引擎为 Snail Job 1.10.0。整体分三部分：独立部署的调度中心服务端（Snail Job Server，负责任务分发与重试）、内嵌在业务服务中的客户端（`snail-job-client-starter`，注册并执行具体任务）、ContiNew Admin 的管理界面（经 OpenFeign 调用 Snail Job OpenAPI 做任务与日志管理）。调度数据落库于独立的 `sj_*` 系列表（23 张），与业务库分离。
+任务调度模块位于 `continew-plugin-schedule`，底层调度引擎为 Snail Job 1.10.0。整体分三部分：独立部署的调度中心服务端（Snail Job Server，负责任务分发与重试）、内嵌在业务服务中的客户端（`snail-job-client-starter`，注册并执行具体任务）、ContiNew Admin 的管理界面（经 OpenFeign 调用 Snail Job OpenAPI 做任务与日志管理）。调度数据落库于独立的 `sj_*` 系列表（由自部署服务端的官方初始化脚本创建），与业务库分离。
 
 ## 启用开关与默认状态
 
@@ -14,9 +14,9 @@ description: 任务调度模块基于 Snail Job 实现分布式任务调度，�
 
 ## 部署调度服务端
 
-仓库提供 `continew-extension-schedule-server` 模块作为本地开发用的调度中心，启动类 `ScheduleServerApplication` 继承 Snail Job 官方的 `SnailJobServerApplication`，通过 Liquibase 独立 changelog 初始化 `sj_*` 表，数据默认落在 `continew_admin_job` 库。dev 环境 Web 端口 8001、通讯端口 17888，prod 环境 Web 端口 18001。生产部署也可以按 Snail Job 官方文档搭建服务端，二者等价。
+本仓库不提供调度服务端，需按 [Snail Job 官方文档](https://snailjob.opensnail.com/)自行部署，或直接使用官方 Docker 镜像。客户端依赖版本由 continew-starter 底座统一管理（当前 1.10.0，见[技术栈基线](/docs/admin/introduction)），自部署的服务端版本需与客户端兼容，建议保持同一版本线。
 
-Docker Compose 部署时 `docker-compose.yml` 已包含 `schedule-server` 服务（镜像 `schedule-server:1.8.0`），与主服务同网编排。
+`docker/docker-compose.yml` 不包含调度服务端，自部署后需将 `SCHEDULE_HOST` 与 `SCHEDULE_API_URL` 指向服务端实际地址；容器化部署时可让两个容器接入同一 Docker 网络。
 
 业务服务侧的连接配置（`application-dev.yml` 节选）。
 
@@ -27,11 +27,11 @@ snail-job:
     host: ${SCHEDULE_HOST:127.0.0.1}
     port: ${SCHEDULE_PORT:17888}
     api:
-      url: http://127.0.0.1:8001/snail-job
+      url: http://127.0.0.1:8080/snail-job
       username: ${SCHEDULE_USERNAME:admin}
       password: ${SCHEDULE_PASSWORD:admin}
   openapi:
-    port: 8001
+    port: 8080
   port: 17889
   namespace: ${SCHEDULE_NAMESPACE:764d604ec6fc45f68cd92514c40e9e1a}
   group: ${SCHEDULE_GROUP:continew-admin}
@@ -65,5 +65,4 @@ prod 环境 `SCHEDULE_PASSWORD` 与 `SCHEDULE_TOKEN` 无默认值，必须由环
 
 - [JobController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/controller/JobController.java) 与 [JobLogController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/controller/JobLogController.java)：任务与任务日志 API
 - [SnailJobConfiguration.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-schedule/src/main/java/top/continew/admin/schedule/config/SnailJobConfiguration.java)：客户端装配与日志上报
-- [ScheduleServerApplication.java](https://github.com/continew-org/continew-admin/blob/dev/continew-extension/continew-extension-schedule-server/src/main/java/top/continew/admin/extension/scheduling/ScheduleServerApplication.java)：调度服务端启动类
 - [continew-admin-ui/src/views/schedule/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/schedule)：前端页面

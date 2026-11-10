@@ -98,9 +98,9 @@ services:
       REDIS_PORT: 6379
       REDIS_PWD: 你的 Redis 密码
       REDIS_DB: 0
-      SCHEDULE_HOST: schedule-server
+      SCHEDULE_HOST: 你的调度服务端主机名
       SCHEDULE_PORT: 17888
-      SCHEDULE_API_URL: http://schedule-server:18001/snail-job
+      SCHEDULE_API_URL: http://你的调度服务端主机名:8080/snail-job
       SCHEDULE_TOKEN: 任务调度服务端 Token
       SCHEDULE_PASSWORD: 任务调度控制台密码
       ACCESS_TOKEN_JWT_SECRET: 你的访问令牌 JWT 密钥（至少 32 字符）
@@ -135,28 +135,3 @@ services:
       - /docker/continew-admin/web/:/usr/share/nginx/html/
     environment:
       TZ: Asia/Shanghai
-  schedule-server:
-    build: ./schedule-server
-    image: schedule-server:1.8.0
-    container_name: schedule-server
-    restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "50m"
-        max-file: "3"
-    ports:
-      - '18001:18001'
-      - '17888:17888'
-    volumes:
-      - /docker/schedule-server/logs/:/app/logs/
-    environment:
-      TZ: Asia/Shanghai
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: 你的数据库用户名
-      DB_PWD: 你的数据库密码
-      DB_NAME: continew_admin_job
-    depends_on:
-      mysql:
-        condition: service_healthy

@@ -256,8 +256,8 @@ snail-job:
     port: ${SCHEDULE_PORT:17888}
     # API 配置
     api:
-      # URL（Snail Job OpenAPI 地址；容器化部署时指向调度中心服务，端口与 schedule-server 的 Web 端口一致）
-      url: ${SCHEDULE_API_URL:http://127.0.0.1:18001/snail-job}
+      # URL（Snail Job OpenAPI 地址；容器化部署时指向调度中心服务，端口与其 Web 端口一致）
+      url: ${SCHEDULE_API_URL:http://127.0.0.1:8080/snail-job}
       # 用户名
       username: ${SCHEDULE_USERNAME:admin}
       # 密码
@@ -265,8 +265,7 @@ snail-job:
   ## OpenAPI 配置
   openapi:
     # 服务端 Web 端口（默认：8080，如果你部署的服务端改动了端口，这里也需要对应改动）
-    # continew-extension/continew-extension-schedule-server
-    port: 18001
+    port: 8080
   # 客户端地址（默认：自动推断。必须确保服务端可以访问到，在服务端无法调度客户端时需要手动配置）
   #host: 127.0.0.1
   # 客户端端口（默认：17889）

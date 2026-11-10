@@ -466,25 +466,6 @@ continew-admin
 │  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ continew-extension（扩展模块）
-│  ├─ continew-extension-schedule-server（任务调度服务端模块，实际开发时如果是公司统一提供环境，可直接删除本模块）
-│  │  ├─ src
-│  │  │  ├─ main
-│  │  │  │  ├─ java/top/continew/admin/extension/schedule
-│  │  │  │  │  └─ ScheduleServerApplication.java（任务调度服务端启动程序）
-│  │  │  │  └─ resources
-│  │  │  │     ├─ config（核心配置目录）
-│  │  │  │     │  ├─ application-dev.yml（开发环境配置文件）
-│  │  │  │     │  ├─ application-prod.yml（生产环境配置文件）
-│  │  │  │     │  └─ application.yml（通用配置文件）
-│  │  │  │     ├─ db/changelog（Liquibase 数据脚本配置目录）
-│  │  │  │     │  ├─ mysql（MySQL 数据库初始 SQL 脚本目录）
-│  │  │  │     │  ├─ postgresql（PostgreSQL 数据库初始 SQL 脚本目录）
-│  │  │  │     │  └─ db.changelog-master.yaml（Liquibase 变更记录文件）
-│  │  │  │     └─ logback-spring.xml（日志配置文件）
-│  │  │  └─ test（测试相关代码目录）
-│  │  └─ pom.xml
-│  └─ pom.xml
 ├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
 ├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
 ├─ .idea

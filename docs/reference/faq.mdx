@@ -65,7 +65,7 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 prod 默认 `snail-job.enabled: true`，没部署调度中心时启动或访问任务管理会报连接失败。
 
-不用任务调度就在 prod 配置中把 `snail-job.enabled` 改为 `false`（dev 默认就是 `false`）；要启用就部署 `continew-extension/continew-extension-schedule-server`，并核对 `SCHEDULE_HOST`、`SCHEDULE_PORT`（默认 17888）与 OpenAPI 端口（prod 默认 18001）。
+不用任务调度就在 prod 配置中把 `snail-job.enabled` 改为 `false`（dev 默认就是 `false`）；要启用就按 [Snail Job 官方文档](https://snailjob.opensnail.com/)自行部署服务端，并核对 `SCHEDULE_HOST`、`SCHEDULE_PORT`（默认 17888）与 OpenAPI 端口（prod 默认 8080）。
 
 ## 登录
 
