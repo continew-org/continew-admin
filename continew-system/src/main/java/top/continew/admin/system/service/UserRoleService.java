@@ -60,6 +60,18 @@ public interface UserRoleService {
     boolean assignRoleToUsers(Long roleId, List<Long> userIds);
 
     /**
+     * 租户初始化专用：为内置管理员用户绑定内置管理员角色，绕过系统内置用户守卫。
+     * <p>
+     * 仅允许租户初始化流程调用，常规分配请使用 {@link #assignRoleToUsers(Long, List)}。
+     * </p>
+     *
+     * @param roleId  角色 ID
+     * @param userIds 用户 ID 列表
+     * @return 是否成功
+     */
+    boolean assignRoleToUsersForInit(Long roleId, List<Long> userIds);
+
+    /**
      * 根据 ID 删除
      *
      * @param ids ID 列表

@@ -103,8 +103,8 @@ public class TenantDataApiForSystemImpl implements TenantDataApi {
             roleMenuService.add(menuIds, roleId);
             // 初始化管理用户
             Long userId = this.initUserData(tenant, deptId);
-            // 用户绑定角色
-            userRoleService.assignRoleToUsers(roleId, ListUtil.of(userId));
+            // 用户绑定角色（租户初始用户与角色均为内置数据，走专用授权入口）
+            userRoleService.assignRoleToUsersForInit(roleId, ListUtil.of(userId));
             // 租户绑定用户
             tenantApi.bindAdminUser(tenantId, userId);
         });

@@ -44,8 +44,9 @@ import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import jakarta.annotation.Resource;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -87,13 +88,11 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean assignRolesToUser(List<Long> roleIds, Long userId) {
-        UserDO userDO = userService.getById(userId);
-        if (Boolean.TRUE.equals(userDO.getIsSystem())) {
-            Collection<Long> disjunctionRoleIds =
-                CollUtil.disjunction(roleIds, this.listRoleIdByUserId(userId));
-            CheckUtils.throwIfNotEmpty(disjunctionRoleIds, "[{}] 是系统内置用户，不允许变更角色",
-                userDO.getNickname());
-        }
+        List<Long> oldRoleIdList = this.listRoleIdByUserId(userId);
+        boolean isRoleChanged = CollUtil
+            .isNotEmpty(CollUtil.disjunction(roleIds, oldRoleIdList));
+        // 角色无变更的幂等重放不触发系统内置用户守卫
+        this.checkSystemUserChange(isRoleChanged ? Set.of(userId) : Set.of());
         // 超级管理员和租户管理员角色不允许分配
         CheckUtils.throwIf(roleIds.contains(SystemConstants.SUPER_ADMIN_ROLE_ID), "不允许分配超级管理员角色");
         Set<String> roleCodeSet =
@@ -101,14 +100,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         CheckUtils.throwIf(roleCodeSet.contains(RoleCodeEnum.TENANT_ADMIN.getCode()),
             "不允许分配系统管理员角色");
         // 检查是否有变更
-        List<Long> oldRoleIdList = baseMapper.lambdaQuery()
-            .select(UserRoleDO::getRoleId)
-            .eq(UserRoleDO::getUserId, userId)
-            .list()
-            .stream()
-            .map(UserRoleDO::getRoleId)
-            .toList();
-        if (CollUtil.isEmpty(CollUtil.disjunction(roleIds, oldRoleIdList))) {
+        if (!isRoleChanged) {
             return false;
         }
         // 删除原有关联
@@ -121,13 +113,36 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public boolean assignRoleToUsers(Long roleId, List<Long> userIds) {
+        this.checkSystemUserChange(new HashSet<>(userIds));
+        List<UserRoleDO> userRoleList =
+            CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
+        return baseMapper.insertBatch(userRoleList);
+    }
+
+    /**
+     * 租户初始化专用：为内置管理员用户绑定内置管理员角色。
+     * <p>
+     * 租户的初始用户与初始角色均为系统内置数据，需绕过守卫完成首次授权；
+     * 仅允许 TenantDataApi 在初始化流程中调用。
+     * </p>
+     *
+     * @param roleId  角色 ID
+     * @param userIds 用户 ID 列表
+     * @return 是否成功
+     */
+    @Override
+    public boolean assignRoleToUsersForInit(Long roleId, List<Long> userIds) {
         List<UserRoleDO> userRoleList =
             CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
         return baseMapper.insertBatch(userRoleList);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> ids) {
+        List<UserRoleDO> userRoleList = baseMapper.selectByIds(ids);
+        Set<Long> userIds = CollUtils.mapToSet(userRoleList, UserRoleDO::getUserId);
+        this.checkSystemUserChange(userIds);
         baseMapper.deleteByIds(ids);
     }
 
@@ -136,11 +151,14 @@ public class UserRoleServiceImpl implements UserRoleService {
         if (CollUtil.isEmpty(userIds)) {
             return;
         }
+        this.checkSystemUserChange(new HashSet<>(userIds));
         baseMapper.lambdaUpdate().in(UserRoleDO::getUserId, userIds).remove();
     }
 
     @Override
     public void saveBatch(List<UserRoleDO> list) {
+        Set<Long> userIds = CollUtils.mapToSet(list, UserRoleDO::getUserId);
+        this.checkSystemUserChange(userIds);
         baseMapper.insert(list);
     }
 
@@ -172,5 +190,23 @@ public class UserRoleServiceImpl implements UserRoleService {
             return false;
         }
         return baseMapper.lambdaQuery().in(UserRoleDO::getRoleId, roleIds).exists();
+    }
+
+    /**
+     * 校验并拒绝系统内置用户的角色关联变更。
+     * <p>
+     * 系统内置用户的角色关联不允许增删（含取消），集合为空时跳过检查，命中任一内置用户整批拒绝。
+     * </p>
+     *
+     * @param userIds 本次涉及的用户 ID 集合
+     */
+    private void checkSystemUserChange(Set<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return;
+        }
+        List<UserDO> userList = userService.listByIds(userIds);
+        Optional<UserDO> systemUser = userList.stream().filter(UserDO::getIsSystem).findFirst();
+        CheckUtils.throwIf(systemUser::isPresent, "[{}] 是系统内置用户，不允许变更角色",
+            systemUser.orElseGet(UserDO::new).getNickname());
     }
 }

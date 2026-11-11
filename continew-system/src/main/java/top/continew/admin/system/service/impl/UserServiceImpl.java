@@ -376,6 +376,10 @@ public class UserServiceImpl
             .toList());
         Map<String, Long> roleMap =
             roleList.stream().collect(Collectors.toMap(RoleDO::getName, RoleDO::getId));
+        Set<Long> systemRoleIds = roleList.stream()
+            .filter(role -> Boolean.TRUE.equals(role.getIsSystem()))
+            .map(RoleDO::getId)
+            .collect(Collectors.toSet());
         // 获取多级部门映射
         Map<String, Long> deptMap = buildMultiLevelDeptMapping(importUserList.stream()
             .map(UserImportRowReq::getDeptName)
@@ -408,7 +412,10 @@ public class UserServiceImpl
                 userDO.setIsSystem(false);
                 insertList.add(userDO);
             }
-            userRoleDoList.add(new UserRoleDO(userDO.getId(), roleMap.get(row.getRoleName())));
+            Long roleId = roleMap.get(row.getRoleName());
+            CheckUtils.throwIf(systemRoleIds.contains(roleId),
+                "角色 [{}] 是系统内置角色，不允许通过导入分配", row.getRoleName());
+            userRoleDoList.add(new UserRoleDO(userDO.getId(), roleId));
         }
         doImportUser(insertList, updateList, userRoleDoList);
         RedisUtils.delete(CacheConstants.DATA_IMPORT_KEY + req.getImportKey());
