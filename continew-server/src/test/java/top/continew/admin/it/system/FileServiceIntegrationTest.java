@@ -19,6 +19,11 @@ package top.continew.admin.it.system;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.context.SaTokenContext;
+import cn.dev33.satoken.context.SaTokenContextForThreadLocal;
+import cn.dev33.satoken.context.mock.SaTokenContextMockUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,16 +73,27 @@ class FileServiceIntegrationTest extends BaseIntegrationTest {
 
     private String probeDirName;
 
+    private SaTokenContext originalSaTokenContext;
+
     @BeforeEach
     void setUpUserContext() {
+        // 先例见 UserServiceIntegrationTest：前置测试可能残留 Sa-Token 请求上下文并登出，
+        // 归属校验将因无有效登录态清空线程上下文（create_user 随之置空），需初始化会话并登录
+        originalSaTokenContext = SaManager.getSaTokenContext();
+        SaManager.setSaTokenContext(new SaTokenContextForThreadLocal());
+        SaTokenContextMockUtil.setMockContext();
+        StpUtil.login(ADMIN_USER_ID);
         UserContext userContext = new UserContext();
         userContext.setId(ADMIN_USER_ID);
         userContext.setUsername("admin");
-        UserContextHolder.setContext(userContext);
+        UserContextHolder.setContext(userContext, false);
     }
 
     @AfterEach
     void removeProbeData() {
+        StpUtil.logout(ADMIN_USER_ID);
+        SaTokenContextMockUtil.clearContext();
+        SaManager.setSaTokenContext(originalSaTokenContext);
         UserContextHolder.clearContext();
         if (probeDirName != null) {
             jdbcTemplate.update("DELETE FROM sys_file WHERE name = ?", probeDirName);
