@@ -42,6 +42,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import top.continew.admin.system.mapper.UserRoleMapper;
+import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.entity.UserRoleDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.service.RoleService;
@@ -152,7 +153,8 @@ class UserRoleServiceImplSystemGuardTest {
     void shouldSkipGuardWhenReplayingUnchangedRoles() {
         doReturn(List.of(NORMAL_ROLE_ID)).when(userRoleService)
             .listRoleIdByUserId(SYSTEM_USER_ID);
-        when(roleService.listByUserId(SYSTEM_USER_ID)).thenReturn(Set.of());
+        when(roleService.listByIds(List.of(NORMAL_ROLE_ID)))
+            .thenReturn(List.of(this.role(NORMAL_ROLE_ID, false)));
 
         boolean result = userRoleService
             .assignRolesToUser(List.of(NORMAL_ROLE_ID), SYSTEM_USER_ID);
@@ -219,7 +221,7 @@ class UserRoleServiceImplSystemGuardTest {
             .listRoleIdByUserId(NORMAL_USER_ID);
         when(userService.listByIds(Set.of(NORMAL_USER_ID)))
             .thenReturn(List.of(this.user(NORMAL_USER_ID, false)));
-        when(roleService.listByUserId(NORMAL_USER_ID)).thenReturn(Set.of());
+        when(roleService.listByIds(List.of(5L))).thenReturn(List.of(this.role(5L, false)));
         this.mockRemoveChain();
         when(baseMapper.insertBatch(anyList())).thenReturn(true);
 
@@ -237,6 +239,14 @@ class UserRoleServiceImplSystemGuardTest {
         user.setNickname(isSystem ? "超级管理员" : "测试员");
         user.setIsSystem(isSystem);
         return user;
+    }
+
+    private RoleDO role(Long id, boolean isSystem) {
+        RoleDO role = new RoleDO();
+        role.setId(id);
+        role.setName(isSystem ? "超级管理员" : "普通角色");
+        role.setIsSystem(isSystem);
+        return role;
     }
 
     @SuppressWarnings("unchecked")

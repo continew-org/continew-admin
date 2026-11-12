@@ -40,6 +40,7 @@ import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.common.enums.GenderEnum;
 import top.continew.admin.common.enums.RoleCodeEnum;
 import top.continew.admin.it.BaseIntegrationTest;
+import top.continew.admin.system.constant.SystemConstants;
 import top.continew.admin.system.model.req.user.UserReq;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.core.exception.BusinessException;
@@ -98,6 +99,9 @@ class UserServiceIntegrationTest extends BaseIntegrationTest {
         operator.setId(1L);
         operator.setUsername("admin");
         operator.setRoleCodes(Set.of(RoleCodeEnum.SUPER_ADMIN.getCode()));
+        // 真实登录上下文由 AuthTokenServiceImpl 一并装入权限集合，超管持有 ALL_PERMISSION；
+        // 补齐该字段，避免用户创建接口的分配角色权限校验读取到 null
+        operator.setPermissions(Set.of(SystemConstants.ALL_PERMISSION));
         UserContextHolder.setContext(operator, false);
     }
 
