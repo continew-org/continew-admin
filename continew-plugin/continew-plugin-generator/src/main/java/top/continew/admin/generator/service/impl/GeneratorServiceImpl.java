@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.generator.config.properties.GeneratorProperties;
+import top.continew.admin.generator.config.properties.GeneratorProperties.TemplateConfiguration;
 import top.continew.admin.generator.enums.FormTypeEnum;
 import top.continew.admin.generator.enums.QueryTypeEnum;
 import top.continew.admin.generator.mapper.FieldConfigMapper;
@@ -329,7 +330,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
-        Map<String, GeneratorProperties.TemplateConfig> templateConfigMap =
+        Map<String, TemplateConfiguration> templateConfigMap =
             generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
@@ -340,9 +341,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             freemarkerEngine.getConfiguration().setSharedVariable("statics",
                 wrapper.getStaticModels());
         }
-        for (Map.Entry<String, GeneratorProperties.TemplateConfig> templateConfigEntry : templateConfigMap
+        for (Map.Entry<String, TemplateConfiguration> templateConfigEntry : templateConfigMap
             .entrySet()) {
-            GeneratorProperties.TemplateConfig templateConfig = templateConfigEntry.getValue();
+            TemplateConfiguration templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段
             innerGenConfig.setFieldConfigs(fieldConfigRecords.stream()
                 .filter(fieldConfig -> !StrUtil.equalsAny(fieldConfig.getFieldName(), templateConfig
@@ -378,14 +379,14 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 添加枚举类型的属性，生成对应的import
      *
-     * @param fieldConfigDO 属性配置信息
+     * @param source        属性配置信息
      * @param imports       待导入包集合
      * @return 新的属性配置信息
      */
-    private FieldConfigDO convertToFieldConfigDO(FieldConfigDO fieldConfigDO,
+    private FieldConfigDO convertToFieldConfigDO(FieldConfigDO source,
         List<String> imports) {
         FieldConfigDO fieldConfig = new FieldConfigDO();
-        BeanUtil.copyProperties(fieldConfigDO, fieldConfig);
+        BeanUtil.copyProperties(source, fieldConfig);
         String dictCode = fieldConfig.getDictCode();
         if (StringUtils.isBlank(dictCode)) {
             return fieldConfig;
@@ -413,7 +414,7 @@ public class GeneratorServiceImpl implements GeneratorService {
      */
     private void setPreviewPath(GeneratePreviewResp generatePreview,
         InnerGenConfigDO genConfig,
-        GeneratorProperties.TemplateConfig templateConfig) {
+        TemplateConfiguration templateConfig) {
         // 获取前后端基础路径
         String backendBasicPackagePath =
             this.buildBackendBasicPackagePath(genConfig, templateConfig);
@@ -469,7 +470,7 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @return 后端包路径
      */
     private String buildBackendBasicPackagePath(GenConfigDO genConfig,
-        GeneratorProperties.TemplateConfig templateConfig) {
+        TemplateConfiguration templateConfig) {
         String extension = templateConfig.getExtension();
         // 例如：continew-admin/continew-system/src/main/java/top/continew/admin/system
         return String.join(File.separator, applicationProperties.getId(),

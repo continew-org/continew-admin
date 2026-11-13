@@ -62,22 +62,22 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
     @Override
     public MultipartUploadCreateResp initMultipartUpload(
-        MultipartUploadCreateReq multiPartUploadInitReq) {
+        MultipartUploadCreateReq req) {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
-        String extName = FileUtil.extName(multiPartUploadInitReq.getFileName()).toLowerCase();
+        String extName = FileUtil.extName(req.getFileName()).toLowerCase();
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
-        StoragePathValidator.validate(multiPartUploadInitReq.getParentPath());
-        StoragePathValidator.validateName(multiPartUploadInitReq.getFileName());
-        StorageDO storageDO = storageService.getByCode(null);
+        StoragePathValidator.validate(req.getParentPath());
+        StoragePathValidator.validateName(req.getFileName());
+        StorageDO storage = storageService.getByCode(null);
         // 检测文件名是否已存在（同一目录下文件名不能重复）
-        String originalFileName = multiPartUploadInitReq.getFileName();
-        String parentPath = multiPartUploadInitReq.getParentPath();
+        String originalFileName = req.getFileName();
+        String parentPath = req.getParentPath();
         boolean exists = fileMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
-            .eq(FileDO::getStorageId, storageDO.getId())
+            .eq(FileDO::getStorageId, storage.getId())
             .eq(FileDO::getName, originalFileName)
             .ne(FileDO::getType, FileTypeEnum.DIR)
             .exists();
@@ -87,21 +87,21 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
         // 生成唯一文件名（处理重名情况）
         String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storageDO
+            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
                 .getId(), fileMapper);
-        multiPartUploadInitReq.setFileName(uniqueFileName);
+        req.setFileName(uniqueFileName);
         fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
-            storageDO);
+            storage);
 
         MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
-        storageReq.setPlatform(storageDO.getCode());
-        storageReq.setBucket(storageDO.getBucketName());
+        storageReq.setPlatform(storage.getCode());
+        storageReq.setBucket(storage.getBucketName());
         storageReq.setFileName(uniqueFileName);
-        storageReq.setFileSize(multiPartUploadInitReq.getFileSize());
-        storageReq.setFileMd5(multiPartUploadInitReq.getFileMd5());
-        storageReq.setContentType(multiPartUploadInitReq.getContentType());
+        storageReq.setFileSize(req.getFileSize());
+        storageReq.setFileMd5(req.getFileMd5());
+        storageReq.setContentType(req.getContentType());
         storageReq.setParentPath(StrUtil.blankToDefault(parentPath, StringConstants.SLASH));
-        storageReq.setMetadata(multiPartUploadInitReq.getMetaData());
+        storageReq.setMetadata(req.getMetaData());
         MultipartInitResp initResp = fileStorageService.initMultipartUpload(storageReq);
         return this.toAdminInitResp(initResp);
     }
@@ -140,9 +140,9 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
             throw new BaseException("无效的 uploadId: " + uploadId);
         }
         FileInfo fileInfo = fileStorageService.completeMultipartUpload(uploadId, null);
-        StorageDO storageDO = storageService.getByCode(session.getPlatform());
+        StorageDO storage = storageService.getByCode(session.getPlatform());
         FileDO file = fileMapper.lambdaQuery()
-            .eq(FileDO::getStorageId, storageDO.getId())
+            .eq(FileDO::getStorageId, storage.getId())
             .eq(FileDO::getPath, StringConstants.SLASH + normalizeStoragePath(session.getPath()))
             .one();
         if (file != null) {
@@ -150,7 +150,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         }
         // 兼容兜底：记录器未完成落库时补录
         FileDO fallback = new FileDO(fileInfo);
-        fallback.setStorageId(storageDO.getId());
+        fallback.setStorageId(storage.getId());
         fallback.setType(FileTypeEnum.getByExtension(FileUtil.extName(fallback.getName())));
         fileService.save(fallback);
         return fallback;

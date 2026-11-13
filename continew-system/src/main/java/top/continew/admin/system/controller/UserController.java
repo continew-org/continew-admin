@@ -119,7 +119,7 @@ public class UserController
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:updateRole")
     @PatchMapping("/{id}/role")
-    public void updateRole(@RequestBody @Valid UserRoleUpdateReq updateReq, @PathVariable Long id) {
-        baseService.updateRole(updateReq, id);
+    public void updateRole(@RequestBody @Valid UserRoleUpdateReq req, @PathVariable Long id) {
+        baseService.updateRole(req, id);
     }
 }

@@ -99,11 +99,11 @@ public class CaptchaController {
     @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
     @GetMapping("/behavior")
-    public Object getBehaviorCaptcha(CaptchaVO captchaReq, HttpServletRequest request) {
+    public Object getBehaviorCaptcha(CaptchaVO captchaVO, HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaReq.setBrowserInfo(
+        captchaVO.setBrowserInfo(
             JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        ResponseModel responseModel = behaviorCaptchaService.get(captchaReq);
+        ResponseModel responseModel = behaviorCaptchaService.get(captchaVO);
         CheckUtils.throwIf(() -> !StrUtil.equals(RepCodeEnum.SUCCESS.getCode(), responseModel
             .getRepCode()), responseModel.getRepMsg());
         return responseModel.getRepData();
@@ -112,19 +112,19 @@ public class CaptchaController {
     /**
      * 校验行为验证码
      *
-     * @param captchaReq 验证码参数
+     * @param captchaVO  验证码参数
      * @param request    请求对象
      * @return 校验结果
      */
     @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
-    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaReq,
+    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaVO,
         HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaReq.setBrowserInfo(
+        captchaVO.setBrowserInfo(
             JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        return behaviorCaptchaService.check(captchaReq);
+        return behaviorCaptchaService.check(captchaVO);
     }
 
     @Log(ignore = true)
@@ -156,7 +156,7 @@ public class CaptchaController {
      * </p>
      *
      * @param email      邮箱
-     * @param captchaReq 行为验证码请求参数
+     * @param captchaVO  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
@@ -177,10 +177,10 @@ public class CaptchaController {
             interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
             message = "获取验证码操作太频繁，请稍后再试")})
     public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Email(message = "邮箱格式不正确") String email,
-        CaptchaVO captchaReq) throws MessagingException {
+        CaptchaVO captchaVO) throws MessagingException {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
+        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaVO);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
             verificationRes
                 .getRepMsg());
@@ -214,7 +214,7 @@ public class CaptchaController {
      * </p>
      *
      * @param phone      手机号
-     * @param captchaReq 行为验证码请求参数
+     * @param captchaVO  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
@@ -235,10 +235,10 @@ public class CaptchaController {
             interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
             message = "获取验证码操作太频繁，请稍后再试")})
     public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone,
-        CaptchaVO captchaReq) {
+        CaptchaVO captchaVO) {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaReq);
+        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaVO);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
             verificationRes
                 .getRepMsg());

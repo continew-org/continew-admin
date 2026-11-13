@@ -49,7 +49,7 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
         if (DisEnableStatusEnum.DISABLE.equals(smsConfig.getStatus())) {
             return null;
         }
-        return SmsConfigUtil.from(smsConfig);
+        return SmsConfigUtils.from(smsConfig);
     }
 
     @Override
@@ -60,6 +60,6 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
         if (CollUtil.isEmpty(list)) {
             return List.of();
         }
-        return CollUtils.mapToList(list, SmsConfigUtil::from);
+        return CollUtils.mapToList(list, SmsConfigUtils::from);
     }
 }

@@ -50,13 +50,13 @@ public class GeneratorProperties {
     /**
      * 模板配置
      */
-    private Map<String, TemplateConfig> templateConfigs = MapUtil.newHashMap(true);
+    private Map<String, TemplateConfiguration> templateConfigs = MapUtil.newHashMap(true);
 
     /**
      * 模板配置
      */
     @Data
-    public static class TemplateConfig {
+    public static class TemplateConfiguration {
 
         /**
          * 模板路径

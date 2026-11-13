@@ -126,12 +126,12 @@ class SystemServiceIntegrationTest extends BaseIntegrationTest {
         AtomicReference<String> dbPhoneRef = new AtomicReference<>();
         AtomicReference<String> ormPhoneRef = new AtomicReference<>();
         TenantUtils.execute(DEFAULT_TENANT_ID, () -> {
-            UserDO userDO = new UserDO();
-            userDO.setUsername(probeUsername);
-            userDO.setNickname("加密探针");
-            userDO.setPhone(rawPhone);
-            userDO.setDeptId(1L);
-            userMapper.insert(userDO);
+            UserDO user = new UserDO();
+            user.setUsername(probeUsername);
+            user.setNickname("加密探针");
+            user.setPhone(rawPhone);
+            user.setDeptId(1L);
+            userMapper.insert(user);
 
             // 库中密文校验与 ORM 解密读回在同一租户上下文内完成
             dbPhoneRef.set(jdbcTemplate.queryForObject(

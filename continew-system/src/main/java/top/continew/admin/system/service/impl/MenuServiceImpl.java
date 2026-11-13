@@ -134,10 +134,10 @@ public class MenuServiceImpl
     @Override
     public List<Long> listExcludeTenantMenu() {
         Long roleId = roleService.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
-        List<Long> allMenuIdList = CollUtils.mapToList(super.list(), MenuDO::getId);
-        List<Long> menuIdList =
+        List<Long> allMenuIds = CollUtils.mapToList(super.list(), MenuDO::getId);
+        List<Long> menuIds =
             CollUtils.mapToList(baseMapper.selectListByRoleId(roleId), MenuDO::getId);
-        return CollUtil.disjunction(allMenuIdList, menuIdList).stream().toList();
+        return CollUtil.disjunction(allMenuIds, menuIds).stream().toList();
     }
 
     /**

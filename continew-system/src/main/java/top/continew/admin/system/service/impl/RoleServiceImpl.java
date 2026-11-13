@@ -184,8 +184,8 @@ public class RoleServiceImpl
 
     @Override
     public void updateUserContext(Long roleId) {
-        List<Long> userIdList = userRoleService.listUserIdByRoleId(roleId);
-        userIdList.forEach(userId -> {
+        List<Long> userIds = userRoleService.listUserIdByRoleId(roleId);
+        userIds.forEach(userId -> {
             UserContext userContext = UserContextHolder.getContext(userId);
             if (userContext != null) {
                 userContext.setRoles(this.listByUserId(userId));
@@ -208,24 +208,24 @@ public class RoleServiceImpl
 
     @Override
     public Set<String> listCodeByUserId(Long userId) {
-        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
-        if (CollUtil.isEmpty(roleIdList)) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
         List<RoleDO> roleList =
-            baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
+            baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
         return CollUtils.mapToSet(roleList, RoleDO::getCode);
     }
 
     @Override
     public Set<RoleContext> listByUserId(Long userId) {
-        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
-        if (CollUtil.isEmpty(roleIdList)) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
         List<RoleDO> roleList = baseMapper.lambdaQuery()
             .select(RoleDO::getId, RoleDO::getCode, RoleDO::getDataScope)
-            .in(RoleDO::getId, roleIdList)
+            .in(RoleDO::getId, roleIds)
             .list();
         return CollUtils.mapToSet(roleList,
             r -> new RoleContext(r.getId(), r.getCode(), r.getDataScope()));

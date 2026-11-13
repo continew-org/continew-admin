@@ -85,7 +85,7 @@ class GlobalExceptionHandlerTest {
             .addFirst(new MapPropertySource("test-response", Map
                 .of("continew-starter.web.response.default-error-msg", "服务器异常，请联系管理员")));
         context.setServletContext(new MockServletContext());
-        context.register(TestConfig.class);
+        context.register(TestConfiguration.class);
         context.refresh();
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -151,7 +151,7 @@ class GlobalExceptionHandlerTest {
     @EnableWebMvc
     @EnableGlobalResponse
     @ComponentScan(basePackageClasses = AdminGlobalExceptionHandler.class)
-    static class TestConfig {
+    static class TestConfiguration {
 
         /**
          * 抛出各类异常的测试接口

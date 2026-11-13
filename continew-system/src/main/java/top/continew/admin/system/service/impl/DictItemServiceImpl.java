@@ -123,8 +123,8 @@ public class DictItemServiceImpl extends
         if (ArrayUtil.isEmpty(enumConstants)) {
             return List.of();
         }
-        return Arrays.stream(enumConstants).map(e -> {
-            BaseEnum baseEnum = (BaseEnum) e;
+        return Arrays.stream(enumConstants).map(enumConstant -> {
+            BaseEnum baseEnum = (BaseEnum) enumConstant;
             return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(),
                 baseEnum.getColor());
         }).toList();

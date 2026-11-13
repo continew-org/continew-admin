@@ -114,16 +114,16 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(MessageReq req, List<String> userIdList) {
+    public void add(MessageReq req, List<String> userIds) {
         MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
-        message.setScope(CollUtil.isEmpty(userIdList) ? NoticeScopeEnum.ALL : NoticeScopeEnum.USER);
-        message.setUsers(userIdList);
+        message.setScope(CollUtil.isEmpty(userIds) ? NoticeScopeEnum.ALL : NoticeScopeEnum.USER);
+        message.setUsers(userIds);
         baseMapper.insert(message);
         // 发送消息给指定在线用户
-        if (CollUtil.isNotEmpty(userIdList)) {
+        if (CollUtil.isNotEmpty(userIds)) {
             // 顺序执行：本方法处于 @Transactional 之下，且是阻塞式的 Redis 与 WebSocket 调用，
             // 放到 ForkJoinPool 公共池上既拿不到事务与租户上下文，也会阻塞公共池
-            userIdList.forEach(userId -> {
+            userIds.forEach(userId -> {
                 List<String> tokenList = StpUtil.getTokenValueListByLoginId(userId);
                 tokenList.forEach(token -> WebSocketUtils.sendMessageToAll(token, "1"));
             });

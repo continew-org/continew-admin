@@ -47,7 +47,7 @@ class CoreReadApiTest extends ApiTestSupport {
     /**
      * 响应 data 结构分类。
      */
-    enum DataShape {
+    enum DataShapeEnum {
         /**
          * 分页结构：data.list 为数组且 data.total 非负。
          */
@@ -68,24 +68,24 @@ class CoreReadApiTest extends ApiTestSupport {
      * @return 参数流
      */
     static Stream<Arguments> listEndpoints() {
-        return Stream.of(Arguments.of("/system/user?page=1&size=10", DataShape.PAGED), Arguments
-            .of("/system/dept/tree", DataShape.ARRAY),
+        return Stream.of(Arguments.of("/system/user?page=1&size=10", DataShapeEnum.PAGED), Arguments
+            .of("/system/dept/tree", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/role/list", DataShape.ARRAY),
+                .of("/system/role/list", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/menu/tree", DataShape.ARRAY),
+                .of("/system/menu/tree", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/dict/list", DataShape.ARRAY),
+                .of("/system/dict/list", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/option", DataShape.ARRAY),
+                .of("/system/option", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/notice?page=1&size=10", DataShape.PAGED),
+                .of("/system/notice?page=1&size=10", DataShapeEnum.PAGED),
             Arguments
-                .of("/system/client?page=1&size=10", DataShape.PAGED),
+                .of("/system/client?page=1&size=10", DataShapeEnum.PAGED),
             Arguments
-                .of("/system/storage/list", DataShape.ARRAY),
+                .of("/system/storage/list", DataShapeEnum.ARRAY),
             Arguments
-                .of("/system/log", DataShape.PAGED));
+                .of("/system/log", DataShapeEnum.PAGED));
     }
 
     /**
@@ -128,7 +128,7 @@ class CoreReadApiTest extends ApiTestSupport {
      */
     @ParameterizedTest(name = "[{index}] GET {0}")
     @MethodSource("listEndpoints")
-    void listEndpointBizOkWithStructureContract(String path, DataShape shape) {
+    void listEndpointBizOkWithStructureContract(String path, DataShapeEnum shape) {
         Response response = givenAuth().get(path);
         assertBizOk(response);
         switch (shape) {

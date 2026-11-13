@@ -37,7 +37,7 @@ import java.util.Map;
  */
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SmsConfigUtil {
+public class SmsConfigUtils {
 
     /**
      * 将本地配置转换为 SMS4J 配置

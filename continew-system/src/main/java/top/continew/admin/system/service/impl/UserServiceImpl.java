@@ -182,8 +182,8 @@ public class UserServiceImpl
     }
 
     @Override
-    public void afterCreate(UserReq req, UserDO user) {
-        Long userId = user.getId();
+    public void afterCreate(UserReq req, UserDO entity) {
+        Long userId = entity.getId();
         baseMapper.lambdaUpdate()
             .set(UserDO::getPwdResetTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .eq(UserDO::getId, userId).update();
@@ -369,7 +369,8 @@ public class UserServiceImpl
         List<String> existUsernames = CollUtils.mapToList(existUserList, UserDO::getUsername);
         CheckUtils
             .throwIf(
-                isExitImportUser(req, importUserList, existUsernames, existEmails, existPhones),
+                hasDuplicateByExitPolicy(req, importUserList, existUsernames, existEmails,
+                    existPhones),
                 "数据不符合导入策略，已退出导入");
 
         // 基础数据准备
@@ -394,7 +395,7 @@ public class UserServiceImpl
         // 批量操作数据库集合
         List<UserDO> insertList = new ArrayList<>();
         List<UserDO> updateList = new ArrayList<>();
-        List<UserRoleDO> userRoleDoList = new ArrayList<>();
+        List<UserRoleDO> userRoleList = new ArrayList<>();
         // ID生成器
         IdGenerator idGenerator = DefaultIdGeneratorProvider.INSTANCE.getShare();
         for (UserImportRowReq row : importUserList) {
@@ -407,32 +408,32 @@ public class UserServiceImpl
             // 系统内置角色不允许通过导入分配
             CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()),
                 "角色 [{}] 是系统内置角色，不允许通过导入分配", row.getRoleName());
-            UserDO userDO = BeanUtil.toBeanIgnoreError(row, UserDO.class);
-            userDO.setGender(
+            UserDO user = BeanUtil.toBeanIgnoreError(row, UserDO.class);
+            user.setGender(
                 EnumUtil.getBy(GenderEnum::getDescription, row.getGender(), GenderEnum.UNKNOWN));
-            userDO.setDeptId(deptMap.get(row.getDeptName()));
+            user.setDeptId(deptMap.get(row.getDeptName()));
             // 修改 or 新增
             if (UPDATE.validate(req.getDuplicateUser(), row.getUsername(), existUsernames)) {
                 CheckUtils.throwIf(systemUsernames.contains(row.getUsername()),
                     "系统内置用户 [{}] 不允许导入更新", row.getUsername());
                 Long userId = userMap.get(row.getUsername()).getId();
-                userDO.setId(userId);
+                user.setId(userId);
                 // 导入更新不允许修改密码
-                userDO.setPassword(null);
+                user.setPassword(null);
                 // 仅当导入角色与原角色不一致时才校验分配角色权限，避免单纯更新未改角色的用户也要 updateRole
                 this.checkAssignRolePermission(List.of(role.getId()),
                     userRoleService.listRoleIdByUserId(userId));
-                updateList.add(userDO);
+                updateList.add(user);
             } else {
-                userDO.setId(idGenerator.generate());
-                userDO.setIsSystem(false);
-                userDO.setStatus(req.getDefaultStatus());
-                userDO.setPwdResetTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
-                insertList.add(userDO);
+                user.setId(idGenerator.generate());
+                user.setIsSystem(false);
+                user.setStatus(req.getDefaultStatus());
+                user.setPwdResetTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
+                insertList.add(user);
             }
-            userRoleDoList.add(new UserRoleDO(userDO.getId(), role.getId()));
+            userRoleList.add(new UserRoleDO(user.getId(), role.getId()));
         }
-        doImportUser(insertList, updateList, userRoleDoList);
+        doImportUser(insertList, updateList, userRoleList);
         // 角色变更后刷新在线用户上下文，完成后恢复当前操作人的上下文
         if (CollUtil.isNotEmpty(updateList)) {
             UserContext currentContext = UserContextHolder.getContext();
@@ -459,9 +460,9 @@ public class UserServiceImpl
     }
 
     @Override
-    public void updateRole(UserRoleUpdateReq updateReq, Long id) {
+    public void updateRole(UserRoleUpdateReq req, Long id) {
         this.getById(id);
-        List<Long> roleIds = updateReq.getRoleIds();
+        List<Long> roleIds = req.getRoleIds();
         // 保存用户和角色关联
         userRoleService.assignRolesToUser(roleIds, id);
         // 更新用户上下文
@@ -604,7 +605,7 @@ public class UserServiceImpl
         DisEnableStatusEnum status = query.getStatus();
         List<LocalDateTime> createTimeList = query.getCreateTime();
         Long deptId = query.getDeptId();
-        List<Long> userIdList = query.getUserIds();
+        List<Long> userIds = query.getUserIds();
         // 获取排除用户 ID 列表
         List<Long> excludeUserIdList = null;
         if (query.getRoleId() != null) {
@@ -621,12 +622,12 @@ public class UserServiceImpl
                 CollUtil.getFirst(createTimeList), CollUtil
                     .getLast(createTimeList))
             .and(deptId != null, q -> {
-                List<Long> deptIdList =
+                List<Long> deptIds =
                     CollUtils.mapToList(deptService.listChildren(deptId), DeptDO::getId);
-                deptIdList.add(deptId);
-                q.in("t1.dept_id", deptIdList);
+                deptIds.add(deptId);
+                q.in("t1.dept_id", deptIds);
             })
-            .in(CollUtil.isNotEmpty(userIdList), "t1.id", userIdList)
+            .in(CollUtil.isNotEmpty(userIds), "t1.id", userIds)
             .notIn(CollUtil.isNotEmpty(excludeUserIdList), "t1.id", excludeUserIdList)
             .eq("t1.deleted", 0L);
     }
@@ -636,10 +637,10 @@ public class UserServiceImpl
      *
      * @param insertList     新增用户
      * @param updateList     修改用户
-     * @param userRoleDoList 用户角色关联
+     * @param userRoleList    用户角色关联
      */
     private void doImportUser(List<UserDO> insertList, List<UserDO> updateList,
-        List<UserRoleDO> userRoleDoList) {
+        List<UserRoleDO> userRoleList) {
         if (CollUtil.isNotEmpty(insertList)) {
             baseMapper.insert(insertList);
         }
@@ -647,8 +648,8 @@ public class UserServiceImpl
             baseMapper.updateBatchById(updateList);
             userRoleService.deleteByUserIds(CollUtils.mapToList(updateList, UserDO::getId));
         }
-        if (CollUtil.isNotEmpty(userRoleDoList)) {
-            userRoleService.saveBatch(userRoleDoList);
+        if (CollUtil.isNotEmpty(userRoleList)) {
+            userRoleService.saveBatch(userRoleList);
         }
     }
 
@@ -684,7 +685,7 @@ public class UserServiceImpl
      * @param existPhones    导入数据中已存在的手机号
      * @return 是否退出
      */
-    private boolean isExitImportUser(UserImportReq req,
+    private boolean hasDuplicateByExitPolicy(UserImportReq req,
         List<UserImportRowReq> list,
         List<String> existUsernames,
         List<String> existEmails,

@@ -97,9 +97,9 @@ public class FileRecorderImpl implements FileRecorder {
         if (file == null) {
             return null;
         }
-        StorageDO storageDO =
+        StorageDO storage =
             storageMapper.lambdaQuery().eq(StorageDO::getId, file.getStorageId()).one();
-        return file.toFileInfo(storageDO);
+        return file.toFileInfo(storage);
     }
 
     @Override
