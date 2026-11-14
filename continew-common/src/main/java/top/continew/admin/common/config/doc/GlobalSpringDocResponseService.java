@@ -31,7 +31,7 @@ import org.springdoc.core.service.OperationService;
 import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springdoc.core.utils.SpringDocAnnotationsUtils;
 import org.springframework.core.ResolvableType;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import top.continew.starter.web.model.R;
 
 import java.lang.annotation.Annotation;
@@ -46,9 +46,10 @@ import java.util.Arrays;
  * </p>
  *
  * @author echo
+ * @author Charles7c
  * @since 5.0.0
  */
-@Component
+@Service
 public class GlobalSpringDocResponseService extends GenericResponseService {
 
     /**
