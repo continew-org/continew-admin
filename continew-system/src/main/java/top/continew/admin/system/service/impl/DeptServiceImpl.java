@@ -72,36 +72,36 @@ public class DeptServiceImpl
     private OnlineUserService onlineUserService;
 
     @Override
-    public void beforeCreate(DeptReq req) {
-        this.checkNameRepeat(req.getName(), req.getParentId(), null);
-        req.setAncestors(this.getAncestors(req.getParentId()));
+    public void beforeCreate(DeptReq request) {
+        this.checkNameRepeat(request.getName(), request.getParentId(), null);
+        request.setAncestors(this.getAncestors(request.getParentId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(DeptUserPolicyLockTargetResolver.class)
-    public void update(DeptReq req, Long id) {
-        super.update(req, id);
+    public void update(DeptReq request, Long id) {
+        super.update(request, id);
     }
 
     @Override
-    public void beforeUpdate(DeptReq req, Long id) {
-        this.checkNameRepeat(req.getName(), req.getParentId(), id);
+    public void beforeUpdate(DeptReq request, Long id) {
+        this.checkNameRepeat(request.getName(), request.getParentId(), id);
         DeptDO oldDept = super.getById(id);
         String oldName = oldDept.getName();
-        DisEnableStatusEnum newStatus = req.getStatus();
+        DisEnableStatusEnum newStatus = request.getStatus();
         Long oldParentId = oldDept.getParentId();
         if (Boolean.TRUE.equals(oldDept.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用",
                 oldName);
-            CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门",
+            CheckUtils.throwIfNotEqual(request.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门",
                 oldName);
         }
         // 启用/禁用部门
         if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
             List<DeptDO> children = this.listChildren(id);
             long enabledChildrenCount = children.stream()
-                .filter(d -> DisEnableStatusEnum.ENABLE.equals(d.getStatus()))
+                .filter(dept -> DisEnableStatusEnum.ENABLE.equals(dept.getStatus()))
                 .count();
             CheckUtils.throwIf(DisEnableStatusEnum.DISABLE
                 .equals(newStatus) && enabledChildrenCount > 0, "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
@@ -111,18 +111,18 @@ public class DeptServiceImpl
                     .equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
         // 变更上级部门
-        if (ObjectUtil.notEqual(req.getParentId(), oldParentId)) {
+        if (ObjectUtil.notEqual(request.getParentId(), oldParentId)) {
             // 更新祖级列表
-            String newAncestors = this.getAncestors(req.getParentId());
-            req.setAncestors(newAncestors);
+            String newAncestors = this.getAncestors(request.getParentId());
+            request.setAncestors(newAncestors);
             // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
     }
 
     @Override
-    public void afterUpdate(DeptReq req, DeptDO entity) {
-        if (DisEnableStatusEnum.DISABLE.equals(req.getStatus())) {
+    public void afterUpdate(DeptReq request, DeptDO entity) {
+        if (DisEnableStatusEnum.DISABLE.equals(request.getStatus())) {
             // 部门禁用后，直属用户的 Access/Refresh Session 必须立即失效。下级部门要求
             // 先逐级禁用，因此只处理当前部门即可。
             userService.listIdByDeptId(entity.getId()).forEach(onlineUserService::kickOut);
@@ -131,11 +131,11 @@ public class DeptServiceImpl
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<DeptDO> list = baseMapper.lambdaQuery()
+        List<DeptDO> depts = baseMapper.lambdaQuery()
             .select(DeptDO::getName, DeptDO::getIsSystem)
             .in(DeptDO::getId, ids)
             .list();
-        Optional<DeptDO> isSystemData = list.stream().filter(DeptDO::getIsSystem).findFirst();
+        Optional<DeptDO> isSystemData = depts.stream().filter(DeptDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
             isSystemData.orElseGet(DeptDO::new)
                 .getName());
@@ -153,11 +153,11 @@ public class DeptServiceImpl
     }
 
     @Override
-    public List<DeptDO> listByNames(List<String> list) {
-        if (CollUtil.isEmpty(list)) {
+    public List<DeptDO> listByNames(List<String> deptNames) {
+        if (CollUtil.isEmpty(deptNames)) {
             return Collections.emptyList();
         }
-        return this.list(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, list));
+        return this.list(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, deptNames));
     }
 
     @Override
@@ -236,7 +236,7 @@ public class DeptServiceImpl
         if (CollUtil.isEmpty(children)) {
             return;
         }
-        List<DeptDO> list = new ArrayList<>(children.size());
+        List<DeptDO> updatedDepts = new ArrayList<>(children.size());
         // 祖级路径按字面量匹配，正则在循环外编译一次复用，避免每次迭代重复编译
         Pattern oldAncestorPattern = Pattern.compile(oldAncestors, Pattern.LITERAL);
         for (DeptDO child : children) {
@@ -244,8 +244,8 @@ public class DeptServiceImpl
             dept.setId(child.getId());
             Matcher matcher = oldAncestorPattern.matcher(child.getAncestors());
             dept.setAncestors(matcher.replaceFirst(Matcher.quoteReplacement(newAncestors)));
-            list.add(dept);
+            updatedDepts.add(dept);
         }
-        baseMapper.updateById(list);
+        baseMapper.updateById(updatedDepts);
     }
 }

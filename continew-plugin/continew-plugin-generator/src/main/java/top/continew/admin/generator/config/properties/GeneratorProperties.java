@@ -54,6 +54,8 @@ public class GeneratorProperties {
 
     /**
      * 模板配置
+     *
+     * @since 5.0.0
      */
     @Data
     public static class TemplateConfiguration {

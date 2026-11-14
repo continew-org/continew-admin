@@ -77,51 +77,52 @@ public class RoleServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(RoleReq req) {
-        this.checkNameRepeat(req.getName(), null);
-        String code = req.getCode();
+    public Long create(RoleReq request) {
+        this.checkNameRepeat(request.getName(), null);
+        String code = request.getCode();
         this.checkCodeRepeat(code, null);
         // 防止租户添加超级管理员
         CheckUtils.throwIfEqual(RoleCodeEnum.SUPER_ADMIN.getCode(), code, "编码 [{}] 禁止使用", code);
         // 新增信息
-        Long roleId = super.create(req);
+        Long roleId = super.create(request);
         // 保存角色和部门关联
-        roleDeptService.add(req.getDeptIds(), roleId);
+        roleDeptService.add(request.getDeptIds(), roleId);
         return roleId;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(RoleReq req, Long id) {
-        this.checkNameRepeat(req.getName(), id);
+    public void update(RoleReq request, Long id) {
+        this.checkNameRepeat(request.getName(), id);
         RoleDO oldRole = super.getById(id);
-        CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改",
+        CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(), "角色编码不允许修改",
             oldRole.getName());
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
-            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
+            CheckUtils.throwIfNotEqual(request.getDataScope(), oldDataScope,
+                "[{}] 是系统内置角色，不允许修改角色数据权限",
                 oldRole.getName());
         }
         // 更新信息
-        super.update(req, id);
-        if (RoleCodeEnum.isSuperRoleCode(req.getCode())) {
+        super.update(request, id);
+        if (RoleCodeEnum.isSuperRoleCode(request.getCode())) {
             return;
         }
         // 保存角色和部门关联
-        boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
+        boolean isSaveDeptSuccess = roleDeptService.add(request.getDeptIds(), id);
         // 数据权限有变更时同步在线用户权限信息
-        if (isSaveDeptSuccess || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)) {
+        if (isSaveDeptSuccess || ObjectUtil.notEqual(request.getDataScope(), oldDataScope)) {
             TransactionUtils.afterCommit(() -> this.updateUserContext(id));
         }
     }
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<RoleDO> list = baseMapper.lambdaQuery()
+        List<RoleDO> roles = baseMapper.lambdaQuery()
             .select(RoleDO::getName, RoleDO::getIsSystem)
             .in(RoleDO::getId, ids)
             .list();
-        Optional<RoleDO> isSystemData = list.stream().filter(RoleDO::getIsSystem).findFirst();
+        Optional<RoleDO> isSystemData = roles.stream().filter(RoleDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
             isSystemData.orElseGet(RoleDO::new)
                 .getName());
@@ -137,8 +138,8 @@ public class RoleServiceImpl
         super.fill(obj);
         if (obj instanceof RoleDetailResp detail) {
             Long roleId = detail.getId();
-            List<MenuResp> list = menuService.listByRoleId(roleId);
-            List<Long> menuIds = CollUtils.mapToList(list, MenuResp::getId);
+            List<MenuResp> menus = menuService.listByRoleId(roleId);
+            List<Long> menuIds = CollUtils.mapToList(menus, MenuResp::getId);
             detail.setMenuIds(menuIds);
         }
     }
@@ -155,14 +156,14 @@ public class RoleServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheConstants.ROLE_MENU_KEY_PREFIX, key = "#id")
-    public void updatePermission(Long id, RolePermissionUpdateReq req) {
+    public void updatePermission(Long id, RolePermissionUpdateReq request) {
         RoleDO role = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许修改角色功能权限",
             role.getName());
         // 保存角色和菜单关联
-        boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
+        boolean isSaveMenuSuccess = roleMenuService.add(request.getMenuIds(), id);
         baseMapper.lambdaUpdate()
-            .set(RoleDO::getMenuCheckStrictly, req.getMenuCheckStrictly())
+            .set(RoleDO::getMenuCheckStrictly, request.getMenuCheckStrictly())
             .eq(RoleDO::getId, id)
             .update();
         // 功能权限有变更时同步在线用户权限信息
@@ -198,9 +199,9 @@ public class RoleServiceImpl
 
     @Override
     public Set<String> listPermissionByUserId(Long userId) {
-        Set<String> roleCodeSet = this.listCodeByUserId(userId);
+        Set<String> roleCodes = this.listCodeByUserId(userId);
         // 超级管理员赋予全部权限
-        if (roleCodeSet.contains(RoleCodeEnum.SUPER_ADMIN.getCode())) {
+        if (roleCodes.contains(RoleCodeEnum.SUPER_ADMIN.getCode())) {
             return CollUtil.newHashSet(SystemConstants.ALL_PERMISSION);
         }
         return menuService.listPermissionByUserId(userId);
@@ -212,9 +213,9 @@ public class RoleServiceImpl
         if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
-        List<RoleDO> roleList =
+        List<RoleDO> roles =
             baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
-        return CollUtils.mapToSet(roleList, RoleDO::getCode);
+        return CollUtils.mapToSet(roles, RoleDO::getCode);
     }
 
     @Override
@@ -223,12 +224,12 @@ public class RoleServiceImpl
         if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
-        List<RoleDO> roleList = baseMapper.lambdaQuery()
+        List<RoleDO> roles = baseMapper.lambdaQuery()
             .select(RoleDO::getId, RoleDO::getCode, RoleDO::getDataScope)
             .in(RoleDO::getId, roleIds)
             .list();
-        return CollUtils.mapToSet(roleList,
-            r -> new RoleContext(r.getId(), r.getCode(), r.getDataScope()));
+        return CollUtils.mapToSet(roles,
+            role -> new RoleContext(role.getId(), role.getCode(), role.getDataScope()));
     }
 
     @Override
@@ -238,11 +239,11 @@ public class RoleServiceImpl
     }
 
     @Override
-    public List<RoleDO> listByNames(List<String> list) {
-        if (CollUtil.isEmpty(list)) {
+    public List<RoleDO> listByNames(List<String> roleNames) {
+        if (CollUtil.isEmpty(roleNames)) {
             return Collections.emptyList();
         }
-        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, list));
+        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
     }
 
     @Override

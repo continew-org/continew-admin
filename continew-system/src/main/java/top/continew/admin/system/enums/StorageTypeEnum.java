@@ -45,17 +45,19 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
     LOCAL(1, "本地存储") {
 
         @Override
-        public void validate(StorageReq req) {
-            ValidationUtils.validate(req, ValidationGroup.Storage.Local.class);
-            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !UrlUtils.isHttpUrl(req
-                .getDomain()), "访问路径格式不正确");
+        public void validate(StorageReq request) {
+            ValidationUtils.validate(request, ValidationGroup.Storage.Local.class);
+            ValidationUtils
+                .throwIf(StrUtil.isNotBlank(request.getDomain()) && !UrlUtils.isHttpUrl(request
+                    .getDomain()), "访问路径格式不正确");
         }
 
         @Override
-        public void pretreatment(StorageReq req) {
-            super.pretreatment(req);
+        public void pretreatment(StorageReq request) {
+            super.pretreatment(request);
             // 本地存储路径需要以 “/” 结尾
-            req.setBucketName(StrUtil.appendIfMissing(req.getBucketName(), StringConstants.SLASH));
+            request.setBucketName(
+                StrUtil.appendIfMissing(request.getBucketName(), StringConstants.SLASH));
         }
     },
 
@@ -65,11 +67,11 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
     OSS(2, "对象存储") {
 
         @Override
-        public void validate(StorageReq req) {
-            ValidationUtils.validate(req, ValidationGroup.Storage.OSS.class);
-            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !ReUtil
-                .isMatch(RegexConstants.URL_HTTP_NOT_IP, req.getDomain()), "域名格式不正确");
-            Long multipartUploadPartSize = req.getMultipartUploadPartSize();
+        public void validate(StorageReq request) {
+            ValidationUtils.validate(request, ValidationGroup.Storage.OSS.class);
+            ValidationUtils.throwIf(StrUtil.isNotBlank(request.getDomain()) && !ReUtil
+                .isMatch(RegexConstants.URL_HTTP_NOT_IP, request.getDomain()), "域名格式不正确");
+            Long multipartUploadPartSize = request.getMultipartUploadPartSize();
             ValidationUtils
                 .throwIf(multipartUploadPartSize != null
                     && multipartUploadPartSize < StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE,
@@ -83,23 +85,23 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
     /**
      * 校验
      *
-     * @param req 请求参数
+     * @param request 请求参数
      */
-    public abstract void validate(StorageReq req);
+    public abstract void validate(StorageReq request);
 
     /**
      * 处理参数
      *
-     * @param req 请求参数
+     * @param request 请求参数
      */
-    public void pretreatment(StorageReq req) {
+    public void pretreatment(StorageReq request) {
         // 域名需要以 “/” 结尾（x-file-storage 在拼接路径时都是直接 + 拼接，所以规范要求每一级都要以 “/” 结尾，且后面路径不能以 “/” 开头）
-        if (StrUtil.isNotBlank(req.getDomain())) {
-            req.setDomain(StrUtil.appendIfMissing(req.getDomain(), StringConstants.SLASH));
+        if (StrUtil.isNotBlank(request.getDomain())) {
+            request.setDomain(StrUtil.appendIfMissing(request.getDomain(), StringConstants.SLASH));
         }
         // 回收站路径需要以 “/” 结尾
-        if (Boolean.TRUE.equals(req.getRecycleBinEnabled())) {
-            req.setRecycleBinPath(StrUtil.appendIfMissing(StrUtil.removePrefix(req
+        if (Boolean.TRUE.equals(request.getRecycleBinEnabled())) {
+            request.setRecycleBinPath(StrUtil.appendIfMissing(StrUtil.removePrefix(request
                 .getRecycleBinPath(), StringConstants.SLASH), StringConstants.SLASH));
         }
     }

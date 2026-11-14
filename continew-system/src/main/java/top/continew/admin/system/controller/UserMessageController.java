@@ -101,14 +101,14 @@ public class UserMessageController {
 
     @Operation(summary = "删除消息", description = "删除消息")
     @DeleteMapping
-    public void delete(@RequestBody @Valid IdsReq req) {
-        messageService.delete(req.getIds(), UserContextHolder.getUserId());
+    public void delete(@RequestBody @Valid IdsReq request) {
+        messageService.delete(request.getIds(), UserContextHolder.getUserId());
     }
 
     @Operation(summary = "消息标记为已读", description = "将消息标记为已读状态")
     @PatchMapping("/read")
-    public void read(@RequestBody @Valid IdsReq req) {
-        messageService.readMessage(req.getIds(), UserContextHolder.getUserId());
+    public void read(@RequestBody @Valid IdsReq request) {
+        messageService.readMessage(request.getIds(), UserContextHolder.getUserId());
     }
 
     @Operation(summary = "消息全部已读", description = "将所有消息标记为已读状态")
@@ -117,12 +117,18 @@ public class UserMessageController {
         messageService.readMessage(null, UserContextHolder.getUserId());
     }
 
+    /**
+     * 查询当前用户的未读公告数量
+     *
+     * @return 未读公告数量
+     */
     @Log(ignore = true)
     @Operation(summary = "查询未读公告数量", description = "查询当前用户的未读公告数量")
     @GetMapping("/notice/unread")
     public NoticeUnreadCountResp countUnreadNotice() {
-        List<Long> list = noticeService.listUnreadIdsByUserId(null, UserContextHolder.getUserId());
-        return new NoticeUnreadCountResp(list.size());
+        List<Long> unreadNoticeIds =
+            noticeService.listUnreadIdsByUserId(null, UserContextHolder.getUserId());
+        return new NoticeUnreadCountResp(unreadNoticeIds.size());
     }
 
     @Log(ignore = true)

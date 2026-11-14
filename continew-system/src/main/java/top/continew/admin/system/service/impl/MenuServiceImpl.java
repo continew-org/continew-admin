@@ -77,30 +77,30 @@ public class MenuServiceImpl
     }
 
     @Override
-    public Long create(MenuReq req) {
-        this.checkTitleRepeat(req.getTitle(), req.getParentId(), null);
+    public Long create(MenuReq request) {
+        this.checkTitleRepeat(request.getTitle(), request.getParentId(), null);
         // 目录和菜单的组件名称不能重复
-        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
-            this.checkNameRepeat(req.getName(), null);
+        if (!MenuTypeEnum.BUTTON.equals(request.getType())) {
+            this.checkNameRepeat(request.getName(), null);
         }
         // 目录类型菜单，默认为 Layout
-        if (MenuTypeEnum.DIR.equals(req.getType())) {
-            req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
+        if (MenuTypeEnum.DIR.equals(request.getType())) {
+            request.setComponent(StrUtil.blankToDefault(request.getComponent(), "Layout"));
         }
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
-        return super.create(req);
+        return super.create(request);
     }
 
     @Override
-    public void update(MenuReq req, Long id) {
-        this.checkTitleRepeat(req.getTitle(), req.getParentId(), id);
+    public void update(MenuReq request, Long id) {
+        this.checkTitleRepeat(request.getTitle(), request.getParentId(), id);
         // 目录和菜单的组件名称不能重复
-        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
-            this.checkNameRepeat(req.getName(), id);
+        if (!MenuTypeEnum.BUTTON.equals(request.getType())) {
+            this.checkNameRepeat(request.getName(), id);
         }
         MenuDO oldMenu = super.getById(id);
-        CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
-        super.update(req, id);
+        CheckUtils.throwIfNotEqual(request.getType(), oldMenu.getType(), "不允许修改菜单类型");
+        super.update(request, id);
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
@@ -108,8 +108,8 @@ public class MenuServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         // 级联删除菜单（包含子菜单）
-        List<Long> allDeleteIdList = this.listCascadingDeleteMenuIds(ids);
-        baseMapper.deleteByIds(allDeleteIdList);
+        List<Long> cascadingMenuIds = this.listCascadingDeleteMenuIds(ids);
+        baseMapper.deleteByIds(cascadingMenuIds);
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
@@ -125,19 +125,19 @@ public class MenuServiceImpl
         if (SystemConstants.SUPER_ADMIN_ROLE_ID.equals(roleId)) {
             return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
         }
-        List<MenuDO> menuList = baseMapper.selectListByRoleId(roleId);
-        List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
-        list.forEach(super::fill);
-        return list;
+        List<MenuDO> menus = baseMapper.selectListByRoleId(roleId);
+        List<MenuResp> menuResponses = BeanUtil.copyToList(menus, MenuResp.class);
+        menuResponses.forEach(super::fill);
+        return menuResponses;
     }
 
     @Override
     public List<Long> listExcludeTenantMenu() {
         Long roleId = roleService.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
         List<Long> allMenuIds = CollUtils.mapToList(super.list(), MenuDO::getId);
-        List<Long> menuIds =
+        List<Long> tenantAdminMenuIds =
             CollUtils.mapToList(baseMapper.selectListByRoleId(roleId), MenuDO::getId);
-        return CollUtil.disjunction(allMenuIds, menuIds).stream().toList();
+        return CollUtil.disjunction(allMenuIds, tenantAdminMenuIds).stream().toList();
     }
 
     /**
@@ -177,17 +177,17 @@ public class MenuServiceImpl
      */
     private List<Long> listCascadingDeleteMenuIds(List<Long> ids) {
         List<Long> menuIds = new ArrayList<>(ids);
-        List<Long> childIdList = baseMapper.lambdaQuery()
+        List<Long> childMenuIds = baseMapper.lambdaQuery()
             .select(MenuDO::getId)
             .in(MenuDO::getParentId, menuIds)
             .list()
             .stream()
             .map(MenuDO::getId)
             .toList();
-        if (childIdList.isEmpty()) {
+        if (childMenuIds.isEmpty()) {
             return menuIds;
         }
-        menuIds.addAll(this.listCascadingDeleteMenuIds(childIdList));
+        menuIds.addAll(this.listCascadingDeleteMenuIds(childMenuIds));
         return menuIds;
     }
 }

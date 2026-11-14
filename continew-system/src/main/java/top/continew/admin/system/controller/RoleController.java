@@ -76,16 +76,16 @@ public class RoleController
     @SaCheckPermission("system:role:updatePermission")
     @GetMapping("/permission/tree")
     public List<RolePermissionResp> listPermissionTree() {
-        List<Tree<Long>> treeList = menuService.tree(null, null, false);
-        return BeanUtil.copyToList(treeList, RolePermissionResp.class);
+        List<Tree<Long>> permissionTrees = menuService.tree(null, null, false);
+        return BeanUtil.copyToList(permissionTrees, RolePermissionResp.class);
     }
 
     @Operation(summary = "修改权限", description = "修改角色的功能权限")
     @SaCheckPermission("system:role:updatePermission")
     @PutMapping("/{id}/permission")
     public void updatePermission(@PathVariable("id") Long id,
-        @RequestBody @Valid RolePermissionUpdateReq req) {
-        baseService.updatePermission(id, req);
+        @RequestBody @Valid RolePermissionUpdateReq request) {
+        baseService.updatePermission(id, request);
     }
 
     @Operation(summary = "分页查询关联用户", description = "分页查询角色关联的用户列表")

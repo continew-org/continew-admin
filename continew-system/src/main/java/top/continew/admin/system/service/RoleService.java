@@ -42,9 +42,9 @@ public interface RoleService
      * 修改角色权限
      *
      * @param id  角色 ID
-     * @param req 请求参数
+     * @param request 请求参数
      */
-    void updatePermission(Long id, RolePermissionUpdateReq req);
+    void updatePermission(Long id, RolePermissionUpdateReq request);
 
     /**
      * 分配角色给用户
@@ -96,10 +96,10 @@ public interface RoleService
     /**
      * 根据角色名称查询
      *
-     * @param list 名称列表
+     * @param roleNames 名称列表
      * @return 角色列表
      */
-    List<RoleDO> listByNames(List<String> list);
+    List<RoleDO> listByNames(List<String> roleNames);
 
     /**
      * 根据角色名称查询数量

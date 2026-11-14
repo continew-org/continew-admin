@@ -40,16 +40,16 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 
 /**
- * 全局响应操作自定义器
+ * 全局接口文档响应服务
  * <p>
  * 自定义 OpenAPI 文档中的响应结构，将原始返回类型包装为统一的响应格式
  * </p>
  *
  * @author echo
- * @since 4.2.0
+ * @since 5.0.0
  */
 @Component
-public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseService {
+public class GlobalSpringDocResponseService extends GenericResponseService {
 
     /**
      * 统一响应包装类（Starter 3.0 起固定为 R，不再支持配置）
@@ -58,7 +58,7 @@ public class GlobalSpringDocResponseOperationCustomizer extends GenericResponseS
 
     private final PropertyResolverUtils propertyResolverUtils;
 
-    public GlobalSpringDocResponseOperationCustomizer(OperationService operationService,
+    public GlobalSpringDocResponseService(OperationService operationService,
         SpringDocConfigProperties springDocConfigProperties,
         PropertyResolverUtils propertyResolverUtils) {
         super(operationService, springDocConfigProperties, propertyResolverUtils);

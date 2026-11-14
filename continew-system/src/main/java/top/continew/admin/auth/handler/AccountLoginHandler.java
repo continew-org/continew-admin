@@ -56,35 +56,39 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public LoginResp login(AccountLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(AccountLoginReq loginRequest, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 解密密码
-        String password = SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败");
+        String password =
+            SecureUtils.decryptPasswordByRsaPrivateKey(loginRequest.getPassword(), "密码解密失败");
         // 验证用户名密码
-        String username = req.getUsername();
+        String username = loginRequest.getUsername();
         UserDO user = userService.getByUsername(username);
         boolean isError =
             ObjectUtil.isNull(user) || !passwordEncoder.matches(password, user.getPassword());
         // 检查账号锁定状态
-        this.checkUserLocked(req.getUsername(), request, isError);
+        this.checkUserLocked(loginRequest.getUsername(), request, isError);
         ValidationUtils.throwIf(isError, "用户名或密码不正确");
         // 执行认证
         return super.authenticate(user, client, request, response);
     }
 
     @Override
-    public void preLogin(AccountLoginReq req, ClientResp client, HttpServletRequest request) {
-        super.preLogin(req, client, request);
+    public void preLogin(AccountLoginReq loginRequest, ClientResp client,
+        HttpServletRequest request) {
+        super.preLogin(loginRequest, client, request);
         // 校验验证码
         int loginCaptchaEnabled = optionService.getValueByCode2Int("LOGIN_CAPTCHA_ENABLED");
         if (GlobalConstants.Boolean.YES.equals(loginCaptchaEnabled)) {
-            ValidationUtils.throwIfBlank(req.getCaptcha(), "验证码不能为空");
-            ValidationUtils.throwIfBlank(req.getUuid(), "验证码标识不能为空");
-            String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + req.getUuid();
+            ValidationUtils.throwIfBlank(loginRequest.getCaptcha(), "验证码不能为空");
+            ValidationUtils.throwIfBlank(loginRequest.getUuid(), "验证码标识不能为空");
+            String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + loginRequest.getUuid();
             String captcha = RedisUtils.get(captchaKey);
             ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
             RedisUtils.delete(captchaKey);
-            ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+            ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha,
+                CAPTCHA_ERROR);
         }
     }
 

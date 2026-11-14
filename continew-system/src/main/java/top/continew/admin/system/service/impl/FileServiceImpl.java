@@ -96,31 +96,31 @@ public class FileServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        List<FileDO> fileList = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
-        if (CollUtil.isEmpty(fileList)) {
+        List<FileDO> files = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
+        if (CollUtil.isEmpty(files)) {
             return;
         }
         // 批量获取存储配置
-        Map<Long, List<FileDO>> fileListGroup =
-            fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
-        List<StorageDO> storageList = storageService.listByIds(fileListGroup.keySet());
-        Map<Long, StorageDO> storageGroup = storageList.stream()
+        Map<Long, List<FileDO>> filesByStorageId =
+            files.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+        List<StorageDO> storages = storageService.listByIds(filesByStorageId.keySet());
+        Map<Long, StorageDO> storageById = storages.stream()
             .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
                 (existing, replacement) -> existing));
         // 删除记录
-        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-            StorageDO storage = storageGroup.get(entry.getKey());
-            List<Long> idList = CollUtils.mapToList(entry.getValue(), FileDO::getId);
+        for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
+            StorageDO storage = storageById.get(entry.getKey());
+            List<Long> fileIds = CollUtils.mapToList(entry.getValue(), FileDO::getId);
             if (Boolean.TRUE.equals(storage.getRecycleBinEnabled())) {
-                baseMapper.deleteByIds(idList);
+                baseMapper.deleteByIds(fileIds);
             } else {
-                baseMapper.deleteWithoutRecycleBin(idList, UserContextHolder
+                baseMapper.deleteWithoutRecycleBin(fileIds, UserContextHolder
                     .getUserId(), LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             }
         }
         // 删除实际文件
-        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-            StorageDO storage = storageGroup.get(entry.getKey());
+        for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
+            StorageDO storage = storageById.get(entry.getKey());
             entry.getValue().forEach(file -> this.deleteFile(file, storage));
         }
     }
@@ -144,14 +144,14 @@ public class FileServiceImpl
     }
 
     @Override
-    public Long createDir(FileReq req) {
-        String parentPath = req.getParentPath();
+    public Long createDir(FileReq request) {
+        String parentPath = request.getParentPath();
         // 校验上级目录路径与名称，防止通过 ../ 等路径穿越在存储根目录之外创建目录
         StoragePathValidator.validate(parentPath);
-        StoragePathValidator.validateName(req.getOriginalName());
+        StoragePathValidator.validateName(request.getOriginalName());
         FileDO file = baseMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
-            .eq(FileDO::getName, req.getOriginalName())
+            .eq(FileDO::getName, request.getOriginalName())
             .eq(FileDO::getType, FileTypeEnum.DIR)
             .one();
         CheckUtils.throwIfNotNull(file, "文件夹已存在");
@@ -168,7 +168,7 @@ public class FileServiceImpl
         }
         // 创建文件夹
         FileDO dirFile = new FileDO();
-        String originalName = req.getOriginalName();
+        String originalName = request.getOriginalName();
         dirFile.setName(originalName);
         dirFile.setOriginalName(originalName);
         dirFile.setParentPath(parentPath);
@@ -179,24 +179,24 @@ public class FileServiceImpl
     }
 
     @Override
-    public void beforeUpdate(FileReq req, Long id) {
+    public void beforeUpdate(FileReq request, Long id) {
         // 名称和上级目录都会参与物理路径拼接（见 FileDO#setParentPath），
         // 需与新建入口做同样的路径穿越校验，避免通过修改接口改写出存储根目录之外的路径
-        StoragePathValidator.validate(req.getParentPath());
-        StoragePathValidator.validateName(req.getOriginalName());
+        StoragePathValidator.validate(request.getParentPath());
+        StoragePathValidator.validateName(request.getOriginalName());
     }
 
     @Override
     public FileStatisticsResp statistics() {
-        FileStatisticsResp resp = new FileStatisticsResp();
-        List<FileStatisticsResp> statisticsList = baseMapper.statistics();
-        if (CollUtil.isEmpty(statisticsList)) {
-            return resp;
+        FileStatisticsResp response = new FileStatisticsResp();
+        List<FileStatisticsResp> statistics = baseMapper.statistics();
+        if (CollUtil.isEmpty(statistics)) {
+            return response;
         }
-        resp.setData(statisticsList);
-        resp.setSize(statisticsList.stream().mapToLong(FileStatisticsResp::getSize).sum());
-        resp.setNumber(statisticsList.stream().mapToLong(FileStatisticsResp::getNumber).sum());
-        return resp;
+        response.setData(statistics);
+        response.setSize(statistics.stream().mapToLong(FileStatisticsResp::getSize).sum());
+        response.setNumber(statistics.stream().mapToLong(FileStatisticsResp::getNumber).sum());
+        return response;
     }
 
     @Override
@@ -236,20 +236,20 @@ public class FileServiceImpl
         String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
         Object value = RedisUtils.get(key);
         if (value == null) {
-            FileUploadProgressResp resp = new FileUploadProgressResp();
-            resp.setUploadTaskId(uploadTaskId);
-            resp.setStatus(FileUploadProgressStatusEnum.NOT_FOUND);
-            resp.setPercentage(0);
-            resp.setBytesRead(0L);
-            resp.setTotalBytes(0L);
-            return resp;
+            FileUploadProgressResp response = new FileUploadProgressResp();
+            response.setUploadTaskId(uploadTaskId);
+            response.setStatus(FileUploadProgressStatusEnum.NOT_FOUND);
+            response.setPercentage(0);
+            response.setBytesRead(0L);
+            response.setTotalBytes(0L);
+            return response;
         }
-        FileUploadProgressResp resp =
+        FileUploadProgressResp response =
             JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
-        if (StrUtil.isBlank(resp.getUploadTaskId())) {
-            resp.setUploadTaskId(uploadTaskId);
+        if (StrUtil.isBlank(response.getUploadTaskId())) {
+            response.setUploadTaskId(uploadTaskId);
         }
-        return resp;
+        return response;
     }
 
     @Override
@@ -263,19 +263,19 @@ public class FileServiceImpl
     @Override
     protected void fill(Object obj) {
         super.fill(obj);
-        if (obj instanceof FileResp fileResp) {
-            StorageDO storage = storageService.getById(fileResp.getStorageId());
+        if (obj instanceof FileResp response) {
+            StorageDO storage = storageService.getById(response.getStorageId());
             String prefix = storage.getUrlPrefix();
-            String url = URLUtil.normalize(prefix + fileResp.getPath(), false, true);
-            fileResp.setUrl(url);
-            String parentPath = StringConstants.SLASH.equals(fileResp.getParentPath())
+            String url = URLUtil.normalize(prefix + response.getPath(), false, true);
+            response.setUrl(url);
+            String parentPath = StringConstants.SLASH.equals(response.getParentPath())
                 ? StringConstants.EMPTY
-                : fileResp.getParentPath();
+                : response.getParentPath();
             String thumbnailUrl =
-                StrUtils.blankToDefault(fileResp.getThumbnailName(), url, thName -> URLUtil
+                StrUtils.blankToDefault(response.getThumbnailName(), url, thName -> URLUtil
                     .normalize(prefix + parentPath + StringConstants.SLASH + thName, false, true));
-            fileResp.setThumbnailUrl(thumbnailUrl);
-            fileResp.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
+            response.setThumbnailUrl(thumbnailUrl);
+            response.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
         }
     }
 
@@ -596,20 +596,20 @@ public class FileServiceImpl
                 Math.max(percentage, current.getPercentage() == null ? 0 : current.getPercentage());
         }
 
-        FileUploadProgressResp resp = new FileUploadProgressResp();
-        resp.setUploadTaskId(uploadTaskId);
-        resp.setStatus(status);
-        resp.setBytesRead(bytesRead);
-        resp.setTotalBytes(totalBytes);
-        resp.setPercentage(percentage);
+        FileUploadProgressResp response = new FileUploadProgressResp();
+        response.setUploadTaskId(uploadTaskId);
+        response.setStatus(status);
+        response.setBytesRead(bytesRead);
+        response.setTotalBytes(totalBytes);
+        response.setPercentage(percentage);
         // 进度过程沿用上一次的结果信息，终态由 customizer 覆盖写入
-        resp.setMessage(current == null ? null : current.getMessage());
-        resp.setFileId(current == null ? null : current.getFileId());
-        resp.setUrl(current == null ? null : current.getUrl());
+        response.setMessage(current == null ? null : current.getMessage());
+        response.setFileId(current == null ? null : current.getFileId());
+        response.setUrl(current == null ? null : current.getUrl());
         if (customizer != null) {
-            customizer.accept(resp);
+            customizer.accept(response);
         }
-        RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
+        RedisUtils.set(key, JSONUtil.toJsonStr(response), FILE_UPLOAD_PROGRESS_EXPIRE);
     }
 
     private boolean isFinalStatus(String status) {

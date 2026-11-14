@@ -162,11 +162,11 @@ public class FileRecorderImpl implements FileRecorder {
     public List<FilePartInfo> getFileParts(String fileId) {
         String key = MultipartUploadConstants.MULTIPART_PARTS_PREFIX + fileId;
         try {
-            Map<String, Object> entries = RedisUtils.hGetAll(key);
-            if (CollUtil.isEmpty(entries)) {
+            Map<String, Object> partJsonByNumber = RedisUtils.hGetAll(key);
+            if (CollUtil.isEmpty(partJsonByNumber)) {
                 return new ArrayList<>();
             }
-            return entries.values()
+            return partJsonByNumber.values()
                 .stream()
                 .map(value -> JSONUtil.toBean(value.toString(), FilePartInfo.class))
                 .sorted(Comparator.comparing(FilePartInfo::getPartNumber))
@@ -223,22 +223,22 @@ public class FileRecorderImpl implements FileRecorder {
     }
 
     @Override
-    public void saveMultipartSession(String uploadId, MultipartInitResp initResp,
+    public void saveMultipartSession(String uploadId, MultipartInitResp initResponse,
         Map<String, String> metadata) {
         MultipartUploadCreateResp target = new MultipartUploadCreateResp();
-        target.setFileId(initResp.getFileId());
-        target.setUploadId(initResp.getUploadId());
-        target.setBucket(initResp.getBucket());
-        target.setPlatform(initResp.getPlatform());
-        target.setFileName(initResp.getFileName());
-        target.setFileMd5(initResp.getFileMd5());
-        target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
-        target.setExtension(initResp.getExtension());
-        target.setContentType(initResp.getContentType());
-        target.setParentPath(initResp.getParentPath());
-        target.setPath(initResp.getPath());
-        target.setPartSize(initResp.getPartSize());
-        target.setUploadedPartNumbers(initResp.getUploadedPartNumbers());
+        target.setFileId(initResponse.getFileId());
+        target.setUploadId(initResponse.getUploadId());
+        target.setBucket(initResponse.getBucket());
+        target.setPlatform(initResponse.getPlatform());
+        target.setFileName(initResponse.getFileName());
+        target.setFileMd5(initResponse.getFileMd5());
+        target.setFileSize(ObjectUtil.defaultIfNull(initResponse.getFileSize(), 0L));
+        target.setExtension(initResponse.getExtension());
+        target.setContentType(initResponse.getContentType());
+        target.setParentPath(initResponse.getParentPath());
+        target.setPath(initResponse.getPath());
+        target.setPartSize(initResponse.getPartSize());
+        target.setUploadedPartNumbers(initResponse.getUploadedPartNumbers());
         String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
         String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
         try {
@@ -298,8 +298,8 @@ public class FileRecorderImpl implements FileRecorder {
             String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
             String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
             String expireKey = MultipartUploadConstants.MULTIPART_EXPIRE_PREFIX + uploadId;
-            MultipartInitResp initResp = getMultipartSession(uploadId);
-            String fileMd5 = initResp != null ? initResp.getFileMd5() : null;
+            MultipartInitResp initResponse = getMultipartSession(uploadId);
+            String fileMd5 = initResponse != null ? initResponse.getFileMd5() : null;
             if (StrUtil.isNotBlank(fileMd5)) {
                 deleteMd5Mapping(fileMd5);
             }
@@ -327,24 +327,24 @@ public class FileRecorderImpl implements FileRecorder {
                 .eq(FileDO::getPath, StrUtil.prependIfMissing(url, StringConstants.SLASH)).one();
         }
         // HTTP URL 场景
-        List<FileDO> list = queryWrapper.list();
-        if (CollUtil.isEmpty(list)) {
+        List<FileDO> files = queryWrapper.list();
+        if (CollUtil.isEmpty(files)) {
             return null;
         }
-        if (list.size() == 1) {
-            return list.get(0);
+        if (files.size() == 1) {
+            return files.get(0);
         }
         // 结合存储配置进行匹配
-        List<StorageDO> storageList =
-            storageMapper.selectByIds(CollUtils.mapToList(list, FileDO::getStorageId));
-        Map<Long, StorageDO> storageMap = storageList.stream()
+        List<StorageDO> storages =
+            storageMapper.selectByIds(CollUtils.mapToList(files, FileDO::getStorageId));
+        Map<Long, StorageDO> storageById = storages.stream()
             .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
                 (existing, replacement) -> existing));
-        return list.stream().filter(file -> {
+        return files.stream().filter(file -> {
             // http://localhost:8000/file/user/avatar/6825e687db4174e7a297a5f8.png => http://localhost:8000/file/user/avatar
             String urlPrefix = StrUtil.subBefore(url, StringConstants.SLASH, true);
             // http://localhost:8000/file/ + /user/avatar => http://localhost:8000/file/user/avatar
-            StorageDO storage = storageMap.get(file.getStorageId());
+            StorageDO storage = storageById.get(file.getStorageId());
             return urlPrefix.equals(
                 URLUtil.normalize(storage.getUrlPrefix() + file.getParentPath(), false, true));
         }).findFirst().orElse(null);

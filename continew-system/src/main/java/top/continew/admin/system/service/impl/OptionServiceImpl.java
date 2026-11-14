@@ -73,55 +73,56 @@ public class OptionServiceImpl implements OptionService {
         return baseMapper.selectByCategory(category.name())
             .stream()
             .collect(Collectors.toMap(OptionDO::getCode,
-                o -> StrUtil.emptyIfNull(ObjectUtil.defaultIfNull(o
-                    .getValue(), o.getDefaultValue())),
+                option -> StrUtil.emptyIfNull(ObjectUtil.defaultIfNull(option
+                    .getValue(), option.getDefaultValue())),
                 (existing, replacement) -> existing));
     }
 
     @Override
     public void update(List<OptionReq> options) {
         // 非空校验
-        List<Long> idList = CollUtils.mapToList(options, OptionReq::getId);
-        List<OptionDO> optionList = baseMapper.selectByIds(idList);
-        Map<String, OptionDO> optionMap = optionList.stream()
+        List<Long> optionIds = CollUtils.mapToList(options, OptionReq::getId);
+        List<OptionDO> existingOptions = baseMapper.selectByIds(optionIds);
+        Map<String, OptionDO> optionByCode = existingOptions.stream()
             .collect(Collectors.toMap(OptionDO::getCode, Function.identity(),
                 (existing, replacement) -> existing));
-        for (OptionReq req : options) {
-            OptionDO option = optionMap.get(req.getCode());
-            ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", req.getCode());
+        for (OptionReq request : options) {
+            OptionDO option = optionByCode.get(request.getCode());
+            ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", request.getCode());
             if (StrUtil.isNotBlank(option.getDefaultValue())) {
-                ValidationUtils.throwIfBlank(req.getValue(), "参数 [{}] 的值不能为空", option.getName());
+                ValidationUtils.throwIfBlank(request.getValue(), "参数 [{}] 的值不能为空",
+                    option.getName());
             }
         }
         // 校验密码策略参数取值范围
-        Map<String, String> passwordPolicyOptionMap = options.stream()
+        Map<String, String> passwordPolicyValueByCode = options.stream()
             .filter(option -> StrUtil.startWith(option.getCode(), PasswordPolicyEnum.CATEGORY
                 .name() + StringConstants.UNDERLINE))
             .collect(Collectors.toMap(OptionReq::getCode, OptionReq::getValue,
                 (existing, replacement) -> existing));
-        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyOptionMap
+        for (Map.Entry<String, String> passwordPolicyOptionEntry : passwordPolicyValueByCode
             .entrySet()) {
             String code = passwordPolicyOptionEntry.getKey();
             String value = passwordPolicyOptionEntry.getValue();
             ValidationUtils.throwIf(!NumberUtil.isNumber(value), "参数 [%s] 的值必须为数字", code);
             PasswordPolicyEnum passwordPolicy = PasswordPolicyEnum.valueOf(code);
-            passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyOptionMap);
+            passwordPolicy.validateRange(Integer.parseInt(value), passwordPolicyValueByCode);
         }
         baseMapper.updateById(BeanUtil.copyToList(options, OptionDO.class));
         this.clearCache();
     }
 
     @Override
-    public void resetValue(OptionValueResetReq req) {
-        String category = req.getCategory();
-        List<String> codeList = req.getCode();
-        ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codeList), "键列表不能为空");
+    public void resetValue(OptionValueResetReq request) {
+        String category = request.getCategory();
+        List<String> codes = request.getCode();
+        ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codes), "键列表不能为空");
         LambdaUpdateChainWrapper<OptionDO> updateWrapper =
             baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
         if (StrUtil.isNotBlank(category)) {
             updateWrapper.eq(OptionDO::getCategory, category);
         } else {
-            updateWrapper.in(OptionDO::getCode, req.getCode());
+            updateWrapper.in(OptionDO::getCode, request.getCode());
         }
         updateWrapper.update();
         this.clearCache();

@@ -64,7 +64,7 @@ public class SessionController {
     /**
      * 使用 Refresh Token 轮换 Access Token
      *
-     * @param req      刷新令牌请求参数，可为空
+     * @param refreshRequest      刷新令牌请求参数，可为空
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录响应参数
@@ -75,11 +75,13 @@ public class SessionController {
     @Log(excludes = {Include.REQUEST_HEADERS, Include.REQUEST_BODY, Include.RESPONSE_HEADERS,
         Include.RESPONSE_BODY})
     @PostMapping("/refresh")
-    public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq req,
+    public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq refreshRequest,
         HttpServletRequest request, HttpServletResponse response) {
         // 四步安全钩子（解析 → 限流 → 来源校验 → 原子轮换）由 Starter 的 refresh 模板固化编排
-        RefreshIssueResult result = refreshTokenService.refresh(req == null ? null : req
-            .getRefreshToken(), request, response,
+        RefreshIssueResult result = refreshTokenService.refresh(
+            refreshRequest == null ? null : refreshRequest
+                .getRefreshToken(),
+            request, response,
             session -> refreshAccessTokenIssuer.issue(session,
                 request, response));
         return LoginResp.builder().accessToken(result.getAccessToken())
@@ -91,7 +93,7 @@ public class SessionController {
     /**
      * 注销当前认证会话
      *
-     * @param req      注销请求参数，可为空
+     * @param refreshRequest      注销请求参数，可为空
      * @param request  请求对象
      * @param response 响应对象
      * @return 被注销会话的登录用户 ID
@@ -103,14 +105,15 @@ public class SessionController {
     @Parameter(name = "Authorization", description = "令牌", required = true,
         example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public Object logout(@RequestBody(required = false) RefreshTokenReq req,
+    public Object logout(@RequestBody(required = false) RefreshTokenReq refreshRequest,
         HttpServletRequest request, HttpServletResponse response) {
         Object loginId = StpUtil.getLoginId(-1L);
         String accessToken = StpUtil.getTokenValue();
         refreshTokenService.validateCookieOrigin(request);
         String refreshToken;
         try {
-            refreshToken = refreshTokenService.resolve(req == null ? null : req.getRefreshToken(),
+            refreshToken = refreshTokenService.resolve(
+                refreshRequest == null ? null : refreshRequest.getRefreshToken(),
                 request);
             refreshTokenService.validateRequest(refreshToken, request);
         } catch (RefreshTokenException e) {

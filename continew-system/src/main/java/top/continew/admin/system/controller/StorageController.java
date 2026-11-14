@@ -53,9 +53,9 @@ public class StorageController
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:storage:updateStatus")
     @PutMapping({"/{id}/status"})
-    public void updateStatus(@RequestBody @Valid CommonStatusUpdateReq req,
+    public void updateStatus(@RequestBody @Valid CommonStatusUpdateReq request,
         @PathVariable("id") Long id) {
-        baseService.updateStatus(req, id);
+        baseService.updateStatus(request, id);
     }
 
     @Operation(summary = "设为默认存储", description = "设为默认存储")

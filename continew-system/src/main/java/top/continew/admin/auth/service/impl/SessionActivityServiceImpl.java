@@ -129,19 +129,20 @@ public class SessionActivityServiceImpl implements SessionActivityService {
 
     @Override
     public Map<String, Long> getLastActiveTimes(Collection<String> sessionIds) {
-        List<String> validIds = this.filterValidIds(sessionIds);
-        if (validIds.isEmpty()) {
+        List<String> validSessionIds = this.filterValidIds(sessionIds);
+        if (validSessionIds.isEmpty()) {
             return Collections.emptyMap();
         }
-        Map<String, Long> result = new HashMap<>(validIds.size());
+        Map<String, Long> lastActiveTimeBySessionId = new HashMap<>(validSessionIds.size());
         // 会话数量等于在线设备数，一次 pipeline 上千条会放大单次响应；分批读取，
         // 单批失败只丢这一批的活跃时间，列表其余部分照常展示。
-        for (int from = 0; from < validIds.size(); from += BATCH_SIZE) {
-            List<String> chunk = validIds.subList(from, Math.min(from + BATCH_SIZE, validIds
-                .size()));
-            this.fetchChunk(chunk, from, result);
+        for (int from = 0; from < validSessionIds.size(); from += BATCH_SIZE) {
+            List<String> batchSessionIds =
+                validSessionIds.subList(from, Math.min(from + BATCH_SIZE, validSessionIds
+                    .size()));
+            this.fetchChunk(batchSessionIds, from, lastActiveTimeBySessionId);
         }
-        return result;
+        return lastActiveTimeBySessionId;
     }
 
     /**
@@ -154,33 +155,34 @@ public class SessionActivityServiceImpl implements SessionActivityService {
         if (sessionIds == null || sessionIds.isEmpty()) {
             return Collections.emptyList();
         }
-        List<String> validIds = new ArrayList<>(sessionIds.size());
+        List<String> validSessionIds = new ArrayList<>(sessionIds.size());
         for (String sessionId : sessionIds) {
             if (StrUtil.isNotBlank(sessionId)) {
-                validIds.add(sessionId);
+                validSessionIds.add(sessionId);
             }
         }
-        return validIds;
+        return validSessionIds;
     }
 
     /**
      * 批量读取一批会话的活跃时间并合并入结果，单批失败只丢这一批的数据
      *
-     * @param chunk 一批会话 ID
+     * @param batchSessionIds 一批会话 ID
      * @param from  本批在全集中的起始偏移（用于失败日志定位）
-     * @param result 活跃时间结果集
+     * @param lastActiveTimeBySessionId 活跃时间结果集
      */
-    private void fetchChunk(List<String> chunk, int from, Map<String, Long> result) {
+    private void fetchChunk(List<String> batchSessionIds, int from,
+        Map<String, Long> lastActiveTimeBySessionId) {
         try {
             RBatch batch = RedisUtils.getClient().createBatch();
-            for (String sessionId : chunk) {
+            for (String sessionId : batchSessionIds) {
                 batch.getBucket(this.key(sessionId)).getAsync();
             }
             List<?> responses = batch.execute().getResponses();
-            for (int i = 0; i < chunk.size() && i < responses.size(); i++) {
+            for (int i = 0; i < batchSessionIds.size() && i < responses.size(); i++) {
                 Long lastActive = this.parse(responses.get(i));
                 if (lastActive != null) {
-                    result.put(chunk.get(i), lastActive);
+                    lastActiveTimeBySessionId.put(batchSessionIds.get(i), lastActive);
                 }
             }
         } catch (Exception e) {

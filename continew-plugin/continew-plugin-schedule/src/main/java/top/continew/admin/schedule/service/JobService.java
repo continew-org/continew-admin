@@ -45,28 +45,28 @@ public interface JobService {
     /**
      * 新增
      *
-     * @param req 请求参数
+     * @param request 请求参数
      * @return 新增结果
      */
-    boolean create(JobReq req);
+    boolean create(JobReq request);
 
     /**
      * 修改
      *
-     * @param req 请求参数
+     * @param request 请求参数
      * @param id  ID
      * @return 修改结果
      */
-    boolean update(JobReq req, Long id);
+    boolean update(JobReq request, Long id);
 
     /**
      * 修改状态
      *
-     * @param req 请求参数
+     * @param request 请求参数
      * @param id  ID
      * @return 修改状态结果
      */
-    boolean updateStatus(JobStatusReq req, Long id);
+    boolean updateStatus(JobStatusReq request, Long id);
 
     /**
      * 删除
@@ -79,10 +79,10 @@ public interface JobService {
     /**
      * 执行
      *
-     * @param req 请求参数
+     * @param request 请求参数
      * @return 执行结果
      */
-    boolean trigger(JobTriggerReq req);
+    boolean trigger(JobTriggerReq request);
 
     /**
      * 查询分组列表

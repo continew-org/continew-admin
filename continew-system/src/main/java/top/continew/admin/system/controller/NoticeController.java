@@ -56,9 +56,9 @@ public class NoticeController
         if (!(Api.CREATE.equals(api) || Api.UPDATE.equals(api))) {
             return;
         }
-        NoticeReq req = (NoticeReq) args[0];
+        NoticeReq request = (NoticeReq) args[0];
         // 校验通知方式
-        List<Integer> noticeMethods = req.getNoticeMethods();
+        List<Integer> noticeMethods = request.getNoticeMethods();
         if (CollUtil.isNotEmpty(noticeMethods)) {
             List<Integer> validMethods = Arrays.stream(NoticeMethodEnum.values())
                 .map(NoticeMethodEnum::getValue)

@@ -56,21 +56,22 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public boolean create(JobReq req) {
-        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.create(req)));
+    public boolean create(JobReq request) {
+        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.create(request)));
     }
 
     @Override
-    public boolean update(JobReq req, Long id) {
-        req.setId(id);
-        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.update(req)));
+    public boolean update(JobReq request, Long id) {
+        request.setId(id);
+        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.update(request)));
     }
 
     @Override
-    public boolean updateStatus(JobStatusReq req, Long id) {
+    public boolean updateStatus(JobStatusReq request, Long id) {
         return SnailJobOpenApi.updateJobStatus(id)
             .setStatus(
-                JobStatusEnum.DISABLED.equals(req.getJobStatus()) ? StatusEnum.NO : StatusEnum.YES)
+                JobStatusEnum.DISABLED.equals(request.getJobStatus()) ? StatusEnum.NO
+                    : StatusEnum.YES)
             .execute();
     }
 
@@ -80,8 +81,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public boolean trigger(JobTriggerReq req) {
-        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.trigger(req)));
+    public boolean trigger(JobTriggerReq request) {
+        return Boolean.TRUE.equals(jobClient.request(() -> jobApi.trigger(request)));
     }
 
     @Override

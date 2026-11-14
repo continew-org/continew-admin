@@ -200,15 +200,15 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             // SaLoginParameter#setExtraData 会整体替换 extra 数据。必须在同一 Map 中
             // 写入会话声明，否则 sid 会被用户额外上下文覆盖，后续接口无法关联到
             // Refresh Session 而被错误判定为 401。
-            Map<String, Object> loginExtraData = new HashMap<>(BeanUtil.beanToMap(extraContext));
-            loginExtraData.put(CLIENT_ID, client.getClientId());
-            loginExtraData.put(AuthSessionConstants.SESSION_ID_CLAIM, sessionId);
-            StpUtil.login(userContext.getId(), loginParameter.setExtraData(loginExtraData));
+            Map<String, Object> claimValueByName = new HashMap<>(BeanUtil.beanToMap(extraContext));
+            claimValueByName.put(CLIENT_ID, client.getClientId());
+            claimValueByName.put(AuthSessionConstants.SESSION_ID_CLAIM, sessionId);
+            StpUtil.login(userContext.getId(), loginParameter.setExtraData(claimValueByName));
             // 先保存本次签发的令牌，保证后续任一步骤失败时可以精确清理它。
             accessToken = StpUtil.getTokenValue();
             UserContextHolder.setContext(userContext);
 
-            LoginResp loginResp = LoginResp.builder()
+            LoginResp loginResponse = LoginResp.builder()
                 .accessToken(accessToken)
                 .tokenType("Bearer")
                 .expiresIn(accessTokenTimeout)
@@ -221,12 +221,12 @@ public class AuthTokenServiceImpl implements AuthTokenService {
                 String refreshToken = refreshTokenService.issue(sessionId,
                     new RefreshSessionPrincipalAdapter(userContext, extraContext),
                     refreshClientPolicy, securityVersion, response);
-                loginResp.setRefreshExpiresIn(refreshClientPolicy.refreshTokenTimeout());
+                loginResponse.setRefreshExpiresIn(refreshClientPolicy.refreshTokenTimeout());
                 if (RefreshTokenModeEnum.BODY.equals(refreshClientPolicy.refreshTokenMode())) {
-                    loginResp.setRefreshToken(refreshToken);
+                    loginResponse.setRefreshToken(refreshToken);
                 }
             }
-            return loginResp;
+            return loginResponse;
         } catch (Exception e) {
             // 登录响应组装、Refresh Session 写入或 Cookie 写入失败时，不能留下孤立的
             // Access Token。覆盖 StpUtil.login 后的所有异常路径，而不只是 Redis 失败。

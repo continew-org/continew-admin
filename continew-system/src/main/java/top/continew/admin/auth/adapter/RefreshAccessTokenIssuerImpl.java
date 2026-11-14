@@ -77,10 +77,10 @@ public class RefreshAccessTokenIssuerImpl implements RefreshAccessTokenIssuer {
         if (userReference.get() == null || StrUtil.isBlank(userReference.get().getUsername())) {
             throw RefreshTokenException.unauthorized("登录状态已失效，请重新登录");
         }
-        LoginResp loginResp = authTokenService.issueAccessToken(userReference.get(), client,
+        LoginResp loginResponse = authTokenService.issueAccessToken(userReference.get(), client,
             session.getTenantId(), session, request, response);
-        return new IssuedAccessToken(loginResp.getAccessToken(), loginResp.getExpiresIn(),
-            loginResp.getTenantId());
+        return new IssuedAccessToken(loginResponse.getAccessToken(), loginResponse.getExpiresIn(),
+            loginResponse.getTenantId());
     }
 
     /**

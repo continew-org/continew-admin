@@ -47,12 +47,12 @@ public class SmsConfigServiceImpl extends
     implements SmsConfigService {
 
     @Override
-    public void afterCreate(SmsConfigReq req, SmsConfigDO entity) {
+    public void afterCreate(SmsConfigReq request, SmsConfigDO entity) {
         this.load(entity);
     }
 
     @Override
-    public void afterUpdate(SmsConfigReq req, SmsConfigDO entity) {
+    public void afterUpdate(SmsConfigReq request, SmsConfigDO entity) {
         // 重新加载配置
         // 先卸载
         this.unload(entity.getId().toString());

@@ -60,13 +60,13 @@ public class OnlineUserServiceImpl implements OnlineUserService {
 
     @Override
     public PageResp<OnlineUserResp> page(OnlineUserQuery query, PageQuery pageQuery) {
-        List<OnlineUserResp> list = this.list(query);
-        return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        List<OnlineUserResp> onlineUsers = this.list(query);
+        return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), onlineUsers);
     }
 
     @Override
     public List<OnlineUserResp> list(OnlineUserQuery query) {
-        List<OnlineUserResp> list = new ArrayList<>();
+        List<OnlineUserResp> onlineUsers = new ArrayList<>();
         Long tenantId = TenantContextHolder.isTenantEnabled() && !UserContextHolder.isSuperAdmin()
             ? TenantContextHolder.getTenantId()
             : null;
@@ -81,20 +81,22 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             .filter(session -> this.isMatch(query, session, DateUtil.date(session.getCreatedAt())
                 .toLocalDateTime()))
             .toList();
-        Map<String, Long> lastActiveTimes = sessionActivityService.getLastActiveTimes(sessions
-            .stream()
-            .map(SessionView::getSessionId)
-            .toList());
-        Map<String, ClientPolicyCache.ClientPolicy> policies = clientPolicyCache.all();
+        Map<String, Long> lastActiveTimeBySessionId =
+            sessionActivityService.getLastActiveTimes(sessions
+                .stream()
+                .map(SessionView::getSessionId)
+                .toList());
+        Map<String, ClientPolicyCache.ClientPolicy> policyByClientId = clientPolicyCache.all();
         long presenceWindowMillis = onlineUserProperties.getPresenceWindow().toMillis();
         for (SessionView session : sessions) {
-            Long recordedActiveTime = lastActiveTimes.get(session.getSessionId());
+            Long recordedActiveTime = lastActiveTimeBySessionId.get(session.getSessionId());
             // 没有活跃记录时按最近刷新时间推算，并标记为估算值：不能当作「从未活跃」。
             long lastActiveTime = recordedActiveTime == null
                 ? session.getLastRefreshAt()
                 : recordedActiveTime;
             final long idleTimeoutMillis =
-                policies.getOrDefault(session.getClientId(), ClientPolicyCache.ClientPolicy.DEFAULT)
+                policyByClientId
+                    .getOrDefault(session.getClientId(), ClientPolicyCache.ClientPolicy.DEFAULT)
                     .idleTimeoutSeconds() * 1000;
             // 没有活跃记录时不判「已闲置」：此时时间是按最近刷新推算出来的，断言过期会误标；
             // 与拦截器、刷新兜底两处「无记录不判定」的口径保持一致。
@@ -107,35 +109,36 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             if (query.getOnline() != null && query.getOnline() != online) {
                 continue;
             }
-            OnlineUserResp resp = new OnlineUserResp();
-            resp.setId(session.getUserId());
-            resp.setSessionId(session.getSessionId());
-            resp.setUsername(session.getUsername());
-            resp.setNickname(session.getNickname());
-            resp.setClientType(session.getClientType());
-            resp.setClientId(session.getClientId());
-            resp.setIp(session.getIp());
-            resp.setAddress(session.getAddress());
-            resp.setBrowser(session.getBrowser());
-            resp.setOs(session.getOs());
-            resp.setLoginTime(DateUtil.date(session.getCreatedAt()).toLocalDateTime());
-            resp.setLastRefreshTime(DateUtil.date(session.getLastRefreshAt()).toLocalDateTime());
-            resp.setLastActiveTime(DateUtil.date(lastActiveTime).toLocalDateTime());
-            resp.setActiveTimeExact(hasActiveRecord);
-            resp.setSessionExpireTime(DateUtil.date(session.getExpiresAt()).toLocalDateTime());
+            OnlineUserResp response = new OnlineUserResp();
+            response.setId(session.getUserId());
+            response.setSessionId(session.getSessionId());
+            response.setUsername(session.getUsername());
+            response.setNickname(session.getNickname());
+            response.setClientType(session.getClientType());
+            response.setClientId(session.getClientId());
+            response.setIp(session.getIp());
+            response.setAddress(session.getAddress());
+            response.setBrowser(session.getBrowser());
+            response.setOs(session.getOs());
+            response.setLoginTime(DateUtil.date(session.getCreatedAt()).toLocalDateTime());
+            response
+                .setLastRefreshTime(DateUtil.date(session.getLastRefreshAt()).toLocalDateTime());
+            response.setLastActiveTime(DateUtil.date(lastActiveTime).toLocalDateTime());
+            response.setActiveTimeExact(hasActiveRecord);
+            response.setSessionExpireTime(DateUtil.date(session.getExpiresAt()).toLocalDateTime());
             // 没有活跃记录时不给出「预计失效」：时间本身是推算的，算出来的阈值时刻可能已过去，
             // 会让人误以为这台设备马上要掉线。此时前端回落到会话的绝对到期时间。
-            resp.setIdleExpireTime(hasActiveRecord && idleTimeoutMillis > 0
+            response.setIdleExpireTime(hasActiveRecord && idleTimeoutMillis > 0
                 ? DateUtil.date(lastActiveTime + idleTimeoutMillis).toLocalDateTime()
                 : null);
-            resp.setIdleExpired(idleExpired);
-            resp.setOnline(online);
-            list.add(resp);
+            response.setIdleExpired(idleExpired);
+            response.setOnline(online);
+            onlineUsers.add(response);
         }
         // 登录时间可能缺失，排序必须空值安全。
-        CollUtil.sort(list, Comparator.comparing(OnlineUserResp::getLoginTime, Comparator
+        CollUtil.sort(onlineUsers, Comparator.comparing(OnlineUserResp::getLoginTime, Comparator
             .nullsFirst(Comparator.naturalOrder())).reversed());
-        return list;
+        return onlineUsers;
     }
 
     @Override
@@ -195,20 +198,20 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     /**
      * 是否匹配登录时间
      *
-     * @param loginTimeList 登录时间列表
+     * @param loginTimes 登录时间列表
      * @param loginTime     登录时间
      * @return 是否匹配登录时间
      */
-    private boolean isMatchLoginTime(List<LocalDateTime> loginTimeList, LocalDateTime loginTime) {
-        if (CollUtil.isEmpty(loginTimeList)) {
+    private boolean isMatchLoginTime(List<LocalDateTime> loginTimes, LocalDateTime loginTime) {
+        if (CollUtil.isEmpty(loginTimes)) {
             return true;
         }
         // 查询参数来自外部请求，必须防御只传一个时间点或空边界。
-        if (loginTime == null || loginTimeList.size() < 2 || loginTimeList.get(0) == null
-            || loginTimeList.get(1) == null) {
+        if (loginTime == null || loginTimes.size() < 2 || loginTimes.get(0) == null
+            || loginTimes.get(1) == null) {
             return false;
         }
-        return loginTime.isAfter(loginTimeList.get(0)) && loginTime.isBefore(loginTimeList.get(1));
+        return loginTime.isAfter(loginTimes.get(0)) && loginTime.isBefore(loginTimes.get(1));
     }
 
 }

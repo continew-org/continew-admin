@@ -38,8 +38,8 @@ public class DictApiImpl implements DictApi {
 
     @Override
     public List<LabelValueResp> listAll() {
-        List<LabelValueResp> list = baseService.dict(null, null);
-        list.addAll(baseService.listEnumDict());
-        return list;
+        List<LabelValueResp> dicts = baseService.dict(null, null);
+        dicts.addAll(baseService.listEnumDict());
+        return dicts;
     }
 }

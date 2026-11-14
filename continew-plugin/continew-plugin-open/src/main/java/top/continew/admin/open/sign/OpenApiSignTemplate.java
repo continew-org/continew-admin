@@ -42,12 +42,12 @@ public class OpenApiSignTemplate extends SaSignTemplate {
     public static final String ACCESS_KEY = "accessKey";
 
     @Override
-    public void checkParamMap(Map<String, String> paramMap) {
+    public void checkParamMap(Map<String, String> paramValueByName) {
         // 获取必须的参数
-        String timestampValue = paramMap.get(timestamp);
-        String nonceValue = paramMap.get(nonce);
-        String signValue = paramMap.get(sign);
-        String accessKeyValue = paramMap.get(ACCESS_KEY);
+        String timestampValue = paramValueByName.get(timestamp);
+        String nonceValue = paramValueByName.get(nonce);
+        String signValue = paramValueByName.get(sign);
+        String accessKeyValue = paramValueByName.get(ACCESS_KEY);
 
         // 校验
         ValidationUtils.throwIfBlank(timestampValue, "timestamp不能为空");
@@ -63,16 +63,16 @@ public class OpenApiSignTemplate extends SaSignTemplate {
         // 依次校验三个参数
         super.checkTimestamp(Long.parseLong(timestampValue));
         super.checkNonce(nonceValue);
-        paramMap.put(key, app.getSecretKey());
-        super.checkSign(paramMap, signValue);
+        paramValueByName.put(key, app.getSecretKey());
+        super.checkSign(paramValueByName, signValue);
     }
 
     @Override
-    public String createSign(Map<String, ?> paramMap) {
-        ValidationUtils.throwIfEmpty(paramMap.get(key), "秘钥缺失, 请检查应用配置");
+    public String createSign(Map<String, ?> paramValueByName) {
+        ValidationUtils.throwIfEmpty(paramValueByName.get(key), "秘钥缺失, 请检查应用配置");
         // 移除 sign 参数
-        paramMap.remove(sign);
+        paramValueByName.remove(sign);
         // 计算签名
-        return SaSecureUtil.md5(super.joinParamsDictSort(paramMap));
+        return SaSecureUtil.md5(super.joinParamsDictSort(paramValueByName));
     }
 }

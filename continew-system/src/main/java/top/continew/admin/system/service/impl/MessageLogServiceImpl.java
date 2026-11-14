@@ -46,11 +46,11 @@ public class MessageLogServiceImpl implements MessageLogService {
         if (CollUtil.isEmpty(messageIds)) {
             return;
         }
-        List<MessageLogDO> list = CollUtils
+        List<MessageLogDO> messageLogs = CollUtils
             .mapToList(messageIds,
                 messageId -> new MessageLogDO(messageId, userId,
                     LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID)));
-        baseMapper.insert(list);
+        baseMapper.insert(messageLogs);
     }
 
     @Override

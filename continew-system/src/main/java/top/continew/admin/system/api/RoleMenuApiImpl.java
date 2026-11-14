@@ -41,11 +41,11 @@ public class RoleMenuApiImpl implements RoleMenuApi {
 
     @Override
     public Set<Long> listRoleIdByNotInMenuIds(List<Long> menuIds) {
-        List<RoleMenuDO> roleMenuList = baseService.lambdaQuery()
+        List<RoleMenuDO> roleMenus = baseService.lambdaQuery()
             .select(RoleMenuDO::getRoleId)
             .notIn(CollUtil.isNotEmpty(menuIds), RoleMenuDO::getMenuId, menuIds)
             .list();
-        return CollUtils.mapToSet(roleMenuList, RoleMenuDO::getRoleId);
+        return CollUtils.mapToSet(roleMenus, RoleMenuDO::getRoleId);
     }
 
     @Override

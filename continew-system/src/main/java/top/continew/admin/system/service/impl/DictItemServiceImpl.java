@@ -62,22 +62,22 @@ public class DictItemServiceImpl extends
         new ConcurrentHashMap<>();
 
     @Override
-    public void beforeCreate(DictItemReq req) {
-        this.checkValueRepeat(req.getValue(), null, req.getDictId());
+    public void beforeCreate(DictItemReq request) {
+        this.checkValueRepeat(request.getValue(), null, request.getDictId());
         CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override
-    public void beforeUpdate(DictItemReq req, Long id) {
-        this.checkValueRepeat(req.getValue(), id, req.getDictId());
+    public void beforeUpdate(DictItemReq request, Long id) {
+        this.checkValueRepeat(request.getValue(), id, request.getDictId());
         CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override
     public List<LabelValueResp> listByDictCode(String dictCode) {
-        List<LabelValueResp> enumDict = ENUM_DICT_CACHE.get(dictCode.toLowerCase());
-        if (enumDict != null) {
-            return enumDict;
+        List<LabelValueResp> enumDictItems = ENUM_DICT_CACHE.get(dictCode.toLowerCase());
+        if (enumDictItems != null) {
+            return enumDictItems;
         }
         return CacheUtils.get(CacheConstants.DICT_KEY_PREFIX, dictCode,
             () -> baseMapper.listByDictCode(dictCode));
@@ -135,15 +135,15 @@ public class DictItemServiceImpl extends
      */
     @PostConstruct
     public void init() {
-        Set<Class<?>> classSet =
+        Set<Class<?>> enumClasses =
             ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
-        for (Class<?> cls : classSet) {
-            List<LabelValueResp> value = this.toEnumDict(cls);
-            if (CollUtil.isEmpty(value)) {
+        for (Class<?> cls : enumClasses) {
+            List<LabelValueResp> dictItems = this.toEnumDict(cls);
+            if (CollUtil.isEmpty(dictItems)) {
                 continue;
             }
             String key = StrUtil.toUnderlineCase(cls.getSimpleName()).toLowerCase();
-            ENUM_DICT_CACHE.put(key, value);
+            ENUM_DICT_CACHE.put(key, dictItems);
         }
         log.debug("枚举字典已缓存到内存：{}", ENUM_DICT_CACHE.keySet());
     }

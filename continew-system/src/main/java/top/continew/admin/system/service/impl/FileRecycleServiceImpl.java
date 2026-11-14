@@ -110,8 +110,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     @Transactional(rollbackFor = Exception.class)
     public void clean() {
         // 查询回收站记录
-        List<FileDO> list = fileMapper.selectListInRecycleBin();
-        if (CollUtil.isEmpty(list)) {
+        List<FileDO> files = fileMapper.selectListInRecycleBin();
+        if (CollUtil.isEmpty(files)) {
             return;
         }
         try {
@@ -121,15 +121,15 @@ public class FileRecycleServiceImpl implements FileRecycleService {
                 .now(GlobalConstants.DEFAULT_ZONE_ID));
             // 删除文件
             // 批量获取存储配置
-            Map<Long, List<FileDO>> fileListGroup =
-                list.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
-            List<StorageDO> storageList = storageService.listByIds(fileListGroup.keySet());
-            Map<Long, StorageDO> storageGroup = storageList.stream()
+            Map<Long, List<FileDO>> filesByStorageId =
+                files.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+            List<StorageDO> storages = storageService.listByIds(filesByStorageId.keySet());
+            Map<Long, StorageDO> storageById = storages.stream()
                 .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
                     (existing, replacement) -> existing));
             // 删除文件
-            for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-                StorageDO storage = storageGroup.get(entry.getKey());
+            for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
+                StorageDO storage = storageById.get(entry.getKey());
                 List<String> deletePaths = entry.getValue()
                     .stream()
                     .filter(file -> !FileTypeEnum.DIR.equals(file.getType()))

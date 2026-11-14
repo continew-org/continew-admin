@@ -60,18 +60,18 @@ public class TenantController
     /**
      * 修改租户管理员密码
      *
-     * @param req 新密码
+     * @param request 新密码
      * @param id 租户 ID
      */
     @Operation(summary = "修改租户管理员密码", description = "修改租户管理员密码")
     @SaCheckPermission("tenant:management:updateAdminUserPwd")
     @PutMapping("/{id}/admin/pwd")
-    public void updateAdminUserPwd(@RequestBody @Valid TenantAdminUserPwdUpdateReq req,
+    public void updateAdminUserPwd(@RequestBody @Valid TenantAdminUserPwdUpdateReq request,
         @PathVariable Long id) {
         TenantDO tenant = baseService.getById(id);
         TenantUtils.execute(id, () -> {
             String password =
-                SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "新密码解密失败");
+                SecureUtils.decryptPasswordByRsaPrivateKey(request.getPassword(), "新密码解密失败");
             userApi.resetPassword(password, tenant.getAdminUser());
         });
     }

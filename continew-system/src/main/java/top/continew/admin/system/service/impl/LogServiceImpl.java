@@ -71,24 +71,24 @@ public class LogServiceImpl implements LogService {
     @Override
     @AutoOperate(type = LogDetailResp.class)
     public LogDetailResp get(Long id) {
-        LogDO logDO = baseMapper.selectById(id);
-        CheckUtils.throwIfNotExists(logDO, "LogDO", "ID", id);
-        return BeanUtil.copyProperties(logDO, LogDetailResp.class);
+        LogDO logEntity = baseMapper.selectById(id);
+        CheckUtils.throwIfNotExists(logEntity, "LogDO", "ID", id);
+        return BeanUtil.copyProperties(logEntity, LogDetailResp.class);
     }
 
     @Override
     public void exportLoginLog(LogQuery query, SortQuery sortQuery, HttpServletResponse response) {
-        List<LoginLogExportResp> list =
+        List<LoginLogExportResp> loginLogs =
             BeanUtil.copyToList(this.list(query, sortQuery), LoginLogExportResp.class);
-        ExcelUtils.export(list, "导出登录日志数据", LoginLogExportResp.class, response);
+        ExcelUtils.export(loginLogs, "导出登录日志数据", LoginLogExportResp.class, response);
     }
 
     @Override
     public void exportOperationLog(LogQuery query, SortQuery sortQuery,
         HttpServletResponse response) {
-        List<OperationLogExportResp> list = BeanUtil.copyToList(this
+        List<OperationLogExportResp> operationLogs = BeanUtil.copyToList(this
             .list(query, sortQuery), OperationLogExportResp.class);
-        ExcelUtils.export(list, "导出操作日志数据", OperationLogExportResp.class, response);
+        ExcelUtils.export(operationLogs, "导出操作日志数据", OperationLogExportResp.class, response);
     }
 
     /**
@@ -116,7 +116,7 @@ public class LogServiceImpl implements LogService {
         String ip = query.getIp();
         String createUserString = query.getCreateUserString();
         LogStatusEnum status = query.getStatus();
-        List<LocalDateTime> createTimeList = query.getCreateTime();
+        List<LocalDateTime> createTimes = query.getCreateTime();
         return new QueryWrapper<LogDO>()
             .and(StrUtil.isNotBlank(description), q -> q.like("t1.description", description)
                 .or()
@@ -127,8 +127,8 @@ public class LogServiceImpl implements LogService {
                 .or()
                 .like("t2.nickname", createUserString))
             .eq(status != null, "t1.status", status)
-            .between(CollUtil.isNotEmpty(createTimeList), "t1.create_time",
-                CollUtil.getFirst(createTimeList), CollUtil
-                    .getLast(createTimeList));
+            .between(CollUtil.isNotEmpty(createTimes), "t1.create_time",
+                CollUtil.getFirst(createTimes), CollUtil
+                    .getLast(createTimes));
     }
 }

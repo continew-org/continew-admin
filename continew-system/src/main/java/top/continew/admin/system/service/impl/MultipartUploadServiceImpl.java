@@ -62,19 +62,19 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
 
     @Override
     public MultipartUploadCreateResp initMultipartUpload(
-        MultipartUploadCreateReq req) {
+        MultipartUploadCreateReq request) {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
-        String extName = FileUtil.extName(req.getFileName()).toLowerCase();
+        String extName = FileUtil.extName(request.getFileName()).toLowerCase();
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
         CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
-        StoragePathValidator.validate(req.getParentPath());
-        StoragePathValidator.validateName(req.getFileName());
+        StoragePathValidator.validate(request.getParentPath());
+        StoragePathValidator.validateName(request.getFileName());
         StorageDO storage = storageService.getByCode(null);
         // 检测文件名是否已存在（同一目录下文件名不能重复）
-        String originalFileName = req.getFileName();
-        String parentPath = req.getParentPath();
+        String originalFileName = request.getFileName();
+        String parentPath = request.getParentPath();
         boolean exists = fileMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
             .eq(FileDO::getStorageId, storage.getId())
@@ -89,21 +89,21 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         String uniqueFileName =
             FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
                 .getId(), fileMapper);
-        req.setFileName(uniqueFileName);
+        request.setFileName(uniqueFileName);
         fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
             storage);
 
-        MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
-        storageReq.setPlatform(storage.getCode());
-        storageReq.setBucket(storage.getBucketName());
-        storageReq.setFileName(uniqueFileName);
-        storageReq.setFileSize(req.getFileSize());
-        storageReq.setFileMd5(req.getFileMd5());
-        storageReq.setContentType(req.getContentType());
-        storageReq.setParentPath(StrUtil.blankToDefault(parentPath, StringConstants.SLASH));
-        storageReq.setMetadata(req.getMetaData());
-        MultipartInitResp initResp = fileStorageService.initMultipartUpload(storageReq);
-        return this.toAdminInitResp(initResp);
+        MultipartUploadInitReq storageRequest = new MultipartUploadInitReq();
+        storageRequest.setPlatform(storage.getCode());
+        storageRequest.setBucket(storage.getBucketName());
+        storageRequest.setFileName(uniqueFileName);
+        storageRequest.setFileSize(request.getFileSize());
+        storageRequest.setFileMd5(request.getFileMd5());
+        storageRequest.setContentType(request.getContentType());
+        storageRequest.setParentPath(StrUtil.blankToDefault(parentPath, StringConstants.SLASH));
+        storageRequest.setMetadata(request.getMetaData());
+        MultipartInitResp initResponse = fileStorageService.initMultipartUpload(storageRequest);
+        return this.toAdminInitResp(initResponse);
     }
 
     @Override
@@ -122,12 +122,12 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         }
         String targetPath = StrUtil.blankToDefault(sessionPath, path);
         try {
-            MultipartUploadResp resp =
+            MultipartUploadResp response =
                 fileStorageService
                     .uploadPart(session.getPlatform(), session
                         .getBucket(), normalizeStoragePath(targetPath), uploadId, partNumber,
                         file.getInputStream());
-            return this.toAdminUploadResp(resp);
+            return this.toAdminUploadResp(response);
         } catch (IOException e) {
             throw new BaseException("上传分片失败: " + e.getMessage(), e);
         }

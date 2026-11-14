@@ -37,10 +37,10 @@ public interface StorageService
     /**
      * 修改状态
      *
-     * @param req 状态信息
+     * @param request 状态信息
      * @param id  ID
      */
-    void updateStatus(CommonStatusUpdateReq req, Long id);
+    void updateStatus(CommonStatusUpdateReq request, Long id);
 
     /**
      * 设置默认存储

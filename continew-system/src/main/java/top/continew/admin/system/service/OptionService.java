@@ -60,9 +60,9 @@ public interface OptionService {
     /**
      * 重置参数
      *
-     * @param req 重置信息
+     * @param request 重置信息
      */
-    void resetValue(OptionValueResetReq req);
+    void resetValue(OptionValueResetReq request);
 
     /**
      * 根据编码查询参数值

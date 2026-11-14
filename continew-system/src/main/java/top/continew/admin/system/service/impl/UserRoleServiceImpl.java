@@ -88,22 +88,22 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean assignRolesToUser(List<Long> roleIds, Long userId) {
-        List<Long> oldRoleIdList = this.listRoleIdByUserId(userId);
+        List<Long> existingRoleIds = this.listRoleIdByUserId(userId);
         boolean isRoleChanged = CollUtil
-            .isNotEmpty(CollUtil.disjunction(roleIds, oldRoleIdList));
+            .isNotEmpty(CollUtil.disjunction(roleIds, existingRoleIds));
         // 角色无变更的幂等重放不触发系统内置用户守卫
         this.checkSystemUserChange(isRoleChanged ? Set.of(userId) : Set.of());
         // 超级管理员和租户管理员角色不允许分配
         CheckUtils.throwIfEmpty(roleIds, "所属角色不能为空");
         CheckUtils.throwIf(roleIds.stream().anyMatch(Objects::isNull), "角色不存在或无权限");
-        Set<Long> uniqueRoleIds = CollUtil.newHashSet(roleIds);
-        CheckUtils.throwIf(uniqueRoleIds.size() != roleIds.size(), "角色 ID 重复");
-        List<RoleDO> roleList = roleService.listByIds(roleIds);
-        CheckUtils.throwIf(roleList.size() != uniqueRoleIds.size(), "角色不存在或无权限");
-        Set<String> roleCodeSet = CollUtils.mapToSet(roleList, RoleDO::getCode);
-        CheckUtils.throwIf(roleCodeSet.contains(RoleCodeEnum.SUPER_ADMIN.getCode()),
+        Set<Long> distinctRoleIds = CollUtil.newHashSet(roleIds);
+        CheckUtils.throwIf(distinctRoleIds.size() != roleIds.size(), "角色 ID 重复");
+        List<RoleDO> roles = roleService.listByIds(roleIds);
+        CheckUtils.throwIf(roles.size() != distinctRoleIds.size(), "角色不存在或无权限");
+        Set<String> roleCodes = CollUtils.mapToSet(roles, RoleDO::getCode);
+        CheckUtils.throwIf(roleCodes.contains(RoleCodeEnum.SUPER_ADMIN.getCode()),
             "不允许分配超级管理员角色");
-        CheckUtils.throwIf(roleCodeSet.contains(RoleCodeEnum.TENANT_ADMIN.getCode()),
+        CheckUtils.throwIf(roleCodes.contains(RoleCodeEnum.TENANT_ADMIN.getCode()),
             "不允许分配系统管理员角色");
         // 检查是否有变更
         if (!isRoleChanged) {
@@ -112,17 +112,17 @@ public class UserRoleServiceImpl implements UserRoleService {
         // 删除原有关联
         baseMapper.lambdaUpdate().eq(UserRoleDO::getUserId, userId).remove();
         // 保存最新关联
-        List<UserRoleDO> userRoleList =
+        List<UserRoleDO> userRoles =
             CollUtils.mapToList(roleIds, roleId -> new UserRoleDO(userId, roleId));
-        return baseMapper.insertBatch(userRoleList);
+        return baseMapper.insertBatch(userRoles);
     }
 
     @Override
     public boolean assignRoleToUsers(Long roleId, List<Long> userIds) {
         this.checkSystemUserChange(new HashSet<>(userIds));
-        List<UserRoleDO> userRoleList =
+        List<UserRoleDO> userRoles =
             CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
-        return baseMapper.insertBatch(userRoleList);
+        return baseMapper.insertBatch(userRoles);
     }
 
     /**
@@ -138,16 +138,16 @@ public class UserRoleServiceImpl implements UserRoleService {
      */
     @Override
     public boolean assignRoleToUsersForInit(Long roleId, List<Long> userIds) {
-        List<UserRoleDO> userRoleList =
+        List<UserRoleDO> userRoles =
             CollUtils.mapToList(userIds, userId -> new UserRoleDO(userId, roleId));
-        return baseMapper.insertBatch(userRoleList);
+        return baseMapper.insertBatch(userRoles);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> ids) {
-        List<UserRoleDO> userRoleList = baseMapper.selectByIds(ids);
-        Set<Long> userIds = CollUtils.mapToSet(userRoleList, UserRoleDO::getUserId);
+        List<UserRoleDO> userRoles = baseMapper.selectByIds(ids);
+        Set<Long> userIds = CollUtils.mapToSet(userRoles, UserRoleDO::getUserId);
         this.checkSystemUserChange(userIds);
         baseMapper.deleteByIds(ids);
     }
@@ -162,10 +162,10 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public void saveBatch(List<UserRoleDO> list) {
-        Set<Long> userIds = CollUtils.mapToSet(list, UserRoleDO::getUserId);
+    public void saveBatch(List<UserRoleDO> userRoles) {
+        Set<Long> userIds = CollUtils.mapToSet(userRoles, UserRoleDO::getUserId);
         this.checkSystemUserChange(userIds);
-        baseMapper.insert(list);
+        baseMapper.insert(userRoles);
     }
 
     @Override
@@ -210,8 +210,8 @@ public class UserRoleServiceImpl implements UserRoleService {
         if (CollUtil.isEmpty(userIds)) {
             return;
         }
-        List<UserDO> userList = userService.listByIds(userIds);
-        Optional<UserDO> systemUser = userList.stream().filter(UserDO::getIsSystem).findFirst();
+        List<UserDO> users = userService.listByIds(userIds);
+        Optional<UserDO> systemUser = users.stream().filter(UserDO::getIsSystem).findFirst();
         CheckUtils.throwIf(systemUser::isPresent, "[{}] 是系统内置用户，不允许变更角色",
             systemUser.orElseGet(UserDO::new).getNickname());
     }

@@ -46,22 +46,22 @@ public class NoticeLogServiceImpl implements NoticeLogService {
     @Transactional(rollbackFor = Exception.class)
     public boolean add(List<Long> userIds, Long noticeId) {
         // 检查是否有变更
-        List<Long> oldUserIdList = baseMapper.lambdaQuery()
+        List<Long> existingUserIds = baseMapper.lambdaQuery()
             .select(NoticeLogDO::getUserId)
             .eq(NoticeLogDO::getNoticeId, noticeId)
             .list()
             .stream()
             .map(NoticeLogDO::getUserId)
             .toList();
-        Collection<Long> subtract = CollUtil.subtract(userIds, oldUserIdList);
-        if (CollUtil.isEmpty(subtract)) {
+        Collection<Long> addedUserIds = CollUtil.subtract(userIds, existingUserIds);
+        if (CollUtil.isEmpty(addedUserIds)) {
             return false;
         }
         // 新增没有关联的
         LocalDateTime now = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
-        List<NoticeLogDO> list =
-            CollUtils.mapToList(subtract, userId -> new NoticeLogDO(noticeId, userId, now));
-        return baseMapper.insertBatch(list);
+        List<NoticeLogDO> noticeLogs =
+            CollUtils.mapToList(addedUserIds, userId -> new NoticeLogDO(noticeId, userId, now));
+        return baseMapper.insertBatch(noticeLogs);
     }
 
     @Override

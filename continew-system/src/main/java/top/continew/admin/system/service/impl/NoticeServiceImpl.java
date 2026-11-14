@@ -73,21 +73,21 @@ public class NoticeServiceImpl extends
     }
 
     @Override
-    public void beforeCreate(NoticeReq req) {
-        if (!NoticeStatusEnum.DRAFT.equals(req.getStatus())) {
-            if (Boolean.TRUE.equals(req.getIsTiming())) {
+    public void beforeCreate(NoticeReq request) {
+        if (!NoticeStatusEnum.DRAFT.equals(request.getStatus())) {
+            if (Boolean.TRUE.equals(request.getIsTiming())) {
                 // 待发布
-                req.setStatus(NoticeStatusEnum.PENDING);
+                request.setStatus(NoticeStatusEnum.PENDING);
             } else {
                 // 已发布
-                req.setStatus(NoticeStatusEnum.PUBLISHED);
-                req.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
+                request.setStatus(NoticeStatusEnum.PUBLISHED);
+                request.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             }
         }
     }
 
     @Override
-    public void afterCreate(NoticeReq req, NoticeDO entity) {
+    public void afterCreate(NoticeReq request, NoticeDO entity) {
         // 发送消息
         if (NoticeStatusEnum.PUBLISHED.equals(entity.getStatus())) {
             this.publish(entity);
@@ -95,38 +95,40 @@ public class NoticeServiceImpl extends
     }
 
     @Override
-    public void beforeUpdate(NoticeReq req, Long id) {
+    public void beforeUpdate(NoticeReq request, Long id) {
         NoticeDO oldNotice = super.getById(id);
         switch (oldNotice.getStatus()) {
             case PUBLISHED -> {
-                CheckUtils.throwIfNotEqual(req.getStatus(), oldNotice.getStatus(), "公告已发布，不允许修改状态");
-                CheckUtils.throwIfNotEqual(req.getIsTiming(), oldNotice.getIsTiming(),
+                CheckUtils.throwIfNotEqual(request.getStatus(), oldNotice.getStatus(),
+                    "公告已发布，不允许修改状态");
+                CheckUtils.throwIfNotEqual(request.getIsTiming(), oldNotice.getIsTiming(),
                     "公告已发布，不允许修改定时发布信息");
-                CheckUtils.throwIfNotEqual(req.getNoticeScope(), oldNotice.getNoticeScope(),
+                CheckUtils.throwIfNotEqual(request.getNoticeScope(), oldNotice.getNoticeScope(),
                     "公告已发布，不允许修改通知范围");
                 if (NoticeScopeEnum.USER.equals(oldNotice.getNoticeScope())) {
-                    CheckUtils.throwIfNotEmpty(CollUtil.disjunction(req.getNoticeUsers(), oldNotice
-                        .getNoticeUsers()), "公告已发布，不允许修改通知用户");
+                    CheckUtils
+                        .throwIfNotEmpty(CollUtil.disjunction(request.getNoticeUsers(), oldNotice
+                            .getNoticeUsers()), "公告已发布，不允许修改通知用户");
                 }
-                CheckUtils.throwIf(!CollUtil.isEqualList(req.getNoticeMethods(), oldNotice
+                CheckUtils.throwIf(!CollUtil.isEqualList(request.getNoticeMethods(), oldNotice
                     .getNoticeMethods()), "公告已发布，不允许修改通知方式");
                 // 修正定时发布信息
                 if (Boolean.TRUE.equals(oldNotice.getIsTiming())) {
-                    CheckUtils.throwIfNotEqual(req.getPublishTime(), oldNotice.getPublishTime(),
+                    CheckUtils.throwIfNotEqual(request.getPublishTime(), oldNotice.getPublishTime(),
                         "公告已发布，不允许修改定时发布信息");
                 }
-                req.setPublishTime(oldNotice.getPublishTime());
+                request.setPublishTime(oldNotice.getPublishTime());
             }
             case DRAFT, PENDING -> {
                 // 已发布
-                if (NoticeStatusEnum.PUBLISHED.equals(req.getStatus())) {
-                    if (Boolean.TRUE.equals(req.getIsTiming())) {
+                if (NoticeStatusEnum.PUBLISHED.equals(request.getStatus())) {
+                    if (Boolean.TRUE.equals(request.getIsTiming())) {
                         // 待发布
-                        req.setStatus(NoticeStatusEnum.PENDING);
+                        request.setStatus(NoticeStatusEnum.PENDING);
                     } else {
                         // 已发布
-                        req.setStatus(NoticeStatusEnum.PUBLISHED);
-                        req.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
+                        request.setStatus(NoticeStatusEnum.PUBLISHED);
+                        request.setPublishTime(LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
                     }
                 }
             }
@@ -135,7 +137,7 @@ public class NoticeServiceImpl extends
     }
 
     @Override
-    public void afterUpdate(NoticeReq req, NoticeDO entity) {
+    public void afterUpdate(NoticeReq request, NoticeDO entity) {
         // 重置定时发布时间
         if (!NoticeStatusEnum.PUBLISHED.equals(entity.getStatus()) && Boolean.FALSE.equals(entity
             .getIsTiming()) && entity.getPublishTime() != null) {
@@ -161,12 +163,12 @@ public class NoticeServiceImpl extends
         if (CollUtil.isNotEmpty(noticeMethods)
             && noticeMethods.contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue())) {
             MessageTemplateEnum template = MessageTemplateEnum.NOTICE_PUBLISH;
-            MessageReq req = new MessageReq(MessageTypeEnum.SYSTEM);
-            req.setTitle(template.getTitle());
-            req.setContent(template.getContent().formatted(notice.getTitle()));
-            req.setPath(template.getPath().formatted(notice.getId()));
+            MessageReq request = new MessageReq(MessageTypeEnum.SYSTEM);
+            request.setTitle(template.getTitle());
+            request.setContent(template.getContent().formatted(notice.getTitle()));
+            request.setPath(template.getPath().formatted(notice.getId()));
             // 新增消息
-            messageService.add(req, notice.getNoticeUsers());
+            messageService.add(request, notice.getNoticeUsers());
         }
     }
 

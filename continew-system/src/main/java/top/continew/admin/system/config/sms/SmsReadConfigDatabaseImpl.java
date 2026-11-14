@@ -56,10 +56,10 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
     public List<BaseConfig> getSupplierConfigList() {
         SmsConfigQuery query = new SmsConfigQuery();
         query.setStatus(DisEnableStatusEnum.ENABLE);
-        List<SmsConfigResp> list = smsConfigService.list(query, null);
-        if (CollUtil.isEmpty(list)) {
+        List<SmsConfigResp> smsConfigs = smsConfigService.list(query, null);
+        if (CollUtil.isEmpty(smsConfigs)) {
             return List.of();
         }
-        return CollUtils.mapToList(list, SmsConfigUtils::from);
+        return CollUtils.mapToList(smsConfigs, SmsConfigUtils::from);
     }
 }

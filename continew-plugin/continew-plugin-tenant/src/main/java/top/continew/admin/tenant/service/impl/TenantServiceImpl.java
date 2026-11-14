@@ -80,27 +80,27 @@ public class TenantServiceImpl extends
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(TenantReq req) {
-        this.checkNameRepeat(req.getName(), null);
-        this.checkDomainRepeat(req.getDomain(), null);
+    public Long create(TenantReq request) {
+        this.checkNameRepeat(request.getName(), null);
+        this.checkDomainRepeat(request.getDomain(), null);
         // 检查套餐
-        packageService.checkStatus(req.getPackageId());
+        packageService.checkStatus(request.getPackageId());
         // 生成租户编码
-        req.setCode(this.generateCode());
+        request.setCode(this.generateCode());
         // 新增信息
-        Long id = super.create(req);
+        Long id = super.create(request);
         // 初始化租户数据
-        req.setId(id);
+        request.setId(id);
         tenantDataApiMap
-            .forEach((key, value) -> value.init(BeanUtil.copyProperties(req, TenantDTO.class)));
+            .forEach((key, value) -> value.init(BeanUtil.copyProperties(request, TenantDTO.class)));
         return id;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(TenantArgumentPolicyLockTargetResolver.class)
-    public void update(TenantReq req, Long id) {
-        super.update(req, id);
+    public void update(TenantReq request, Long id) {
+        super.update(request, id);
     }
 
     @Override
@@ -115,18 +115,18 @@ public class TenantServiceImpl extends
     }
 
     @Override
-    public void beforeUpdate(TenantReq req, Long id) {
-        this.checkNameRepeat(req.getName(), id);
-        this.checkDomainRepeat(req.getDomain(), id);
+    public void beforeUpdate(TenantReq request, Long id) {
+        this.checkNameRepeat(request.getName(), id);
+        this.checkDomainRepeat(request.getDomain(), id);
         TenantDO tenant = super.getById(id);
         // 变更套餐
-        if (!tenant.getPackageId().equals(req.getPackageId())) {
-            packageService.checkStatus(req.getPackageId());
+        if (!tenant.getPackageId().equals(request.getPackageId())) {
+            packageService.checkStatus(request.getPackageId());
         }
     }
 
     @Override
-    public void afterUpdate(TenantReq req, TenantDO entity) {
+    public void afterUpdate(TenantReq request, TenantDO entity) {
         // 租户域名/编码可变更，需同时清 L2 与各节点 L1，否则旧域名会继续解析到本租户
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);
@@ -214,20 +214,20 @@ public class TenantServiceImpl extends
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateTenantMenu(List<Long> newMenuIds, Long packageId) {
-        List<Long> tenantIdList = this.listIdByPackageId(packageId);
-        if (CollUtil.isEmpty(tenantIdList)) {
+        List<Long> tenantIds = this.listIdByPackageId(packageId);
+        if (CollUtil.isEmpty(tenantIds)) {
             return;
         }
         // 所有租户角色：删除旧菜单
-        tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
-            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
+        tenantIds.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+            Set<Long> affectedRoleIds = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             // 删除旧菜单
             roleMenuApi.deleteByNotInMenuIds(newMenuIds);
             // 更新在线用户上下文
-            roleIdSet.forEach(roleApi::updateUserContext);
+            affectedRoleIds.forEach(roleApi::updateUserContext);
         }));
         // 租户管理员：新增菜单
-        tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+        tenantIds.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
             Long roleId = roleApi.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
             roleMenuApi.add(newMenuIds, roleId);
             // 更新在线用户上下文

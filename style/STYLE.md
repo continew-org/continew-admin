@@ -10,6 +10,24 @@ OCN-CodeStyle（OCN 即 OpenContiNew 缩写）基于 Apache Nacos 社区代码�
 | `ocn-spotbugs-exclude.xml` | SpotBugs 排除清单（豁免需留痕） |
 | `license-header` | License Header 模板（Spotless 校验与补全） |
 
+## 命名约定
+
+以下约定用于方法参数、局部变量和 lambda 参数，不据此修改模型字段、JSON 字段、数据库字段、配置键、模板键或对外接口参数。
+
+| 场景 | 约定 | 示例 |
+|:--|:--|:--|
+| `Collection`、`List`、`Set` | 使用内容或元素名称的复数，不加容器后缀 | `users`、`roleIds` |
+| 单值 `Map` | 单个值名称 + `By` + 真实键名称 | `userByUsername`、`storageById` |
+| 多值 `Map` | 复数值名称 + `By` + 真实键名称 | `filesByStorageId`、`usersByDeptId` |
+| 同作用域多组集合 | 用业务角色或状态区分 | `requestedRoleIds`、`existingRoleIds` |
+| 原集合与去重结果共存 | 去重结果使用 `distinct` 前缀 | `roleIds`、`distinctRoleIds` |
+
+`data`、`metadata` 等自然集合词按实际含义表达，不机械添加复数。重命名不改变集合类型、去重、排序或遍历顺序。上述集合写法是本项目的选择，不将手册中的推荐表述为行业强制要求。
+
+对象变量按职责命名：请求用 `request`，查询用 `query`，响应用 `response`；同作用域存在多个请求或响应时补业务名，如 `loginRequest`、`userDetailResponse`。DO、DTO、VO 实例使用业务名，如 `user`、`tenant`，不复制类型后缀；复制转换中的 `source`、`target` 保留来源和目标职责。日志框架字段保留 `log`，日志实体用 `logEntity`。
+
+请求、响应类使用 `Req`、`Resp` 后缀，分别放在 `model.req`、`model.resp` 包。参数改名须同步 Javadoc、表达式及间接引用；隐式绑定的 HTTP 参数名、MyBatis 默认集合别名等按现有契约保留。
+
 ## IntelliJ IDEA
 
 ### 导入代码风格

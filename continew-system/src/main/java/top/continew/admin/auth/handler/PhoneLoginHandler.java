@@ -41,23 +41,26 @@ import jakarta.servlet.http.HttpServletResponse;
 public class PhoneLoginHandler extends AbstractLoginHandler<PhoneLoginReq> {
 
     @Override
-    public LoginResp login(PhoneLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(PhoneLoginReq loginRequest, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 验证手机号
-        UserDO user = userService.getByPhone(req.getPhone());
+        UserDO user = userService.getByPhone(loginRequest.getPhone());
         ValidationUtils.throwIfNull(user, "此手机号未绑定本系统账号");
         // 执行认证
         return super.authenticate(user, client, request, response);
     }
 
     @Override
-    public void preLogin(PhoneLoginReq req, ClientResp client, HttpServletRequest request) {
-        super.preLogin(req, client, request);
-        String phone = req.getPhone();
+    public void preLogin(PhoneLoginReq loginRequest, ClientResp client,
+        HttpServletRequest request) {
+        super.preLogin(loginRequest, client, request);
+        String phone = loginRequest.getPhone();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha,
+            CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
     }
 

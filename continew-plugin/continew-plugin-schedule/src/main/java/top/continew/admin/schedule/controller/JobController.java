@@ -74,8 +74,8 @@ public class JobController {
     @SaCheckPermission("schedule:job:create")
     @PostMapping
     @Validated(CrudValidationGroup.Create.class)
-    public void create(@RequestBody @Valid JobReq req) {
-        CheckUtils.throwIf(!baseService.create(req), "任务创建失败");
+    public void create(@RequestBody @Valid JobReq request) {
+        CheckUtils.throwIf(!baseService.create(request), "任务创建失败");
     }
 
     @Operation(summary = "修改任务", description = "修改任务")
@@ -83,15 +83,15 @@ public class JobController {
     @SaCheckPermission("schedule:job:update")
     @PutMapping("/{id}")
     @Validated(CrudValidationGroup.Update.class)
-    public void update(@RequestBody @Valid JobReq req, @PathVariable Long id) {
-        CheckUtils.throwIf(!baseService.update(req, id), "任务修改失败");
+    public void update(@RequestBody @Valid JobReq request, @PathVariable Long id) {
+        CheckUtils.throwIf(!baseService.update(request, id), "任务修改失败");
     }
 
     @Operation(summary = "修改任务状态", description = "修改任务状态")
     @SaCheckPermission("schedule:job:update")
     @PatchMapping("/{id}/status")
-    public void updateStatus(@RequestBody @Valid JobStatusReq req, @PathVariable Long id) {
-        CheckUtils.throwIf(!baseService.updateStatus(req, id), "任务状态修改失败");
+    public void updateStatus(@RequestBody @Valid JobStatusReq request, @PathVariable Long id) {
+        CheckUtils.throwIf(!baseService.updateStatus(request, id), "任务状态修改失败");
     }
 
     @Operation(summary = "删除任务", description = "删除任务")
@@ -112,9 +112,9 @@ public class JobController {
     @SaCheckPermission("schedule:job:trigger")
     @PostMapping("/trigger/{id}")
     public void trigger(@PathVariable Long id) {
-        JobTriggerReq req = new JobTriggerReq();
-        req.setJobId(id);
-        CheckUtils.throwIf(!baseService.trigger(req), "任务执行失败");
+        JobTriggerReq request = new JobTriggerReq();
+        request.setJobId(id);
+        CheckUtils.throwIf(!baseService.trigger(request), "任务执行失败");
     }
 
     @Log(ignore = true)

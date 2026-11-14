@@ -70,18 +70,19 @@ public class MenuController
         if (!(Api.CREATE.equals(api) || Api.UPDATE.equals(api))) {
             return;
         }
-        MenuReq req = (MenuReq) args[0];
-        Boolean isExternal = ObjectUtil.defaultIfNull(req.getIsExternal(), false);
-        String path = req.getPath();
+        MenuReq request = (MenuReq) args[0];
+        Boolean isExternal = ObjectUtil.defaultIfNull(request.getIsExternal(), false);
+        String path = request.getPath();
         ValidationUtils.throwIf(Boolean.TRUE.equals(isExternal) && !UrlUtils
             .isHttpUrl(path), "路由地址格式不正确，请以 http:// 或 https:// 开头");
         // 非外链菜单参数修正
         if (Boolean.FALSE.equals(isExternal)) {
             ValidationUtils.throwIf(UrlUtils.isHttpUrl(path), "路由地址格式不正确");
-            req.setPath(StrUtil.isBlank(path) ? path
+            request.setPath(StrUtil.isBlank(path) ? path
                 : StrUtil.prependIfMissing(path, StringConstants.SLASH));
-            req.setName(StrUtil.removePrefix(req.getName(), StringConstants.SLASH));
-            req.setComponent(StrUtil.removePrefix(req.getComponent(), StringConstants.SLASH));
+            request.setName(StrUtil.removePrefix(request.getName(), StringConstants.SLASH));
+            request
+                .setComponent(StrUtil.removePrefix(request.getComponent(), StringConstants.SLASH));
         }
     }
 }

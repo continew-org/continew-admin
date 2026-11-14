@@ -110,14 +110,14 @@ public class CrudApiPermissionPrefixCache {
      * @return 权限前缀
      */
     private static String parsePermissionPrefix(String path) {
-        List<String> pathSegmentList = StrUtil.splitTrim(path, StringConstants.SLASH);
-        if (pathSegmentList.size() < 2) {
+        List<String> pathSegments = StrUtil.splitTrim(path, StringConstants.SLASH);
+        if (pathSegments.size() < 2) {
             throw new IllegalArgumentException("无效的 @CrudRequestMapping 路径配置：" + path);
         }
-        String moduleName = pathSegmentList.get(0);
+        String moduleName = pathSegments.get(0);
         String resourceName =
-            StrUtil.toCamelCase(String.join(StringConstants.UNDERLINE, pathSegmentList
-                .subList(1, pathSegmentList.size())));
+            StrUtil.toCamelCase(String.join(StringConstants.UNDERLINE, pathSegments
+                .subList(1, pathSegments.size())));
         return "%s:%s".formatted(moduleName, resourceName);
     }
 

@@ -58,16 +58,16 @@ public class ClientServiceImpl
     private final SessionInvalidationService sessionInvalidationService;
 
     @Override
-    public void beforeCreate(ClientReq req) {
-        req.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())
+    public void beforeCreate(ClientReq request) {
+        request.setClientId(SecureUtil.md5(Base64.encode(IdUtil.fastSimpleUUID())
             .replace(StringConstants.SLASH, StringConstants.EMPTY)
             .replace(StringConstants.PLUS, StringConstants.EMPTY)));
-        this.checkIdleTimeout(req);
+        this.checkIdleTimeout(request);
     }
 
     @Override
-    protected void beforeUpdate(ClientReq req, Long id) {
-        this.checkIdleTimeout(req);
+    protected void beforeUpdate(ClientReq request, Long id) {
+        this.checkIdleTimeout(request);
     }
 
     /**
@@ -76,10 +76,10 @@ public class ClientServiceImpl
      * <p>1~59 秒虽然语法上合法，但保存配置会立刻撤销该客户端的全部会话，用户重新登录后不到一分钟
      * 又会再次闲置失效，等同于把客户端锁死。这类值基本是「想填小时却填了秒」的手误，直接挡在入口。</p>
      *
-     * @param req 客户端请求参数
+     * @param request 客户端请求参数
      */
-    private void checkIdleTimeout(ClientReq req) {
-        Long idleTimeout = req.getRefreshTokenIdleTimeout();
+    private void checkIdleTimeout(ClientReq request) {
+        Long idleTimeout = request.getRefreshTokenIdleTimeout();
         CheckUtils.throwIf(idleTimeout != null && idleTimeout > 0 && idleTimeout < 60,
             "Refresh Token 闲置失效需为 0（不限制）或不小于 60 秒");
     }
@@ -87,8 +87,8 @@ public class ClientServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(ClientPolicyLockTargetResolver.class)
-    public void update(ClientReq req, Long id) {
-        super.update(req, id);
+    public void update(ClientReq request, Long id) {
+        super.update(request, id);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class ClientServiceImpl
     }
 
     @Override
-    public void afterUpdate(ClientReq req, ClientDO entity) {
+    public void afterUpdate(ClientReq request, ClientDO entity) {
         // 客户端配置全部属于认证策略。传输模式、有效期、并发规则或状态发生修改后，
         // 旧 Session 不能继续按历史策略运行，统一要求重新登录。
         sessionInvalidationService.invalidateClient(entity.getClientId());

@@ -51,7 +51,9 @@ public enum ImportPolicyEnum implements BaseEnum<Integer> {
     private final Integer value;
     private final String description;
 
-    public boolean validate(ImportPolicyEnum importPolicy, String data, List<String> existList) {
-        return this == importPolicy && CollUtil.isNotEmpty(existList) && existList.contains(data);
+    public boolean validate(ImportPolicyEnum importPolicy, String data,
+        List<String> existingValues) {
+        return this == importPolicy && CollUtil.isNotEmpty(existingValues)
+            && existingValues.contains(data);
     }
 }

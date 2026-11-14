@@ -94,8 +94,9 @@ public class GeneratorController {
         in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:config")
     @PostMapping("/config/{tableName}")
-    public void saveConfig(@RequestBody @Valid GenConfigReq req, @PathVariable String tableName) {
-        baseService.saveConfig(req, tableName);
+    public void saveConfig(@RequestBody @Valid GenConfigReq request,
+        @PathVariable String tableName) {
+        baseService.saveConfig(request, tableName);
     }
 
     @Operation(summary = "生成预览", description = "预览生成代码")

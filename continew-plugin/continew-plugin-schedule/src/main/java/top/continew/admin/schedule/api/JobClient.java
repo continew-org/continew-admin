@@ -125,11 +125,11 @@ public class JobClient {
      * @return Token
      */
     private String authenticate() {
-        Map<String, Object> paramMap = MapUtil.newHashMap(2);
-        paramMap.put("username", username);
-        paramMap.put("password", SecureUtil.md5(password));
+        Map<String, Object> authParamValueByName = MapUtil.newHashMap(2);
+        authParamValueByName.put("username", username);
+        authParamValueByName.put("password", SecureUtil.md5(password));
         HttpRequest httpRequest = HttpUtil.createPost("%s%s".formatted(url, AUTH_URL));
-        httpRequest.body(JSONUtil.toJsonStr(paramMap));
+        httpRequest.body(JSONUtil.toJsonStr(authParamValueByName));
         try (HttpResponse response = httpRequest.execute()) {
             if (!response.isOk() || response.body() == null) {
                 throw new ScheduleServerException("连接任务调度中心异常");

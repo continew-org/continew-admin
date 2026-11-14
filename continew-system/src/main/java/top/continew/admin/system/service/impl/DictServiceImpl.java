@@ -48,25 +48,25 @@ public class DictServiceImpl
     private final DictItemService dictItemService;
 
     @Override
-    public void beforeCreate(DictReq req) {
-        this.checkNameRepeat(req.getName(), null);
-        this.checkCodeRepeat(req.getCode(), null);
+    public void beforeCreate(DictReq request) {
+        this.checkNameRepeat(request.getName(), null);
+        this.checkCodeRepeat(request.getCode(), null);
     }
 
     @Override
-    public void beforeUpdate(DictReq req, Long id) {
-        this.checkNameRepeat(req.getName(), id);
+    public void beforeUpdate(DictReq request, Long id) {
+        this.checkNameRepeat(request.getName(), id);
         DictDO oldDict = super.getById(id);
-        CheckUtils.throwIfNotEqual(req.getCode(), oldDict.getCode(), "不允许修改字典编码");
+        CheckUtils.throwIfNotEqual(request.getCode(), oldDict.getCode(), "不允许修改字典编码");
     }
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<DictDO> list = baseMapper.lambdaQuery()
+        List<DictDO> dicts = baseMapper.lambdaQuery()
             .select(DictDO::getName, DictDO::getIsSystem)
             .in(DictDO::getId, ids)
             .list();
-        Optional<DictDO> isSystemData = list.stream().filter(DictDO::getIsSystem).findFirst();
+        Optional<DictDO> isSystemData = dicts.stream().filter(DictDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除",
             isSystemData.orElseGet(DictDO::new)
                 .getName());
@@ -75,8 +75,8 @@ public class DictServiceImpl
 
     @Override
     public List<LabelValueResp> listEnumDict() {
-        List<String> enumDictNameList = dictItemService.listEnumDictNames();
-        return CollUtils.mapToList(enumDictNameList, name -> new LabelValueResp(name, name));
+        List<String> enumDictNames = dictItemService.listEnumDictNames();
+        return CollUtils.mapToList(enumDictNames, name -> new LabelValueResp(name, name));
     }
 
     /**

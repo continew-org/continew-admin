@@ -66,53 +66,54 @@ public class StorageServiceImpl extends
     private FileService fileService;
 
     @Override
-    public void beforeCreate(StorageReq req) {
+    public void beforeCreate(StorageReq request) {
         // 解密密钥
-        if (StorageTypeEnum.OSS.equals(req.getType())) {
-            ValidationUtils.throwIfBlank(req.getSecretKey(), "Secret Key不能为空");
-            req.setSecretKey(this.decryptSecretKey(req.getSecretKey(), null));
+        if (StorageTypeEnum.OSS.equals(request.getType())) {
+            ValidationUtils.throwIfBlank(request.getSecretKey(), "Secret Key不能为空");
+            request.setSecretKey(this.decryptSecretKey(request.getSecretKey(), null));
         }
         // 指定配置参数校验及预处理
-        StorageTypeEnum storageType = req.getType();
-        storageType.validate(req);
-        storageType.pretreatment(req);
+        StorageTypeEnum storageType = request.getType();
+        storageType.validate(request);
+        storageType.pretreatment(request);
         // 校验存储编码
-        this.checkCodeRepeat(req.getCode(), null);
+        this.checkCodeRepeat(request.getCode(), null);
         // 需要独立操作来指定默认存储
-        req.setIsDefault(false);
+        request.setIsDefault(false);
         // 加载存储引擎
-        if (DisEnableStatusEnum.ENABLE.equals(req.getStatus())) {
-            this.load(BeanUtil.copyProperties(req, StorageDO.class));
+        if (DisEnableStatusEnum.ENABLE.equals(request.getStatus())) {
+            this.load(BeanUtil.copyProperties(request, StorageDO.class));
         }
     }
 
     @Override
-    public void beforeUpdate(StorageReq req, Long id) {
+    public void beforeUpdate(StorageReq request, Long id) {
         // 解密密钥
         StorageDO oldStorage = super.getById(id);
-        if (StorageTypeEnum.OSS.equals(req.getType())) {
-            req.setSecretKey(this.decryptSecretKey(req.getSecretKey(), oldStorage));
+        if (StorageTypeEnum.OSS.equals(request.getType())) {
+            request.setSecretKey(this.decryptSecretKey(request.getSecretKey(), oldStorage));
         }
         // 校验存储类型、存储编码、回收站配置、状态
-        CheckUtils.throwIfNotEqual(req.getType(), oldStorage.getType(), "不允许修改存储类型");
-        CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
-        CheckUtils.throwIfNotEqual(req.getRecycleBinEnabled(), oldStorage.getRecycleBinEnabled(),
+        CheckUtils.throwIfNotEqual(request.getType(), oldStorage.getType(), "不允许修改存储类型");
+        CheckUtils.throwIfNotEqual(request.getCode(), oldStorage.getCode(), "不允许修改存储编码");
+        CheckUtils.throwIfNotEqual(request.getRecycleBinEnabled(),
+            oldStorage.getRecycleBinEnabled(),
             "不允许修改回收站配置");
-        CheckUtils.throwIfNotEqual(req.getRecycleBinPath(), oldStorage.getRecycleBinPath(),
+        CheckUtils.throwIfNotEqual(request.getRecycleBinPath(), oldStorage.getRecycleBinPath(),
             "不允许修改回收站配置");
-        DisEnableStatusEnum newStatus = req.getStatus();
+        DisEnableStatusEnum newStatus = request.getStatus();
         CheckUtils
             .throwIf(Boolean.TRUE.equals(oldStorage.getIsDefault()) && DisEnableStatusEnum.DISABLE
                 .equals(newStatus), "[{}] 是默认存储，不允许禁用", oldStorage.getName());
         // 指定配置参数校验及预处理
-        StorageTypeEnum storageType = req.getType();
-        storageType.validate(req);
-        storageType.pretreatment(req);
+        StorageTypeEnum storageType = request.getType();
+        storageType.validate(request);
+        storageType.pretreatment(request);
         // 卸载存储引擎
         this.unload(oldStorage);
         // 加载存储引擎
         if (DisEnableStatusEnum.ENABLE.equals(newStatus)) {
-            BeanUtil.copyProperties(req, oldStorage);
+            BeanUtil.copyProperties(request, oldStorage);
             this.load(oldStorage);
         }
     }
@@ -120,8 +121,8 @@ public class StorageServiceImpl extends
     @Override
     public void beforeDelete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件或文件夹关联，请删除后重试");
-        List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(storage -> {
+        List<StorageDO> storages = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
+        storages.forEach(storage -> {
             CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许删除",
                 storage.getName());
             // 卸载存储引擎
@@ -131,10 +132,10 @@ public class StorageServiceImpl extends
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateStatus(CommonStatusUpdateReq req, Long id) {
+    public void updateStatus(CommonStatusUpdateReq request, Long id) {
         StorageDO storage = super.getById(id);
         // 状态未改变
-        DisEnableStatusEnum newStatus = req.getStatus();
+        DisEnableStatusEnum newStatus = request.getStatus();
         if (storage.getStatus().equals(newStatus)) {
             return;
         }
@@ -192,17 +193,17 @@ public class StorageServiceImpl extends
     @Override
     public FileUploadConfigResp getDefaultUploadConfig() {
         StorageDO storage = this.getDefaultStorage();
-        FileUploadConfigResp resp = new FileUploadConfigResp();
-        resp.setStorageId(storage.getId());
-        resp.setStorageName(storage.getName());
-        resp.setStorageCode(storage.getCode());
-        resp.setStorageType(storage.getType());
-        resp.setMultipartUploadThreshold(resolveMultipartUploadThreshold(storage));
-        resp.setMultipartUploadPartSize(resolveMultipartUploadPartSize(storage));
+        FileUploadConfigResp response = new FileUploadConfigResp();
+        response.setStorageId(storage.getId());
+        response.setStorageName(storage.getName());
+        response.setStorageCode(storage.getCode());
+        response.setStorageType(storage.getType());
+        response.setMultipartUploadThreshold(resolveMultipartUploadThreshold(storage));
+        response.setMultipartUploadPartSize(resolveMultipartUploadPartSize(storage));
         if (StorageTypeEnum.LOCAL.equals(storage.getType())) {
-            resp.setMultipartTempDir(resolveLocalMultipartTempDir(storage));
+            response.setMultipartTempDir(resolveLocalMultipartTempDir(storage));
         }
-        return resp;
+        return response;
     }
 
     @Override

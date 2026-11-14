@@ -103,17 +103,17 @@ public class GeneratorServiceImpl implements GeneratorService {
     @Override
     public PageResp<GenConfigDO> pageGenConfig(GenConfigQuery query, PageQuery pageQuery) {
         // 查询所有表
-        List<Table> tableList = MetaUtils.getTables(dataSource);
-        tableList
+        List<Table> tables = MetaUtils.getTables(dataSource);
+        tables
             .removeIf(table -> StrUtil.equalsAnyIgnoreCase(table.getTableName(), generatorProperties
                 .getExcludeTables()));
         String tableName = query.getTableName();
         if (StrUtil.isNotBlank(tableName)) {
-            tableList
+            tables
                 .removeIf(table -> !StrUtil.containsAnyIgnoreCase(table.getTableName(), tableName));
         }
         // 查询生成配置
-        List<GenConfigDO> list = tableList.parallelStream().map(table -> {
+        List<GenConfigDO> genConfigs = tables.parallelStream().map(table -> {
             GenConfigDO genConfig = genConfigMapper.selectById(table.getTableName());
             if (genConfig == null) {
                 genConfig = new GenConfigDO(table.getTableName());
@@ -128,7 +128,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                     Comparator.nullsLast(Comparator.naturalOrder())))
             .toList();
         // 分页
-        return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), list);
+        return PageResp.build(pageQuery.getPage(), pageQuery.getSize(), genConfigs);
     }
 
     @Override
@@ -140,9 +140,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             String packageName = ClassUtil.getPackage(GeneratorService.class);
             genConfig.setPackageName(StrUtil.subBefore(packageName, StringConstants.DOT, true));
             // 默认业务名（表注释）
-            List<Table> tableList = MetaUtils.getTables(dataSource, tableName);
-            if (CollUtil.isNotEmpty(tableList)) {
-                Table table = tableList.get(0);
+            List<Table> tables = MetaUtils.getTables(dataSource, tableName);
+            if (CollUtil.isNotEmpty(tables)) {
+                Table table = tables.get(0);
                 genConfig.setBusinessName(
                     StrUtil.replace(table.getComment(), "表", StringConstants.EMPTY));
             }
@@ -160,53 +160,54 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     public List<FieldConfigDO> listFieldConfig(String tableName, Boolean requireSync) {
-        List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
-        if (CollUtil.isNotEmpty(fieldConfigList) && Boolean.FALSE.equals(requireSync)) {
-            return fieldConfigList;
+        List<FieldConfigDO> fieldConfigs = fieldConfigMapper.selectListByTableName(tableName);
+        if (CollUtil.isNotEmpty(fieldConfigs) && Boolean.FALSE.equals(requireSync)) {
+            return fieldConfigs;
         }
-        List<FieldConfigDO> latestFieldConfigList = new ArrayList<>();
+        List<FieldConfigDO> latestFieldConfigs = new ArrayList<>();
         // 获取最新数据表列信息
-        Collection<Column> columnList = MetaUtils.getColumns(dataSource, tableName);
+        Collection<Column> columns = MetaUtils.getColumns(dataSource, tableName);
         // 获取数据库对应的类型映射配置
         DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
-        Map<String, List<String>> typeMappingMap =
+        Map<String, List<String>> columnTypesByFieldType =
             generatorProperties.getTypeMappings().get(databaseType);
-        CheckUtils.throwIfEmpty(typeMappingMap, "请先配置对应数据库的类型映射");
-        Set<Map.Entry<String, List<String>>> typeMappingEntrySet = typeMappingMap.entrySet();
+        CheckUtils.throwIfEmpty(columnTypesByFieldType, "请先配置对应数据库的类型映射");
+        Set<Map.Entry<String, List<String>>> typeMappings = columnTypesByFieldType.entrySet();
         // 新增或更新字段配置
-        Map<String, FieldConfigDO> fieldConfigMap = fieldConfigList.stream()
+        Map<String, FieldConfigDO> fieldConfigByColumnName = fieldConfigs.stream()
             .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (existing,
                 replacement) -> existing));
         int i = 1;
-        for (Column column : columnList) {
-            FieldConfigDO fieldConfig = Optional.ofNullable(fieldConfigMap.get(column.getName()))
-                .orElseGet(() -> new FieldConfigDO(column));
+        for (Column column : columns) {
+            FieldConfigDO fieldConfig =
+                Optional.ofNullable(fieldConfigByColumnName.get(column.getName()))
+                    .orElseGet(() -> new FieldConfigDO(column));
             // 更新已有字段配置
             if (fieldConfig.getCreateTime() != null) {
                 fieldConfig.setColumnType(column.getTypeName());
                 fieldConfig.setColumnSize(column.getSize());
             }
-            String fieldType = typeMappingEntrySet.stream()
+            String fieldType = typeMappings.stream()
                 .filter(entry -> entry.getValue().contains(fieldConfig.getColumnType()))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(null);
             fieldConfig.setFieldType(fieldType);
             fieldConfig.setFieldSort(i++);
-            latestFieldConfigList.add(fieldConfig);
+            latestFieldConfigs.add(fieldConfig);
         }
-        return latestFieldConfigList;
+        return latestFieldConfigs;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveConfig(GenConfigReq req, String tableName) {
+    public void saveConfig(GenConfigReq request, String tableName) {
         // 保存字段配置（先删除再保存）
         fieldConfigMapper.delete(
             Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
-        List<FieldConfigDO> fieldConfigList = req.getFieldConfigs();
-        for (int i = 0; i < fieldConfigList.size(); i++) {
-            FieldConfigDO fieldConfig = fieldConfigList.get(i);
+        List<FieldConfigDO> fieldConfigs = request.getFieldConfigs();
+        for (int i = 0; i < fieldConfigs.size(); i++) {
+            FieldConfigDO fieldConfig = fieldConfigs.get(i);
             // 重新设置排序
             fieldConfig.setFieldSort(i + 1);
             if (Boolean.TRUE.equals(fieldConfig.getShowInForm())) {
@@ -233,9 +234,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             }
             fieldConfig.setTableName(tableName);
         }
-        fieldConfigMapper.insert(fieldConfigList);
+        fieldConfigMapper.insert(fieldConfigs);
         // 保存或更新生成配置信息
-        GenConfigDO newGenConfig = req.getGenConfig();
+        GenConfigDO newGenConfig = request.getGenConfig();
         GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);
         if (oldGenConfig != null) {
             BeanUtil.copyProperties(newGenConfig, oldGenConfig);
@@ -247,11 +248,11 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     public List<GeneratePreviewResp> preview(List<String> tableNames) {
-        List<GeneratePreviewResp> generatePreviewList = new ArrayList<>();
+        List<GeneratePreviewResp> previews = new ArrayList<>();
         for (String tableName : tableNames) {
-            generatePreviewList.addAll(this.doPreview(tableName));
+            previews.addAll(this.doPreview(tableName));
         }
-        return generatePreviewList;
+        return previews;
     }
 
     @Override
@@ -262,9 +263,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             FileUtil.del(tempDir + applicationProperties.getId());
             tableNames.forEach(tableName -> {
                 // 初始化配置及数据
-                List<GeneratePreviewResp> generatePreviewList = this.doPreview(tableName);
+                List<GeneratePreviewResp> previews = this.doPreview(tableName);
                 // 生成代码
-                this.doGenerateCode(generatePreviewList, genConfigMapper.selectById(tableName));
+                this.doGenerateCode(previews, genConfigMapper.selectById(tableName));
             });
             // 打包下载
             File tempDirFile = new File(tempDir, applicationProperties.getId());
@@ -284,9 +285,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             String projectPath = System.getProperty("user.dir");
             tableNames.forEach(tableName -> {
                 // 初始化配置及数据
-                List<GeneratePreviewResp> generatePreviewList = this.doPreview(tableName);
+                List<GeneratePreviewResp> previews = this.doPreview(tableName);
                 // 生成代码
-                for (GeneratePreviewResp generatePreview : generatePreviewList) {
+                for (GeneratePreviewResp generatePreview : previews) {
                     // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
                     // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
                     File file = new File(projectPath + generatePreview.getPath()
@@ -314,23 +315,23 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @return 预览信息
      */
     private List<GeneratePreviewResp> doPreview(String tableName) {
-        List<GeneratePreviewResp> generatePreviewList = new ArrayList<>();
+        List<GeneratePreviewResp> previews = new ArrayList<>();
         // 初始化配置
         GenConfigDO genConfig = genConfigMapper.selectById(tableName);
         CheckUtils.throwIfNull(genConfig, "请先进行数据表 [{}] 生成配置", tableName);
-        List<FieldConfigDO> fieldConfigList = fieldConfigMapper.selectListByTableName(tableName);
-        CheckUtils.throwIfEmpty(fieldConfigList, "请先进行数据表 [{}] 字段配置", tableName);
+        List<FieldConfigDO> fieldConfigs = fieldConfigMapper.selectListByTableName(tableName);
+        CheckUtils.throwIfEmpty(fieldConfigs, "请先进行数据表 [{}] 字段配置", tableName);
 
         InnerGenConfigDO innerGenConfig = new InnerGenConfigDO(genConfig);
         List<String> imports = new ArrayList<>();
         // 处理枚举字段
         List<FieldConfigDO> fieldConfigRecords = CollUtils
-            .mapToList(fieldConfigList, s -> convertToFieldConfigDO(s, imports));
+            .mapToList(fieldConfigs, s -> convertToFieldConfigDO(s, imports));
         innerGenConfig.setImports(imports);
 
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
-        Map<String, TemplateConfiguration> templateConfigMap =
+        Map<String, TemplateConfiguration> templateConfigByClassSuffix =
             generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
@@ -341,7 +342,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             freemarkerEngine.getConfiguration().setSharedVariable("statics",
                 wrapper.getStaticModels());
         }
-        for (Map.Entry<String, TemplateConfiguration> templateConfigEntry : templateConfigMap
+        for (Map.Entry<String, TemplateConfiguration> templateConfigEntry : templateConfigByClassSuffix
             .entrySet()) {
             TemplateConfiguration templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段
@@ -361,7 +362,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             String extension = templateConfig.getExtension();
             GeneratePreviewResp generatePreview = new GeneratePreviewResp();
             generatePreview.setBackend(isBackend);
-            generatePreviewList.add(generatePreview);
+            previews.add(generatePreview);
             String fileName = className + extension;
             if (!isBackend) {
                 fileName = ".vue".equals(extension) && "index".equals(classNameSuffix)
@@ -373,7 +374,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 .render(BeanUtil.beanToMap(innerGenConfig)));
             this.setPreviewPath(generatePreview, innerGenConfig, templateConfig);
         }
-        return generatePreviewList;
+        return previews;
     }
 
     /**
@@ -391,9 +392,9 @@ public class GeneratorServiceImpl implements GeneratorService {
         if (StringUtils.isBlank(dictCode)) {
             return fieldConfig;
         }
-        Set<Class<?>> classSet =
+        Set<Class<?>> enumClasses =
             ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
-        Optional<Class<?>> clazzOptional = classSet.stream()
+        Optional<Class<?>> clazzOptional = enumClasses.stream()
             .filter(s -> StrUtil.toUnderlineCase(s.getSimpleName()).toLowerCase().equals(dictCode))
             .findFirst();
         if (clazzOptional.isEmpty()) {
@@ -444,12 +445,12 @@ public class GeneratorServiceImpl implements GeneratorService {
     /**
      * 生成代码
      *
-     * @param generatePreviewList 生成预览列表
+     * @param previews 生成预览列表
      * @param genConfig           生成配置
      */
-    private void doGenerateCode(List<GeneratePreviewResp> generatePreviewList,
+    private void doGenerateCode(List<GeneratePreviewResp> previews,
         GenConfigDO genConfig) {
-        for (GeneratePreviewResp generatePreview : generatePreviewList) {
+        for (GeneratePreviewResp generatePreview : previews) {
             // 后端：continew-admin/continew-system/src/main/java/top/continew/admin/system/service/impl/XxxServiceImpl.java
             // 前端：continew-admin/continew-admin-ui/src/views/system/user/index.vue
             File file = new File(SystemUtil.getUserInfo().getTempDir() + generatePreview.getPath(),
@@ -504,10 +505,10 @@ public class GeneratorServiceImpl implements GeneratorService {
      * @param genConfig 生成配置
      */
     private void pretreatment(InnerGenConfigDO genConfig) {
-        List<FieldConfigDO> fieldConfigList = genConfig.getFieldConfigs();
+        List<FieldConfigDO> fieldConfigs = genConfig.getFieldConfigs();
         // 统计部分特殊字段特征
-        Set<String> dictCodeSet = new HashSet<>();
-        for (FieldConfigDO fieldConfig : fieldConfigList) {
+        Set<String> dictCodes = new HashSet<>();
+        for (FieldConfigDO fieldConfig : fieldConfigs) {
             String fieldType = fieldConfig.getFieldType();
             // 必填项
             if (Boolean.TRUE.equals(fieldConfig.getIsRequired())) {
@@ -523,9 +524,9 @@ public class GeneratorServiceImpl implements GeneratorService {
             // 字典码
             if (StrUtil.isNotBlank(fieldConfig.getDictCode())) {
                 genConfig.setHasDictField(true);
-                dictCodeSet.add(fieldConfig.getDictCode());
+                dictCodes.add(fieldConfig.getDictCode());
             }
         }
-        genConfig.setDictCodes(dictCodeSet);
+        genConfig.setDictCodes(dictCodes);
     }
 }

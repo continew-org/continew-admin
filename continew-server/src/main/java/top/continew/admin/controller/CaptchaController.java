@@ -99,11 +99,11 @@ public class CaptchaController {
     @Log(ignore = true)
     @Operation(summary = "获取行为验证码", description = "获取行为验证码（Base64编码）")
     @GetMapping("/behavior")
-    public Object getBehaviorCaptcha(CaptchaVO captchaVO, HttpServletRequest request) {
+    public Object getBehaviorCaptcha(CaptchaVO captchaRequest, HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaVO.setBrowserInfo(
+        captchaRequest.setBrowserInfo(
             JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        ResponseModel responseModel = behaviorCaptchaService.get(captchaVO);
+        ResponseModel responseModel = behaviorCaptchaService.get(captchaRequest);
         CheckUtils.throwIf(() -> !StrUtil.equals(RepCodeEnum.SUCCESS.getCode(), responseModel
             .getRepCode()), responseModel.getRepMsg());
         return responseModel.getRepData();
@@ -112,19 +112,19 @@ public class CaptchaController {
     /**
      * 校验行为验证码
      *
-     * @param captchaVO  验证码参数
+     * @param captchaRequest  验证码参数
      * @param request    请求对象
      * @return 校验结果
      */
     @Log(ignore = true)
     @Operation(summary = "校验行为验证码", description = "校验行为验证码")
     @PostMapping("/behavior")
-    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaVO,
+    public Object checkBehaviorCaptcha(@RequestBody CaptchaVO captchaRequest,
         HttpServletRequest request) {
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        captchaVO.setBrowserInfo(
+        captchaRequest.setBrowserInfo(
             JakartaServletUtil.getClientIP(request) + request.getHeader(HttpHeaders.USER_AGENT));
-        return behaviorCaptchaService.check(captchaVO);
+        return behaviorCaptchaService.check(captchaRequest);
     }
 
     @Log(ignore = true)
@@ -156,7 +156,7 @@ public class CaptchaController {
      * </p>
      *
      * @param email      邮箱
-     * @param captchaVO  行为验证码请求参数
+     * @param captchaRequest  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
@@ -177,10 +177,10 @@ public class CaptchaController {
             interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
             message = "获取验证码操作太频繁，请稍后再试")})
     public R getMailCaptcha(@NotBlank(message = "邮箱不能为空") @Email(message = "邮箱格式不正确") String email,
-        CaptchaVO captchaVO) throws MessagingException {
+        CaptchaVO captchaRequest) throws MessagingException {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaVO);
+        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaRequest);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
             verificationRes
                 .getRepMsg());
@@ -189,11 +189,12 @@ public class CaptchaController {
         String captcha = RandomUtil.randomNumbers(captchaMail.getLength());
         // 发送验证码
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
-        Map<String, String> siteConfig = optionService.getByCategory(OptionCategoryEnum.SITE);
+        Map<String, String> siteOptionValueByCode =
+            optionService.getByCategory(OptionCategoryEnum.SITE);
         String content = TemplateUtils.render(captchaMail.getTemplatePath(), Dict.create()
             .set("siteUrl", applicationProperties.getUrl())
-            .set("siteTitle", siteConfig.get("SITE_TITLE"))
-            .set("siteCopyright", siteConfig.get("SITE_COPYRIGHT"))
+            .set("siteTitle", siteOptionValueByCode.get("SITE_TITLE"))
+            .set("siteCopyright", siteOptionValueByCode.get("SITE_COPYRIGHT"))
             .set("captcha", captcha)
             .set("expiration", expirationInMinutes));
         MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(applicationProperties.getName()), content);
@@ -214,7 +215,7 @@ public class CaptchaController {
      * </p>
      *
      * @param phone      手机号
-     * @param captchaVO  行为验证码请求参数
+     * @param captchaRequest  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
@@ -235,10 +236,10 @@ public class CaptchaController {
             interval = 1, unit = TimeUnit.MINUTES, type = LimitType.IP,
             message = "获取验证码操作太频繁，请稍后再试")})
     public R getSmsCaptcha(@NotBlank(message = "手机号不能为空") @Mobile String phone,
-        CaptchaVO captchaVO) {
+        CaptchaVO captchaRequest) {
         // 行为验证码校验
         CaptchaService behaviorCaptchaService = SpringUtil.getBean(CaptchaService.class);
-        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaVO);
+        ResponseModel verificationRes = behaviorCaptchaService.verification(captchaRequest);
         ValidationUtils.throwIfNotEqual(verificationRes.getRepCode(), RepCodeEnum.SUCCESS.getCode(),
             verificationRes
                 .getRepMsg());
@@ -251,12 +252,12 @@ public class CaptchaController {
         SmsBlend smsBlend = smsConfig != null
             ? SmsFactory.getSmsBlend(smsConfig.getId().toString())
             : SmsFactory.getSmsBlend();
-        Map<String, String> messageMap = MapUtil.newHashMap(2, true);
-        messageMap.put(captchaSms.getCodeKey(), captcha);
-        messageMap.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
+        Map<String, String> templateValueByKey = MapUtil.newHashMap(2, true);
+        templateValueByKey.put(captchaSms.getCodeKey(), captcha);
+        templateValueByKey.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
         // 发送验证码
         SmsResponse smsResponse =
-            smsBlend.sendMessage(phone, (LinkedHashMap<String, String>) messageMap);
+            smsBlend.sendMessage(phone, (LinkedHashMap<String, String>) templateValueByKey);
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
