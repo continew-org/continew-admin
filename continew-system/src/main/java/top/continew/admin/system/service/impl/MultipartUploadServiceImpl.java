@@ -66,7 +66,8 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
         String extName = FileUtil.extName(createReq.getFileName()).toLowerCase();
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
-        CheckUtils.throwIf(!allExtensions.contains(extName), "不支持的文件类型，仅支持 {} 格式的文件", String
+        FileTypeEnum fileType = FileTypeEnum.getByExtension(extName);
+        CheckUtils.throwIf(fileType == FileTypeEnum.UNKNOWN, "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
         StoragePathValidator.validate(createReq.getParentPath());
@@ -85,18 +86,15 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
             throw new BaseException("文件名已存在：" + originalFileName);
         }
 
-        // 生成唯一文件名（处理重名情况）
-        String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
-                .getId(), fileMapper);
-        createReq.setFileName(uniqueFileName);
         fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
             storage);
 
+        // 落盘文件名使用唯一 ID（扩展名不变），原始文件名交给 starter 会话携带，完成上传时自动回填
+        String storedFileName = FileNameGenerator.generateStoredName(originalFileName);
         MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
         storageReq.setPlatform(storage.getCode());
         storageReq.setBucket(storage.getBucketName());
-        storageReq.setFileName(uniqueFileName);
+        storageReq.setFileName(storedFileName);
         storageReq.setFileSize(createReq.getFileSize());
         storageReq.setFileMd5(createReq.getFileMd5());
         storageReq.setContentType(createReq.getContentType());
@@ -148,7 +146,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         if (file != null) {
             return file;
         }
-        // 兼容兜底：记录器未完成落库时补录
+        // 兼容兜底：记录器未完成落库时补录，原始文件名已由 starter 从会话回填到 fileInfo
         FileDO fallback = new FileDO(fileInfo);
         fallback.setStorageId(storage.getId());
         fallback.setType(FileTypeEnum.getByExtension(FileUtil.extName(fallback.getName())));
@@ -168,6 +166,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         target.setBucket(source.getBucket());
         target.setPlatform(source.getPlatform());
         target.setFileName(source.getFileName());
+        target.setOriginalFileName(source.getOriginalFileName());
         target.setFileMd5(source.getFileMd5());
         target.setFileSize(source.getFileSize());
         target.setExtension(source.getExtension());

@@ -34,7 +34,6 @@ import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserPasswordHistoryService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.admin.system.service.UserSocialService;
-import top.continew.starter.storage.core.FileStorageService;
 
 import java.util.Collections;
 import java.util.List;
@@ -59,8 +58,7 @@ class UserServiceImplTest {
             mock(OptionService.class),
             mock(RoleService.class),
             mock(OnlineUserService.class),
-            mock(FileService.class),
-            mock(FileStorageService.class));
+            mock(FileService.class));
     }
 
     @Test

@@ -22,10 +22,12 @@ import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import top.continew.admin.common.base.model.entity.BaseDO;
 import top.continew.admin.system.enums.FileTypeEnum;
+import top.continew.admin.system.util.StoragePathUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
 
@@ -48,11 +50,19 @@ public class FileDO extends BaseDO {
 
     /**
      * 名称
+     *
+     * <p>
+     * 存储中的实际文件名：文件为「唯一 ID + 原扩展名」（见 {@code FileNameGenerator}），文件夹仍为可读名称。
+     * </p>
      */
     private String name;
 
     /**
      * 原始名称
+     *
+     * <p>
+     * 用户上传时的原始文件名，也是列表、详情等界面展示的名称。
+     * </p>
      */
     private String originalName;
 
@@ -171,6 +181,19 @@ public class FileDO extends BaseDO {
     }
 
     /**
+     * 获取缩略图库内路径
+     *
+     * <p>派生属性，无对应数据库字段；忽略序列化，避免实体直接作为响应时多出冗余字段。</p>
+     *
+     * @return 缩略图库内路径（带前导斜杠）；无缩略图时返回 null
+     * @since 5.0.0
+     */
+    @JsonIgnore
+    public String getThumbnailPath() {
+        return StoragePathUtils.thumbnailPath(this.parentPath, this.thumbnailName);
+    }
+
+    /**
      * 转换为 {@link FileInfo} 文件信息对象
      *
      * @param storage 存储配置
@@ -193,12 +216,9 @@ public class FileDO extends BaseDO {
         }
         fileInfo.setUrl(URLUtil.normalize(storage.getUrlPrefix() + normalizedPath, false, true));
         // 缩略图信息
-        if (StrUtil.isNotBlank(this.thumbnailName)) {
-            String normalizedParentPath = StringConstants.SLASH.equals(this.parentPath)
-                ? StringConstants.EMPTY
-                : StrUtil.appendIfMissing(StrUtil
-                    .removePrefix(this.parentPath, StringConstants.SLASH), StringConstants.SLASH);
-            fileInfo.setThumbnailPath(normalizedParentPath + this.thumbnailName);
+        String thumbnailPath = this.getThumbnailPath();
+        if (StrUtil.isNotBlank(thumbnailPath)) {
+            fileInfo.setThumbnailPath(StrUtil.removePrefix(thumbnailPath, StringConstants.SLASH));
             fileInfo.setThumbnailSize(this.thumbnailSize);
         }
         return fileInfo;
