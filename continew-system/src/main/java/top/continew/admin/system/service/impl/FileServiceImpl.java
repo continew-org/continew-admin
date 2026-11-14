@@ -98,6 +98,9 @@ public class FileServiceImpl
     @Lazy
     @Resource
     private StorageService storageService;
+    @Lazy
+    @Resource
+    private FileService self;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -374,13 +377,13 @@ public class FileServiceImpl
             baseMapper.lambdaQuery()
                 .in(FileDO::getPath, batch)
                 .list()
-                .forEach(record -> {
-                    Long storageId = record.getStorageId();
-                    Long existing = storageIdByPath.get(record.getPath());
+                .forEach(fileRecord -> {
+                    Long storageId = fileRecord.getStorageId();
+                    Long existing = storageIdByPath.get(fileRecord.getPath());
                     // 默认存储优先，避免同路径跨存储时装配到非上传存储
                     if (existing == null
                         || (defaultStorageId != null && defaultStorageId.equals(storageId))) {
-                        storageIdByPath.put(record.getPath(), storageId);
+                        storageIdByPath.put(fileRecord.getPath(), storageId);
                     }
                 });
         }
@@ -468,7 +471,7 @@ public class FileServiceImpl
             log.warn("路径 [{}] 未匹配到可删除的本系统文件记录，跳过文件删除", path);
             return false;
         }
-        this.delete(List.of(file.getId()));
+        self.delete(List.of(file.getId()));
         return true;
     }
 

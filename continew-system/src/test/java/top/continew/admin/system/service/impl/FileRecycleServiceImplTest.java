@@ -101,8 +101,8 @@ class FileRecycleServiceImplTest {
         FileDO file = recycledFile(10L, "a.png", "thumb.png");
         when(fileMapper.selectByIdInRecycleBin(10L)).thenReturn(file);
         when(storageService.getById(1L)).thenReturn(storage);
-        when(fileStorageService.exists(eq("local"), eq("bucket"),
-            eq("recycle/user/avatar/thumb.png"))).thenReturn(true);
+        when(fileStorageService.exists("local", "bucket",
+            "recycle/user/avatar/thumb.png")).thenReturn(true);
         // 主文件无其他回收记录引用（移动），缩略图仍被 B 引用（复制）
         when(fileMapper.countRecycleBinReferences(eq(1L), eq("/user/avatar/a.png"), any(), any(),
             eq(10L))).thenReturn(0L);
@@ -153,8 +153,8 @@ class FileRecycleServiceImplTest {
 
         // 回收站主文件照常删除；回收站缩略图因仍被 B 引用而保留
         verify(fileStorageService).delete("local", "bucket", "recycle/user/avatar/a.png");
-        verify(fileStorageService, never()).delete(eq("local"), eq("bucket"),
-            eq("recycle/user/avatar/thumb.png"));
+        verify(fileStorageService, never()).delete("local", "bucket",
+            "recycle/user/avatar/thumb.png");
     }
 
     @Test

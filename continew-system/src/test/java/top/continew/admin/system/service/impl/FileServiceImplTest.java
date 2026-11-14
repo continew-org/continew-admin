@@ -124,9 +124,9 @@ class FileServiceImplTest {
         LambdaQueryChainWrapper<FileDO> wrapper = mock(LambdaQueryChainWrapper.class);
         when(baseMapper.lambdaQuery()).thenReturn(wrapper);
         when(wrapper.in(any(), anyList())).thenReturn(wrapper);
-        FileDO record = file(10L, "/user/avatar/x.png", "/user/avatar", null);
-        record.setStorageId(1L);
-        when(wrapper.list()).thenReturn(List.of(record));
+        FileDO fileRecord = file(10L, "/user/avatar/x.png", "/user/avatar", null);
+        fileRecord.setStorageId(1L);
+        when(wrapper.list()).thenReturn(List.of(fileRecord));
         FileServiceImpl fileService =
             newFileService(mock(FileStorageService.class), storageService);
         injectBaseMapper(fileService, baseMapper);
@@ -368,9 +368,12 @@ class FileServiceImplTest {
     private FileServiceImpl newFileService(FileStorageService fileStorageService,
         StorageService storageService) throws Exception {
         FileServiceImpl fileService = new FileServiceImpl(fileStorageService);
-        Field field = FileServiceImpl.class.getDeclaredField("storageService");
-        field.setAccessible(true);
-        field.set(fileService, storageService);
+        Field storageField = FileServiceImpl.class.getDeclaredField("storageService");
+        storageField.setAccessible(true);
+        storageField.set(fileService, storageService);
+        Field selfField = FileServiceImpl.class.getDeclaredField("self");
+        selfField.setAccessible(true);
+        selfField.set(fileService, fileService);
         return fileService;
     }
 

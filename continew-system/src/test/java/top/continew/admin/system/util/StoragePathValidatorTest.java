@@ -40,7 +40,8 @@ class StoragePathValidatorTest {
 
     @Test
     void shouldRejectNameOverMaxLength() {
-        assertThrows(BaseException.class, () -> StoragePathValidator.validateName("a".repeat(256)));
+        String overMaxName = "a".repeat(256);
+        assertThrows(BaseException.class, () -> StoragePathValidator.validateName(overMaxName));
     }
 
     @Test

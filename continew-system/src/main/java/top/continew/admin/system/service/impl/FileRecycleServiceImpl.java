@@ -366,9 +366,9 @@ public class FileRecycleServiceImpl implements FileRecycleService {
     static Set<String> resolveSkipPaths(Set<String> candidatePaths, List<FileDO> mainPathFiles,
         List<FileDO> thumbnailFiles) {
         Set<String> skipPaths = new HashSet<>();
-        mainPathFiles.forEach(record -> skipPaths.add(record.getPath()));
-        thumbnailFiles.forEach(record -> {
-            String thumbnailPath = record.getThumbnailPath();
+        mainPathFiles.forEach(fileRecord -> skipPaths.add(fileRecord.getPath()));
+        thumbnailFiles.forEach(fileRecord -> {
+            String thumbnailPath = fileRecord.getThumbnailPath();
             if (thumbnailPath != null && candidatePaths.contains(thumbnailPath)) {
                 skipPaths.add(thumbnailPath);
             }
