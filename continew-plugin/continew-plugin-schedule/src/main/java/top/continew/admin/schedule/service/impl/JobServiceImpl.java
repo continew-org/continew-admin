@@ -70,7 +70,8 @@ public class JobServiceImpl implements JobService {
     public boolean updateStatus(JobStatusReq req, Long id) {
         return SnailJobOpenApi.updateJobStatus(id)
             .setStatus(
-                JobStatusEnum.DISABLED.equals(req.getJobStatus()) ? StatusEnum.NO : StatusEnum.YES)
+                JobStatusEnum.DISABLED.equals(req.getJobStatus()) ? StatusEnum.NO
+                    : StatusEnum.YES)
             .execute();
     }
 

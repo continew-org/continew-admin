@@ -62,11 +62,11 @@ public class DictServiceImpl
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<DictDO> list = baseMapper.lambdaQuery()
+        List<DictDO> dicts = baseMapper.lambdaQuery()
             .select(DictDO::getName, DictDO::getIsSystem)
             .in(DictDO::getId, ids)
             .list();
-        Optional<DictDO> isSystemData = list.stream().filter(DictDO::getIsSystem).findFirst();
+        Optional<DictDO> isSystemData = dicts.stream().filter(DictDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选字典 [{}] 是系统内置字典，不允许删除",
             isSystemData.orElseGet(DictDO::new)
                 .getName());
@@ -75,8 +75,8 @@ public class DictServiceImpl
 
     @Override
     public List<LabelValueResp> listEnumDict() {
-        List<String> enumDictNameList = dictItemService.listEnumDictNames();
-        return CollUtils.mapToList(enumDictNameList, name -> new LabelValueResp(name, name));
+        List<String> enumDictNames = dictItemService.listEnumDictNames();
+        return CollUtils.mapToList(enumDictNames, name -> new LabelValueResp(name, name));
     }
 
     /**

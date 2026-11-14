@@ -75,9 +75,9 @@ public class DictItemServiceImpl extends
 
     @Override
     public List<LabelValueResp> listByDictCode(String dictCode) {
-        List<LabelValueResp> enumDict = ENUM_DICT_CACHE.get(dictCode.toLowerCase());
-        if (enumDict != null) {
-            return enumDict;
+        List<LabelValueResp> enumDictItems = ENUM_DICT_CACHE.get(dictCode.toLowerCase());
+        if (enumDictItems != null) {
+            return enumDictItems;
         }
         return CacheUtils.get(CacheConstants.DICT_KEY_PREFIX, dictCode,
             () -> baseMapper.listByDictCode(dictCode));
@@ -123,8 +123,8 @@ public class DictItemServiceImpl extends
         if (ArrayUtil.isEmpty(enumConstants)) {
             return List.of();
         }
-        return Arrays.stream(enumConstants).map(e -> {
-            BaseEnum baseEnum = (BaseEnum) e;
+        return Arrays.stream(enumConstants).map(enumConstant -> {
+            BaseEnum baseEnum = (BaseEnum) enumConstant;
             return new LabelValueResp(baseEnum.getDescription(), baseEnum.getValue(),
                 baseEnum.getColor());
         }).toList();
@@ -135,15 +135,15 @@ public class DictItemServiceImpl extends
      */
     @PostConstruct
     public void init() {
-        Set<Class<?>> classSet =
+        Set<Class<?>> enumClasses =
             ClassUtil.scanPackageBySuper(applicationProperties.getBasePackage(), BaseEnum.class);
-        for (Class<?> cls : classSet) {
-            List<LabelValueResp> value = this.toEnumDict(cls);
-            if (CollUtil.isEmpty(value)) {
+        for (Class<?> cls : enumClasses) {
+            List<LabelValueResp> dictItems = this.toEnumDict(cls);
+            if (CollUtil.isEmpty(dictItems)) {
                 continue;
             }
             String key = StrUtil.toUnderlineCase(cls.getSimpleName()).toLowerCase();
-            ENUM_DICT_CACHE.put(key, value);
+            ENUM_DICT_CACHE.put(key, dictItems);
         }
         log.debug("枚举字典已缓存到内存：{}", ENUM_DICT_CACHE.keySet());
     }

@@ -101,7 +101,7 @@ public class DeptServiceImpl
         if (ObjectUtil.notEqual(newStatus, oldDept.getStatus())) {
             List<DeptDO> children = this.listChildren(id);
             long enabledChildrenCount = children.stream()
-                .filter(d -> DisEnableStatusEnum.ENABLE.equals(d.getStatus()))
+                .filter(dept -> DisEnableStatusEnum.ENABLE.equals(dept.getStatus()))
                 .count();
             CheckUtils.throwIf(DisEnableStatusEnum.DISABLE
                 .equals(newStatus) && enabledChildrenCount > 0, "禁用 [{}] 前，请先禁用其所有下级部门", oldName);
@@ -131,11 +131,11 @@ public class DeptServiceImpl
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<DeptDO> list = baseMapper.lambdaQuery()
+        List<DeptDO> depts = baseMapper.lambdaQuery()
             .select(DeptDO::getName, DeptDO::getIsSystem)
             .in(DeptDO::getId, ids)
             .list();
-        Optional<DeptDO> isSystemData = list.stream().filter(DeptDO::getIsSystem).findFirst();
+        Optional<DeptDO> isSystemData = depts.stream().filter(DeptDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选部门 [{}] 是系统内置部门，不允许删除",
             isSystemData.orElseGet(DeptDO::new)
                 .getName());
@@ -153,11 +153,11 @@ public class DeptServiceImpl
     }
 
     @Override
-    public List<DeptDO> listByNames(List<String> list) {
-        if (CollUtil.isEmpty(list)) {
+    public List<DeptDO> listByNames(List<String> deptNames) {
+        if (CollUtil.isEmpty(deptNames)) {
             return Collections.emptyList();
         }
-        return this.list(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, list));
+        return this.list(Wrappers.<DeptDO>lambdaQuery().in(DeptDO::getName, deptNames));
     }
 
     @Override
@@ -236,7 +236,7 @@ public class DeptServiceImpl
         if (CollUtil.isEmpty(children)) {
             return;
         }
-        List<DeptDO> list = new ArrayList<>(children.size());
+        List<DeptDO> updatedDepts = new ArrayList<>(children.size());
         // 祖级路径按字面量匹配，正则在循环外编译一次复用，避免每次迭代重复编译
         Pattern oldAncestorPattern = Pattern.compile(oldAncestors, Pattern.LITERAL);
         for (DeptDO child : children) {
@@ -244,8 +244,8 @@ public class DeptServiceImpl
             dept.setId(child.getId());
             Matcher matcher = oldAncestorPattern.matcher(child.getAncestors());
             dept.setAncestors(matcher.replaceFirst(Matcher.quoteReplacement(newAncestors)));
-            list.add(dept);
+            updatedDepts.add(dept);
         }
-        baseMapper.updateById(list);
+        baseMapper.updateById(updatedDepts);
     }
 }

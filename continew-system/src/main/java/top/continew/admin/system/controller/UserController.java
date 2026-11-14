@@ -108,7 +108,8 @@ public class UserController
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:resetPwd")
     @PatchMapping("/{id}/password")
-    public void resetPassword(@RequestBody @Valid UserPasswordResetReq req, @PathVariable Long id) {
+    public void resetPassword(@RequestBody @Valid UserPasswordResetReq req,
+        @PathVariable Long id) {
         String newPassword =
             SecureUtils.decryptPasswordByRsaPrivateKey(req.getNewPassword(), "新密码解密失败", true);
         req.setNewPassword(newPassword);
@@ -119,7 +120,7 @@ public class UserController
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:updateRole")
     @PatchMapping("/{id}/role")
-    public void updateRole(@RequestBody @Valid UserRoleUpdateReq updateReq, @PathVariable Long id) {
-        baseService.updateRole(updateReq, id);
+    public void updateRole(@RequestBody @Valid UserRoleUpdateReq req, @PathVariable Long id) {
+        baseService.updateRole(req, id);
     }
 }

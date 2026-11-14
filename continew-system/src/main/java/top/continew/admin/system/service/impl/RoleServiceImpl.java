@@ -99,7 +99,8 @@ public class RoleServiceImpl
             oldRole.getName());
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
-            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope, "[{}] 是系统内置角色，不允许修改角色数据权限",
+            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope,
+                "[{}] 是系统内置角色，不允许修改角色数据权限",
                 oldRole.getName());
         }
         // 更新信息
@@ -117,11 +118,11 @@ public class RoleServiceImpl
 
     @Override
     public void beforeDelete(List<Long> ids) {
-        List<RoleDO> list = baseMapper.lambdaQuery()
+        List<RoleDO> roles = baseMapper.lambdaQuery()
             .select(RoleDO::getName, RoleDO::getIsSystem)
             .in(RoleDO::getId, ids)
             .list();
-        Optional<RoleDO> isSystemData = list.stream().filter(RoleDO::getIsSystem).findFirst();
+        Optional<RoleDO> isSystemData = roles.stream().filter(RoleDO::getIsSystem).findFirst();
         CheckUtils.throwIf(isSystemData::isPresent, "所选角色 [{}] 是系统内置角色，不允许删除",
             isSystemData.orElseGet(RoleDO::new)
                 .getName());
@@ -137,8 +138,8 @@ public class RoleServiceImpl
         super.fill(obj);
         if (obj instanceof RoleDetailResp detail) {
             Long roleId = detail.getId();
-            List<MenuResp> list = menuService.listByRoleId(roleId);
-            List<Long> menuIds = CollUtils.mapToList(list, MenuResp::getId);
+            List<MenuResp> menus = menuService.listByRoleId(roleId);
+            List<Long> menuIds = CollUtils.mapToList(menus, MenuResp::getId);
             detail.setMenuIds(menuIds);
         }
     }
@@ -184,8 +185,8 @@ public class RoleServiceImpl
 
     @Override
     public void updateUserContext(Long roleId) {
-        List<Long> userIdList = userRoleService.listUserIdByRoleId(roleId);
-        userIdList.forEach(userId -> {
+        List<Long> userIds = userRoleService.listUserIdByRoleId(roleId);
+        userIds.forEach(userId -> {
             UserContext userContext = UserContextHolder.getContext(userId);
             if (userContext != null) {
                 userContext.setRoles(this.listByUserId(userId));
@@ -198,9 +199,9 @@ public class RoleServiceImpl
 
     @Override
     public Set<String> listPermissionByUserId(Long userId) {
-        Set<String> roleCodeSet = this.listCodeByUserId(userId);
+        Set<String> roleCodes = this.listCodeByUserId(userId);
         // 超级管理员赋予全部权限
-        if (roleCodeSet.contains(RoleCodeEnum.SUPER_ADMIN.getCode())) {
+        if (roleCodes.contains(RoleCodeEnum.SUPER_ADMIN.getCode())) {
             return CollUtil.newHashSet(SystemConstants.ALL_PERMISSION);
         }
         return menuService.listPermissionByUserId(userId);
@@ -208,27 +209,27 @@ public class RoleServiceImpl
 
     @Override
     public Set<String> listCodeByUserId(Long userId) {
-        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
-        if (CollUtil.isEmpty(roleIdList)) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
-        List<RoleDO> roleList =
-            baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIdList).list();
-        return CollUtils.mapToSet(roleList, RoleDO::getCode);
+        List<RoleDO> roles =
+            baseMapper.lambdaQuery().select(RoleDO::getCode).in(RoleDO::getId, roleIds).list();
+        return CollUtils.mapToSet(roles, RoleDO::getCode);
     }
 
     @Override
     public Set<RoleContext> listByUserId(Long userId) {
-        List<Long> roleIdList = userRoleService.listRoleIdByUserId(userId);
-        if (CollUtil.isEmpty(roleIdList)) {
+        List<Long> roleIds = userRoleService.listRoleIdByUserId(userId);
+        if (CollUtil.isEmpty(roleIds)) {
             return Collections.emptySet();
         }
-        List<RoleDO> roleList = baseMapper.lambdaQuery()
+        List<RoleDO> roles = baseMapper.lambdaQuery()
             .select(RoleDO::getId, RoleDO::getCode, RoleDO::getDataScope)
-            .in(RoleDO::getId, roleIdList)
+            .in(RoleDO::getId, roleIds)
             .list();
-        return CollUtils.mapToSet(roleList,
-            r -> new RoleContext(r.getId(), r.getCode(), r.getDataScope()));
+        return CollUtils.mapToSet(roles,
+            role -> new RoleContext(role.getId(), role.getCode(), role.getDataScope()));
     }
 
     @Override
@@ -238,11 +239,11 @@ public class RoleServiceImpl
     }
 
     @Override
-    public List<RoleDO> listByNames(List<String> list) {
-        if (CollUtil.isEmpty(list)) {
+    public List<RoleDO> listByNames(List<String> roleNames) {
+        if (CollUtil.isEmpty(roleNames)) {
             return Collections.emptyList();
         }
-        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, list));
+        return this.list(Wrappers.<RoleDO>lambdaQuery().in(RoleDO::getName, roleNames));
     }
 
     @Override

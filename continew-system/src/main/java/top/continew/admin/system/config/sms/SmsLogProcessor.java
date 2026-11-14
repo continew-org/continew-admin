@@ -65,7 +65,7 @@ public class SmsLogProcessor implements CoreMethodProcessor {
     @Override
     public void sendMessageByTemplatePreProcess(String phone,
         String templateId,
-        LinkedHashMap<String, String> messages) {
+        LinkedHashMap<String, String> templateParams) {
         // do nothing
     }
 
@@ -77,7 +77,7 @@ public class SmsLogProcessor implements CoreMethodProcessor {
     @Override
     public void massTextingByTemplatePreProcess(List<String> phones,
         String templateId,
-        LinkedHashMap<String, String> messages) {
+        LinkedHashMap<String, String> templateParams) {
         // do nothing
     }
 }

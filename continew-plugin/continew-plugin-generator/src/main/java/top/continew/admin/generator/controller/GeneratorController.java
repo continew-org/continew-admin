@@ -94,7 +94,8 @@ public class GeneratorController {
         in = ParameterIn.PATH)
     @SaCheckPermission("code:generator:config")
     @PostMapping("/config/{tableName}")
-    public void saveConfig(@RequestBody @Valid GenConfigReq req, @PathVariable String tableName) {
+    public void saveConfig(@RequestBody @Valid GenConfigReq req,
+        @PathVariable String tableName) {
         baseService.saveConfig(req, tableName);
     }
 

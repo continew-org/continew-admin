@@ -64,17 +64,19 @@ public class UserPasswordHistoryServiceImpl implements UserPasswordHistoryServic
     @Override
     public boolean isPasswordReused(Long userId, String password, int count) {
         // 查询近 N 个历史密码
-        List<UserPasswordHistoryDO> list = baseMapper.lambdaQuery()
+        List<UserPasswordHistoryDO> passwordHistories = baseMapper.lambdaQuery()
             .select(UserPasswordHistoryDO::getPassword)
             .eq(UserPasswordHistoryDO::getUserId, userId)
             .orderByDesc(UserPasswordHistoryDO::getCreateTime)
             .last("LIMIT %s".formatted(count))
             .list();
-        if (CollUtil.isEmpty(list)) {
+        if (CollUtil.isEmpty(passwordHistories)) {
             return false;
         }
         // 校验是否重复使用历史密码
-        List<String> passwordList = CollUtils.mapToList(list, UserPasswordHistoryDO::getPassword);
-        return passwordList.stream().anyMatch(p -> passwordEncoder.matches(password, p));
+        List<String> passwords =
+            CollUtils.mapToList(passwordHistories, UserPasswordHistoryDO::getPassword);
+        return passwords.stream()
+            .anyMatch(historyPassword -> passwordEncoder.matches(password, historyPassword));
     }
 }

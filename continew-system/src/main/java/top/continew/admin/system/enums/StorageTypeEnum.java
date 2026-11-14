@@ -47,15 +47,17 @@ public enum StorageTypeEnum implements BaseEnum<Integer> {
         @Override
         public void validate(StorageReq req) {
             ValidationUtils.validate(req, ValidationGroup.Storage.Local.class);
-            ValidationUtils.throwIf(StrUtil.isNotBlank(req.getDomain()) && !UrlUtils.isHttpUrl(req
-                .getDomain()), "访问路径格式不正确");
+            ValidationUtils
+                .throwIf(StrUtil.isNotBlank(req.getDomain()) && !UrlUtils.isHttpUrl(req
+                    .getDomain()), "访问路径格式不正确");
         }
 
         @Override
         public void pretreatment(StorageReq req) {
             super.pretreatment(req);
             // 本地存储路径需要以 “/” 结尾
-            req.setBucketName(StrUtil.appendIfMissing(req.getBucketName(), StringConstants.SLASH));
+            req.setBucketName(
+                StrUtil.appendIfMissing(req.getBucketName(), StringConstants.SLASH));
         }
     },
 

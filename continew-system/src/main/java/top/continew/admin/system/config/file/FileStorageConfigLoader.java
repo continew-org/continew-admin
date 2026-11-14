@@ -43,11 +43,11 @@ public class FileStorageConfigLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        List<StorageDO> list = storageService.lambdaQuery()
+        List<StorageDO> storages = storageService.lambdaQuery()
             .eq(StorageDO::getStatus, DisEnableStatusEnum.ENABLE).list();
-        if (CollUtil.isEmpty(list)) {
+        if (CollUtil.isEmpty(storages)) {
             return;
         }
-        list.forEach(storageService::load);
+        storages.forEach(storageService::load);
     }
 }

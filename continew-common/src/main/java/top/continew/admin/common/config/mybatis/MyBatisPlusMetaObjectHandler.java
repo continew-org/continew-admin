@@ -62,10 +62,10 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
         }
         Long createUser = UserContextHolder.getUserId();
         LocalDateTime createTime = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
-        if (metaObject.getOriginalObject() instanceof BaseDO baseDO) {
+        if (metaObject.getOriginalObject() instanceof BaseDO entity) {
             // 继承了 BaseDO 的类，填充创建信息字段
-            baseDO.setCreateUser(ObjectUtil.defaultIfNull(baseDO.getCreateUser(), createUser));
-            baseDO.setCreateTime(ObjectUtil.defaultIfNull(baseDO.getCreateTime(), createTime));
+            entity.setCreateUser(ObjectUtil.defaultIfNull(entity.getCreateUser(), createUser));
+            entity.setCreateTime(ObjectUtil.defaultIfNull(entity.getCreateTime(), createTime));
         } else {
             // 未继承 BaseDO 的类，如存在创建信息字段则进行填充
             this.fillFieldValue(metaObject, CREATE_USER, createUser, false);
@@ -85,10 +85,10 @@ public class MyBatisPlusMetaObjectHandler implements MetaObjectHandler {
         }
         Long updateUser = UserContextHolder.getUserId();
         LocalDateTime updateTime = LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID);
-        if (metaObject.getOriginalObject() instanceof BaseDO baseDO) {
+        if (metaObject.getOriginalObject() instanceof BaseDO entity) {
             // 继承了 BaseDO 的类，填充修改信息
-            baseDO.setUpdateUser(updateUser);
-            baseDO.setUpdateTime(updateTime);
+            entity.setUpdateUser(updateUser);
+            entity.setUpdateTime(updateTime);
         } else {
             // 未继承 BaseDO 的类，根据类中拥有的修改信息字段进行填充，不存在修改信息字段不进行填充
             this.fillFieldValue(metaObject, UPDATE_USER, updateUser, true);

@@ -41,7 +41,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class PhoneLoginHandler extends AbstractLoginHandler<PhoneLoginReq> {
 
     @Override
-    public LoginResp login(PhoneLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(PhoneLoginReq req, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 验证手机号
         UserDO user = userService.getByPhone(req.getPhone());
@@ -51,13 +52,15 @@ public class PhoneLoginHandler extends AbstractLoginHandler<PhoneLoginReq> {
     }
 
     @Override
-    public void preLogin(PhoneLoginReq req, ClientResp client, HttpServletRequest request) {
+    public void preLogin(PhoneLoginReq req, ClientResp client,
+        HttpServletRequest request) {
         super.preLogin(req, client, request);
         String phone = req.getPhone();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha,
+            CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
     }
 

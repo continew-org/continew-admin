@@ -150,11 +150,11 @@ public class FileDO extends BaseDO {
         this.extension = FileNameUtil.extName(fileName);
         this.contentType = fileInfo.getContentType();
         this.type = FileTypeEnum.getByExtension(this.extension);
-        Map<String, String> metadataMap = fileInfo.getMetadata();
-        this.sha256 = metadataMap != null
-            ? StrUtil.blankToDefault(metadataMap.get("sha256"), metadataMap.get("etag"))
+        Map<String, String> fileMetadata = fileInfo.getMetadata();
+        this.sha256 = fileMetadata != null
+            ? StrUtil.blankToDefault(fileMetadata.get("sha256"), fileMetadata.get("etag"))
             : null;
-        this.metadata = JSONUtil.toJsonStr(metadataMap);
+        this.metadata = JSONUtil.toJsonStr(fileMetadata);
         String thumbnailPath = fileInfo.getThumbnailPath();
         if (StrUtil.isNotBlank(thumbnailPath)) {
             String normalizedThumbnailPath = thumbnailPath.replace("\\", StringConstants.SLASH);

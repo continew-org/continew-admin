@@ -108,8 +108,8 @@ public class MenuServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         // 级联删除菜单（包含子菜单）
-        List<Long> allDeleteIdList = this.listCascadingDeleteMenuIds(ids);
-        baseMapper.deleteByIds(allDeleteIdList);
+        List<Long> menuIdsToDelete = this.listCascadingDeleteMenuIds(ids);
+        baseMapper.deleteByIds(menuIdsToDelete);
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
@@ -125,19 +125,19 @@ public class MenuServiceImpl
         if (SystemConstants.SUPER_ADMIN_ROLE_ID.equals(roleId)) {
             return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
         }
-        List<MenuDO> menuList = baseMapper.selectListByRoleId(roleId);
-        List<MenuResp> list = BeanUtil.copyToList(menuList, MenuResp.class);
-        list.forEach(super::fill);
-        return list;
+        List<MenuDO> menus = baseMapper.selectListByRoleId(roleId);
+        List<MenuResp> roleMenus = BeanUtil.copyToList(menus, MenuResp.class);
+        roleMenus.forEach(super::fill);
+        return roleMenus;
     }
 
     @Override
     public List<Long> listExcludeTenantMenu() {
         Long roleId = roleService.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
-        List<Long> allMenuIdList = CollUtils.mapToList(super.list(), MenuDO::getId);
-        List<Long> menuIdList =
+        List<Long> allMenuIds = CollUtils.mapToList(super.list(), MenuDO::getId);
+        List<Long> tenantAdminMenuIds =
             CollUtils.mapToList(baseMapper.selectListByRoleId(roleId), MenuDO::getId);
-        return CollUtil.disjunction(allMenuIdList, menuIdList).stream().toList();
+        return CollUtil.disjunction(allMenuIds, tenantAdminMenuIds).stream().toList();
     }
 
     /**
@@ -177,17 +177,17 @@ public class MenuServiceImpl
      */
     private List<Long> listCascadingDeleteMenuIds(List<Long> ids) {
         List<Long> menuIds = new ArrayList<>(ids);
-        List<Long> childIdList = baseMapper.lambdaQuery()
+        List<Long> childMenuIds = baseMapper.lambdaQuery()
             .select(MenuDO::getId)
             .in(MenuDO::getParentId, menuIds)
             .list()
             .stream()
             .map(MenuDO::getId)
             .toList();
-        if (childIdList.isEmpty()) {
+        if (childMenuIds.isEmpty()) {
             return menuIds;
         }
-        menuIds.addAll(this.listCascadingDeleteMenuIds(childIdList));
+        menuIds.addAll(this.listCascadingDeleteMenuIds(childMenuIds));
         return menuIds;
     }
 }

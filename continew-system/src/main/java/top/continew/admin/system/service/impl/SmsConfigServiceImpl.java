@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.admin.common.base.service.BaseServiceImpl;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
-import top.continew.admin.system.config.sms.SmsConfigUtil;
+import top.continew.admin.system.config.sms.SmsConfigUtils;
 import top.continew.admin.system.mapper.SmsConfigMapper;
 import top.continew.admin.system.model.entity.SmsConfigDO;
 import top.continew.admin.system.model.query.SmsConfigQuery;
@@ -97,7 +97,7 @@ public class SmsConfigServiceImpl extends
      */
     private void load(SmsConfigDO entity) {
         SmsConfigResp smsConfig = this.get(entity.getId());
-        BaseConfig config = SmsConfigUtil.from(smsConfig);
+        BaseConfig config = SmsConfigUtils.from(smsConfig);
         if (config != null) {
             SmsFactory.createSmsBlend(config);
         }

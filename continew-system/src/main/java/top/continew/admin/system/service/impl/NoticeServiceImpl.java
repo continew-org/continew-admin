@@ -99,14 +99,16 @@ public class NoticeServiceImpl extends
         NoticeDO oldNotice = super.getById(id);
         switch (oldNotice.getStatus()) {
             case PUBLISHED -> {
-                CheckUtils.throwIfNotEqual(req.getStatus(), oldNotice.getStatus(), "公告已发布，不允许修改状态");
+                CheckUtils.throwIfNotEqual(req.getStatus(), oldNotice.getStatus(),
+                    "公告已发布，不允许修改状态");
                 CheckUtils.throwIfNotEqual(req.getIsTiming(), oldNotice.getIsTiming(),
                     "公告已发布，不允许修改定时发布信息");
                 CheckUtils.throwIfNotEqual(req.getNoticeScope(), oldNotice.getNoticeScope(),
                     "公告已发布，不允许修改通知范围");
                 if (NoticeScopeEnum.USER.equals(oldNotice.getNoticeScope())) {
-                    CheckUtils.throwIfNotEmpty(CollUtil.disjunction(req.getNoticeUsers(), oldNotice
-                        .getNoticeUsers()), "公告已发布，不允许修改通知用户");
+                    CheckUtils
+                        .throwIfNotEmpty(CollUtil.disjunction(req.getNoticeUsers(), oldNotice
+                            .getNoticeUsers()), "公告已发布，不允许修改通知用户");
                 }
                 CheckUtils.throwIf(!CollUtil.isEqualList(req.getNoticeMethods(), oldNotice
                     .getNoticeMethods()), "公告已发布，不允许修改通知方式");

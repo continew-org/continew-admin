@@ -98,31 +98,31 @@ public class NoticePublishJob {
     private static void publishNotice() {
         NoticeMapper noticeMapper = SpringUtil.getBean(NoticeMapper.class);
         // 查询待发布公告
-        List<NoticeDO> list = noticeMapper.lambdaQuery()
+        List<NoticeDO> pendingNotices = noticeMapper.lambdaQuery()
             .eq(NoticeDO::getStatus, NoticeStatusEnum.PENDING)
             .le(NoticeDO::getPublishTime, LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID))
             .list();
-        if (CollUtil.isEmpty(list)) {
+        if (CollUtil.isEmpty(pendingNotices)) {
             return;
         }
         // 筛选需要发送消息的公告并发送
-        List<NoticeDO> needSendMessageList = list.stream()
+        List<NoticeDO> noticesWithSystemMessage = pendingNotices.stream()
             .filter(notice -> CollUtil.isNotEmpty(notice.getNoticeMethods()))
             .filter(notice -> notice.getNoticeMethods()
                 .contains(NoticeMethodEnum.SYSTEM_MESSAGE.getValue()))
             .toList();
-        if (CollUtil.isNotEmpty(needSendMessageList)) {
+        if (CollUtil.isNotEmpty(noticesWithSystemMessage)) {
             // 发送消息
             // 注意：此处必须顺序执行。本方法运行在 @Transactional + @TenantIgnore 之下，
             // 而事务连接与租户上下文都绑定在 ThreadLocal 上，ForkJoinPool 线程不会继承，
             // 一旦并发执行，消息会脱离事务自动提交，回滚后公告仍为待发布状态并被下一次调度重复推送
             NoticeService noticeService = SpringUtil.getBean(NoticeService.class);
-            needSendMessageList.forEach(noticeService::publish);
+            noticesWithSystemMessage.forEach(noticeService::publish);
         }
         // 更新状态
         noticeMapper.lambdaUpdate()
             .set(NoticeDO::getStatus, NoticeStatusEnum.PUBLISHED)
-            .in(NoticeDO::getId, CollUtils.mapToList(list, NoticeDO::getId))
+            .in(NoticeDO::getId, CollUtils.mapToList(pendingNotices, NoticeDO::getId))
             .update();
     }
 }

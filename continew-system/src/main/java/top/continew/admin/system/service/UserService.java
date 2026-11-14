@@ -79,10 +79,10 @@ public interface UserService
     /**
      * 修改角色
      *
-     * @param updateReq 修改信息
+     * @param req       修改信息
      * @param id        ID
      */
-    void updateRole(UserRoleUpdateReq updateReq, Long id);
+    void updateRole(UserRoleUpdateReq req, Long id);
 
     /**
      * 上传头像
@@ -97,7 +97,7 @@ public interface UserService
     /**
      * 修改基础信息
      *
-     * @param req 修改信息
+     * @param req       修改信息
      * @param id  ID
      */
     void updateBasicInfo(UserBasicInfoUpdateReq req, Long id);

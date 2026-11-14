@@ -56,10 +56,12 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public LoginResp login(AccountLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(AccountLoginReq req, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 解密密码
-        String password = SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败");
+        String password =
+            SecureUtils.decryptPasswordByRsaPrivateKey(req.getPassword(), "密码解密失败");
         // 验证用户名密码
         String username = req.getUsername();
         UserDO user = userService.getByUsername(username);
@@ -73,7 +75,8 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
     }
 
     @Override
-    public void preLogin(AccountLoginReq req, ClientResp client, HttpServletRequest request) {
+    public void preLogin(AccountLoginReq req, ClientResp client,
+        HttpServletRequest request) {
         super.preLogin(req, client, request);
         // 校验验证码
         int loginCaptchaEnabled = optionService.getValueByCode2Int("LOGIN_CAPTCHA_ENABLED");
@@ -84,7 +87,8 @@ public class AccountLoginHandler extends AbstractLoginHandler<AccountLoginReq> {
             String captcha = RedisUtils.get(captchaKey);
             ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
             RedisUtils.delete(captchaKey);
-            ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+            ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha,
+                CAPTCHA_ERROR);
         }
     }
 

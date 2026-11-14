@@ -54,7 +54,7 @@ description: 站内信的产生方式、未读统计与已读管理，以及用�
 
 ## 业务接入
 
-后端业务需要触达用户时，构造 `MessageReq` 并调用 `MessageService.add(req, userIdList)`，`userIdList` 为 `null` 表示发给所有人。公告发布走的就是这条路径（`NoticeServiceImpl.publish`）。
+后端业务需要触达用户时，构造 `MessageReq` 并调用 `MessageService.add(req, userIds)`，`userIds` 为 `null` 表示发给所有人。公告发布走的就是这条路径（`NoticeServiceImpl.publish`）。
 
 ## 相关源码
 

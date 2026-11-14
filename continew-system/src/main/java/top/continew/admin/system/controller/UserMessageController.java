@@ -121,8 +121,8 @@ public class UserMessageController {
     @Operation(summary = "查询未读公告数量", description = "查询当前用户的未读公告数量")
     @GetMapping("/notice/unread")
     public NoticeUnreadCountResp countUnreadNotice() {
-        List<Long> list = noticeService.listUnreadIdsByUserId(null, UserContextHolder.getUserId());
-        return new NoticeUnreadCountResp(list.size());
+        Long userId = UserContextHolder.getUserId();
+        return new NoticeUnreadCountResp(noticeService.listUnreadIdsByUserId(null, userId).size());
     }
 
     @Log(ignore = true)

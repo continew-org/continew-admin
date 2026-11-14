@@ -41,7 +41,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class EmailLoginHandler extends AbstractLoginHandler<EmailLoginReq> {
 
     @Override
-    public LoginResp login(EmailLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(EmailLoginReq req, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 验证邮箱
         UserDO user = userService.getByEmail(req.getEmail());
@@ -51,13 +52,15 @@ public class EmailLoginHandler extends AbstractLoginHandler<EmailLoginReq> {
     }
 
     @Override
-    public void preLogin(EmailLoginReq req, ClientResp client, HttpServletRequest request) {
+    public void preLogin(EmailLoginReq req, ClientResp client,
+        HttpServletRequest request) {
         super.preLogin(req, client, request);
         String email = req.getEmail();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, CAPTCHA_ERROR);
+        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha,
+            CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
     }
 

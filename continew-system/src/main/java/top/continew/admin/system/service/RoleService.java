@@ -96,10 +96,10 @@ public interface RoleService
     /**
      * 根据角色名称查询
      *
-     * @param list 名称列表
+     * @param roleNames 名称列表
      * @return 角色列表
      */
-    List<RoleDO> listByNames(List<String> list);
+    List<RoleDO> listByNames(List<String> roleNames);
 
     /**
      * 根据角色名称查询数量

@@ -84,7 +84,8 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
     @Override
     @Transactional
-    public LoginResp login(SocialLoginReq req, ClientResp client, HttpServletRequest request,
+    public LoginResp login(SocialLoginReq req, ClientResp client,
+        HttpServletRequest request,
         HttpServletResponse response) {
         // 获取第三方登录信息
         AuthRequest authRequest = authRequestFactory.getAuthRequest(req.getSource());
@@ -118,11 +119,11 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
             }
             user.setAvatar(authUser.getAvatar());
             // 默认设置为系统内置数据的根部门 如果需要设置其他部门自行替换查询条件
-            DeptDO deptDO =
+            DeptDO dept =
                 deptService.getOne(new LambdaQueryWrapper<DeptDO>().eq(DeptDO::getIsSystem, true)
                     .eq(DeptDO::getParentId, 0));
-            ValidationUtils.throwIf(deptDO == null, "未查询到系统内置部门");
-            user.setDeptId(deptDO.getId());
+            ValidationUtils.throwIf(dept == null, "未查询到系统内置部门");
+            user.setDeptId(dept.getId());
             user.setStatus(DisEnableStatusEnum.ENABLE);
             userService.save(user);
             Long userId = user.getId();

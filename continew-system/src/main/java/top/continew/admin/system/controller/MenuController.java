@@ -81,7 +81,8 @@ public class MenuController
             req.setPath(StrUtil.isBlank(path) ? path
                 : StrUtil.prependIfMissing(path, StringConstants.SLASH));
             req.setName(StrUtil.removePrefix(req.getName(), StringConstants.SLASH));
-            req.setComponent(StrUtil.removePrefix(req.getComponent(), StringConstants.SLASH));
+            req
+                .setComponent(StrUtil.removePrefix(req.getComponent(), StringConstants.SLASH));
         }
     }
 }

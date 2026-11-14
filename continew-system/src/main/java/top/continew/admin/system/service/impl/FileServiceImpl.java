@@ -96,31 +96,31 @@ public class FileServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
-        List<FileDO> fileList = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
-        if (CollUtil.isEmpty(fileList)) {
+        List<FileDO> files = baseMapper.lambdaQuery().in(FileDO::getId, ids).list();
+        if (CollUtil.isEmpty(files)) {
             return;
         }
         // 批量获取存储配置
-        Map<Long, List<FileDO>> fileListGroup =
-            fileList.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
-        List<StorageDO> storageList = storageService.listByIds(fileListGroup.keySet());
-        Map<Long, StorageDO> storageGroup = storageList.stream()
+        Map<Long, List<FileDO>> filesByStorageId =
+            files.stream().collect(Collectors.groupingBy(FileDO::getStorageId));
+        List<StorageDO> storages = storageService.listByIds(filesByStorageId.keySet());
+        Map<Long, StorageDO> storageById = storages.stream()
             .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
                 (existing, replacement) -> existing));
         // 删除记录
-        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-            StorageDO storage = storageGroup.get(entry.getKey());
-            List<Long> idList = CollUtils.mapToList(entry.getValue(), FileDO::getId);
+        for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
+            StorageDO storage = storageById.get(entry.getKey());
+            List<Long> fileIds = CollUtils.mapToList(entry.getValue(), FileDO::getId);
             if (Boolean.TRUE.equals(storage.getRecycleBinEnabled())) {
-                baseMapper.deleteByIds(idList);
+                baseMapper.deleteByIds(fileIds);
             } else {
-                baseMapper.deleteWithoutRecycleBin(idList, UserContextHolder
+                baseMapper.deleteWithoutRecycleBin(fileIds, UserContextHolder
                     .getUserId(), LocalDateTime.now(GlobalConstants.DEFAULT_ZONE_ID));
             }
         }
         // 删除实际文件
-        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
-            StorageDO storage = storageGroup.get(entry.getKey());
+        for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
+            StorageDO storage = storageById.get(entry.getKey());
             entry.getValue().forEach(file -> this.deleteFile(file, storage));
         }
     }
@@ -189,13 +189,13 @@ public class FileServiceImpl
     @Override
     public FileStatisticsResp statistics() {
         FileStatisticsResp resp = new FileStatisticsResp();
-        List<FileStatisticsResp> statisticsList = baseMapper.statistics();
-        if (CollUtil.isEmpty(statisticsList)) {
+        List<FileStatisticsResp> statistics = baseMapper.statistics();
+        if (CollUtil.isEmpty(statistics)) {
             return resp;
         }
-        resp.setData(statisticsList);
-        resp.setSize(statisticsList.stream().mapToLong(FileStatisticsResp::getSize).sum());
-        resp.setNumber(statisticsList.stream().mapToLong(FileStatisticsResp::getNumber).sum());
+        resp.setData(statistics);
+        resp.setSize(statistics.stream().mapToLong(FileStatisticsResp::getSize).sum());
+        resp.setNumber(statistics.stream().mapToLong(FileStatisticsResp::getNumber).sum());
         return resp;
     }
 
@@ -610,11 +610,6 @@ public class FileServiceImpl
             customizer.accept(resp);
         }
         RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
-    }
-
-    private boolean isFinalStatus(String status) {
-        return StrUtil.equalsAnyIgnoreCase(status, FileUploadProgressStatusEnum.COMPLETED
-            .getValue(), FileUploadProgressStatusEnum.FAILED.getValue());
     }
 
     private boolean isFinalStatus(FileUploadProgressStatusEnum status) {

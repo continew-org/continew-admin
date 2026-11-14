@@ -214,20 +214,20 @@ public class TenantServiceImpl extends
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateTenantMenu(List<Long> newMenuIds, Long packageId) {
-        List<Long> tenantIdList = this.listIdByPackageId(packageId);
-        if (CollUtil.isEmpty(tenantIdList)) {
+        List<Long> tenantIds = this.listIdByPackageId(packageId);
+        if (CollUtil.isEmpty(tenantIds)) {
             return;
         }
         // 所有租户角色：删除旧菜单
-        tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
-            Set<Long> roleIdSet = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
+        tenantIds.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+            Set<Long> affectedRoleIds = roleMenuApi.listRoleIdByNotInMenuIds(newMenuIds);
             // 删除旧菜单
             roleMenuApi.deleteByNotInMenuIds(newMenuIds);
             // 更新在线用户上下文
-            roleIdSet.forEach(roleApi::updateUserContext);
+            affectedRoleIds.forEach(roleApi::updateUserContext);
         }));
         // 租户管理员：新增菜单
-        tenantIdList.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
+        tenantIds.forEach(tenantId -> TenantUtils.execute(tenantId, () -> {
             Long roleId = roleApi.getIdByCode(RoleCodeEnum.TENANT_ADMIN.getCode());
             roleMenuApi.add(newMenuIds, roleId);
             // 更新在线用户上下文

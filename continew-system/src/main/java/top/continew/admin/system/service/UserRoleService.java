@@ -88,9 +88,9 @@ public interface UserRoleService {
     /**
      * 批量插入
      *
-     * @param list 数据集
+     * @param userRoles 数据集
      */
-    void saveBatch(List<UserRoleDO> list);
+    void saveBatch(List<UserRoleDO> userRoles);
 
     /**
      * 根据用户 ID 查询

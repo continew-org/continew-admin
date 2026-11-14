@@ -68,7 +68,8 @@ public class AuthServiceImpl implements AuthService {
     private final CrudProperties crudProperties;
 
     @Override
-    public LoginResp login(LoginReq req, HttpServletRequest request, HttpServletResponse response) {
+    public LoginResp login(LoginReq req, HttpServletRequest request,
+        HttpServletResponse response) {
         AuthTypeEnum authType = req.getAuthType();
         // 校验客户端
         ClientResp client = clientService.getByClientId(req.getClientId());
@@ -87,51 +88,53 @@ public class AuthServiceImpl implements AuthService {
         // 登录前置处理
         loginHandler.preLogin(req, client, request);
         // 登录
-        LoginResp loginResp = loginHandler.login(req, client, request, response);
+        LoginResp resp = loginHandler.login(req, client, request, response);
         // 登录后置处理
         loginHandler.postLogin(req, client, request);
-        return loginResp;
+        return resp;
     }
 
     @Override
     public List<RouteResp> buildRouteTree(Long userId) {
-        Set<RoleContext> roleSet = roleService.listByUserId(userId);
-        if (CollUtil.isEmpty(roleSet)) {
+        Set<RoleContext> roles = roleService.listByUserId(userId);
+        if (CollUtil.isEmpty(roles)) {
             return new ArrayList<>(0);
         }
         // 查询菜单列表
-        Set<MenuResp> menuSet = new LinkedHashSet<>();
-        if (roleSet.stream().anyMatch(r -> SystemConstants.SUPER_ADMIN_ROLE_ID.equals(r.getId()))) {
-            menuSet.addAll(menuService.listByRoleId(SystemConstants.SUPER_ADMIN_ROLE_ID));
+        Set<MenuResp> menus = new LinkedHashSet<>();
+        if (roles.stream()
+            .anyMatch(role -> SystemConstants.SUPER_ADMIN_ROLE_ID.equals(role.getId()))) {
+            menus.addAll(menuService.listByRoleId(SystemConstants.SUPER_ADMIN_ROLE_ID));
         } else {
-            roleSet.forEach(r -> menuSet.addAll(menuService.listByRoleId(r.getId())));
+            roles.forEach(role -> menus.addAll(menuService.listByRoleId(role.getId())));
         }
-        List<MenuResp> menuList =
-            menuSet.stream().filter(m -> !MenuTypeEnum.BUTTON.equals(m.getType())).toList();
-        if (CollUtil.isEmpty(menuList)) {
+        List<MenuResp> routeMenus =
+            menus.stream().filter(menu -> !MenuTypeEnum.BUTTON.equals(menu.getType()))
+                .toList();
+        if (CollUtil.isEmpty(routeMenus)) {
             return new ArrayList<>(0);
         }
         // 构建路由树
         TreeField treeField = MenuResp.class.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig =
             crudProperties.getTreeDictModel().genTreeNodeConfig(treeField);
-        List<Tree<Long>> treeList =
-            TreeUtil.build(menuList, treeField.rootId(), treeNodeConfig, (m, tree) -> {
-                tree.setId(m.getId());
-                tree.setParentId(m.getParentId());
-                tree.setName(m.getTitle());
-                tree.setWeight(m.getSort());
-                tree.putExtra("type", m.getType().getValue());
-                tree.putExtra("path", m.getPath());
-                tree.putExtra("name", m.getName());
-                tree.putExtra("component", m.getComponent());
-                tree.putExtra("redirect", m.getRedirect());
-                tree.putExtra("icon", m.getIcon());
-                tree.putExtra("isExternal", m.getIsExternal());
-                tree.putExtra("isCache", m.getIsCache());
-                tree.putExtra("isHidden", m.getIsHidden());
-                tree.putExtra("permission", m.getPermission());
+        List<Tree<Long>> routeTrees =
+            TreeUtil.build(routeMenus, treeField.rootId(), treeNodeConfig, (menu, tree) -> {
+                tree.setId(menu.getId());
+                tree.setParentId(menu.getParentId());
+                tree.setName(menu.getTitle());
+                tree.setWeight(menu.getSort());
+                tree.putExtra("type", menu.getType().getValue());
+                tree.putExtra("path", menu.getPath());
+                tree.putExtra("name", menu.getName());
+                tree.putExtra("component", menu.getComponent());
+                tree.putExtra("redirect", menu.getRedirect());
+                tree.putExtra("icon", menu.getIcon());
+                tree.putExtra("isExternal", menu.getIsExternal());
+                tree.putExtra("isCache", menu.getIsCache());
+                tree.putExtra("isHidden", menu.getIsHidden());
+                tree.putExtra("permission", menu.getPermission());
             });
-        return BeanUtil.copyToList(treeList, RouteResp.class);
+        return BeanUtil.copyToList(routeTrees, RouteResp.class);
     }
 }

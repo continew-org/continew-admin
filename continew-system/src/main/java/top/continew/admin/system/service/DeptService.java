@@ -46,10 +46,10 @@ public interface DeptService
     /**
      * 通过名称查询部门
      *
-     * @param list 名称列表
+     * @param deptNames 名称列表
      * @return 部门列表
      */
-    List<DeptDO> listByNames(List<String> list);
+    List<DeptDO> listByNames(List<String> deptNames);
 
     /**
      * 通过名称查询部门数量

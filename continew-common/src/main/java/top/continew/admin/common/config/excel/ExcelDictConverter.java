@@ -44,9 +44,9 @@ public class ExcelDictConverter implements Converter<Object> {
         ExcelContentProperty contentProperty,
         GlobalConfiguration globalConfiguration) {
         // 获取字典项数据
-        List<LabelValueResp> dictItemList = this.getDictCode(contentProperty);
+        List<LabelValueResp> dictItems = this.listDictItems(contentProperty);
         // 单元格中填写的是字典标签，转换为字典值
-        String value = dictItemList.stream()
+        String value = dictItems.stream()
             .filter(item -> Objects.equals(cellData.getStringValue(), item.getLabel()))
             .findFirst()
             .map(LabelValueResp::getValue)
@@ -64,12 +64,12 @@ public class ExcelDictConverter implements Converter<Object> {
             return new WriteCellData<>(StringConstants.EMPTY);
         }
         // 获取字典项数据
-        List<LabelValueResp> dictItemList = this.getDictCode(contentProperty);
-        if (CollUtil.isEmpty(dictItemList)) {
+        List<LabelValueResp> dictItems = this.listDictItems(contentProperty);
+        if (CollUtil.isEmpty(dictItems)) {
             return new WriteCellData<>(StringConstants.EMPTY);
         }
         // 转换字典值为字典标签
-        return new WriteCellData<>(dictItemList.stream()
+        return new WriteCellData<>(dictItems.stream()
             .filter(item -> Objects.equals(data, item.getValue()))
             .findFirst()
             .map(LabelValueResp::getLabel)
@@ -82,7 +82,7 @@ public class ExcelDictConverter implements Converter<Object> {
      * @param contentProperty Excel 内容属性
      * @return 字典项数据
      */
-    private List<LabelValueResp> getDictCode(ExcelContentProperty contentProperty) {
+    private List<LabelValueResp> listDictItems(ExcelContentProperty contentProperty) {
         DictExcelProperty dictExcelProperty =
             contentProperty.getField().getAnnotation(DictExcelProperty.class);
         if (dictExcelProperty == null) {

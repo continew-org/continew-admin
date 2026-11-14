@@ -76,8 +76,8 @@ public class RoleController
     @SaCheckPermission("system:role:updatePermission")
     @GetMapping("/permission/tree")
     public List<RolePermissionResp> listPermissionTree() {
-        List<Tree<Long>> treeList = menuService.tree(null, null, false);
-        return BeanUtil.copyToList(treeList, RolePermissionResp.class);
+        List<Tree<Long>> permissionTrees = menuService.tree(null, null, false);
+        return BeanUtil.copyToList(permissionTrees, RolePermissionResp.class);
     }
 
     @Operation(summary = "修改权限", description = "修改角色的功能权限")

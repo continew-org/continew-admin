@@ -94,17 +94,17 @@ public class ClientPolicyCache {
             if (now < current.expireAt()) {
                 return current.policies();
             }
-            Map<String, ClientPolicy> policies = current.policies();
+            Map<String, ClientPolicy> policyByClientId = current.policies();
             try {
-                policies = this.load();
+                policyByClientId = this.load();
             } catch (Exception e) {
                 // 数据库抖动时沿用上一次快照，宁可短暂使用旧策略，也不要让认证链路整体失败。
                 log.warn("加载客户端认证策略失败，沿用上一次缓存：{}", e.getMessage());
             } finally {
                 // 失败也要退避一个周期：否则数据库异常期间每个请求都会重试查询一次。
-                this.snapshotRef.set(new Snapshot(policies, now + EXPIRE_MILLIS));
+                this.snapshotRef.set(new Snapshot(policyByClientId, now + EXPIRE_MILLIS));
             }
-            return policies;
+            return policyByClientId;
         }
     }
 
@@ -113,15 +113,15 @@ public class ClientPolicyCache {
             .select(ClientDO::getClientId,
                 ClientDO::getRefreshTokenIdleTimeout,
                 ClientDO::getRefreshTokenTimeout));
-        Map<String, ClientPolicy> result = new HashMap<>(clients.size());
+        Map<String, ClientPolicy> policyByClientId = new HashMap<>(clients.size());
         for (ClientDO client : clients) {
-            result.put(client.getClientId(), new ClientPolicy(ObjectUtil
+            policyByClientId.put(client.getClientId(), new ClientPolicy(ObjectUtil
                 .defaultIfNull(client.getRefreshTokenIdleTimeout(), 0L),
                 ObjectUtil
                     .defaultIfNull(client.getRefreshTokenTimeout(),
                         ClientPolicy.DEFAULT_REFRESH_TIMEOUT)));
         }
-        return Collections.unmodifiableMap(result);
+        return Collections.unmodifiableMap(policyByClientId);
     }
 
     /**

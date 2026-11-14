@@ -49,17 +49,17 @@ public class SmsReadConfigDatabaseImpl implements SmsReadConfig {
         if (DisEnableStatusEnum.DISABLE.equals(smsConfig.getStatus())) {
             return null;
         }
-        return SmsConfigUtil.from(smsConfig);
+        return SmsConfigUtils.from(smsConfig);
     }
 
     @Override
     public List<BaseConfig> getSupplierConfigList() {
         SmsConfigQuery query = new SmsConfigQuery();
         query.setStatus(DisEnableStatusEnum.ENABLE);
-        List<SmsConfigResp> list = smsConfigService.list(query, null);
-        if (CollUtil.isEmpty(list)) {
+        List<SmsConfigResp> smsConfigs = smsConfigService.list(query, null);
+        if (CollUtil.isEmpty(smsConfigs)) {
             return List.of();
         }
-        return CollUtils.mapToList(list, SmsConfigUtil::from);
+        return CollUtils.mapToList(smsConfigs, SmsConfigUtils::from);
     }
 }

@@ -66,19 +66,20 @@ public enum PasswordPolicyEnum {
     PASSWORD_EXPIRATION_WARNING_DAYS("密码到期提醒取值范围为 %d-%d 天", GlobalConstants.Boolean.NO, 998, null) {
 
         @Override
-        public void validateRange(int value, Map<String, String> policyMap) {
-            if (CollUtil.isEmpty(policyMap)) {
-                super.validateRange(value, policyMap);
+        public void validateRange(int value, Map<String, String> policyValueByCode) {
+            if (CollUtil.isEmpty(policyValueByCode)) {
+                super.validateRange(value, policyValueByCode);
                 return;
             }
-            Integer passwordExpirationDays = ObjectUtil.defaultIfNull(Convert.toInt(policyMap
-                .get(PASSWORD_EXPIRATION_DAYS.name())), SpringUtil.getBean(OptionService.class)
-                    .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
+            Integer passwordExpirationDays =
+                ObjectUtil.defaultIfNull(Convert.toInt(policyValueByCode
+                    .get(PASSWORD_EXPIRATION_DAYS.name())), SpringUtil.getBean(OptionService.class)
+                        .getValueByCode2Int(PASSWORD_EXPIRATION_DAYS.name()));
             if (passwordExpirationDays > GlobalConstants.Boolean.NO) {
                 ValidationUtils.throwIf(value >= passwordExpirationDays, "密码到期提醒时间应小于密码有效期");
                 return;
             }
-            super.validateRange(value, policyMap);
+            super.validateRange(value, policyValueByCode);
         }
     },
 
@@ -107,7 +108,7 @@ public enum PasswordPolicyEnum {
         GlobalConstants.Boolean.YES, "密码必须包含特殊字符") {
 
         @Override
-        public void validateRange(int value, Map<String, String> policyMap) {
+        public void validateRange(int value, Map<String, String> policyValueByCode) {
             ValidationUtils
                 .throwIf(
                     value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO,
@@ -130,7 +131,7 @@ public enum PasswordPolicyEnum {
         GlobalConstants.Boolean.YES, "密码不允许包含正反序用户名") {
 
         @Override
-        public void validateRange(int value, Map<String, String> policyMap) {
+        public void validateRange(int value, Map<String, String> policyValueByCode) {
             ValidationUtils
                 .throwIf(
                     value != GlobalConstants.Boolean.YES && value != GlobalConstants.Boolean.NO,
@@ -195,9 +196,9 @@ public enum PasswordPolicyEnum {
      * 校验取值范围
      *
      * @param value     值
-     * @param policyMap 策略集合
+     * @param policyValueByCode 策略集合
      */
-    public void validateRange(int value, Map<String, String> policyMap) {
+    public void validateRange(int value, Map<String, String> policyValueByCode) {
         Integer minValue = this.getMin();
         Integer maxValue = this.getMax();
         ValidationUtils.throwIf(value < minValue || value > maxValue, this.getDescription()

@@ -44,18 +44,20 @@ public class MailConfigurerImpl implements MailConfigurer {
     @Override
     public MailConfig getMailConfig() {
         // 查询邮件配置
-        Map<String, String> map = optionService.getByCategory(OptionCategoryEnum.MAIL);
+        Map<String, String> mailOptionValueByCode =
+            optionService.getByCategory(OptionCategoryEnum.MAIL);
         // 封装邮件配置
         MailConfig mailConfig = new MailConfig();
-        mailConfig.setProtocol(MapUtil.getStr(map, "MAIL_PROTOCOL"));
-        mailConfig.setHost(MapUtil.getStr(map, "MAIL_HOST"));
-        mailConfig.setPort(MapUtil.getInt(map, "MAIL_PORT"));
-        mailConfig.setUsername(MapUtil.getStr(map, "MAIL_USERNAME"));
-        mailConfig.setPassword(MapUtil.getStr(map, "MAIL_PASSWORD"));
+        mailConfig.setProtocol(MapUtil.getStr(mailOptionValueByCode, "MAIL_PROTOCOL"));
+        mailConfig.setHost(MapUtil.getStr(mailOptionValueByCode, "MAIL_HOST"));
+        mailConfig.setPort(MapUtil.getInt(mailOptionValueByCode, "MAIL_PORT"));
+        mailConfig.setUsername(MapUtil.getStr(mailOptionValueByCode, "MAIL_USERNAME"));
+        mailConfig.setPassword(MapUtil.getStr(mailOptionValueByCode, "MAIL_PASSWORD"));
         mailConfig.setSslEnabled(
-            GlobalConstants.Boolean.YES.equals(MapUtil.getInt(map, "MAIL_SSL_ENABLED")));
+            GlobalConstants.Boolean.YES
+                .equals(MapUtil.getInt(mailOptionValueByCode, "MAIL_SSL_ENABLED")));
         if (mailConfig.isSslEnabled()) {
-            mailConfig.setSslPort(MapUtil.getInt(map, "MAIL_SSL_PORT"));
+            mailConfig.setSslPort(MapUtil.getInt(mailOptionValueByCode, "MAIL_SSL_PORT"));
         }
         return mailConfig;
     }

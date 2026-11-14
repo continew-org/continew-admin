@@ -33,11 +33,12 @@ import java.util.Map;
  * 短信配置工具类
  *
  * @author Top2Hub
- * @since 3.7.0
+ * @author Charles7c
+ * @since 5.0.0
  */
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SmsConfigUtil {
+public class SmsConfigUtils {
 
     /**
      * 将本地配置转换为 SMS4J 配置
@@ -56,25 +57,25 @@ public class SmsConfigUtil {
             return null;
         }
         // 构建配置
-        Map<String, Object> configInfo = MapUtil.newHashMap();
-        configInfo.put("configId", smsConfig.getId().toString());
-        configInfo.put("accessKeyId", smsConfig.getAccessKey());
-        configInfo.put("accessKeySecret", smsConfig.getSecretKey());
-        configInfo.put("signature", smsConfig.getSignature());
-        configInfo.put("templateId", smsConfig.getTemplateId());
+        Map<String, Object> configProperties = MapUtil.newHashMap();
+        configProperties.put("configId", smsConfig.getId().toString());
+        configProperties.put("accessKeyId", smsConfig.getAccessKey());
+        configProperties.put("accessKeySecret", smsConfig.getSecretKey());
+        configProperties.put("signature", smsConfig.getSignature());
+        configProperties.put("templateId", smsConfig.getTemplateId());
         if (smsConfig.getWeight() != null) {
-            configInfo.put("weight", smsConfig.getWeight());
+            configProperties.put("weight", smsConfig.getWeight());
         }
         if (smsConfig.getRetryInterval() != null) {
-            configInfo.put("retryInterval", smsConfig.getRetryInterval());
+            configProperties.put("retryInterval", smsConfig.getRetryInterval());
         }
         if (smsConfig.getMaxRetries() != null) {
-            configInfo.put("maxRetries", smsConfig.getMaxRetries());
+            configProperties.put("maxRetries", smsConfig.getMaxRetries());
         }
         if (StrUtil.isNotBlank(smsConfig.getSupplierConfig())) {
-            configInfo.putAll(JsonUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
+            configProperties.putAll(JsonUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
         }
-        return (BaseConfig) BeanUtil.toBean(configInfo, providerFactory.getConfigClass());
+        return (BaseConfig) BeanUtil.toBean(configProperties, providerFactory.getConfigClass());
     }
 
 }

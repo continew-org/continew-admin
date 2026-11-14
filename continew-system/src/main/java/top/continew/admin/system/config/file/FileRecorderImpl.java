@@ -97,9 +97,9 @@ public class FileRecorderImpl implements FileRecorder {
         if (file == null) {
             return null;
         }
-        StorageDO storageDO =
+        StorageDO storage =
             storageMapper.lambdaQuery().eq(StorageDO::getId, file.getStorageId()).one();
-        return file.toFileInfo(storageDO);
+        return file.toFileInfo(storage);
     }
 
     @Override
@@ -162,11 +162,11 @@ public class FileRecorderImpl implements FileRecorder {
     public List<FilePartInfo> getFileParts(String fileId) {
         String key = MultipartUploadConstants.MULTIPART_PARTS_PREFIX + fileId;
         try {
-            Map<String, Object> entries = RedisUtils.hGetAll(key);
-            if (CollUtil.isEmpty(entries)) {
+            Map<String, Object> partJsons = RedisUtils.hGetAll(key);
+            if (CollUtil.isEmpty(partJsons)) {
                 return new ArrayList<>();
             }
-            return entries.values()
+            return partJsons.values()
                 .stream()
                 .map(value -> JSONUtil.toBean(value.toString(), FilePartInfo.class))
                 .sorted(Comparator.comparing(FilePartInfo::getPartNumber))
@@ -327,24 +327,24 @@ public class FileRecorderImpl implements FileRecorder {
                 .eq(FileDO::getPath, StrUtil.prependIfMissing(url, StringConstants.SLASH)).one();
         }
         // HTTP URL 场景
-        List<FileDO> list = queryWrapper.list();
-        if (CollUtil.isEmpty(list)) {
+        List<FileDO> files = queryWrapper.list();
+        if (CollUtil.isEmpty(files)) {
             return null;
         }
-        if (list.size() == 1) {
-            return list.get(0);
+        if (files.size() == 1) {
+            return files.get(0);
         }
         // 结合存储配置进行匹配
-        List<StorageDO> storageList =
-            storageMapper.selectByIds(CollUtils.mapToList(list, FileDO::getStorageId));
-        Map<Long, StorageDO> storageMap = storageList.stream()
+        List<StorageDO> storages =
+            storageMapper.selectByIds(CollUtils.mapToList(files, FileDO::getStorageId));
+        Map<Long, StorageDO> storageById = storages.stream()
             .collect(Collectors.toMap(StorageDO::getId, Function.identity(),
                 (existing, replacement) -> existing));
-        return list.stream().filter(file -> {
+        return files.stream().filter(file -> {
             // http://localhost:8000/file/user/avatar/6825e687db4174e7a297a5f8.png => http://localhost:8000/file/user/avatar
             String urlPrefix = StrUtil.subBefore(url, StringConstants.SLASH, true);
             // http://localhost:8000/file/ + /user/avatar => http://localhost:8000/file/user/avatar
-            StorageDO storage = storageMap.get(file.getStorageId());
+            StorageDO storage = storageById.get(file.getStorageId());
             return urlPrefix.equals(
                 URLUtil.normalize(storage.getUrlPrefix() + file.getParentPath(), false, true));
         }).findFirst().orElse(null);

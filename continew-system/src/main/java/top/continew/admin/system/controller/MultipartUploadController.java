@@ -52,15 +52,15 @@ public class MultipartUploadController {
     /**
      * 初始化分片上传
      *
-     * @param multiPartUploadInitReq 分片上传信息
+     * @param req 分片上传信息
      * @return 初始化响应
      */
     @Operation(summary = "初始化分片上传", description = "初始化分片上传，返回uploadId等信息")
     @SaCheckPermission("system:file:upload")
     @PostMapping("/init")
     public MultipartUploadCreateResp initMultipartUpload(
-        @RequestBody @Valid MultipartUploadCreateReq multiPartUploadInitReq) {
-        return multipartUploadService.initMultipartUpload(multiPartUploadInitReq);
+        @RequestBody @Valid MultipartUploadCreateReq req) {
+        return multipartUploadService.initMultipartUpload(req);
     }
 
     /**

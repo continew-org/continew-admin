@@ -77,8 +77,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void readMessage(List<Long> ids, Long userId) {
         // 查询当前用户的未读消息
-        List<MessageDO> list = baseMapper.selectUnreadListByUserId(userId);
-        List<Long> unreadIds = CollUtils.mapToList(list, MessageDO::getId);
+        List<MessageDO> unreadMessages = baseMapper.selectUnreadListByUserId(userId);
+        List<Long> unreadIds = CollUtils.mapToList(unreadMessages, MessageDO::getId);
         messageLogService.addWithUserId(CollUtil.isNotEmpty(ids)
             ? CollUtil.intersection(unreadIds, ids).stream().toList()
             : unreadIds, userId);
@@ -91,41 +91,41 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageUnreadResp countUnreadByUserId(Long userId, Boolean isDetail) {
-        MessageUnreadResp result = new MessageUnreadResp();
+        MessageUnreadResp unreadResp = new MessageUnreadResp();
         Long total = 0L;
         if (Boolean.TRUE.equals(isDetail)) {
-            List<MessageTypeUnreadResp> detailList = new ArrayList<>();
+            List<MessageTypeUnreadResp> unreadCounts = new ArrayList<>();
             for (MessageTypeEnum messageType : MessageTypeEnum.values()) {
-                MessageTypeUnreadResp resp = new MessageTypeUnreadResp();
-                resp.setType(messageType);
+                MessageTypeUnreadResp typeResp = new MessageTypeUnreadResp();
+                typeResp.setType(messageType);
                 Long count =
                     baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
-                resp.setCount(count);
-                detailList.add(resp);
+                typeResp.setCount(count);
+                unreadCounts.add(typeResp);
                 total += count;
             }
-            result.setDetails(detailList);
+            unreadResp.setDetails(unreadCounts);
         } else {
             total = baseMapper.selectUnreadCountByUserIdAndType(userId, null);
         }
-        result.setTotal(total);
-        return result;
+        unreadResp.setTotal(total);
+        return unreadResp;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(MessageReq req, List<String> userIdList) {
+    public void add(MessageReq req, List<String> userIds) {
         MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
-        message.setScope(CollUtil.isEmpty(userIdList) ? NoticeScopeEnum.ALL : NoticeScopeEnum.USER);
-        message.setUsers(userIdList);
+        message.setScope(CollUtil.isEmpty(userIds) ? NoticeScopeEnum.ALL : NoticeScopeEnum.USER);
+        message.setUsers(userIds);
         baseMapper.insert(message);
         // 发送消息给指定在线用户
-        if (CollUtil.isNotEmpty(userIdList)) {
+        if (CollUtil.isNotEmpty(userIds)) {
             // 顺序执行：本方法处于 @Transactional 之下，且是阻塞式的 Redis 与 WebSocket 调用，
             // 放到 ForkJoinPool 公共池上既拿不到事务与租户上下文，也会阻塞公共池
-            userIdList.forEach(userId -> {
-                List<String> tokenList = StpUtil.getTokenValueListByLoginId(userId);
-                tokenList.forEach(token -> WebSocketUtils.sendMessageToAll(token, "1"));
+            userIds.forEach(userId -> {
+                List<String> tokens = StpUtil.getTokenValueListByLoginId(userId);
+                tokens.forEach(token -> WebSocketUtils.sendMessageToAll(token, "1"));
             });
             return;
         }
@@ -143,8 +143,11 @@ public class MessageServiceImpl implements MessageService {
         List<MessageDO> messages = baseMapper.selectList(Wrappers.lambdaQuery(MessageDO.class)
             .in(MessageDO::getId, ids));
         List<Long> ownIds = messages.stream()
-            .filter(m -> NoticeScopeEnum.ALL.equals(m.getScope()) || (NoticeScopeEnum.USER.equals(m
-                .getScope()) && CollUtil.contains(m.getUsers(), String.valueOf(userId))))
+            .filter(
+                message -> NoticeScopeEnum.ALL.equals(message.getScope()) || (NoticeScopeEnum.USER
+                    .equals(message
+                        .getScope())
+                    && CollUtil.contains(message.getUsers(), String.valueOf(userId))))
             .map(MessageDO::getId)
             .toList();
         if (CollUtil.isEmpty(ownIds)) {

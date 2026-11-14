@@ -96,7 +96,8 @@ public class StorageServiceImpl extends
         // 校验存储类型、存储编码、回收站配置、状态
         CheckUtils.throwIfNotEqual(req.getType(), oldStorage.getType(), "不允许修改存储类型");
         CheckUtils.throwIfNotEqual(req.getCode(), oldStorage.getCode(), "不允许修改存储编码");
-        CheckUtils.throwIfNotEqual(req.getRecycleBinEnabled(), oldStorage.getRecycleBinEnabled(),
+        CheckUtils.throwIfNotEqual(req.getRecycleBinEnabled(),
+            oldStorage.getRecycleBinEnabled(),
             "不允许修改回收站配置");
         CheckUtils.throwIfNotEqual(req.getRecycleBinPath(), oldStorage.getRecycleBinPath(),
             "不允许修改回收站配置");
@@ -120,8 +121,8 @@ public class StorageServiceImpl extends
     @Override
     public void beforeDelete(List<Long> ids) {
         CheckUtils.throwIf(fileService.countByStorageIds(ids) > 0, "所选存储存在文件或文件夹关联，请删除后重试");
-        List<StorageDO> storageList = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
-        storageList.forEach(storage -> {
+        List<StorageDO> storages = baseMapper.lambdaQuery().in(StorageDO::getId, ids).list();
+        storages.forEach(storage -> {
             CheckUtils.throwIfEqual(Boolean.TRUE, storage.getIsDefault(), "[{}] 是默认存储，不允许删除",
                 storage.getName());
             // 卸载存储引擎

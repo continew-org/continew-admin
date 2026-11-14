@@ -78,58 +78,64 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DashboardOverviewCommonResp getOverviewPv() {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewPv();
-        resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
-        List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList = CacheUtils.get(CacheConstants.DASHBOARD_KEY_PREFIX
-            + "PV:", last12MonthList.get(0),
-            () -> logMapper.selectListDashboardAnalysisPv(last12MonthList));
-        if (dataList.size() < 12) {
+        resp
+            .setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
+        List<String> last12Months = this.getLast12Months();
+        List<DashboardChartCommonResp> chartData = CacheUtils.get(
+            CacheConstants.DASHBOARD_KEY_PREFIX
+                + "PV:",
+            last12Months.get(0),
+            () -> logMapper.selectListDashboardAnalysisPv(last12Months));
+        if (chartData.size() < 12) {
             // 填充缺失的数据
-            this.fillMissingDateData(last12MonthList, dataList);
+            this.fillMissingDateData(last12Months, chartData);
         }
-        resp.setDataList(dataList);
+        resp.setDataList(chartData);
         return resp;
     }
 
     @Override
     public DashboardOverviewCommonResp getOverviewIp() {
         DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewIp();
-        resp.setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
-        List<String> last12MonthList = this.getLast12Months();
-        List<DashboardChartCommonResp> dataList = CacheUtils.get(CacheConstants.DASHBOARD_KEY_PREFIX
-            + "IP:", last12MonthList.get(0),
-            () -> logMapper.selectListDashboardAnalysisIp(last12MonthList));
-        if (dataList.size() < 12) {
+        resp
+            .setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
+        List<String> last12Months = this.getLast12Months();
+        List<DashboardChartCommonResp> chartData = CacheUtils.get(
+            CacheConstants.DASHBOARD_KEY_PREFIX
+                + "IP:",
+            last12Months.get(0),
+            () -> logMapper.selectListDashboardAnalysisIp(last12Months));
+        if (chartData.size() < 12) {
             // 填充缺失的数据
-            this.fillMissingDateData(last12MonthList, dataList);
+            this.fillMissingDateData(last12Months, chartData);
         }
-        resp.setDataList(dataList);
+        resp.setDataList(chartData);
         return resp;
     }
 
     @Override
     public List<DashboardChartCommonResp> getAnalysisGeo() throws IOException {
-        List<DashboardChartCommonResp> originList = logMapper.selectListDashboardAnalysisGeo();
-        List<DashboardChartCommonResp> list = new ArrayList<>(34);
+        List<DashboardChartCommonResp> rawChartData = logMapper.selectListDashboardAnalysisGeo();
+        List<DashboardChartCommonResp> chartData = new ArrayList<>(34);
         // 获取省份数据
         String chinaJson = IoUtil.readUtf8(new ClassPathResource("china.json").getInputStream());
         JSONArray jsonArr = JSONUtil.parseObj(chinaJson).getJSONArray("children");
-        List<String> provinceList = CollUtils.mapToList(jsonArr, item -> {
+        List<String> provinces = CollUtils.mapToList(jsonArr, item -> {
             JSONObject itemJsonObj = JSONUtil.parseObj(item);
             return "%s:%s".formatted(itemJsonObj.getStr("name"), itemJsonObj.getStr("fullname"));
         });
         // 汇总各省份访问数据
-        for (String province : provinceList) {
+        for (String province : provinces) {
             String[] split = province.split(StringConstants.COLON);
             String name = split[0];
             String fullName = split[1];
-            long sum = originList.stream()
+            long sum = rawChartData.stream()
                 .filter(item -> item.getName().contains(name))
                 .mapToLong(DashboardChartCommonResp::getValue)
                 .sum();
-            list.add(new DashboardChartCommonResp(fullName, sum));
+            chartData.add(new DashboardChartCommonResp(fullName, sum));
         }
-        return list;
+        return chartData;
     }
 
     @Override
@@ -142,35 +148,35 @@ public class DashboardServiceImpl implements DashboardService {
         // 查询区间为左闭右开 [startDate, today)，不依赖数据库时间精度
         LocalDateTime startTime = startDate.atStartOfDay();
         LocalDateTime endTime = today.atStartOfDay();
-        List<DashboardAccessTrendResp> list =
+        List<DashboardAccessTrendResp> accessTrends =
             logMapper.selectListDashboardAccessTrend(startTime, endTime);
-        if (list.size() < days) {
-            List<String> all = Stream
+        if (accessTrends.size() < days) {
+            List<String> expectedDates = Stream
                 .iterate(startDate, date -> date.isBefore(today), date -> date.plusDays(1))
                 .map(DateTimeFormatter.ISO_LOCAL_DATE::format)
                 .toList();
-            Collection<String> missings = CollUtil.disjunction(all, CollUtils
-                .mapToList(list, DashboardAccessTrendResp::getDate));
-            list.addAll(CollUtils.mapToList(missings,
-                missing -> new DashboardAccessTrendResp(missing, 0L, 0L)));
-            list.sort(Comparator.comparing(DashboardAccessTrendResp::getDate));
+            Collection<String> missingDates = CollUtil.disjunction(expectedDates, CollUtils
+                .mapToList(accessTrends, DashboardAccessTrendResp::getDate));
+            accessTrends.addAll(CollUtils.mapToList(missingDates,
+                missingDate -> new DashboardAccessTrendResp(missingDate, 0L, 0L)));
+            accessTrends.sort(Comparator.comparing(DashboardAccessTrendResp::getDate));
         }
-        return list;
+        return accessTrends;
     }
 
     @Override
     public List<DashboardChartCommonResp> getAnalysisTimeslot() {
-        List<DashboardChartCommonResp> list = logMapper.selectListDashboardAnalysisTimeslot();
-        if (list.size() < 12) {
+        List<DashboardChartCommonResp> chartData = logMapper.selectListDashboardAnalysisTimeslot();
+        if (chartData.size() < 12) {
             // 获取所有时间段
-            List<String> allTimeSlotList = new ArrayList<>(12);
+            List<String> timeSlots = new ArrayList<>(12);
             for (int hour = 0; hour < 24; hour += 2) {
-                allTimeSlotList.add(String.format("%02d:00", hour));
+                timeSlots.add(String.format("%02d:00", hour));
             }
             // 填充缺失的数据
-            this.fillMissingDateData(allTimeSlotList, list);
+            this.fillMissingDateData(timeSlots, chartData);
         }
-        return list;
+        return chartData;
     }
 
     @Override
@@ -180,14 +186,14 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardChartCommonResp> getAnalysisOs() {
-        List<DashboardChartCommonResp> list = logMapper.selectListDashboardAnalysisOs(4);
-        return this.buildOtherPieChartData(list);
+        List<DashboardChartCommonResp> chartData = logMapper.selectListDashboardAnalysisOs(4);
+        return this.buildOtherPieChartData(chartData);
     }
 
     @Override
     public List<DashboardChartCommonResp> getAnalysisBrowser() {
-        List<DashboardChartCommonResp> list = logMapper.selectListDashboardAnalysisBrowser(4);
-        return this.buildOtherPieChartData(list);
+        List<DashboardChartCommonResp> chartData = logMapper.selectListDashboardAnalysisBrowser(4);
+        return this.buildOtherPieChartData(chartData);
     }
 
     /**
@@ -208,31 +214,33 @@ public class DashboardServiceImpl implements DashboardService {
     /**
      * 构建其他饼图数据
      *
-     * @param list 饼图数据列表
+     * @param chartData 饼图数据列表
      * @return 饼图数据列表
      */
     private List<DashboardChartCommonResp> buildOtherPieChartData(
-        List<DashboardChartCommonResp> list) {
+        List<DashboardChartCommonResp> chartData) {
         Long totalCount = logMapper.selectTotalCount();
-        long sumCount = list.stream().mapToLong(DashboardChartCommonResp::getValue).sum();
+        long sumCount = chartData.stream().mapToLong(DashboardChartCommonResp::getValue).sum();
         if (sumCount < totalCount) {
-            list.add(new DashboardChartCommonResp("其他", totalCount - sumCount));
+            chartData.add(new DashboardChartCommonResp("其他", totalCount - sumCount));
         }
-        return list;
+        return chartData;
     }
 
     /**
      * 填充缺失时间段的数据
      *
-     * @param all  所有时间段
-     * @param list 待填充数据
+     * @param expectedLabels 所有时间段
+     * @param chartData 待填充数据
      */
-    private void fillMissingDateData(List<String> all, List<DashboardChartCommonResp> list) {
-        Collection<String> missings = CollUtil.disjunction(all, CollUtils
-            .mapToList(list, DashboardChartCommonResp::getName));
-        list.addAll(
-            CollUtils.mapToList(missings, missing -> new DashboardChartCommonResp(missing, 0L)));
-        list.sort(Comparator.comparing(DashboardChartCommonResp::getName));
+    private void fillMissingDateData(List<String> expectedLabels,
+        List<DashboardChartCommonResp> chartData) {
+        Collection<String> missingLabels = CollUtil.disjunction(expectedLabels, CollUtils
+            .mapToList(chartData, DashboardChartCommonResp::getName));
+        chartData.addAll(
+            CollUtils.mapToList(missingLabels,
+                missingLabel -> new DashboardChartCommonResp(missingLabel, 0L)));
+        chartData.sort(Comparator.comparing(DashboardChartCommonResp::getName));
     }
 
     /**

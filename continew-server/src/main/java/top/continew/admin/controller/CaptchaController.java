@@ -112,7 +112,7 @@ public class CaptchaController {
     /**
      * 校验行为验证码
      *
-     * @param captchaReq 验证码参数
+     * @param captchaReq  验证码参数
      * @param request    请求对象
      * @return 校验结果
      */
@@ -156,7 +156,7 @@ public class CaptchaController {
      * </p>
      *
      * @param email      邮箱
-     * @param captchaReq 行为验证码请求参数
+     * @param captchaReq  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取邮箱验证码", description = "发送验证码到指定邮箱")
@@ -189,11 +189,12 @@ public class CaptchaController {
         String captcha = RandomUtil.randomNumbers(captchaMail.getLength());
         // 发送验证码
         Long expirationInMinutes = captchaMail.getExpirationInMinutes();
-        Map<String, String> siteConfig = optionService.getByCategory(OptionCategoryEnum.SITE);
+        Map<String, String> siteOptionValueByCode =
+            optionService.getByCategory(OptionCategoryEnum.SITE);
         String content = TemplateUtils.render(captchaMail.getTemplatePath(), Dict.create()
             .set("siteUrl", applicationProperties.getUrl())
-            .set("siteTitle", siteConfig.get("SITE_TITLE"))
-            .set("siteCopyright", siteConfig.get("SITE_COPYRIGHT"))
+            .set("siteTitle", siteOptionValueByCode.get("SITE_TITLE"))
+            .set("siteCopyright", siteOptionValueByCode.get("SITE_COPYRIGHT"))
             .set("captcha", captcha)
             .set("expiration", expirationInMinutes));
         MailUtils.sendHtml(email, "【%s】邮箱验证码".formatted(applicationProperties.getName()), content);
@@ -214,7 +215,7 @@ public class CaptchaController {
      * </p>
      *
      * @param phone      手机号
-     * @param captchaReq 行为验证码请求参数
+     * @param captchaReq  行为验证码请求参数
      * @return {@link R }
      */
     @Operation(summary = "获取短信验证码", description = "发送验证码到指定手机号")
@@ -251,12 +252,12 @@ public class CaptchaController {
         SmsBlend smsBlend = smsConfig != null
             ? SmsFactory.getSmsBlend(smsConfig.getId().toString())
             : SmsFactory.getSmsBlend();
-        Map<String, String> messageMap = MapUtil.newHashMap(2, true);
-        messageMap.put(captchaSms.getCodeKey(), captcha);
-        messageMap.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
+        Map<String, String> templateParams = MapUtil.newHashMap(2, true);
+        templateParams.put(captchaSms.getCodeKey(), captcha);
+        templateParams.put(captchaSms.getTimeKey(), String.valueOf(expirationInMinutes));
         // 发送验证码
         SmsResponse smsResponse =
-            smsBlend.sendMessage(phone, (LinkedHashMap<String, String>) messageMap);
+            smsBlend.sendMessage(phone, (LinkedHashMap<String, String>) templateParams);
         CheckUtils.throwIf(!smsResponse.isSuccess(), "验证码发送失败");
         // 保存验证码
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + phone;
