@@ -281,7 +281,7 @@ public class UserServiceImpl
 
     @Override
     public UserImportParseResp parseImport(MultipartFile file) {
-        UserImportParseResp userImportResp = new UserImportParseResp();
+        UserImportParseResp resp = new UserImportParseResp();
         List<UserImportRowReq> importRows;
         // 读取表格数据
         try {
@@ -295,11 +295,11 @@ public class UserServiceImpl
             throw new BusinessException("数据文件解析异常");
         }
         // 总计行数
-        userImportResp.setTotalRows(importRows.size());
+        resp.setTotalRows(importRows.size());
         CheckUtils.throwIfEmpty(importRows, "数据文件格式不正确");
         // 有效行数：过滤无效数据
         List<UserImportRowReq> validRows = this.filterImportData(importRows);
-        userImportResp.setValidRows(validRows.size());
+        resp.setValidRows(validRows.size());
         CheckUtils.throwIfEmpty(validRows, "数据文件格式不正确");
 
         // 检测表格内数据是否合法
@@ -325,15 +325,15 @@ public class UserServiceImpl
         CheckUtils.throwIf(existDeptCount < deptNames.size(), "存在无效部门，请检查部门名称或部门层级是否正确");
 
         // 查询重复用户
-        userImportResp
+        resp
             .setDuplicateUserRows(countExistByField(validRows, UserImportRowReq::getUsername,
                 UserDO::getUsername));
         // 查询重复邮箱
-        userImportResp
+        resp
             .setDuplicateEmailRows(countExistByField(validRows, row -> EncryptHelper.encrypt(row
                 .getEmail()), UserDO::getEmail));
         // 查询重复手机
-        userImportResp
+        resp
             .setDuplicatePhoneRows(countExistByField(validRows, row -> EncryptHelper.encrypt(row
                 .getPhone()), UserDO::getPhone));
 
@@ -342,8 +342,8 @@ public class UserServiceImpl
         RedisUtils.set(CacheConstants.DATA_IMPORT_KEY + importKey, JSONUtil.toJsonStr(validRows),
             Duration
                 .ofMinutes(10));
-        userImportResp.setImportKey(importKey);
-        return userImportResp;
+        resp.setImportKey(importKey);
+        return resp;
     }
 
     @Override
@@ -369,7 +369,7 @@ public class UserServiceImpl
         List<String> existingUsernames = CollUtils.mapToList(existingUsers, UserDO::getUsername);
         CheckUtils
             .throwIf(
-                hasDuplicateByExitPolicy(req, importRows, existingUsernames, existingEmails,
+                shouldExitImport(req, importRows, existingUsernames, existingEmails,
                     existingPhones),
                 "数据不符合导入策略，已退出导入");
 
@@ -387,7 +387,7 @@ public class UserServiceImpl
         Map<String, RoleDO> roleByName = roles.stream()
             .collect(Collectors.toMap(RoleDO::getName, Function.identity()));
         // 获取多级部门映射
-        Map<String, Long> deptIdByNameOrPath = buildMultiLevelDeptMapping(importRows.stream()
+        Map<String, Long> deptIdByName = buildMultiLevelDeptMapping(importRows.stream()
             .map(UserImportRowReq::getDeptName)
             .distinct()
             .toList());
@@ -411,7 +411,7 @@ public class UserServiceImpl
             UserDO user = BeanUtil.toBeanIgnoreError(row, UserDO.class);
             user.setGender(
                 EnumUtil.getBy(GenderEnum::getDescription, row.getGender(), GenderEnum.UNKNOWN));
-            user.setDeptId(deptIdByNameOrPath.get(row.getDeptName()));
+            user.setDeptId(deptIdByName.get(row.getDeptName()));
             // 修改 or 新增
             if (UPDATE.validate(req.getDuplicateUser(), row.getUsername(), existingUsernames)) {
                 CheckUtils.throwIf(systemUsernames.contains(row.getUsername()),
@@ -685,7 +685,7 @@ public class UserServiceImpl
      * @param existingPhones    导入数据中已存在的手机号
      * @return 是否退出
      */
-    private boolean hasDuplicateByExitPolicy(UserImportReq req,
+    private boolean shouldExitImport(UserImportReq req,
         List<UserImportRowReq> importRows,
         List<String> existingUsernames,
         List<String> existingEmails,
@@ -930,13 +930,13 @@ public class UserServiceImpl
     private Map<String, Long> buildMultiLevelDeptMapping(List<String> deptNames) {
         CheckUtils.throwIfEmpty(deptNames, "部门名称列表不能为空");
 
-        Map<String, Long> deptIdByNameOrPath = new HashMap<>();
+        Map<String, Long> deptIdByName = new HashMap<>();
         for (String deptName : deptNames) {
             DeptDO dept = findDeptByHierarchicalPath(deptName);
             CheckUtils.throwIfNull(dept, "部门 [{}] 不存在或存在歧义", deptName);
-            deptIdByNameOrPath.put(deptName, dept.getId());
+            deptIdByName.put(deptName, dept.getId());
         }
-        return deptIdByNameOrPath;
+        return deptIdByName;
     }
 
     /**

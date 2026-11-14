@@ -77,7 +77,7 @@ public class AuthController {
     /**
      * 用户登录
      *
-     * @param loginReq      登录信息
+     * @param req  登录信息
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录结果
@@ -86,9 +86,9 @@ public class AuthController {
     @Operation(summary = "登录", description = "用户登录")
     @Log(excludes = {Include.REQUEST_HEADERS, Include.RESPONSE_HEADERS, Include.RESPONSE_BODY})
     @PostMapping("/login")
-    public LoginResp login(@RequestBody @Valid LoginReq loginReq, HttpServletRequest request,
+    public LoginResp login(@RequestBody @Valid LoginReq req, HttpServletRequest request,
         HttpServletResponse response) {
-        return authService.login(loginReq, request, response);
+        return authService.login(req, request, response);
     }
 
     /**

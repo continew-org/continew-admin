@@ -208,7 +208,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             accessToken = StpUtil.getTokenValue();
             UserContextHolder.setContext(userContext);
 
-            LoginResp loginResp = LoginResp.builder()
+            LoginResp resp = LoginResp.builder()
                 .accessToken(accessToken)
                 .tokenType("Bearer")
                 .expiresIn(accessTokenTimeout)
@@ -221,12 +221,12 @@ public class AuthTokenServiceImpl implements AuthTokenService {
                 String refreshToken = refreshTokenService.issue(sessionId,
                     new RefreshSessionPrincipalAdapter(userContext, extraContext),
                     refreshClientPolicy, securityVersion, response);
-                loginResp.setRefreshExpiresIn(refreshClientPolicy.refreshTokenTimeout());
+                resp.setRefreshExpiresIn(refreshClientPolicy.refreshTokenTimeout());
                 if (RefreshTokenModeEnum.BODY.equals(refreshClientPolicy.refreshTokenMode())) {
-                    loginResp.setRefreshToken(refreshToken);
+                    resp.setRefreshToken(refreshToken);
                 }
             }
-            return loginResp;
+            return resp;
         } catch (Exception e) {
             // 登录响应组装、Refresh Session 写入或 Cookie 写入失败时，不能留下孤立的
             // Access Token。覆盖 StpUtil.login 后的所有异常路径，而不只是 Redis 失败。

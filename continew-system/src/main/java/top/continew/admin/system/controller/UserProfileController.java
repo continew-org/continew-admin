@@ -170,9 +170,9 @@ public class UserProfileController {
     @Operation(summary = "查询绑定的三方账号", description = "查询绑定的三方账号")
     @GetMapping("/social")
     public List<UserSocialBindResp> listSocialBind() {
-        List<UserSocialDO> userSocials =
+        List<UserSocialDO> socialBinds =
             userSocialService.listByUserId(UserContextHolder.getUserId());
-        return CollUtils.mapToList(userSocials, userSocial -> {
+        return CollUtils.mapToList(socialBinds, userSocial -> {
             String source = userSocial.getSource();
             UserSocialBindResp userSocialBind = new UserSocialBindResp();
             userSocialBind.setSource(source);

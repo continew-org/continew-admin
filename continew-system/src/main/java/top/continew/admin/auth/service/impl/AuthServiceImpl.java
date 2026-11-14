@@ -68,11 +68,11 @@ public class AuthServiceImpl implements AuthService {
     private final CrudProperties crudProperties;
 
     @Override
-    public LoginResp login(LoginReq loginReq, HttpServletRequest request,
+    public LoginResp login(LoginReq req, HttpServletRequest request,
         HttpServletResponse response) {
-        AuthTypeEnum authType = loginReq.getAuthType();
+        AuthTypeEnum authType = req.getAuthType();
         // 校验客户端
-        ClientResp client = clientService.getByClientId(loginReq.getClientId());
+        ClientResp client = clientService.getByClientId(req.getClientId());
         if (client == null) {
             throw new BadRequestException("客户端不存在");
         }
@@ -86,12 +86,12 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("不支持的认证类型 [" + authType.getDescription() + "]");
         }
         // 登录前置处理
-        loginHandler.preLogin(loginReq, client, request);
+        loginHandler.preLogin(req, client, request);
         // 登录
-        LoginResp loginResp = loginHandler.login(loginReq, client, request, response);
+        LoginResp resp = loginHandler.login(req, client, request, response);
         // 登录后置处理
-        loginHandler.postLogin(loginReq, client, request);
-        return loginResp;
+        loginHandler.postLogin(req, client, request);
+        return resp;
     }
 
     @Override
@@ -101,15 +101,15 @@ public class AuthServiceImpl implements AuthService {
             return new ArrayList<>(0);
         }
         // 查询菜单列表
-        Set<MenuResp> distinctMenus = new LinkedHashSet<>();
+        Set<MenuResp> menus = new LinkedHashSet<>();
         if (roles.stream()
             .anyMatch(role -> SystemConstants.SUPER_ADMIN_ROLE_ID.equals(role.getId()))) {
-            distinctMenus.addAll(menuService.listByRoleId(SystemConstants.SUPER_ADMIN_ROLE_ID));
+            menus.addAll(menuService.listByRoleId(SystemConstants.SUPER_ADMIN_ROLE_ID));
         } else {
-            roles.forEach(role -> distinctMenus.addAll(menuService.listByRoleId(role.getId())));
+            roles.forEach(role -> menus.addAll(menuService.listByRoleId(role.getId())));
         }
         List<MenuResp> routeMenus =
-            distinctMenus.stream().filter(menu -> !MenuTypeEnum.BUTTON.equals(menu.getType()))
+            menus.stream().filter(menu -> !MenuTypeEnum.BUTTON.equals(menu.getType()))
                 .toList();
         if (CollUtil.isEmpty(routeMenus)) {
             return new ArrayList<>(0);

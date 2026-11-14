@@ -115,7 +115,7 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<DashboardChartCommonResp> getAnalysisGeo() throws IOException {
-        List<DashboardChartCommonResp> originData = logMapper.selectListDashboardAnalysisGeo();
+        List<DashboardChartCommonResp> rawChartData = logMapper.selectListDashboardAnalysisGeo();
         List<DashboardChartCommonResp> chartData = new ArrayList<>(34);
         // 获取省份数据
         String chinaJson = IoUtil.readUtf8(new ClassPathResource("china.json").getInputStream());
@@ -129,7 +129,7 @@ public class DashboardServiceImpl implements DashboardService {
             String[] split = province.split(StringConstants.COLON);
             String name = split[0];
             String fullName = split[1];
-            long sum = originData.stream()
+            long sum = rawChartData.stream()
                 .filter(item -> item.getName().contains(name))
                 .mapToLong(DashboardChartCommonResp::getValue)
                 .sum();
@@ -230,16 +230,16 @@ public class DashboardServiceImpl implements DashboardService {
     /**
      * 填充缺失时间段的数据
      *
-     * @param expectedTimeLabels 所有时间段
+     * @param expectedLabels 所有时间段
      * @param chartData 待填充数据
      */
-    private void fillMissingDateData(List<String> expectedTimeLabels,
+    private void fillMissingDateData(List<String> expectedLabels,
         List<DashboardChartCommonResp> chartData) {
-        Collection<String> missingTimeLabels = CollUtil.disjunction(expectedTimeLabels, CollUtils
+        Collection<String> missingLabels = CollUtil.disjunction(expectedLabels, CollUtils
             .mapToList(chartData, DashboardChartCommonResp::getName));
         chartData.addAll(
-            CollUtils.mapToList(missingTimeLabels,
-                missingTimeLabel -> new DashboardChartCommonResp(missingTimeLabel, 0L)));
+            CollUtils.mapToList(missingLabels,
+                missingLabel -> new DashboardChartCommonResp(missingLabel, 0L)));
         chartData.sort(Comparator.comparing(DashboardChartCommonResp::getName));
     }
 

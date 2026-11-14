@@ -84,14 +84,14 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
     @Override
     @Transactional
-    public LoginResp login(SocialLoginReq loginReq, ClientResp client,
+    public LoginResp login(SocialLoginReq req, ClientResp client,
         HttpServletRequest request,
         HttpServletResponse response) {
         // 获取第三方登录信息
-        AuthRequest authRequest = authRequestFactory.getAuthRequest(loginReq.getSource());
+        AuthRequest authRequest = authRequestFactory.getAuthRequest(req.getSource());
         AuthCallback callback = new AuthCallback();
-        callback.setCode(loginReq.getCode());
-        callback.setState(loginReq.getState());
+        callback.setCode(req.getCode());
+        callback.setState(req.getState());
         AuthResponse<AuthUser> authResponse = authRequest.login(callback);
         ValidationUtils.throwIf(!authResponse.ok(), authResponse.getMsg());
         AuthUser authUser = authResponse.getData();

@@ -108,8 +108,8 @@ public class MenuServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void delete(List<Long> ids) {
         // 级联删除菜单（包含子菜单）
-        List<Long> cascadingMenuIds = this.listCascadingDeleteMenuIds(ids);
-        baseMapper.deleteByIds(cascadingMenuIds);
+        List<Long> menuIdsToDelete = this.listCascadingDeleteMenuIds(ids);
+        baseMapper.deleteByIds(menuIdsToDelete);
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 
@@ -126,9 +126,9 @@ public class MenuServiceImpl
             return super.list(new MenuQuery(DisEnableStatusEnum.ENABLE), null);
         }
         List<MenuDO> menus = baseMapper.selectListByRoleId(roleId);
-        List<MenuResp> menuResponses = BeanUtil.copyToList(menus, MenuResp.class);
-        menuResponses.forEach(super::fill);
-        return menuResponses;
+        List<MenuResp> roleMenus = BeanUtil.copyToList(menus, MenuResp.class);
+        roleMenus.forEach(super::fill);
+        return roleMenus;
     }
 
     @Override

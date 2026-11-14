@@ -215,9 +215,9 @@ public class DatabaseLogDao implements LogDao {
             return false;
         }
         String requestBody = logRequest.getBody();
-        LoginReq loginReq = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
+        LoginReq req = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
             LoginReq.class));
-        AuthTypeEnum authType = loginReq == null ? null : loginReq.getAuthType();
+        AuthTypeEnum authType = req == null ? null : req.getAuthType();
         // 登录接口已配置脱敏，不同日志实现或旧管理端可能没有保留 authType。操作日志
         // 不能因附加信息不完整而覆盖真实登录结果。
         if (authType == null) {

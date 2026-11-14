@@ -117,18 +117,12 @@ public class UserMessageController {
         messageService.readMessage(null, UserContextHolder.getUserId());
     }
 
-    /**
-     * 查询当前用户的未读公告数量
-     *
-     * @return 未读公告数量
-     */
     @Log(ignore = true)
     @Operation(summary = "查询未读公告数量", description = "查询当前用户的未读公告数量")
     @GetMapping("/notice/unread")
     public NoticeUnreadCountResp countUnreadNotice() {
-        List<Long> unreadNoticeIds =
-            noticeService.listUnreadIdsByUserId(null, UserContextHolder.getUserId());
-        return new NoticeUnreadCountResp(unreadNoticeIds.size());
+        Long userId = UserContextHolder.getUserId();
+        return new NoticeUnreadCountResp(noticeService.listUnreadIdsByUserId(null, userId).size());
     }
 
     @Log(ignore = true)

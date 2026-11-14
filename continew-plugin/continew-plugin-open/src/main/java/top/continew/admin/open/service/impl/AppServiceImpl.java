@@ -55,10 +55,10 @@ public class AppServiceImpl
     @Override
     public AppSecretResp getSecret(Long id) {
         AppDO app = super.getById(id);
-        AppSecretResp appSecretResp = new AppSecretResp();
-        appSecretResp.setAccessKey(app.getAccessKey());
-        appSecretResp.setSecretKey(app.getSecretKey());
-        return appSecretResp;
+        AppSecretResp resp = new AppSecretResp();
+        resp.setAccessKey(app.getAccessKey());
+        resp.setSecretKey(app.getSecretKey());
+        return resp;
     }
 
     @Override

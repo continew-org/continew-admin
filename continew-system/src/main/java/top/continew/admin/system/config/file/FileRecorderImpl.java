@@ -162,11 +162,11 @@ public class FileRecorderImpl implements FileRecorder {
     public List<FilePartInfo> getFileParts(String fileId) {
         String key = MultipartUploadConstants.MULTIPART_PARTS_PREFIX + fileId;
         try {
-            Map<String, Object> partJsonByNumber = RedisUtils.hGetAll(key);
-            if (CollUtil.isEmpty(partJsonByNumber)) {
+            Map<String, Object> partJsons = RedisUtils.hGetAll(key);
+            if (CollUtil.isEmpty(partJsons)) {
                 return new ArrayList<>();
             }
-            return partJsonByNumber.values()
+            return partJsons.values()
                 .stream()
                 .map(value -> JSONUtil.toBean(value.toString(), FilePartInfo.class))
                 .sorted(Comparator.comparing(FilePartInfo::getPartNumber))

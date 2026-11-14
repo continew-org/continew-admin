@@ -169,10 +169,10 @@ public class GeneratorServiceImpl implements GeneratorService {
         Collection<Column> columns = MetaUtils.getColumns(dataSource, tableName);
         // 获取数据库对应的类型映射配置
         DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
-        Map<String, List<String>> columnTypesByFieldType =
+        Map<String, List<String>> fieldTypeMappings =
             generatorProperties.getTypeMappings().get(databaseType);
-        CheckUtils.throwIfEmpty(columnTypesByFieldType, "请先配置对应数据库的类型映射");
-        Set<Map.Entry<String, List<String>>> typeMappings = columnTypesByFieldType.entrySet();
+        CheckUtils.throwIfEmpty(fieldTypeMappings, "请先配置对应数据库的类型映射");
+        Set<Map.Entry<String, List<String>>> mappingEntries = fieldTypeMappings.entrySet();
         // 新增或更新字段配置
         Map<String, FieldConfigDO> fieldConfigByColumnName = fieldConfigs.stream()
             .collect(Collectors.toMap(FieldConfigDO::getColumnName, Function.identity(), (existing,
@@ -187,7 +187,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 fieldConfig.setColumnType(column.getTypeName());
                 fieldConfig.setColumnSize(column.getSize());
             }
-            String fieldType = typeMappings.stream()
+            String fieldType = mappingEntries.stream()
                 .filter(entry -> entry.getValue().contains(fieldConfig.getColumnType()))
                 .map(Map.Entry::getKey)
                 .findFirst()
@@ -331,7 +331,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 
         // 渲染代码
         String classNamePrefix = innerGenConfig.getClassNamePrefix();
-        Map<String, TemplateConfiguration> templateConfigByClassSuffix =
+        Map<String, TemplateConfiguration> templateConfigs =
             generatorProperties.getTemplateConfigs();
         TemplateEngine engine = TemplateUtil
             .createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
@@ -342,7 +342,7 @@ public class GeneratorServiceImpl implements GeneratorService {
             freemarkerEngine.getConfiguration().setSharedVariable("statics",
                 wrapper.getStaticModels());
         }
-        for (Map.Entry<String, TemplateConfiguration> templateConfigEntry : templateConfigByClassSuffix
+        for (Map.Entry<String, TemplateConfiguration> templateConfigEntry : templateConfigs
             .entrySet()) {
             TemplateConfiguration templateConfig = templateConfigEntry.getValue();
             // 移除需要忽略的字段

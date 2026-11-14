@@ -73,8 +73,8 @@ public class UserSocialServiceImpl implements UserSocialService {
     public void bind(AuthUser authUser, Long userId) {
         String source = authUser.getSource();
         String openId = authUser.getUuid();
-        List<UserSocialDO> userSocials = this.listByUserId(userId);
-        Set<String> boundSources = CollUtils.mapToSet(userSocials, UserSocialDO::getSource);
+        List<UserSocialDO> socialBinds = this.listByUserId(userId);
+        Set<String> boundSources = CollUtils.mapToSet(socialBinds, UserSocialDO::getSource);
         String description = SocialSourceEnum.valueOf(source).getDescription();
         CheckUtils.throwIf(boundSources.contains(source), "您已经绑定过了 [{}] 平台，请先解绑", description);
         UserSocialDO userSocial = this.getBySourceAndOpenId(source, openId);

@@ -91,7 +91,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageUnreadResp countUnreadByUserId(Long userId, Boolean isDetail) {
-        MessageUnreadResp resp = new MessageUnreadResp();
+        MessageUnreadResp unreadResp = new MessageUnreadResp();
         Long total = 0L;
         if (Boolean.TRUE.equals(isDetail)) {
             List<MessageTypeUnreadResp> unreadCounts = new ArrayList<>();
@@ -104,12 +104,12 @@ public class MessageServiceImpl implements MessageService {
                 unreadCounts.add(typeResp);
                 total += count;
             }
-            resp.setDetails(unreadCounts);
+            unreadResp.setDetails(unreadCounts);
         } else {
             total = baseMapper.selectUnreadCountByUserIdAndType(userId, null);
         }
-        resp.setTotal(total);
-        return resp;
+        unreadResp.setTotal(total);
+        return unreadResp;
     }
 
     @Override
