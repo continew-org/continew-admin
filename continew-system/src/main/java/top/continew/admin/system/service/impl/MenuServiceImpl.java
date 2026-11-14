@@ -77,30 +77,30 @@ public class MenuServiceImpl
     }
 
     @Override
-    public Long create(MenuReq request) {
-        this.checkTitleRepeat(request.getTitle(), request.getParentId(), null);
+    public Long create(MenuReq req) {
+        this.checkTitleRepeat(req.getTitle(), req.getParentId(), null);
         // 目录和菜单的组件名称不能重复
-        if (!MenuTypeEnum.BUTTON.equals(request.getType())) {
-            this.checkNameRepeat(request.getName(), null);
+        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
+            this.checkNameRepeat(req.getName(), null);
         }
         // 目录类型菜单，默认为 Layout
-        if (MenuTypeEnum.DIR.equals(request.getType())) {
-            request.setComponent(StrUtil.blankToDefault(request.getComponent(), "Layout"));
+        if (MenuTypeEnum.DIR.equals(req.getType())) {
+            req.setComponent(StrUtil.blankToDefault(req.getComponent(), "Layout"));
         }
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
-        return super.create(request);
+        return super.create(req);
     }
 
     @Override
-    public void update(MenuReq request, Long id) {
-        this.checkTitleRepeat(request.getTitle(), request.getParentId(), id);
+    public void update(MenuReq req, Long id) {
+        this.checkTitleRepeat(req.getTitle(), req.getParentId(), id);
         // 目录和菜单的组件名称不能重复
-        if (!MenuTypeEnum.BUTTON.equals(request.getType())) {
-            this.checkNameRepeat(request.getName(), id);
+        if (!MenuTypeEnum.BUTTON.equals(req.getType())) {
+            this.checkNameRepeat(req.getName(), id);
         }
         MenuDO oldMenu = super.getById(id);
-        CheckUtils.throwIfNotEqual(request.getType(), oldMenu.getType(), "不允许修改菜单类型");
-        super.update(request, id);
+        CheckUtils.throwIfNotEqual(req.getType(), oldMenu.getType(), "不允许修改菜单类型");
+        super.update(req, id);
         CacheUtils.evictAll(CacheConstants.ROLE_MENU_KEY_PREFIX);
     }
 

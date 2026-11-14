@@ -109,31 +109,31 @@ public class OnlineUserServiceImpl implements OnlineUserService {
             if (query.getOnline() != null && query.getOnline() != online) {
                 continue;
             }
-            OnlineUserResp response = new OnlineUserResp();
-            response.setId(session.getUserId());
-            response.setSessionId(session.getSessionId());
-            response.setUsername(session.getUsername());
-            response.setNickname(session.getNickname());
-            response.setClientType(session.getClientType());
-            response.setClientId(session.getClientId());
-            response.setIp(session.getIp());
-            response.setAddress(session.getAddress());
-            response.setBrowser(session.getBrowser());
-            response.setOs(session.getOs());
-            response.setLoginTime(DateUtil.date(session.getCreatedAt()).toLocalDateTime());
-            response
+            OnlineUserResp resp = new OnlineUserResp();
+            resp.setId(session.getUserId());
+            resp.setSessionId(session.getSessionId());
+            resp.setUsername(session.getUsername());
+            resp.setNickname(session.getNickname());
+            resp.setClientType(session.getClientType());
+            resp.setClientId(session.getClientId());
+            resp.setIp(session.getIp());
+            resp.setAddress(session.getAddress());
+            resp.setBrowser(session.getBrowser());
+            resp.setOs(session.getOs());
+            resp.setLoginTime(DateUtil.date(session.getCreatedAt()).toLocalDateTime());
+            resp
                 .setLastRefreshTime(DateUtil.date(session.getLastRefreshAt()).toLocalDateTime());
-            response.setLastActiveTime(DateUtil.date(lastActiveTime).toLocalDateTime());
-            response.setActiveTimeExact(hasActiveRecord);
-            response.setSessionExpireTime(DateUtil.date(session.getExpiresAt()).toLocalDateTime());
+            resp.setLastActiveTime(DateUtil.date(lastActiveTime).toLocalDateTime());
+            resp.setActiveTimeExact(hasActiveRecord);
+            resp.setSessionExpireTime(DateUtil.date(session.getExpiresAt()).toLocalDateTime());
             // 没有活跃记录时不给出「预计失效」：时间本身是推算的，算出来的阈值时刻可能已过去，
             // 会让人误以为这台设备马上要掉线。此时前端回落到会话的绝对到期时间。
-            response.setIdleExpireTime(hasActiveRecord && idleTimeoutMillis > 0
+            resp.setIdleExpireTime(hasActiveRecord && idleTimeoutMillis > 0
                 ? DateUtil.date(lastActiveTime + idleTimeoutMillis).toLocalDateTime()
                 : null);
-            response.setIdleExpired(idleExpired);
-            response.setOnline(online);
-            onlineUsers.add(response);
+            resp.setIdleExpired(idleExpired);
+            resp.setOnline(online);
+            onlineUsers.add(resp);
         }
         // 登录时间可能缺失，排序必须空值安全。
         CollUtil.sort(onlineUsers, Comparator.comparing(OnlineUserResp::getLoginTime, Comparator

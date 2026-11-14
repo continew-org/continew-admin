@@ -74,7 +74,7 @@ public class OptionController {
         "system:loginConfig:update",
         "system:mailConfig:update"}, mode = SaMode.OR)
     @PatchMapping("/value")
-    public void resetValue(@RequestBody @Valid OptionValueResetReq request) {
-        baseService.resetValue(request);
+    public void resetValue(@RequestBody @Valid OptionValueResetReq req) {
+        baseService.resetValue(req);
     }
 }

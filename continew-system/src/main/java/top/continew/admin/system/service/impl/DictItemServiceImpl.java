@@ -62,14 +62,14 @@ public class DictItemServiceImpl extends
         new ConcurrentHashMap<>();
 
     @Override
-    public void beforeCreate(DictItemReq request) {
-        this.checkValueRepeat(request.getValue(), null, request.getDictId());
+    public void beforeCreate(DictItemReq req) {
+        this.checkValueRepeat(req.getValue(), null, req.getDictId());
         CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 
     @Override
-    public void beforeUpdate(DictItemReq request, Long id) {
-        this.checkValueRepeat(request.getValue(), id, request.getDictId());
+    public void beforeUpdate(DictItemReq req, Long id) {
+        this.checkValueRepeat(req.getValue(), id, req.getDictId());
         CacheUtils.evictAll(CacheConstants.DICT_KEY_PREFIX);
     }
 

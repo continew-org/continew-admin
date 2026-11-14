@@ -201,11 +201,11 @@ public class GeneratorServiceImpl implements GeneratorService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveConfig(GenConfigReq request, String tableName) {
+    public void saveConfig(GenConfigReq req, String tableName) {
         // 保存字段配置（先删除再保存）
         fieldConfigMapper.delete(
             Wrappers.lambdaQuery(FieldConfigDO.class).eq(FieldConfigDO::getTableName, tableName));
-        List<FieldConfigDO> fieldConfigs = request.getFieldConfigs();
+        List<FieldConfigDO> fieldConfigs = req.getFieldConfigs();
         for (int i = 0; i < fieldConfigs.size(); i++) {
             FieldConfigDO fieldConfig = fieldConfigs.get(i);
             // 重新设置排序
@@ -236,7 +236,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
         fieldConfigMapper.insert(fieldConfigs);
         // 保存或更新生成配置信息
-        GenConfigDO newGenConfig = request.getGenConfig();
+        GenConfigDO newGenConfig = req.getGenConfig();
         GenConfigDO oldGenConfig = genConfigMapper.selectById(tableName);
         if (oldGenConfig != null) {
             BeanUtil.copyProperties(newGenConfig, oldGenConfig);

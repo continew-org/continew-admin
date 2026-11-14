@@ -35,12 +35,12 @@ public interface AuthService {
     /**
      * 登录
      *
-     * @param loginRequest      请求参数
+     * @param loginReq      请求参数
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录响应参数
      */
-    LoginResp login(LoginReq loginRequest, HttpServletRequest request,
+    LoginResp login(LoginReq loginReq, HttpServletRequest request,
         HttpServletResponse response);
 
     /**

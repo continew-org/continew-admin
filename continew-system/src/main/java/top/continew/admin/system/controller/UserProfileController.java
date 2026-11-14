@@ -99,67 +99,67 @@ public class UserProfileController {
     /**
      * 修改基础信息
      *
-     * @param request 基础信息
+     * @param req 基础信息
      */
     @Operation(summary = "修改基础信息", description = "修改用户基础信息")
     @PatchMapping("/basic/info")
-    public void updateBasicInfo(@RequestBody @Valid UserBasicInfoUpdateReq request) {
-        userService.updateBasicInfo(request, UserContextHolder.getUserId());
+    public void updateBasicInfo(@RequestBody @Valid UserBasicInfoUpdateReq req) {
+        userService.updateBasicInfo(req, UserContextHolder.getUserId());
     }
 
     /**
      * 修改密码
      *
-     * @param request 当前密码和新密码
+     * @param req 当前密码和新密码
      */
     @Operation(summary = "修改密码", description = "修改用户登录密码")
     @PatchMapping("/password")
-    public void updatePassword(@RequestBody @Valid UserPasswordUpdateReq request) {
+    public void updatePassword(@RequestBody @Valid UserPasswordUpdateReq req) {
         // 三方用户（无密码）设置初始密码时，旧密码为空，无需校验
-        String oldPassword = StrUtil.isNotBlank(request.getOldPassword())
-            ? SecureUtils.decryptPasswordByRsaPrivateKey(request.getOldPassword(), DECRYPT_FAILED)
+        String oldPassword = StrUtil.isNotBlank(req.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(req.getOldPassword(), DECRYPT_FAILED)
             : null;
         String newPassword =
-            SecureUtils.decryptPasswordByRsaPrivateKey(request.getNewPassword(), "新密码解密失败");
+            SecureUtils.decryptPasswordByRsaPrivateKey(req.getNewPassword(), "新密码解密失败");
         userService.updatePassword(oldPassword, newPassword, UserContextHolder.getUserId());
     }
 
     /**
      * 修改手机号
      *
-     * @param request 当前密码、新手机号和验证码
+     * @param req 当前密码、新手机号和验证码
      */
     @Operation(summary = "修改手机号", description = "修改手机号")
     @PatchMapping("/phone")
-    public void updatePhone(@RequestBody @Valid UserPhoneUpdateReq request) {
-        String oldPassword = StrUtil.isNotBlank(request.getOldPassword())
-            ? SecureUtils.decryptPasswordByRsaPrivateKey(request.getOldPassword(), DECRYPT_FAILED)
+    public void updatePhone(@RequestBody @Valid UserPhoneUpdateReq req) {
+        String oldPassword = StrUtil.isNotBlank(req.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(req.getOldPassword(), DECRYPT_FAILED)
             : null;
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + request.getPhone();
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + req.getPhone();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(request.getCaptcha(), captcha, "验证码不正确");
+        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, "验证码不正确");
         RedisUtils.delete(captchaKey);
-        userService.updatePhone(request.getPhone(), oldPassword, UserContextHolder.getUserId());
+        userService.updatePhone(req.getPhone(), oldPassword, UserContextHolder.getUserId());
     }
 
     /**
      * 修改邮箱
      *
-     * @param request 当前密码、新邮箱和验证码
+     * @param req 当前密码、新邮箱和验证码
      */
     @Operation(summary = "修改邮箱", description = "修改用户邮箱")
     @PatchMapping("/email")
-    public void updateEmail(@RequestBody @Valid UserEmailUpdateReq request) {
-        String oldPassword = StrUtil.isNotBlank(request.getOldPassword())
-            ? SecureUtils.decryptPasswordByRsaPrivateKey(request.getOldPassword(), DECRYPT_FAILED)
+    public void updateEmail(@RequestBody @Valid UserEmailUpdateReq req) {
+        String oldPassword = StrUtil.isNotBlank(req.getOldPassword())
+            ? SecureUtils.decryptPasswordByRsaPrivateKey(req.getOldPassword(), DECRYPT_FAILED)
             : null;
-        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + request.getEmail();
+        String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + req.getEmail();
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(request.getCaptcha(), captcha, "验证码不正确");
+        ValidationUtils.throwIfNotEqualIgnoreCase(req.getCaptcha(), captcha, "验证码不正确");
         RedisUtils.delete(captchaKey);
-        userService.updateEmail(request.getEmail(), oldPassword, UserContextHolder.getUserId());
+        userService.updateEmail(req.getEmail(), oldPassword, UserContextHolder.getUserId());
     }
 
     /**
@@ -174,10 +174,10 @@ public class UserProfileController {
             userSocialService.listByUserId(UserContextHolder.getUserId());
         return CollUtils.mapToList(userSocials, userSocial -> {
             String source = userSocial.getSource();
-            UserSocialBindResp response = new UserSocialBindResp();
-            response.setSource(source);
-            response.setDescription(SocialSourceEnum.valueOf(source).getDescription());
-            return response;
+            UserSocialBindResp userSocialBind = new UserSocialBindResp();
+            userSocialBind.setSource(source);
+            userSocialBind.setDescription(SocialSourceEnum.valueOf(source).getDescription());
+            return userSocialBind;
         });
     }
 

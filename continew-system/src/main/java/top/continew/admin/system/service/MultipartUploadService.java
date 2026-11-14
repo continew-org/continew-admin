@@ -30,7 +30,7 @@ import top.continew.admin.system.model.resp.file.MultipartUploadPartResp;
  */
 public interface MultipartUploadService {
 
-    MultipartUploadCreateResp initMultipartUpload(MultipartUploadCreateReq request);
+    MultipartUploadCreateResp initMultipartUpload(MultipartUploadCreateReq req);
 
     MultipartUploadPartResp uploadPart(MultipartFile file, String uploadId, Integer partNumber,
         String path);

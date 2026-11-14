@@ -72,29 +72,29 @@ public class DeptServiceImpl
     private OnlineUserService onlineUserService;
 
     @Override
-    public void beforeCreate(DeptReq request) {
-        this.checkNameRepeat(request.getName(), request.getParentId(), null);
-        request.setAncestors(this.getAncestors(request.getParentId()));
+    public void beforeCreate(DeptReq req) {
+        this.checkNameRepeat(req.getName(), req.getParentId(), null);
+        req.setAncestors(this.getAncestors(req.getParentId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(DeptUserPolicyLockTargetResolver.class)
-    public void update(DeptReq request, Long id) {
-        super.update(request, id);
+    public void update(DeptReq req, Long id) {
+        super.update(req, id);
     }
 
     @Override
-    public void beforeUpdate(DeptReq request, Long id) {
-        this.checkNameRepeat(request.getName(), request.getParentId(), id);
+    public void beforeUpdate(DeptReq req, Long id) {
+        this.checkNameRepeat(req.getName(), req.getParentId(), id);
         DeptDO oldDept = super.getById(id);
         String oldName = oldDept.getName();
-        DisEnableStatusEnum newStatus = request.getStatus();
+        DisEnableStatusEnum newStatus = req.getStatus();
         Long oldParentId = oldDept.getParentId();
         if (Boolean.TRUE.equals(oldDept.getIsSystem())) {
             CheckUtils.throwIfEqual(DisEnableStatusEnum.DISABLE, newStatus, "[{}] 是系统内置部门，不允许禁用",
                 oldName);
-            CheckUtils.throwIfNotEqual(request.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门",
+            CheckUtils.throwIfNotEqual(req.getParentId(), oldParentId, "[{}] 是系统内置部门，不允许变更上级部门",
                 oldName);
         }
         // 启用/禁用部门
@@ -111,18 +111,18 @@ public class DeptServiceImpl
                     .equals(oldParentDept.getStatus()), "启用 [{}] 前，请先启用其所有上级部门", oldName);
         }
         // 变更上级部门
-        if (ObjectUtil.notEqual(request.getParentId(), oldParentId)) {
+        if (ObjectUtil.notEqual(req.getParentId(), oldParentId)) {
             // 更新祖级列表
-            String newAncestors = this.getAncestors(request.getParentId());
-            request.setAncestors(newAncestors);
+            String newAncestors = this.getAncestors(req.getParentId());
+            req.setAncestors(newAncestors);
             // 更新子级的祖级列表
             this.updateChildrenAncestors(newAncestors, oldDept.getAncestors(), id);
         }
     }
 
     @Override
-    public void afterUpdate(DeptReq request, DeptDO entity) {
-        if (DisEnableStatusEnum.DISABLE.equals(request.getStatus())) {
+    public void afterUpdate(DeptReq req, DeptDO entity) {
+        if (DisEnableStatusEnum.DISABLE.equals(req.getStatus())) {
             // 部门禁用后，直属用户的 Access/Refresh Session 必须立即失效。下级部门要求
             // 先逐级禁用，因此只处理当前部门即可。
             userService.listIdByDeptId(entity.getId()).forEach(onlineUserService::kickOut);

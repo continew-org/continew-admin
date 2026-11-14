@@ -77,41 +77,41 @@ public class RoleServiceImpl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(RoleReq request) {
-        this.checkNameRepeat(request.getName(), null);
-        String code = request.getCode();
+    public Long create(RoleReq req) {
+        this.checkNameRepeat(req.getName(), null);
+        String code = req.getCode();
         this.checkCodeRepeat(code, null);
         // 防止租户添加超级管理员
         CheckUtils.throwIfEqual(RoleCodeEnum.SUPER_ADMIN.getCode(), code, "编码 [{}] 禁止使用", code);
         // 新增信息
-        Long roleId = super.create(request);
+        Long roleId = super.create(req);
         // 保存角色和部门关联
-        roleDeptService.add(request.getDeptIds(), roleId);
+        roleDeptService.add(req.getDeptIds(), roleId);
         return roleId;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(RoleReq request, Long id) {
-        this.checkNameRepeat(request.getName(), id);
+    public void update(RoleReq req, Long id) {
+        this.checkNameRepeat(req.getName(), id);
         RoleDO oldRole = super.getById(id);
-        CheckUtils.throwIfNotEqual(request.getCode(), oldRole.getCode(), "角色编码不允许修改",
+        CheckUtils.throwIfNotEqual(req.getCode(), oldRole.getCode(), "角色编码不允许修改",
             oldRole.getName());
         DataScopeEnum oldDataScope = oldRole.getDataScope();
         if (Boolean.TRUE.equals(oldRole.getIsSystem())) {
-            CheckUtils.throwIfNotEqual(request.getDataScope(), oldDataScope,
+            CheckUtils.throwIfNotEqual(req.getDataScope(), oldDataScope,
                 "[{}] 是系统内置角色，不允许修改角色数据权限",
                 oldRole.getName());
         }
         // 更新信息
-        super.update(request, id);
-        if (RoleCodeEnum.isSuperRoleCode(request.getCode())) {
+        super.update(req, id);
+        if (RoleCodeEnum.isSuperRoleCode(req.getCode())) {
             return;
         }
         // 保存角色和部门关联
-        boolean isSaveDeptSuccess = roleDeptService.add(request.getDeptIds(), id);
+        boolean isSaveDeptSuccess = roleDeptService.add(req.getDeptIds(), id);
         // 数据权限有变更时同步在线用户权限信息
-        if (isSaveDeptSuccess || ObjectUtil.notEqual(request.getDataScope(), oldDataScope)) {
+        if (isSaveDeptSuccess || ObjectUtil.notEqual(req.getDataScope(), oldDataScope)) {
             TransactionUtils.afterCommit(() -> this.updateUserContext(id));
         }
     }
@@ -156,14 +156,14 @@ public class RoleServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheConstants.ROLE_MENU_KEY_PREFIX, key = "#id")
-    public void updatePermission(Long id, RolePermissionUpdateReq request) {
+    public void updatePermission(Long id, RolePermissionUpdateReq req) {
         RoleDO role = super.getById(id);
         CheckUtils.throwIf(Boolean.TRUE.equals(role.getIsSystem()), "[{}] 是系统内置角色，不允许修改角色功能权限",
             role.getName());
         // 保存角色和菜单关联
-        boolean isSaveMenuSuccess = roleMenuService.add(request.getMenuIds(), id);
+        boolean isSaveMenuSuccess = roleMenuService.add(req.getMenuIds(), id);
         baseMapper.lambdaUpdate()
-            .set(RoleDO::getMenuCheckStrictly, request.getMenuCheckStrictly())
+            .set(RoleDO::getMenuCheckStrictly, req.getMenuCheckStrictly())
             .eq(RoleDO::getId, id)
             .update();
         // 功能权限有变更时同步在线用户权限信息

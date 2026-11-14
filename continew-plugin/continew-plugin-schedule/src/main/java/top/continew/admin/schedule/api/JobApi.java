@@ -55,27 +55,27 @@ public interface JobApi {
     /**
      * 新增
      *
-     * @param request 请求参数
+     * @param req 请求参数
      * @return 响应信息
      */
     @PostMapping
-    Result<Boolean> create(@RequestBody JobReq request);
+    Result<Boolean> create(@RequestBody JobReq req);
 
     /**
      * 修改
      *
-     * @param request 请求参数
+     * @param req 请求参数
      * @return 响应信息
      */
     @PutMapping
-    Result<Boolean> update(@RequestBody JobReq request);
+    Result<Boolean> update(@RequestBody JobReq req);
 
     /**
      * 执行
      *
-     * @param request 请求参数
+     * @param req 请求参数
      * @return 响应信息
      */
     @PostMapping("/trigger")
-    Result<Boolean> trigger(@RequestBody JobTriggerReq request);
+    Result<Boolean> trigger(@RequestBody JobTriggerReq req);
 }

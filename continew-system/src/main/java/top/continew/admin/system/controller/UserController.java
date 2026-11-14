@@ -88,39 +88,39 @@ public class UserController
     /**
      * 导入数据
      *
-     * @param request 导入信息
+     * @param req 导入信息
      * @return 导入结果
      */
     @Operation(summary = "导入数据", description = "导入数据")
     @SaCheckPermission("system:user:import")
     @PostMapping(value = "/import")
-    public UserImportResp importUser(@RequestBody @Valid UserImportReq request) {
-        return baseService.importUser(request);
+    public UserImportResp importUser(@RequestBody @Valid UserImportReq req) {
+        return baseService.importUser(req);
     }
 
     /**
      * 重置密码
      *
-     * @param request 新密码
+     * @param req 新密码
      * @param id 用户 ID
      */
     @Operation(summary = "重置密码", description = "重置用户登录密码")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:resetPwd")
     @PatchMapping("/{id}/password")
-    public void resetPassword(@RequestBody @Valid UserPasswordResetReq request,
+    public void resetPassword(@RequestBody @Valid UserPasswordResetReq req,
         @PathVariable Long id) {
         String newPassword =
-            SecureUtils.decryptPasswordByRsaPrivateKey(request.getNewPassword(), "新密码解密失败", true);
-        request.setNewPassword(newPassword);
-        baseService.resetPassword(request, id);
+            SecureUtils.decryptPasswordByRsaPrivateKey(req.getNewPassword(), "新密码解密失败", true);
+        req.setNewPassword(newPassword);
+        baseService.resetPassword(req, id);
     }
 
     @Operation(summary = "分配角色", description = "为用户新增或移除角色")
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @SaCheckPermission("system:user:updateRole")
     @PatchMapping("/{id}/role")
-    public void updateRole(@RequestBody @Valid UserRoleUpdateReq request, @PathVariable Long id) {
-        baseService.updateRole(request, id);
+    public void updateRole(@RequestBody @Valid UserRoleUpdateReq req, @PathVariable Long id) {
+        baseService.updateRole(req, id);
     }
 }

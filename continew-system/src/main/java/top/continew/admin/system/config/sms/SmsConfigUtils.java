@@ -56,25 +56,25 @@ public class SmsConfigUtils {
             return null;
         }
         // 构建配置
-        Map<String, Object> configValueByName = MapUtil.newHashMap();
-        configValueByName.put("configId", smsConfig.getId().toString());
-        configValueByName.put("accessKeyId", smsConfig.getAccessKey());
-        configValueByName.put("accessKeySecret", smsConfig.getSecretKey());
-        configValueByName.put("signature", smsConfig.getSignature());
-        configValueByName.put("templateId", smsConfig.getTemplateId());
+        Map<String, Object> configProperties = MapUtil.newHashMap();
+        configProperties.put("configId", smsConfig.getId().toString());
+        configProperties.put("accessKeyId", smsConfig.getAccessKey());
+        configProperties.put("accessKeySecret", smsConfig.getSecretKey());
+        configProperties.put("signature", smsConfig.getSignature());
+        configProperties.put("templateId", smsConfig.getTemplateId());
         if (smsConfig.getWeight() != null) {
-            configValueByName.put("weight", smsConfig.getWeight());
+            configProperties.put("weight", smsConfig.getWeight());
         }
         if (smsConfig.getRetryInterval() != null) {
-            configValueByName.put("retryInterval", smsConfig.getRetryInterval());
+            configProperties.put("retryInterval", smsConfig.getRetryInterval());
         }
         if (smsConfig.getMaxRetries() != null) {
-            configValueByName.put("maxRetries", smsConfig.getMaxRetries());
+            configProperties.put("maxRetries", smsConfig.getMaxRetries());
         }
         if (StrUtil.isNotBlank(smsConfig.getSupplierConfig())) {
-            configValueByName.putAll(JsonUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
+            configProperties.putAll(JsonUtils.toBean(smsConfig.getSupplierConfig(), Map.class));
         }
-        return (BaseConfig) BeanUtil.toBean(configValueByName, providerFactory.getConfigClass());
+        return (BaseConfig) BeanUtil.toBean(configProperties, providerFactory.getConfigClass());
     }
 
 }

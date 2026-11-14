@@ -47,8 +47,8 @@ public class UserApiImpl implements UserApi {
 
     @Override
     public void resetPassword(String newPassword, Long id) {
-        UserPasswordResetReq request = new UserPasswordResetReq();
-        request.setNewPassword(newPassword);
-        baseService.resetPassword(request, id);
+        UserPasswordResetReq req = new UserPasswordResetReq();
+        req.setNewPassword(newPassword);
+        baseService.resetPassword(req, id);
     }
 }

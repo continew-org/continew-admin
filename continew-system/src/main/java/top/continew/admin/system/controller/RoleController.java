@@ -84,8 +84,8 @@ public class RoleController
     @SaCheckPermission("system:role:updatePermission")
     @PutMapping("/{id}/permission")
     public void updatePermission(@PathVariable("id") Long id,
-        @RequestBody @Valid RolePermissionUpdateReq request) {
-        baseService.updatePermission(id, request);
+        @RequestBody @Valid RolePermissionUpdateReq req) {
+        baseService.updatePermission(id, req);
     }
 
     @Operation(summary = "分页查询关联用户", description = "分页查询角色关联的用户列表")

@@ -64,7 +64,7 @@ public class SessionController {
     /**
      * 使用 Refresh Token 轮换 Access Token
      *
-     * @param refreshRequest      刷新令牌请求参数，可为空
+     * @param refreshReq      刷新令牌请求参数，可为空
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录响应参数
@@ -75,11 +75,11 @@ public class SessionController {
     @Log(excludes = {Include.REQUEST_HEADERS, Include.REQUEST_BODY, Include.RESPONSE_HEADERS,
         Include.RESPONSE_BODY})
     @PostMapping("/refresh")
-    public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq refreshRequest,
+    public LoginResp refresh(@RequestBody(required = false) @Valid RefreshTokenReq refreshReq,
         HttpServletRequest request, HttpServletResponse response) {
         // 四步安全钩子（解析 → 限流 → 来源校验 → 原子轮换）由 Starter 的 refresh 模板固化编排
         RefreshIssueResult result = refreshTokenService.refresh(
-            refreshRequest == null ? null : refreshRequest
+            refreshReq == null ? null : refreshReq
                 .getRefreshToken(),
             request, response,
             session -> refreshAccessTokenIssuer.issue(session,
@@ -93,7 +93,7 @@ public class SessionController {
     /**
      * 注销当前认证会话
      *
-     * @param refreshRequest      注销请求参数，可为空
+     * @param refreshReq      注销请求参数，可为空
      * @param request  请求对象
      * @param response 响应对象
      * @return 被注销会话的登录用户 ID
@@ -105,7 +105,7 @@ public class SessionController {
     @Parameter(name = "Authorization", description = "令牌", required = true,
         example = "Bearer xxxx-xxxx-xxxx-xxxx", in = ParameterIn.HEADER)
     @PostMapping("/logout")
-    public Object logout(@RequestBody(required = false) RefreshTokenReq refreshRequest,
+    public Object logout(@RequestBody(required = false) RefreshTokenReq refreshReq,
         HttpServletRequest request, HttpServletResponse response) {
         Object loginId = StpUtil.getLoginId(-1L);
         String accessToken = StpUtil.getTokenValue();
@@ -113,7 +113,7 @@ public class SessionController {
         String refreshToken;
         try {
             refreshToken = refreshTokenService.resolve(
-                refreshRequest == null ? null : refreshRequest.getRefreshToken(),
+                refreshReq == null ? null : refreshReq.getRefreshToken(),
                 request);
             refreshTokenService.validateRequest(refreshToken, request);
         } catch (RefreshTokenException e) {

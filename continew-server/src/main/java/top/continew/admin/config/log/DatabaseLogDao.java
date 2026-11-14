@@ -135,11 +135,11 @@ public class DatabaseLogDao implements LogDao {
             logEntity.setStatus(LogStatusEnum.FAILURE);
             return;
         }
-        Map<String, String> responseHeaderValueByName = logResponse.getHeaders();
-        responseHeaderValueByName =
-            responseHeaderValueByName == null ? Collections.emptyMap() : responseHeaderValueByName;
-        logEntity.setResponseHeaders(JSONUtil.toJsonStr(responseHeaderValueByName));
-        logEntity.setTraceId(responseHeaderValueByName.get(traceProperties.getTraceIdName()));
+        Map<String, String> responseHeaders = logResponse.getHeaders();
+        responseHeaders =
+            responseHeaders == null ? Collections.emptyMap() : responseHeaders;
+        logEntity.setResponseHeaders(JSONUtil.toJsonStr(responseHeaders));
+        logEntity.setTraceId(responseHeaders.get(traceProperties.getTraceIdName()));
         String responseBody = logResponse.getBody();
         logEntity.setResponseBody(responseBody);
         // 状态
@@ -215,9 +215,9 @@ public class DatabaseLogDao implements LogDao {
             return false;
         }
         String requestBody = logRequest.getBody();
-        LoginReq loginRequest = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
+        LoginReq loginReq = ExceptionUtils.exToNull(() -> JSONUtil.toBean(requestBody,
             LoginReq.class));
-        AuthTypeEnum authType = loginRequest == null ? null : loginRequest.getAuthType();
+        AuthTypeEnum authType = loginReq == null ? null : loginReq.getAuthType();
         // 登录接口已配置脱敏，不同日志实现或旧管理端可能没有保留 authType。操作日志
         // 不能因附加信息不完整而覆盖真实登录结果。
         if (authType == null) {
@@ -255,15 +255,15 @@ public class DatabaseLogDao implements LogDao {
      * @param logRequest 请求信息
      */
     private void setCreateUserByToken(LogDO logEntity, LogRequest logRequest) {
-        Map<String, String> requestHeaderValueByName = this.getRequestHeaders(logRequest);
+        Map<String, String> requestHeaders = this.getRequestHeaders(logRequest);
         String headerName = HttpHeaders.AUTHORIZATION;
-        boolean isContainsAuthHeader = CollUtil.containsAny(requestHeaderValueByName.keySet(), Set
+        boolean isContainsAuthHeader = CollUtil.containsAny(requestHeaders.keySet(), Set
             .of(headerName, headerName.toLowerCase()));
         if (!isContainsAuthHeader) {
             return;
         }
         String authorization =
-            requestHeaderValueByName.getOrDefault(headerName, requestHeaderValueByName
+            requestHeaders.getOrDefault(headerName, requestHeaders
                 .get(headerName.toLowerCase()));
         if (StrUtil.isBlank(authorization)) {
             return;

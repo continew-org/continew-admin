@@ -144,14 +144,14 @@ public class FileServiceImpl
     }
 
     @Override
-    public Long createDir(FileReq request) {
-        String parentPath = request.getParentPath();
+    public Long createDir(FileReq req) {
+        String parentPath = req.getParentPath();
         // 校验上级目录路径与名称，防止通过 ../ 等路径穿越在存储根目录之外创建目录
         StoragePathValidator.validate(parentPath);
-        StoragePathValidator.validateName(request.getOriginalName());
+        StoragePathValidator.validateName(req.getOriginalName());
         FileDO file = baseMapper.lambdaQuery()
             .eq(FileDO::getParentPath, parentPath)
-            .eq(FileDO::getName, request.getOriginalName())
+            .eq(FileDO::getName, req.getOriginalName())
             .eq(FileDO::getType, FileTypeEnum.DIR)
             .one();
         CheckUtils.throwIfNotNull(file, "文件夹已存在");
@@ -168,7 +168,7 @@ public class FileServiceImpl
         }
         // 创建文件夹
         FileDO dirFile = new FileDO();
-        String originalName = request.getOriginalName();
+        String originalName = req.getOriginalName();
         dirFile.setName(originalName);
         dirFile.setOriginalName(originalName);
         dirFile.setParentPath(parentPath);
@@ -179,24 +179,24 @@ public class FileServiceImpl
     }
 
     @Override
-    public void beforeUpdate(FileReq request, Long id) {
+    public void beforeUpdate(FileReq req, Long id) {
         // 名称和上级目录都会参与物理路径拼接（见 FileDO#setParentPath），
         // 需与新建入口做同样的路径穿越校验，避免通过修改接口改写出存储根目录之外的路径
-        StoragePathValidator.validate(request.getParentPath());
-        StoragePathValidator.validateName(request.getOriginalName());
+        StoragePathValidator.validate(req.getParentPath());
+        StoragePathValidator.validateName(req.getOriginalName());
     }
 
     @Override
     public FileStatisticsResp statistics() {
-        FileStatisticsResp response = new FileStatisticsResp();
+        FileStatisticsResp resp = new FileStatisticsResp();
         List<FileStatisticsResp> statistics = baseMapper.statistics();
         if (CollUtil.isEmpty(statistics)) {
-            return response;
+            return resp;
         }
-        response.setData(statistics);
-        response.setSize(statistics.stream().mapToLong(FileStatisticsResp::getSize).sum());
-        response.setNumber(statistics.stream().mapToLong(FileStatisticsResp::getNumber).sum());
-        return response;
+        resp.setData(statistics);
+        resp.setSize(statistics.stream().mapToLong(FileStatisticsResp::getSize).sum());
+        resp.setNumber(statistics.stream().mapToLong(FileStatisticsResp::getNumber).sum());
+        return resp;
     }
 
     @Override
@@ -236,20 +236,20 @@ public class FileServiceImpl
         String key = FILE_UPLOAD_PROGRESS_PREFIX + uploadTaskId;
         Object value = RedisUtils.get(key);
         if (value == null) {
-            FileUploadProgressResp response = new FileUploadProgressResp();
-            response.setUploadTaskId(uploadTaskId);
-            response.setStatus(FileUploadProgressStatusEnum.NOT_FOUND);
-            response.setPercentage(0);
-            response.setBytesRead(0L);
-            response.setTotalBytes(0L);
-            return response;
+            FileUploadProgressResp resp = new FileUploadProgressResp();
+            resp.setUploadTaskId(uploadTaskId);
+            resp.setStatus(FileUploadProgressStatusEnum.NOT_FOUND);
+            resp.setPercentage(0);
+            resp.setBytesRead(0L);
+            resp.setTotalBytes(0L);
+            return resp;
         }
-        FileUploadProgressResp response =
+        FileUploadProgressResp resp =
             JSONUtil.toBean(value.toString(), FileUploadProgressResp.class);
-        if (StrUtil.isBlank(response.getUploadTaskId())) {
-            response.setUploadTaskId(uploadTaskId);
+        if (StrUtil.isBlank(resp.getUploadTaskId())) {
+            resp.setUploadTaskId(uploadTaskId);
         }
-        return response;
+        return resp;
     }
 
     @Override
@@ -263,19 +263,19 @@ public class FileServiceImpl
     @Override
     protected void fill(Object obj) {
         super.fill(obj);
-        if (obj instanceof FileResp response) {
-            StorageDO storage = storageService.getById(response.getStorageId());
+        if (obj instanceof FileResp fileResp) {
+            StorageDO storage = storageService.getById(fileResp.getStorageId());
             String prefix = storage.getUrlPrefix();
-            String url = URLUtil.normalize(prefix + response.getPath(), false, true);
-            response.setUrl(url);
-            String parentPath = StringConstants.SLASH.equals(response.getParentPath())
+            String url = URLUtil.normalize(prefix + fileResp.getPath(), false, true);
+            fileResp.setUrl(url);
+            String parentPath = StringConstants.SLASH.equals(fileResp.getParentPath())
                 ? StringConstants.EMPTY
-                : response.getParentPath();
+                : fileResp.getParentPath();
             String thumbnailUrl =
-                StrUtils.blankToDefault(response.getThumbnailName(), url, thName -> URLUtil
+                StrUtils.blankToDefault(fileResp.getThumbnailName(), url, thName -> URLUtil
                     .normalize(prefix + parentPath + StringConstants.SLASH + thName, false, true));
-            response.setThumbnailUrl(thumbnailUrl);
-            response.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
+            fileResp.setThumbnailUrl(thumbnailUrl);
+            fileResp.setStorageName("%s (%s)".formatted(storage.getName(), storage.getCode()));
         }
     }
 
@@ -596,20 +596,20 @@ public class FileServiceImpl
                 Math.max(percentage, current.getPercentage() == null ? 0 : current.getPercentage());
         }
 
-        FileUploadProgressResp response = new FileUploadProgressResp();
-        response.setUploadTaskId(uploadTaskId);
-        response.setStatus(status);
-        response.setBytesRead(bytesRead);
-        response.setTotalBytes(totalBytes);
-        response.setPercentage(percentage);
+        FileUploadProgressResp resp = new FileUploadProgressResp();
+        resp.setUploadTaskId(uploadTaskId);
+        resp.setStatus(status);
+        resp.setBytesRead(bytesRead);
+        resp.setTotalBytes(totalBytes);
+        resp.setPercentage(percentage);
         // 进度过程沿用上一次的结果信息，终态由 customizer 覆盖写入
-        response.setMessage(current == null ? null : current.getMessage());
-        response.setFileId(current == null ? null : current.getFileId());
-        response.setUrl(current == null ? null : current.getUrl());
+        resp.setMessage(current == null ? null : current.getMessage());
+        resp.setFileId(current == null ? null : current.getFileId());
+        resp.setUrl(current == null ? null : current.getUrl());
         if (customizer != null) {
-            customizer.accept(response);
+            customizer.accept(resp);
         }
-        RedisUtils.set(key, JSONUtil.toJsonStr(response), FILE_UPLOAD_PROGRESS_EXPIRE);
+        RedisUtils.set(key, JSONUtil.toJsonStr(resp), FILE_UPLOAD_PROGRESS_EXPIRE);
     }
 
     private boolean isFinalStatus(FileUploadProgressStatusEnum status) {

@@ -101,14 +101,14 @@ public class UserMessageController {
 
     @Operation(summary = "删除消息", description = "删除消息")
     @DeleteMapping
-    public void delete(@RequestBody @Valid IdsReq request) {
-        messageService.delete(request.getIds(), UserContextHolder.getUserId());
+    public void delete(@RequestBody @Valid IdsReq req) {
+        messageService.delete(req.getIds(), UserContextHolder.getUserId());
     }
 
     @Operation(summary = "消息标记为已读", description = "将消息标记为已读状态")
     @PatchMapping("/read")
-    public void read(@RequestBody @Valid IdsReq request) {
-        messageService.readMessage(request.getIds(), UserContextHolder.getUserId());
+    public void read(@RequestBody @Valid IdsReq req) {
+        messageService.readMessage(req.getIds(), UserContextHolder.getUserId());
     }
 
     @Operation(summary = "消息全部已读", description = "将所有消息标记为已读状态")

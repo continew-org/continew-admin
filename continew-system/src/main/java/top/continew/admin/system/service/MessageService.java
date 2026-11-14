@@ -72,10 +72,10 @@ public interface MessageService {
     /**
      * 新增
      *
-     * @param request    请求参数
+     * @param req    请求参数
      * @param userIds    接收人列表
      */
-    void add(MessageReq request, List<String> userIds);
+    void add(MessageReq req, List<String> userIds);
 
     /**
      * 删除

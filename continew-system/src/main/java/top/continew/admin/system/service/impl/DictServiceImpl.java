@@ -48,16 +48,16 @@ public class DictServiceImpl
     private final DictItemService dictItemService;
 
     @Override
-    public void beforeCreate(DictReq request) {
-        this.checkNameRepeat(request.getName(), null);
-        this.checkCodeRepeat(request.getCode(), null);
+    public void beforeCreate(DictReq req) {
+        this.checkNameRepeat(req.getName(), null);
+        this.checkCodeRepeat(req.getCode(), null);
     }
 
     @Override
-    public void beforeUpdate(DictReq request, Long id) {
-        this.checkNameRepeat(request.getName(), id);
+    public void beforeUpdate(DictReq req, Long id) {
+        this.checkNameRepeat(req.getName(), id);
         DictDO oldDict = super.getById(id);
-        CheckUtils.throwIfNotEqual(request.getCode(), oldDict.getCode(), "不允许修改字典编码");
+        CheckUtils.throwIfNotEqual(req.getCode(), oldDict.getCode(), "不允许修改字典编码");
     }
 
     @Override

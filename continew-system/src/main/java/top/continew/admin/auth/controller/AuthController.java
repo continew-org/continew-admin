@@ -77,7 +77,7 @@ public class AuthController {
     /**
      * 用户登录
      *
-     * @param loginRequest      登录信息
+     * @param loginReq      登录信息
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录结果
@@ -86,9 +86,9 @@ public class AuthController {
     @Operation(summary = "登录", description = "用户登录")
     @Log(excludes = {Include.REQUEST_HEADERS, Include.RESPONSE_HEADERS, Include.RESPONSE_BODY})
     @PostMapping("/login")
-    public LoginResp login(@RequestBody @Valid LoginReq loginRequest, HttpServletRequest request,
+    public LoginResp login(@RequestBody @Valid LoginReq loginReq, HttpServletRequest request,
         HttpServletResponse response) {
-        return authService.login(loginRequest, request, response);
+        return authService.login(loginReq, request, response);
     }
 
     /**
@@ -121,17 +121,17 @@ public class AuthController {
     @GetMapping("/user/info")
     public UserInfoResp getUserInfo() {
         UserContext userContext = UserContextHolder.getContext();
-        UserDetailResp userDetailResponse = userService.get(userContext.getId());
-        UserInfoResp userInfoResponse =
-            BeanUtil.copyProperties(userDetailResponse, UserInfoResp.class);
-        userInfoResponse.setPermissions(userContext.getPermissions());
-        userInfoResponse.setRoles(userContext.getRoleCodes());
+        UserDetailResp userDetailResp = userService.get(userContext.getId());
+        UserInfoResp userInfoResp =
+            BeanUtil.copyProperties(userDetailResp, UserInfoResp.class);
+        userInfoResp.setPermissions(userContext.getPermissions());
+        userInfoResp.setRoles(userContext.getRoleCodes());
         // 两个字段同源推导，避免各自取 now 落在到期点两侧时出现「未过期 + 剩余 0 天」
         Integer pwdExpireDays = userContext.getPwdExpireDays();
-        userInfoResponse.setPwdExpired(pwdExpireDays != null && pwdExpireDays == 0);
-        userInfoResponse.setPwdExpireDays(pwdExpireDays);
-        userInfoResponse.setPwdWarningDays(userContext.getPasswordExpirationWarningDays());
-        return userInfoResponse;
+        userInfoResp.setPwdExpired(pwdExpireDays != null && pwdExpireDays == 0);
+        userInfoResp.setPwdExpireDays(pwdExpireDays);
+        userInfoResp.setPwdWarningDays(userContext.getPasswordExpirationWarningDays());
+        return userInfoResp;
     }
 
     @Log(ignore = true)

@@ -91,31 +91,31 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageUnreadResp countUnreadByUserId(Long userId, Boolean isDetail) {
-        MessageUnreadResp response = new MessageUnreadResp();
+        MessageUnreadResp resp = new MessageUnreadResp();
         Long total = 0L;
         if (Boolean.TRUE.equals(isDetail)) {
             List<MessageTypeUnreadResp> unreadCounts = new ArrayList<>();
             for (MessageTypeEnum messageType : MessageTypeEnum.values()) {
-                MessageTypeUnreadResp typeResponse = new MessageTypeUnreadResp();
-                typeResponse.setType(messageType);
+                MessageTypeUnreadResp typeResp = new MessageTypeUnreadResp();
+                typeResp.setType(messageType);
                 Long count =
                     baseMapper.selectUnreadCountByUserIdAndType(userId, messageType.getValue());
-                typeResponse.setCount(count);
-                unreadCounts.add(typeResponse);
+                typeResp.setCount(count);
+                unreadCounts.add(typeResp);
                 total += count;
             }
-            response.setDetails(unreadCounts);
+            resp.setDetails(unreadCounts);
         } else {
             total = baseMapper.selectUnreadCountByUserIdAndType(userId, null);
         }
-        response.setTotal(total);
-        return response;
+        resp.setTotal(total);
+        return resp;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void add(MessageReq request, List<String> userIds) {
-        MessageDO message = BeanUtil.copyProperties(request, MessageDO.class);
+    public void add(MessageReq req, List<String> userIds) {
+        MessageDO message = BeanUtil.copyProperties(req, MessageDO.class);
         message.setScope(CollUtil.isEmpty(userIds) ? NoticeScopeEnum.ALL : NoticeScopeEnum.USER);
         message.setUsers(userIds);
         baseMapper.insert(message);

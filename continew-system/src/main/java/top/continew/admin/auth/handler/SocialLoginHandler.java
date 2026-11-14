@@ -84,14 +84,14 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
 
     @Override
     @Transactional
-    public LoginResp login(SocialLoginReq loginRequest, ClientResp client,
+    public LoginResp login(SocialLoginReq loginReq, ClientResp client,
         HttpServletRequest request,
         HttpServletResponse response) {
         // 获取第三方登录信息
-        AuthRequest authRequest = authRequestFactory.getAuthRequest(loginRequest.getSource());
+        AuthRequest authRequest = authRequestFactory.getAuthRequest(loginReq.getSource());
         AuthCallback callback = new AuthCallback();
-        callback.setCode(loginRequest.getCode());
-        callback.setState(loginRequest.getState());
+        callback.setCode(loginReq.getCode());
+        callback.setState(loginReq.getState());
         AuthResponse<AuthUser> authResponse = authRequest.login(callback);
         ValidationUtils.throwIf(!authResponse.ok(), authResponse.getMsg());
         AuthUser authUser = authResponse.getData();
@@ -157,9 +157,9 @@ public class SocialLoginHandler extends AbstractLoginHandler<SocialLoginReq> {
      */
     private void sendSecurityMsg(UserDO user) {
         MessageTemplateEnum template = MessageTemplateEnum.SOCIAL_REGISTER;
-        MessageReq request = new MessageReq(MessageTypeEnum.SECURITY);
-        request.setTitle(template.getTitle().formatted(applicationProperties.getName()));
-        request.setContent(template.getContent().formatted(user.getNickname()));
-        messageService.add(request, CollUtil.toList(user.getId().toString()));
+        MessageReq req = new MessageReq(MessageTypeEnum.SECURITY);
+        req.setTitle(template.getTitle().formatted(applicationProperties.getName()));
+        req.setContent(template.getContent().formatted(user.getNickname()));
+        messageService.add(req, CollUtil.toList(user.getId().toString()));
     }
 }

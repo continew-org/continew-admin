@@ -68,11 +68,11 @@ public class AuthServiceImpl implements AuthService {
     private final CrudProperties crudProperties;
 
     @Override
-    public LoginResp login(LoginReq loginRequest, HttpServletRequest request,
+    public LoginResp login(LoginReq loginReq, HttpServletRequest request,
         HttpServletResponse response) {
-        AuthTypeEnum authType = loginRequest.getAuthType();
+        AuthTypeEnum authType = loginReq.getAuthType();
         // 校验客户端
-        ClientResp client = clientService.getByClientId(loginRequest.getClientId());
+        ClientResp client = clientService.getByClientId(loginReq.getClientId());
         if (client == null) {
             throw new BadRequestException("客户端不存在");
         }
@@ -86,12 +86,12 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("不支持的认证类型 [" + authType.getDescription() + "]");
         }
         // 登录前置处理
-        loginHandler.preLogin(loginRequest, client, request);
+        loginHandler.preLogin(loginReq, client, request);
         // 登录
-        LoginResp loginResponse = loginHandler.login(loginRequest, client, request, response);
+        LoginResp loginResp = loginHandler.login(loginReq, client, request, response);
         // 登录后置处理
-        loginHandler.postLogin(loginRequest, client, request);
-        return loginResponse;
+        loginHandler.postLogin(loginReq, client, request);
+        return loginResp;
     }
 
     @Override

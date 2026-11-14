@@ -133,10 +133,10 @@ public interface FileService
     /**
      * 创建目录
      *
-     * @param request 请求参数
+     * @param req 请求参数
      * @return ID
      */
-    Long createDir(FileReq request);
+    Long createDir(FileReq req);
 
     /**
      * 查询文件资源统计信息

@@ -41,25 +41,25 @@ import jakarta.servlet.http.HttpServletResponse;
 public class EmailLoginHandler extends AbstractLoginHandler<EmailLoginReq> {
 
     @Override
-    public LoginResp login(EmailLoginReq loginRequest, ClientResp client,
+    public LoginResp login(EmailLoginReq loginReq, ClientResp client,
         HttpServletRequest request,
         HttpServletResponse response) {
         // 验证邮箱
-        UserDO user = userService.getByEmail(loginRequest.getEmail());
+        UserDO user = userService.getByEmail(loginReq.getEmail());
         ValidationUtils.throwIfNull(user, "此邮箱未绑定本系统账号");
         // 执行认证
         return super.authenticate(user, client, request, response);
     }
 
     @Override
-    public void preLogin(EmailLoginReq loginRequest, ClientResp client,
+    public void preLogin(EmailLoginReq loginReq, ClientResp client,
         HttpServletRequest request) {
-        super.preLogin(loginRequest, client, request);
-        String email = loginRequest.getEmail();
+        super.preLogin(loginReq, client, request);
+        String email = loginReq.getEmail();
         String captchaKey = CacheConstants.CAPTCHA_KEY_PREFIX + email;
         String captcha = RedisUtils.get(captchaKey);
         ValidationUtils.throwIfBlank(captcha, CAPTCHA_EXPIRED);
-        ValidationUtils.throwIfNotEqualIgnoreCase(loginRequest.getCaptcha(), captcha,
+        ValidationUtils.throwIfNotEqualIgnoreCase(loginReq.getCaptcha(), captcha,
             CAPTCHA_ERROR);
         RedisUtils.delete(captchaKey);
     }

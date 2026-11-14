@@ -77,9 +77,9 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public DashboardOverviewCommonResp getOverviewPv() {
-        DashboardOverviewCommonResp response = logMapper.selectDashboardOverviewPv();
-        response
-            .setGrowth(this.calcGrowthFromYesterday(response.getToday(), response.getYesterday()));
+        DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewPv();
+        resp
+            .setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12Months = this.getLast12Months();
         List<DashboardChartCommonResp> chartData = CacheUtils.get(
             CacheConstants.DASHBOARD_KEY_PREFIX
@@ -90,15 +90,15 @@ public class DashboardServiceImpl implements DashboardService {
             // 填充缺失的数据
             this.fillMissingDateData(last12Months, chartData);
         }
-        response.setDataList(chartData);
-        return response;
+        resp.setDataList(chartData);
+        return resp;
     }
 
     @Override
     public DashboardOverviewCommonResp getOverviewIp() {
-        DashboardOverviewCommonResp response = logMapper.selectDashboardOverviewIp();
-        response
-            .setGrowth(this.calcGrowthFromYesterday(response.getToday(), response.getYesterday()));
+        DashboardOverviewCommonResp resp = logMapper.selectDashboardOverviewIp();
+        resp
+            .setGrowth(this.calcGrowthFromYesterday(resp.getToday(), resp.getYesterday()));
         List<String> last12Months = this.getLast12Months();
         List<DashboardChartCommonResp> chartData = CacheUtils.get(
             CacheConstants.DASHBOARD_KEY_PREFIX
@@ -109,8 +109,8 @@ public class DashboardServiceImpl implements DashboardService {
             // 填充缺失的数据
             this.fillMissingDateData(last12Months, chartData);
         }
-        response.setDataList(chartData);
-        return response;
+        resp.setDataList(chartData);
+        return resp;
     }
 
     @Override

@@ -223,22 +223,22 @@ public class FileRecorderImpl implements FileRecorder {
     }
 
     @Override
-    public void saveMultipartSession(String uploadId, MultipartInitResp initResponse,
+    public void saveMultipartSession(String uploadId, MultipartInitResp initResp,
         Map<String, String> metadata) {
         MultipartUploadCreateResp target = new MultipartUploadCreateResp();
-        target.setFileId(initResponse.getFileId());
-        target.setUploadId(initResponse.getUploadId());
-        target.setBucket(initResponse.getBucket());
-        target.setPlatform(initResponse.getPlatform());
-        target.setFileName(initResponse.getFileName());
-        target.setFileMd5(initResponse.getFileMd5());
-        target.setFileSize(ObjectUtil.defaultIfNull(initResponse.getFileSize(), 0L));
-        target.setExtension(initResponse.getExtension());
-        target.setContentType(initResponse.getContentType());
-        target.setParentPath(initResponse.getParentPath());
-        target.setPath(initResponse.getPath());
-        target.setPartSize(initResponse.getPartSize());
-        target.setUploadedPartNumbers(initResponse.getUploadedPartNumbers());
+        target.setFileId(initResp.getFileId());
+        target.setUploadId(initResp.getUploadId());
+        target.setBucket(initResp.getBucket());
+        target.setPlatform(initResp.getPlatform());
+        target.setFileName(initResp.getFileName());
+        target.setFileMd5(initResp.getFileMd5());
+        target.setFileSize(ObjectUtil.defaultIfNull(initResp.getFileSize(), 0L));
+        target.setExtension(initResp.getExtension());
+        target.setContentType(initResp.getContentType());
+        target.setParentPath(initResp.getParentPath());
+        target.setPath(initResp.getPath());
+        target.setPartSize(initResp.getPartSize());
+        target.setUploadedPartNumbers(initResp.getUploadedPartNumbers());
         String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
         String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
         try {
@@ -298,8 +298,8 @@ public class FileRecorderImpl implements FileRecorder {
             String key = MultipartUploadConstants.MULTIPART_UPLOAD_PREFIX + uploadId;
             String metadataKey = MultipartUploadConstants.MULTIPART_METADATA_PREFIX + uploadId;
             String expireKey = MultipartUploadConstants.MULTIPART_EXPIRE_PREFIX + uploadId;
-            MultipartInitResp initResponse = getMultipartSession(uploadId);
-            String fileMd5 = initResponse != null ? initResponse.getFileMd5() : null;
+            MultipartInitResp initResp = getMultipartSession(uploadId);
+            String fileMd5 = initResp != null ? initResp.getFileMd5() : null;
             if (StrUtil.isNotBlank(fileMd5)) {
                 deleteMd5Mapping(fileMd5);
             }

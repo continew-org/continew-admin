@@ -118,9 +118,9 @@ public class FileController
     @Operation(summary = "创建文件夹", description = "创建文件夹")
     @SaCheckPermission("system:file:createDir")
     @PostMapping("/dir")
-    public IdResp<Long> createDir(@RequestBody @Valid FileReq request) {
-        ValidationUtils.throwIfBlank(request.getParentPath(), "上级目录不能为空");
-        return new IdResp<>(baseService.createDir(request));
+    public IdResp<Long> createDir(@RequestBody @Valid FileReq req) {
+        ValidationUtils.throwIfBlank(req.getParentPath(), "上级目录不能为空");
+        return new IdResp<>(baseService.createDir(req));
     }
 
     @Operation(summary = "计算文件夹大小", description = "计算文件夹大小")

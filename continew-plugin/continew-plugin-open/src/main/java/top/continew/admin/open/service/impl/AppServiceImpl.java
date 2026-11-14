@@ -44,21 +44,21 @@ public class AppServiceImpl
     implements AppService {
 
     @Override
-    public void beforeCreate(AppReq request) {
-        request.setAccessKey(Base64.encode(IdUtil.fastSimpleUUID())
+    public void beforeCreate(AppReq req) {
+        req.setAccessKey(Base64.encode(IdUtil.fastSimpleUUID())
             .replace(StringConstants.SLASH, StringConstants.EMPTY)
             .replace(StringConstants.PLUS, StringConstants.EMPTY)
             .substring(0, 30));
-        request.setSecretKey(this.generateSecret());
+        req.setSecretKey(this.generateSecret());
     }
 
     @Override
     public AppSecretResp getSecret(Long id) {
         AppDO app = super.getById(id);
-        AppSecretResp response = new AppSecretResp();
-        response.setAccessKey(app.getAccessKey());
-        response.setSecretKey(app.getSecretKey());
-        return response;
+        AppSecretResp appSecretResp = new AppSecretResp();
+        appSecretResp.setAccessKey(app.getAccessKey());
+        appSecretResp.setSecretKey(app.getSecretKey());
+        return appSecretResp;
     }
 
     @Override

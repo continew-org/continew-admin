@@ -56,13 +56,13 @@ public abstract class AbstractLoginHandler<T extends LoginReq> implements LoginH
     protected static final String CAPTCHA_ERROR = "验证码不正确";
 
     @Override
-    public void preLogin(T loginRequest, ClientResp client, HttpServletRequest request) {
+    public void preLogin(T loginReq, ClientResp client, HttpServletRequest request) {
         // 参数校验
-        Validator.validate(loginRequest);
+        Validator.validate(loginReq);
     }
 
     @Override
-    public void postLogin(T loginRequest, ClientResp client, HttpServletRequest request) {
+    public void postLogin(T loginReq, ClientResp client, HttpServletRequest request) {
     }
 
     /**

@@ -37,32 +37,32 @@ public interface LoginHandler<T extends LoginReq> {
     /**
      * 登录
      *
-     * @param loginRequest     登录请求参数
+     * @param loginReq     登录请求参数
      * @param client  客户端信息
      * @param request  请求对象
      * @param response 响应对象
      * @return 登录响应参数
      */
-    LoginResp login(T loginRequest, ClientResp client, HttpServletRequest request,
+    LoginResp login(T loginReq, ClientResp client, HttpServletRequest request,
         HttpServletResponse response);
 
     /**
      * 登录前置处理
      *
-     * @param loginRequest     登录请求参数
+     * @param loginReq     登录请求参数
      * @param client  客户端信息
      * @param request 请求对象
      */
-    void preLogin(T loginRequest, ClientResp client, HttpServletRequest request);
+    void preLogin(T loginReq, ClientResp client, HttpServletRequest request);
 
     /**
      * 登录后置处理
      *
-     * @param loginRequest     登录请求参数
+     * @param loginReq     登录请求参数
      * @param client  客户端信息
      * @param request 请求对象
      */
-    void postLogin(T loginRequest, ClientResp client, HttpServletRequest request);
+    void postLogin(T loginReq, ClientResp client, HttpServletRequest request);
 
     /**
      * 获取认证类型

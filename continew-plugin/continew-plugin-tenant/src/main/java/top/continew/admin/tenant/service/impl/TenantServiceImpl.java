@@ -80,27 +80,27 @@ public class TenantServiceImpl extends
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long create(TenantReq request) {
-        this.checkNameRepeat(request.getName(), null);
-        this.checkDomainRepeat(request.getDomain(), null);
+    public Long create(TenantReq req) {
+        this.checkNameRepeat(req.getName(), null);
+        this.checkDomainRepeat(req.getDomain(), null);
         // 检查套餐
-        packageService.checkStatus(request.getPackageId());
+        packageService.checkStatus(req.getPackageId());
         // 生成租户编码
-        request.setCode(this.generateCode());
+        req.setCode(this.generateCode());
         // 新增信息
-        Long id = super.create(request);
+        Long id = super.create(req);
         // 初始化租户数据
-        request.setId(id);
+        req.setId(id);
         tenantDataApiMap
-            .forEach((key, value) -> value.init(BeanUtil.copyProperties(request, TenantDTO.class)));
+            .forEach((key, value) -> value.init(BeanUtil.copyProperties(req, TenantDTO.class)));
         return id;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(TenantArgumentPolicyLockTargetResolver.class)
-    public void update(TenantReq request, Long id) {
-        super.update(request, id);
+    public void update(TenantReq req, Long id) {
+        super.update(req, id);
     }
 
     @Override
@@ -115,18 +115,18 @@ public class TenantServiceImpl extends
     }
 
     @Override
-    public void beforeUpdate(TenantReq request, Long id) {
-        this.checkNameRepeat(request.getName(), id);
-        this.checkDomainRepeat(request.getDomain(), id);
+    public void beforeUpdate(TenantReq req, Long id) {
+        this.checkNameRepeat(req.getName(), id);
+        this.checkDomainRepeat(req.getDomain(), id);
         TenantDO tenant = super.getById(id);
         // 变更套餐
-        if (!tenant.getPackageId().equals(request.getPackageId())) {
-            packageService.checkStatus(request.getPackageId());
+        if (!tenant.getPackageId().equals(req.getPackageId())) {
+            packageService.checkStatus(req.getPackageId());
         }
     }
 
     @Override
-    public void afterUpdate(TenantReq request, TenantDO entity) {
+    public void afterUpdate(TenantReq req, TenantDO entity) {
         // 租户域名/编码可变更，需同时清 L2 与各节点 L1，否则旧域名会继续解析到本租户
         RedisUtils
             .deleteByPattern(TenantCacheConstants.TENANT_KEY_PREFIX + StringConstants.ASTERISK);

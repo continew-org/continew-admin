@@ -45,14 +45,14 @@ public class SmsLogProcessor implements CoreMethodProcessor {
     @Override
     public Object postProcessor(SmsResponse result, Object[] param) {
         if (NumberUtil.isNumber(result.getConfigId())) {
-            SmsLogReq request = new SmsLogReq();
-            request.setConfigId(Long.parseLong(result.getConfigId()));
-            request.setPhone(param[0].toString());
-            request.setParams(JSONUtil.toJsonStr(param[1]));
-            request.setStatus(result.isSuccess() ? SuccessFailureStatusEnum.SUCCESS
+            SmsLogReq req = new SmsLogReq();
+            req.setConfigId(Long.parseLong(result.getConfigId()));
+            req.setPhone(param[0].toString());
+            req.setParams(JSONUtil.toJsonStr(param[1]));
+            req.setStatus(result.isSuccess() ? SuccessFailureStatusEnum.SUCCESS
                 : SuccessFailureStatusEnum.FAILURE);
-            request.setResMsg(JSONUtil.toJsonStr(result.getData()));
-            smsLogService.create(request);
+            req.setResMsg(JSONUtil.toJsonStr(result.getData()));
+            smsLogService.create(req);
         }
         return CoreMethodProcessor.super.postProcessor(result, param);
     }
@@ -65,7 +65,7 @@ public class SmsLogProcessor implements CoreMethodProcessor {
     @Override
     public void sendMessageByTemplatePreProcess(String phone,
         String templateId,
-        LinkedHashMap<String, String> templateValueByKey) {
+        LinkedHashMap<String, String> templateParams) {
         // do nothing
     }
 
@@ -77,7 +77,7 @@ public class SmsLogProcessor implements CoreMethodProcessor {
     @Override
     public void massTextingByTemplatePreProcess(List<String> phones,
         String templateId,
-        LinkedHashMap<String, String> templateValueByKey) {
+        LinkedHashMap<String, String> templateParams) {
         // do nothing
     }
 }

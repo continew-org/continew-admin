@@ -86,11 +86,11 @@ public class OptionServiceImpl implements OptionService {
         Map<String, OptionDO> optionByCode = existingOptions.stream()
             .collect(Collectors.toMap(OptionDO::getCode, Function.identity(),
                 (existing, replacement) -> existing));
-        for (OptionReq request : options) {
-            OptionDO option = optionByCode.get(request.getCode());
-            ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", request.getCode());
+        for (OptionReq req : options) {
+            OptionDO option = optionByCode.get(req.getCode());
+            ValidationUtils.throwIfNull(option, "参数 [{}] 不存在", req.getCode());
             if (StrUtil.isNotBlank(option.getDefaultValue())) {
-                ValidationUtils.throwIfBlank(request.getValue(), "参数 [{}] 的值不能为空",
+                ValidationUtils.throwIfBlank(req.getValue(), "参数 [{}] 的值不能为空",
                     option.getName());
             }
         }
@@ -113,16 +113,16 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public void resetValue(OptionValueResetReq request) {
-        String category = request.getCategory();
-        List<String> codes = request.getCode();
+    public void resetValue(OptionValueResetReq req) {
+        String category = req.getCategory();
+        List<String> codes = req.getCode();
         ValidationUtils.throwIf(StrUtil.isBlank(category) && CollUtil.isEmpty(codes), "键列表不能为空");
         LambdaUpdateChainWrapper<OptionDO> updateWrapper =
             baseMapper.lambdaUpdate().set(OptionDO::getValue, null);
         if (StrUtil.isNotBlank(category)) {
             updateWrapper.eq(OptionDO::getCategory, category);
         } else {
-            updateWrapper.in(OptionDO::getCode, request.getCode());
+            updateWrapper.in(OptionDO::getCode, req.getCode());
         }
         updateWrapper.update();
         this.clearCache();

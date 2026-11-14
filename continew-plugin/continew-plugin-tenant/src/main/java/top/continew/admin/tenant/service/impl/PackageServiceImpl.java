@@ -57,27 +57,27 @@ public class PackageServiceImpl extends
     private TenantService tenantService;
 
     @Override
-    public Long create(PackageReq request) {
-        this.checkNameRepeat(request.getName(), null);
+    public Long create(PackageReq req) {
+        this.checkNameRepeat(req.getName(), null);
         // 新增信息
-        Long id = super.create(request);
+        Long id = super.create(req);
         // 保存套餐和菜单关联
-        packageMenuService.add(request.getMenuIds(), id);
+        packageMenuService.add(req.getMenuIds(), id);
         return id;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     @AuthPolicyWriteLocked(PackageTenantPolicyLockTargetResolver.class)
-    public void update(PackageReq request, Long id) {
-        this.checkNameRepeat(request.getName(), id);
+    public void update(PackageReq req, Long id) {
+        this.checkNameRepeat(req.getName(), id);
         // 更新信息
-        super.update(request, id);
+        super.update(req, id);
         // 保存套餐和菜单关联
-        boolean isSaveMenuSuccess = packageMenuService.add(request.getMenuIds(), id);
+        boolean isSaveMenuSuccess = packageMenuService.add(req.getMenuIds(), id);
         if (isSaveMenuSuccess) {
             // 更新租户菜单
-            tenantService.updateTenantMenu(request.getMenuIds(), id);
+            tenantService.updateTenantMenu(req.getMenuIds(), id);
         }
         // 套餐状态、权限或其他配置变化后，关联租户的旧会话统一重新认证。
         tenantService.invalidateSessionsByPackageId(id);
