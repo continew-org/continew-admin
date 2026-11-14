@@ -59,7 +59,6 @@ import top.continew.admin.system.service.UserSocialService;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.encrypt.field.util.EncryptHelper;
-import top.continew.starter.storage.core.FileStorageService;
 
 import jakarta.validation.Validator;
 import java.util.List;
@@ -115,8 +114,7 @@ class UserServiceImplImportRoleGuardTest {
             mock(OptionService.class),
             roleService,
             mock(OnlineUserService.class),
-            mock(FileService.class),
-            mock(FileStorageService.class));
+            mock(FileService.class));
         userMapper = mock(UserMapper.class);
         ReflectionTestUtils.setField(userService, "baseMapper", userMapper);
         ReflectionTestUtils.setField(userService, "deptService", deptService);

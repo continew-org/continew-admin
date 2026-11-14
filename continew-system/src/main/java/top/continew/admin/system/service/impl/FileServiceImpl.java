@@ -126,14 +126,21 @@ public class FileServiceImpl
         }
         // 物理删除前预查缩略图引用：本批记录已逻辑删除，查询结果只包含仍然有效的记录
         Map<Long, Set<String>> referencedThumbnailPaths = new HashMap<>();
-        for (Map.Entry<Long, List<FileDO>> entry : fileListGroup.entrySet()) {
+        for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
             referencedThumbnailPaths.put(entry.getKey(), this
                 .findReferencedThumbnailPaths(entry.getKey(), entry.getValue()));
         }
         // 删除实际文件
         for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
             StorageDO storage = storageById.get(entry.getKey());
-            entry.getValue().forEach(file -> this.deleteFile(file, storage));
+            Set<String> batchMainPaths = entry.getValue()
+                .stream()
+                .map(FileDO::getPath)
+                .collect(Collectors.toSet());
+            Set<String> handledPaths = new HashSet<>();
+            entry.getValue()
+                .forEach(file -> this.deleteFile(file, storage,
+                    referencedThumbnailPaths.get(entry.getKey()), batchMainPaths, handledPaths));
         }
     }
 

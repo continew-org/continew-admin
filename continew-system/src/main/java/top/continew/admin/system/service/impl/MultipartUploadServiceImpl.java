@@ -66,6 +66,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         // 校验文件扩展名是否在白名单内，防止任意类型文件上传（如 .jsp/.html 等）
         String extName = FileUtil.extName(createReq.getFileName()).toLowerCase();
         List<String> allExtensions = FileTypeEnum.getAllExtensions();
+        FileTypeEnum fileType = FileTypeEnum.getByExtension(extName);
         CheckUtils.throwIf(fileType == FileTypeEnum.UNKNOWN, "不支持的文件类型，仅支持 {} 格式的文件", String
             .join(StringConstants.COMMA, allExtensions));
         // 校验上级目录路径与文件名，防止通过 ../ 等路径穿越将文件写入存储根目录之外
@@ -85,11 +86,6 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
             throw new BaseException("文件名已存在：" + originalFileName);
         }
 
-        // 生成唯一文件名（处理重名情况）
-        String uniqueFileName =
-            FileNameGenerator.generateUniqueName(originalFileName, parentPath, storage
-                .getId(), fileMapper);
-        createReq.setFileName(uniqueFileName);
         fileService.createParentDir(StrUtil.blankToDefault(parentPath, StringConstants.SLASH),
             storage);
 
@@ -98,7 +94,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         MultipartUploadInitReq storageReq = new MultipartUploadInitReq();
         storageReq.setPlatform(storage.getCode());
         storageReq.setBucket(storage.getBucketName());
-        storageReq.setFileName(uniqueFileName);
+        storageReq.setFileName(storedFileName);
         storageReq.setFileSize(createReq.getFileSize());
         storageReq.setFileMd5(createReq.getFileMd5());
         storageReq.setContentType(createReq.getContentType());

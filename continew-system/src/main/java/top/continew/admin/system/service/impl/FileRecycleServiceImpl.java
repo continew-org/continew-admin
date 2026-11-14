@@ -268,10 +268,6 @@ public class FileRecycleServiceImpl implements FileRecycleService {
             // 删除文件
             for (Map.Entry<Long, List<FileDO>> entry : filesByStorageId.entrySet()) {
                 StorageDO storage = storageById.get(entry.getKey());
-                List<String> deletePaths = entry.getValue()
-                    .stream()
-                    .filter(file -> !FileTypeEnum.DIR.equals(file.getType()))
-                    .toList();
                 // 遗留原目录缩略图候选（库内形态 → 物理形态）
                 Map<String, String> originalThCandidates = new HashMap<>();
                 Set<String> thumbnailNames = new HashSet<>();

@@ -51,7 +51,6 @@ import top.continew.admin.system.service.RoleService;
 import top.continew.admin.system.service.UserPasswordHistoryService;
 import top.continew.admin.system.service.UserRoleService;
 import top.continew.admin.system.service.UserSocialService;
-import top.continew.starter.storage.core.FileStorageService;
 
 import jakarta.validation.Validator;
 import java.util.List;
@@ -90,8 +89,7 @@ class UserServiceImplUpdateContextTimingTest {
             mock(OptionService.class),
             roleService,
             mock(OnlineUserService.class),
-            mock(FileService.class),
-            mock(FileStorageService.class));
+            mock(FileService.class));
         userMapper = mock(UserMapper.class);
         ReflectionTestUtils.setField(userService, "baseMapper", userMapper);
         when(roleService.listByUserId(anyLong())).thenReturn(Set.of());
