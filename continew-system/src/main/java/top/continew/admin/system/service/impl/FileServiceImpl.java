@@ -612,11 +612,6 @@ public class FileServiceImpl
         RedisUtils.set(key, JSONUtil.toJsonStr(response), FILE_UPLOAD_PROGRESS_EXPIRE);
     }
 
-    private boolean isFinalStatus(String status) {
-        return StrUtil.equalsAnyIgnoreCase(status, FileUploadProgressStatusEnum.COMPLETED
-            .getValue(), FileUploadProgressStatusEnum.FAILED.getValue());
-    }
-
     private boolean isFinalStatus(FileUploadProgressStatusEnum status) {
         return status == FileUploadProgressStatusEnum.COMPLETED
             || status == FileUploadProgressStatusEnum.FAILED;
