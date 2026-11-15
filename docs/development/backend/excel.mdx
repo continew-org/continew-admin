@@ -27,7 +27,7 @@ public class LoginLogExportResp implements Serializable {
 }
 ```
 
-`@ExcelIgnoreUnannotated` 让未标注的字段不进表格。枚举字段挂 `ExcelBaseEnumConverter`，写出枚举的 `description` 而不是编码值；集合字段挂 `ExcelListConverter`；大数值 ID 由 `ExcelUtils` 内置注册的 `ExcelBigNumberConverter` 自动转字符串，避免 Excel 科学计数法截断。`ExcelUtils.export` 还会注册 `LongestMatchColumnWidthStyleStrategy` 做列宽自适应，响应头输出 `附件名_yyyyMMddHHmmss.xlsx`。
+`@ExcelIgnoreUnannotated` 让未标注的字段不进表格。枚举字段挂 `ExcelBaseEnumConverter`，写出枚举的 `description` 而不是编码值；集合字段挂 `ExcelListConverter`；大数值 ID 由 `ExcelUtils` 内置注册的 `ExcelBigNumberWriteConverter` 自动转字符串，避免 Excel 科学计数法截断。`ExcelUtils.export` 还会注册 `LongestMatchColumnWidthStyleStrategy` 做列宽自适应，响应头输出 `附件名_yyyyMMddHHmmss.xlsx`。
 
 ### 手动导出
 

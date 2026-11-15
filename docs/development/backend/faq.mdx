@@ -120,9 +120,9 @@ Refresh Session 过期、被撤销，或 Cookie 没带。浏览器端 Refresh To
 
 ### 导出 Excel 打开后 ID 变成科学计数法或精度丢失
 
-旧写法绕过了 `ExcelUtils.export` 自己拼 FastExcel 写入。`ExcelUtils` 内置注册了 `ExcelBigNumberConverter`，大数值 ID 写出为字符串。
+旧写法绕过了 `ExcelUtils.export` 自己拼 FastExcel 写入。`ExcelUtils` 内置注册了 `ExcelBigNumberWriteConverter`，大数值 ID 写出为字符串。
 
-统一走 `ExcelUtils.export`；特殊场景自写 FastExcel 代码时手动 `registerConverter(new ExcelBigNumberConverter())`。
+统一走 `ExcelUtils.export`；特殊场景自写 FastExcel 代码时手动 `registerConverter(new ExcelBigNumberWriteConverter())`。
 
 ### 字典列导出是值不是标签
 
