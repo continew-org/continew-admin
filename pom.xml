@@ -30,6 +30,8 @@
         <module>continew-system</module>
         <module>continew-plugin</module>
         <module>continew-common</module>
+        <!-- 集中测试模块依赖所有被测模块，须最后构建 -->
+        <module>continew-tests</module>
     </modules>
 
     <properties>
@@ -58,6 +60,13 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>continew-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 集中测试模块（存放不适合放入单个被测模块的测试类，不对外发布） -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>continew-tests</artifactId>
                 <version>${revision}</version>
             </dependency>
 
