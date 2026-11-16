@@ -269,6 +269,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- 单元测试覆盖率采集：置于顶层构建，使常规 verify 也生成 jacoco.xml，
+                 供 Sonar 分析与各模块 jacoco:check 门禁共用（版本暂由本项目管理，
+                 待 Starter 父 POM 统一管理 jacoco-maven-plugin 后移除显式版本） -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.13</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- 统一版本号插件 -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -359,28 +382,6 @@
             </activation>
             <build>
                 <plugins>
-                    <!-- 单元测试覆盖率采集（为 Sonar 分析提供覆盖率数据；版本暂由本项目管理，
-                         待 Starter 父 POM 统一管理 jacoco-maven-plugin 后移除显式版本） -->
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.13</version>
-                        <executions>
-                            <execution>
-                                <id>jacoco-prepare-agent</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>jacoco-report</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>

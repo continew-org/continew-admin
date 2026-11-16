@@ -76,8 +76,7 @@
 
     <build>
         <plugins>
-            <!-- 保证本模块测试用例在 CI 中实际执行，不被跳过；
-                 L3 API 黑盒测试以 @Tag("api") 标记，默认排除，-Papi-test 时反向只跑该组。
+            <!-- L3 API 黑盒测试以 @Tag("api") 标记，默认排除，-Papi-test 时反向只跑该组。
                  组过滤经属性间接配置：profile 无法用空标签覆盖父配置值（Maven 合并保留父值），
                  属性覆盖则是完全替换，故此处以属性占位 -->
             <plugin>
@@ -87,10 +86,7 @@
                     <skip>false</skip>
                     <groups>${surefire.groups}</groups>
                     <excludedGroups>${surefire.excludedGroups}</excludedGroups>
-                    <!-- continew-server 的默认瘦包 artifact 位于 target/app/bin，其 MANIFEST
-                         Class-Path 指向 ../lib/ 下的整套依赖，会把它们再次拉入测试类路径，导致 MyBatis
-                         classpath*:/mapper/** 重复解析同一 Mapper XML。测试期改用其编译输出目录，
-                         避免瘦包 manifest 污染；server 的传递依赖不受影响 -->
+                    <!-- 测试期改用 server 编译输出目录，避开瘦包 manifest 的 Class-Path 导致 Mapper XML 重复加载 -->
                     <classpathDependencyExcludes>
                         <classpathDependencyExclude>${project.groupId}:continew-server</classpathDependencyExclude>
                     </classpathDependencyExcludes>
