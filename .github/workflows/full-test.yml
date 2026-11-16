@@ -51,29 +51,8 @@ jobs:
       #     低于下限即判失败；suite=api 不跑 L2，加条件避免误判（同 starter integration.yml 守卫）
       - name: Fail on silently skipped integration tests
         if: inputs.suite == 'all'
-        run: |
-          total=$(python3 <<'PY'
-          import glob
-          import xml.etree.ElementTree as ET
-          # 只统计 L2 报告（IntegrationTest + ApplicationTests），与下限 20 的标定口径一致；
-          # 不纳入 api 套件遗留报告或 L1 smoke，避免上限虚高掩盖"L2 全跳过"
-          patterns = (
-              'continew-tests/target/surefire-reports/TEST-*IntegrationTest.xml',
-              'continew-tests/target/surefire-reports/TEST-*ApplicationTests.xml',
-          )
-          total = 0
-          for pattern in patterns:
-              for path in glob.glob(pattern):
-                  root = ET.parse(path).getroot()
-                  total += int(root.get('tests', '0')) - int(root.get('skipped', '0'))
-          print(total)
-          PY
-          )
-          echo "L2 integration tests executed (excluding skipped): $total"
-          if [ "$total" -lt 20 ]; then
-            echo "::error::真实执行的 L2 集成测试用例数（$total）低于下限（20），可能全部被跳过"
-            exit 1
-          fi
+        # 与 ci.yml 共用脚本，下限与统计口径只在 scripts/test/check-l2-executed.sh 维护一处
+        run: bash scripts/test/check-l2-executed.sh
       # 3c、启动 L3 测试环境：up.sh 内含宿主 Maven 打包（-DskipTests）、compose 启动与健康等待，
       #     无需重复打包；脚本基于自身位置解析仓库根，Actions 工作区根即仓库根
       - name: Start test environment
