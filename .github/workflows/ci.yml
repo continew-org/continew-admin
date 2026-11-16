@@ -42,3 +42,7 @@ jobs:
       - name: Build and verify
         # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) -> 编译 -> 单元测试 (test) -> SpotBugs (verify)
         run: ./mvnw -B verify
+      - name: Fail on silently skipped integration tests
+        # runner 自带 Docker，L2 应真实执行；若环境异常被整体跳过，verify 仍会绿灯，
+        # 这里按脚本统计的真实执行数兜底，与 full-test.yml 共用同一下限
+        run: bash scripts/test/check-l2-executed.sh
