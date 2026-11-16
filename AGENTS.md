@@ -107,7 +107,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 构建过程**不会修改任何源码文件**；`-Pformat` 是唯一会修改源码的 profile。不要用 IDE 格式化或 `git diff --check` 替代 Spotless 门禁。IDE 格式化引擎是另一套实现，可能放行项目格式化器拒绝的代码。
 
-Sonar 分析使用 `./mvnw verify -Psonar`（激活 JaCoCo），日常 `./mvnw verify` 不激活。
+覆盖率采集（JaCoCo prepare-agent/report）已置于根 POM 顶层 `build/plugins`，日常 `./mvnw verify` 即生成覆盖率报告，供 Sonar 与各模块 `jacoco:check` 门禁共用；`./mvnw verify -Psonar` 仅在此基础上追加 SonarCloud 上传。四层测试体系的边界、落位与 CI 守卫见 [`docs/development/backend/testing.mdx`](docs/development/backend/testing.mdx)。
 
 ## 代码风格
 
