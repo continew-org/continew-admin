@@ -5,7 +5,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-# 下限与 full-test.yml 原守卫的标定口径一致（L2 现有 38 个方法，留足余量）
+# 下限沿用 full-test.yml 原守卫口径，给跳过留余量；调整下限只需改此处
 readonly MIN_EXECUTED=20
 
 total=$(python3 -I - "$REPO_ROOT" <<'PY'
