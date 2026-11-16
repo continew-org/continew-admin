@@ -93,4 +93,4 @@ fi
 export API_BASE_URL="$BASE_URL"
 
 cd "$REPO_ROOT"
-exec ./mvnw -B -pl :continew-server -am -Papi-test test -Dsurefire.failIfNoSpecifiedTests=false
+exec ./mvnw -B -pl :continew-tests -am -Papi-test test -Dsurefire.failIfNoSpecifiedTests=false
