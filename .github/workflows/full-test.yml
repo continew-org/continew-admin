@@ -46,7 +46,35 @@ jobs:
       - name: Build and verify
         if: inputs.suite == 'all'
         run: ./mvnw -B verify
-      # 3b、启动 L3 测试环境：up.sh 内含宿主 Maven 打包（-DskipTests）、compose 启动与健康等待，
+      # 3b、防静默跳过守卫（suite=all 专属）：verify 阶段在 continew-tests 跑 L2 集成测试，
+      #     Docker/环境异常可能导致用例被整体跳过而 verify 仍绿灯。统计真实执行数（tests-skipped），
+      #     低于下限即判失败；suite=api 不跑 L2，加条件避免误判（同 starter integration.yml 守卫）
+      - name: Fail on silently skipped integration tests
+        if: inputs.suite == 'all'
+        run: |
+          total=$(python3 <<'PY'
+          import glob
+          import xml.etree.ElementTree as ET
+          # 只统计 L2 报告（IntegrationTest + ApplicationTests），与下限 20 的标定口径一致；
+          # 不纳入 api 套件遗留报告或 L1 smoke，避免上限虚高掩盖"L2 全跳过"
+          patterns = (
+              'continew-tests/target/surefire-reports/TEST-*IntegrationTest.xml',
+              'continew-tests/target/surefire-reports/TEST-*ApplicationTests.xml',
+          )
+          total = 0
+          for pattern in patterns:
+              for path in glob.glob(pattern):
+                  root = ET.parse(path).getroot()
+                  total += int(root.get('tests', '0')) - int(root.get('skipped', '0'))
+          print(total)
+          PY
+          )
+          echo "L2 integration tests executed (excluding skipped): $total"
+          if [ "$total" -lt 20 ]; then
+            echo "::error::真实执行的 L2 集成测试用例数（$total）低于下限（20），可能全部被跳过"
+            exit 1
+          fi
+      # 3c、启动 L3 测试环境：up.sh 内含宿主 Maven 打包（-DskipTests）、compose 启动与健康等待，
       #     无需重复打包；脚本基于自身位置解析仓库根，Actions 工作区根即仓库根
       - name: Start test environment
         run: bash scripts/test/up.sh
@@ -60,8 +88,16 @@ jobs:
       - name: Archive surefire reports (runner-local)
         if: always()
         run: |
-          mkdir -p ~/full-test-artifacts/"${{ github.run_id }}"
-          cp -r continew-server/target/surefire-reports ~/full-test-artifacts/"${{ github.run_id }}"/
+          dest=~/full-test-artifacts/"${{ github.run_id }}"
+          mkdir -p "$dest"
+          # 迁移后 L2/L3 报告落在 continew-tests；server 仍有 6 个 L1 测试，两者都归档。
+          # 分模块建子目录避免同名 surefire-reports 相互覆盖；某模块无报告时跳过，不使步骤失败。
+          for module in continew-server continew-tests; do
+            if [ -d "$module/target/surefire-reports" ]; then
+              mkdir -p "$dest/$module"
+              cp -r "$module/target/surefire-reports" "$dest/$module/"
+            fi
+          done
       # 6、清理测试环境：down.sh 清空 project continew-admin-test 的容器与数据卷，
       #    always() 保证失败也执行，防容器残留；up 未执行时幂等无害
       - name: Stop test environment
