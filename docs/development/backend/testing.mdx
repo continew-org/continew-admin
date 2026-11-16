@@ -34,6 +34,8 @@ L1 在本机毫秒级完成，是日常迭代的主力反馈。L2 经 Testcontai
 | L2 | `./mvnw verify` | 需要 |
 | L3 | `scripts/test/` 四脚本（见下文） | 需要 |
 
+L2 与 L3 的报告统一落在 `continew-tests/target/surefire-reports`，与 CI 的归档和防静默跳过守卫使用同一份产物；L1 报告仍落在各自模块的 `target/surefire-reports`。
+
 L2 容器由 `@Testcontainers(disabledWithoutDocker = true)` 管理，本机没有 Docker 时自动跳过全部集成测试，构建不会失败；CI（`ci.yml`）具备 Docker 环境，`./mvnw verify` 会真实启动容器执行。这也意味着无 Docker 的本机执行 `./mvnw test` 等价于只跑 L1。
 
 ## L3 测试环境
@@ -77,10 +79,10 @@ bash scripts/test/down.sh        # 停环境并清卷
 
 ## api-test profile
 
-L3 用例以 `@Tag("api")` 标记，经 Maven profile 与普通构建隔离，配置位于 `continew-server/pom.xml`：
+L3 用例以 `@Tag("api")` 标记，经 Maven profile 与普通构建隔离，配置位于集中测试模块的 `continew-tests/pom.xml`：
 
 1. 默认构建：surefire 的 `excludedGroups` 为 `api`，L3 用例不执行，L1 与 L2 不受影响。
-2. `-Papi-test`：反向只执行 `api` 组，命令为 `./mvnw -pl :continew-server -am -Papi-test test -Dsurefire.failIfNoSpecifiedTests=false`。`api-smoke.sh` 内部执行的就是这条命令，并自动按 `--base-url` 参数与 `.ports.env` 注入目标地址。
+2. `-Papi-test`：反向只执行 `api` 组，命令为 `./mvnw -pl :continew-tests -am -Papi-test test -Dsurefire.failIfNoSpecifiedTests=false`。`api-smoke.sh` 内部执行的就是这条命令，并自动按 `--base-url` 参数与 `.ports.env` 注入目标地址。
 
 ### 配置项
 
@@ -107,17 +109,19 @@ L3 用例以 `@Tag("api")` 标记，经 Maven profile 与普通构建隔离，�
 
 ## 新增用例
 
+集中测试模块 `continew-tests` 归集跨模块的 L2 与 L3 用例，便于统一依赖 Testcontainers 与 rest-assured 并集中归档报告；L1 不跨模块，就近放在所属模块。
+
 ### 新增一个 L1 用例
 
 L1 放在对应模块的 `src/test` 下（continew-common、continew-system、continew-server 均有），不启动 Spring、不连数据库，Mock 掉全部协作对象。参考 `continew-common/src/test` 下的 `GlobalExceptionHandlerTest` 与 `continew-system/src/test` 下的 `RefreshAccessTokenIssuerImplTest`。运行方式为 IDE 直接执行或 `./mvnw test`。
 
 ### 新增一个 L2 用例
 
-L2 放在 `continew-server/src/test/java/top/continew/admin/it/` 包下，继承 `BaseIntegrationTest`。基类以 singleton 模式管理 MySQL 与 Redis 容器（跨测试类复用同一实例，Liquibase 建表与上下文启动成本只支付一次），并已注入容器连接信息，子类只需注入 Service 编写断言。现有示例为 `it/cache/CacheIntegrationTest`、`it/system/SystemServiceIntegrationTest`、`it/tenant/TenantIsolationIntegrationTest`。L2 聚焦 L3 黑盒覆盖不到的内部行为（事务回滚、唯一约束、软删除、数据权限），避免与 L3 重复验证同一面。
+L2 放在 `continew-tests/src/test/java/top/continew/admin/it/` 包下，继承 `BaseIntegrationTest`。基类以 singleton 模式管理 MySQL 与 Redis 容器（跨测试类复用同一实例，Liquibase 建表与上下文启动成本只支付一次），并已注入容器连接信息，子类只需注入 Service 编写断言。现有示例为 `it/cache/CacheIntegrationTest`、`it/system/SystemServiceIntegrationTest`、`it/tenant/TenantIsolationIntegrationTest`。L2 聚焦 L3 黑盒覆盖不到的内部行为（事务回滚、唯一约束、软删除、数据权限），避免与 L3 重复验证同一面。
 
 ### 新增一个 L3 用例
 
-L3 放在 `continew-server/src/test/java/top/continew/admin/api/` 包下，类上标注 `@Tag("api")` 并继承 `ApiTestSupport`，现有套件为 `AuthApiTest`、`CoreReadApiTest`、`TenantApiTest`、`CacheEvictApiTest`。执行方式为 `up.sh` 起环境后运行 `api-smoke.sh`，或直接执行 `-Papi-test` 命令指向目标实例。
+L3 放在 `continew-tests/src/test/java/top/continew/admin/api/` 包下，类上标注 `@Tag("api")` 并继承 `ApiTestSupport`，现有套件为 `AuthApiTest`、`CoreReadApiTest`、`TenantApiTest`、`CacheEvictApiTest`。执行方式为 `up.sh` 起环境后运行 `api-smoke.sh`，或直接执行 `-Papi-test` 命令指向目标实例。
 
 L3 用例应验证对外契约而非内部实现，每个端点至少带一条结构断言（如分页端点断言 `data.list` 为数组）。缓存相关断言一律走 `awaitConsistency()`。
 
@@ -139,6 +143,8 @@ L3 会对被测实例产生真实写入，约定如下：
 | `full-test.yml` | `workflow_dispatch` 手动触发 | L3 API 黑盒测试 | 否 |
 
 `ci.yml` 是唯一阻塞合并的自动化检查，L2 在 GitHub 云端 runner 上真实拉起容器执行。L3 只手动触发，不阻塞任何 PR，原因有两点：社区贡献者的 fork 没有 self-hosted runner，接入 `pull_request` 会让外部 PR 长期停在等待状态；缓存最终一致类断言存在偶发失败的可能，先经一段时间的运行观察，再评估是否收紧为必需检查。
+
+`full-test.yml` 在 `suite=all` 时增设防静默跳过守卫：L2 集成测试在 `verify` 阶段执行，Docker 或环境异常可能让用例被整体跳过而构建仍是绿灯。守卫统计 `continew-tests/target/surefire-reports` 下 `TEST-*IntegrationTest.xml` 与 `TEST-*ApplicationTests.xml` 的真实执行数（tests 减 skipped），低于 20 即判该步骤失败。`suite=api` 不跑 L2，守卫也跳过，避免误判。报告归档改为分模块收集 `continew-server` 与 `continew-tests` 的 surefire-reports，各建子目录避免同名文件相互覆盖。
 
 ## 常见问题
 
@@ -163,7 +169,8 @@ L3 登录密码用 `api.rsa-public-key`（或 `API_RSA_PUBLIC_KEY`）指定的�
 - [scripts/test/up.sh（环境启停与端口探测）](https://github.com/continew-org/continew-admin/blob/dev/scripts/test/up.sh)
 - [scripts/test/api-smoke.sh（L3 执行入口）](https://github.com/continew-org/continew-admin/blob/dev/scripts/test/api-smoke.sh)
 - [docker/docker-compose-test.yml（测试环境编排）](https://github.com/continew-org/continew-admin/blob/dev/docker/docker-compose-test.yml)
-- [continew-server/pom.xml（api-test profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/pom.xml)
-- [ApiTestSupport（L3 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/test/java/top/continew/admin/api/support/ApiTestSupport.java)
-- [BaseIntegrationTest（L2 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/test/java/top/continew/admin/it/BaseIntegrationTest.java)
+- [continew-tests/pom.xml（集中测试模块与 api-test profile）](https://github.com/continew-org/continew-admin/blob/dev/continew-tests/pom.xml)
+- [ApiTestSupport（L3 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-tests/src/test/java/top/continew/admin/api/support/ApiTestSupport.java)
+- [BaseIntegrationTest（L2 测试基类）](https://github.com/continew-org/continew-admin/blob/dev/continew-tests/src/test/java/top/continew/admin/it/BaseIntegrationTest.java)
 - [ci.yml（PR 检查）](https://github.com/continew-org/continew-admin/blob/dev/.github/workflows/ci.yml)
+- [full-test.yml（L3 全量测试与防静默跳过守卫）](https://github.com/continew-org/continew-admin/blob/dev/.github/workflows/full-test.yml)
