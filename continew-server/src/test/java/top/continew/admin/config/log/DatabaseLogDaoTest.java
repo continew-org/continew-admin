@@ -109,7 +109,7 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldRecordFailureWithDefaultStatusWhenResponseMissing() {
-        logDao.add(record(LOGIN_URI, null, null, null));
+        logDao.add(buildRecord(LOGIN_URI, null, null, null));
 
         LogDO entity = capturedEntity();
         assertEquals(500, entity.getStatusCode());
@@ -122,8 +122,9 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldNotPersistLoginRequestBody() {
-        logDao.add(record(LOGIN_URI, "{\"username\":\"admin\",\"password\":\"encrypted\"}", 200,
-            okBody()));
+        logDao
+            .add(buildRecord(LOGIN_URI, "{\"username\":\"admin\",\"password\":\"encrypted\"}", 200,
+                okBody()));
 
         LogDO entity = capturedEntity();
         assertNull(entity.getRequestBody());
@@ -132,7 +133,7 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldPersistRequestBodyForNonLoginUri() {
-        logDao.add(record("/system/user/page", "{\"deptId\":1}", 200, okBody()));
+        logDao.add(buildRecord("/system/user/page", "{\"deptId\":1}", 200, okBody()));
 
         LogDO entity = capturedEntity();
         assertEquals("{\"deptId\":1}", entity.getRequestBody());
@@ -141,14 +142,14 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldMarkFailureWhenHttpStatusIsServerError() {
-        logDao.add(record("/system/user/page", null, 502, okBody()));
+        logDao.add(buildRecord("/system/user/page", null, 502, okBody()));
 
         assertEquals(LogStatusEnum.FAILURE, capturedEntity().getStatus());
     }
 
     @Test
     void shouldMarkFailureWhenBizCodeIsNotSuccess() {
-        logDao.add(record("/system/user/page", null, 200, failBody()));
+        logDao.add(buildRecord("/system/user/page", null, 200, failBody()));
 
         LogDO entity = capturedEntity();
         assertEquals(LogStatusEnum.FAILURE, entity.getStatus());
@@ -157,10 +158,10 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldMarkFailureWhenResponseHeadersMissing() {
-        LogRecord record = record("/system/user/page", null, 200, okBody());
-        when(record.getResponse().getHeaders()).thenReturn(null);
+        LogRecord logRecord = buildRecord("/system/user/page", null, 200, okBody());
+        when(logRecord.getResponse().getHeaders()).thenReturn(null);
 
-        logDao.add(record);
+        logDao.add(logRecord);
 
         LogDO entity = capturedEntity();
         assertNull(entity.getTraceId());
@@ -169,17 +170,17 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldResolveTraceIdFromResponseHeaders() {
-        LogRecord record = record("/system/user/page", null, 200, okBody());
-        when(record.getResponse().getHeaders()).thenReturn(Map.of("X-Trace-Id", "trace-1"));
+        LogRecord logRecord = buildRecord("/system/user/page", null, 200, okBody());
+        when(logRecord.getResponse().getHeaders()).thenReturn(Map.of("X-Trace-Id", "trace-1"));
 
-        logDao.add(record);
+        logDao.add(logRecord);
 
         assertEquals("trace-1", capturedEntity().getTraceId());
     }
 
     @Test
     void shouldResolveCreateUserFromLogoutResponseBody() {
-        logDao.add(record(LOGOUT_URI, null, 200, logoutBody(234L), Map
+        logDao.add(buildRecord(LOGOUT_URI, null, 200, logoutBody(234L), Map
             .of("Authorization", "Bearer token-x")));
 
         assertEquals(234L, capturedEntity().getCreateUser());
@@ -187,7 +188,7 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldSkipLogoutParseWhenResponseBodyBlank() {
-        logDao.add(record(LOGOUT_URI, null, 200, null, Map
+        logDao.add(buildRecord(LOGOUT_URI, null, 200, null, Map
             .of("Authorization", "Bearer raw-token")));
 
         LogDO entity = capturedEntity();
@@ -201,7 +202,7 @@ class DatabaseLogDaoTest {
         req.setUsername("admin");
         when(userService.getByUsername("admin")).thenReturn(user(1L));
 
-        logDao.add(record(LOGIN_URI, JSONUtil.toJsonStr(req), 200, okBody()));
+        logDao.add(buildRecord(LOGIN_URI, JSONUtil.toJsonStr(req), 200, okBody()));
 
         LogDO entity = capturedEntity();
         assertEquals(1L, entity.getCreateUser());
@@ -210,7 +211,7 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldKeepLoginDescriptionWhenAuthTypeMissing() {
-        logDao.add(record(LOGIN_URI, "{\"username\":\"admin\"}", 200, okBody()));
+        logDao.add(buildRecord(LOGIN_URI, "{\"username\":\"admin\"}", 200, okBody()));
 
         LogDO entity = capturedEntity();
         assertEquals("登录", entity.getDescription());
@@ -226,7 +227,7 @@ class DatabaseLogDaoTest {
             MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
             saManager.when(SaManager::getConfig).thenReturn(config);
             stpUtil.when(() -> StpUtil.getLoginIdByToken("raw-token")).thenReturn(7L);
-            logDao.add(record(LOGIN_URI, "{\"authType\":\"SOCIAL\"}", 200, okBody(), Map
+            logDao.add(buildRecord(LOGIN_URI, "{\"authType\":\"SOCIAL\"}", 200, okBody(), Map
                 .of("Authorization", "Bearer raw-token")));
         }
 
@@ -242,7 +243,7 @@ class DatabaseLogDaoTest {
             MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
             saManager.when(SaManager::getConfig).thenReturn(config);
             stpUtil.when(() -> StpUtil.getLoginIdByToken("raw-token")).thenReturn(66L);
-            logDao.add(record("/system/user/page", null, 200, okBody(), Map
+            logDao.add(buildRecord("/system/user/page", null, 200, okBody(), Map
                 .of("Authorization", "Bearer raw-token")));
         }
 
@@ -258,7 +259,7 @@ class DatabaseLogDaoTest {
             MockedStatic<StpUtil> stpUtil = mockStatic(StpUtil.class)) {
             saManager.when(SaManager::getConfig).thenReturn(config);
             stpUtil.when(() -> StpUtil.getLoginIdByToken("lower-token")).thenReturn(88L);
-            logDao.add(record("/system/user/page", null, 200, okBody(), Map
+            logDao.add(buildRecord("/system/user/page", null, 200, okBody(), Map
                 .of("authorization", "Bearer lower-token")));
         }
 
@@ -267,7 +268,7 @@ class DatabaseLogDaoTest {
 
     @Test
     void shouldSkipTokenParseWhenAuthorizationHeaderAbsent() {
-        logDao.add(record("/system/user/page", null, 200, okBody(), Map.of("X-Other", "v")));
+        logDao.add(buildRecord("/system/user/page", null, 200, okBody(), Map.of("X-Other", "v")));
 
         assertNull(capturedEntity().getCreateUser());
     }
@@ -279,7 +280,7 @@ class DatabaseLogDaoTest {
 
         try (MockedStatic<SaManager> saManager = mockStatic(SaManager.class)) {
             saManager.when(SaManager::getConfig).thenReturn(config);
-            logDao.add(record("/system/user/page", null, 200, okBody(), Map
+            logDao.add(buildRecord("/system/user/page", null, 200, okBody(), Map
                 .of("Authorization", " ")));
         }
 
@@ -299,7 +300,7 @@ class DatabaseLogDaoTest {
             // TenantUtils.execute 的语义是在指定租户上下文内同步执行，桩中直接透传被代理动作
             tenantUtils.when(() -> TenantUtils.execute(eq(999L), any(Runnable.class)))
                 .thenAnswer(passThroughRunnable());
-            logDao.add(record("/system/user/page", null, 200, okBody(), Map
+            logDao.add(buildRecord("/system/user/page", null, 200, okBody(), Map
                 .of("X-Tenant-Id", "999")));
         }
 
@@ -315,21 +316,24 @@ class DatabaseLogDaoTest {
             .thenReturn(tenantProperties);
         tenantContextHolderMock.when(TenantContextHolder::isTenantEnabled).thenReturn(true);
 
-        logDao.add(record("/system/user/page", null, 200, okBody(), Map.of("X-Tenant-Id", " ")));
+        logDao
+            .add(buildRecord("/system/user/page", null, 200, okBody(), Map.of("X-Tenant-Id", " ")));
 
         verify(logMapper).insert(any(LogDO.class));
     }
 
     @Test
     void shouldInsertDirectlyWhenTenantDisabled() {
-        logDao.add(record("/system/user/page", null, 200, okBody(), Map.of("X-Tenant-Id", "999")));
+        logDao.add(
+            buildRecord("/system/user/page", null, 200, okBody(), Map.of("X-Tenant-Id", "999")));
 
         verify(logMapper).insert(any(LogDO.class));
     }
 
     @Test
     void shouldTruncateOsNameBeforePlatformSeparator() {
-        logDao.add(record("/system/user/page", null, 200, okBody(), null, "Windows 10 or newer"));
+        logDao.add(
+            buildRecord("/system/user/page", null, 200, okBody(), null, "Windows 10 or newer"));
 
         assertEquals("Windows 10", capturedEntity().getOs());
     }
@@ -347,16 +351,19 @@ class DatabaseLogDaoTest {
         };
     }
 
-    private LogRecord record(String requestUri, String body, Integer status, String responseBody) {
-        return record(requestUri, body, status, responseBody, null, "Windows");
+    private LogRecord buildRecord(String requestUri, String body, Integer status,
+        String responseBody) {
+        return buildRecord(requestUri, body, status, responseBody, null, "Windows");
     }
 
-    private LogRecord record(String requestUri, String body, Integer status, String responseBody,
+    private LogRecord buildRecord(String requestUri, String body, Integer status,
+        String responseBody,
         Map<String, String> requestHeaders) {
-        return record(requestUri, body, status, responseBody, requestHeaders, "Windows");
+        return buildRecord(requestUri, body, status, responseBody, requestHeaders, "Windows");
     }
 
-    private LogRecord record(String requestUri, String body, Integer status, String responseBody,
+    private LogRecord buildRecord(String requestUri, String body, Integer status,
+        String responseBody,
         Map<String, String> requestHeaders, String os) {
         LogRequest request = mock(LogRequest.class);
         when(request.getMethod()).thenReturn("POST");
@@ -373,11 +380,11 @@ class DatabaseLogDaoTest {
             when(response.getHeaders()).thenReturn(new HashMap<>());
             when(response.getBody()).thenReturn(responseBody);
         }
-        LogRecord record = new LogRecord(Instant.now(), request, response, Duration
+        LogRecord logRecord = new LogRecord(Instant.now(), request, response, Duration
             .ofMillis(120));
-        record.setDescription("登录测试");
-        record.setModule("登录测试模块API");
-        return record;
+        logRecord.setDescription("登录测试");
+        logRecord.setModule("登录测试模块API");
+        return logRecord;
     }
 
     private String okBody() {

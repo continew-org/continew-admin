@@ -17,6 +17,8 @@
 package top.continew.admin.job;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -27,7 +29,6 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import top.continew.admin.common.constant.CacheConstants;
 import top.continew.admin.open.mapper.AppMapper;
 import top.continew.admin.system.mapper.ClientMapper;
@@ -80,8 +81,8 @@ class DemoEnvironmentJobTest {
             removableMapper(PackageMenuMapper.class));
 
         try (MockedStatic<CacheUtils> cacheUtils = mockStatic(CacheUtils.class);
-            MockedStatic<InterceptorIgnoreHelper> ignoreHelper = Mockito
-                .mockStatic(InterceptorIgnoreHelper.class)) {
+            MockedStatic<InterceptorIgnoreHelper> ignoreHelper =
+                mockStatic(InterceptorIgnoreHelper.class)) {
             job.resetEnvironmentData();
 
             ignoreHelper.verify(InterceptorIgnoreHelper::clearIgnoreStrategy);
@@ -104,8 +105,8 @@ class DemoEnvironmentJobTest {
             removableMapper(PackageMenuMapper.class));
 
         try (MockedStatic<CacheUtils> cacheUtils = mockStatic(CacheUtils.class);
-            MockedStatic<InterceptorIgnoreHelper> ignoreHelper = Mockito
-                .mockStatic(InterceptorIgnoreHelper.class)) {
+            MockedStatic<InterceptorIgnoreHelper> ignoreHelper =
+                mockStatic(InterceptorIgnoreHelper.class)) {
             job.resetEnvironmentData();
 
             ignoreHelper.verify(() -> InterceptorIgnoreHelper.handle(any(IgnoreStrategy.class)));
@@ -131,8 +132,8 @@ class DemoEnvironmentJobTest {
             removableMapper(PackageMenuMapper.class));
 
         try (MockedStatic<CacheUtils> cacheUtils = mockStatic(CacheUtils.class);
-            MockedStatic<InterceptorIgnoreHelper> ignoreHelper = Mockito
-                .mockStatic(InterceptorIgnoreHelper.class)) {
+            MockedStatic<InterceptorIgnoreHelper> ignoreHelper =
+                mockStatic(InterceptorIgnoreHelper.class)) {
             job.resetEnvironmentData();
 
             ignoreHelper.verify(InterceptorIgnoreHelper::clearIgnoreStrategy);
@@ -150,7 +151,7 @@ class DemoEnvironmentJobTest {
     private <M> M zeroCountMapper(Class<M> mapperClass) {
         M mapper = mock(mapperClass);
         LambdaQueryChainWrapper<Object> query = chainQuery();
-        Mockito.doReturn(query).when((BaseMapper) mapper)
+        doReturn(query).when((BaseMapper) mapper)
             .lambdaQuery();
         when(query.count()).thenReturn(0L);
         return mapper;
@@ -167,9 +168,9 @@ class DemoEnvironmentJobTest {
         M mapper = mock(mapperClass);
         LambdaQueryChainWrapper<Object> query = chainQuery();
         LambdaUpdateChainWrapper<Object> update = chainUpdate(true);
-        Mockito.doReturn(query).when((BaseMapper) mapper)
+        doReturn(query).when((BaseMapper) mapper)
             .lambdaQuery();
-        Mockito.doReturn(update).when((BaseMapper) mapper)
+        doReturn(update).when((BaseMapper) mapper)
             .lambdaUpdate();
         when(query.count()).thenReturn(NON_ZERO_COUNT);
         return mapper;
@@ -185,7 +186,7 @@ class DemoEnvironmentJobTest {
     private <M> M removableMapper(Class<M> mapperClass) {
         M mapper = mock(mapperClass);
         LambdaUpdateChainWrapper<Object> update = chainUpdate(true);
-        Mockito.doReturn(update).when((BaseMapper) mapper)
+        doReturn(update).when((BaseMapper) mapper)
             .lambdaUpdate();
         return mapper;
     }
@@ -201,9 +202,9 @@ class DemoEnvironmentJobTest {
         M mapper = mock(mapperClass);
         LambdaQueryChainWrapper<Object> query = chainQuery();
         LambdaUpdateChainWrapper<Object> update = chainUpdate(false);
-        Mockito.doReturn(query).when((BaseMapper) mapper)
+        doReturn(query).when((BaseMapper) mapper)
             .lambdaQuery();
-        Mockito.doReturn(update).when((BaseMapper) mapper)
+        doReturn(update).when((BaseMapper) mapper)
             .lambdaUpdate();
         when(query.count()).thenReturn(NON_ZERO_COUNT);
         return mapper;
@@ -216,9 +217,9 @@ class DemoEnvironmentJobTest {
      */
     @SuppressWarnings("unchecked")
     private LambdaQueryChainWrapper<Object> chainQuery() {
-        LambdaQueryChainWrapper<Object> query = Mockito.mock(LambdaQueryChainWrapper.class);
-        Mockito.doReturn(query).when(query).gt(any(), any());
-        Mockito.doReturn(query).when(query).notIn(any(), Mockito.anyCollection());
+        LambdaQueryChainWrapper<Object> query = mock(LambdaQueryChainWrapper.class);
+        doReturn(query).when(query).gt(any(), any());
+        doReturn(query).when(query).notIn(any(), anyCollection());
         return query;
     }
 
@@ -230,10 +231,10 @@ class DemoEnvironmentJobTest {
      */
     @SuppressWarnings("unchecked")
     private LambdaUpdateChainWrapper<Object> chainUpdate(boolean removeResult) {
-        LambdaUpdateChainWrapper<Object> update = Mockito.mock(LambdaUpdateChainWrapper.class);
-        Mockito.doReturn(update).when(update).gt(any(), any());
-        Mockito.doReturn(update).when(update).notIn(any(), Mockito.anyCollection());
-        Mockito.doReturn(removeResult).when(update).remove();
+        LambdaUpdateChainWrapper<Object> update = mock(LambdaUpdateChainWrapper.class);
+        doReturn(update).when(update).gt(any(), any());
+        doReturn(update).when(update).notIn(any(), anyCollection());
+        doReturn(removeResult).when(update).remove();
         return update;
     }
 }
