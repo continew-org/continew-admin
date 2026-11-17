@@ -17,13 +17,14 @@
 package top.continew.admin.schedule.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.aizuda.snailjob.common.core.model.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentMatchers;
 import top.continew.admin.schedule.api.JobApi;
 import top.continew.admin.schedule.api.JobClient;
 import top.continew.admin.schedule.api.JobGroupApi;
@@ -66,10 +67,10 @@ class JobServiceImplTest {
         pageResult.setStatus(JobClient.STATUS_SUCCESS);
         pageResult.setData(List.of());
         pageResult.setTotal(0L);
-        when(jobClient.requestPage(Mockito.any()))
+        when(jobClient.requestPage(any()))
             .thenReturn(top.continew.starter.extension.crud.model.resp.PageResp
                 .build(1, 10, List.of()));
-        Mockito.when(jobApi.page(Mockito.any())).thenReturn(pageResult);
+        when(jobApi.page(any())).thenReturn(pageResult);
 
         PageResp<JobResp> page = jobService.page(new JobQuery());
 
@@ -79,10 +80,11 @@ class JobServiceImplTest {
     @Test
     void shouldDelegateCreateAndUpdateToJobApi() {
         JobReq req = new JobReq();
-        Mockito.when(jobClient.request(Mockito.<java.util.function.Supplier<Result<Boolean>>>any()))
+        when(
+            jobClient.request(ArgumentMatchers.<java.util.function.Supplier<Result<Boolean>>>any()))
             .thenReturn(Boolean.TRUE);
-        Mockito.when(jobApi.create(Mockito.any())).thenReturn(new Result<>());
-        Mockito.when(jobApi.update(Mockito.any())).thenReturn(new Result<>());
+        when(jobApi.create(any())).thenReturn(new Result<>());
+        when(jobApi.update(any())).thenReturn(new Result<>());
 
         assertEquals(Boolean.TRUE, jobService.create(req));
         assertEquals(Boolean.TRUE, jobService.update(req, 1L));
@@ -91,11 +93,10 @@ class JobServiceImplTest {
 
     @Test
     void shouldDelegateListGroupToJobGroupApi() {
-        Mockito
-            .when(
-                jobClient.request(Mockito.<java.util.function.Supplier<Result<List<String>>>>any()))
+        when(jobClient
+            .request(ArgumentMatchers.<java.util.function.Supplier<Result<List<String>>>>any()))
             .thenReturn(List.of("default"));
-        Mockito.when(jobGroupApi.listGroup()).thenReturn(new Result<>());
+        when(jobGroupApi.listGroup()).thenReturn(new Result<>());
 
         List<String> groups = jobService.listGroup();
 
