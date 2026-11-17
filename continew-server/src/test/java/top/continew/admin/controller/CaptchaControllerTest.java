@@ -27,11 +27,13 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.wf.captcha.base.Captcha;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.redisson.api.RedissonClient;
 import top.continew.admin.auth.model.resp.CaptchaResp;
 import top.continew.admin.common.config.CaptchaProperties;
 import top.continew.admin.common.constant.CacheConstants;
@@ -101,12 +103,11 @@ class CaptchaControllerTest {
         CaptchaResp resp;
         // RedisUtils 的静态块经 SpringUtil 取 RedissonClient，纯单测下先桩 SpringUtil 再模拟 RedisUtils
         try (
-            MockedStatic<cn.hutool.extra.spring.SpringUtil> springUtil =
-                mockStatic(cn.hutool.extra.spring.SpringUtil.class);
+            MockedStatic<SpringUtil> springUtil = mockStatic(SpringUtil.class);
             MockedStatic<RedisUtils> redisUtils = mockStatic(RedisUtils.class)) {
-            springUtil.when(() -> cn.hutool.extra.spring.SpringUtil
-                .getBean(org.redisson.api.RedissonClient.class))
-                .thenReturn(mock(org.redisson.api.RedissonClient.class));
+            RedissonClient redissonClient = mock(RedissonClient.class);
+            springUtil.when(() -> SpringUtil.getBean(RedissonClient.class))
+                .thenReturn(redissonClient);
             resp = controller.getImageCaptcha();
 
             assertNotNull(resp.getUuid());
