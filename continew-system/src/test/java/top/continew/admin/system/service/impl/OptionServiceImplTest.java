@@ -159,9 +159,10 @@ class OptionServiceImplTest {
         existing.setId(1L);
         existing.setCode(req.getCode());
         doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        List<OptionReq> policyUpdates = List.of(req);
 
         BadRequestException exception =
-            assertThrows(BadRequestException.class, () -> optionService.update(List.of(req)));
+            assertThrows(BadRequestException.class, () -> optionService.update(policyUpdates));
 
         // Validator.throwIf 的占位符为 {} 风格，%s 模板不会替换
         assertEquals("参数 [%s] 的值必须为数字", exception.getMessage());
