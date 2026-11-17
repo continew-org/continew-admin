@@ -140,6 +140,9 @@ class AccountLoginHandlerTest {
         when(jakartaValidator.validate(any(Object.class), ArgumentMatchers.<Class<?>>any()))
             .thenReturn(Set.<ConstraintViolation<Object>>of());
         springUtil.when(() -> SpringUtil.getBean(Validator.class)).thenReturn(jakartaValidator);
+        // starter Validator 的实例在类首次加载时固化到静态字段；其他测试类先加载时本类
+        // 的 SpringUtil 桩不再命中，以 Unsafe 覆写静态实例保证始终命中 mock
+        StarterValidatorOverwrite.overwriteInstance(jakartaValidator);
     }
 
     /**
