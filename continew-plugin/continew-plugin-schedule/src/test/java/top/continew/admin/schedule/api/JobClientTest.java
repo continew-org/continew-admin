@@ -74,8 +74,10 @@ class JobClientTest {
         result.setStatus(0);
         result.setMessage("任务不存在");
 
+        JobClient client = client();
+
         ScheduleClientException exception =
-            assertThrows(ScheduleClientException.class, () -> client().request(() -> result));
+            assertThrows(ScheduleClientException.class, () -> client.request(() -> result));
 
         assertEquals("任务不存在", exception.getMessage());
     }
