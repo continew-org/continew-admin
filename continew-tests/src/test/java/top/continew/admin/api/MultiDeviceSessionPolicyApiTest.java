@@ -19,7 +19,6 @@ package top.continew.admin.api;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import top.continew.admin.api.support.L3FixtureSupport;
@@ -83,21 +82,26 @@ class MultiDeviceSessionPolicyApiTest extends L3FixtureSupport {
             Response appInfo = asToken(appToken).get(USER_INFO_PATH);
             assertOwner(appInfo, userId, username, "C-106 步骤 3：APP 端自读");
 
-            // 步骤 4：APP 端非豁免路径建立活跃，随后双端完全静默（静置 > 阈值 + 快照 TTL）
+            // 步骤 4：APP 端非豁免路径建立活跃 → 等策略快照重载 → 预写 APP 端过期活跃记录。
+            // PC 端策略为闲置不限制，预写只作用于 APP 端会话；预写后双端不再发任何请求
             Response appActive = asToken(appToken).get(LOG_PATH + "?page=1&size=10");
             Assertions.assertEquals("0", appActive.jsonPath().getString("code"),
                 "C-106 步骤 4：APP 端活跃请求应成功，响应体：" + sanitize(appActive.getBody().asString()));
+            // 快照 TTL 60 秒：新建客户端的闲置策略在下一次快照重载后才可见
             sleepSeconds(IDLE_WAIT_SECONDS);
+            presetExpiredActivity(appToken, IDLE_TIMEOUT_SECONDS * 2);
 
             // 步骤 5：关键判定——自身端闲置生效，未被另一端「救活」
             List<String> encodingViolations = new ArrayList<>();
             Response appAfterIdle = asToken(appToken).get(LOG_PATH + "?page=1&size=10");
-            log.info("C-106 静置后 APP 端: HTTP {} code={} msg={}", appAfterIdle.statusCode(),
+            log.info("C-106 预写后 APP 端: HTTP {} code={} msg={}", appAfterIdle.statusCode(),
                 appAfterIdle
                     .jsonPath().getString("code"),
                 appAfterIdle.jsonPath().getString("msg"));
-            Assumptions.assumeTrue(appAfterIdle.statusCode() == 401,
-                "APP 端闲置策略在 65 秒静置后未生效（外部条件未就绪），标记阻塞而非产品缺陷");
+            // 预写与快照窗口均已保证，401 不出现即产品判定缺陷，不再阻塞跳过
+            Assertions.assertEquals(401, appAfterIdle.statusCode(),
+                "C-106 步骤 5：APP 端预写过期活跃记录后应闲置 401，响应体：" + sanitize(appAfterIdle
+                    .getBody().asString()));
             Assertions.assertEquals("401", appAfterIdle.jsonPath().getString("code"),
                 "C-106 步骤 5：闲置拒绝业务码应为 401");
             String idleMsg = appAfterIdle.jsonPath().getString("msg");
