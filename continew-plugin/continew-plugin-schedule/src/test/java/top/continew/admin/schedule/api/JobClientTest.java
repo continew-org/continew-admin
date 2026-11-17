@@ -102,8 +102,10 @@ class JobClientTest {
         result.setStatus(0);
         result.setMessage("查询失败");
 
+        JobClient client = client();
+
         ScheduleClientException exception =
-            assertThrows(ScheduleClientException.class, () -> client().requestPage(() -> result));
+            assertThrows(ScheduleClientException.class, () -> client.requestPage(() -> result));
 
         assertEquals("查询失败", exception.getMessage());
     }
