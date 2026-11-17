@@ -18,6 +18,7 @@ package top.continew.admin.it.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import top.continew.admin.it.BaseIntegrationTest;
 import top.continew.starter.cache.multicache.util.CacheUtils;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -98,8 +100,12 @@ class CacheIntegrationTest extends BaseIntegrationTest {
 
         String evicted = CacheUtils.get(cacheName, "evict_key");
         assertThat(evicted).as("evict 后不应命中缓存").isNull();
-        Set<String> keys = stringRedisTemplate.keys(cacheName + "*");
-        assertThat(keys).as("evict 后 Redis 键应消失").isEmpty();
+        // L2 的 Redis 键清理经异步缓存写入器执行，以终态轮询等待其完成
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> assertThat(stringRedisTemplate.keys(cacheName + "*"))
+                .as("evict 后 Redis 键应消失").isEmpty());
     }
 
     /**
@@ -113,17 +119,16 @@ class CacheIntegrationTest extends BaseIntegrationTest {
 
         CacheUtils.evictAll(cacheName);
 
-        // 清理 L2 残留键后校验 L1 与 L2 终态
-        Set<String> keysAfterEvict = stringRedisTemplate.keys(cacheName + "*");
-        if (keysAfterEvict != null && !keysAfterEvict.isEmpty()) {
-            stringRedisTemplate.delete(keysAfterEvict);
-        }
-
         String k1AfterClear = CacheUtils.get(cacheName, "k1");
         String k2AfterClear = CacheUtils.get(cacheName, "k2");
         assertThat(k1AfterClear).as("evictAll 后 L1 应被清除").isNull();
         assertThat(k2AfterClear).as("evictAll 后 L1 应被清除").isNull();
-        assertThat(stringRedisTemplate.keys(cacheName + "*")).as("L2 残留清理后应无键").isEmpty();
+        // L2 的 Redis 键清理经异步缓存写入器执行，以终态轮询等待其完成
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> assertThat(stringRedisTemplate.keys(cacheName + "*"))
+                .as("evictAll 后 Redis 键应消失").isEmpty());
     }
 
     /**
