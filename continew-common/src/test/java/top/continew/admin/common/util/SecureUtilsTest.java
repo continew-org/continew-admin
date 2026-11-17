@@ -124,10 +124,10 @@ class SecureUtilsTest {
     @Test
     void shouldRejectPasswordNotMatchingPatternWhenVerifyEnabled() {
         // 纯小写字母无数字，PASSWORD 正则要求至少包含字母和数字
+        String encryptedText = encryptToBase64Text("abcdefghij");
+
         BadRequestException exception = assertThrows(BadRequestException.class,
-            () -> SecureUtils.decryptPasswordByRsaPrivateKey(encryptToBase64Text("abcdefghij"),
-                "解密失败",
-                true));
+            () -> SecureUtils.decryptPasswordByRsaPrivateKey(encryptedText, "解密失败", true));
         assertEquals("密码长度为 8-32 个字符，支持大小写字母、数字、特殊字符，至少包含字母和数字", exception
             .getMessage());
     }
