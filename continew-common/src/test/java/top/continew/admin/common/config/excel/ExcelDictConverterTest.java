@@ -18,6 +18,8 @@ package top.continew.admin.common.config.excel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 import cn.hutool.extra.spring.SpringUtil;
@@ -90,14 +92,14 @@ class ExcelDictConverterTest {
     }
 
     private void stubDictItems() {
-        DictItemApi dictItemApi = org.mockito.Mockito.mock(DictItemApi.class);
+        DictItemApi dictItemApi = mock(DictItemApi.class);
         LabelValueResp male = new LabelValueResp();
         male.setLabel("男");
         male.setValue(1);
         LabelValueResp female = new LabelValueResp();
         female.setLabel("女");
         female.setValue(2);
-        org.mockito.Mockito.doReturn(List.of(male, female)).when(dictItemApi)
+        doReturn(List.of(male, female)).when(dictItemApi)
             .listByDictCode("gender");
         springUtilMock.when(() -> SpringUtil.getBean(DictItemApi.class)).thenReturn(dictItemApi);
     }
@@ -138,8 +140,8 @@ class ExcelDictConverterTest {
 
     @Test
     void shouldWriteEmptyWhenDictItemsEmpty() throws Exception {
-        DictItemApi dictItemApi = org.mockito.Mockito.mock(DictItemApi.class);
-        org.mockito.Mockito.doReturn(List.of()).when(dictItemApi).listByDictCode("gender");
+        DictItemApi dictItemApi = mock(DictItemApi.class);
+        doReturn(List.of()).when(dictItemApi).listByDictCode("gender");
         springUtilMock.when(() -> SpringUtil.getBean(DictItemApi.class)).thenReturn(dictItemApi);
         ExcelContentProperty property = contentProperty(DemoRow.class, "gender");
 
@@ -153,9 +155,10 @@ class ExcelDictConverterTest {
     void shouldThrowWhenFieldMissesDictAnnotation() throws Exception {
         ReadCellData<?> cellData = ReadCellData.newInstance("男", (Integer) null, (Integer) null);
         ExcelContentProperty property = contentProperty(PlainRow.class, "plain");
+        GlobalConfiguration globalConfiguration = new GlobalConfiguration();
 
         assertThrows(IllegalArgumentException.class,
-            () -> converter.convertToJavaData(cellData, property, new GlobalConfiguration()));
+            () -> converter.convertToJavaData(cellData, property, globalConfiguration));
     }
 
 }
