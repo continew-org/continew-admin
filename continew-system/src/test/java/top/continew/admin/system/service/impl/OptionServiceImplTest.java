@@ -20,9 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
@@ -32,7 +36,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import top.continew.admin.system.mapper.OptionMapper;
 import top.continew.admin.system.model.entity.OptionDO;
 import top.continew.admin.system.model.req.OptionReq;
@@ -73,11 +76,13 @@ class OptionServiceImplTest {
         // ValidationUtils 静态块经 SpringUtil 取校验器，均先桩 SpringUtil 再模拟静态工具
         springUtilMock = mockStatic(SpringUtil.class);
         jakarta.validation.Validator jakartaValidator = mock(jakarta.validation.Validator.class);
-        Mockito.when(jakartaValidator.validate(any())).thenReturn(java.util.Set.of());
+        when(jakartaValidator.validate(any())).thenReturn(java.util.Set.of());
         springUtilMock.when(() -> SpringUtil.getBean(jakarta.validation.Validator.class))
             .thenReturn(jakartaValidator);
+        org.redisson.api.RedissonClient redissonClient =
+            mock(org.redisson.api.RedissonClient.class);
         springUtilMock.when(() -> SpringUtil.getBean(org.redisson.api.RedissonClient.class))
-            .thenReturn(mock(org.redisson.api.RedissonClient.class));
+            .thenReturn(redissonClient);
         redisUtilsMock = mockStatic(RedisUtils.class);
         cacheUtilsMock = mockStatic(CacheUtils.class);
     }
@@ -95,7 +100,7 @@ class OptionServiceImplTest {
         option.setCode("SITE_TITLE");
         option.setValue(null);
         option.setDefaultValue("ContiNew Admin");
-        Mockito.doReturn(List.of(option)).when(optionMapper).selectByCategory("SITE");
+        doReturn(List.of(option)).when(optionMapper).selectByCategory("SITE");
 
         Map<String, String> result =
             optionService.getByCategory(top.continew.admin.system.enums.OptionCategoryEnum.SITE);
@@ -112,13 +117,14 @@ class OptionServiceImplTest {
         OptionDO existing = new OptionDO();
         existing.setId(1L);
         existing.setCode("SITE_TITLE");
-        Mockito.doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        List<OptionReq> updates = List.of(req);
 
         BadRequestException exception =
-            assertThrows(BadRequestException.class, () -> optionService.update(List.of(req)));
+            assertThrows(BadRequestException.class, () -> optionService.update(updates));
 
         assertEquals("参数 [UNKNOWN_CODE] 不存在", exception.getMessage());
-        Mockito.verify(optionMapper, Mockito.never()).updateById(Mockito.any(OptionDO.class));
+        verify(optionMapper, never()).updateById(any(OptionDO.class));
     }
 
     @Test
@@ -132,10 +138,12 @@ class OptionServiceImplTest {
         existing.setCode("SITE_TITLE");
         existing.setName("网站标题");
         existing.setDefaultValue("默认值");
-        Mockito.doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+
+        List<OptionReq> updates = List.of(req);
 
         BadRequestException exception =
-            assertThrows(BadRequestException.class, () -> optionService.update(List.of(req)));
+            assertThrows(BadRequestException.class, () -> optionService.update(updates));
 
         assertEquals("参数 [网站标题] 的值不能为空", exception.getMessage());
     }
@@ -150,7 +158,7 @@ class OptionServiceImplTest {
         OptionDO existing = new OptionDO();
         existing.setId(1L);
         existing.setCode(req.getCode());
-        Mockito.doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
 
         BadRequestException exception =
             assertThrows(BadRequestException.class, () -> optionService.update(List.of(req)));
@@ -168,8 +176,8 @@ class OptionServiceImplTest {
         OptionDO existing = new OptionDO();
         existing.setId(1L);
         existing.setCode("SITE_TITLE");
-        Mockito.doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
-        Mockito.doReturn(1).when(optionMapper).updateById(Mockito.any(OptionDO.class));
+        doReturn(List.of(existing)).when(optionMapper).selectByIds(List.of(1L));
+        doReturn(1).when(optionMapper).updateById(any(OptionDO.class));
 
         optionService.update(List.of(req));
 
@@ -189,17 +197,17 @@ class OptionServiceImplTest {
         @SuppressWarnings("unchecked")
         LambdaUpdateChainWrapper<OptionDO> updateWrapper =
             mock(LambdaUpdateChainWrapper.class);
-        Mockito.doReturn(updateWrapper).when(optionMapper).lambdaUpdate();
-        Mockito.doReturn(updateWrapper).when(updateWrapper).set(Mockito.any(), Mockito.any());
-        Mockito.doReturn(updateWrapper).when(updateWrapper).eq(Mockito.any(), Mockito.any());
-        Mockito.doReturn(true).when(updateWrapper).update();
+        doReturn(updateWrapper).when(optionMapper).lambdaUpdate();
+        doReturn(updateWrapper).when(updateWrapper).set(any(), any());
+        doReturn(updateWrapper).when(updateWrapper).eq(any(), any());
+        doReturn(true).when(updateWrapper).update();
         OptionValueResetReq req = new OptionValueResetReq();
         req.setCategory("SITE");
 
         optionService.resetValue(req);
 
         verify(optionMapper).lambdaUpdate();
-        cacheUtilsMock.verify(() -> CacheUtils.evictAll(anyString()), Mockito.atLeast(2));
+        cacheUtilsMock.verify(() -> CacheUtils.evictAll(anyString()), atLeast(2));
     }
 
     @Test
@@ -217,15 +225,15 @@ class OptionServiceImplTest {
         redisUtilsMock.when(() -> RedisUtils.get(anyString())).thenReturn(null);
         @SuppressWarnings("unchecked")
         LambdaQueryChainWrapper<OptionDO> queryWrapper = mock(LambdaQueryChainWrapper.class);
-        Mockito.when(optionMapper.lambdaQuery()).thenReturn(queryWrapper);
-        Mockito.doReturn(queryWrapper).when(queryWrapper).eq(Mockito.any(), Mockito.any());
-        Mockito.doReturn(queryWrapper).when(queryWrapper)
-            .select(Mockito.any(SFunction.class), Mockito.any(SFunction.class));
+        when(optionMapper.lambdaQuery()).thenReturn(queryWrapper);
+        doReturn(queryWrapper).when(queryWrapper).eq(any(), any());
+        doReturn(queryWrapper).when(queryWrapper)
+            .select(any(SFunction.class), any(SFunction.class));
         OptionDO option = new OptionDO();
         option.setCode("LOGIN_CAPTCHA_ENABLED");
         option.setValue(null);
         option.setDefaultValue("1");
-        Mockito.doReturn(option).when(queryWrapper).one();
+        doReturn(option).when(queryWrapper).one();
 
         Integer value = optionService.getValueByCode2Int("LOGIN_CAPTCHA_ENABLED");
 
@@ -240,11 +248,11 @@ class OptionServiceImplTest {
         redisUtilsMock.when(() -> RedisUtils.get(anyString())).thenReturn(null);
         @SuppressWarnings("unchecked")
         LambdaQueryChainWrapper<OptionDO> queryWrapper = mock(LambdaQueryChainWrapper.class);
-        Mockito.when(optionMapper.lambdaQuery()).thenReturn(queryWrapper);
-        Mockito.doReturn(queryWrapper).when(queryWrapper).eq(Mockito.any(), Mockito.any());
-        Mockito.doReturn(queryWrapper).when(queryWrapper)
-            .select(Mockito.any(SFunction.class), Mockito.any(SFunction.class));
-        Mockito.when(queryWrapper.one()).thenReturn(null);
+        when(optionMapper.lambdaQuery()).thenReturn(queryWrapper);
+        doReturn(queryWrapper).when(queryWrapper).eq(any(), any());
+        doReturn(queryWrapper).when(queryWrapper)
+            .select(any(SFunction.class), any(SFunction.class));
+        when(queryWrapper.one()).thenReturn(null);
 
         assertThrows(BusinessException.class, () -> optionService.getValueByCode2Int("NOT_EXIST"));
     }
