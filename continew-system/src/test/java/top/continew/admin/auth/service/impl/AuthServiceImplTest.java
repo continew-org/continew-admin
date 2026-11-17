@@ -19,16 +19,20 @@ package top.continew.admin.auth.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import cn.hutool.extra.spring.SpringUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import top.continew.admin.auth.LoginHandler;
 import top.continew.admin.auth.LoginHandlerFactory;
 import top.continew.admin.auth.enums.AuthTypeEnum;
@@ -60,20 +64,20 @@ class AuthServiceImplTest {
     private LoginHandler<LoginReq> loginHandler;
     private LoginHandlerFactory loginHandlerFactory;
     private AuthServiceImpl authService;
-    private MockedStatic<cn.hutool.extra.spring.SpringUtil> springUtilMock;
+    private MockedStatic<SpringUtil> springUtilMock;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
     void setUp() {
         // ValidationUtils 静态块经 SpringUtil 取 jakarta Validator，纯单测下桩一个恒通过的校验器
-        springUtilMock = Mockito.mockStatic(cn.hutool.extra.spring.SpringUtil.class);
+        springUtilMock = mockStatic(SpringUtil.class);
         jakarta.validation.Validator jakartaValidator = mock(jakarta.validation.Validator.class);
-        Mockito.when(jakartaValidator.validate(any())).thenReturn(java.util.Set.of());
-        springUtilMock.when(() -> cn.hutool.extra.spring.SpringUtil
+        when(jakartaValidator.validate(any())).thenReturn(java.util.Set.of());
+        springUtilMock.when(() -> SpringUtil
             .getBean(jakarta.validation.Validator.class)).thenReturn(jakartaValidator);
         clientService = mock(ClientService.class);
         loginHandler = mock(LoginHandler.class);
-        Mockito.doReturn(AuthTypeEnum.ACCOUNT).when(loginHandler).getAuthType();
+        doReturn(AuthTypeEnum.ACCOUNT).when(loginHandler).getAuthType();
         loginHandlerFactory = new LoginHandlerFactory(java.util.List.of(loginHandler));
         authService =
             new AuthServiceImpl(loginHandlerFactory, clientService, mock(RoleService.class),
@@ -168,18 +172,18 @@ class AuthServiceImplTest {
         LoginReq req = loginReq();
         req.setClientId("client-1");
         ClientResp client = clientService.getByClientId("client-1");
-        Mockito.doReturn(expected).when(loginHandler).login(Mockito.same(req), Mockito
-            .same(client), Mockito.same(request), Mockito.same(response));
+        doReturn(expected).when(loginHandler).login(same(req), same(client), same(request),
+            same(response));
 
         LoginResp resp = authService.login(req, request, response);
 
         assertEquals(expected, resp);
-        org.mockito.InOrder inOrder = Mockito.inOrder(loginHandler);
-        inOrder.verify(loginHandler).preLogin(Mockito.same(req), Mockito.any(), Mockito
-            .same(request));
-        inOrder.verify(loginHandler).login(Mockito.same(req), Mockito.any(), Mockito
-            .same(request), Mockito.same(response));
-        inOrder.verify(loginHandler).postLogin(Mockito.same(req), Mockito.any(), Mockito
-            .same(request));
+        org.mockito.InOrder order = inOrder(loginHandler);
+        order.verify(loginHandler).preLogin(same(req), org.mockito.ArgumentMatchers.any(),
+            same(request));
+        order.verify(loginHandler).login(same(req), org.mockito.ArgumentMatchers.any(),
+            same(request), same(response));
+        order.verify(loginHandler).postLogin(same(req), org.mockito.ArgumentMatchers.any(),
+            same(request));
     }
 }
