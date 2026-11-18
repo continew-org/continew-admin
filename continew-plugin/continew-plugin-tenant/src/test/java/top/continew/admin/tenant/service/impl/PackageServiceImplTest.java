@@ -19,10 +19,13 @@ package top.continew.admin.tenant.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +39,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import top.continew.admin.common.enums.DisEnableStatusEnum;
 import top.continew.admin.tenant.mapper.PackageMapper;
@@ -77,7 +79,7 @@ class PackageServiceImplTest {
         packageMapper = mock(PackageMapper.class);
         packageMenuService = mock(PackageMenuService.class);
         tenantService = mock(TenantService.class);
-        packageService = Mockito.spy(new PackageServiceImpl(packageMenuService));
+        packageService = spy(new PackageServiceImpl(packageMenuService));
         ReflectionTestUtils.setField(packageService, "tenantService", tenantService);
         ReflectionTestUtils.setField(packageService, "baseMapper", packageMapper);
     }
@@ -101,9 +103,10 @@ class PackageServiceImplTest {
     @Test
     void shouldRejectDuplicateNameOnCreate() {
         stubExistsQuery(true);
+        PackageReq req = reqOf(List.of(1L));
 
         BusinessException exception = assertThrows(BusinessException.class, () -> packageService
-            .create(reqOf(List.of(1L))));
+            .create(req));
 
         assertEquals("名称为 [测试套餐] 的套餐已存在", exception.getMessage());
     }
@@ -141,9 +144,10 @@ class PackageServiceImplTest {
     @Test
     void shouldRejectDeleteWhenTenantsBoundToPackage() {
         when(tenantService.countByPackageIds(List.of(PACKAGE_ID))).thenReturn(2L);
+        List<Long> ids = List.of(PACKAGE_ID);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> packageService
-            .beforeDelete(List.of(PACKAGE_ID)));
+            .beforeDelete(ids));
 
         assertEquals("所选套餐存在关联租户，不允许删除", exception.getMessage());
     }
@@ -190,8 +194,8 @@ class PackageServiceImplTest {
         LambdaQueryChainWrapper<PackageDO> queryChain = mock(LambdaQueryChainWrapper.class);
         doReturn(queryChain).when(packageMapper).lambdaQuery();
         doReturn(queryChain).when(queryChain).eq(any(SFunction.class), any());
-        Mockito.lenient().doReturn(queryChain).when(queryChain)
-            .ne(Mockito.anyBoolean(), any(SFunction.class), any());
+        lenient().doReturn(queryChain).when(queryChain)
+            .ne(anyBoolean(), any(SFunction.class), any());
         when(queryChain.exists()).thenReturn(exists);
     }
 }

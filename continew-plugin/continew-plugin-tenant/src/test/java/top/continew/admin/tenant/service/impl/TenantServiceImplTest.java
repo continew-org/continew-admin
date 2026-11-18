@@ -20,11 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +42,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import top.continew.admin.common.api.system.RoleApi;
 import top.continew.admin.common.api.system.RoleMenuApi;
@@ -103,7 +105,7 @@ class TenantServiceImplTest {
         tenantMapper = mock(TenantMapper.class);
         packageService = mock(PackageService.class);
         idGeneratorProvider = mock(IdGeneratorProvider.class);
-        tenantService = Mockito.spy(new TenantServiceImpl(properties, packageService,
+        tenantService = spy(new TenantServiceImpl(properties, packageService,
             idGeneratorProvider, mock(RoleMenuApi.class), mock(RoleApi.class)));
         ReflectionTestUtils.setField(tenantService, "baseMapper", tenantMapper);
     }
@@ -118,9 +120,10 @@ class TenantServiceImplTest {
     @Test
     void shouldRejectDuplicateNameOnCreate() {
         stubExistsQuery(true);
+        TenantReq req = req();
 
         BusinessException exception = assertThrows(BusinessException.class, () -> tenantService
-            .create(req()));
+            .create(req));
 
         assertEquals("名称为 [测试租户] 的租户已存在", exception.getMessage());
     }
@@ -128,14 +131,17 @@ class TenantServiceImplTest {
     @Test
     void shouldRejectDuplicateDomainOnCreate() {
         stubExistsQuery(false, true);
+        TenantReq req = req();
 
-        assertThrows(BusinessException.class, () -> tenantService.create(req()));
+        assertThrows(BusinessException.class, () -> tenantService.create(req));
     }
 
     @Test
     void shouldRejectDeleteOfDefaultTenant() {
+        List<Long> ids = List.of(DEFAULT_TENANT_ID);
+
         BusinessException exception = assertThrows(BusinessException.class, () -> tenantService
-            .delete(List.of(DEFAULT_TENANT_ID)));
+            .delete(ids));
 
         assertEquals("默认租户不允许删除", exception.getMessage());
     }
@@ -307,19 +313,12 @@ class TenantServiceImplTest {
         return req;
     }
 
-    private TenantDO entityOf(String code) {
-        TenantDO tenant = new TenantDO();
-        tenant.setId(TENANT_ID);
-        tenant.setCode(code);
-        return tenant;
-    }
-
     @SuppressWarnings("unchecked")
     private LambdaQueryChainWrapper<TenantDO> mockChain() {
         LambdaQueryChainWrapper<TenantDO> queryChain = mock(LambdaQueryChainWrapper.class);
         doReturn(queryChain).when(queryChain).select(any(SFunction.class));
         doReturn(queryChain).when(queryChain).eq(any(SFunction.class), any());
-        doReturn(queryChain).when(queryChain).ne(Mockito.anyBoolean(), any(SFunction.class), any());
+        doReturn(queryChain).when(queryChain).ne(anyBoolean(), any(SFunction.class), any());
         doReturn(queryChain).when(queryChain).in(any(SFunction.class),
             any(java.util.Collection.class));
         return queryChain;
@@ -344,7 +343,7 @@ class TenantServiceImplTest {
         LambdaQueryChainWrapper<TenantDO> queryChain = mockChain();
         doReturn(queryChain).when(tenantMapper).lambdaQuery();
         doReturn(queryChain).when(queryChain).select(any(SFunction.class));
-        Mockito.lenient().doReturn(queryChain).when(queryChain)
+        lenient().doReturn(queryChain).when(queryChain)
             .eq(any(SFunction.class), any());
         if (id != null) {
             TenantDO tenant = new TenantDO();
