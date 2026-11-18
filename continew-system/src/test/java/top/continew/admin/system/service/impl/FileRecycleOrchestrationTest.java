@@ -223,7 +223,7 @@ class FileRecycleOrchestrationTest {
         mockChainExists(true);
         // 主文件已删除成功后，缩略图删除失败仅告警
         doThrow(new RuntimeException("storage down")).when(fileStorageService)
-            .delete(eq(STORAGE_CODE), eq(BUCKET), eq("upload/a_thumb.png"));
+            .delete(STORAGE_CODE, BUCKET, "upload/a_thumb.png");
 
         fileRecycleService.delete(FILE_ID);
 
@@ -310,10 +310,7 @@ class FileRecycleOrchestrationTest {
     }
 
     private void stubDelete(FileDO file, long referenceCount) {
-        when(fileMapper.selectByIdInRecycleBin(FILE_ID)).thenReturn(file);
-        when(storageService.getById(STORAGE_ID)).thenReturn(storage());
-        when(fileMapper.countRecycleBinReferences(anyLong(), anyString(), anyString(), anyString(),
-            anyLong())).thenReturn(referenceCount);
+        stubRestore(file, referenceCount);
     }
 
     private List<String> captureBatchDeletePaths() {
