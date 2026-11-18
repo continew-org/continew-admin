@@ -20,7 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import cn.hutool.extra.spring.SpringUtil;
@@ -33,7 +37,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -82,7 +85,7 @@ class StorageServiceImplTest {
     void setUp() {
         ReflectionTestUtils.setField(storageService, "baseMapper", storageMapper);
         // CheckUtils 的静态块经 SpringUtil 取 Bean 校验器，以本地 Validator 供给
-        springUtilMock = Mockito.mockStatic(SpringUtil.class);
+        springUtilMock = mockStatic(SpringUtil.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
             .thenReturn(Validation.buildDefaultValidatorFactory().getValidator());
         // storageProperties 经构造注入，默认值即可支撑上传配置组装
@@ -158,7 +161,7 @@ class StorageServiceImplTest {
 
         storageService.updateStatus(req, 1L);
 
-        Mockito.verifyNoInteractions(fileStorageService);
+        verifyNoInteractions(fileStorageService);
     }
 
     @Test
@@ -226,7 +229,7 @@ class StorageServiceImplTest {
 
         storageService.setDefaultStorage(2L);
 
-        Mockito.verifyNoInteractions(fileStorageService);
+        verifyNoInteractions(fileStorageService);
     }
 
     @Test
@@ -249,7 +252,7 @@ class StorageServiceImplTest {
         StorageDO result = storageService.getByCode("");
 
         assertEquals(storage, result);
-        Mockito.verify(chain.query).eq(any(), any());
+        verify(chain.query).eq(any(), any());
     }
 
     @Test
@@ -314,37 +317,35 @@ class StorageServiceImplTest {
 
     private void stubLambdaUpdateChain() {
         LambdaUpdateChainStub stub = new LambdaUpdateChainStub();
-        Mockito.doReturn(stub.chain).when((BaseMapper) storageMapper).lambdaUpdate();
+        doReturn(stub.chain).when((BaseMapper) storageMapper).lambdaUpdate();
     }
 
     private LambdaQueryChainStub stubLambdaQueryChain(StorageDO result, Long count) {
         LambdaQueryChainStub stub = new LambdaQueryChainStub(result, count);
-        Mockito.doReturn(stub.chain).when((BaseMapper) storageMapper).lambdaQuery();
+        doReturn(stub.chain).when((BaseMapper) storageMapper).lambdaQuery();
         return stub;
     }
 
     static class LambdaUpdateChainStub {
 
-        final LambdaUpdateChainWrapper<StorageDO> chain = Mockito
-            .mock(LambdaUpdateChainWrapper.class);
+        final LambdaUpdateChainWrapper<StorageDO> chain = mock(LambdaUpdateChainWrapper.class);
 
         LambdaUpdateChainStub() {
-            Mockito.doReturn(chain).when(chain).eq(any(), any());
-            Mockito.doReturn(chain).when(chain).set(any(), any());
-            Mockito.lenient().when(chain.update()).thenReturn(true);
+            doReturn(chain).when(chain).eq(any(), any());
+            doReturn(chain).when(chain).set(any(), any());
+            lenient().when(chain.update()).thenReturn(true);
         }
     }
 
     static class LambdaQueryChainStub {
 
-        final LambdaQueryChainWrapper<StorageDO> chain = Mockito
-            .mock(LambdaQueryChainWrapper.class);
+        final LambdaQueryChainWrapper<StorageDO> chain = mock(LambdaQueryChainWrapper.class);
         final LambdaQueryChainWrapper<StorageDO> query = chain;
 
         LambdaQueryChainStub(StorageDO result, Long count) {
-            Mockito.lenient().doReturn(chain).when(chain).eq(any(), any());
-            Mockito.lenient().when(chain.one()).thenReturn(result);
-            Mockito.lenient().when(chain.count()).thenReturn(count);
+            lenient().doReturn(chain).when(chain).eq(any(), any());
+            lenient().when(chain.one()).thenReturn(result);
+            lenient().when(chain.count()).thenReturn(count);
         }
     }
 }

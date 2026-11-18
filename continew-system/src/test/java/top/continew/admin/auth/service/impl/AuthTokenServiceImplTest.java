@@ -94,19 +94,22 @@ class AuthTokenServiceImplTest {
 
     @Test
     void shouldReloadStateWhenClientUnchanged() {
-        ClientResp expected = client("pc", "0", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
-        ClientResp current = client("pc", "0", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
+        ClientResp expected = client("pc", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
+        ClientResp current = client("pc", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
         when(clientService.getByClientId("pc")).thenReturn(current);
         UserDO oldUser = user(1L, 100L);
         UserDO newUser = user(1L, 100L);
         when(userService.getById(1L)).thenReturn(newUser);
         stubStatusChecks(100L);
+        LoginStateHolder state;
         try (MockedStatic<TenantUtils> tenantUtils = mockStatic(TenantUtils.class)) {
             tenantUtils.when(() -> TenantUtils.execute(any(), any(Runnable.class)))
                 .thenAnswer(passThrough());
             // reloadLoginState 为私有方法，经同包反射驱动
-            Reflections.invokeReloadLoginState(authTokenService, oldUser, expected, 0L);
+            state = Reflections.invokeReloadLoginState(authTokenService, oldUser, expected, 0L);
         }
+        assertEquals(newUser, state.user);
+        assertEquals(current, state.client);
     }
 
     @Test
@@ -117,22 +120,22 @@ class AuthTokenServiceImplTest {
 
     @Test
     void shouldRejectWhenClientDisabledOnReload() {
-        when(clientService.getByClientId("pc")).thenReturn(client("pc", "0",
+        when(clientService.getByClientId("pc")).thenReturn(client("pc",
             DisEnableStatusEnum.DISABLE, 1800L, 86400L, 60L));
         assertReloadThrows("客户端已禁用");
     }
 
     @Test
     void shouldRejectWhenSecurityPolicyChangedOnReload() {
-        when(clientService.getByClientId("pc")).thenReturn(client("pc", "0",
+        when(clientService.getByClientId("pc")).thenReturn(client("pc",
             DisEnableStatusEnum.ENABLE, 900L, 86400L, 60L));
         assertReloadThrows("客户端认证配置已变更，请重新登录");
     }
 
     @Test
     void shouldRejectWhenPasswordResetTimeChangedOnReload() {
-        ClientResp expected = client("pc", "0", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
-        when(clientService.getByClientId("pc")).thenReturn(client("pc", "0",
+        ClientResp expected = client("pc", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
+        when(clientService.getByClientId("pc")).thenReturn(client("pc",
             DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L));
         UserDO oldUser = user(1L, 100L);
         oldUser.setPwdResetTime(LocalDateTime.of(2026, 1, 2, 0, 0));
@@ -185,12 +188,13 @@ class AuthTokenServiceImplTest {
     }
 
     private void assertReloadThrows(String expectedMessage) {
+        UserDO oldUser = user(1L, 100L);
+        ClientResp client = client("pc", DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L);
         try (MockedStatic<TenantUtils> tenantUtils = mockStatic(TenantUtils.class)) {
             tenantUtils.when(() -> TenantUtils.execute(any(), any(Runnable.class)))
                 .thenAnswer(passThrough());
             BusinessException exception = assertThrows(BusinessException.class, () -> Reflections
-                .invokeReloadLoginState(authTokenService, user(1L, 100L), client("pc", "0",
-                    DisEnableStatusEnum.ENABLE, 1800L, 86400L, 60L), 0L));
+                .invokeReloadLoginState(authTokenService, oldUser, client, 0L));
             assertEquals(expectedMessage, exception.getMessage());
         }
     }
@@ -209,8 +213,8 @@ class AuthTokenServiceImplTest {
         };
     }
 
-    private ClientResp client(String clientId, String authType, DisEnableStatusEnum status,
-        Long activeTimeout, Long timeout, Long refreshTokenTimeout) {
+    private ClientResp client(String clientId, DisEnableStatusEnum status, Long activeTimeout,
+        Long timeout, Long refreshTokenTimeout) {
         ClientResp client = new ClientResp();
         client.setClientId(clientId);
         client.setClientType("PC");
@@ -243,14 +247,23 @@ class AuthTokenServiceImplTest {
 
     static class Reflections {
 
-        static void invokeReloadLoginState(Object service, UserDO user, ClientResp client,
-            Long tenantId) {
+        static LoginStateHolder invokeReloadLoginState(Object service, UserDO user,
+            ClientResp client, Long tenantId) {
             try {
                 java.lang.reflect.Method m =
                     service.getClass().getDeclaredMethod("reloadLoginState",
                         UserDO.class, ClientResp.class, Long.class);
                 m.setAccessible(true);
-                m.invoke(service, user, client, tenantId);
+                Object result = m.invoke(service, user, client, tenantId);
+                java.lang.reflect.Method userAccessor = result.getClass().getDeclaredMethod("user");
+                java.lang.reflect.Method clientAccessor = result.getClass()
+                    .getDeclaredMethod("client");
+                userAccessor.setAccessible(true);
+                clientAccessor.setAccessible(true);
+                LoginStateHolder holder = new LoginStateHolder();
+                holder.user = (UserDO) userAccessor.invoke(result);
+                holder.client = (ClientResp) clientAccessor.invoke(result);
+                return holder;
             } catch (java.lang.reflect.InvocationTargetException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof RuntimeException runtime) {
