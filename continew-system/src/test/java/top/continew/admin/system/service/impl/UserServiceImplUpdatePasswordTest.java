@@ -83,8 +83,9 @@ class UserServiceImplUpdatePasswordTest {
     @BeforeEach
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         passwordEncoder = mock(PasswordEncoder.class);
         passwordHistoryService = mock(UserPasswordHistoryService.class);
         onlineUserService = mock(OnlineUserService.class);

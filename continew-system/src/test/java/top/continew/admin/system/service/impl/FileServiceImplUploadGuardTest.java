@@ -60,8 +60,9 @@ class FileServiceImplUploadGuardTest {
     @BeforeEach
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         storageService = mock(StorageService.class);
         fileStorageService = mock(FileStorageService.class);
         fileService = new FileServiceImpl(fileStorageService);
@@ -75,8 +76,9 @@ class FileServiceImplUploadGuardTest {
 
     @Test
     void shouldRejectPathTraversalInParentPath() {
+        MockMultipartFile file = file("photo.png");
         BadRequestException exception = assertThrows(BadRequestException.class,
-            () -> fileService.upload(file("photo.png"), "../evil", null));
+            () -> fileService.upload(file, "../evil", null));
 
         assertTrue(exception.getMessage().contains("路径段"));
         verifyNoInteractions(fileStorageService);
@@ -84,8 +86,9 @@ class FileServiceImplUploadGuardTest {
 
     @Test
     void shouldRejectFileNameWithSeparator() {
+        MockMultipartFile file = file("../photo.png");
         BadRequestException exception = assertThrows(BadRequestException.class,
-            () -> fileService.upload(file("../photo.png"), PARENT_PATH, null));
+            () -> fileService.upload(file, PARENT_PATH, null));
 
         assertTrue(exception.getMessage().contains("路径分隔符"));
         verifyNoInteractions(fileStorageService);
@@ -93,8 +96,9 @@ class FileServiceImplUploadGuardTest {
 
     @Test
     void shouldRejectUnsupportedExtension() {
+        MockMultipartFile file = file("evil.jsp");
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileService.upload(file("evil.jsp"), PARENT_PATH, null));
+            () -> fileService.upload(file, PARENT_PATH, null));
 
         assertTrue(exception.getMessage().contains("不支持的文件类型"));
         verifyNoInteractions(fileStorageService);
@@ -103,9 +107,10 @@ class FileServiceImplUploadGuardTest {
     @Test
     void shouldRejectDisabledStorage() {
         when(storageService.getByCode(null)).thenReturn(storage(DisEnableStatusEnum.DISABLE));
+        MockMultipartFile file = file("photo.png");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> fileService.upload(file("photo.png"), PARENT_PATH, null));
+            () -> fileService.upload(file, PARENT_PATH, null));
 
         assertTrue(exception.getMessage().contains("请先启用存储"));
         verifyNoInteractions(fileStorageService);

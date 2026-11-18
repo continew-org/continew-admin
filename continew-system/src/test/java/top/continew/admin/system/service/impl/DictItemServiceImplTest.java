@@ -78,8 +78,9 @@ class DictItemServiceImplTest {
     @SuppressWarnings("unchecked")
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         cacheUtilsMock = mockStatic(CacheUtils.class);
         dictItemMapper = mock(DictItemMapper.class);
         ApplicationProperties properties = new ApplicationProperties();
@@ -101,9 +102,10 @@ class DictItemServiceImplTest {
     @Test
     void shouldRejectDuplicateValueOnCreate() {
         stubValueRepeat(true);
+        DictItemReq req = req("male");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> dictItemService.beforeCreate(req("male")));
+            () -> dictItemService.beforeCreate(req));
 
         assertEquals("字典值为 [male] 的字典项已存在", exception.getMessage());
         cacheUtilsMock.verify(() -> CacheUtils.evictAll(
@@ -122,9 +124,10 @@ class DictItemServiceImplTest {
     @Test
     void shouldRejectDuplicateValueOnUpdate() {
         stubValueRepeat(true);
+        DictItemReq req = req("male");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> dictItemService.beforeUpdate(req("male"), 9L));
+            () -> dictItemService.beforeUpdate(req, 9L));
 
         assertEquals("字典值为 [male] 的字典项已存在", exception.getMessage());
     }

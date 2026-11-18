@@ -17,6 +17,7 @@
 package top.continew.admin.system.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -87,8 +88,9 @@ class MultipartUploadServiceImplTest {
     void setUp() {
         // CheckUtils 父类 Validator 的静态实例取自 Spring 上下文，单测环境以恒通过的 mock 供给
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         storageService = mock(StorageService.class);
         fileStorageService = mock(FileStorageService.class);
         fileService = mock(FileService.class);
@@ -104,8 +106,9 @@ class MultipartUploadServiceImplTest {
 
     @Test
     void shouldRejectUnsupportedExtensionOnInit() {
+        MultipartUploadCreateReq req = req("evil.jsp");
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.initMultipartUpload(req("evil.jsp")));
+            () -> service.initMultipartUpload(req));
 
         assertTrue(exception.getMessage().contains("不支持的文件类型"));
         verify(fileMapper, never()).lambdaQuery();
@@ -113,8 +116,9 @@ class MultipartUploadServiceImplTest {
 
     @Test
     void shouldRejectFileNameWithPathSeparatorOnInit() {
+        MultipartUploadCreateReq req = req("../evil.png");
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.initMultipartUpload(req("../evil.png")));
+            () -> service.initMultipartUpload(req));
 
         assertTrue(exception.getMessage().contains("路径分隔符"));
         verify(fileMapper, never()).lambdaQuery();
@@ -125,8 +129,9 @@ class MultipartUploadServiceImplTest {
         when(storageService.getByCode(null)).thenReturn(storage());
         stubExists(true);
 
+        MultipartUploadCreateReq req = req("photo.png");
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.initMultipartUpload(req("photo.png")));
+            () -> service.initMultipartUpload(req));
 
         assertEquals("文件名已存在：photo.png", exception.getMessage());
         verify(fileService, never()).createParentDir(anyString(), any());
@@ -154,7 +159,7 @@ class MultipartUploadServiceImplTest {
         assertEquals(BUCKET, captor.getValue().getBucket());
         // 落盘名为唯一 ID，不等于原始文件名
         assertNotNull(captor.getValue().getFileName());
-        assertTrue(!captor.getValue().getFileName().equals("photo.png"));
+        assertNotEquals("photo.png", captor.getValue().getFileName());
         verify(fileService).createParentDir(eq("upload"), any());
     }
 
@@ -162,8 +167,9 @@ class MultipartUploadServiceImplTest {
     void shouldRejectUploadPartWithInvalidUploadId() {
         when(fileStorageService.getMultipartSession(UPLOAD_ID)).thenReturn(null);
 
+        MockMultipartFile file = partFile(10);
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.uploadPart(partFile(10), UPLOAD_ID, 1, "upload/photo.png"));
+            () -> service.uploadPart(file, UPLOAD_ID, 1, "upload/photo.png"));
 
         assertEquals("无效的 uploadId: " + UPLOAD_ID, exception.getMessage());
     }
@@ -172,8 +178,9 @@ class MultipartUploadServiceImplTest {
     void shouldRejectUploadPartWithBadPartNumber() {
         when(fileStorageService.getMultipartSession(UPLOAD_ID)).thenReturn(session(100L, 50L));
 
+        MockMultipartFile file = partFile(50);
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.uploadPart(partFile(50), UPLOAD_ID, 0, "upload/photo.png"));
+            () -> service.uploadPart(file, UPLOAD_ID, 0, "upload/photo.png"));
 
         assertTrue(exception.getMessage().contains("分片序号不合法"));
     }
@@ -182,8 +189,9 @@ class MultipartUploadServiceImplTest {
     void shouldRejectUploadPartWithOutOfRangePartNumber() {
         when(fileStorageService.getMultipartSession(UPLOAD_ID)).thenReturn(session(100L, 50L));
 
+        MockMultipartFile file = partFile(50);
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.uploadPart(partFile(50), UPLOAD_ID, 3, "upload/photo.png"));
+            () -> service.uploadPart(file, UPLOAD_ID, 3, "upload/photo.png"));
 
         assertTrue(exception.getMessage().contains("分片序号超出范围"));
     }
@@ -192,8 +200,9 @@ class MultipartUploadServiceImplTest {
     void shouldRejectUploadPartWithWrongSize() {
         when(fileStorageService.getMultipartSession(UPLOAD_ID)).thenReturn(session(100L, 50L));
 
+        MockMultipartFile file = partFile(49);
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.uploadPart(partFile(49), UPLOAD_ID, 1, "upload/photo.png"));
+            () -> service.uploadPart(file, UPLOAD_ID, 1, "upload/photo.png"));
 
         assertTrue(exception.getMessage().contains("分片大小不匹配"));
     }
@@ -226,8 +235,9 @@ class MultipartUploadServiceImplTest {
     void shouldValidateFallbackPathWhenSessionHasNoPath() {
         when(fileStorageService.getMultipartSession(UPLOAD_ID)).thenReturn(session(100L, 50L));
 
+        MockMultipartFile file = partFile(50);
         BaseException exception = assertThrows(BaseException.class,
-            () -> service.uploadPart(partFile(50), UPLOAD_ID, 1, "../evil.png"));
+            () -> service.uploadPart(file, UPLOAD_ID, 1, "../evil.png"));
 
         assertTrue(exception.getMessage().contains("路径段"));
     }

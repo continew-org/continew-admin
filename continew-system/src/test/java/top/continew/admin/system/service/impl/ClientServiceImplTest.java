@@ -72,8 +72,9 @@ class ClientServiceImplTest {
     @BeforeEach
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         clientMapper = mock(ClientMapper.class);
         onlineUserService = mock(OnlineUserService.class);
         sessionInvalidationService = mock(SessionInvalidationService.class);
@@ -100,8 +101,9 @@ class ClientServiceImplTest {
 
     @Test
     void shouldRejectIdleTimeoutBetweenOneAndFiftyNine() {
+        ClientReq req = req(30L);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> clientService.beforeCreate(req(30L)));
+            () -> clientService.beforeCreate(req));
 
         assertEquals("Refresh Token 闲置失效需为 0（不限制）或不小于 60 秒", exception.getMessage());
     }
@@ -110,7 +112,10 @@ class ClientServiceImplTest {
     void shouldAcceptZeroAndUnlimitedIdleTimeout() {
         clientService.beforeCreate(req(0L));
         clientService.beforeCreate(req(null));
-        clientService.beforeCreate(req(60L));
+        ClientReq req = req(60L);
+        clientService.beforeCreate(req);
+
+        assertEquals("60", String.valueOf(req.getRefreshTokenIdleTimeout()));
     }
 
     @Test
@@ -118,9 +123,10 @@ class ClientServiceImplTest {
         when(clientMapper.selectById(CLIENT_ID)).thenReturn(client("cid-1"));
         when(onlineUserService.list(any(OnlineUserQuery.class)))
             .thenReturn(List.of(mock(OnlineUserResp.class)));
+        List<Long> ids = List.of(CLIENT_ID);
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> clientService.beforeDelete(List.of(CLIENT_ID)));
+            () -> clientService.beforeDelete(ids));
 
         assertEquals("客户端 [cid-1] 还存在在线用户，不允许删除", exception.getMessage());
         verify(sessionInvalidationService, never()).invalidateClient(any());

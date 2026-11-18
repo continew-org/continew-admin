@@ -79,8 +79,9 @@ class UserServiceImplDeleteTest {
     @BeforeEach
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         userContextMock = mockStatic(UserContextHolder.class);
         userContextMock.when(UserContextHolder::getUserId).thenReturn(CURRENT_USER_ID);
         cacheUtilsMock = mockStatic(CacheUtils.class);
@@ -105,8 +106,9 @@ class UserServiceImplDeleteTest {
 
     @Test
     void shouldRejectDeleteCurrentUser() {
+        List<Long> ids = List.of(CURRENT_USER_ID, USER_ID);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userService.delete(List.of(CURRENT_USER_ID, USER_ID)));
+            () -> userService.delete(ids));
 
         assertEquals("不允许删除当前用户", exception.getMessage());
         verify(userMapper, never()).lambdaQuery();
@@ -116,8 +118,9 @@ class UserServiceImplDeleteTest {
     void shouldRejectDeleteWhenSomeUserMissing() {
         stubExistingUsers(List.of(user(USER_ID)));
 
+        List<Long> ids = List.of(USER_ID, 99L);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userService.delete(List.of(USER_ID, 99L)));
+            () -> userService.delete(ids));
 
         assertEquals("所选用户 [99] 不存在", exception.getMessage());
         verify(userRoleService, never()).deleteByUserIds(any());
@@ -129,8 +132,9 @@ class UserServiceImplDeleteTest {
         systemUser.setIsSystem(true);
         stubExistingUsers(List.of(systemUser));
 
+        List<Long> ids = List.of(USER_ID);
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userService.delete(List.of(USER_ID)));
+            () -> userService.delete(ids));
 
         assertEquals("所选用户 [测试用户] 是系统内置用户，不允许删除", exception.getMessage());
         verify(userMapper, never()).deleteByIds(any());

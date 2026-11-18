@@ -24,6 +24,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,8 +67,9 @@ class DictServiceImplTest {
     @BeforeEach
     void setUp() {
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         dictMapper = mock(DictMapper.class);
         dictItemService = mock(DictItemService.class);
         dictService = new DictServiceImpl(dictItemService);
@@ -84,9 +86,10 @@ class DictServiceImplTest {
     @Test
     void shouldRejectDuplicateNameOnCreate() {
         stubRepeatQuery(true);
+        DictReq req = req("测试字典", "test");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> dictService.beforeCreate(req("测试字典", "test")));
+            () -> dictService.beforeCreate(req));
 
         assertEquals("名称为 [测试字典] 的字典已存在", exception.getMessage());
     }
@@ -94,9 +97,10 @@ class DictServiceImplTest {
     @Test
     void shouldRejectDuplicateCodeOnCreate() {
         stubRepeatQuery(false, true);
+        DictReq req = req("测试字典", "test");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> dictService.beforeCreate(req("测试字典", "test")));
+            () -> dictService.beforeCreate(req));
 
         assertEquals("编码为 [test] 的字典已存在", exception.getMessage());
     }
@@ -107,16 +111,17 @@ class DictServiceImplTest {
 
         dictService.beforeCreate(req("测试字典", "test"));
 
-        verify(dictMapper, org.mockito.Mockito.times(2)).lambdaQuery();
+        verify(dictMapper, times(2)).lambdaQuery();
     }
 
     @Test
     void shouldRejectCodeChangeOnUpdate() {
         stubRepeatQuery(false);
         when(dictMapper.selectById(DICT_ID)).thenReturn(dict("test"));
+        DictReq req = req("测试字典", "changed");
 
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> dictService.beforeUpdate(req("测试字典", "changed"), DICT_ID));
+            () -> dictService.beforeUpdate(req, DICT_ID));
 
         assertEquals("不允许修改字典编码", exception.getMessage());
     }
