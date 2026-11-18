@@ -185,6 +185,7 @@ class NextDoc4jCustomPermissionDisplayTest {
     static class PlainController {
 
         void plain() {
+            // 夹具方法，仅供权限解析流程扫描
         }
     }
 }
