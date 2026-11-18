@@ -48,7 +48,6 @@ import top.continew.admin.system.model.entity.DeptDO;
 import top.continew.admin.system.model.entity.RoleDO;
 import top.continew.admin.system.model.entity.user.UserDO;
 import top.continew.admin.system.model.req.user.UserImportReq;
-import top.continew.admin.system.model.req.user.UserImportRowReq;
 import top.continew.admin.system.service.DeptService;
 import top.continew.admin.system.service.FileService;
 import top.continew.admin.system.service.OptionService;
@@ -91,8 +90,8 @@ class UserServiceImplImportRoleGuardTest {
         TableInfoHelper.initTableInfo(assistant, UserDO.class);
 
         springUtilMock = mockStatic(SpringUtil.class);
-        springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+        Validator validator = mock(Validator.class);
+        springUtilMock.when(() -> SpringUtil.getBean(Validator.class)).thenReturn(validator);
 
         redisUtilsMock = mockStatic(RedisUtils.class);
         encryptHelperMock = mockStatic(EncryptHelper.class);
@@ -153,16 +152,6 @@ class UserServiceImplImportRoleGuardTest {
         return req;
     }
 
-    private UserImportRowReq row(String username, String roleName) {
-        UserImportRowReq row = new UserImportRowReq();
-        row.setUsername(username);
-        row.setNickname("测试员");
-        row.setPassword("test123");
-        row.setDeptName("研发部");
-        row.setRoleName(roleName);
-        return row;
-    }
-
     private RoleDO role(Long id, boolean isSystem) {
         RoleDO role = new RoleDO();
         role.setId(id);
@@ -179,8 +168,9 @@ class UserServiceImplImportRoleGuardTest {
         when(roleService.listByNames(List.of("超级管理员")))
             .thenReturn(List.of(this.role(SYSTEM_ROLE_ID, true)));
 
+        UserImportReq importReq = req();
         BusinessException exception = assertThrows(BusinessException.class,
-            () -> userService.importUser(req()));
+            () -> userService.importUser(importReq));
 
         assertEquals("角色 [超级管理员] 是系统内置角色，不允许通过导入分配", exception.getMessage());
         verify(userRoleService, never()).saveBatch(any());
