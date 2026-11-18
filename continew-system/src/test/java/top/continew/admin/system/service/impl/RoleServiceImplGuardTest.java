@@ -20,11 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +41,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import top.continew.admin.common.config.TenantExtensionProperties;
 import top.continew.admin.common.enums.DataScopeEnum;
@@ -100,8 +102,9 @@ class RoleServiceImplGuardTest {
         roleMapper = mock(RoleMapper.class);
         userRoleService = mock(UserRoleService.class);
         menuService = mock(MenuService.class);
-        roleService = Mockito.spy(new RoleServiceImpl(mock(RoleMenuService.class), mock(
-            RoleDeptService.class)));
+        RoleMenuService roleMenuService = mock(RoleMenuService.class);
+        RoleDeptService roleDeptService = mock(RoleDeptService.class);
+        roleService = spy(new RoleServiceImpl(roleMenuService, roleDeptService));
         ReflectionTestUtils.setField(roleService, "userRoleService", userRoleService);
         ReflectionTestUtils.setField(roleService, "menuService", menuService);
         ReflectionTestUtils.setField(roleService, "baseMapper", roleMapper);
@@ -121,8 +124,10 @@ class RoleServiceImplGuardTest {
     void shouldRejectSuperAdminCodeOnCreate() {
         stubRepeatQueries(false);
 
+        RoleReq createReq = req(RoleCodeEnum.SUPER_ADMIN.getCode());
+
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .create(req(RoleCodeEnum.SUPER_ADMIN.getCode())));
+            .create(createReq));
 
         assertEquals("编码 [super_admin] 禁止使用", exception.getMessage());
     }
@@ -131,8 +136,10 @@ class RoleServiceImplGuardTest {
     void shouldRejectDuplicateNameOnCreate() {
         stubRepeatQueries(true, false);
 
+        RoleReq createReq = req("custom");
+
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .create(req("custom")));
+            .create(createReq));
 
         assertEquals("名称为 [测试角色] 的角色已存在", exception.getMessage());
     }
@@ -141,9 +148,10 @@ class RoleServiceImplGuardTest {
     void shouldRejectCodeChangeOnUpdate() {
         stubRepeatQueries(false);
         doReturn(role("custom", false, DataScopeEnum.DEPT)).when(roleService).getById(ROLE_ID);
+        RoleReq updateReq = req("changed");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .update(req("changed"), ROLE_ID));
+            .update(updateReq, ROLE_ID));
 
         assertEquals("角色编码不允许修改", exception.getMessage());
     }
@@ -177,9 +185,10 @@ class RoleServiceImplGuardTest {
     @Test
     void shouldRejectDeleteOfSystemRole() {
         stubRoleQuery(List.of(role("测试角色", true, DataScopeEnum.DEPT)));
+        List<Long> ids = List.of(ROLE_ID);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .beforeDelete(List.of(ROLE_ID)));
+            .beforeDelete(ids));
 
         assertEquals("所选角色 [测试角色] 是系统内置角色，不允许删除", exception.getMessage());
     }
@@ -188,9 +197,10 @@ class RoleServiceImplGuardTest {
     void shouldRejectDeleteWhenUsersAssigned() {
         stubRoleQuery(List.of(role("测试角色", false, DataScopeEnum.DEPT)));
         when(userRoleService.isRoleIdExists(List.of(ROLE_ID))).thenReturn(true);
+        List<Long> ids = List.of(ROLE_ID);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .beforeDelete(List.of(ROLE_ID)));
+            .beforeDelete(ids));
 
         assertEquals("所选角色存在用户关联，请解除关联后重试", exception.getMessage());
     }
@@ -199,8 +209,10 @@ class RoleServiceImplGuardTest {
     void shouldRejectAssignToUsersForSystemRole() {
         doReturn(role("测试角色", true, DataScopeEnum.DEPT)).when(roleService).getById(ROLE_ID);
 
+        List<Long> userIds = List.of(9L);
+
         BusinessException exception = assertThrows(BusinessException.class, () -> roleService
-            .assignToUsers(ROLE_ID, List.of(9L)));
+            .assignToUsers(ROLE_ID, userIds));
 
         assertEquals("[测试角色] 是系统内置角色，不允许分配角色给其他用户", exception.getMessage());
     }
@@ -289,8 +301,8 @@ class RoleServiceImplGuardTest {
         LambdaQueryChainWrapper<RoleDO> chain = mock(LambdaQueryChainWrapper.class);
         doReturn(chain).when(roleMapper).lambdaQuery();
         doReturn(chain).when(chain).eq(any(SFunction.class), any());
-        Mockito.lenient().doReturn(chain).when(chain)
-            .ne(Mockito.anyBoolean(), any(SFunction.class), any());
+        lenient().doReturn(chain).when(chain)
+            .ne(anyBoolean(), any(SFunction.class), any());
         // 名称查重与编码查重依次消费 exists()
         when(chain.exists()).thenReturn(nameExists, codeExists);
     }
@@ -298,8 +310,8 @@ class RoleServiceImplGuardTest {
     private void stubRoleQuery(List<RoleDO> roles) {
         LambdaQueryChainWrapper<RoleDO> chain = mock(LambdaQueryChainWrapper.class);
         doReturn(chain).when(roleMapper).lambdaQuery();
-        Mockito.lenient().doReturn(chain).when(chain)
-            .select(Mockito.<SFunction<RoleDO, ?>>any(), Mockito.<SFunction<RoleDO, ?>>any());
+        lenient().doReturn(chain).when(chain)
+            .select(any(SFunction.class), any(SFunction.class));
         doReturn(chain).when(chain).in(any(SFunction.class), any(Collection.class));
         when(chain.list()).thenReturn(roles);
     }
