@@ -90,9 +90,9 @@ class RoleServiceImplGuardTest {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(),
             RoleDO.class.getName()), RoleDO.class);
         // 校验工具的校验器实例取自 Spring 上下文，单测环境以恒通过的 mock 供给
+        Validator validator = mock(Validator.class);
         springUtilMock = mockStatic(SpringUtil.class);
-        springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+        springUtilMock.when(() -> SpringUtil.getBean(Validator.class)).thenReturn(validator);
         cacheUtilsMock = mockStatic(CacheUtils.class);
         transactionUtilsMock = mockStatic(TransactionUtils.class);
         tenantContextHolderMock = mockStatic(TenantContextHolder.class);
