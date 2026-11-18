@@ -74,8 +74,9 @@ class JobClientAuthTest {
     void setUp() {
         // RedisUtils 的静态块经 SpringUtil 取 RedissonClient，纯单测下先桩 SpringUtil 再模拟 RedisUtils
         springUtilMock = mockStatic(SpringUtil.class);
+        RedissonClient redissonClient = mock(RedissonClient.class);
         springUtilMock.when(() -> SpringUtil.getBean(RedissonClient.class))
-            .thenReturn(mock(RedissonClient.class));
+            .thenReturn(redissonClient);
         redisUtilsMock = mockStatic(RedisUtils.class);
         httpUtilMock = mockStatic(HttpUtil.class);
     }
