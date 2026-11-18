@@ -11,7 +11,6 @@ permissions:
   contents: read
 
 # 每个 PR 独立并发组：同 PR 新 push 取消旧 run，不同 PR 互不阻塞。
-# L3 环境在 runner 内独占固定端口段，不取消正在执行的 run 以免留下半起环境。
 concurrency:
   group: api-test-${{ github.event.pull_request.number }}
   cancel-in-progress: true
