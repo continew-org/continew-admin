@@ -19,7 +19,6 @@ package top.continew.admin.api;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import top.continew.admin.api.support.L3FixtureSupport;
@@ -51,11 +50,6 @@ import java.util.Map;
 class SessionIdleTimeoutApiTest extends L3FixtureSupport {
 
     /**
-     * 策略生效探针最大轮数（每轮含一次 65 秒静置，3 轮仍无 401 判「外部条件未就绪」）。
-     */
-    private static final int MAX_POLICY_ATTEMPTS = 3;
-
-    /**
      * 主流程：触发闲置 401 → 豁免路径不误伤（200 且属主正确）→ OBS-3 记录 touch 后行为。
      */
     @Test
@@ -68,7 +62,7 @@ class SessionIdleTimeoutApiTest extends L3FixtureSupport {
         Long roleId = null;
         Long userId = null;
         Long clientRowId = null;
-        // 每轮探针登录的 token 与 Cookie 都要注销，否则在线会话会挡死客户端删除
+        // 探针登录的 token 与 Cookie 要注销，否则在线会话会挡死客户端删除
         List<String> attemptTokens = new ArrayList<>();
         List<Map<String, String>> attemptCookies = new ArrayList<>();
         try {
@@ -80,31 +74,28 @@ class SessionIdleTimeoutApiTest extends L3FixtureSupport {
             clientRowId = createClient("qa_idle_client_" + timestamp, IDLE_TIMEOUT_SECONDS);
             String clientId = readClientId(clientRowId);
 
-            // 步骤 2+3：登录 → 活跃请求 → 静置 65 秒 → 非豁免路径必须闲置 401
-            Response idleReject = null;
-            String rejectedToken = null;
-            for (int attempt = 1; attempt <= MAX_POLICY_ATTEMPTS && idleReject == null; attempt++) {
-                String token = login(username, password, clientId);
-                attemptTokens.add(token);
-                attemptCookies.add(getLoginCookies());
-                Response active = asToken(token).get(LOG_PATH + "?page=1&size=10");
-                log.info("C-104 探针第 {} 轮建立活跃: HTTP {} code={}", attempt, active.statusCode(), active
-                    .jsonPath().getString("code"));
-                // 期间不发任何请求，静置窗口 > 闲置阈值且 > 策略快照 TTL
-                sleepSeconds(IDLE_WAIT_SECONDS);
-                Response probe = asToken(token).get(LOG_PATH + "?page=1&size=10");
-                log.info("C-104 探针第 {} 轮静置后探测: HTTP {} code={} msg={}", attempt, probe.statusCode(),
-                    probe
-                        .jsonPath().getString("code"),
-                    probe.jsonPath().getString("msg"));
-                if (probe.statusCode() == 401) {
-                    idleReject = probe;
-                    rejectedToken = token;
-                }
-            }
-            // 3 轮静置窗口均无闲置 401：闲置判定外部条件未就绪，记阻塞不判产品缺陷
-            Assumptions.assumeTrue(idleReject != null,
-                "闲置策略在 3 轮 × 65 秒静置后仍未生效（ClientPolicyCache 快照或会话活跃记录未就绪），标记阻塞");
+            // 步骤 2+3：登录 → 活跃请求 → 等策略快照重载 → 预写过期活跃记录 → 探测必须闲置 401。
+            // 闲置判定 = 会话活跃记录早于阈值 + 客户端策略可见，两条件分别由预写与快照重载窗口保证，
+            // 不再依赖真静置 65 秒的概率性触发
+            String token = login(username, password, clientId);
+            attemptTokens.add(token);
+            attemptCookies.add(getLoginCookies());
+            Response active = asToken(token).get(LOG_PATH + "?page=1&size=10");
+            log.info("C-104 建立活跃: HTTP {} code={}", active.statusCode(), active.jsonPath()
+                .getString("code"));
+            // 快照 TTL 60 秒：新建客户端的闲置策略在下一次快照重载后才可见，等待窗口只服务于此
+            sleepSeconds(IDLE_WAIT_SECONDS);
+            // 最后一次请求之后预写：活跃记录回退到阈值之外，预写值不会被 touch 覆盖
+            presetExpiredActivity(token, IDLE_TIMEOUT_SECONDS * 2);
+            Response probe = asToken(token).get(LOG_PATH + "?page=1&size=10");
+            log.info("C-104 预写后探测: HTTP {} code={} msg={}", probe.statusCode(), probe.jsonPath()
+                .getString("code"), probe.jsonPath().getString("msg"));
+            Response idleReject = probe;
+            String rejectedToken = token;
+            // 预写与快照窗口均已保证，401 不出现即产品判定缺陷，不再阻塞跳过
+            Assertions.assertEquals(401, idleReject.statusCode(),
+                "C-104 预写过期活跃记录后非豁免路径应闲置 401，响应体：" + sanitize(idleReject.getBody()
+                    .asString()));
 
             // 正式判定：401 + code="401" + data 为空；msg 精确匹配失败按 DEFECT-1（writeJson 未设
             // UTF-8）收集证据后继续，保证步骤 4/5（豁免不误伤与 OBS-3）拿到完整判定证据

@@ -18,6 +18,7 @@ package top.continew.admin.it.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +26,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import top.continew.admin.it.BaseIntegrationTest;
 import top.continew.starter.cache.multicache.util.CacheUtils;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -93,37 +95,58 @@ class CacheIntegrationTest extends BaseIntegrationTest {
     void evictShouldClearBothLevels() {
         String cacheName = uniqueCacheName();
         CacheUtils.put(cacheName, "evict_key", "v1");
+        // put 的 L2 写入经异步缓存写入器，先等键落库再清除
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> assertThat(stringRedisTemplate.keys(cacheName + "*"))
+                .as("put 后 Redis 应出现对应键").isNotEmpty());
 
         CacheUtils.evict(cacheName, "evict_key");
 
         String evicted = CacheUtils.get(cacheName, "evict_key");
         assertThat(evicted).as("evict 后不应命中缓存").isNull();
-        Set<String> keys = stringRedisTemplate.keys(cacheName + "*");
-        assertThat(keys).as("evict 后 Redis 键应消失").isEmpty();
+        // L2 的 Redis 键清理经异步缓存写入器执行，以终态轮询等待其完成
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> assertThat(stringRedisTemplate.keys(cacheName + "*"))
+                .as("evict 后 Redis 键应消失").isEmpty());
     }
 
     /**
-     * evictAll 清除本地 L1，测试显式清理 L2 残留键后校验 L1 与 L2 终态
+     * evictAll 清除 L1 与 L2，统一入口读不到，Redis 键消失
      */
     @Test
     void evictAllShouldClearWholeCache() {
         String cacheName = uniqueCacheName();
         CacheUtils.put(cacheName, "k1", "v1");
         CacheUtils.put(cacheName, "k2", "v2");
+        // put 的 L2 写入同样经异步缓存写入器，先等键落库再清除
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> assertThat(stringRedisTemplate.keys(cacheName + "*"))
+                .as("put 后 Redis 应出现两个键").hasSize(2));
 
         CacheUtils.evictAll(cacheName);
 
-        // 清理 L2 残留键后校验 L1 与 L2 终态
-        Set<String> keysAfterEvict = stringRedisTemplate.keys(cacheName + "*");
-        if (keysAfterEvict != null && !keysAfterEvict.isEmpty()) {
-            stringRedisTemplate.delete(keysAfterEvict);
-        }
-
-        String k1AfterClear = CacheUtils.get(cacheName, "k1");
-        String k2AfterClear = CacheUtils.get(cacheName, "k2");
-        assertThat(k1AfterClear).as("evictAll 后 L1 应被清除").isNull();
-        assertThat(k2AfterClear).as("evictAll 后 L1 应被清除").isNull();
-        assertThat(stringRedisTemplate.keys(cacheName + "*")).as("L2 残留清理后应无键").isEmpty();
+        // 统一入口读取走 L1 → L2 回源链路，put/evict 的异步写入完成前可能回源读到旧值，
+        // 与 Redis 键消失断言一起按终态轮询
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> {
+                String k1AfterClear = CacheUtils.get(cacheName, "k1");
+                String k2AfterClear = CacheUtils.get(cacheName, "k2");
+                org.assertj.core.api.BDDAssertions.then(k1AfterClear)
+                    .as("evictAll 后不应命中缓存").isNull();
+                org.assertj.core.api.BDDAssertions.then(k2AfterClear)
+                    .as("evictAll 后不应命中缓存").isNull();
+                Set<String> remainingKeys = stringRedisTemplate.keys(cacheName + "*");
+                org.assertj.core.api.BDDAssertions.then(remainingKeys)
+                    .as("evictAll 后 Redis 键应消失").isEmpty();
+            });
     }
 
     /**

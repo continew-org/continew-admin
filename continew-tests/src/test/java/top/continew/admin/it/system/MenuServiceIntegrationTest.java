@@ -18,6 +18,7 @@ package top.continew.admin.it.system;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import top.continew.admin.system.service.MenuService;
 import top.continew.starter.cache.multicache.util.CacheUtils;
 import top.continew.starter.extension.tenant.util.TenantUtils;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,9 +96,15 @@ class MenuServiceIntegrationTest extends BaseIntegrationTest {
             Long.class, childId))
             .as("子菜单应被级联逻辑删除")
             .isEqualTo(childId);
-        Object cachedAfterDelete =
-            CacheUtils.get(CacheConstants.ROLE_MENU_KEY_PREFIX, "it_cascade_probe_key");
-        assertThat(cachedAfterDelete).as("删除菜单后 ROLE_MENU 缓存应整簇失效").isNull();
+        // evictAll 的 Redis 端清理经异步缓存写入器执行，以终态轮询等待
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> {
+                Object cached = CacheUtils.get(CacheConstants.ROLE_MENU_KEY_PREFIX,
+                    "it_cascade_probe_key");
+                assertThat(cached).as("删除菜单后 ROLE_MENU 缓存应整簇失效").isNull();
+            });
     }
 
     /**
@@ -120,9 +128,16 @@ class MenuServiceIntegrationTest extends BaseIntegrationTest {
         String title = jdbcTemplate.queryForObject("SELECT title FROM sys_menu WHERE id = ?",
             String.class, menuId);
         assertThat(title).as("菜单标题应更新为新值").isEqualTo("更新后菜单");
-        Object cachedAfterUpdate =
-            CacheUtils.get(CacheConstants.ROLE_MENU_KEY_PREFIX, "it_update_probe_key");
-        assertThat(cachedAfterUpdate).as("更新菜单后 ROLE_MENU 缓存应整簇失效").isNull();
+        // evictAll 的 Redis 端清理经异步缓存写入器执行，统一入口读 L1（同步清除），
+        // L2 键的消失以终态轮询等待
+        Awaitility.await()
+            .atMost(Duration.ofSeconds(5))
+            .pollInterval(Duration.ofMillis(200))
+            .untilAsserted(() -> {
+                Object cached = CacheUtils.get(CacheConstants.ROLE_MENU_KEY_PREFIX,
+                    "it_update_probe_key");
+                assertThat(cached).as("更新菜单后 ROLE_MENU 缓存应整簇失效").isNull();
+            });
     }
 
     /**

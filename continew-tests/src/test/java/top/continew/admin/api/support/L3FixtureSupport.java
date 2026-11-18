@@ -165,6 +165,19 @@ public abstract class L3FixtureSupport extends ApiTestSupport {
     protected static final long IDLE_WAIT_SECONDS = 65L;
 
     /**
+     * 测试 Redis 容器名（compose project continew-admin-test 默认命名，可经
+     * -Dapi.redis-container / API_REDIS_CONTAINER 覆盖）。
+     */
+    private static final String REDIS_CONTAINER =
+        config("api.redis-container", "API_REDIS_CONTAINER",
+            "continew-admin-test-redis-test-1");
+
+    /**
+     * 会话活跃记录的 Redis 键前缀（SessionActivityServiceImpl.KEY_PREFIX）。
+     */
+    private static final String ACTIVITY_KEY_PREFIX = "AUTH:ACTIVITY:";
+
+    /**
      * 以显式 Access Token 构造请求（默认租户 0），登录态不受基座单例字段影响。
      *
      * @param token Access Token
@@ -560,6 +573,77 @@ public abstract class L3FixtureSupport extends ApiTestSupport {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Assertions.fail("静置等待被中断");
+        }
+    }
+
+    /**
+     * 从 Access Token（JWT）中解析 Sa-Token 会话 ID（payload 的 sid 声明）。
+     *
+     * @param accessToken
+     *            Access Token
+     * @return 会话 ID，无法解析时断言失败
+     */
+    protected static String resolveSessionId(String accessToken) {
+        String[] parts = accessToken.split("\\.");
+        Assertions.assertEquals(3, parts.length, "Access Token 应为 JWT 三段结构");
+        byte[] payload = java.util.Base64.getUrlDecoder().decode(parts[1]);
+        String payloadJson = new String(payload, StandardCharsets.UTF_8);
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+            .compile("\"sid\"\\s*:\\s*\"([^\"]+)\"").matcher(payloadJson);
+        Assertions.assertTrue(matcher.find(), "JWT payload 应包含 sid 声明: " + payloadJson);
+        return matcher.group(1);
+    }
+
+    /**
+     * 预写会话活跃记录为指定时长前的过期时间戳，使服务端闲置判定立即成立。
+     *
+     * <p>服务端经 RedisUtils（Redisson JsonJackson3Codec）读写字符串，Redis 中
+     * JSON 字符串带双引号，预写值必须保持同一编码。预写须在该会话最后一次
+     * 请求之后执行：任何后续请求都会 touch 刷新活跃时间，覆盖预写值。</p>
+     *
+     * @param accessToken
+     *            目标会话的 Access Token
+     * @param expiredSecondsAgo
+     *            活跃时间回退秒数（须大于客户端闲置阈值）
+     */
+    protected static void presetExpiredActivity(String accessToken, long expiredSecondsAgo) {
+        String sessionId = resolveSessionId(accessToken);
+        String value = "\"" + (System.currentTimeMillis() - expiredSecondsAgo * 1000) + "\"";
+        String shellCommand =
+            "REDISCLI_AUTH=\"$REDIS_PASSWORD\" redis-cli SET \"" + ACTIVITY_KEY_PREFIX
+                + sessionId + "\" '" + value + "'";
+        runInContainer(REDIS_CONTAINER, shellCommand, "预写会话活跃记录");
+    }
+
+    /**
+     * 在测试容器内执行命令，失败即断言失败并带出输出。
+     *
+     * @param container
+     *            容器名
+     * @param shellCommand
+     *            容器内 sh -c 命令
+     * @param action
+     *            动作描述（用于失败消息与日志）
+     */
+    private static void runInContainer(String container, String shellCommand, String action) {
+        ProcessBuilder builder =
+            new ProcessBuilder("docker", "exec", container, "sh", "-c", shellCommand);
+        builder.redirectErrorStream(true);
+        try {
+            Process process = builder.start();
+            String output;
+            try (InputStream in = process.getInputStream()) {
+                output = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+            boolean finished = process.waitFor(60, TimeUnit.SECONDS);
+            Assertions.assertTrue(finished, action + " 60 秒未结束: " + shellCommand);
+            Assertions.assertEquals(0, process.exitValue(), action + " 执行失败: " + output.trim());
+            log.info("L3 容器命令执行成功: {}", action);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Assertions.fail(action + " 等待被中断");
+        } catch (Exception e) {
+            Assertions.fail(action + " 执行异常，原因：" + e.getMessage());
         }
     }
 
