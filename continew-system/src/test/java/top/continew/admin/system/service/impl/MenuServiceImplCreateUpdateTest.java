@@ -19,10 +19,15 @@ package top.continew.admin.system.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +41,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import top.continew.admin.common.config.TenantExtensionProperties;
 import top.continew.admin.common.constant.CacheConstants;
@@ -81,15 +85,15 @@ class MenuServiceImplCreateUpdateTest {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(),
             MenuDO.class.getName()), MenuDO.class);
         // 校验工具的校验器实例取自 Spring 上下文，单测环境以恒通过的 mock 供给
+        Validator validator = mock(Validator.class);
         springUtilMock = mockStatic(SpringUtil.class);
-        springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+        springUtilMock.when(() -> SpringUtil.getBean(Validator.class)).thenReturn(validator);
         cacheUtilsMock = mockStatic(CacheUtils.class);
         tenantContextHolderMock = mockStatic(TenantContextHolder.class);
         menuMapper = mock(MenuMapper.class);
         roleService = mock(RoleService.class);
         // CRUD 钩子（getById/create/update 的持久化层）以 spy 短路，仅验证业务编排
-        menuService = Mockito.spy(new MenuServiceImpl(new TenantExtensionProperties()));
+        menuService = spy(new MenuServiceImpl(new TenantExtensionProperties()));
         ReflectionTestUtils.setField(menuService, "roleService", roleService);
         ReflectionTestUtils.setField(menuService, "baseMapper", menuMapper);
     }
@@ -116,9 +120,10 @@ class MenuServiceImplCreateUpdateTest {
     @Test
     void shouldRejectDuplicateTitleOnCreate() {
         stubRepeatQueries(true, false);
+        MenuReq createReq = req(MenuTypeEnum.MENU, "ComponentA");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> menuService
-            .create(req(MenuTypeEnum.MENU, "ComponentA")));
+            .create(createReq));
 
         assertEquals("标题为 [测试菜单] 的菜单已存在", exception.getMessage());
     }
@@ -126,9 +131,10 @@ class MenuServiceImplCreateUpdateTest {
     @Test
     void shouldRejectDuplicateComponentNameForNonButton() {
         stubRepeatQueries(false, true);
+        MenuReq createReq = req(MenuTypeEnum.MENU, "ComponentA");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> menuService
-            .create(req(MenuTypeEnum.MENU, "ComponentA")));
+            .create(createReq));
 
         assertEquals("组件名称为 [ComponentA] 的菜单已存在", exception.getMessage());
     }
@@ -141,7 +147,7 @@ class MenuServiceImplCreateUpdateTest {
         menuService.create(req(MenuTypeEnum.BUTTON, null));
 
         // 按钮类型无组件概念，组件名称查重不触发（lambdaQuery 仅被标题查重消费一次）
-        verify(menuMapper, Mockito.times(1)).lambdaQuery();
+        verify(menuMapper, times(1)).lambdaQuery();
     }
 
     @Test
@@ -149,9 +155,10 @@ class MenuServiceImplCreateUpdateTest {
         stubRepeatQueries(false);
         MenuDO oldMenu = menu(MenuTypeEnum.DIR);
         doReturn(oldMenu).when(menuService).getById(MENU_ID);
+        MenuReq updateReq = req(MenuTypeEnum.MENU, "ComponentA");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> menuService
-            .update(req(MenuTypeEnum.MENU, "ComponentA"), MENU_ID));
+            .update(updateReq, MENU_ID));
 
         assertEquals("不允许修改菜单类型", exception.getMessage());
     }
@@ -161,9 +168,10 @@ class MenuServiceImplCreateUpdateTest {
         stubRepeatQueries(true, false);
         MenuDO oldMenu = menu(MenuTypeEnum.MENU);
         doReturn(oldMenu).when(menuService).getById(MENU_ID);
+        MenuReq updateReq = req(MenuTypeEnum.MENU, "ComponentA");
 
         BusinessException exception = assertThrows(BusinessException.class, () -> menuService
-            .update(req(MenuTypeEnum.MENU, "ComponentA"), MENU_ID));
+            .update(updateReq, MENU_ID));
 
         assertEquals("标题为 [测试菜单] 的菜单已存在", exception.getMessage());
     }
@@ -192,7 +200,7 @@ class MenuServiceImplCreateUpdateTest {
 
     @Test
     void shouldListAllMenusForSuperAdminRole() {
-        doReturn(List.of()).when(menuService).list(Mockito.any(MenuQuery.class), Mockito.isNull());
+        doReturn(List.of()).when(menuService).list(any(MenuQuery.class), isNull());
 
         menuService.listByRoleId(SystemConstants.SUPER_ADMIN_ROLE_ID);
 
@@ -241,9 +249,9 @@ class MenuServiceImplCreateUpdateTest {
         LambdaQueryChainWrapper<MenuDO> chain = mock(LambdaQueryChainWrapper.class);
         doReturn(chain).when(menuMapper).lambdaQuery();
         doReturn(chain).when(chain).eq(any(SFunction.class), any());
-        Mockito.lenient().doReturn(chain).when(chain)
-            .ne(Mockito.anyBoolean(), any(SFunction.class), any());
-        Mockito.lenient().doReturn(chain).when(chain).ne(any(SFunction.class), any());
+        lenient().doReturn(chain).when(chain)
+            .ne(anyBoolean(), any(SFunction.class), any());
+        lenient().doReturn(chain).when(chain).ne(any(SFunction.class), any());
         // 标题查重与组件名查重依次消费 exists()
         when(chain.exists()).thenReturn(titleExists, nameExists);
     }
