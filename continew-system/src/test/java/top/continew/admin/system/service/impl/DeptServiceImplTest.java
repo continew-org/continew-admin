@@ -19,7 +19,12 @@ package top.continew.admin.system.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -36,7 +41,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -56,6 +60,16 @@ import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
 
+/**
+ * 部门业务实现单元测试。
+ *
+ * <p>覆盖新增与更新的名称查重、新增时祖先链拼接、系统内置部门禁用与变更上级保护、
+ * 禁用联动下级与启用联动上级校验、禁用后踢出在线用户，以及删除守卫（系统内置/
+ * 下级存在/用户关联）与角色部门关联的级联清理。</p>
+ *
+ * @author Charles7c
+ * @since 5.0.0
+ */
 @ExtendWith(MockitoExtension.class)
 class DeptServiceImplTest {
 
@@ -208,9 +222,10 @@ class DeptServiceImplTest {
             DisEnableStatusEnum.ENABLE, 0L)), 0L);
         doReturn(query).when((top.continew.starter.data.mapper.BaseMapper) deptMapper)
             .lambdaQuery();
+        List<Long> ids = List.of(1L);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> deptService
-            .beforeDelete(List.of(1L)));
+            .beforeDelete(ids));
         assertEquals("所选部门 [研发中心] 是系统内置部门，不允许删除", exception.getMessage());
         verifyNoInteractions(roleDeptService);
     }
@@ -222,9 +237,10 @@ class DeptServiceImplTest {
         LambdaQueryChainWrapper<DeptDO> listQuery = chainList(List.of(), 2L);
         doReturn(listQuery).when((top.continew.starter.data.mapper.BaseMapper) deptMapper)
             .lambdaQuery();
+        List<Long> ids = List.of(1L);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> deptService
-            .beforeDelete(List.of(1L)));
+            .beforeDelete(ids));
         assertEquals("所选部门存在下级部门，不允许删除", exception.getMessage());
     }
 
@@ -237,9 +253,10 @@ class DeptServiceImplTest {
         doReturn(listQuery).when((top.continew.starter.data.mapper.BaseMapper) deptMapper)
             .lambdaQuery();
         when(userService.countByDeptIds(List.of(1L))).thenReturn(3L);
+        List<Long> ids = List.of(1L);
 
         BusinessException exception = assertThrows(BusinessException.class, () -> deptService
-            .beforeDelete(List.of(1L)));
+            .beforeDelete(ids));
         assertEquals("所选部门存在用户关联，请解除关联后重试", exception.getMessage());
         verify(roleDeptService, never()).deleteByDeptIds(any());
     }
@@ -304,11 +321,11 @@ class DeptServiceImplTest {
     private void stubDatabaseTypeFallback() {
         // MetaUtils 经 DataSource 元数据识别数据库类型；返回不可识别的产品名使其回落默认 MySQL
         try {
-            Connection connection = Mockito.mock(Connection.class);
-            java.sql.DatabaseMetaData metaData = Mockito.mock(java.sql.DatabaseMetaData.class);
-            Mockito.doReturn(connection).when(dataSource).getConnection();
-            Mockito.doReturn("Unknown-Database").when(metaData).getDatabaseProductName();
-            Mockito.doReturn(metaData).when(connection).getMetaData();
+            Connection connection = mock(Connection.class);
+            java.sql.DatabaseMetaData metaData = mock(java.sql.DatabaseMetaData.class);
+            doReturn(connection).when(dataSource).getConnection();
+            doReturn("Unknown-Database").when(metaData).getDatabaseProductName();
+            doReturn(metaData).when(connection).getMetaData();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -316,22 +333,22 @@ class DeptServiceImplTest {
 
     @SuppressWarnings("unchecked")
     private LambdaQueryChainWrapper<DeptDO> chainExists(boolean exists) {
-        LambdaQueryChainWrapper<DeptDO> query = Mockito.mock(LambdaQueryChainWrapper.class);
-        Mockito.doReturn(query).when(query).eq(any(), any());
-        Mockito.doReturn(query).when(query).ne(Mockito.anyBoolean(), any(), any());
+        LambdaQueryChainWrapper<DeptDO> query = mock(LambdaQueryChainWrapper.class);
+        doReturn(query).when(query).eq(any(), any());
+        doReturn(query).when(query).ne(anyBoolean(), any(), any());
         when(query.exists()).thenReturn(exists);
         return query;
     }
 
     @SuppressWarnings("unchecked")
     private LambdaQueryChainWrapper<DeptDO> chainList(List<DeptDO> list, Long count) {
-        LambdaQueryChainWrapper<DeptDO> query = Mockito.mock(LambdaQueryChainWrapper.class);
+        LambdaQueryChainWrapper<DeptDO> query = mock(LambdaQueryChainWrapper.class);
         // 链上条件方法与终止方法按用例选择性触达，桩统一宽松处理避免逐用例裁剪
-        Mockito.lenient().doReturn(query).when(query).in(any(), Mockito.anyCollection());
-        Mockito.lenient().doReturn(query).when(query).apply(Mockito.anyString());
-        Mockito.lenient().doReturn(query).when(query).select(Mockito.any(SFunction[].class));
-        Mockito.lenient().when(query.list()).thenReturn(list);
-        Mockito.lenient().when(query.count()).thenReturn(count);
+        lenient().doReturn(query).when(query).in(any(), anyCollection());
+        lenient().doReturn(query).when(query).apply(anyString());
+        lenient().doReturn(query).when(query).select(any(SFunction[].class));
+        lenient().when(query.list()).thenReturn(list);
+        lenient().when(query.count()).thenReturn(count);
         return query;
     }
 }

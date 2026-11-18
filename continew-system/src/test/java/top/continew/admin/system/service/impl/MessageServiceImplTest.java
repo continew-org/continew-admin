@@ -19,7 +19,6 @@ package top.continew.admin.system.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
@@ -106,7 +105,7 @@ class MessageServiceImplTest {
         assertEquals(7L, resp.getTotal());
         // 非明细模式不逐类型查询
         verify(messageMapper).selectUnreadCountByUserIdAndType(1L, null);
-        verify(messageMapper, never()).selectUnreadCountByUserIdAndType(eq(1L), eq(1));
+        verify(messageMapper, never()).selectUnreadCountByUserIdAndType(1L, 1);
     }
 
     @Test

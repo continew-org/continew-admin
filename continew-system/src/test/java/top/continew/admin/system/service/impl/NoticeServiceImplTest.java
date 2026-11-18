@@ -24,8 +24,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import cn.hutool.extra.spring.SpringUtil;
@@ -37,7 +40,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -87,7 +89,7 @@ class NoticeServiceImplTest {
     void setUp() {
         ReflectionTestUtils.setField(noticeService, "baseMapper", noticeMapper);
         // CheckUtils 的静态块经 SpringUtil 取 Bean 校验器，以本地 Validator 供给
-        springUtilMock = Mockito.mockStatic(SpringUtil.class);
+        springUtilMock = mockStatic(SpringUtil.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
             .thenReturn(Validation.buildDefaultValidatorFactory().getValidator());
     }
@@ -237,7 +239,7 @@ class NoticeServiceImplTest {
         NoticeDO entity = oldNotice(NoticeStatusEnum.PENDING, false, NoticeScopeEnum.ALL);
         entity.setId(7L);
         entity.setPublishTime(LocalDateTime.now());
-        LambdaUpdateChainWrapper<NoticeDO> update = Mockito.mock(LambdaUpdateChainWrapper.class);
+        LambdaUpdateChainWrapper<NoticeDO> update = mock(LambdaUpdateChainWrapper.class);
         doReturn(update).when((BaseMapper) noticeMapper).lambdaUpdate();
         doReturn(update).when(update).set(any(), any());
         doReturn(update).when(update).eq(any(), any());
@@ -247,7 +249,7 @@ class NoticeServiceImplTest {
         noticeService.afterUpdate(req, entity);
 
         verify(noticeMapper).lambdaUpdate();
-        Mockito.verifyNoInteractions(messageService);
+        verifyNoInteractions(messageService);
     }
 
     @Test
@@ -307,7 +309,7 @@ class NoticeServiceImplTest {
 
         noticeService.publish(notice);
 
-        Mockito.verifyNoInteractions(messageService);
+        verifyNoInteractions(messageService);
     }
 
     private NoticeReq newNoticeReq() {
