@@ -43,6 +43,7 @@ jobs:
               .map(f => f.filename);
             const tests = files
               .filter(f => /\/src\/test\/java\/.*\.java$/.test(f.filename))
+              .filter(f => !excluded.test(f.filename))
               .map(f => f.filename);
             const missing = production.length > 0 && tests.length === 0;
 
