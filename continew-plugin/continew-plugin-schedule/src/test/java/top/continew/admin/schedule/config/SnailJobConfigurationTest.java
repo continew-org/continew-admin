@@ -16,6 +16,7 @@
 
 package top.continew.admin.schedule.config;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -67,6 +68,6 @@ class SnailJobConfigurationTest {
         ArgumentCaptor<SnailLogbackAppender> appenderCaptor = ArgumentCaptor
             .forClass(SnailLogbackAppender.class);
         verify(rootLogger).addAppender(appenderCaptor.capture());
-        org.junit.jupiter.api.Assertions.assertTrue(appenderCaptor.getValue().isStarted());
+        assertTrue(appenderCaptor.getValue().isStarted());
     }
 }
