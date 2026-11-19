@@ -47,6 +47,7 @@ import top.continew.admin.schedule.constant.JobConstants;
 import top.continew.admin.schedule.exception.ScheduleServerException;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Map;
 
@@ -166,7 +167,7 @@ class JobClientAuthTest {
         httpUtilMock.when(() -> HttpUtil.createPost(AUTH_URL)).thenReturn(request);
         when(request.body(anyString())).thenReturn(request);
         when(request.execute())
-            .thenThrow(new IORuntimeException(new java.io.IOException("connection refused")));
+            .thenThrow(new IORuntimeException(new IOException("connection refused")));
 
         JobClient client = client();
 
