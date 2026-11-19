@@ -77,8 +77,9 @@ class LogServiceImplTest {
     void setUp() {
         // CheckUtils 类惰性初始化时经 SpringUtil 取校验器，须在首次调用前供给
         springUtilMock = mockStatic(SpringUtil.class);
+        Validator validator = mock(Validator.class);
         springUtilMock.when(() -> SpringUtil.getBean(Validator.class))
-            .thenReturn(mock(Validator.class));
+            .thenReturn(validator);
         excelUtilsMock = mockStatic(ExcelUtils.class);
         logMapper = mock(LogMapper.class);
         logService = new LogServiceImpl(logMapper);
