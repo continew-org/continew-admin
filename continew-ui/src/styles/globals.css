@@ -1,0 +1,279 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/noto-sans-sc';
+
+/* Accent colours: they override the brand tokens only; light/dark stays in theme_mode. */
+@import './theme-colors.css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --app-font-sans: 'Geist Variable', 'Noto Sans SC Variable', ui-sans-serif, system-ui, sans-serif;
+  /* Root font size preference (px). Drives the rem-based type scale. */
+  --app-font-size: 16px;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --status-success: oklch(0.696 0.17 162.48);
+  --status-success-foreground: oklch(0.596 0.145 163.225);
+  --status-warning: oklch(0.769 0.188 70.08);
+  --status-warning-foreground: oklch(0.666 0.179 58.318);
+  --status-caution: oklch(0.705 0.213 47.604);
+  --status-caution-foreground: oklch(0.646 0.222 41.116);
+  --status-info: oklch(0.685 0.169 237.323);
+  --status-info-foreground: oklch(0.588 0.158 241.966);
+  --type-blue: oklch(0.623 0.214 259.815);
+  --type-blue-foreground: oklch(0.546 0.245 262.881);
+  --type-violet: oklch(0.606 0.25 292.717);
+  --type-violet-foreground: oklch(0.541 0.281 293.009);
+  --type-teal: oklch(0.704 0.14 182.503);
+  --type-teal-foreground: oklch(0.6 0.118 184.704);
+  --type-amber: oklch(0.769 0.188 70.08);
+  --type-amber-foreground: oklch(0.666 0.179 58.318);
+  --radius-scale: 1;
+  --radius: calc(0.625rem * var(--radius-scale));
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* Radius preference: a share of the base corner, so 0 squares every control and 1 is the default. */
+:root[data-radius='0'] {
+  --radius-scale: 0;
+}
+
+:root[data-radius='0.25'] {
+  --radius-scale: 0.25;
+}
+
+:root[data-radius='0.5'] {
+  --radius-scale: 0.5;
+}
+
+:root[data-radius='0.75'] {
+  --radius-scale: 0.75;
+}
+
+/* Font-size preference: the root size feeds every rem-based measurement. */
+html {
+  font-size: var(--app-font-size);
+}
+
+@theme inline {
+  --font-heading: var(--app-font-sans);
+  --font-sans: var(--app-font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-status-success: var(--status-success);
+  --color-status-success-foreground: var(--status-success-foreground);
+  --color-status-warning: var(--status-warning);
+  --color-status-warning-foreground: var(--status-warning-foreground);
+  --color-status-caution: var(--status-caution);
+  --color-status-caution-foreground: var(--status-caution-foreground);
+  --color-status-info: var(--status-info);
+  --color-status-info-foreground: var(--status-info-foreground);
+  --color-type-blue: var(--type-blue);
+  --color-type-blue-foreground: var(--type-blue-foreground);
+  --color-type-violet: var(--type-violet);
+  --color-type-violet-foreground: var(--type-violet-foreground);
+  --color-type-teal: var(--type-teal);
+  --color-type-teal-foreground: var(--type-teal-foreground);
+  --color-type-amber: var(--type-amber);
+  --color-type-amber-foreground: var(--type-amber-foreground);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
+
+  @keyframes ripple {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  }
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --status-success-foreground: oklch(0.765 0.177 163.223);
+  --status-warning-foreground: oklch(0.828 0.189 84.429);
+  --status-caution-foreground: oklch(0.75 0.183 55.934);
+  --status-info-foreground: oklch(0.746 0.16 232.661);
+  --type-blue-foreground: oklch(0.707 0.165 254.624);
+  --type-violet-foreground: oklch(0.702 0.183 293.541);
+  --type-teal-foreground: oklch(0.777 0.152 181.912);
+  --type-amber-foreground: oklch(0.828 0.189 84.429);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-sans;
+  }
+
+  /* Native scrollbars matched to the shadcn ScrollArea spec (src/components/ui/scroll-area.tsx):
+     10px gutter, 1px inset, 8px fully-rounded thumb in --border, transparent track. */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    background-color: var(--border);
+    background-clip: content-box;
+  }
+
+  /* Firefox has no ::-webkit-scrollbar, so it falls back to the standard properties there.
+     This block must stay behind @supports: a non-auto scrollbar-color/scrollbar-width makes
+     Chromium ignore the ::-webkit-scrollbar rules above, and scrollbar-color is inherited. */
+  @supports not selector(::-webkit-scrollbar) {
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+  }
+}
+
+/* Keep form and search controls on the same 14px scale. */
+[data-slot='input'],
+[data-slot='input-group-control'],
+[data-slot='textarea'] {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.disable-transitions * {
+  transition: none !important;
+}
+
+/* Colour filters mirroring the original Vue app: grey / colour-weak, combined with a space. */
+:root[data-color-gray='true'] {
+  filter: grayscale(100%);
+}
+
+:root[data-color-weak='true'] {
+  filter: invert(80%);
+}
+
+:root[data-color-gray='true'][data-color-weak='true'] {
+  filter: grayscale(100%) invert(80%);
+}
+
+/* Tiled watermark layer, toggled by the app_watermark preference. Under overlays, above content. */
+[data-slot='app-watermark'] {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}

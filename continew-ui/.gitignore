@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+dist
+*.local
+.env
+.tanstack
+todos.json
+
+backups
