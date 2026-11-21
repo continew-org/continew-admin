@@ -6,6 +6,15 @@ on:
     branches: [dev]
   # 可手动执行
   workflow_dispatch:
+    inputs:
+      simulate:
+        description: 'Dry-Run：仅输出路由决策，不执行任何构建/部署动作'
+        type: boolean
+        default: false
+      simulate_paths:
+        description: 'simulate=true 时的模拟改动路径清单（空格或换行分隔）；simulate=false 时传入将使工作流失败'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -16,8 +25,58 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  detect:
+    name: Detect changes
+    # repo 守卫（照 sonar.yml 先例）：fork 上手动触发不执行任何作业
+    if: github.repository == 'continew-org/continew-admin'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      ui: ${{ steps.changes.outputs.ui }}
+      deploy_backend: ${{ steps.changes.outputs.deploy_backend }}
+      categories: ${{ steps.changes.outputs.categories }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 改动检测需要 base/before 提交对象参与 diff，取完整历史
+          fetch-depth: 0
+      - name: Detect changed paths
+        id: changes
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          SIMULATE: ${{ inputs.simulate }}
+          SIMULATE_PATHS: ${{ inputs.simulate_paths }}
+        # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
+        # 部署分流必须由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）；
+        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 误传清单属歧义输入，
+        # 直接快速失败，真实事件路径行为不变
+        run: |
+          set -eo pipefail
+          if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
+            echo '::error::simulate_paths 仅支持 simulate=true（Dry-Run）：演练请设 simulate=true 走模拟清单，真实部署请留空 simulate_paths'
+            exit 1
+          elif [ -n "$SIMULATE_PATHS" ]; then
+            printf '%s\n' "$SIMULATE_PATHS" | tr ' \t' '\n' | sed '/^$/d' | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" = 'push' ] && [ -n "$BEFORE_SHA" ] \
+            && [ "$BEFORE_SHA" != '0000000000000000000000000000000000000000' ] \
+            && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+          else
+            # workflow_dispatch 未传模拟清单（含 simulate=true 演练，构建/部署动作由各
+            # 作业 if 的 simulate 守卫拦截；非 simulate 保持既有「dispatch 即部署」语义），
+            # 或 push 的 before 缺失/全零/不可达（新分支、force-push）：默认全跑
+            bash scripts/ci/detect-changes.sh --all >> "$GITHUB_OUTPUT"
+          fi
+
   deploy:
     name: Deploy server
+    needs: detect
+    # simulate Dry-Run 下，所有触达 secrets/容器/部署目录的作业一律不执行（作业级守卫）
+    if: >-
+      github.repository == 'continew-org/continew-admin'
+      && inputs.simulate != true
+      && needs.detect.outputs.deploy_backend == 'true'
     runs-on: self-hosted
     timeout-minutes: 30
     steps:
@@ -50,3 +109,69 @@ jobs:
           cd ${{ secrets.SERVER_PATH }}
           docker-compose up --force-recreate --build -d continew-server
           docker images | grep none | awk '{print $3}' | xargs -r docker rmi
+
+  build-ui:
+    name: Build UI dist
+    needs: detect
+    if: >-
+      github.repository == 'continew-org/continew-admin'
+      && inputs.simulate != true
+      && needs.detect.outputs.ui == 'true'
+    runs-on: self-hosted
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
+      # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
+      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）
+      - name: Build UI dist
+        run: >
+          docker run --rm
+          --memory=4g --cpus=4
+          -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+          -v "$PWD":/ws
+          -v /root/.local/share/pnpm/store:/root/.local/share/pnpm/store
+          -w /ws/continew-ui
+          node:22
+          sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm build"
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: continew-ui-dist
+          path: continew-ui/dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  decision:
+    name: Deploy routing decision
+    needs: detect
+    # detect 成功即出决策日志（含部署作业被分流跳过的情形）；detect 失败时工作流已红，无需留档
+    if: >-
+      always()
+      && github.repository == 'continew-org/continew-admin'
+      && needs.detect.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Write routing decision
+        env:
+          SIMULATE: ${{ inputs.simulate }}
+          UI: ${{ needs.detect.outputs.ui }}
+          DEPLOY_BACKEND: ${{ needs.detect.outputs.deploy_backend }}
+          CATEGORIES: ${{ needs.detect.outputs.categories }}
+        # 纯文档/模板/infra-only 变更时部署作业中性 Skipped，决策依据在此留档
+        run: |
+          backend_action='跳过'
+          [ "$DEPLOY_BACKEND" = 'true' ] && backend_action='执行'
+          ui_action='跳过'
+          [ "$UI" = 'true' ] && ui_action='执行'
+          mode='真实'
+          [ "$SIMULATE" = 'true' ] && mode='Dry-Run（simulate）：以下为模拟路由，未执行任何构建/部署动作'
+          {
+            echo '## 部署分流决策'
+            echo "- 模式：$mode"
+            echo "- 改动类别：$CATEGORIES"
+            echo "- 后端部署（Deploy server）：$backend_action"
+            echo "- UI dist 构建（Build UI dist）：$ui_action"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -9,7 +9,7 @@ body:
 
         较复杂的功能建议先在此描述使用场景与设计方案，与维护者达成共识后再动手实现。
 
-        > 前端功能建议请提交至 [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui/issues/new/choose)；依赖组件自身的功能请提交至对应组件仓库。
+        > 依赖组件自身的功能请提交至对应组件仓库。
   - type: checkboxes
     id: confirmation
     attributes:
@@ -19,7 +19,7 @@ body:
           required: true
         - label: 我确认该功能具有通用性，而非特定业务场景的定制需求
           required: true
-        - label: 我确认这是 ContiNew Admin 自身的需求，而非前端项目或依赖组件的需求
+        - label: 我确认这是 ContiNew Admin 自身的需求，而非依赖组件的需求
           required: true
         - label: 我确认已在最新版本上验证该功能暂不存在
           required: true

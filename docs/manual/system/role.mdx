@@ -24,7 +24,7 @@ description: 角色的功能权限、数据权限与关联用户分配，以及�
 | 字段 | 说明 |
 |:-----|:-----|
 | `name` | 角色名称，唯一 |
-| `code` | 角色编码，唯一，前端 `v-role` 指令与编程式 `hasRole` 按编码判断 |
+| `code` | 角色编码，唯一，随用户信息（`GET /auth/user/info`）下发给前端 |
 | `data_scope` | 数据权限范围，默认 4（仅本人） |
 | `menu_check_strictly` | 菜单选择是否父子节点关联，默认关联 |
 | `dept_check_strictly` | 部门选择是否父子节点关联，默认关联 |
@@ -64,4 +64,4 @@ description: 角色的功能权限、数据权限与关联用户分配，以及�
 - [RoleController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/RoleController.java)（/system/role 接口与权限码）
 - [RoleServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/RoleServiceImpl.java)（权限修改与分配逻辑）
 - [DataScopeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-common/src/main/java/top/continew/admin/common/enums/DataScopeEnum.java)（数据权限取值）
-- [前端页面 src/views/system/role](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/role)
+- [前端页面 continew-ui/src/routes/(main)/(app)/system/role](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/routes/(main)/(app)/system/role)

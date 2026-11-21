@@ -1,6 +1,5 @@
 <!--
-  非常感谢您的 PR！提交前请确保本地执行 ./mvnw verify 通过全部门禁（Enforcer / Spotless / Checkstyle / SpotBugs）。
-  贡献流程详见 CONTRIBUTING.md。
+  非常感谢您的 PR！贡献流程详见 CONTRIBUTING.md。
 -->
 
 ## 变更类型
@@ -14,6 +13,15 @@
 - [ ] 构建、CI 或依赖升级（build / ci）
 - [ ] 测试（test）
 - [ ] 其他
+
+## 影响范围
+
+<!-- 跨端改动需附两侧验证证据（后端 ./mvnw verify 与前端 pnpm 检查，详见 CONTRIBUTING.md「开发与自测」）。 -->
+
+- [ ] 后端（continew-server / system / common / plugin）
+- [ ] 前端（continew-ui）
+- [ ] 跨端（后端契约或菜单字段变更，需两侧联调）
+- [ ] 文档 / 模板 / CI
 
 ## 破坏性变更
 
@@ -43,7 +51,8 @@
 ## 提交前确认
 
 - [ ] 一个 PR 只解决一个 Issue，不夹带无关改动
-- [ ] 本地 `./mvnw verify` 四道静态门禁与单元测试全部通过（被 Spotless 拦截时使用 `-Pformat` 修复）
+- [ ] 后端改动：本地 `./mvnw verify` 全部通过（被 Spotless 拦截时使用 `-Pformat` 修复）
+- [ ] 前端改动：`continew-ui` 下 `pnpm check` 全部通过
 - [ ] （可选）已在本地完成 AI 自检（`open-code-review-delegate`）
 - [ ] 代码注释只写当前约束；变更历史在 commit message，修复叙述在 PR 正文，均不混入注释
 - [ ] 已完整填写 Changelog，并关联相关 Issue

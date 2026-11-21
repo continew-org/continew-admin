@@ -4,7 +4,7 @@ description: 说明为什么 ContiNew Admin 不能像普通依赖一样整体升
 icon: CircleArrowUp
 ---
 
-ContiNew Admin 是可直接运行的项目模板，不是 Hutool、Vue 这类只需改一个版本号的组件库。项目投入使用后会加入大量业务代码、改包名、裁剪模块、调整表结构；从那时起，你的代码与上游就已经分叉。
+ContiNew Admin 是可直接运行的项目模板，不是 Hutool、Guava 这类只需改一个版本号的组件库。项目投入使用后会加入大量业务代码、改包名、裁剪模块、调整表结构；从那时起，你的代码与上游就已经分叉。
 
 <Callout type="warn">
 选择的初始版本很大程度上会成为项目的基础版本。稳定运行的业务项目不必为了“保持最新”频繁整体升级；多数情况下，只同步自己需要的安全修复、Bug 修复和局部改进更稳妥。
@@ -12,14 +12,13 @@ ContiNew Admin 是可直接运行的项目模板，不是 Hutool、Vue 这类只
 
 ## 开始项目前选哪个版本
 
-- **正式业务项目**：选择最新正式 Release，并让后端与 `continew-admin-ui` 使用匹配版本；
+- **正式业务项目**：选择最新正式 Release；
 - **跟进开发版**：只有能持续处理变更时才使用 `dev`。开发初期和发版前通常较稳定，开发中期可能有模块改名、数据库 changeset 与接口契约调整；
 - **在线演示**：演示环境由 `dev` 自动构建，展示的功能可能尚未正式发布，不能反推正式版一定包含。
 
 版本入口：
 
 - [ContiNew Admin Releases](https://github.com/continew-org/continew-admin/releases)
-- [ContiNew Admin UI Releases](https://github.com/continew-org/continew-admin-ui/releases)
 - [CHANGELOG.md（更新日志）](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)
 
 ## 哪些内容可以直接升级
@@ -61,7 +60,7 @@ Admin 后端、前端与数据库脚本需要按差异迁移，不能直接覆�
 <Steps>
 <Step>
 
-确定起点和目标。记录当前 Admin、Admin UI、Starter 版本及自己的 commit，通读区间内每个版本的破坏性变更、安全通告与依赖升级。
+确定起点和目标。记录当前 Admin 与 Starter 版本及自己的 commit，通读区间内每个版本的破坏性变更、安全通告与依赖升级。
 
 </Step>
 <Step>
@@ -77,7 +76,7 @@ Admin 后端、前端与数据库脚本需要按差异迁移，不能直接覆�
 </Step>
 <Step>
 
-按需求迁移 Admin 后端、数据库 changeset 和前端提交。后端接口有变更时同步修改 UI API、类型与页面；菜单 component、权限码与按钮指令一起核对。
+按需求迁移 Admin 后端、数据库 changeset 和前端提交。后端接口有变更时同步修改前端 API 封装、类型与页面；菜单 component、权限码与按钮权限裁剪一起核对。
 
 </Step>
 <Step>

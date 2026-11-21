@@ -14,10 +14,11 @@ icon: Server
 |:-----|:-----|:-----|
 | JDK | 17 | Spring Boot 4 的最低要求，打包与运行都需要 |
 | Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` |
-| Node.js / pnpm | Node 22 / pnpm 9.3.0 | 仅构建前端时需要 |
+| Node.js | 22 | 前端构建（Vite 8 要求 Node 20.19+ / 22.12+） |
+| pnpm | 锁定版本 | 版本由 `continew-ui/package.json` 的 `packageManager` 字段锁定，`corepack enable` 后自动使用 |
 | MySQL | 8.4.13 | 也支持 PostgreSQL 16+，见下方切换步骤 |
 | Redis | 7.2.17 | 会话、缓存、验证码、限流共用 |
-| Nginx | 1.27.0 | 前端静态资源托管与后端反向代理 |
+| Nginx | 1.29.1 | 前端静态资源托管与后端反向代理 |
 | Docker / Docker Compose | 任意近期版本 | 仅容器化部署需要 |
 
 ## 第 1 步：生产配置
@@ -44,7 +45,11 @@ continew-starter.web.cors:
 
 ### 前端
 
-`pnpm build` 使用 `.env.production`，确认 `VITE_API_BASE_URL` 与 `VITE_API_WS_URL` 指向实际后端地址（开启 SSL 用 `https` / `wss`）。前后端同域名部署时改用 `VITE_API_PREFIX=/api` + 后端地址，并放开 Nginx 里 `/api/` 的代理配置；同源部署下 Refresh Token Cookie 天然同源，`cookie-allowed-origins` 的配置压力最小。
+`pnpm build` 使用 `.env.production`，确认 `VITE_API_BASE_URL` 指向实际后端域名（出厂值 `https://api.continew.top`，自建部署换成自己的域名，开启 SSL 用 `https`）。该完整 URL 会在构建时烧进前端产物，浏览器直连后端域名，对应 Nginx 出厂的双站点结构。
+
+`VITE_APP_RSA_PUBLIC_KEY` 必须与后端 `FIELD_ENCRYPT_PUBLIC_KEY` 注入的公钥属于同一密钥对，且**不能沿用仓库内的示例密钥**。`.env.production` 的出厂值与 `application-dev.yml` 的示例密钥对配套，其私钥随仓库公开，只能用于本地联调；生产沿用等于让登录密码可被任何拿到仓库的人解密。生成自己的密钥对后，公钥写入 `.env.production`（或构建时注入）再执行 `pnpm build`，私钥仅通过 `FIELD_ENCRYPT_PRIVATE_KEY` 注入后端，不入库。
+
+前后端同域名部署时改用 `VITE_API_PREFIX=/api` + 后端地址，并放开 Nginx 前端站点里 `/api/` 的注释样例；此时 Refresh Token Cookie 天然同源，`cookie-allowed-origins` 的配置压力最小。
 
 前端环境变量要点见[前端开发](/docs/admin/development/frontend)，完整清单见[环境变量参考](/docs/admin/reference/environment)。
 
@@ -86,17 +91,18 @@ app/
 
 ### 前端
 
-前端在独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui) 中：
+前端源码在本仓库 `continew-ui/` 目录：
 
 ```bash
+cd continew-ui
 pnpm install
 pnpm build
 ```
 
-产物在 `dist/`，部署时把整个目录交给 Nginx（compose 中挂载到 `/usr/share/nginx/html/`）。
+产物在 `continew-ui/dist/`，部署时把整个目录交给 Nginx（compose 中挂载到 `/usr/share/nginx/html/`）。
 
 <Callout type="info">
-`pnpm build` 会先跑 `vue-tsc --noEmit` 做类型检查再执行 `vite build`，类型错误会直接中断构建。`VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」中某条启用状态的客户端 ID 一致，否则登录会被拒绝。
+`pnpm build` 只执行 `vite build`，类型检查由 `pnpm typecheck` 单独执行，需要 CI 把关时在流水线里另行安排。`VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」中某条启用状态的客户端 ID 一致，否则登录会被拒绝。
 </Callout>
 
 ## 第 3 步：产物落位
@@ -123,7 +129,7 @@ docker/continew-admin/
 | mysql | mysql:8.4.13 | 3306 | 业务数据库（含注释掉的 postgres:16 备选） |
 | redis | redis:7.2.17 | 6379 | 缓存与会话 |
 | continew-server | continew-server:5.0.0-SNAPSHOT（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
-| continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
+| continew-web | nginx:1.29.1 | 80、443 | 前端静态资源与后端反向代理 |
 
 <Steps>
 <Step>
@@ -164,7 +170,7 @@ MySQL 与 Redis 配了健康检查，后端会等两者就绪后启动。首次�
 
 后端站点（`api.continew.top`）把请求反代到 `upstream admin-server`（`172.17.0.1:18000`），三个要点：
 
-- `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作；
+- `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作。新前端暂未接入 WebSocket（站内信通知未实现），该转发为后端 WebSocket 端点与旧前端场景保留；
 - `X-Forwarded-For` 显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
 - `client_max_body_size 100m`，要大于等于后端 `spring.servlet.multipart` 的 20MB 上限，分片上传场景按需再调大。
 

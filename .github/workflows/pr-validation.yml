@@ -39,6 +39,7 @@ jobs:
             schedule
             generator
             docker
+            ui
           requireScope: false
           # if true, the PR title must match the commit message
           validateSingleCommit: false

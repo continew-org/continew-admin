@@ -48,7 +48,7 @@
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot 4（Java17）、Vue3 & Arco Design & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
+当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn/ui & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -56,20 +56,13 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 ## 项目源码
 
-|         | 后端                                                         | 前端                                                         |
-| :------ | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) | [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui) |
-| AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) | [continew/continew-admin-ui](https://atomgit.com/continew/continew-admin-ui) |
-| Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) | [continew/continew-admin-ui](https://gitee.com/continew/continew-admin-ui) |
+前端源码位于本仓库 `continew-ui/` 目录，与后端同版本发布。
 
-## OpenContiNew 生态
-
-ContiNew 系列项目均由 OpenContiNew 开源社区维护，除本项目外还包括：
-
-| 项目 | 简介 |
-|:-----|:-----|
-| [ContiNew Starter](https://github.com/continew-org/continew-starter) | ContiNew Admin 的通用基础能力抽离形成的企业级 Starter 库，约定优于配置，开箱即用 |
-| [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui) | ContiNew Admin 前端适配项目 |
+|         | 仓库                                                         |
+| :------ | :----------------------------------------------------------- |
+| GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) |
+| AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) |
+| Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) |
 
 ## 项目起源
 
@@ -121,7 +114,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
 - 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新；
 
-**7.Almost 最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范，前端代码同样采用严格的 ESLint、StyleLint 等检查。优秀的设计带来极高的代码复用率！开发时，你会有一种“无需多写，理应如此”的流畅感。
+**7.Almost 最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范，前端代码采用 oxlint 静态检查与 oxfmt 格式化门禁。优秀的设计带来极高的代码复用率！开发时，你会有一种“无需多写，理应如此”的流畅感。
 
 **8.卓越工程化实践：** 后端采用模块化工程结构，集成了统一版本管理、编译时自动代码格式化等插件。提供自定义打包部署配置（配置文件、第三方依赖与主程序分离），以及全套环境和应用的 Docker Compose 部署脚本。
 
@@ -176,81 +169,18 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - 任务日志：管理定时任务执行日志，包含停止、重试指定批次等功能
 - 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
 
-## 系统截图
-
-> [!TIP]
-> 受篇幅长度及功能更新频率影响，下方仅为系统 **部分** 功能于 **2024年11月18日** 进行的截图，更多新增功能及细节请登录演示环境或 clone 代码到本地启动查看。
-
-<table border="1" cellpadding="1" cellspacing="1" style="width: 500px">
-    <tbody>
-        <tr>
-            <td><img src=".image/screenshot/000登录页面.png" alt="登录页面" width="1920" /></td>
-            <td><img src=".image/screenshot/000登录页面-H5.png" alt="登录页面-H5" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/001仪表盘.png" alt="仪表盘" width="1920" /></td>
-            <td><img src=".image/screenshot/002分析页.png" alt="分析页" width="1920" /></td>
-        </tr>
-       <tr>
-            <td><img src=".image/screenshot/010个人中心.png" alt="个人中心" width="1920" /></td>
-            <td><img src=".image/screenshot/013消息中心.png" alt="消息中心" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/011安全设置-修改邮箱.png" alt="安全设置-修改邮箱" width="1920" /></td>
-            <td><img src=".image/screenshot/012安全设置-修改邮箱-邮箱验证码.png" alt="安全设置-修改邮箱-邮箱验证码" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/060系统管理-系统配置.png" alt="系统管理-系统配置" width="1920" /></td>
-            <td><img src=".image/screenshot/061系统管理-安全配置.png" alt="系统管理-安全配置" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/020系统管理-用户管理-列表.png" alt="系统管理-用户管理-列表" width="1920" /></td>
-            <td><img src=".image/screenshot/021系统管理-用户管理-新增.png" alt="系统管理-用户管理-新增" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/025系统管理-角色管理-列表.png" alt="系统管理-角色管理-列表" width="1920" /></td>
-            <td><img src=".image/screenshot/026系统管理-角色管理-新增.png" alt="系统管理-角色管理-新增" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/030系统管理-菜单管理-列表.png" alt="系统管理-菜单管理-列表" width="1920" /></td>
-            <td><img src=".image/screenshot/031系统管理-菜单管理-新增.png" alt="系统管理-菜单管理-新增" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/045系统管理-公告管理-列表.png" alt="系统管理-公告管理-列表" width="1920" /></td>
-            <td><img src=".image/screenshot/046系统管理-公告管理-修改.png" alt="系统管理-公告管理-修改" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/040系统管理-字典管理-列表.png" alt="系统管理-字典管理-列表" width="1920" /></td>
-            <td><img src=".image/screenshot/041系统管理-字典项管理.png" alt="系统管理-字典项管理" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/051系统管理-文件管理-列表-2.png" alt="系统管理-文件管理-列表-2" width="1920" /></td>
-            <td><img src=".image/screenshot/052系统管理-文件管理-查看文档.png" alt="系统管理-文件管理-查看文档" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/301系统工具-代码生成-配置.png" alt="系统工具-代码生成-配置" width="1920" /></td>
-            <td><img src=".image/screenshot/302系统工具-代码生成-预览.png" alt="系统工具-代码生成-预览" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/100系统监控-在线用户.png" alt="系统监控-在线用户" width="1920" /></td>
-            <td><img src=".image/screenshot/101系统监控-系统日志-登录日志.png" alt="系统监控-系统日志-登录日志" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src=".image/screenshot/102系统监控-系统日志-操作日志.png" alt="系统监控-系统日志-操作日志" width="1920" /></td>
-            <td><img src=".image/screenshot/103系统监控-系统日志-操作日志-详情.png" alt="系统监控-系统日志-操作日志-详情" width="1920" /></td>
-        </tr>
-    </tbody>
-</table>
-
-
 ## 核心技术栈
 
 | 名称                                                                                                                                | 版本           | 简介                                                         |
 |:----------------------------------------------------------------------------------------------------------------------------------|:-------------| :----------------------------------------------------------- |
-| <a href="https://vuejs.org/" target="_blank">Vue</a>                                                                              | 3.5.4        | 渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。 |
-| <a href="https://arco.design/vue/docs/start" target="_blank">Arco Design</a>                                                      | 2.57.0       | 字节跳动推出的前端 UI 框架，年轻化的色彩和组件设计。         |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 5.0.4        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
-| <a href="https://vite.dev/" target="_blank">Vite</a>                                                                              | 5.1.5        | 下一代的前端工具链，为开发提供极速响应。                     |
+| <a href="https://react.dev/" target="_blank">React</a>                                                                              | 19.3.1       | 用于构建 Web 与原生交互界面的库，以组件化与声明式视图著称。   |
+| <a href="https://tanstack.com/router/latest" target="_blank">TanStack Router</a>                                                    | 1.170.46     | 全类型安全的文件路由方案，配合 TanStack Query 与 Table 构成数据层三件套。 |
+| <a href="https://tanstack.com/query/latest" target="_blank">TanStack Query</a>                                                      | 5.105.0      | 强大的异步状态管理，覆盖数据获取、缓存与失效重试。           |
+| <a href="https://tanstack.com/table/latest" target="_blank">TanStack Table</a>                                                      | 9.3.1        | 无头表格组件库，为列表页提供排序、筛选与分页能力。           |
+| <a href="https://ui.shadcn.com/" target="_blank">shadcn/ui</a>                                                                     | —            | 可拷贝、可定制的组件分发模式，本项目选用 base-nova 注册表，底层基于 Base UI 与 Tailwind CSS。 |
+| <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>                                                                 | 4.3.3        | 原子化 CSS 框架，通过工具类快速构建界面。                    |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 7.0.2        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://vite.dev/" target="_blank">Vite</a>                                                                              | 8.0.5        | 下一代的前端工具链，为开发提供极速响应。                     |
 | [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 3.0.0 | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
 | <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 4.1.1        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://tomcat.apache.org/" target="_blank">Tomcat</a>                                                                   | 11.0.24      | 采用 Java 开发的 Servlet 容器，Spring Boot 4 起内置并作为默认 Web 服务器。 |
@@ -285,10 +215,10 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 > 更详细的流程，请查看在线文档[《快速开始》](https://continew.top/docs/admin)。
 
 ```bash
-# 1.克隆本项目
+# 1.克隆本项目（前后端同仓，前端位于 continew-ui/ 目录）
 git clone https://github.com/continew-org/continew-admin.git
 
-# 2.在 IDE（IntelliJ IDEA/Eclipse）中打开本项目
+# 2.在 IDE（IntelliJ IDEA/Eclipse）中打开后端项目
 
 # 3.修改配置文件中的数据源配置信息、Redis 配置信息、邮件配置信息等
 # [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
@@ -296,6 +226,14 @@ git clone https://github.com/continew-org/continew-admin.git
 # 4.启动程序
 # 启动成功，在控制台末尾会输出 ContiNew Admin service started successfully.
 # 并输出 API 地址及 API 接口文档地址
+
+# 5.启动前端（需要 Node 22）
+cd continew-ui
+corepack enable
+pnpm install
+pnpm dev
+# corepack 按 package.json 的 packageManager 取用锁定的 pnpm 版本
+# 浏览器访问 http://localhost:5173，开发环境经 /api 代理连接本地后端，无需额外配置
 ```
 
 ## 项目结构
@@ -465,6 +403,7 @@ continew-admin
 │  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
+├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/ui + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
 ├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
 ├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
 ├─ .idea

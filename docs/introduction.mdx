@@ -14,7 +14,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 我们的愿景在于，当你将 ContiNew 系列项目应用到工作场景时，不仅仅是得到效率的提高，更可以得到舒适的开发体验，让更多开发者的编程工作多一点“甜”。
 
-工程形态上，后端为 Maven 多模块工程（依赖自上而下为 `continew-server` → `continew-system` → `continew-common`），基于 Spring Boot 4（Java 17），启动类为 `top.continew.admin.ContiNewAdminApplication`，dev 环境端口 8000；前端为独立仓库 [continew-admin-ui](https://github.com/continew-org/continew-admin-ui)，基于 Vue 3、Arco Design、TypeScript 与 Vite。框架的通用基础能力（CRUD 套件、认证、租户、数据权限、缓存、日志等）抽离在 [ContiNew Starter](/docs/starter) 中，以 BOM 方式引入（3.0.0），Admin 在其上做业务实现与工程级扩展。
+工程形态上，后端为 Maven 多模块工程（依赖自上而下为 `continew-server` → `continew-system` → `continew-common`），基于 Spring Boot 4（Java 17），启动类为 `top.continew.admin.ContiNewAdminApplication`，dev 环境端口 8000；前端在本仓库的 `continew-ui/` 目录，基于 React 19、TypeScript、Vite、Tailwind CSS、shadcn/ui 与 TanStack Router / Query / Table。框架的通用基础能力（CRUD 套件、认证、租户、数据权限、缓存、日志等）抽离在 [ContiNew Starter](/docs/starter) 中，以 BOM 方式引入（3.0.0），Admin 在其上做业务实现与工程级扩展。
 
 ## 项目起源
 
@@ -76,17 +76,21 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 | Crane4j | 2.10.0 |
 | Hutool | 5.8.47 |
 
-前端（版本取自 `continew-admin-ui` 的 `package.json`）：
+前端（版本取自 `continew-ui/package.json` 的声明值）：
 
 | 依赖 | 版本 |
 |:-----|:-----|
-| Vue | 3.5.4 |
-| Arco Design（@arco-design/web-vue） | 2.57.0 |
-| TypeScript | 5.0.4 |
-| Vite | 5.1.5 |
-| vue-router | 4.3.3 |
-| Pinia | 2.0.16 |
-| pnpm | 9.3.0 |
+| React | 19.3.1 |
+| Vite | 8.0.5 |
+| TanStack Router | 1.170.46 |
+| TanStack Query | 5.105.0 |
+| TanStack Table | 9.3.1 |
+| TypeScript | 7.0.2 |
+| Tailwind CSS | 4.3.3 |
+| shadcn/ui（`@shadcn/react`） | 0.3.1 |
+| ↳ 组件形态 | 风格 base-nova，原语基于 Base UI 1.9.0，图标 lucide-react 1.55.0；组件源码经 CLI 拷贝在 `continew-ui/src/components/ui/`，运行时包仅少数组件直接引用 |
+| zustand | 5.0.16 |
+| zod | 4.6.7 |
 
 运行环境要求（JDK 17 为 Spring Boot 4 的最低要求）：JDK 17、MySQL 8.4.13（亦支持 PostgreSQL 16+，脚本位于 `db/changelog/postgresql`）、Redis 7.2.17、Maven 3.9+（仓库内置 `mvnw`）。
 
@@ -113,5 +117,5 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 ## 相关源码
 
 - 后端仓库：[continew-org/continew-admin](https://github.com/continew-org/continew-admin/tree/dev)
-- 前端仓库：[continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui/tree/dev)
+- 前端源码：[continew-ui/](https://github.com/continew-org/continew-admin/tree/dev/continew-ui)
 - 基础能力：[continew-org/continew-starter](https://github.com/continew-org/continew-starter/tree/dev)

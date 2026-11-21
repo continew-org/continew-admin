@@ -6,8 +6,10 @@ description: >
   版本号不手动传：从根 pom.xml 的 <revision> 自动推导发版号（去掉 -SNAPSHOT）。
   用户说"发版"、"发布新版"、"release"、"准备发版"、"tag"、"打 tag"、"新建 GitHub Release"、
   "切维护分支"，或想看发版流程清单时使用。
-  专用于 continew-admin 后端仓库，不适用其它项目；前端 continew-admin-ui 独立仓库独立流程，
-  仅在完成后提醒同步发版。发版前业务侧自验（演示环境功能验收、前后端联调）由用户自行完成，skill 只做门禁与流程。
+  专用于 continew-admin 仓库（前后端同仓）：单版本、单 tag、单 CHANGELOG，前端 `continew-ui/`
+  随后端同一 tag 发布，无需单独发版；push tag 后部署由 Actions 按 `scripts/ci/detect-changes.sh`
+  的改动路由分流（只改前端不重部署后端，只改后端不重发前端，纯文档不部署）。
+  发版前业务侧自验（演示环境功能验收、前后端联调）由用户自行完成，skill 只做门禁与流程。
 ---
 
 # continew-admin 发版
@@ -182,8 +184,9 @@ git checkout dev
   - Gitee:  https://gitee.com/continew/continew-admin/releases/tag/${NEW_TAG}
   - AtomGit: https://atomgit.com/continew/continew-admin
 后续：
-  - push origin/dev 已触发 Deploy 工作流，演示站点会自动重建为 ${NEW_VERSION}
-  - 前端 continew-admin-ui 同为 ${NEW_VERSION}-SNAPSHOT，需在其仓库按同一节奏发版（独立流程，本 skill 不覆盖）
+  - push origin/dev 已触发 Deploy 工作流，演示站点会自动重建为 ${NEW_VERSION}；
+    前端 `continew-ui/` 与后端同版本同 tag，部署按 `scripts/ci/detect-changes.sh` 的改动路由分流，
+    无需单独发版
   - 下个开发周期开始时，在 dev 手动 commit: "build: 更新项目版本号至<major>.<minor+1>.0-SNAPSHOT"，
     并把 README 徽章改回 SNAPSHOT-v<major>.<minor+1>.0
 ```

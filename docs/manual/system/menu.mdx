@@ -25,12 +25,12 @@ description: 目录、菜单、按钮三级资源的维护，动态路由的生�
 | `parent_id` | 上级菜单 ID，根节点为 0 |
 | `type` | 类型（1：目录；2：菜单；3：按钮） |
 | `path` | 路由地址；外链菜单填完整 URL（http/https 开头） |
-| `name` | 组件名称，对应前端路由 name，用于页面缓存（keep-alive）匹配 |
-| `component` | 组件路径，对应前端 `src/views` 下的 `.vue` 文件 |
+| `name` | 组件名称，仅随菜单数据下发；前端路由由文件路由按目录生成，不依赖该字段 |
+| `component` | 组件路径，对应前端 `continew-ui/src/routes/(main)/(app)/` 下的路由目录 |
 | `redirect` | 重定向地址 |
 | `icon` | 图标 |
 | `is_external` | 是否外链 |
-| `is_cache` | 是否缓存，开启后页面切换页签时不重新渲染 |
+| `is_cache` | 是否缓存（登记项，当前前端页签切换没有组件级缓存） |
 | `is_hidden` | 是否隐藏，隐藏后不出现在侧边栏，但路由仍可访问 |
 | `permission` | 权限标识，如 `system:user:create` |
 | `sort` | 排序，默认 999 |
@@ -43,11 +43,11 @@ description: 目录、菜单、按钮三级资源的维护，动态路由的生�
 - 勾选「是否外链」时，`path` 必须以 `http://` 或 `https://` 开头，否则报「路由地址格式不正确」；
 - 非外链时，`path` 不允许是完整 URL，保存时自动补前导 `/`；`name` 与 `component` 自动去除前导 `/`。
 
-前端登录后调用 `/auth/user/route` 拉取当前用户可见的菜单树，按 `component` 经 `import.meta.glob('@/views/**/*.vue')` 匹配组件并注册动态路由。`component` 填相对 `src/views` 的路径（不带前导 `/`、不带扩展名），例如 `system/user/index`。
+前端登录后调用 `/auth/user/route` 拉取当前用户可见的菜单树，页面由 TanStack 文件路由承接：在 `continew-ui/src/routes/(main)/(app)/` 下按菜单路径建目录并写一个 `route.tsx`，即生成对应路由。菜单里没有的路径由访问守卫（`src/lib/route-access.ts`）重定向到无权限页；菜单里有入口而页面文件还没建时，占位页会提示预期的文件路径。`component` 填相对路径（不带前导 `/`、不带扩展名），例如 `system/user/index`。目录约定与守卫细节见[路由与页签](/docs/admin/development/frontend/route)。
 
 ## 权限标识与按钮鉴权
 
-按钮类型（`type = 3`）的 `permission` 字段是后端接口鉴权的依据。CRUD 类接口由 `BaseController.preHandle` 按「模块：资源：动作」自动生成权限码，例如 `POST /system/user` 要求 `system:user:create`。前端按钮用 `v-permission="['system:user:create']"` 指令控制显隐，无权限时不渲染。
+按钮类型（`type = 3`）的 `permission` 字段是后端接口鉴权的依据。CRUD 类接口由 `BaseController.preHandle` 按「模块：资源：动作」自动生成权限码，例如 `POST /system/user` 要求 `system:user:create`。前端按钮经 `usePermission` 的 `hasPermission` 做条件渲染裁剪，无权限时不渲染，用法见[权限控制](/docs/admin/development/frontend/permission)。
 
 <Callout type="info">
 新增业务模块时，代码生成器会同时产出菜单 SQL（含按钮权限标识），在菜单管理中执行或手工录入后即可挂到角色上。按钮权限标识建议与后端权限码保持一致，避免前后端两张皮。
@@ -62,4 +62,4 @@ description: 目录、菜单、按钮三级资源的维护，动态路由的生�
 - [MenuController](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/MenuController.java)（/system/menu 接口与参数修正）
 - [MenuTypeEnum](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/enums/MenuTypeEnum.java)（菜单类型枚举）
 - [MenuServiceImpl](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/MenuServiceImpl.java)（菜单树与路由构建）
-- [前端页面 src/views/system/menu](https://github.com/continew-org/continew-admin-ui/tree/dev/src/views/system/menu)
+- [前端页面 continew-ui/src/routes/(main)/(app)/system/menu](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/routes/(main)/(app)/system/menu)

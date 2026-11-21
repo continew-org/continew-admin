@@ -1,74 +1,73 @@
 ---
 title: 布局与主题
-description: 讲解布局模式切换、主题色与暗黑模式、页签样式等外观配置的运行机制与 setting.ts 默认值。
+description: 讲解 AppShell 布局、外观偏好（preferences）体系、主题与暗色模式的实现机制。
 ---
 
-布局与外观配置的运行时在 Pinia 的 `app` store，默认值来自 `src/config/setting.ts`，用户在「应用配置面板」里的修改会持久化到 `localStorage`（`app` store 全量持久化）。
+调整全局外观、或想给布局加一个新偏好项时，读这页。布局与外观由两层组成：`src/components/app-shell/` 下的 `AppShell` 按 6 种布局模式渲染页面骨架，`src/lib/preferences/` 的偏好注册表管理 40 余项外观偏好，用户在右上角设置面板里的修改即时生效并持久化。
 
-## setting.ts 默认配置
+## 偏好注册表
 
-`src/config/setting.ts` 导出 `defaultSettings`，字段与默认值如下（`src/types/app.d.ts` 的 `App.AppSettings` 是类型定义）。
+外观偏好的单一事实源是 `src/lib/preferences/preferences-config.ts` 的 `PREFERENCE_REGISTRY`。每一项声明类型（枚举/数字/布尔/文本）、默认值、保存方式与作用到 DOM 的方式。
 
-| 字段 | 默认值 | 说明 |
-|:-----|:-------|:-----|
-| `theme` | `light` | 主题，`light` / `dark` |
-| `themeColor` | `#165DFF` | 主题色 |
-| `tab` | `true` | 是否显示页签栏 |
-| `tabMode` | `card-gutter` | 页签样式，`card` / `card-gutter` / `rounded` |
-| `animate` | `false` | 页面切换动画开关 |
-| `animateMode` | `zoom-fade` | 动画类型，共 6 种可选 |
-| `menuCollapse` | `false` | 菜单折叠状态 |
-| `menuAccordion` | `true` | 菜单手风琴模式（同级只展开一个） |
-| `menuDark` | `false` | 深色菜单 |
-| `copyrightDisplay` | `true` | 页脚版权显示 |
-| `layout` | `mix` | 布局模式，`left` / `mix` / `columns` / `top` |
-| `isOpenWatermark` | 未设置 | 全局水印开关 |
-| `watermark` | 未设置 | 水印文案，留空显示用户名 |
-| `enableColorWeaknessMode` | `false` | 色弱模式 |
-| `enableMourningMode` | `false` | 哀悼模式 |
+保存方式分三类。
 
-改全局默认值就改这个文件。用户的个性化配置在配置面板里改，存 `localStorage`，优先级高于默认值。
+| 方式 | 范围 | 说明 |
+|:-----|:-----|:-----|
+| `client-cookie` | 布局关键项（主题模式、主题色、内容布局、导航栏样式、侧栏形态、圆角） | 写入 Cookie，刷新首帧前就能读到，避免闪烁 |
+| `localStorage` | 其余偏好 | 键名加 `pref_` 前缀 |
+| `none` | 不保存 | 刷新即回到默认值 |
+
+作用方式也分两类：`attribute` 写到 `<html data-*>` 供 CSS 选择器匹配（如 `data-theme-mode`、`data-radius`），`cssVar` 写到 `<html style>` 上的自定义属性（如 `--app-font-size`、`--app-tabbar-height`）。运行时写入走 `src/lib/preferences/preference-runtime.ts` 的 `applyPreference`，状态在 zustand 的 `src/stores/preferences/preferences-store.ts`（`usePreferencesStore`）。
+
+首帧防闪烁由注入脚本承担：`src/scripts/theme-boot-script.ts` 生成一段内联 JS，`vite.config.ts` 的 `themeBootPlugin` 把它替换进 `index.html` 的 `<!--theme-boot-->` 占位处，首帧渲染前就把 Cookie/localStorage 里的偏好写到 DOM 上。新增偏好时注册表是唯一要改的地方，boot 脚本直接复用同一份注册表数据。
 
 ## 布局模式
 
-四套布局组件在 `src/layout/` 下，`src/layout/index.vue` 按 `appStore.layout` 动态切换（`src/layout/index.vue:23`）。
+布局模式偏好 `layout` 在一套 `AppShell` 里切换，共 6 种（`src/lib/preferences/layout.ts:55`），默认 `sidebar-nav`。
 
-| 值 | 组件 | 形态 |
-|:---|:-----|:-----|
-| `left` | `LayoutDefault` | 经典左侧菜单（`layoutMap` 的兜底键是 `default`，配置面板写入的值是 `left`，查不到时回退到经典布局） |
-| `mix` | `LayoutMix` | 混合布局（默认），顶部一级菜单 + 左侧二级菜单 |
-| `columns` | `LayoutColumns` | 双栏布局，一级菜单窄栏 + 二级菜单栏 |
-| `top` | `LayoutTop` | 顶部菜单，无侧边栏 |
+| 值 | 形态 |
+|:---|:-----|
+| `sidebar-nav` | 垂直：左侧菜单 |
+| `sidebar-mixed-nav` | 双列菜单：一级窄栏 + 二级菜单栏 |
+| `header-nav` | 水平：菜单全部在顶部 |
+| `header-sidebar-nav` | 顶部通栏 + 侧边导航 |
+| `mixed-nav` | 混合垂直：顶部一级 + 左侧子菜单共存 |
+| `header-mixed-nav` | 混合双列：双列与水平菜单共存 |
 
-布局本体之外的公共件（头部、页签栏、主内容区）在 `src/layout/components/` 下复用。主内容区 `Main.vue` 是 `<transition>` 套 `<keep-alive>` 再套 `<router-view>` 的结构（`src/layout/components/Main.vue:3`），动画名取 `appStore.transitionName`，`keep-alive` 的 `include` 绑定 `tabsStore.cacheList`（页签缓存机制见 [路由与页签](./route)）。
+`AppShell`（`src/components/app-shell/index.tsx`）按模式与 `navigation_split`、`header_menu_align` 等偏好算出侧栏形态、头部位置与头部菜单行为，渲染对应的头部、侧栏与内容区。侧栏本身有 `sidebar_variant`（sidebar / inset / floating）与 `sidebar_collapsible`（icon / offcanvas）两种形态偏好，值在路由 loader 里经 `src/lib/shell-preferences.ts` 从 Cookie 读出，保证首帧就是正确的侧栏状态。
 
-## 主题与暗黑模式
+头部组件在 `app-shell/header/`（菜单、搜索、通知、主题切换、用户菜单、布局设置入口），侧栏在 `app-shell/sidebar/`，页签栏在 `app-shell/tabbar/`。
 
-主题切换在 `appStore.toggleTheme`（`src/stores/modules/app.ts:35`）：给 `document.body` 设置或移除 `arco-theme="dark"` 属性，Arco 组件按属性切换暗色样式，然后重算主题色变量。
+## 主题与暗色模式
 
-主题色不是编译期写死的。`setThemeColor` 用 `@arco-design/color` 的 `generate` 按当前主题算出 10 级色阶，逐个写到 `document.body` 的 `--primary-1` 到 `--primary-10` CSS 变量上。浅色的深色菜单场景用 store 里的 `themeCSSVar`（恒按 dark 计算）。
+主题机制建立在 Tailwind CSS 4 的 CSS 变量上（`src/styles/globals.css`）。
 
-色弱模式与哀悼模式通过 `watch` 监听，给 `document.documentElement` 加 CSS `filter`：哀悼模式是 `grayscale(100%)`，色弱模式是 `invert(80%)`，两者可同时叠加（`src/stores/modules/app.ts:85`）。
+暗色模式的开关是 `theme_mode`（light / dark / system，默认 light）。`applyThemeMode`（`src/lib/preferences/theme-utils.ts`）按选择解析出实际模式：`system` 跟随 `prefers-color-scheme` 并订阅系统变化，然后切换 `<html>` 上的 `dark` class 与 `colorScheme`。CSS 侧用 `@custom-variant dark (&:is(.dark *))` 声明暗色变体，`.dark` 选择器块整体覆盖变量值。切换时会临时加 `disable-transitions` class 压掉过渡动画，避免切换瞬间的颜色渐变。
 
-## 页签栏
+主题色是 `theme_color`，10 个预置色（`src/lib/preferences/theme.ts`，中文名：霁蓝、墨染、天青、竹青、琥珀、丹霞、朱砂、霓虹、暮紫、石板），经 `<html data-theme-color>` 匹配 `src/styles/theme-colors.css` 里的变量组。色值是按亮暗两态调好的 oklch 值，主题色只覆盖品牌相关 token，与暗色模式正交叠加。没有运行时色阶生成，想加一个新主题色就在 `theme-colors.css` 里加一组变量。
 
-页签栏的显隐由 `tab` 控制，样式由 `tabMode` 控制（卡片、卡片间隔、圆角）。页签的打开、关闭、固定、缓存行为由 `tabs` store 与路由 `meta` 决定，数据流转见 [路由与页签](./route)，这里只列配置入口。
+配套的外观开关：灰度模式（`data-color-gray`，`filter: grayscale(100%)`）与色弱模式（`data-color-weak`，`filter: invert(80%)`）可叠加（`src/styles/globals.css:258`）；圆角偏好按基础值的比例缩放（0 到 1）；字号偏好（14 到 18px）驱动整套 rem 字号体系。动画基础样式来自 `tw-animate-css`。
 
-页签数据持久化到 `sessionStorage`，关掉浏览器标签页即清空；`localStorage` 里的 `app` store 只存样式偏好，不存页签。
+## 设置面板
 
-## 应用配置面板
+右上角齿轮图标打开设置抽屉（`src/components/app-shell/header/layout-controls.tsx`），内部分七个区块：主题、其他、布局、标签栏、通用、小部件、快捷键。改动经 `usePreferencesStore` 即时写 DOM 并持久化。快捷键区块展示全局快捷键（`app-shell/global-shortcuts.tsx`，可在偏好里逐项停用）。
 
-右上角齿轮图标打开配置抽屉（`src/layout/components/HeaderRightBar/SettingDrawer.vue`），实时修改上述字段并即时生效。抽屉底部「复制配置」按钮把当前设置导出为 JSON，方便把一套调好的外观写回 `setting.ts` 作为新默认值。
+## 站点信息与页面效果
 
-齿轮入口是固定渲染的，环境变量 `VITE_APP_SETTING` 并不能隐藏它；该变量只在抽屉内部生效（`SettingDrawer.vue:94`），值为 `false` 时隐藏「主题色、色弱模式」等外观区块，布局、页签等其余设置仍然显示。想彻底去掉配置入口，需要自行移除 `HeaderRightBar` 中的齿轮按钮。
+站点标题、Logo、版权、备案号由后端「网站配置」维护，前端经 `src/hooks/use-site-options.ts` 调 `GET /system/common/dict/option/site` 拉取（结果缓存在 `src/lib/site-option-cache.ts`）。改站点名不用动前端代码。
 
-## 站点信息的来源
+页面级效果集中在 `app-shell/page-effects.tsx`：
 
-站点标题、Logo、Favicon、版权、备案号不在 `setting.ts`，由后端「系统配置 → 网站配置」维护，前端启动时经 `appStore.initSiteConfig()` 调 `GET /system/common/dict/option/site` 拉取并写入 `document.title` 与 favicon 链接（`src/stores/modules/app.ts:60`）。改站点名不用改前端代码，后台页面改配置即可。
+- **动态标题**（`app_dynamic_title`）：标签页标题按「页面名 - 站点名」拼出；
+- **水印**（`app_watermark` + `app_watermark_content`）：平铺水印层绘制用户名与当前时间，内容留空时显示用户名；
+- **更新检测**（`app_enable_check_updates`，仅生产构建生效）：页面可见时每 5 分钟拉一次 `index.html`，入口脚本地址变了就在右下角提示「发现新版本」并引导刷新。
+
+锁屏在 `app-shell/workspace-overlays.tsx`：解锁密码是锁屏时本地设置的口令，SHA-256 后存 sessionStorage，仅用于遮蔽无人值守的屏幕，不参与认证。
 
 ## 相关源码
 
-- [src/config/setting.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/config/setting.ts)：默认外观配置
-- [src/stores/modules/app.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/app.ts)：外观配置的运行时 store（主题、布局、站点信息）
-- [src/layout/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/layout/index.vue)：布局模式动态切换
-- [src/layout/components/HeaderRightBar/SettingDrawer.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/layout/components/HeaderRightBar/SettingDrawer.vue)：应用配置面板
+- [src/lib/preferences/](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/lib/preferences)：偏好注册表、布局与主题的取值定义
+- [src/components/app-shell/](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/components/app-shell)：AppShell、头部、侧栏、页签栏
+- [src/stores/preferences/preferences-store.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/stores/preferences/preferences-store.ts)：偏好状态与持久化
+- [src/styles/globals.css](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/styles/globals.css)：CSS 变量、暗色块与色彩开关
+- [src/hooks/use-site-options.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/hooks/use-site-options.ts)：站点信息拉取
