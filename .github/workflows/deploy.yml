@@ -27,7 +27,7 @@ concurrency:
 jobs:
   detect:
     name: Detect changes
-    # repo 守卫（照 ci.yml 的 Sonar analysis 先例）：fork 上手动触发不执行任何作业
+    # repo 守卫（同 ci.yml 的 Sonar analysis）：fork 上手动触发不执行任何作业
     if: github.repository == 'continew-org/continew-admin'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -48,8 +48,8 @@ jobs:
           SIMULATE_PATHS: ${{ inputs.simulate_paths }}
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
         # 部署分流必须由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）；
-        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 误传清单属歧义输入，
-        # 直接快速失败，真实事件路径行为不变
+        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 时传 simulate_paths
+        # 属歧义输入，直接快速失败
         run: |
           set -eo pipefail
           if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
@@ -58,9 +58,9 @@ jobs:
           elif [ -n "$SIMULATE_PATHS" ]; then
             printf '%s\n' "$SIMULATE_PATHS" | tr ' \t' '\n' | sed '/^$/d' | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
           else
-            # workflow_dispatch 未传模拟清单（含 simulate=true 演练，构建/部署动作由各
-            # 作业 if 的 simulate 守卫拦截；非 simulate 保持既有「dispatch 即部署」语义）；
-            # push/dispatch 的清单解析与兜底在编排层，行为不变
+            # workflow_dispatch 未传模拟清单：simulate=true 时构建/部署动作由各作业
+            # if 的 simulate 守卫拦截（仅出路由决策），simulate=false 即正常部署；
+            # push/dispatch 的清单解析与兜底在编排层 scripts/ci/changed-files.sh
             bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
           fi
 
@@ -98,7 +98,7 @@ jobs:
           rsync -a --delete continew-server/target/app/bin/ ${{ secrets.SERVER_PATH }}/continew-admin/bin/
           rsync -a continew-server/target/app/config/ ${{ secrets.SERVER_PATH }}/continew-admin/config/
           rsync -a docker/continew-admin/Dockerfile ${{ secrets.SERVER_PATH }}/continew-admin/Dockerfile
-      # 5、启动
+      # 4、启动
       - name: Start
         run: |
           cd ${{ secrets.SERVER_PATH }}

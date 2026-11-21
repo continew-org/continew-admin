@@ -178,7 +178,7 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Upload dist artifact
-        # dist 仅作为构建产物上传（若需保留失败现场可加 always()），不进缓存、不同步公开网页
+        # dist 仅作为构建成功后的产物上传，不进缓存、不同步公开网页
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: continew-ui-dist-${{ github.event.pull_request.number || github.sha }}
@@ -199,7 +199,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
       - name: Remove repository mirrors
         # 与 Backend checks / Sonar analysis 同形：托管 runner 上国内镜像不稳定，改用 Maven Central。
         # 必须在 setup-java 之前执行：Maven 缓存键按此刻磁盘上的 POM 内容计算
