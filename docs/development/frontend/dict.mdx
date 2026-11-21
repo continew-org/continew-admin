@@ -1,97 +1,90 @@
 ---
 title: 字典使用
-description: 讲解字典数据在后端的存储与缓存机制，以及前端 useDict hook 的加载、缓存与渲染方式。
+description: 讲解字典数据的后端缓存机制、前端查询键组织与 DictLabelBadge 的颜色渲染映射。
 ---
 
-字典解决「状态、类型这类固定取值集合」的展示问题：数据库存值（如 `1`），页面显示文案（如「启用」）。ContiNew Admin 的字典分两类，数据库字典在「字典管理」页面维护，枚举字典由后端 Java 枚举自动生成，两类走同一个查询接口，前端用同一个 hook 消费。
+状态、类型这类固定取值集合，数据库存值（如 `1`），页面显示文案（如「启用」），靠字典把两者对上。ContiNew Admin 的字典分两类：数据库字典在「字典管理」页面维护，枚举字典由后端 Java 枚举自动生成，两类走同一个查询接口，前端用同一套查询键消费。
 
 ## 后端机制
 
 数据落在两张表：`sys_dict`（字典定义，含编码 `code`）和 `sys_dict_item`（字典项，含 `label`/`value`/`color`）。
 
-业务查询走 `GET /system/common/dict/{code}`（`CommonController`），返回 `[{ label, value, extra }]` 结构的列表，`extra` 是字典项颜色，用于标签渲染。这个接口有两级加速。
+业务查询走 `GET /system/common/dict/{code}`（`CommonController.listDict`，委托 `DictItemServiceImpl.listByDictCode`），返回 `LabelValueResp` 数组，每项含 `label`、`value`、`disabled` 与 `extra`（字典项颜色：数据库字典取 `color` 列，SQL 里 `t1.color AS extra`）。查询只返回启用状态的字典项。这个接口有两级加速（`DictItemServiceImpl`）。
 
-- **枚举字典优先**：`DictItemServiceImpl` 启动时扫描实现了 `BaseEnum` 的枚举类，按「类名转下划线小写」生成字典编码（如 `NoticeStatusEnum` → `notice_status_enum`），缓存进内存 Map。查询时先查这个 Map，命中就不查数据库。
-- **数据库字典走多级缓存**：`DictItemServiceImpl.listByDictCode` 通过 `CacheUtils.get("DICT:", dictCode, ...)` 编程式缓存，结果同时进 Caffeine（L1）与 Redis（L2）。
+- **枚举字典优先**：启动时扫描实现了 `BaseEnum` 的枚举类，按「类名转下划线小写」生成字典编码（如 `NoticeStatusEnum` → `notice_status_enum`），缓存在内存 Map。查询先查这个 Map，命中就不查数据库。
+- **数据库字典走多级缓存**：经 `CacheUtils.get(DICT_KEY_PREFIX, dictCode, ...)` 编程式缓存，结果同时进 Caffeine（L1）与 Redis（L2）。
 
-字典项增删改时（`DictItemServiceImpl.beforeCreate` / `beforeUpdate` 等）按 cacheName 清空 `DICT:` 缓存，L1 与 L2 一并失效并向集群广播。改了枚举类或者想强制刷新某个字典，可以调 `DELETE /system/dict/cache/{code}`（需要 `system:dict:clearCache` 权限）。
+字典项增删改时按缓存名前缀整体清空（`CacheUtils.evictAll`），L1 与 L2 一并失效并向集群广播。改了枚举类或者想强制刷新某个字典，调 `DELETE /system/dict/cache/{code}`（需要 `system:dict:clearCache` 权限，`DictController`）。
 
 <Callout type="info">
 数据库字典与枚举字典编码冲突时枚举优先。自定义枚举想暴露成字典，实现 `BaseEnum` 接口即可，启动时自动注册，编码规则是类名转下划线小写。
 </Callout>
 
-## 前端 useDict hook
+## 前端消费
 
-页面消费字典统一用 `useDict`（`src/hooks/app/useDict.ts`），传编码返回响应式字典项数组。
+前端没有专门的字典 store，字典就是一个普通的 TanStack Query 查询：请求函数 `listDict(code)` 在 `src/lib/api/common.ts`，查询键用 `src/lib/query-keys.ts` 的 `dictKeys.code(code)`。查询缓存遵循全局默认（5 分钟新鲜期），同一编码的多个组件共享同一条缓存，天然去重并发请求。
 
-```vue
-<script setup lang="ts">
-import { useDict } from '@/hooks/app'
+两个现成的消费模式：
 
-const { notice_type, notice_status_enum } = useDict('notice_type', 'notice_status_enum')
-</script>
+```tsx
+// 模式一：useDictOptions（摘自 system/config/-components/use-dict-options.ts）
+// 字典为空时回退到内置预设，适合「有兜底选项」的场景
+const options = useDictOptions('goods_type', FALLBACK_PRESETS)
+
+// 模式二：一页多字典各自 useQuery（摘自 system/notice/-components/use-notice-dicts.ts）
+const typeQuery = useQuery({
+    queryKey: dictKeys.code('notice_type'),
+    queryFn: ({ signal }) => listDict('notice_type', signal)
+})
 ```
 
-返回对象的键与传入的编码一一对应，值是 `Ref<App.DictItem[]>`，初始为空数组，数据到达后自动填充，模板里直接用不用判空。
+取到的选项直接喂给 `FilterSelect`、shadcn 的 `Select` 等控件的 `options`，或经 `toLabelMap` 转成「值到文案」的映射给表格单元格用。字典项在「字典管理」里改动后，调用 `DELETE /system/dict/cache/{code}` 清后端缓存，再 `queryClient.invalidateQueries({ queryKey: dictKeys.code(code) })` 让前端重新拉取。
 
-hook 内部有三级处理（`src/hooks/app/useDict.ts`）。
+## 渲染与配色
 
-1. 先查 Pinia 的 `dict` store，命中缓存直接返回，不发请求；
-2. 未命中则调 `listCommonDict(code)`，拿到数据后写进 store；
-3. 同一编码的并发请求共用一个 Promise（`pendingRequests` Map），一个页面多次 `useDict('xxx')` 不会重复发请求。
+带颜色的标签渲染用 `DictLabelBadge`（定义在 `src/routes/(main)/(app)/system/dict/-components/dict-display.tsx:31`），按字典项的 `color` 字段取色。
 
-`dict` store（`src/stores/modules/dict.ts`）只存内存、不做持久化，刷新页面后重新拉取，保证字典变更能及时生效。
+| `color` 取值 | 渲染 |
+|:-------------|:-----|
+| `primary` | 主题色标签（`bg-primary/10 text-primary`） |
+| `success` | 成功色（`--status-success` 变量） |
+| `warning` | 警告色（`--status-warning` 变量） |
+| `error` | 错误色（`--destructive` 变量） |
+| `default` | 中性灰（`bg-muted text-muted-foreground`） |
+| `none` 或未设置 | 不渲染标签，纯文本 |
 
-## 渲染字典
+配色映射到 CSS 设计令牌而非固定色值，所以颜色会跟随主题色与亮暗模式一起变。同一组取值在 `DICT_COLOR_OPTIONS`（字典项表单的选项）与 `DICT_COLOR_DOT_CLASSES`（取色圆点）中复用。
 
-列表页的枚举列用 `GiCellTag` 按 `extra` 颜色渲染标签，`GiCellTags` 渲染多值。
+```tsx
+import { DictLabelBadge } from './dict-display'
 
-```vue
-<template>
-  <GiTable :columns="columns" :data="dataList">
-    <template #type="{ record }">
-      <GiCellTag :value="record.type" :dict="notice_type" />
-    </template>
-    <template #status="{ record }">
-      <GiCellTag :value="record.status" :dict="notice_status_enum" />
-    </template>
-  </GiTable>
-</template>
+// 字典项列：color 存在且能映射时渲染彩色标签，否则纯文本
+{
+    accessorKey: 'label',
+    cell: ({ row }) => <DictLabelBadge label={row.original.label} color={row.original.color} />
+}
 ```
 
-搜索表单的选项直接把字典数组喂给 `options`。
-
-```ts
-const queryFormColumns: ColumnItem[] = [
-  {
-    type: 'select',
-    label: '分类',
-    field: 'type',
-    props: { options: notice_type, placeholder: '请选择分类' },
-  },
-]
-```
-
-字典项上没有颜色（`extra` 为空）时 `GiCellTag` 渲染纯文本。`extra` 的可选值对应 Arco 标签配色：`primary`（arcoblue）、`success`（green）、`warning`（orangered）、`error`（red）、`default`（gray）。
+`color` 字段的取值范围就是上表五个色名（`none` 表示显式无色），传入表之外的值同样按纯文本处理，不会报错。
 
 ## 新增一个数据库字典
 
 <Steps>
   <Step>
-    「系统管理 → 字典管理」新增字典，编码按模块语义命名（如 `announce_type`）。
+    「系统管理 → 字典管理」新增字典，编码按模块语义命名（如 `goods_type`）。
   </Step>
   <Step>
-    在字典详情里维护字典项，填名称、值、颜色。
+    在字典详情里维护字典项，填名称、值、颜色（颜色从上表的五个色名里选）。
   </Step>
   <Step>
-    页面里 `useDict('announce_type')` 取用，配合 `GiCellTag` 或表单 `options` 渲染。
+    页面里用 `useDictOptions` 或 `useQuery` + `dictKeys.code` 取用，配 `FilterSelect` 或表单 `options` 渲染；需要彩色标签的场景用 `DictLabelBadge`。
   </Step>
 </Steps>
 
 ## 相关源码
 
-- [src/hooks/app/useDict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/hooks/app/useDict.ts)：前端字典 hook
-- [src/stores/modules/dict.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/dict.ts)：字典内存缓存 store
+- [src/lib/api/common.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/api/common.ts)：业务字典查询函数
+- [src/lib/api/dict.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/api/dict.ts)：字典管理页的 CRUD 接口
+- [src/lib/query-keys.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/query-keys.ts)：`dictKeys` 查询键工厂
+- [src/routes/(main)/(app)/system/dict/-components/dict-display.tsx](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/routes/(main)/(app)/system/dict/-components/dict-display.tsx)：`DictLabelBadge` 与配色映射
 - [DictItemServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/DictItemServiceImpl.java)：枚举字典扫描、数据库字典的多级缓存与缓存清理
-- [DictItemMapper.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/mapper/DictItemMapper.java)：数据库字典查询（缓存由 Service 层承担）
-- [src/views/system/notice/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/system/notice/index.vue)：多字典混用的完整页面示例

@@ -1,128 +1,152 @@
 ---
 title: HTTP 请求
-description: 讲解前端 axios 封装（src/utils/http.ts）的统一约定，包括请求头注入、401 刷新重试与错误提示。
+description: 讲解前端请求封装（src/lib/http.ts）的统一约定，包括请求地址分流、请求头注入、401 刷新重试与错误提示。
 ---
 
-前端所有接口请求都经过 `src/utils/http.ts` 导出的封装实例，业务代码不直接引用 axios。这一层统一处理了请求头注入、双令牌刷新、错误提示三件事。
+新增接口或排查一个请求为什么没带 Token、为什么弹了「登录状态已失效」时，读这页。前端所有接口请求都经过 `src/lib/http.ts` 的封装对象发出，业务代码不直接调 `fetch`。这一层统一处理请求地址、请求头注入、双令牌刷新、错误提示四件事。
 
 ## 基本用法
 
-API 定义集中在 `src/apis/` 下，按后端模块分文件。每个文件从 `@/utils/http` 导入封装对象，用 `get` / `post` / `put` / `del` 等方法拼出接口函数。
+API 定义集中在 `src/lib/api/` 下，按后端模块分文件（`auth.ts`、`user.ts`、`dict.ts`、`role.ts` 等）。每个文件从 `@/lib/http` 导入封装对象，用 `get` / `post` / `put` / `patch` / `del` 拼出接口函数。
 
 ```ts
-// src/apis/system/user.ts（节选）
-import http from '@/utils/http'
+// src/lib/api/goods.ts（结构摘自 lib/api/dict.ts，实体做了改名）
+import { http } from '@/lib/http'
+import type { PageResp } from './types'
 
-const BASE_URL = '/system/user'
-
-/** @desc 查询用户列表（分页） */
-export function listUser(query: UserPageQuery) {
-  return http.get<PageRes<UserResp[]>>(`${BASE_URL}`, query)
+export type GoodsPageQuery = {
+  name?: string
+  page: number
+  size: number
 }
 
-/** @desc 查询所有用户（无分页，入参为可选的分页过滤条件） */
-export function listAllUser(query: Partial<UserPageQuery> = {}) {
-  return http.get<UserResp[]>(`${BASE_URL}/list`, query)
+export interface GoodsResp {
+  id: string | number
+  name: string
+  status: 1 | 2
 }
 
-/** @desc 新增用户 */
-export function addUser(data: any) {
-  return http.post(`${BASE_URL}`, data)
+export function listGoods(query: GoodsPageQuery, signal?: AbortSignal) {
+  return http.get<PageResp<GoodsResp>>('/example/goods', { query, signal })
+}
+
+export function createGoods(body: { name: string; status: 1 | 2 }) {
+  return http.post('/example/goods', body)
+}
+
+export function deleteGoods(id: string | number) {
+  return http.del('/example/goods', { body: { ids: [id] } })
 }
 ```
 
-页面里通过 `useTable` 等 hook 调用这些函数，或直接 `await`。
-
-```ts
-import { listUser } from '@/apis/system/user'
-
-const { data } = await listUser({ page: 1, size: 10 })
-```
-
-封装导出的方法如下。
+封装对象的方法如下（`src/lib/http.ts:381`）。
 
 | 方法 | 说明 |
 |:-----|:-----|
-| `get` / `post` / `put` / `patch` / `del` | 常规请求，返回 `Promise<ApiRes<T>>`（已解包到响应体） |
-| `request` | 原始请求，返回 `Promise<ApiRes<T>>` |
-| `requestNative` | 返回完整 `AxiosResponse`（需要响应头时用） |
-| `download` | 文件下载，`responseType: 'blob'`，返回 `AxiosResponse` |
+| `get` / `post` / `put` / `patch` / `del` | 常规请求，泛型标注响应类型，成功时已解包到 `data` 字段 |
+| `downloadFile` | 文件下载：解析 `Content-Disposition` 文件名，401 时先刷新再重试一次 |
 
-## axios 实例配置
+成功响应直接返回 `ApiResponse.data`，页面拿到的已经是业务数据；失败时抛 `ApiError`（`src/lib/http.ts:44`），携带 `code`（后端业务码）、`status`（HTTP 状态）与 `notified`（是否已弹过提示）三个字段。
 
-`http.ts` 创建的实例有三项关键配置（`src/utils/http.ts:38`）。
+后端统一响应结构由 Starter 全局响应封装：`{ success, code, msg, data, timestamp }`。业务失败返回 HTTP 200 加 `success: false`，封装检查 `success` 字段后抛错；Access Token 过期返回 HTTP 401，走刷新流程（见下文）。
+
+## 请求地址与超时
+
+`BASE_URL` 在 `src/lib/http.ts:13` 合成：
 
 ```ts
-const http: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_PREFIX ?? import.meta.env.VITE_API_BASE_URL,
-  timeout: 30 * 1000,
-  // Refresh Token 由后端写入 HttpOnly Cookie，浏览器必须允许跨域请求携带 Cookie。
-  withCredentials: true,
-})
+const BASE_URL = (import.meta.env.VITE_API_PREFIX || import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
 ```
 
-`baseURL` 优先取 `VITE_API_PREFIX`（开发环境走 Vite 代理），没有则取 `VITE_API_BASE_URL`（生产环境直连接口域名）。`withCredentials: true` 让跨域请求携带 HttpOnly Cookie，双令牌刷新依赖这一点。
+开发环境取 `VITE_API_PREFIX`（默认 `/api`），请求先打到同源前缀，再由 `vite.config.ts` 的 `server.proxy` 转发到 `VITE_API_BASE_URL` 并剥掉前缀。同源的意义在于让后端写入的 HttpOnly Refresh Token Cookie 是第一方 Cookie，刷新流程不需要额外配置。生产环境不设置前缀变量，请求直连 `VITE_API_BASE_URL` 的完整域名，跨域由后端 CORS 配置放开。取值见[环境变量参考](/docs/admin/reference/environment)。
 
-后端统一响应结构由 Starter 全局响应封装，形如 `{ "code": 0, "data": ..., "msg": "...", "success": true, "timestamp": ... }`。响应拦截器检查 `success` 字段：`true` 直接放行，`false` 弹出错误提示并 reject。`get` 类请求会自动用 `query-string` 序列化参数，数组参数不会被 axios 默认格式序列化坏。
+请求超时 30 秒（`REQUEST_TIMEOUT_MS`，`src/lib/http.ts:14`），用 `AbortSignal.timeout` 实现；调用方传入的 `signal` 与超时信号经 `AbortSignal.any` 叠加，两者任一触发都会取消请求。
 
 ## 请求头注入
 
-请求拦截器在每个请求上注入两类请求头（`src/utils/http.ts:207`）。
+每个请求经 `buildHeaders`（`src/lib/http.ts:131`）注入三类头。
 
-`Authorization` 取内存中的 Access Token，拼成 `Bearer <token>`。Access Token 只保存在内存（`src/features/auth-session/access-token.ts`），不落地 localStorage，浏览器刷新后靠 HttpOnly Cookie 里的 Refresh Token 换新的。
+`Content-Type: application/json`，`FormData` 请求体除外。`Authorization` 取 `auth-session.ts` 的 Access Token，拼成 `Bearer <token>`。`X-Tenant-Id` 取登录响应写入的租户 ID，租户 ID 存在时注入，对应后端多租户插件的行级隔离。
 
-`X-Tenant-Id` 在租户功能开启（`tenantStore.tenantEnabled`）且已选定租户（`tenantStore.tenantId`）时注入，值来自登录响应或刷新响应。后端多租户插件靠这个头做行级隔离，对应 starter 配置 `continew-starter.tenant.tenant-id-header`。
-
-认证接口有例外处理：`/auth/refresh`、`/auth/logout` 以及账号密码登录的 `/auth/login` 不携带 `X-Tenant-Id`，因为这些请求要么以服务端 Refresh Session 为准，要么以用户显式输入的租户编码为准；社交登录回调则保留授权前选定的租户。请求重试时会复用原始 headers，拦截器在租户状态变化时主动删除旧租户头，避免把上一次会话的租户上下文带给服务端。
-
-## 401 处理与双令牌刷新
-
-HTTP 状态 401 走 `retryAfterRefresh` 分支（`src/utils/http.ts:165`），处理流程分三步。
-
-<Steps>
-  <Step>
-    首次 401 触发 `/auth/refresh` 刷新请求，浏览器自动携带 HttpOnly Cookie。同一时间多个 401 请求共用一个单例 Promise（`refreshPromise`），Refresh Token 不会被并发轮换。
-  </Step>
-  <Step>
-    刷新成功后更新内存中的 Access Token 与租户 ID，给原请求打上 `__isRetryRequest` 标记，换上新 Token 重发。
-  </Step>
-  <Step>
-    重发后再次 401，或者刷新请求本身返回 401（Refresh Token 确定失效），进入重新登录流程。
-  </Step>
-</Steps>
-
-重新登录流程由 `showReLogin` 负责（`src/utils/http.ts:78`）：清理内存 Token 与持久化的用户、路由状态，调用 `/auth/logout` 让服务端清掉 Cookie，然后弹 Modal 引导用户重新登录，确认后跳转 `/login` 并带上 `redirect` 参数。弹窗期间如果用户已在别处重新登录，「认证代次」（auth generation）机制会让旧弹窗失效，不会把新会话重置掉。
-
-刷新请求遇到 403、429、5xx 或网络故障时不算终态失败，Cookie 会保留，下一次请求继续尝试刷新。只有刷新返回 401 或业务层明确拒绝（HTTP 200 但 `success: false`）才引导重新登录。
-
-<Callout type="warn">
-401 的重登弹窗只对应用内操作出现。浏览器刷新后首次进入页面时没有会话，由路由守卫直接跳转登录页，不弹窗（见 [路由与页签](./route)）。
-</Callout>
-
-## 错误提示
-
-非 401 的 HTTP 错误按状态码映射到 `StatusCodeMessage` 里的中文提示（如 403「拒绝访问」、500「服务器错误」），映射不到时给通用兜底文案。网络层失败（无响应对象）提示「网络连接失败」。
-
-提示形式按文案长度分流（`src/utils/http.ts:193`）：15 字以内用 `Message`，更长用 `Notification`，都包了一层防重复弹出的 wrapper（`message-error-wrapper` / `notification-error-wrapper`）。
-
-下载类请求（`responseType: 'blob'`）的失败响应是 JSON 格式的 Blob，响应拦截器会用 `FileReader` 读出 `msg` 再提示，不会让错误以乱码形式吞掉。
-
-## 新增接口的建议
-
-在 `src/apis/` 对应模块文件里追加函数，遵循既有约定：`BASE_URL` 常量拼路径、`@desc` 注释描述用途、返回类型用泛型标注。新增模块时在 `src/apis/index.ts` 里 re-export。
+三类路径例外（`TENANT_FREE_PATHS`，`src/lib/http.ts:19`）：`/auth/login`、`/auth/refresh`、`/auth/logout` 不携带 `X-Tenant-Id`，这些请求要么以服务端 Refresh Session 为准，要么以用户显式输入的租户编码为准。账号登录的租户编码走另一个头，由接口函数显式传入（`src/lib/api/auth.ts:18`）：
 
 ```ts
-/** @desc 查询公告列表 */
-export function listNotice(query: NoticePageQuery) {
-  return http.get<PageRes<NoticeResp[]>>(`/system/notice`, query)
+export function login(req: AccountLoginReq, tenantCode?: string) {
+  return http.post<LoginResp>('/auth/login', req, {
+    headers: tenantCode ? { 'X-Tenant-Code': tenantCode } : undefined,
+    skipAuthRefresh: true,
+    silent: true
+  })
 }
 ```
 
-不要在页面组件里直接写 `axios.get`，绕过封装意味着丢掉 Token 注入、租户头、401 刷新和错误提示。
+登录密码在调用前经 `src/lib/crypto.ts` 的 `encryptByRsa` 用 `VITE_APP_RSA_PUBLIC_KEY` 加密（PKCS#1 v1.5 填充，与后端私钥配对）。
+
+## 会话与令牌存储
+
+Access Token 与租户 ID 存在 `src/lib/auth-session.ts` 的模块级变量里，同时按 `persist` 标志写入 localStorage（键 `continew.access-token` / `continew.tenant-id`），浏览器刷新后经 `hydrateSession()` 恢复。Refresh Token 不在前端持有，由后端写入 HttpOnly Cookie，刷新请求靠 `credentials: 'include'` 自动携带。`src/lib/cookie.ts` 的 `setClientCookie` / `getClientCookie` 是外观偏好用的普通 Cookie 工具，与认证 Cookie 无关。
+
+会话每次被替换或清空（`setSession` / `clearSession`），`authGeneration` 计数器加一。请求发起时记录当时的代次，响应回来后经 `assertGeneration` 比对，代次不一致说明期间用户重新登录或登出了，抛「登录状态已变更，请重试」（`SESSION_CHANGED`），避免旧请求的响应写进新会话。
+
+## 401 处理与双令牌刷新
+
+请求收到 HTTP 401 时走刷新重试分支（`src/lib/http.ts:284`），流程如下。
+
+<Steps>
+  <Step>
+    首次 401 触发 `POST /auth/refresh` 刷新请求，浏览器自动携带 HttpOnly Cookie。并发 401 共用同一个 Promise（`refreshState`，`src/lib/http.ts:183`），Refresh Token 不会被并发轮换。
+  </Step>
+  <Step>
+    刷新成功后写回新的 Access Token 与租户 ID，原请求换新 Token 重发一次（`isRetry` 标记防住重试风暴）。
+  </Step>
+  <Step>
+    刷新失败即视为会话终态：`handleSessionExpired`（`src/lib/http.ts:201`）清空本地会话，用 `keepalive` 发一次 `POST /auth/logout` 让服务端清掉 Cookie，然后交给会话失效回调。
+  </Step>
+</Steps>
+
+会话失效回调在 `src/stores/auth/auth-provider.tsx:47` 注册：弹出错误提示，取消进行中的查询，清空认证状态、页签与查询缓存，跳转 `/auth/login` 并带上当前地址作为 `redirect` 参数（`src/lib/end-session.ts`）。
+
+<Callout type="warn">
+会话失效的提示与跳转由请求层驱动。浏览器刷新后 Token 从 localStorage 恢复（`hydrateSession`，`src/main.tsx:11`），路由守卫只在完全没有 Token 时直接跳登录页（不弹提示）；只要 Token 存在，哪怕已经过期，请求都会先走一遍刷新流程，刷新也失败才提示并回到登录页。
+</Callout>
+
+接口可以显式退出刷新流程：`skipAuthRefresh: true` 时 401 直接按会话失效抛出，登录、登出等认证接口都这样声明，避免刷新逻辑递归触发。
+
+## 403 处理
+
+HTTP 403 触发 `forbiddenHandler`（`src/lib/http.ts:293`），回调在 `auth-provider.tsx:58` 注册，把页面替换到 `/unauthorized`。文件下载的 403 走同一回调。
+
+## 错误提示
+
+非 401 的失败按状态码映射到中文提示（`STATUS_MESSAGE`，`src/lib/http.ts:25`：403「拒绝访问（403）」、500「服务器错误（500）」等），映射不到时给通用兜底文案；响应体里的 `msg` / `message` 字段优先于映射文案。提示经 `src/components/ui/toast` 弹出，`ApiError.notified` 标记防止同一条错误重复弹。
+
+请求层之外手动上报错误用 `reportError`：已弹过提示的错误不再重复弹，其余兜底「操作失败，请重试」。`silent: true` 可以让单个接口不自动弹提示（登录失败由登录页自己刷新验证码并提示，就用这个选项）。
+
+网络层失败提示「网络连接失败，请检查您的网络」。调用方主动取消的请求（React Query 换键或卸载时中止）原样抛出，不当网络故障弹提示。
+
+`downloadFile` 对失败的下载做了两步兜底：响应是 JSON 时按业务错误解析 `msg` 并抛出，避免错误被当文件吞掉；响应正常时从 `Content-Disposition` 解析文件名（兼容 `filename*=UTF-8''` 与带引号两种格式）。
+
+## TanStack Query 缓存约定
+
+列表与详情的请求、缓存、失效由 TanStack Query 管理，请求封装只负责单次 HTTP 行为。全局默认值在 `src/lib/query-client.ts`：`staleTime` 5 分钟，窗口聚焦、重连、组件重挂载都不触发自动重新请求，刷新由工具栏的刷新按钮显式触发；查询失败最多重试 1 次，Mutation 不重试。详情抽屉打开必须展示最新数据，对应的 `DETAIL_STALE_TIME_MS` 为 0（`src/hooks/use-detail-query.ts`）。
+
+查询键按层级工厂组织在 `src/lib/query-keys.ts`，形如 `userKeys.list(query)`、`userKeys.detail(id)`。写新接口时先在这里加一组键工厂，Mutation 成功后用 `all` / `lists` 前缀做失效：
+
+```ts
+// 前缀失效：一条 Mutation 让全部用户列表回到初始状态
+queryClient.invalidateQueries({ queryKey: userKeys.all })
+```
+
+## 新增接口的建议
+
+在 `src/lib/api/` 对应模块文件里追加函数，遵循既有约定：路径常量或字面量拼 URL、泛型标注响应类型、分页参数走 `query`。新模块的查询键在 `src/lib/query-keys.ts` 登记。
+
+不要在页面组件里直接调 `fetch`，绕过封装意味着丢掉 Token 注入、租户头、401 刷新和错误提示。
 
 ## 相关源码
 
-- [src/utils/http.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/utils/http.ts)：axios 封装本体
-- [src/features/auth-session/](https://github.com/continew-org/continew-admin-ui/tree/dev/src/features/auth-session)：Access Token 存储与认证生命周期锁
-- [src/stores/modules/tenant.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/stores/modules/tenant.ts)：租户状态与持久化
-- [src/apis/system/user.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/apis/system/user.ts)：API 定义参考实现
+- [src/lib/http.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/http.ts)：请求封装本体（地址合成、刷新、错误提示）
+- [src/lib/auth-session.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/auth-session.ts)：Access Token 存储与认证代次
+- [src/lib/api/](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/lib/api)：API 定义全目录
+- [src/lib/query-keys.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/query-keys.ts)：查询键工厂
+- [src/stores/auth/auth-provider.tsx](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/stores/auth/auth-provider.tsx)：会话失效与 403 回调的注册处

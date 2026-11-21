@@ -1,93 +1,67 @@
 ---
 title: 权限控制
-description: 讲解前端按钮级权限的两种用法（v-permission / v-role 指令与 hasPerm / hasRole 编程式判断）及其判定规则。
+description: 讲解前端按钮级权限的 usePermission hook 用法与路由级访问控制，及判定规则。
 ---
 
-页面级权限由动态路由控制（没权限的菜单根本不下发，见 [路由与页签](./route)），本页讲页面内部的按钮级权限。前端提供指令式与编程式两套 API，判定数据都来自 `userStore` 的 `roles` 和 `permissions`，在用户登录后的 `getInfo()` 里赋值（`src/stores/modules/user.ts:143`）。
+给按钮、入口加权限裁剪，或排查「按钮为什么不出现」时，读这页。页面级权限由菜单下发与路由守卫控制（没权限的菜单根本不下发，见[路由与页签](/docs/admin/development/frontend/route)），本页讲页面内部的按钮级权限与判定规则。
 
-## 权限码与角色标识
+## 权限码与判定规则
 
-权限码是三段式字符串，与后端 CRUD 控制器自动生成的权限标识一一对应，例如 `system:user:create`、`system:role:delete`。角色标识是角色编码字符串，内置超级管理员为 `role_admin`。
+权限码是三段式字符串，与后端 CRUD 控制器自动生成的权限标识一一对应，例如 `system:user:create`、`system:role:delete`。判定逻辑在 `src/lib/permission.ts`，两条约定：
 
-判定规则里有两条通配约定。
+- 权限集合含 `*:*:*` 时任何校验直接通过（超级管理员）；
+- 校验目标不传权限码（`undefined`）时视为无需权限，直接通过。
 
-- 用户权限集合含 `*:*:*` 时，任何权限校验直接通过（超级管理员）；
-- 用户角色集合含 `role_admin` 时，任何角色校验直接通过。
+权限数据来自 `GET /auth/user/info`，登录后写入 zustand 认证 store（`src/stores/auth/auth-store.ts`）。恢复会话（浏览器刷新）时权限先为空数组，用户信息请求落定后才填充；`(main)/(app)` 布局路由会等这步完成才渲染页面，页面组件里读到的权限始终是完整的。
 
-## 指令式用法
+## usePermission hook
 
-指令在 `src/directives/permission/` 下实现，`src/directives/index.ts` 全局注册为 `v-permission` 和 `v-role`。校验不通过时把元素从 DOM 移除（`el.parentNode?.removeChild(el)`），不是简单的 `display: none`。
+按钮级权限用 `src/hooks/use-permission.ts` 的 `usePermission`，React 里没有指令机制，权限裁剪就是条件渲染。
 
-```vue
-<template>
-  <a-button v-permission="['system:user:create']" type="primary" @click="onAdd">
-    新增
-  </a-button>
-  <a-button v-permission="['system:user:export']" @click="onExport">
-    导出
-  </a-button>
-  <a-button v-role="['role_admin']" @click="onInit">
-    初始化
-  </a-button>
-</template>
+```tsx
+import { usePermission } from '@/hooks/use-permission'
+
+export function GoodsToolbar({ onAdd }: { onAdd: () => void }) {
+    // 一屏调一次，把结果传下去；别在表格行里逐行调用（见下文）
+    const { permissions, hasPermission, hasAnyPermission } = usePermission()
+
+    return (
+        <>
+            {hasPermission('system:user:create') && <Button onClick={onAdd}>新增用户</Button>}
+            {hasPermission('system:user:import') && <Button variant="outline">导入</Button>}
+            {hasPermission('system:user:export') && <Button variant="outline">导出</Button>}
+            {hasAnyPermission(['system:user:resetPwd', 'system:user:updateRole']) && (
+                <Button variant="ghost">更多操作</Button>
+            )}
+        </>
+    )
+}
 ```
 
-指令值是字符串数组，数组内任一匹配即通过（OR 语义）。`mounted` 和 `updated` 两个钩子都会校验，权限数据异步到达时元素会被正确移除。传空数组或非数组会直接抛错，提示正确的使用格式。
-
-指令的典型位置是工具栏按钮和行内操作链接。
-
-```vue
-<template #action="{ record }">
-  <a-space>
-    <a-link v-permission="['system:user:get']" @click="onDetail(record)">详情</a-link>
-    <a-link v-permission="['system:user:update']" @click="onUpdate(record)">修改</a-link>
-    <a-link v-permission="['system:user:delete']" @click="onDelete(record)">删除</a-link>
-  </a-space>
-</template>
-```
-
-## 编程式用法
-
-需要组合判断（如「多个权限有一个就显示入口按钮」）时，用 `src/utils/has.ts` 导出的工具对象。
-
-```vue
-<script setup lang="ts">
-import has from '@/utils/has'
-</script>
-
-<template>
-  <a-button
-    v-if="has.hasPermOr(['system:user:resetPwd', 'system:user:updateRole', 'system:user:delete'])"
-    type="text"
-    title="更多"
-  >
-    <icon-more :size="16" />
-  </a-button>
-</template>
-```
-
-完整 API 有六个（`src/utils/has.ts:27`）。
+API 共三项（`src/hooks/use-permission.ts:16`）。
 
 | 方法 | 语义 |
 |:-----|:-----|
-| `hasPerm(permission)` | 具备指定权限 |
-| `hasPermOr(permissions)` | 数组内任一权限具备即通过 |
-| `hasPermAnd(permissions)` | 数组内权限全部具备才通过 |
-| `hasRole(role)` | 具备指定角色 |
-| `hasRoleOr(roles)` | 数组内任一角色具备即通过 |
-| `hasRoleAnd(roles)` | 数组内角色全部具备才通过 |
+| `permissions` | 当前权限码数组，需要传给子组件时直接用 |
+| `hasPermission(code?)` | 具备指定权限；不传码返回 `true` |
+| `hasAnyPermission(codes)` | 数组内任一权限具备即通过 |
 
-编程式判断返回布尔值，常与 `v-if` 或 `:disabled` 配合。与指令的区别在于指令是「移除元素」，编程式可以自由决定降级方式（禁用、隐藏、换文案）。
+两个使用要点：
+
+- **每屏调一次，往下传**。hook 内部订阅认证 store，在表格行的列定义里逐行调用会把一条订阅放大成 N 条。行的显隐裁剪把 `permissions` 数组传进列工厂，行内只做数组比对（`src/routes/(main)/(app)/system/user/-components/user-list.tsx:64` 的真实用法：页面调一次 `usePermission`，再经 `createUserColumns(handleRowAction, rowOffset, permissions)` 传给列定义）。
+- **返回的函数引用稳定**。权限码不变时函数身份不变，可以作为 `useMemo` / `useCallback` 的依赖放心使用。
+
+「多个权限都具备才显示」（AND 语义）没有独立 API，用 `codes.every(...)` 组合 `hasPermission` 即可。
 
 ## 与后端的配合
 
-前端权限控制只做展示层裁剪，真正的鉴权在后端：CRUD 控制器的 `BaseController.preHandle` 会按请求方法与路径自动生成权限码并校验（如 `POST /system/user` 对应 `system:user:create`）。两边约定同一套权限码，新增 CRUD 页面时照 `模块:资源:动作` 的格式给按钮加指令即可，不需要额外注册。
+前端权限控制只做展示层裁剪，真正的鉴权在后端：CRUD 控制器的 `BaseController.preHandle` 按请求方法与路径自动生成权限码并校验（`POST /system/user` 对应 `system:user:create`）。两边约定同一套权限码，新增 CRUD 页面时照 `模块:资源:动作` 的格式给按钮加条件渲染即可，不需要额外注册。
 
-权限数据在 Pinia 里持久化到 `localStorage`（`user` store 只持久化 `roles`、`permissions`、`pwdExpiredShow`），登出或会话失效时清理。
+权限码在响应 403 时还有一道兜底：绕过前端裁剪直接发请求会被后端拒绝，HTTP 层把页面替换到 `/unauthorized`（见[HTTP 请求](/docs/admin/development/frontend/request)）。
 
 ## 相关源码
 
-- [src/directives/permission/hasPerm.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/directives/permission/hasPerm.ts)：`v-permission` 指令实现
-- [src/directives/permission/hasRole.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/directives/permission/hasRole.ts)：`v-role` 指令实现
-- [src/utils/has.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/src/utils/has.ts)：编程式权限判断
-- [src/views/system/user/index.vue](https://github.com/continew-org/continew-admin-ui/blob/dev/src/views/system/user/index.vue)：指令与编程式混用的完整页面示例
+- [src/hooks/use-permission.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/hooks/use-permission.ts)：`usePermission` hook
+- [src/lib/permission.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/permission.ts)：判定规则与通配约定
+- [src/stores/auth/auth-store.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/stores/auth/auth-store.ts)：权限数据的加载与生命周期
+- [src/routes/(main)/(app)/system/user/-components/user-list.tsx](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/routes/(main)/(app)/system/user/-components/user-list.tsx)：权限裁剪的完整页面示例

@@ -3,7 +3,7 @@ title: 项目结构
 description: 介绍 ContiNew Admin 后端 Maven 多模块划分、业务分层子包约定与前端 src 目录组织，帮助你在改代码前找对位置。
 ---
 
-ContiNew Admin 分两个仓库。后端 continew-admin 是 Maven 多模块工程，前端 continew-admin-ui 是独立 Vite 工程。本页分别说明两边的目录组织，读完后能回答「这段代码该放哪」这类问题。
+ContiNew Admin 前后端同仓库。后端是 Maven 多模块工程，前端在本仓库的 `continew-ui/` 目录（React 19 单页应用）。本页分别说明两边的目录组织，读完后能回答「这段代码该放哪」这类问题。
 
 ## 后端 Maven 模块
 
@@ -72,48 +72,45 @@ continew-admin
 
 跨模块调用走「内部 API」模式：被调方在 common 的 `api` 包定义接口，业务模块在自己的 `api/` 子包提供实现。调用方只依赖接口，模块之间不出现循环依赖。
 
-## 前端 src 目录
+## 前端 continew-ui 目录
 
-前端 continew-admin-ui 基于 Vue 3 + TypeScript + Vite，路径别名 `@` 指向 `src`，`~` 指向仓库根。项目未接入 i18n，没有 `locale` 目录；站点标题从后端「网站配置」接口动态获取。
+前端 `continew-ui/` 基于 React 19 + TypeScript + Vite + Tailwind CSS 4，组件层是 shadcn/ui（base-nova 风格）。包管理器为 pnpm。路径别名 `@` 指向 `src`（`tsconfig.json` 的 `paths` 定义，`vite.config.ts` 的 `resolve.tsconfigPaths` 生效）。项目未接入 i18n，没有 `locale` 目录；站点标题从后端「网站配置」接口动态获取。
 
 ```text
-src
-├─ apis            # 后端接口封装（按 system/auth/monitor/tenant 等域分目录）
-├─ assets          # 静态资源（fonts、icons、images）
-├─ components      # Gi 组件库（GiTable、GiForm、GiPageLayout、Verify、FilePreview 等）与通用组件
-├─ config          # 全局配置（setting.ts，主题、布局、页签默认值）
-├─ constant        # 常量（common.ts、file.ts）
-├─ directives      # 自定义指令（permission，即 v-permission / v-role）
-├─ features        # 特性模块（auth-session：access-token 内存持有与会话恢复）
-├─ hooks           # 组合式函数（app、modules 两级）
-├─ layout          # 布局组件（LayoutMix、LayoutTop、LayoutDefault、LayoutColumns 四套）
-├─ mock            # 本地 mock 数据
-├─ router          # 路由（index.ts、guard.ts 守卫、route.ts 常量路由、asyncModules.ts 动态路由）
-├─ stores          # Pinia（modules 下 app、user、route、tabs、tenant、dict）
-├─ styles          # 全局样式（SCSS，Arco 主题定制在 arco-ui 子目录）
-├─ types           # 全局类型声明（api.d.ts、router.d.ts、env.d.ts 等）
-├─ utils           # 工具（http.ts 请求封装、has.ts 权限判断、encrypt.ts 加密等）
-└─ views           # 页面，按一级菜单分目录
+continew-ui
+├─ package.json       # 依赖与脚本声明（pnpm install / dev / build / typecheck / lint / test）
+├─ vite.config.ts     # dev 代理（/api 前缀）、TanStack Router 插件、首帧主题注入脚本
+├─ components.json    # shadcn CLI 配置（base-nova 风格、lucide 图标、@/ 别名）
+├─ tests              # 单元测试（vitest，tests/*.test.ts）
+└─ src
+   ├─ components      # 业务组件（data-table、entity-drawer、dept-tree-select 等）+ ui/（shadcn/ui 拷贝源码）+ app-shell/（布局壳）
+   ├─ hooks           # 组合式函数（use-list-table、use-menu、use-permission、use-export 等）
+   ├─ lib             # 基础库：http（请求封装）、auth-session（会话）、route-access（路由守卫）、permission、
+   │                  #   query-client / query-keys（查询缓存）、api/（按后端模块分文件）、preferences/（外观偏好）
+   ├─ navigation      # 菜单树到侧边栏分组的转换、菜单图标解析、静态路由标题
+   ├─ routes          # TanStack 文件路由：目录即路由表，业务页 <模块>/route.tsx + -components/ 私有组件
+   ├─ stores          # zustand 仓库（auth、tabs、preferences、shell）
+   ├─ styles          # Tailwind CSS 入口与主题变量（globals.css、theme-colors.css）
+   ├─ scripts         # 偏好/主题首帧注入脚本（theme-boot-script.ts）
+   ├─ router.tsx      # Router 实例
+   └─ routeTree.gen.ts  # Vite 插件生成的路由树，不要手改
 ```
 
-`views` 的目录与菜单一一对应，动态路由按 `import.meta.glob('@/views/**/*.vue')` 匹配后端返回的组件路径。
+路由由文件目录决定，菜单由后端下发：`src/routes/(main)/(app)/` 下的目录与业务菜单一一对应，新页面在对应路径下建 `route.tsx`；菜单数据来自 `GET /auth/user/route`（后端已按权限过滤），菜单里配了入口而页面文件还没建时显示占位卡片。机制细节见[路由与页签](/docs/admin/development/frontend/route)。
 
 | 目录 | 页面 |
 |:-----|:-----|
-| `dashboard` | 工作台（workplace）、分析页（analysis） |
-| `system` | 用户、角色、菜单、部门、字典、通知公告、文件、系统配置（config 下 site/security/login/mail/sms/storage/client 七组） |
-| `monitor` | 在线用户、登录日志、操作日志、短信日志 |
-| `tenant` | 租户管理、套餐管理 |
-| `schedule` | 任务管理、任务日志 |
-| `code/generator` | 代码生成 |
+| `dashboard` | 仪表盘、个人中心（`dashboard/profile`） |
+| `system` | 用户、角色、菜单、部门、字典、通知公告、文件、短信（`sms` 与 `sms/log`）、系统配置（`config`） |
+| `monitor` | 在线用户（`online`）、登录与操作日志（`log`） |
+| `tenant` | 租户管理（`management`）、套餐管理（`package`） |
+| `schedule` | 任务管理（`job`）、任务日志（`log`） |
 | `open/app` | 应用管理（AK/SK） |
-| `user` | 个人中心（profile）、消息中心（message） |
-| `login` | 登录页、第三方回调（social）、密码过期（pwdExpired） |
-| `about` | 接口文档、更新日志（内嵌页） |
-| `default` | 错误页（403/404/500）与跳转页 |
+| `(main)/auth` | 登录页与第三方登录回调（`social/callback`） |
+| `(main)/unauthorized.tsx` | 无权限页 |
 
 ## 相关源码
 
 - 后端模块定义 [pom.xml](https://github.com/continew-org/continew-admin/blob/dev/pom.xml)
 - 后端仓库 [continew-org/continew-admin](https://github.com/continew-org/continew-admin/tree/dev)
-- 前端仓库 [continew-org/continew-admin-ui](https://github.com/continew-org/continew-admin-ui/tree/dev)（`src/` 目录）
+- 前端工程 [continew-ui/](https://github.com/continew-org/continew-admin/tree/dev/continew-ui)（本仓库内，`src/` 目录）
