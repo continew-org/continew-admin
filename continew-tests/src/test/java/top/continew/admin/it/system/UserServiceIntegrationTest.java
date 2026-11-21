@@ -230,7 +230,7 @@ class UserServiceIntegrationTest extends BaseIntegrationTest {
      * @return Base64 编码的 RSA 密文
      */
     private static String rsaEncryptBase64(String raw) {
-        return Base64.encode(SecureUtil.rsa(null, RsaProperties.PUBLIC_KEY)
+        return Base64.encode(SecureUtil.rsa(null, RsaProperties.publicKey())
             .encrypt(raw, KeyType.PublicKey));
     }
 }

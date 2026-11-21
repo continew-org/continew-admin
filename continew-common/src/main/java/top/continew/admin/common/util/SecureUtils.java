@@ -21,8 +21,10 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
+import lombok.extern.slf4j.Slf4j;
 import top.continew.admin.common.config.RsaProperties;
 import top.continew.admin.common.constant.RegexConstants;
+import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 
 /**
@@ -31,6 +33,7 @@ import top.continew.starter.core.util.validation.ValidationUtils;
  * @author Charles7c
  * @since 1.0.0
  */
+@Slf4j
 public class SecureUtils {
 
     private SecureUtils() {
@@ -107,13 +110,9 @@ public class SecureUtils {
     public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey,
         String errorMsg,
         boolean isVerifyPattern) {
-        String rawPassword;
-        try {
-            rawPassword = decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey);
-        } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(SecureUtils.class).error("RSA decrypt failed", e);
-            rawPassword = null;
-        }
+        String rawPassword = ExceptionUtils.exToNull(
+            () -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey),
+            e -> log.error("RSA 解密失败", e));
         ValidationUtils.throwIfBlank(rawPassword, errorMsg);
         if (isVerifyPattern) {
             ValidationUtils.throwIf(!ReUtil

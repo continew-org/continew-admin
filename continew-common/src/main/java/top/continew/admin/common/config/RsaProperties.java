@@ -28,30 +28,23 @@ import cn.hutool.extra.spring.SpringUtil;
 public class RsaProperties {
 
     /**
-     * 私钥
+     * 获取 RSA 私钥
+     *
+     * @return 私钥（未配置时为 {@code null}）
+     * @since 5.0.0
      */
-    public static final String PRIVATE_KEY;
-    public static final String PUBLIC_KEY;
-
-    static {
-        PRIVATE_KEY = SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
-        PUBLIC_KEY = SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
+    public static String privateKey() {
+        return SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
     }
 
     /**
-     * 首次调用时才读 Spring 环境：RsaProperties 可能先于 SpringUtil 注入 ApplicationContext 被加载，
-     * 静态块会把 null 固化为终值（登录密码解密失败即此原因），故调用侧改用懒读取。
+     * 获取 RSA 公钥
+     *
+     * @return 公钥（未配置时为 {@code null}）
+     * @since 5.0.0
      */
-    public static String privateKey() {
-        return PRIVATE_KEY != null
-            ? PRIVATE_KEY
-            : SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
-    }
-
     public static String publicKey() {
-        return PUBLIC_KEY != null
-            ? PUBLIC_KEY
-            : SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
+        return SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
     }
 
     private RsaProperties() {
