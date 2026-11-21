@@ -4,6 +4,12 @@ on:
   pull_request_target:
     types: [opened, reopened, synchronize, edited]
 
+# 同 PR 新事件串行执行：并发 run 会同时查无历史评论并各自 create，产生重复评论；
+# 不用 cancel-in-progress，取消会让 required check 落在 cancelled 结论上反而阻塞合并
+concurrency:
+  group: pr-validation-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
 jobs:
   validate-pr-title:
     name: Validate PR title
@@ -41,17 +47,17 @@ jobs:
             docker
             ui
           requireScope: false
-          # if true, the PR title must match the commit message
+          # 本项目采用 Squash and merge，PR 标题即最终提交信息（见 CONTRIBUTING.md），
+          # 单提交的原始提交信息合并后不保留，无需按标题规则校验或与标题对齐
           validateSingleCommit: false
-          # if true, the PR title must match the single commit message
           validateSingleCommitMatchesPrTitle: false
 
   check-commit-authors:
+    # 各触发类型一律执行，不按事件过滤：edited 时跳过会产生 skipped check
+    # 覆盖既有 failure（GitHub 按最新一次 check 判定），且 edited 也包含改 base 分支
     name: Verify commit author emails
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # 仅在提交变动时校验，标题/描述编辑（edited）无需重跑
-    if: github.event.action != 'edited'
     permissions:
       pull-requests: write
     steps:
@@ -62,14 +68,15 @@ jobs:
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
 
-            const commits = await github.rest.pulls.listCommits({
+            // 全量分页：单页 100 条会漏检长 PR
+            const commits = await github.paginate(github.rest.pulls.listCommits, {
               owner,
               repo,
               pull_number: prNumber,
               per_page: 100,
             });
 
-            const unlinked = commits.data.filter(c => !c.author);
+            const unlinked = commits.filter(c => !c.author);
             if (unlinked.length === 0) {
               core.info('所有提交的作者邮箱均已绑定 GitHub 账号。');
               return;
@@ -98,14 +105,14 @@ jobs:
               '   ```',
               '3. 修订提交并强推：',
               '   ```',
-              '   git rebase -i HEAD~' + unlinked.length + ' # 标记为 "edit"，修改作者信息后 continue',
+              '   git rebase -i HEAD~' + commits.length + ' # 将未绑定邮箱的提交标记为 "edit"，修改作者信息后 continue',
               '   git push --force-with-lease',
               '   ```',
               '',
               '*推送后本校验会自动重新运行。*',
             ].join('\n');
 
-            // Post or update comment
+            // 用固定标记定位历史评论做更新，避免每次推送都新增一条
             const marker = '<!-- pr-validation-author-check -->';
             const commentBody = marker + '\n' + body;
             const existingComments = await github.rest.issues.listComments({
