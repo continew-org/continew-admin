@@ -38,6 +38,22 @@ public class RsaProperties {
         PUBLIC_KEY = SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
     }
 
+    /**
+     * 首次调用时才读 Spring 环境：RsaProperties 可能先于 SpringUtil 注入 ApplicationContext 被加载，
+     * 静态块会把 null 固化为终值（登录密码解密失败即此原因），故调用侧改用懒读取。
+     */
+    public static String privateKey() {
+        return PRIVATE_KEY != null
+            ? PRIVATE_KEY
+            : SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
+    }
+
+    public static String publicKey() {
+        return PUBLIC_KEY != null
+            ? PUBLIC_KEY
+            : SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
+    }
+
     private RsaProperties() {
     }
 }

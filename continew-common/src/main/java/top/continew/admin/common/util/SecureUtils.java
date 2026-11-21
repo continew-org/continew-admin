@@ -23,7 +23,6 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import top.continew.admin.common.config.RsaProperties;
 import top.continew.admin.common.constant.RegexConstants;
-import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 
 /**
@@ -44,7 +43,7 @@ public class SecureUtils {
      * @return 加密后的内容
      */
     public static String encryptByRsaPublicKey(String data) {
-        String publicKey = RsaProperties.PUBLIC_KEY;
+        String publicKey = RsaProperties.publicKey();
         ValidationUtils.throwIfBlank(publicKey, "请配置 RSA 公钥");
         return encryptByRsaPublicKey(data, publicKey);
     }
@@ -68,7 +67,7 @@ public class SecureUtils {
      * @return 解密后的内容
      */
     public static String decryptByRsaPrivateKey(String data) {
-        String privateKey = RsaProperties.PRIVATE_KEY;
+        String privateKey = RsaProperties.privateKey();
         ValidationUtils.throwIfBlank(privateKey, "请配置 RSA 私钥");
         return decryptByRsaPrivateKey(data, privateKey);
     }
@@ -108,8 +107,13 @@ public class SecureUtils {
     public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey,
         String errorMsg,
         boolean isVerifyPattern) {
-        String rawPassword =
-            ExceptionUtils.exToNull(() -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey));
+        String rawPassword;
+        try {
+            rawPassword = decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey);
+        } catch (Exception e) {
+            org.slf4j.LoggerFactory.getLogger(SecureUtils.class).error("RSA decrypt failed", e);
+            rawPassword = null;
+        }
         ValidationUtils.throwIfBlank(rawPassword, errorMsg);
         if (isVerifyPattern) {
             ValidationUtils.throwIf(!ReUtil
