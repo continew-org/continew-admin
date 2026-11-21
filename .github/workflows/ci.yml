@@ -23,6 +23,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       backend: ${{ steps.changes.outputs.backend }}
+      ui: ${{ steps.changes.outputs.ui }}
       infra: ${{ steps.changes.outputs.infra }}
     steps:
       - name: Checkout
@@ -61,6 +62,7 @@ jobs:
           done
 
   build:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
     name: Backend checks
     needs: detect
     # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
@@ -90,3 +92,213 @@ jobs:
         # runner 自带 Docker，L2 应真实执行；若环境异常被整体跳过，verify 仍会绿灯，
         # 这里按脚本统计的真实执行数兜底，与 full-test.yml 共用同一下限
         run: bash scripts/test/check-l2-executed.sh
+
+  sonar:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: Sonar analysis
+    needs: detect
+    # 外部 PR 无权读取 SONAR_TOKEN，跳过避免必红；外部 PR 由 OCR 与人工评审把关，合并后 push 分析兜底
+    if: >-
+      github.repository == 'continew-org/continew-admin'
+      && (github.event_name != 'pull_request'
+        || github.event.pull_request.head.repo.full_name == github.repository)
+      && needs.detect.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Sonar 需要完整提交历史用于准确分析
+          fetch-depth: 0
+      - name: Remove repository mirrors
+        # POM 中配置的国内镜像仓库在 CI 环境不稳定，构建前移除，改用 Maven Central
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+      - name: Set up JDK 25
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+          # 只有 push（dev）写入缓存，PR 与手动触发一律只读，避免每个 PR ref 各存一份
+          cache-read-only: ${{ github.event_name != 'push' }}
+      - name: Cache SonarQube packages
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw -B verify -Psonar
+
+  ui:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: UI checks
+    needs: detect
+    # 纯后端/纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
+    if: needs.detect.outputs.ui == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: continew-ui
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Enable corepack and pin pnpm
+        # pnpm 版本由 package.json 的 packageManager 字段驱动；
+        # -g 安装兜底：setup-node 的缓存探测在仓库根目录执行（无 package.json），
+        # 不固定会让其解析到 corepack 内置的旧默认版本，store 路径随 pnpm 大版本漂移导致缓存恒未命中
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          corepack enable
+          corepack install -g "$(node -p "require('./package.json').packageManager")"
+      - name: Set up Node 22
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: continew-ui/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm fmt:check
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: Upload dist artifact
+        # dist 仅作为构建产物上传（若需保留失败现场可加 always()），不进缓存、不同步公开网页
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: continew-ui-dist-${{ github.event.pull_request.number || github.sha }}
+          path: continew-ui/dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  api-test:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: API tests
+    needs: detect
+    # 仅 pull_request 触发：L3 门禁面向合并前验证，dev push 的 L1/L2 由 Backend checks 覆盖。
+    # 托管 runner：自带 Docker 与 JDK 25，且天然覆盖 fork PR。
+    # L3 仅用仓库内公开弱凭据、无 secret、无写权限，fork 运行无安全风险。
+    if: github.event_name == 'pull_request' && needs.detect.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Remove repository mirrors
+        # 与 Backend checks / Sonar analysis 同形：托管 runner 上国内镜像不稳定，改用 Maven Central。
+        # 必须在 setup-java 之前执行：Maven 缓存键按此刻磁盘上的 POM 内容计算
+        # （**/pom.xml 参与 hashFiles），缺这一步会算出与 dev 写入方不同的键，
+        # 精确键永不命中，每次全量冷下载依赖（setup-java 未设 restore-keys 兜底）
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+
+      - name: Set up JDK 25
+        # 与 Backend checks 同 pinned 版本；构建基线 JDK 25，产物字节码 17。
+        # 瘦包由 up.sh 内的 ./mvnw package 现构建，运行时镜像自带 JRE 17。
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+          # 本作业只在 pull_request 运行，缓存一律只读；写入方只有 dev 上的 Backend checks / Sonar analysis
+          cache-read-only: true
+
+      - name: Start test environment
+        # up.sh：探测空闲端口 -> mvnw package 瘦包 -> compose 启 MySQL/Redis/应用 -> 健康检查 -> 关闭验证码
+        run: bash scripts/test/up.sh
+
+      - name: Run L3 API tests
+        # api-smoke.sh：-Papi-test 执行 @Tag("api") 套件（42 用例），目标为 up.sh 起的独立实例。
+        # 不加 continue-on-error：L3 失败即为失败，检查结论真实反映质量。
+        run: bash scripts/test/api-smoke.sh
+
+      - name: Archive surefire reports
+        # 托管 runner 无 full-test.yml 的本地归档限制，用 upload-artifact 归档供失败诊断。
+        # always()：L3 失败也归档。
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: l3-surefire-reports-pr-${{ github.event.pull_request.number }}
+          path: continew-tests/target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop test environment
+        # always()：失败也清理容器与数据卷，防 runner 残留；up 未执行时幂等无害。
+        if: always()
+        run: bash scripts/test/down.sh
+
+  advisory:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: Test change advisory
+    needs: detect
+    # 仅 pull_request 触发；纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
+    if: github.event_name == 'pull_request' && needs.detect.outputs.backend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # 列 PR 文件需要 pull-requests: read（工作流级权限仅 contents: read，按 job 覆盖）
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Inspect changed files
+        # advisory 定位：只写 job summary，不评论、不打标签、不 setFailed，不影响合并。
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number: context.payload.pull_request.number,
+              per_page: 100,
+            });
+
+            // open 与 generator 插件已退出测试范围，不参与判定。
+            const excluded = /^continew-plugin\/continew-plugin-(open|generator)\//;
+            const production = files
+              .filter(f => /\/src\/main\/java\/.*\.java$/.test(f.filename))
+              .filter(f => !excluded.test(f.filename))
+              .map(f => f.filename);
+            const tests = files
+              .filter(f => /\/src\/test\/java\/.*\.java$/.test(f.filename))
+              .filter(f => !excluded.test(f.filename))
+              .map(f => f.filename);
+            const missing = production.length > 0 && tests.length === 0;
+
+            const lines = [
+              '## 测试配套检查（advisory，不影响合并）',
+              '',
+              `- 生产 Java 改动：${production.length}`,
+              `- 测试 Java 改动：${tests.length}`,
+              `- 判定：${missing ? '缺少测试配套' : '无需关注'}`,
+              '',
+            ];
+            if (production.length > 0) {
+              lines.push('<details><summary>改动的生产文件</summary>', '');
+              for (const file of production) {
+                lines.push(`- \`${file}\``);
+              }
+              lines.push('', '</details>', '');
+            }
+            core.summary.addRaw(lines.join('\n'));
+            await core.summary.write();
+            core.info(missing
+              ? '本次生产代码改动没有配套测试改动（仅记录，不影响合并）。'
+              : '未发现缺少配套测试的生产代码改动。');

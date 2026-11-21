@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # 按事件形态解析改动文件清单并交给 detect-changes.sh 分类，stdout 输出 GITHUB_OUTPUT
-# 键值对，人读日志走 stderr。供 ci.yml / ui.yml / sonar.yml / api-test.yml /
-# test-companion-shadow.yml / deploy.yml 的 "Detect changed paths" 步骤共用；
-# deploy.yml 的 simulate 清单分支留在工作流内（含用户可见的歧义输入校验）。
+# 键值对，人读日志走 stderr。供 ci.yml / deploy.yml 的 "Detect changed paths"
+# 步骤共用；deploy.yml 的 simulate 清单分支留在工作流内（含用户可见的歧义输入校验）。
 #
 # 事件 -> 清单：
 #   pull_request       基线取 origin/$GITHUB_BASE_REF 与 HEAD 的 merge-base。

@@ -176,17 +176,17 @@ L3 会对被测实例产生真实写入，约定如下：
 
 ## CI 触发
 
-| 工作流 | 触发方式 | 执行内容 | 必需检查名 |
+| 必需检查名 | 工作流 | 触发方式 | 执行内容 |
 |:--|:--|:--|:--|
-| `ci.yml` | push dev、pull_request | 四道静态门禁 + L1 + L2（Testcontainers 真实启动容器） | `Backend checks` |
-| `sonar.yml` | push dev、pull_request | `verify -Psonar` 静态分析；外部 fork PR 无 SONAR_TOKEN，中性跳过 | `Sonar analysis` |
-| `ui.yml` | push dev、pull_request | 前端格式 / lint / typecheck / 单测 / build | `UI checks` |
-| `api-test.yml` | pull_request | L3 API 黑盒测试，托管 runner 拉起独立实例，天然覆盖 fork PR | `API tests` |
-| `test-companion-shadow.yml` | pull_request | 测试配套 advisory：生产代码改动缺配套测试时仅在 job summary 记录，不影响合并 | `Test change advisory` |
-| `pr-validation.yml` | pull_request_target | PR 标题规范校验；commit 作者邮箱须绑定 GitHub 账号，未绑定将阻塞合并 | `Validate PR title`、`Verify commit author emails` |
-| `full-test.yml` | `workflow_dispatch` 手动触发 | self-hosted runner：`suite=all` 先过完整门禁再跑 L3，归档 surefire 报告 | 否 |
+| `Backend checks` | `ci.yml` | push dev、pull_request | 四道静态门禁 + L1 + L2（Testcontainers 真实启动容器） |
+| `Sonar analysis` | `ci.yml` | push dev、pull_request | `verify -Psonar` 静态分析；外部 fork PR 无 SONAR_TOKEN，中性跳过 |
+| `UI checks` | `ci.yml` | push dev、pull_request | 前端格式 / lint / typecheck / 单测 / build |
+| `API tests` | `ci.yml` | 仅 pull_request | L3 API 黑盒测试，托管 runner 拉起独立实例，天然覆盖 fork PR |
+| `Test change advisory` | `ci.yml` | 仅 pull_request | 测试配套 advisory：生产代码改动缺配套测试时仅在 job summary 记录，不影响合并 |
+| `Validate PR title`、`Verify commit author emails` | `pr-validation.yml` | pull_request_target | PR 标题规范校验；commit 作者邮箱须绑定 GitHub 账号，未绑定将阻塞合并 |
+| — | `full-test.yml` | `workflow_dispatch` 手动触发 | self-hosted runner：`suite=all` 先过完整门禁再跑 L3，归档 surefire 报告 |
 
-`license/cla`（CLA 签署）同为必需检查。L2 在 `ci.yml` 的云端 runner 上通过 Testcontainers 真实拉起容器执行；L3 的 PR 门禁由 `api-test.yml` 在托管 runner 上提供，`full-test.yml` 保留手动触发用于合并前的全量验证与报告归档。表中「必需检查名」即 job 显示名，与分支保护登记逐字一致，改名须同步仓库设置。
+`license/cla`（CLA 签署）同为必需检查。`ci.yml` 另含 `Lint workflows` 作业，仅在 CI 自身改动（`.github/**`、`scripts/ci/**`）时执行 actionlint 与脚本语法检查，非必需。L2 在 `Backend checks` 的云端 runner 上通过 Testcontainers 真实拉起容器执行；L3 的 PR 门禁由 `API tests` 在托管 runner 上提供，`full-test.yml` 保留手动触发用于合并前的全量验证与报告归档。表中「必需检查名」即 job 显示名，与分支保护登记逐字一致，改名须同步仓库设置。
 
 改动检测由 `scripts/ci/changed-files.sh` 按事件形态解析改动清单并交给 `scripts/ci/detect-changes.sh` 分类：pull_request 以 `origin/<base>` 与 HEAD 的 merge-base 为基线，取「合并进 base 后的净变更」，而非事件 payload 中可能过时的 `base.sha`；检测失败一律降级为全类别放行，避免 detect 失败令必需检查悬空。
 

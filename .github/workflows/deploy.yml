@@ -27,7 +27,7 @@ concurrency:
 jobs:
   detect:
     name: Detect changes
-    # repo 守卫（照 sonar.yml 先例）：fork 上手动触发不执行任何作业
+    # repo 守卫（照 ci.yml 的 Sonar analysis 先例）：fork 上手动触发不执行任何作业
     if: github.repository == 'continew-org/continew-admin'
     runs-on: ubuntu-24.04
     timeout-minutes: 10

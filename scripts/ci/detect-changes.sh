@@ -38,7 +38,7 @@ fi
 #           仅被 CI 工作流自身消费，无运行时消费者 -> 不触发部署、不改变后端检查类别；
 #           脚本本身的正确性由 detect 作业失败兜底，无需借后端检查回归。
 # ui        continew-ui/**
-#           前端产物唯一来源 -> ui.yml 检查与部署侧 Build UI dist 的消费者。
+#           前端产物唯一来源 -> ci.yml 的 UI checks 与部署侧 Build UI dist 的消费者。
 # template  continew-plugin/continew-plugin-generator/src/main/resources/templates/**
 #           生成器模板：随 jar 打包，计入后端检查以保构建完整；
 #           但仅服务代码生成、不改变服务运行时行为 -> 不触发部署。
