@@ -47,8 +47,9 @@ fi
 #           continew-plugin/**、continew-tests/**、pom.xml、*/pom.xml、
 #           mvnw、mvnw.cmd、.mvn/**、docker/**、scripts/**（ci 之外）
 #           后端构建/测试/运行时/部署链消费者 -> 后端检查 + 后端部署；
-#           其中 scripts/test/** 不触达任何 Java 门禁，另产出 test_scripts=true
-#           供 Lint workflows 的 bash -n 触发，防该目录改动零信号。
+#           其中 scripts/test/** 不触达 Java 门禁、不改变服务运行时行为 ->
+#           计入后端检查（脚本由后端检查作业真实执行）并产出 test_scripts=true
+#           供 Lint workflows 的 bash -n 触发，但不触发部署（同 template 逻辑）。
 # other     其余根文件（style/、LICENSE、.gitignore 等）
 #           消费者不明：保守计入后端检查（不静默跳过 CI），无运行时证据 -> 不触发部署。
 # ---------------------------------------------------------------------------
@@ -80,10 +81,10 @@ while IFS= read -r path; do
             has_template=true
             ;;
         scripts/test/*)
-            # 测试脚本保持 backend 归类（后端检查作业真实执行它们），仅追加 Lint 触发信号
+            # 测试脚本由后端检查作业真实执行，保持 backend 归类；但不改变服务运行时
+            # 行为，不触发部署（同 template 类别逻辑）
             has_test_scripts=true
             has_backend=true
-            has_deploy_backend=true
             ;;
         continew-server/* | continew-system/* | continew-common/* | continew-plugin/* | continew-tests/* | \
             pom.xml | */pom.xml | mvnw | mvnw.cmd | .mvn/* | docker/* | scripts/*)
