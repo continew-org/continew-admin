@@ -34,6 +34,7 @@ import { Route as mainappSystemRoleRouteRouteImport } from './routes/(main)/(app
 import { Route as mainappSystemUserRouteRouteImport } from './routes/(main)/(app)/system/user/route'
 import { Route as mainappTenantManagementRouteRouteImport } from './routes/(main)/(app)/tenant/management/route'
 import { Route as mainappTenantPackageRouteRouteImport } from './routes/(main)/(app)/tenant/package/route'
+import { Route as mainappUserMessageRouteRouteImport } from './routes/(main)/(app)/user/message/route'
 import { Route as mainappSystemSmsLogRouteRouteImport } from './routes/(main)/(app)/system/sms/log/route'
 
 const externalIndexRoute = externalIndexRouteImport.update({
@@ -166,6 +167,11 @@ const mainappTenantPackageRouteRoute =
     path: '/tenant/package',
     getParentRoute: () => mainappRouteRoute,
   } as any)
+const mainappUserMessageRouteRoute = mainappUserMessageRouteRouteImport.update({
+  id: '/user/message',
+  path: '/user/message',
+  getParentRoute: () => mainappRouteRoute,
+} as any)
 const mainappSystemSmsLogRouteRoute =
   mainappSystemSmsLogRouteRouteImport.update({
     id: '/system/sms/log',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/system/user': typeof mainappSystemUserRouteRoute
   '/tenant/management': typeof mainappTenantManagementRouteRoute
   '/tenant/package': typeof mainappTenantPackageRouteRoute
+  '/user/message': typeof mainappUserMessageRouteRoute
   '/dashboard/$': typeof mainappDashboardSplatRoute
   '/dashboard/': typeof mainappDashboardIndexRoute
   '/system/sms/log': typeof mainappSystemSmsLogRouteRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/system/user': typeof mainappSystemUserRouteRoute
   '/tenant/management': typeof mainappTenantManagementRouteRoute
   '/tenant/package': typeof mainappTenantPackageRouteRoute
+  '/user/message': typeof mainappUserMessageRouteRoute
   '/dashboard/$': typeof mainappDashboardSplatRoute
   '/dashboard': typeof mainappDashboardIndexRoute
   '/system/sms/log': typeof mainappSystemSmsLogRouteRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/(main)/(app)/system/user': typeof mainappSystemUserRouteRoute
   '/(main)/(app)/tenant/management': typeof mainappTenantManagementRouteRoute
   '/(main)/(app)/tenant/package': typeof mainappTenantPackageRouteRoute
+  '/(main)/(app)/user/message': typeof mainappUserMessageRouteRoute
   '/(main)/(app)/dashboard/$': typeof mainappDashboardSplatRoute
   '/(main)/(app)/dashboard/': typeof mainappDashboardIndexRoute
   '/(main)/(app)/system/sms/log': typeof mainappSystemSmsLogRouteRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/system/user'
     | '/tenant/management'
     | '/tenant/package'
+    | '/user/message'
     | '/dashboard/$'
     | '/dashboard/'
     | '/system/sms/log'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/system/user'
     | '/tenant/management'
     | '/tenant/package'
+    | '/user/message'
     | '/dashboard/$'
     | '/dashboard'
     | '/system/sms/log'
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/(main)/(app)/system/user'
     | '/(main)/(app)/tenant/management'
     | '/(main)/(app)/tenant/package'
+    | '/(main)/(app)/user/message'
     | '/(main)/(app)/dashboard/$'
     | '/(main)/(app)/dashboard/'
     | '/(main)/(app)/system/sms/log'
@@ -526,6 +538,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainappTenantPackageRouteRouteImport
       parentRoute: typeof mainappRouteRoute
     }
+    '/(main)/(app)/user/message': {
+      id: '/(main)/(app)/user/message'
+      path: '/user/message'
+      fullPath: '/user/message'
+      preLoaderRoute: typeof mainappUserMessageRouteRouteImport
+      parentRoute: typeof mainappRouteRoute
+    }
     '/(main)/(app)/system/sms/log': {
       id: '/(main)/(app)/system/sms/log'
       path: '/system/sms/log'
@@ -554,6 +573,7 @@ interface mainappRouteRouteChildren {
   mainappSystemUserRouteRoute: typeof mainappSystemUserRouteRoute
   mainappTenantManagementRouteRoute: typeof mainappTenantManagementRouteRoute
   mainappTenantPackageRouteRoute: typeof mainappTenantPackageRouteRoute
+  mainappUserMessageRouteRoute: typeof mainappUserMessageRouteRoute
   mainappDashboardSplatRoute: typeof mainappDashboardSplatRoute
   mainappDashboardIndexRoute: typeof mainappDashboardIndexRoute
   mainappSystemSmsLogRouteRoute: typeof mainappSystemSmsLogRouteRoute
@@ -577,6 +597,7 @@ const mainappRouteRouteChildren: mainappRouteRouteChildren = {
   mainappSystemUserRouteRoute: mainappSystemUserRouteRoute,
   mainappTenantManagementRouteRoute: mainappTenantManagementRouteRoute,
   mainappTenantPackageRouteRoute: mainappTenantPackageRouteRoute,
+  mainappUserMessageRouteRoute: mainappUserMessageRouteRoute,
   mainappDashboardSplatRoute: mainappDashboardSplatRoute,
   mainappDashboardIndexRoute: mainappDashboardIndexRoute,
   mainappSystemSmsLogRouteRoute: mainappSystemSmsLogRouteRoute,

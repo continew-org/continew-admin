@@ -10,7 +10,12 @@ import {
   setTenantId
 } from './auth-session'
 
-const BASE_URL = (import.meta.env.VITE_API_PREFIX || import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
+/** Base used for the WebSocket endpoint, which does not share the `http` client. */
+export const API_BASE_URL = (import.meta.env.VITE_API_PREFIX || import.meta.env.VITE_API_BASE_URL || '').replace(
+  /\/+$/,
+  ''
+)
+const BASE_URL = API_BASE_URL
 const REQUEST_TIMEOUT_MS = 30_000
 
 const LOGIN_PATH = '/auth/login'

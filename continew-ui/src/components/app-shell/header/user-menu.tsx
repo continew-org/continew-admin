@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 
-import { CircleUser, Lock, LogOut } from 'lucide-react'
+import { Bell, CircleUser, Lock, LogOut } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 
 import { TagList } from '@/components/data-badge'
@@ -73,6 +73,10 @@ export function UserMenu() {
           <DropdownMenuItem render={<Link to="/dashboard/profile" />}>
             <CircleUser />
             个人信息
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link to="/user/message" />}>
+            <Bell />
+            消息中心
           </DropdownMenuItem>
           {lockScreen && (
             <DropdownMenuItem onClick={() => setLockSetupOpen(true)}>

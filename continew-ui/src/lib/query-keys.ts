@@ -5,6 +5,7 @@ import type { FilePageQuery } from '@/lib/api/file'
 import type { JobQuery } from '@/lib/api/job'
 import type { JobLogQuery } from '@/lib/api/job-log'
 import type { LogPageQuery } from '@/lib/api/log'
+import type { MessagePageQuery, UserNoticePageQuery } from '@/lib/api/message'
 import type { NoticePageQuery } from '@/lib/api/notice'
 import type { OnlineUserPageQuery } from '@/lib/api/online'
 import type { PackagePageQuery } from '@/lib/api/package'
@@ -140,6 +141,23 @@ export const noticeKeys = {
   list: (query?: NoticePageQuery) => [...noticeKeys.lists(), query] as const,
   details: () => [...noticeKeys.all, 'detail'] as const,
   detail: (id: string | number | null) => [...noticeKeys.details(), id] as const
+}
+
+export const messageKeys = {
+  all: ['user', 'message'] as const,
+  unread: () => [...messageKeys.all, 'unread'] as const,
+  unreadMessages: () => [...messageKeys.unread(), 'message'] as const,
+  unreadNotices: () => [...messageKeys.unread(), 'notice'] as const,
+  lists: () => [...messageKeys.all, 'list'] as const,
+  recent: () => [...messageKeys.lists(), 'recent'] as const,
+  list: (query?: MessagePageQuery) => [...messageKeys.lists(), query] as const,
+  detail: (id: string | number | null) => [...messageKeys.all, 'detail', id] as const,
+  noticeLists: () => [...messageKeys.all, 'notice-list'] as const,
+  noticeList: (query?: UserNoticePageQuery) => [...messageKeys.noticeLists(), query] as const,
+  recentNotices: () => [...messageKeys.noticeLists(), 'recent'] as const,
+  noticeDetail: (id: string | number | null) => [...messageKeys.all, 'notice-detail', id] as const,
+  /** Outside `all`, so a push or a read never re-opens the login popup. */
+  popup: () => ['user', 'notice-popup'] as const
 }
 
 export const siteOptionKeys = {

@@ -25,6 +25,7 @@ import { AdminHeader } from './header/admin-header'
 import { SearchDialog } from './header/search-dialog'
 import { GlobalShortcuts } from './global-shortcuts'
 import { BreadcrumbView, useBreadcrumbTrail } from './app-breadcrumb'
+import { MessageSocket, NoticePopup } from './message-effects'
 import { DocumentTitle, UpdateChecker, Watermark } from './page-effects'
 import { AppSidebar } from './sidebar/app-sidebar'
 import { MixedSidebar, type MixedColumnEntry } from './sidebar/mixed-sidebar'
@@ -232,6 +233,8 @@ export function AppShell({ defaultOpen, variant, collapsible, children }: ShellP
       <GlobalShortcuts />
       <SearchDialog />
       <LockScreenSetupDialog onLock={lock} />
+      <MessageSocket />
+      <NoticePopup />
       {locked && <LockScreenOverlay onUnlock={unlock} onClear={clear} onForget={clear} />}
     </SidebarProvider>
   )
