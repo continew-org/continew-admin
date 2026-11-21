@@ -23,6 +23,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       backend: ${{ steps.changes.outputs.backend }}
+      infra: ${{ steps.changes.outputs.infra }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -34,6 +35,30 @@ jobs:
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
         # 检查分流必须由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）
         run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
+
+  lint-workflows:
+    name: Lint workflows
+    needs: detect
+    # 只在 CI 自身改动（.github/**、scripts/ci/**，归类 infra）时执行：
+    # workflow YAML 写坏不会产生任何 check（GitHub 只在 Actions 页面报 invalid），
+    # 这里是改 workflow / 改脚本类 PR 唯一的检查信号
+    if: needs.detect.outputs.infra == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lint workflow files
+        # -shellcheck= 关闭内嵌脚本检查：镜像内置的 shellcheck 会对存量 run 块报
+        # 大量历史告警，与本步骤目标（workflow 语法/表达式/schema）无关；
+        # 脚本语法由下一步 bash -n 覆盖
+        run: docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:1.7.12 -shellcheck=
+      - name: Check shell script syntax
+        run: |
+          for f in scripts/ci/*.sh scripts/test/*.sh; do
+            [ -e "$f" ] || continue
+            bash -n "$f"
+          done
 
   build:
     name: Backend checks
