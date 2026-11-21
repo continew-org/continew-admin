@@ -16,11 +16,11 @@ import {
   CommandList,
   CommandSeparator
 } from '@/components/ui/command'
-import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { useMenuGroups } from '@/hooks/use-menu'
-import type { MenuGroup, MenuItem } from '@/navigation/menu'
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider'
-import { useShellStore } from '@/stores/shell'
+import type { MenuGroup, MenuItem } from '@/navigation/menu'
+
+import { useShellStore } from '../shell-store'
 
 interface SearchItem {
   id: string
@@ -30,9 +30,6 @@ interface SearchItem {
   icon?: MenuItem['icon']
   external?: boolean
 }
-
-/** macOS shows ⌘; every other platform uses Ctrl, matching the global shortcut handler. */
-const MODIFIER_KEY = /Mac|iPhone|iPad|iPod/.test(navigator.platform) ? '⌘' : 'Ctrl'
 
 function toSearchItems(groups: readonly MenuGroup[]): SearchItem[] {
   return groups.flatMap(group =>
@@ -51,7 +48,7 @@ function toSearchItems(groups: readonly MenuGroup[]): SearchItem[] {
       return [
         {
           id: item.id,
-          group: group.label ?? '固定',
+          group: group.label ?? '其他',
           label: item.title,
           url: item.url,
           icon: item.icon,
@@ -83,7 +80,7 @@ function FadingCommandList({ children }: { children: React.ReactNode }) {
   return <CommandList ref={listRef}>{children}</CommandList>
 }
 
-/** Header trigger; the palette itself is mounted once by the shell and opened through the store. */
+/** Header trigger; the dialog itself is mounted once by the layout and opened through the shell store. */
 export function SearchTrigger() {
   const setOpen = useShellStore(state => state.setSearchOpen)
   const shortcut = usePreferencesStore(state => state.values.shortcut_enable && state.values.shortcut_search)
@@ -97,10 +94,9 @@ export function SearchTrigger() {
       <Search data-icon="inline-start" />
       搜索
       {shortcut && (
-        <KbdGroup>
-          <Kbd>{MODIFIER_KEY}</Kbd>
-          <Kbd>J</Kbd>
-        </KbdGroup>
+        <kbd className="inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 text-[10px] font-medium select-none">
+          <span className="text-xs">⌘</span>J
+        </kbd>
       )}
     </Button>
   )
@@ -112,7 +108,7 @@ export function SearchDialog() {
   const [query, setQuery] = React.useState('')
   const navigate = useNavigate()
   const { groups } = useMenuGroups()
-  const groupedItems = React.useMemo(() => groupBy(toSearchItems(groups)), [groups])
+  const searchItems = React.useMemo(() => toSearchItems(groups), [groups])
 
   const handleOpenChange = (value: boolean) => {
     setOpen(value)
@@ -131,12 +127,12 @@ export function SearchDialog() {
     void navigate({ href: item.url })
   }
 
-  const renderGroups = () =>
-    groupedItems.map(({ group, items }, index) => (
+  const renderGroups = (items: SearchItem[]) =>
+    groupBy(items).map(({ group, items: groupItems }, index) => (
       <React.Fragment key={group}>
         {index > 0 && <CommandSeparator />}
         <CommandGroup heading={group}>
-          {items.map(item => (
+          {groupItems.map(item => (
             <CommandItem
               key={`${group}-${item.id}`}
               value={`${item.group} ${item.label}`}
@@ -153,14 +149,16 @@ export function SearchDialog() {
     ))
 
   return (
-    <CommandDialog open={open} onOpenChange={handleOpenChange} title="搜索" description="搜索目录或页面">
-      <Command>
-        <CommandInput placeholder="搜索目录或页面" value={query} onValueChange={setQuery} />
-        <FadingCommandList>
-          <CommandEmpty>没有找到结果</CommandEmpty>
-          {renderGroups()}
-        </FadingCommandList>
-      </Command>
-    </CommandDialog>
+    <>
+      <CommandDialog open={open} onOpenChange={handleOpenChange}>
+        <Command>
+          <CommandInput placeholder="搜索目录" value={query} onValueChange={setQuery} />
+          <FadingCommandList>
+            <CommandEmpty>没有找到结果</CommandEmpty>
+            {renderGroups(searchItems)}
+          </FadingCommandList>
+        </Command>
+      </CommandDialog>
+    </>
   )
 }

@@ -1,14 +1,24 @@
 import * as React from 'react'
 
-import { useScrollFade } from '@animate-ui/react/primitives/effects/scroll-fade'
 import { DragDropProvider } from '@dnd-kit/react'
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 import { Link, useRouter, type RegisteredRouter } from '@tanstack/react-router'
 import { cn } from 'cn'
-import { ArrowLeftToLine, ArrowRightToLine, Ban, Ellipsis, Layers, Pin, PinOff, RotateCw, X } from 'lucide-react'
+import {
+  ArrowLeftToLine,
+  ArrowRightToLine,
+  Ban,
+  ChevronDown,
+  Fullscreen,
+  Layers,
+  Minimize2,
+  Pin,
+  PinOff,
+  RotateCw,
+  X
+} from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 
-import { Button } from '@/components/ui/button'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -26,13 +36,19 @@ import {
 import { useMenuRoutes } from '@/hooks/use-menu'
 import type { TabbarStyle } from '@/lib/preferences/layout'
 import { resolveMenuIcon } from '@/navigation/menu-icons'
-import { resolveRouteInfo, usePathname } from '@/navigation/route-info'
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider'
-import { useShellStore } from '@/stores/shell'
 import { type TabItem, useTabsStore } from '@/stores/tabs'
+
+import { resolveRouteInfo, usePathname } from '../route-info'
+import { useShellStore } from '../shell-store'
 
 /** Visual style of each tab, keyed by `tabbar_style`. */
 const TAB_STYLES: Record<TabbarStyle, { base: string; active: string; idle: string }> = {
+  chrome: {
+    base: 'rounded-t-lg mt-auto h-[calc(100%-4px)] px-3',
+    active: 'bg-background text-foreground shadow-[0_-1px_0_var(--border)]',
+    idle: 'text-muted-foreground hover:bg-accent/60 hover:text-foreground'
+  },
   plain: {
     base: 'h-full border-r px-3',
     active: 'bg-background text-primary',
@@ -208,9 +224,8 @@ const Tab = React.memo(function Tab({
               }
             }}
             className={cn(
-              'group relative flex max-w-40 min-w-0 shrink-0 items-center text-xs transition-colors duration-150 select-none',
+              'group relative flex max-w-40 min-w-0 shrink-0 items-center gap-1.5 text-xs transition-colors duration-150 select-none',
               style.base,
-              'px-2',
               isActive ? style.active : style.idle,
               isDragging && 'z-10 opacity-80 shadow-md'
             )}
@@ -220,10 +235,7 @@ const Tab = React.memo(function Tab({
         <Link<RegisteredRouter, string, string>
           href={tab.path}
           draggable={false}
-          className={cn(
-            'flex h-full min-w-0 flex-1 items-center gap-1.5 outline-none',
-            tab.path !== '/dashboard' ? 'pr-4' : 'pr-1'
-          )}
+          className="flex h-full min-w-0 flex-1 items-center gap-1.5 outline-none"
         >
           {showIcon && React.createElement(resolveMenuIcon(tab.icon), { className: 'size-3.5 shrink-0' })}
           <span className="truncate">{tab.title}</span>
@@ -233,7 +245,7 @@ const Tab = React.memo(function Tab({
             type="button"
             onClick={() => actions.close(tab)}
             className={cn(
-              'absolute inset-y-0 right-1 my-auto flex size-4 items-center justify-center rounded-sm transition-opacity hover:bg-foreground/10',
+              'flex size-4 shrink-0 items-center justify-center rounded-sm transition-opacity hover:bg-foreground/10',
               isActive ? 'opacity-60 hover:opacity-100' : 'opacity-0 group-hover:opacity-60 hover:opacity-100'
             )}
           >
@@ -241,11 +253,7 @@ const Tab = React.memo(function Tab({
             <span className="sr-only">关闭 {tab.title}</span>
           </button>
         ) : (
-          tab.path !== '/dashboard' && (
-            <span className="absolute inset-y-0 right-1 my-auto flex size-4 items-center justify-center text-muted-foreground">
-              <Pin className="size-3 opacity-60" />
-            </span>
-          )
+          tab.path !== '/dashboard' && <Pin className="size-3 shrink-0 opacity-50" />
         )}
       </ContextMenuTrigger>
       <ContextMenuContent className="min-w-36">
@@ -262,6 +270,18 @@ const Tab = React.memo(function Tab({
   )
 })
 
+function TabbarTool({ label, ...props }: React.ComponentProps<'button'> & { label: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      {...props}
+      className="flex h-full w-9 shrink-0 items-center justify-center border-l text-muted-foreground transition-colors hover:bg-accent hover:text-foreground [&_svg]:size-3.5"
+    />
+  )
+}
+
 /**
  * Multi-tab bar under the header. Adds a tab for every page the user opens, keeps it in step
  * with the router, and supports pin, drag sorting, wheel scrolling and the close menu.
@@ -274,8 +294,6 @@ export function Tabbar() {
   const actions = useTabActions()
   const scrollRef = React.useRef<HTMLDivElement>(null)
 
-  useScrollFade(scrollRef, { orientation: 'horizontal', blur: 4 })
-
   const prefs = usePreferencesStore(
     useShallow(state => ({
       styleType: state.values.tabbar_style,
@@ -284,9 +302,13 @@ export function Tabbar() {
       wheelable: state.values.tabbar_wheelable,
       middleClickClose: state.values.tabbar_middle_click_close,
       maxCount: state.values.tabbar_max_count,
-      showMore: state.values.tabbar_show_more
+      showMore: state.values.tabbar_show_more,
+      showRefresh: state.values.tabbar_show_refresh,
+      showMaximize: state.values.tabbar_show_maximize
     }))
   )
+  const contentMaximized = useShellStore(state => state.contentMaximized)
+  const setContentMaximized = useShellStore(state => state.setContentMaximized)
 
   // Record the page as a tab in the same frame it renders, instead of one paint later.
   React.useLayoutEffect(() => {
@@ -336,7 +358,10 @@ export function Tabbar() {
     <div
       data-slot="app-tabbar"
       data-style={prefs.styleType}
-      className="flex h-(--app-tabbar-height) shrink-0 items-stretch border-b bg-muted/30"
+      className={cn(
+        'flex h-(--app-tabbar-height) shrink-0 items-stretch border-b bg-muted/30',
+        prefs.styleType === 'chrome' && 'bg-muted/60'
+      )}
     >
       <DragDropProvider
         onDragOver={event => {
@@ -375,23 +400,31 @@ export function Tabbar() {
       </DragDropProvider>
 
       {prefs.showMore && activeTab && (
-        <div className="flex shrink-0 items-center px-1.5">
-          <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="outline" size="icon-sm" aria-label="更多操作" />}>
-              <Ellipsis />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-36">
-              <TabMenuItems
-                tab={activeTab}
-                index={activeIndex}
-                tabs={tabs}
-                actions={actions}
-                Item={DropdownMenuItem}
-                Separator={DropdownMenuSeparator}
-              />
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<TabbarTool label="更多操作" />}>
+            <ChevronDown />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="min-w-36">
+            <TabMenuItems
+              tab={activeTab}
+              index={activeIndex}
+              tabs={tabs}
+              actions={actions}
+              Item={DropdownMenuItem}
+              Separator={DropdownMenuSeparator}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+      {prefs.showRefresh && activeTab && (
+        <TabbarTool label="刷新" onClick={() => actions.refresh(activeTab)}>
+          <RotateCw />
+        </TabbarTool>
+      )}
+      {prefs.showMaximize && (
+        <TabbarTool label={contentMaximized ? '还原' : '最大化'} onClick={() => setContentMaximized(!contentMaximized)}>
+          {contentMaximized ? <Minimize2 /> : <Fullscreen />}
+        </TabbarTool>
       )}
     </div>
   )

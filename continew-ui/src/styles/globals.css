@@ -11,8 +11,6 @@
 
 :root {
   --app-font-sans: 'Geist Variable', 'Noto Sans SC Variable', ui-sans-serif, system-ui, sans-serif;
-  /* Root font size preference (px). Drives the rem-based type scale. */
-  --app-font-size: 16px;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -81,9 +79,14 @@
   --radius-scale: 0.75;
 }
 
-/* Font-size preference: the root size feeds every rem-based measurement. */
-html {
-  font-size: var(--app-font-size);
+/* Layout sizes: the boot script overrides these from preferences before the first paint. */
+:root {
+  --app-header-height: 48px;
+  --app-tabbar-height: 38px;
+  --app-sidebar-width: 272px;
+  --app-sidebar-mixed-width: 80px;
+  --app-content-width: 1536px;
+  --app-content-padding: 24px;
 }
 
 @theme inline {
@@ -210,6 +213,7 @@ html {
 
   html {
     @apply font-sans;
+    font-size: var(--app-font-size, 16px);
   }
 
   /* Native scrollbars matched to the shadcn ScrollArea spec (src/components/ui/scroll-area.tsx):
@@ -254,26 +258,191 @@ html {
   transition: none !important;
 }
 
-/* Colour filters mirroring the original Vue app: grey / colour-weak, combined with a space. */
+/* ---------- Shell preferences ---------- */
+
+/* Gray and weak-colour modes filter the whole page; they compose when both are on. */
 :root[data-color-gray='true'] {
-  filter: grayscale(100%);
+  filter: grayscale(1);
 }
 
 :root[data-color-weak='true'] {
-  filter: invert(80%);
+  filter: contrast(0.9) saturate(0.6);
 }
 
 :root[data-color-gray='true'][data-color-weak='true'] {
-  filter: grayscale(100%) invert(80%);
+  filter: grayscale(1) contrast(0.9) saturate(0.6);
 }
 
-/* Tiled watermark layer, toggled by the app_watermark preference. Under overlays, above content. */
+/* Animations off: every transition and keyframe finishes instantly. */
+:root[data-animation='false'] *,
+:root[data-animation='false'] *::before,
+:root[data-animation='false'] *::after {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
+
+/* Semi-dark: the header or sidebar takes the dark palette while the page stays light. */
+:root:not(.dark)[data-semi-dark-header='true'] [data-slot='app-header'],
+:root:not(.dark)[data-semi-dark-sidebar='true'] [data-slot='sidebar-inner'],
+:root:not(.dark)[data-semi-dark-sidebar='true'] [data-slot='mixed-sidebar-root'],
+:root:not(.dark)[data-semi-dark-sidebar-sub='true'] [data-slot='mixed-sidebar-sub'] {
+  color-scheme: dark;
+  --background: oklch(0.205 0 0);
+  --foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  background-color: var(--sidebar);
+  color: var(--sidebar-foreground);
+}
+
+/* Plain navigation: square, full-bleed menu items. */
+:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-button'],
+:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-sub-button'],
+:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-button']::before {
+  border-radius: 0;
+}
+
+/* Collapsed sidebar that keeps the titles under the icons. Scoped to the nav area so the
+   brand button in the sidebar header keeps its icon-only look. In the utilities layer so
+   these !important rules win over the `size-8!`/`p-2!` utilities on the menu button. */
+@layer utilities {
+  :root[data-sidebar-show-title='true']
+    [data-slot='sidebar'][data-collapsible='icon']
+    [data-slot='sidebar-content']
+    [data-sidebar='menu-button'] {
+    width: 100% !important;
+    height: 3.25rem !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.35rem 0.25rem !important;
+  }
+
+  :root[data-sidebar-show-title='true']
+    [data-slot='sidebar'][data-collapsible='icon']
+    [data-slot='sidebar-content']
+    [data-sidebar='menu-button']
+    > span:last-child {
+    display: block;
+    max-width: 100%;
+    font-size: 0.625rem;
+    line-height: 1;
+    text-align: center;
+  }
+
+  :root[data-sidebar-show-title='true']
+    [data-slot='sidebar'][data-collapsible='icon']
+    [data-slot='sidebar-content']
+    [data-sidebar='menu-button']
+    > svg:last-child:not(:first-child) {
+    display: none;
+  }
+}
+
+/* Page transitions: only the route content animates, the shell stays put. */
+@keyframes app-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes app-fade-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
+@keyframes app-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes app-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-transition='fade'] > [data-slot='page-surface'] {
+    animation: app-fade 200ms ease-out;
+  }
+
+  [data-transition='fade-slide'] > [data-slot='page-surface'] {
+    animation: app-fade-slide 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-transition='fade-up'] > [data-slot='page-surface'] {
+    animation: app-fade-up 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-transition='fade-down'] > [data-slot='page-surface'] {
+    animation: app-fade-down 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+.transition-preview-fade {
+  animation: app-fade 1.4s ease-in-out infinite alternate;
+}
+
+.transition-preview-fade-slide {
+  animation: app-fade-slide 1.4s ease-in-out infinite alternate;
+}
+
+.transition-preview-fade-up {
+  animation: app-fade-up 1.4s ease-in-out infinite alternate;
+}
+
+.transition-preview-fade-down {
+  animation: app-fade-down 1.4s ease-in-out infinite alternate;
+}
+
+/* NProgress, tinted with the theme colour. */
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1100;
+  width: 100%;
+  height: 2px;
+  background: var(--primary);
+}
+
+#nprogress .peg {
+  position: absolute;
+  right: 0;
+  display: block;
+  width: 100px;
+  height: 100%;
+  box-shadow:
+    0 0 10px var(--primary),
+    0 0 5px var(--primary);
+  opacity: 1;
+  transform: rotate(3deg) translate(0, -4px);
+}
+
+/* Watermark: a tiled SVG generated at runtime, so it costs one paint layer and no DOM nodes. */
 [data-slot='app-watermark'] {
   position: fixed;
   inset: 0;
-  z-index: 40;
-  display: block;
-  width: 100%;
-  height: 100%;
+  z-index: 60;
   pointer-events: none;
+  background-repeat: repeat;
 }

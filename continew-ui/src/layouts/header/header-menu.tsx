@@ -1,7 +1,5 @@
 import * as React from 'react'
 
-import { useScrollFade } from '@animate-ui/react/primitives/effects/scroll-fade'
-import { useRouterState } from '@tanstack/react-router'
 import { cn } from 'cn'
 import { ChevronDown } from 'lucide-react'
 
@@ -16,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { isMenuItemActive, isMenuRootActive, toPathname, type MenuItem, type MenuRoot } from '@/navigation/menu'
 
+import { usePathname } from '../route-info'
 import { renderItemLink } from '../sidebar/nav-main'
 
 const itemClass =
@@ -62,32 +61,10 @@ interface HeaderMenuProps {
 
 /** Horizontal menu in the header for the header and mixed layouts. */
 export const HeaderMenu = React.memo(function HeaderMenu({ roots, mode, selectedId, onSelect }: HeaderMenuProps) {
-  const pathname = useRouterState({ select: state => state.location.pathname })
-  const navRef = React.useRef<HTMLElement>(null)
-
-  useScrollFade(navRef, { orientation: 'horizontal', blur: 4 })
-
-  // A vertical wheel over the strip scrolls it sideways; native listener so it can be non-passive.
-  React.useEffect(() => {
-    const node = navRef.current
-    if (!node) return
-
-    const onWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return
-      event.preventDefault()
-      node.scrollLeft += event.deltaY
-    }
-
-    node.addEventListener('wheel', onWheel, { passive: false })
-    return () => node.removeEventListener('wheel', onWheel)
-  }, [])
+  const pathname = usePathname()
 
   return (
-    <nav
-      ref={navRef}
-      aria-label="顶部菜单"
-      className="flex w-full min-w-0 scrollbar-none items-center gap-1 overflow-x-auto"
-    >
+    <nav aria-label="顶部菜单" className="flex min-w-0 scrollbar-none items-center gap-1 overflow-x-auto">
       {roots.map(root => {
         const Icon = root.icon
         const active = mode === 'select' ? root.id === selectedId : isMenuRootActive(root, pathname)

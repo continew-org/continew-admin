@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { cn } from 'cn'
 
-import { ThemeSwitcher } from '@/components/app-shell/header/theme-switcher'
+import { ThemeSwitcher } from '@/layouts/header/theme-switcher'
 import { Card, CardContent } from '@/components/ui/card'
 import { Ripple } from '@/components/ui/ripple'
 import { useSiteOptions } from '@/hooks/use-site-options'

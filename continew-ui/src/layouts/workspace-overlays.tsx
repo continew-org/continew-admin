@@ -1,9 +1,7 @@
 import * as React from 'react'
 
-import { cn } from 'cn'
 import { Lock } from 'lucide-react'
 
-import { PasswordInput } from '@/components/password-input'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,11 +12,13 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { useLogout } from '@/hooks/use-logout'
 import { LOCK_SCREEN_KEY } from '@/lib/constants'
 import { getInitials } from '@/lib/utils'
 import { useAuthStore } from '@/stores/auth/auth-provider'
-import { useShellStore } from '@/stores/shell'
+
+import { useShellStore } from './shell-store'
 
 /**
  * Lock screen. The unlock password is a local one the user sets when locking, hashed with
@@ -48,9 +48,15 @@ export function useLockScreen() {
     setLockHash(value)
   }, [])
 
-  // Verifies the password only; clearing the lock is left to the caller so the overlay can
-  // play its exit transition before it unmounts.
-  const unlock = React.useCallback(async (password: string) => (await hash(password)) === lockHash, [lockHash])
+  const unlock = React.useCallback(
+    async (password: string) => {
+      if ((await hash(password)) !== lockHash) return false
+      sessionStorage.removeItem(LOCK_SCREEN_KEY)
+      setLockHash(null)
+      return true
+    },
+    [lockHash]
+  )
 
   const clear = React.useCallback(() => {
     sessionStorage.removeItem(LOCK_SCREEN_KEY)
@@ -87,7 +93,8 @@ export function LockScreenSetupDialog({ onLock }: { onLock: (password: string) =
             <DialogTitle>锁定屏幕</DialogTitle>
             <DialogDescription>设置一个临时解锁密码，离开时保护当前页面。</DialogDescription>
           </DialogHeader>
-          <PasswordInput
+          <Input
+            type="password"
             autoFocus
             autoComplete="new-password"
             placeholder="请输入锁屏密码"
@@ -119,11 +126,9 @@ function useClock() {
 
 export function LockScreenOverlay({
   onUnlock,
-  onClear,
   onForget
 }: {
   onUnlock: (password: string) => Promise<boolean>
-  onClear: () => void
   onForget: () => void
 }) {
   const user = useAuthStore(state => state.user)
@@ -131,22 +136,13 @@ export function LockScreenOverlay({
   const now = useClock()
   const [password, setPassword] = React.useState('')
   const [error, setError] = React.useState(false)
-  const [leaving, setLeaving] = React.useState(false)
   const name = user?.nickname || user?.username || ''
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault()
-    if (leaving) return
     const ok = await onUnlock(password)
-    if (!ok) {
-      setError(true)
-      return
-    }
-    // Play the exit transition, then clear the lock so the shell unmounts this overlay.
-    setError(false)
-    setPassword('')
-    setLeaving(true)
-    window.setTimeout(onClear, 200)
+    setError(!ok)
+    if (ok) setPassword('')
   }
 
   return (
@@ -154,31 +150,28 @@ export function LockScreenOverlay({
       role="dialog"
       aria-modal="true"
       aria-label="屏幕已锁定"
-      className={cn(
-        'fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 bg-background/80 backdrop-blur-xl transition-[opacity,transform] duration-200 ease-out motion-safe:animate-in motion-safe:fade-in motion-reduce:transition-none',
-        leaving ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
-      )}
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-8 bg-background/80 backdrop-blur-xl motion-safe:animate-in motion-safe:fade-in"
     >
       <div className="text-center tabular-nums">
-        <div className="text-8xl font-semibold tracking-tight">
+        <div className="text-6xl font-semibold tracking-tight">
           {now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
         </div>
-        <div className="mt-3 text-lg text-muted-foreground">
+        <div className="mt-2 text-sm text-muted-foreground">
           {now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
         </div>
       </div>
       <form onSubmit={submit} className="flex w-72 flex-col items-center gap-3">
-        <Avatar className="size-24">
+        <Avatar className="size-16">
           <AvatarImage src={user?.avatar ?? undefined} alt={name} />
-          <AvatarFallback className="text-2xl">{getInitials(name)}</AvatarFallback>
+          <AvatarFallback>{getInitials(name)}</AvatarFallback>
         </Avatar>
-        <PasswordInput
+        <span className="font-medium">{name}</span>
+        <Input
+          type="password"
           autoFocus
           autoComplete="off"
           placeholder="输入锁屏密码解锁"
           aria-invalid={error || undefined}
-          disabled={leaving}
-          className="mt-3"
           value={password}
           onChange={event => {
             setPassword(event.target.value)
@@ -186,7 +179,7 @@ export function LockScreenOverlay({
           }}
         />
         {error && <span className="text-xs text-destructive">密码错误</span>}
-        <Button type="submit" className="w-full" disabled={!password || leaving}>
+        <Button type="submit" className="w-full" disabled={!password}>
           解锁
         </Button>
         <Button
@@ -194,7 +187,6 @@ export function LockScreenOverlay({
           variant="link"
           size="sm"
           className="text-muted-foreground"
-          disabled={leaving}
           onClick={() => {
             onForget()
             void logout()

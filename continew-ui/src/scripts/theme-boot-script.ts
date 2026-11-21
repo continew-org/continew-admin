@@ -1,94 +1,82 @@
 /**
- * Boot script that reads user preference values from cookies or localStorage
- * based on the configured persistence mode.
+ * Boot script that reads every saved preference (cookie or localStorage) and writes it to
+ * `<html>` as data attributes and CSS custom properties.
  *
- * The script is inlined into index.html at build time so the data attributes and
- * CSS variables are applied before the first paint, which keeps the theme and
- * layout from flickering on reload. Fonts are not part of it: `--app-font-sans`
- * lives in globals.css and is bundled with the stylesheet.
+ * The script is inlined into index.html at build time so the values are applied before the
+ * first paint, which keeps the theme and layout from flickering on reload. Only the DOM
+ * targets are serialized, so the inlined payload stays small.
+ *
+ * `parse` mirrors `parsePreference` in preferences-config.ts; keep the two in step.
  */
-import { PREFERENCE_REGISTRY } from '../lib/preferences/preferences-config'
+import { getPreferenceStorageKey, PREFERENCE_KEYS, PREFERENCE_REGISTRY } from '../lib/preferences/preferences-config'
 
 export function buildThemeBootScript(): string {
-  const registry = JSON.stringify(PREFERENCE_REGISTRY)
+  // Only preferences that reach the DOM are needed before the first paint.
+  const entries = PREFERENCE_KEYS.flatMap(key => {
+    const d = PREFERENCE_REGISTRY[key] as Record<string, unknown>
+    if (!d.attribute && !d.cssVar) return []
+    return [
+      [
+        getPreferenceStorageKey(key),
+        d.persistence === 'client-cookie' ? 1 : 0,
+        d.type,
+        d.defaultValue,
+        d.type === 'enum' ? d.values : d.type === 'number' ? [d.min, d.max] : d.type === 'text' ? d.maxLength : 0,
+        d.attribute ?? 0,
+        d.cssVar ? ([] as unknown[]).concat(d.cssVar) : 0,
+        d.unit ?? ''
+      ]
+    ]
+  })
 
   return `
     (function () {
       try {
         var root = document.documentElement;
-        var REGISTRY = ${registry};
-
-        function readCookie(name) {
-          var match = document.cookie.split("; ").find(function(c) {
-            return c.startsWith(name + "=");
-          });
-          return match ? decodeURIComponent(match.split("=")[1]) : null;
-        }
+        var ENTRIES = ${JSON.stringify(entries)};
+        var cookies = {};
+        document.cookie.split("; ").forEach(function (c) {
+          var i = c.indexOf("=");
+          if (i <= 0) return;
+          var raw = c.slice(i + 1);
+          // One malformed cookie on the domain must not abort the whole script.
+          try { raw = decodeURIComponent(raw); } catch (e) {}
+          cookies[c.slice(0, i)] = raw;
+        });
 
         function readLocal(name) {
-          try {
-            return window.localStorage.getItem(name);
-          } catch (e) {
-            return null;
-          }
+          try { return window.localStorage.getItem(name); } catch (e) { return null; }
         }
 
-        function readPreference(key, definition) {
-          var storageKey = definition.persistence === "localStorage" ? "pref_" + key : key;
-          var raw = null;
-
-          if (definition.persistence === "localStorage") {
-            raw = readLocal(storageKey);
-          } else if (definition.persistence === "client-cookie") {
-            raw = readCookie(storageKey);
+        function parse(type, raw, fallback, extra) {
+          if (raw == null) return fallback;
+          if (type === "enum") return extra.indexOf(raw) >= 0 ? raw : fallback;
+          if (type === "boolean") return raw === "true" ? true : raw === "false" ? false : fallback;
+          if (type === "number") {
+            var n = Number(raw);
+            if (raw === "" || !isFinite(n)) return fallback;
+            return Math.min(Math.max(Math.round(n), extra[0]), extra[1]);
           }
-
-          if (raw == null || raw === "") return definition.defaultValue;
-
-          if (definition.type === "enum") {
-            return definition.values.indexOf(raw) >= 0 ? raw : definition.defaultValue;
-          }
-
-          if (definition.type === "number") {
-            var value = Number(String(raw).replace(/[^0-9.+-]/g, ""));
-            if (!isFinite(value)) return definition.defaultValue;
-            value = Math.round(value);
-            if (value < definition.min) value = definition.min;
-            if (value > definition.max) value = definition.max;
-            return value;
-          }
-
+          if (type === "text") return raw.slice(0, extra);
           return raw;
         }
 
-        var preferences = {};
+        var themeMode = "light";
 
-        Object.keys(REGISTRY).forEach(function(key) {
-          var definition = REGISTRY[key];
-          var value = readPreference(key, definition);
-
-          preferences[key] = value;
-
-          if (definition.attribute) {
-            root.setAttribute(definition.attribute, String(value));
-          }
-
-          if (definition.cssVar) {
-            var names = Array.isArray(definition.cssVar) ? definition.cssVar : [definition.cssVar];
-            var cssValue = definition.type === "number" && definition.unit ? value + definition.unit : String(value);
-            names.forEach(function(name) {
-              root.style.setProperty(name, cssValue);
-            });
+        ENTRIES.forEach(function (e) {
+          var raw = e[1] ? cookies[e[0]] : readLocal(e[0]);
+          var value = parse(e[2], raw, e[3], e[4]);
+          if (e[0] === "theme_mode") themeMode = value;
+          if (e[5]) root.setAttribute(e[5], String(value));
+          if (e[6] && value !== "") {
+            e[6].forEach(function (name) { root.style.setProperty(name, value + e[7]); });
           }
         });
 
-        var mode = preferences.theme_mode;
         var resolvedMode =
-          mode === "system" && window.matchMedia
+          themeMode === "system" && window.matchMedia
             ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-            : mode === "dark"
-              ? "dark"
-              : "light";
+            : themeMode === "dark" ? "dark" : "light";
 
         root.classList.toggle("dark", resolvedMode === "dark");
         root.style.colorScheme = resolvedMode;
