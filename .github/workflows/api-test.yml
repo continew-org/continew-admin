@@ -1,4 +1,4 @@
-name: API Test (L3)
+name: API Tests
 
 on:
   pull_request:
@@ -33,7 +33,8 @@ jobs:
         run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
   l3:
-    name: L3 API black-box
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: API tests
     needs: detect
     # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
     if: needs.detect.outputs.backend == 'true'

@@ -38,7 +38,7 @@ jobs:
   checks:
     name: UI checks
     needs: detect
-    # 纯后端/纯文档 PR 上中性 Skipped，必需检查（登记分支保护后）不悬空
+    # 纯后端/纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
     if: needs.detect.outputs.ui == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30

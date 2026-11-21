@@ -36,7 +36,8 @@ jobs:
         run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
   build:
-    name: Build and analyze
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: Sonar analysis
     needs: detect
     # 外部 PR 无权读取 SONAR_TOKEN，跳过避免必红；外部 PR 由 OCR 与人工评审把关，合并后 push 分析兜底
     if: >-

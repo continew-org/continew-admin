@@ -1,16 +1,16 @@
-name: Test Companion (Shadow)
+name: Test Change Advisory
 
 on:
   pull_request:
     branches:
       - dev
 
-# shadow 作业只读 pull_request token 即可列出改动文件，无需 checkout；fork PR 同样适用。
+# advisory 作业只读 pull_request token 即可列出改动文件，无需 checkout；fork PR 同样适用。
 # detect 作业需要 checkout 内容做 diff 判定，按 job 级权限覆盖为 contents: read。
 permissions:
   pull-requests: read
 
-# 同 PR 新 push 取消旧 run，避免多份影子信号并存。
+# 同 PR 新 push 取消旧 run，避免多份 advisory 结论并存。
 concurrency:
   group: test-companion-${{ github.event.pull_request.number }}
   cancel-in-progress: true
@@ -20,7 +20,7 @@ jobs:
     name: Detect changes
     runs-on: ubuntu-24.04
     timeout-minutes: 10
-    # 工作流级权限仅为 pull-requests: read（供 shadow 作业列 PR 文件），
+    # 工作流级权限仅为 pull-requests: read（供 advisory 作业列 PR 文件），
     # 本作业需要 checkout 仓库内容，按 job 级覆盖
     permissions:
       contents: read
@@ -38,8 +38,9 @@ jobs:
         # 检查分流由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）
         run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
-  shadow:
-    name: Test companion (shadow)
+  advisory:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: Test change advisory
     needs: detect
     # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
     if: needs.detect.outputs.backend == 'true'
@@ -47,7 +48,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Inspect changed files
-        # 影子阶段：只写 job summary，不评论、不打标签、不 setFailed，不影响合并。
+        # advisory 定位：只写 job summary，不评论、不打标签、不 setFailed，不影响合并。
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
@@ -72,11 +73,11 @@ jobs:
             const missing = production.length > 0 && tests.length === 0;
 
             const lines = [
-              '## 测试配套影子检查',
+              '## 测试配套检查（advisory，不影响合并）',
               '',
               `- 生产 Java 改动：${production.length}`,
               `- 测试 Java 改动：${tests.length}`,
-              `- 判定：${missing ? '缺少测试配套（仅记录，不影响合并）' : '无需关注'}`,
+              `- 判定：${missing ? '缺少测试配套' : '无需关注'}`,
               '',
             ];
             if (production.length > 0) {
@@ -89,5 +90,5 @@ jobs:
             core.summary.addRaw(lines.join('\n'));
             await core.summary.write();
             core.info(missing
-              ? '影子信号：本次生产代码改动没有配套测试改动。'
-              : '影子信号：未发现缺少配套测试的生产代码改动。');
+              ? '本次生产代码改动没有配套测试改动（仅记录，不影响合并）。'
+              : '未发现缺少配套测试的生产代码改动。');

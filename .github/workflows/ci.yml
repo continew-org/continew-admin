@@ -36,7 +36,7 @@ jobs:
         run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
   build:
-    name: Build and verify
+    name: Backend checks
     needs: detect
     # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
     if: needs.detect.outputs.backend == 'true'
