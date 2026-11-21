@@ -58,7 +58,7 @@ CRUD 接口的权限码不需要手写注解也能出现在文档里。`NextDoc4
 Controller 层的文档注解沿用 swagger-annotations（jakarta 版）。`@Tag(name = "用户管理 API")` 定组内标题，`@Operation(summary = "...", description = "...")` 定接口名与说明，`@Parameter(name = "id", in = ParameterIn.PATH)` 补路径参数说明，模型字段用 `@Schema(description = "...", example = "...")`。`UserController` 与 `AbstractCrudController` 里全是现成例子。
 
 <Callout type="info">
-接口文档页面同时被前端「关于 → 接口文档」菜单内嵌（`views/about/document/api/index.vue` 用 iframe 引入 `${apiBaseUrl}/doc.html`），不需要单独部署文档服务。
+接口文档由后端服务直接提供，浏览器访问后端服务的 `/doc.html` 即可，不需要单独部署文档服务。
 </Callout>
 
 ## 完整参考实现

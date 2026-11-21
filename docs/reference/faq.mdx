@@ -27,9 +27,9 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 ### 前端 `pnpm install` 或 `pnpm dev` 异常
 
-前端锁定 pnpm 9.3.0，用 npm/yarn 或差异过大的 pnpm 版本安装，lockfile 解析结果不同，容易出现依赖缺失或构建失败。
+前端使用 pnpm，lockfile 为 pnpm 9 格式（`continew-ui/pnpm-lock.yaml` 的 `lockfileVersion: '9.0'`）。用 npm/yarn 或差异过大的 pnpm 版本安装，lockfile 解析结果不同，容易出现依赖缺失或构建失败。
 
-`corepack enable` 后 `corepack prepare pnpm@9.3.0 --activate`，再执行 `pnpm install`。
+安装 pnpm 9（`corepack enable` 后 `corepack prepare pnpm@9 --activate`），再执行 `pnpm install`。
 
 ## 启动
 
@@ -87,9 +87,9 @@ prod 默认 `snail-job.enabled: true`，没部署调度中心时启动或访问�
 
 Access Token 只存内存，刷新依赖 Refresh Token 的 HttpOnly Cookie。Cookie 没种上或没带上，刷新就失败。三个高频原因。
 
-1. 前端代理路径不在 Cookie 作用域内。`continew-starter.refresh-token.cookie-path` 必须覆盖前端代理前缀（如 `/dev-api`），配置为 `/` 最稳妥；
+1. 前端代理路径不在 Cookie 作用域内。`continew-starter.refresh-token.cookie-path` 必须覆盖前端代理前缀（默认 `/api`），配置为 `/` 最稳妥；
 2. 跨域来源不在白名单。`cookie-allowed-origins` 要包含前端源，且不继承通用 CORS 的 `*`；
-3. 前端请求没带凭证。`refreshToken()` 走 `withCredentials`，前端 dev server 代理或 Nginx 把 Cookie 丢掉了也会出现这个症状，检查代理配置与 `Set-Cookie` 是否被剥离。
+3. 前端请求没带凭证。刷新令牌与业务请求统一以 `credentials: 'include'` 携带 Cookie（`continew-ui/src/lib/http.ts`），前端 dev server 代理或 Nginx 把 Cookie 丢掉了也会出现这个症状，检查代理配置与 `Set-Cookie` 是否被剥离。
 
 ### 生产环境登录后频繁 401 或全站 429
 
@@ -103,19 +103,19 @@ Access Token 只存内存，刷新依赖 Refresh Token 的 HttpOnly Cookie。Coo
 
 报错特征为 `Port 8000 was already in use`。dev 端口 8000，prod 端口 18000。
 
-Windows 下 `netstat -ano | findstr :8000` 找到 PID 后在任务管理器结束；或修改对应 `application-*.yml` 的 `server.port`。改 dev 端口要同步改前端 `.env.development` 的 `VITE_API_BASE_URL`、`VITE_API_WS_URL`。
+Windows 下 `netstat -ano | findstr :8000` 找到 PID 后在任务管理器结束；或修改对应 `application-*.yml` 的 `server.port`。改 dev 端口要同步改前端 `continew-ui/.env.development` 的 `VITE_API_BASE_URL`。
 
 ### 前端 5173 能开但接口全 404 / 网络错误
 
-dev server 把 `VITE_API_PREFIX`（默认 `/dev-api`）代理到 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。后端没启动、端口改过、或代理目标写错，都会表现为页面正常、接口全挂。
+dev server 把 `VITE_API_PREFIX`（默认 `/api`）代理到 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。后端没启动、端口改过、或代理目标写错，都会表现为页面正常、接口全挂。
 
-先直接访问 `http://localhost:8000/v3/api-docs` 验证后端存活；再核对 `.env.development` 三个值与后端实际端口一致；改了 `.env` 要重启 dev server 才生效。
+先直接访问 `http://localhost:8000/v3/api-docs` 验证后端存活；再核对 `continew-ui/.env.development` 中 `VITE_API_PREFIX` 与 `VITE_API_BASE_URL` 两个值与后端实际地址一致；改了 `.env` 要重启 dev server 才生效。
 
 ### WebSocket 连不上
 
-WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:8000`。经 Nginx 部署后连不上，基本是代理没转发 Upgrade 头。
+WebSocket 走 `/websocket` 路径。经 Nginx 部署后连不上，基本是代理没转发 Upgrade 头。
 
-按仓库自带 nginx.conf 的后端站点配置，确认 `proxy_http_version 1.1` 与 `Upgrade`、`Connection` 两个头已设置；前端 `VITE_API_WS_URL` 生产用 `wss://`。
+按仓库自带 nginx.conf 的后端站点配置，确认 `proxy_http_version 1.1` 与 `Upgrade`、`Connection` 两个头已设置。
 
 ## 依赖
 
@@ -131,14 +131,14 @@ ContiNew Starter 已发布到 Maven 中央仓库（`top.continew.starter`），a
 
 先 `./mvnw dependency:tree` 找出谁引入了冲突版本；升级以 Starter 发布的适配版本为准（README 徽章标注当前适配的 Starter 版本），不要绕开 BOM 单独 bump。
 
-### 前端类型检查报错导致 `pnpm build` 中断
+### 前端类型检查报错
 
-`pnpm build` 先执行 `vue-tsc --noEmit`，类型错误会中断构建，dev 能跑不代表能构建。
+`pnpm build` 只执行 `vite build`，类型检查是独立命令 `pnpm typecheck`（`tsc --noEmit`），dev 能跑不代表类型检查通过，提交前与 `pnpm lint`、`pnpm build` 一起执行。
 
-`pnpm typecheck` 单独跑类型检查定位报错；升级依赖后出现的类型错误，优先对照 continew-admin-ui 仓库同版本代码修复，不要加 `// @ts-ignore` 绕过。
+`pnpm typecheck` 定位报错；升级依赖后出现的类型错误，优先对照本仓库 `continew-ui/` 现有代码修复，不要加 `// @ts-ignore` 绕过。
 
 ## 相关源码
 
 - [continew-server/src/main/resources/config/](https://github.com/continew-org/continew-admin/tree/dev/continew-server/src/main/resources/config)
-- [continew-admin-ui/.env.development](https://github.com/continew-org/continew-admin-ui/blob/dev/.env.development)
-- [continew-admin-ui/vite.config.ts](https://github.com/continew-org/continew-admin-ui/blob/dev/vite.config.ts)
+- [continew-ui/.env.development](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/.env.development)
+- [continew-ui/vite.config.ts](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/vite.config.ts)
