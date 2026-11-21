@@ -56,6 +56,8 @@ jobs:
           java-version: 25
           distribution: temurin
           cache: maven
+          # 只有 push（dev）写入缓存，PR 与手动触发一律只读，避免每个 PR ref 各存一份
+          cache-read-only: ${{ github.event_name != 'push' }}
       - name: Build and verify
         # verify 触发完整门禁：Enforcer -> Spotless check -> Checkstyle (validate) -> 编译 -> 单元测试 (test) -> SpotBugs (verify)
         run: ./mvnw -B verify

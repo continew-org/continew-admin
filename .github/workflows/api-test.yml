@@ -45,6 +45,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Remove repository mirrors
+        # 与 ci.yml / sonar.yml 同形：托管 runner 上国内镜像不稳定，改用 Maven Central。
+        # 必须在 setup-java 之前执行：Maven 缓存键按此刻磁盘上的 POM 内容计算
+        # （**/pom.xml 参与 hashFiles），缺这一步会算出与 dev 写入方不同的键，
+        # 精确键永不命中，每次全量冷下载依赖（setup-java 未设 restore-keys 兜底）
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+
       - name: Set up JDK 25
         # 与 ci.yml 同 pinned 版本；构建基线 JDK 25，产物字节码 17。
         # 瘦包由 up.sh 内的 ./mvnw package 现构建，运行时镜像自带 JRE 17。
@@ -53,6 +62,8 @@ jobs:
           java-version: 25
           distribution: temurin
           cache: maven
+          # 本工作流只由 pull_request 触发，缓存一律只读；写入方只有 dev 上的 Backend checks / Sonar analysis
+          cache-read-only: true
 
       - name: Start test environment
         # up.sh：探测空闲端口 -> mvnw package 瘦包 -> compose 启 MySQL/Redis/应用 -> 健康检查 -> 关闭验证码

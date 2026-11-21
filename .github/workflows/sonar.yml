@@ -63,6 +63,8 @@ jobs:
           java-version: 25
           distribution: temurin
           cache: maven
+          # 只有 push（dev）写入缓存，PR 与手动触发一律只读，避免每个 PR ref 各存一份
+          cache-read-only: ${{ github.event_name != 'push' }}
       - name: Cache SonarQube packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
