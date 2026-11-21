@@ -83,7 +83,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 | 改动类型 | 先读 | 必跑 |
 |:--|:--|:--|
-| 仅 `continew-ui/` | [continew-ui/AGENTS.md](continew-ui/AGENTS.md) | `pnpm fmt:check` / `lint` / `typecheck` / `test` / `build`（在 `continew-ui/` 下执行） |
+| 仅 `continew-ui/` | [continew-ui/AGENTS.md](continew-ui/AGENTS.md) | `pnpm check`（在 `continew-ui/` 下执行，含格式、lint、类型、测试、构建） |
 | 仅后端 Java | 本文「提交前门禁」 | `./mvnw verify` |
 | 跨端 | 两份 AGENTS.md | 两侧都跑 |
 | 仅文档 / 模板 / CI | — | 不跑门禁 |

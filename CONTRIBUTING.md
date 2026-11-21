@@ -112,7 +112,7 @@ git checkout -b feat/your-feature upstream/dev
 **纯前端（仅 `continew-ui/`）**：在 `continew-ui/` 下执行：
 
 ```bash
-pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build
+pnpm check    # 依次执行 fmt:check、lint、typecheck、test、build
 ```
 
 **纯后端（仅 Java 源码与 POM）**：执行：
@@ -200,7 +200,7 @@ git push --force-with-lease
 
 - [ ] 一个 PR 只解决一个 Issue（只做一件事），不夹带无关改动
 - [ ] 代码遵循已有风格；注释只写当前代码的非显然约束，不复述实现、不写变更痕迹与修复叙事，符合阿里巴巴《Java 开发手册(黄山版)》
-- [ ] 本地已按改动范围跑过对应检查：后端 `./mvnw verify` 四道静态门禁与单元测试全部通过；前端在 `continew-ui/` 下 `pnpm fmt:check` / `lint` / `typecheck` / `test` / `build` 全部通过（见「开发与自测」）
+- [ ] 本地已按改动范围跑过对应检查：后端 `./mvnw verify` 四道静态门禁与单元测试全部通过；前端在 `continew-ui/` 下 `pnpm check` 全部通过（见「开发与自测」）
 - [ ] （可选）已在本地完成 AI 自检。安装 `ocr` CLI 后，在 AI 编码工具中调用 `open-code-review-delegate`；该检查为建议项，不阻塞合并
 - [ ] 如有行为变更，已同步更新相关文档（含 Liquibase 变更日志）
 - [ ] 按 PR 模板完整填写 Changelog 表格，并关联相关 Issue（Closes/Fixes/Resolves #<issue号>）

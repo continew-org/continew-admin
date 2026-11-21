@@ -34,12 +34,18 @@ React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 
 在 `continew-ui/` 下执行：
 
 ```bash
-pnpm fmt:check    # 格式检查（oxfmt），不通过时执行 pnpm fmt 修复
-pnpm lint         # oxlint 静态检查
-pnpm typecheck    # tsc --noEmit
-pnpm test         # vitest run
-pnpm build        # 生产构建，同时重新生成 routeTree.gen.ts
+pnpm check    # 依次执行下列五条，任一步失败即中断
 ```
+
+| 命令 | 作用 |
+|:--|:--|
+| `pnpm fmt:check` | 格式检查（oxfmt），不通过时执行 `pnpm fmt` 修复 |
+| `pnpm lint` | oxlint 静态检查 |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm test` | vitest run |
+| `pnpm build` | 生产构建，同时重新生成 `routeTree.gen.ts` |
+
+排查失败原因时单独运行对应一条；提交前用 `pnpm check` 一把跑完。
 
 oxfmt 会重排代码（含 JSX 折行），改动会波及你没动过的行。**提交前先跑 `pnpm fmt`**，避免把格式化噪声混进功能提交。
 
