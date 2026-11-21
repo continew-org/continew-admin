@@ -1,6 +1,6 @@
 # continew-ui
 
-ContiNew Admin 前端（React 19 / Vite 8）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
+ContiNew Admin 前端（React 19 / Vite 8 / shadcn + Base UI / Tailwind 4）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
 
 ## 技术栈
 
