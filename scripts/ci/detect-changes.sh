@@ -4,7 +4,7 @@
 # 供 scripts/ci/changed-files.sh（事件 -> 清单的编排层）调用；deploy.yml 的
 # simulate 模拟清单不经编排层，直接传入本脚本。清单来源由编排层负责：
 #   pull_request       origin/base 与 HEAD 的 merge-base 三点 diff
-#   push               git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA"
+#   push               事件载荷 .before 与 GITHUB_SHA 的两点 diff
 #   workflow_dispatch  编排层直接用 --all（默认全跑）
 #
 # 用法：

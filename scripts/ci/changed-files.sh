@@ -12,8 +12,9 @@
 #                      base tip，diff 结果为「合并进 base 后的净变更」；
 #                      PR 与 base 改动同一文件、或作者变基后删除 base 新增文件，
 #                      也都如实计入。
-#   push               git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA"；
-#                      before 缺失/全零/不可达时改用 --all（默认全跑）
+#   push               git diff --name-only "$before" "$GITHUB_SHA"，before 取自
+#                      事件载荷 GITHUB_EVENT_PATH（GitHub 未提供对应环境变量）；
+#                      缺失/全零/不可达时改用 --all（默认全跑）
 #   其余（dispatch）   直接 --all
 #
 # 兜底原则：任何一步取清单失败一律降级 --all 并在 stderr 说明原因，脚本自身
@@ -59,7 +60,9 @@ if [ "$event" = 'pull_request' ]; then
 fi
 
 if [ "$event" = 'push' ]; then
-    before=${GITHUB_EVENT_BEFORE:-}
+    # before 仅存在于事件载荷（GitHub 未提供对应环境变量），从 GITHUB_EVENT_PATH 解析；
+    # 解析不出时按缺失处理，走下方 --all 兜底
+    before=$(jq -r '.before // empty' "${GITHUB_EVENT_PATH:-/dev/null}" 2>/dev/null || true)
     if [ -n "$before" ] \
         && [ "$before" != '0000000000000000000000000000000000000000' ] \
         && git cat-file -e "${before}^{commit}" 2>/dev/null; then
