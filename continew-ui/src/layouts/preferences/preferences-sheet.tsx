@@ -4,9 +4,10 @@ import { cn } from 'cn'
 import { Copy, Pin, PinOff, RotateCcw } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 
+import { Tabs } from '@animate-ui/react/primitives/base-ui/tabs'
+
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLogout } from '@/hooks/use-logout'
@@ -27,6 +28,13 @@ const TABS = [
   { value: 'shortcut', label: '快捷键', Content: ShortcutPreferences },
   { value: 'general', label: '通用', Content: GeneralPreferences }
 ] as const
+
+/**
+ * The animate-ui tabs copy the active trigger's surface onto a sliding indicator and morph the
+ * panel (blur, slide, spring height) on change; both honour the reduced-motion preference.
+ */
+const TAB_TRIGGER_CLASS =
+  'relative inline-flex h-[calc(100%-1px)] items-center justify-center rounded-md px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none data-active:bg-background data-active:text-foreground data-active:shadow-sm dark:data-active:bg-input/30'
 
 /** True while any preference differs from its default; recomputed only when the values change. */
 function useHasChanges() {
@@ -117,24 +125,28 @@ export function PreferencesSheet() {
           </div>
         </SheetHeader>
 
-        <Tabs value={tab} onValueChange={value => setTab(String(value))} className="min-h-0 flex-1 gap-0">
+        <Tabs.Root
+          value={tab}
+          onValueChange={value => setTab(String(value))}
+          className="flex min-h-0 flex-1 flex-col gap-0"
+        >
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
             <div className={cn('bg-popover px-4 pt-3 pb-2', sticky && 'sticky top-0 z-10')}>
-              <TabsList className="grid w-full grid-cols-4">
+              <Tabs.List className="grid h-8 w-full grid-cols-4 items-center rounded-lg bg-muted p-[3px] text-sm text-muted-foreground">
                 {TABS.map(tab => (
-                  <TabsTrigger key={tab.value} value={tab.value}>
+                  <Tabs.Tab key={tab.value} value={tab.value} className={TAB_TRIGGER_CLASS}>
                     {tab.label}
-                  </TabsTrigger>
+                  </Tabs.Tab>
                 ))}
-              </TabsList>
+              </Tabs.List>
             </div>
             {TABS.map(({ value, Content }) => (
-              <TabsContent key={value} value={value} className="px-3 pb-6">
+              <Tabs.Panel key={value} value={value} className="px-3 pb-6 outline-none">
                 <Content />
-              </TabsContent>
+              </Tabs.Panel>
             ))}
           </div>
-        </Tabs>
+        </Tabs.Root>
 
         <div className={cn('grid gap-3 border-t p-4', canCopy ? 'grid-cols-2' : 'grid-cols-1')}>
           {canCopy && (
