@@ -87,7 +87,7 @@ export function DashboardAccessTrend() {
         ) : !data.some(point => point.pvCount > 0 || point.ipCount > 0) ? (
           <QueryState state="empty" className="h-72" title="暂无访问数据" />
         ) : (
-          <ChartContainer config={chartConfig} className="aspect-auto h-72 w-full">
+          <ChartContainer config={chartConfig} debounce={220} className="aspect-auto h-72 w-full">
             <ComposedChart data={data} margin={{ top: 0 }}>
               <defs>
                 <linearGradient id="fillPvCount" x1="0" y1="0" x2="0" y2="1">

@@ -70,7 +70,7 @@ export function RankBarChart({ data, vertical = false, className }: RankBarChart
   const radius: [number, number, number, number] = vertical ? [0, 4, 4, 0] : [4, 4, 0, 0]
 
   return (
-    <ChartContainer config={valueConfig} className={cn('aspect-auto h-60 w-full', className)}>
+    <ChartContainer config={valueConfig} debounce={220} className={cn('aspect-auto h-60 w-full', className)}>
       <BarChart
         accessibilityLayer
         data={data}
@@ -107,7 +107,7 @@ export function RankBarChart({ data, vertical = false, className }: RankBarChart
 export function DistributionPieChart({ data, className }: { data: DashboardChartItem[]; className?: string }) {
   return (
     <div className={cn('flex flex-col', className)}>
-      <ChartContainer config={valueConfig} className="aspect-auto h-48 w-full">
+      <ChartContainer config={valueConfig} debounce={220} className="aspect-auto h-48 w-full">
         <PieChart>
           <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
           <Pie data={data} dataKey="value" nameKey="name" innerRadius={48} outerRadius={80} paddingAngle={2}>
