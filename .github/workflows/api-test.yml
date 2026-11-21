@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - dev
-    paths-ignore:
-      - '**.md'
 
 permissions:
   contents: read
@@ -16,8 +14,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect:
+    name: Detect changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 改动检测需要 base 提交对象参与 diff，取完整历史
+          fetch-depth: 0
+      - name: Detect changed paths
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        # 本工作流仅 pull_request 触发；工作流级不做任何 paths 过滤，
+        # 检查分流由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）
+        run: |
+          set -eo pipefail
+          git diff --name-only "$BASE_SHA...HEAD" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+
   l3:
     name: L3 API black-box
+    needs: detect
+    # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
+    if: needs.detect.outputs.backend == 'true'
     # 托管 runner：自带 Docker 与 JDK 25，且天然覆盖 fork PR。
     # L3 仅用仓库内公开弱凭据、无 secret、无写权限，fork 运行无安全风险。
     runs-on: ubuntu-24.04

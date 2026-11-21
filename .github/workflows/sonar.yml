@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - dev
-    paths-ignore:
-      - '**.md'
   pull_request:
     branches:
       - dev
-    paths-ignore:
-      - '**.md'
   workflow_dispatch:
 
 permissions:
@@ -21,13 +17,47 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  detect:
+    name: Detect changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 改动检测需要 base/before 提交对象参与 diff，取完整历史
+          fetch-depth: 0
+      - name: Detect changed paths
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+        # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
+        # 检查分流必须由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）
+        run: |
+          set -eo pipefail
+          if [ "$GITHUB_EVENT_NAME" = 'pull_request' ]; then
+            git diff --name-only "$BASE_SHA...HEAD" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+          elif [ "$GITHUB_EVENT_NAME" = 'push' ] && [ -n "$BEFORE_SHA" ] \
+            && [ "$BEFORE_SHA" != '0000000000000000000000000000000000000000' ] \
+            && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
+            git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+          else
+            # workflow_dispatch，或 push 的 before 缺失/全零/不可达（新分支、force-push）：默认全跑
+            bash scripts/ci/detect-changes.sh --all >> "$GITHUB_OUTPUT"
+          fi
+
   build:
     name: Build and analyze
+    needs: detect
     # 外部 PR 无权读取 SONAR_TOKEN，跳过避免必红；外部 PR 由 OCR 与人工评审把关，合并后 push 分析兜底
     if: >-
       github.repository == 'continew-org/continew-admin'
       && (github.event_name != 'pull_request'
         || github.event.pull_request.head.repo.full_name == github.repository)
+      && needs.detect.outputs.backend == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
