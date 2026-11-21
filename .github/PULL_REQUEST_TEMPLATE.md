@@ -1,5 +1,6 @@
 <!--
-  非常感谢您的 PR！提交前请确保本地执行 ./mvnw verify 通过全部门禁（Enforcer / Spotless / Checkstyle / SpotBugs）。
+  非常感谢您的 PR！提交前请按改动范围执行对应检查：
+  后端改动运行 ./mvnw verify（Enforcer / Spotless / Checkstyle / SpotBugs），前端改动在 continew-ui/ 下运行 pnpm check。
   贡献流程详见 CONTRIBUTING.md。
 -->
 

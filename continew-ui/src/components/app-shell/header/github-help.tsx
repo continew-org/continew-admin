@@ -6,7 +6,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 
 /** Where to send people for help with this project. */
 const DOCS_URL = 'https://continew.top/docs/admin'
-const REPOSITORY_URL = 'https://github.com/ppxb/continew-ui-next'
+const REPOSITORY_URL = 'https://github.com/continew-org/continew-admin'
 
 /** The help entry in the header toolbar: a GitHub icon that reveals the help links on hover. */
 export function GithubHelp() {

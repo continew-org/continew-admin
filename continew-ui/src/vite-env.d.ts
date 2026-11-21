@@ -11,7 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_RSA_PUBLIC_KEY: string
   /** Dev server port; build and `vite preview` ignore it. */
   readonly VITE_APP_PORT: string
-  /** Public path the app is served from, e.g. `/continew-ui-next/` on GitHub Pages; defaults to `/`. */
+  /** Public path the app is served from, e.g. `/admin/` when deployed under a sub-path; defaults to `/`. */
   readonly VITE_BASE_PATH: string
 }
 

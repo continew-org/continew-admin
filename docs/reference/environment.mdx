@@ -111,7 +111,7 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 | `VITE_APP_PORT` | dev server 端口，`vite build` 与 `vite preview` 不读取 | `5173` | `5173`（构建不使用） |
 | `VITE_CLIENT_ID` | 登录时上报的客户端 ID，对应后端「客户端配置」 | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 |
 | `VITE_APP_RSA_PUBLIC_KEY` | 登录密码 RSA 加密公钥，须与后端 `FIELD_ENCRYPT_PUBLIC_KEY` 同密钥对 | 内置与后端 dev 配对的示例公钥 | 同左，生产换密钥对时构建前替换 |
-| `VITE_BASE_PATH` | 部署子路径 base（如 `/continew-ui-next/`），缺省 `/` | 不设置 | 不设置 |
+| `VITE_BASE_PATH` | 部署子路径 base（如 `/admin/`），缺省 `/` | 不设置 | 不设置 |
 
 ### 变量在代码里的落点
 

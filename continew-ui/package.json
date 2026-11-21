@@ -1,6 +1,6 @@
 {
-  "name": "continew-ui-next",
-  "version": "0.1.0",
+  "name": "continew-ui",
+  "version": "5.0.0-SNAPSHOT",
   "private": true,
   "type": "module",
   "imports": {
