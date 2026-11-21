@@ -37,7 +37,7 @@ import java.util.List;
  * @since 1.3.0
  */
 @Data
-@TableName("sys_message")
+@TableName(value = "sys_message", autoResultMap = true)
 public class MessageDO implements Serializable {
 
     @Serial
