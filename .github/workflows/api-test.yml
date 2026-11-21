@@ -28,13 +28,9 @@ jobs:
           fetch-depth: 0
       - name: Detect changed paths
         id: changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         # 本工作流仅 pull_request 触发；工作流级不做任何 paths 过滤，
-        # 检查分流由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）
-        run: |
-          set -eo pipefail
-          git diff --name-only "$BASE_SHA...HEAD" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+        # 检查分流由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）
+        run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
   l3:
     name: L3 API black-box

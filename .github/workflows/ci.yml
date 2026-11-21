@@ -31,23 +31,9 @@ jobs:
           fetch-depth: 0
       - name: Detect changed paths
         id: changes
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          BEFORE_SHA: ${{ github.event.before }}
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
-        # 检查分流必须由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）
-        run: |
-          set -eo pipefail
-          if [ "$GITHUB_EVENT_NAME" = 'pull_request' ]; then
-            git diff --name-only "$BASE_SHA...HEAD" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
-          elif [ "$GITHUB_EVENT_NAME" = 'push' ] && [ -n "$BEFORE_SHA" ] \
-            && [ "$BEFORE_SHA" != '0000000000000000000000000000000000000000' ] \
-            && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
-            git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
-          else
-            # workflow_dispatch，或 push 的 before 缺失/全零/不可达（新分支、force-push）：默认全跑
-            bash scripts/ci/detect-changes.sh --all >> "$GITHUB_OUTPUT"
-          fi
+        # 检查分流必须由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）
+        run: bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
 
   build:
     name: Build and verify
