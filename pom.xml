@@ -91,13 +91,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 代码生成器插件（后续会改造为独立插件） -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>continew-plugin-generator</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- REST Assured（L3 API 黑盒测试 HTTP 客户端，continew-server 以 test scope 引入） -->
             <!-- 版本暂由本项目管理，待 Starter 统一管理后移除 -->
             <dependency>
