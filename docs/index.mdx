@@ -15,7 +15,7 @@ icon: Rocket
 | JDK | 17 | 后端运行时（Spring Boot 4 的最低要求） |
 | Maven | 3.9.16 | 后端构建，仓库自带 `mvnw`，无需单独安装（enforcer 锁定 3.9.x，Maven 4 未适配） |
 | Node.js | 22 | 前端运行与构建（Vite 8 开发服务器要求 Node 20.19+ / 22.12+） |
-| pnpm | 9+ | 前端包管理（lockfile 为 9.0 格式，未锁定 pnpm 版本） |
+| pnpm | 锁定版本 | 前端包管理，版本由 `continew-ui/package.json` 的 `packageManager` 字段锁定，`corepack enable` 后自动使用 |
 | MySQL | 8.4.13 | 业务数据库（也支持 PostgreSQL 16+，脚本在 `db/changelog/postgresql`，切换步骤见[部署](/docs/admin/reference/deployment)） |
 | Redis | 7.2.17 | 缓存、会话、验证码、限流共用 |
 
@@ -85,6 +85,7 @@ IDEA 用户在运行配置的 Environment variables 里追加即可。Redis 没�
 
 ```bash
 cd continew-ui
+corepack enable
 pnpm install
 ```
 

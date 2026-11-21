@@ -27,9 +27,9 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 ### 前端 `pnpm install` 或 `pnpm dev` 异常
 
-前端使用 pnpm，lockfile 为 pnpm 9 格式（`continew-ui/pnpm-lock.yaml` 的 `lockfileVersion: '9.0'`）。用 npm/yarn 或差异过大的 pnpm 版本安装，lockfile 解析结果不同，容易出现依赖缺失或构建失败。
+前端使用 pnpm，版本由 `continew-ui/package.json` 的 `packageManager` 字段锁定。用 npm/yarn 或版本不符的 pnpm 安装，lockfile 解析结果不同，容易出现依赖缺失或构建失败。
 
-安装 pnpm 9（`corepack enable` 后 `corepack prepare pnpm@9 --activate`），再执行 `pnpm install`。
+在仓库根目录执行 `corepack enable`，进入 `continew-ui/` 后直接运行 `pnpm install`，corepack 会按 `packageManager` 自动取用锁定版本，不需要手动安装指定版本。
 
 ## 启动
 

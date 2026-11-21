@@ -14,7 +14,8 @@ icon: Server
 |:-----|:-----|:-----|
 | JDK | 17 | Spring Boot 4 的最低要求，打包与运行都需要 |
 | Maven | 3.9.16 | 项目用 Maven Wrapper 锁定，直接用 `./mvnw` |
-| Node.js / pnpm | Node 22 / pnpm 9+ | 仅构建前端时需要 |
+| Node.js | 22 | 前端构建（Vite 8 要求 Node 20.19+ / 22.12+） |
+| pnpm | 锁定版本 | 版本由 `continew-ui/package.json` 的 `packageManager` 字段锁定，`corepack enable` 后自动使用 |
 | MySQL | 8.4.13 | 也支持 PostgreSQL 16+，见下方切换步骤 |
 | Redis | 7.2.17 | 会话、缓存、验证码、限流共用 |
 | Nginx | 1.29.1 | 前端静态资源托管与后端反向代理 |
@@ -44,7 +45,9 @@ continew-starter.web.cors:
 
 ### 前端
 
-`pnpm build` 使用 `.env.production`，确认 `VITE_API_BASE_URL` 指向实际后端域名（出厂值 `https://api.continew.top`，自建部署换成自己的域名，开启 SSL 用 `https`）。该完整 URL 会在构建时烧进前端产物，浏览器直连后端域名，对应 Nginx 出厂的双站点结构。另外确认 `VITE_APP_RSA_PUBLIC_KEY` 与后端 `FIELD_ENCRYPT_PUBLIC_KEY` 是同一密钥对，更换密钥时在构建前替换。
+`pnpm build` 使用 `.env.production`，确认 `VITE_API_BASE_URL` 指向实际后端域名（出厂值 `https://api.continew.top`，自建部署换成自己的域名，开启 SSL 用 `https`）。该完整 URL 会在构建时烧进前端产物，浏览器直连后端域名，对应 Nginx 出厂的双站点结构。
+
+`VITE_APP_RSA_PUBLIC_KEY` 必须与后端 `FIELD_ENCRYPT_PUBLIC_KEY` 注入的公钥属于同一密钥对，且**不能沿用仓库内的示例密钥**。`.env.production` 的出厂值与 `application-dev.yml` 的示例密钥对配套，其私钥随仓库公开，只能用于本地联调；生产沿用等于让登录密码可被任何拿到仓库的人解密。生成自己的密钥对后，公钥写入 `.env.production`（或构建时注入）再执行 `pnpm build`，私钥仅通过 `FIELD_ENCRYPT_PRIVATE_KEY` 注入后端，不入库。
 
 前后端同域名部署时改用 `VITE_API_PREFIX=/api` + 后端地址，并放开 Nginx 前端站点里 `/api/` 的注释样例；此时 Refresh Token Cookie 天然同源，`cookie-allowed-origins` 的配置压力最小。
 

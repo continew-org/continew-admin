@@ -294,10 +294,12 @@ git clone https://github.com/continew-org/continew-admin.git
 # 启动成功，在控制台末尾会输出 ContiNew Admin service started successfully.
 # 并输出 API 地址及 API 接口文档地址
 
-# 5.启动前端（需要 Node 22 与 pnpm）
+# 5.启动前端（需要 Node 22）
 cd continew-ui
+corepack enable
 pnpm install
 pnpm dev
+# corepack 按 package.json 的 packageManager 取用锁定的 pnpm 版本
 # 浏览器访问 http://localhost:5173，开发环境经 /api 代理连接本地后端，无需额外配置
 ```
 
