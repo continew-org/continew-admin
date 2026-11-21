@@ -1,15 +1,6 @@
 import type { ColumnDef } from '@tanstack/react-table'
 
-import {
-  ChevronRight,
-  Database,
-  ExternalLink,
-  EyeOff,
-  Folder,
-  PenLine,
-  Plus,
-  Trash2
-} from 'lucide-react'
+import { ChevronRight, Database, ExternalLink, EyeOff, Folder, PenLine, Plus, Trash2 } from 'lucide-react'
 
 import { BooleanCell, TypeBadge, type TypeTone } from '@/components/data-badge'
 import { RowActionsMenu } from '@/components/row-actions-menu'

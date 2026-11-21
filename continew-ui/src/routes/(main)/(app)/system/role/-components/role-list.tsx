@@ -144,11 +144,7 @@ export function RoleList() {
         </TableFillArea>
       </ListPageCard>
 
-      <RoleDetailDrawer
-        roleId={detailRoleId}
-        open={detailRoleId !== null}
-        onClose={() => setDetailRoleId(null)}
-      />
+      <RoleDetailDrawer roleId={detailRoleId} open={detailRoleId !== null} onClose={() => setDetailRoleId(null)} />
       <RoleFormDrawer
         roleId={formTarget?.roleId ?? null}
         open={formTarget !== null}

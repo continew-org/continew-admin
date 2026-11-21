@@ -65,8 +65,7 @@ export function DataTable<TRow extends RowData>({
       className={cn(
         'flex flex-1 flex-col',
         fillHeight && 'min-h-0',
-        fillHeight &&
-          '*:data-[slot=table-container]:min-h-0 *:data-[slot=table-container]:flex-1',
+        fillHeight && '*:data-[slot=table-container]:min-h-0 *:data-[slot=table-container]:flex-1',
         !hasFooter && 'pb-4',
         containerClassName
       )}

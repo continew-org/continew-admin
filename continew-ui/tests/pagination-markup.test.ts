@@ -34,4 +34,3 @@ describe('pagination markup', () => {
     expect(disabled).toContain('aria-disabled="true"')
   })
 })
-

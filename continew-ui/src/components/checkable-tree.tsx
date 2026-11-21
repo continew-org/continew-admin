@@ -58,10 +58,7 @@ export function CheckableTree<T = Record<string, unknown>>({
   const checkedKeyStrings = React.useMemo(() => checkedKeys.map(String), [checkedKeys])
 
   /** Disabled nodes are locked, so the batch actions below leave them untouched. */
-  const enabledKeys = React.useMemo(
-    () => index.allKeys.filter(key => !index.nodeMap.get(key)?.disabled),
-    [index]
-  )
+  const enabledKeys = React.useMemo(() => index.allKeys.filter(key => !index.nodeMap.get(key)?.disabled), [index])
 
   const handleSelectAll = () => {
     const next = new Set(checkedKeyStrings)

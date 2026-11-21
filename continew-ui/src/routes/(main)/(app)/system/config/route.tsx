@@ -89,10 +89,7 @@ function SystemConfigPage() {
   const navigate = useNavigate({ from: Route.fullPath })
   const { hasPermission } = usePermission()
 
-  const visibleTabs = React.useMemo(
-    () => ALL_TABS.filter(tab => hasPermission(tab.permission)),
-    [hasPermission]
-  )
+  const visibleTabs = React.useMemo(() => ALL_TABS.filter(tab => hasPermission(tab.permission)), [hasPermission])
 
   const activeTab = visibleTabs.some(tab => tab.key === queryTab) ? queryTab : visibleTabs[0]?.key
 

@@ -38,9 +38,7 @@ function Table({ className, scrollArea = false, ...props }: TableProps) {
     return () => observer.disconnect()
   }, [scrollArea])
 
-  const table = (
-    <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
-  )
+  const table = <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
 
   if (!scrollArea) {
     return (
@@ -79,10 +77,7 @@ function TableScrollbar({ orientation }: { readonly orientation: 'horizontal' | 
       // Base UI pins the vertical bar to the top edge; start it at the bottom of the sticky header.
       style={orientation === 'vertical' ? { top: 'var(--table-header-height, 0px)' } : undefined}
     >
-      <ScrollAreaPrimitive.Thumb
-        data-slot="table-scrollbar-thumb"
-        className="relative flex-1 rounded-full bg-border"
-      />
+      <ScrollAreaPrimitive.Thumb data-slot="table-scrollbar-thumb" className="relative flex-1 rounded-full bg-border" />
     </ScrollAreaPrimitive.Scrollbar>
   )
 }

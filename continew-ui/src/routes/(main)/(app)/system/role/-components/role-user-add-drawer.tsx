@@ -226,7 +226,7 @@ export function RoleUserAddDrawer({ role, open, onClose, onSuccess }: RoleUserAd
 
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto md:flex-row md:overflow-hidden">
           {/* User list */}
-          <div className="flex flex-none min-w-0 flex-col md:min-h-0 md:flex-1">
+          <div className="flex min-w-0 flex-none flex-col md:min-h-0 md:flex-1">
             <div className="flex min-w-0 flex-col rounded-md border *:data-[slot=table-container]:overflow-auto md:min-h-0 md:flex-1 md:*:data-[slot=table-container]:min-h-0 md:*:data-[slot=table-container]:flex-1">
               <Table>
                 <TableHeader className="[&_th]:bg-muted">
@@ -341,7 +341,6 @@ export function RoleUserAddDrawer({ role, open, onClose, onSuccess }: RoleUserAd
                 />
               ) : null}
             </div>
-
           </div>
 
           {/* Chosen users */}

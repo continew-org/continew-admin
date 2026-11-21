@@ -55,12 +55,7 @@ export function DetailGate<T>({
   if (query.isError || data === undefined) {
     return (
       <div className="flex flex-col gap-4">
-        <QueryState
-          state="error"
-          title={errorTitle}
-          onRetry={() => void query.refetch()}
-          className={errorClassName}
-        />
+        <QueryState state="error" title={errorTitle} onRetry={() => void query.refetch()} className={errorClassName} />
         {errorFooter}
       </div>
     )

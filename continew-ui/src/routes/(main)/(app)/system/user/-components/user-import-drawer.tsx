@@ -208,12 +208,7 @@ export function UserImportDrawer({ open, onClose }: UserImportDrawerProps) {
                 请按照模板要求填写数据，填写完毕后，请先上传并进行解析。
               </span>
             </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="shrink-0"
-              onClick={() => void handleDownloadTemplate()}
-            >
+            <Button type="button" variant="outline" className="shrink-0" onClick={() => void handleDownloadTemplate()}>
               <Download />
               下载模板
             </Button>
@@ -277,9 +272,7 @@ export function UserImportDrawer({ open, onClose }: UserImportDrawerProps) {
               <div className="absolute inset-0 flex flex-col justify-center gap-3 overflow-auto rounded-xl border-2 border-primary/40 bg-background/60 p-4 backdrop-blur-sm">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-medium">解析结果</span>
-                  {file ? (
-                    <span className="max-w-full truncate text-xs text-muted-foreground">{file.name}</span>
-                  ) : null}
+                  {file ? <span className="max-w-full truncate text-xs text-muted-foreground">{file.name}</span> : null}
                 </div>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   <Stat label="总计" value={parseResult.totalRows} />

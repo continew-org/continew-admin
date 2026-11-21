@@ -177,7 +177,13 @@ export function UserList() {
             </Button>
           )}
           {hasPermission('system:user:import') && (
-            <Button size="icon" variant="outline" aria-label="导入用户" title="导入用户" onClick={() => setImportOpen(true)}>
+            <Button
+              size="icon"
+              variant="outline"
+              aria-label="导入用户"
+              title="导入用户"
+              onClick={() => setImportOpen(true)}
+            >
               <Upload />
             </Button>
           )}

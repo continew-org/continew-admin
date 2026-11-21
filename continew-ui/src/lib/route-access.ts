@@ -17,11 +17,7 @@ interface RouteMatchLike {
  * menu, because locking every user out over a failed menu request is worse than a page whose
  * own requests answer 403.
  */
-export function requireRouteAccess(
-  pathname: string,
-  matches: readonly RouteMatchLike[],
-  routes: readonly RouteResp[]
-) {
+export function requireRouteAccess(pathname: string, matches: readonly RouteMatchLike[], routes: readonly RouteResp[]) {
   if (matches.at(-1)?.routeId.endsWith('/$') || routes.length === 0) {
     return
   }

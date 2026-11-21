@@ -60,12 +60,5 @@ function AuthenticatedOutlet() {
     return <PagePending />
   }
 
-  return (
-    <QueryState
-      state="error"
-      title="用户信息加载失败"
-      className="min-h-svh"
-      onRetry={() => void loadUser()}
-    />
-  )
+  return <QueryState state="error" title="用户信息加载失败" className="min-h-svh" onRetry={() => void loadUser()} />
 }

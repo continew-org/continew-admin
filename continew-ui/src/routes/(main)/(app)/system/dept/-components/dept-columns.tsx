@@ -48,11 +48,7 @@ function RowActions({ dept, onAction }: { dept: DeptResp; onAction: (action: Dep
           <>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                variant="destructive"
-                disabled={dept.isSystem}
-                onClick={() => onAction('delete', dept)}
-              >
+              <DropdownMenuItem variant="destructive" disabled={dept.isSystem} onClick={() => onAction('delete', dept)}>
                 <Trash2 />
                 {dept.isSystem ? '内置部门' : '删除'}
               </DropdownMenuItem>
