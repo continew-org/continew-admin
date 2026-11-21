@@ -1,9 +1,8 @@
-import * as React from 'react'
-
 import { skipToken, useQuery } from '@tanstack/react-query'
-import { Eye, EyeOff, KeyRound, ShieldAlert } from 'lucide-react'
+import { KeyRound, ShieldAlert } from 'lucide-react'
 
 import { CopyButton } from '@/components/copy-button'
+import { SensitiveText } from '@/components/sensitive-text'
 import { QueryState } from '@/components/query-state'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -17,7 +16,6 @@ import {
   DialogTitle
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLastRecord } from '@/hooks/use-last-record'
 import { appKeys, type AppResp, getAppSecret } from '@/lib/api/app'
 
@@ -28,37 +26,24 @@ interface AppSecretDialogProps {
 }
 
 function SecretField({ label, value, isMaskable = false }: { label: string; value: string; isMaskable?: boolean }) {
-  const [show, setShow] = React.useState(!isMaskable)
-  const displayValue = show ? value : value.replace(/./g, '•')
-
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2">
-        <span className="flex-1 text-sm break-all select-all">{displayValue}</span>
-        <div className="flex shrink-0 items-center gap-1">
-          {isMaskable ? (
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button variant="ghost" size="icon-sm" className="size-7" onClick={() => setShow(prev => !prev)} />
-                }
-              >
-                {show ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
-              </TooltipTrigger>
-              <TooltipContent side="top" sideOffset={8}>
-                {show ? '隐藏私钥' : '显示私钥'}
-              </TooltipContent>
-            </Tooltip>
-          ) : null}
-          <CopyButton
-            value={value}
-            label={`复制 ${label}`}
-            successMessage={`${label} 已复制到剪贴板`}
-            size="icon-sm"
-            className="size-7"
-          />
-        </div>
+        <SensitiveText
+          value={value}
+          type="password"
+          defaultRevealed={!isMaskable}
+          className="flex-1"
+          textClassName="flex-1 text-sm break-all select-all whitespace-normal"
+        />
+        <CopyButton
+          value={value}
+          label={`复制 ${label}`}
+          successMessage={`${label} 已复制到剪贴板`}
+          size="icon-sm"
+          className="size-7 shrink-0"
+        />
       </div>
     </div>
   )
@@ -71,7 +56,9 @@ export function AppSecretDialog({ app, open, onClose }: AppSecretDialogProps) {
   const query = useQuery({
     queryKey: appKeys.secret(appId),
     queryFn: appId === null ? skipToken : ({ signal }) => getAppSecret(appId, signal),
-    enabled: open
+    enabled: open,
+    // The secret is dropped from the cache once the dialog closes instead of lingering in memory.
+    gcTime: 0
   })
 
   return (

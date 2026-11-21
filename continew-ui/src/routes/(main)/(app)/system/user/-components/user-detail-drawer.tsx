@@ -5,6 +5,7 @@ import { TagList } from '@/components/data-badge'
 import { DetailField, DetailGrid } from '@/components/detail-field'
 import { DetailGate } from '@/components/detail-gate'
 import { EntityDrawer } from '@/components/entity-drawer'
+import { SensitiveText } from '@/components/sensitive-text'
 import { StatusCell } from '@/components/status-cell'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLastRecord } from '@/hooks/use-last-record'
@@ -120,8 +121,13 @@ export function UserDetailDrawer({ userId, open, onClose }: UserDetailDrawerProp
               <DetailField label="状态">
                 <StatusCell status={record.status} />
               </DetailField>
-              <TextDetail label="手机号" value={record.phone} />
-              <TextDetail label="邮箱" value={record.email} />
+              {/* The detail endpoint returns plain values (the list one is masked by @JsonMask), so mask here. */}
+              <DetailField label="手机号">
+                {record.phone ? <SensitiveText value={record.phone} type="phone" /> : EMPTY_PLACEHOLDER}
+              </DetailField>
+              <DetailField label="邮箱">
+                {record.email ? <SensitiveText value={record.email} type="email" /> : EMPTY_PLACEHOLDER}
+              </DetailField>
               <TextDetail label="所属部门" value={record.deptName} />
               <DetailField label="角色">
                 <TagList items={record.roleNames} />
