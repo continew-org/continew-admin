@@ -4,10 +4,9 @@ on:
   pull_request:
     branches:
       - dev
-    paths-ignore:
-      - '**.md'
 
-# 只读 pull_request token 即可列出改动文件，无需 checkout；fork PR 同样适用。
+# shadow 作业只读 pull_request token 即可列出改动文件，无需 checkout；fork PR 同样适用。
+# detect 作业需要 checkout 内容做 diff 判定，按 job 级权限覆盖为 contents: read。
 permissions:
   pull-requests: read
 
@@ -17,8 +16,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect:
+    name: Detect changes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # 工作流级权限仅为 pull-requests: read（供 shadow 作业列 PR 文件），
+    # 本作业需要 checkout 仓库内容，按 job 级覆盖
+    permissions:
+      contents: read
+    outputs:
+      backend: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 改动检测需要 base 提交对象参与 diff，取完整历史
+          fetch-depth: 0
+      - name: Detect changed paths
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        # 本工作流仅 pull_request 触发；工作流级不做任何 paths 过滤，
+        # 检查分流由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）
+        run: |
+          set -eo pipefail
+          git diff --name-only "$BASE_SHA...HEAD" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
+
   shadow:
     name: Test companion (shadow)
+    needs: detect
+    # 纯 UI / 纯文档 PR 上中性 Skipped，必需检查（分支保护登记名）不悬空
+    if: needs.detect.outputs.backend == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
