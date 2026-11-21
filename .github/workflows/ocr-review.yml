@@ -119,6 +119,10 @@ jobs:
           llm_model: ${{ secrets.OCR_LLM_MODEL || vars.OCR_LLM_MODEL }}
           # 空串会被上游归一化为 anthropic，必须显式给 false 才走 OpenAI 兼容协议
           llm_use_anthropic: ${{ secrets.OCR_LLM_USE_ANTHROPIC || vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+          # 单请求默认 300s 会掐断推理端点的慢响应，放宽到 600
+          llm_timeout: '600'
+          # 单文件/并发任务的评审预算默认 15 分钟，单请求放宽后同步抬高，避免长评审被截断
+          review_task_timeout: '30'
           # 背景上下文传 PR 标题；评论触发事件没有 pull_request 上下文，回退到 pr-context 的解析结果
           background: ${{ github.event.pull_request.title || steps.pr-context.outputs.title }}
           # 开启 App 时为 App installation token，否则回退内置 GITHUB_TOKEN

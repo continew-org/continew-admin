@@ -24,7 +24,7 @@ concurrency:
 jobs:
   full-test:
     name: Full test (${{ inputs.suite }})
-    # 避免 fork 因没有 self-hosted runner 卡在 pending（落地计划 4.7）
+    # 避免 fork 因没有 self-hosted runner 卡在 pending
     if: github.repository == 'continew-org/continew-admin'
     runs-on: self-hosted
     timeout-minutes: 30
@@ -60,7 +60,7 @@ jobs:
       # 4、执行 L3：api-smoke.sh 经 -Papi-test 跑 @Tag("api") 套件，目标为 up.sh 起的独立实例
       - name: Run L3 API tests
         run: bash scripts/test/api-smoke.sh
-      # 5、归档 surefire 报告（JUnit XML，计划 T1.9：从第一遍起归档，供 flaky 统计）；
+      # 5、归档 surefire 报告（JUnit XML，供 flaky 统计）；
       #    always() 保证 L3 失败也归档。不用 actions/upload-artifact：其 action 归档同样
       #    经 codeload.github.com 下载（与 setup-java 同链路，本 runner 从未成功过），
       #    改为 runner 本地归档，保留最近若干次 run 的报告供查阅与 flaky 统计
@@ -69,7 +69,7 @@ jobs:
         run: |
           dest=~/full-test-artifacts/"${{ github.run_id }}"
           mkdir -p "$dest"
-          # 迁移后 L2/L3 报告落在 continew-tests；server 仍有 6 个 L1 测试，两者都归档。
+          # L2/L3 报告在 continew-tests 模块，server 模块的单测报告也要归档。
           # 分模块建子目录避免同名 surefire-reports 相互覆盖；某模块无报告时跳过，不使步骤失败。
           for module in continew-server continew-tests; do
             if [ -d "$module/target/surefire-reports" ]; then

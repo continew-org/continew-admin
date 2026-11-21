@@ -27,7 +27,7 @@ concurrency:
 jobs:
   detect:
     name: Detect changes
-    # repo 守卫（照 sonar.yml 先例）：fork 上手动触发不执行任何作业
+    # repo 守卫（同 ci.yml 的 Sonar analysis）：fork 上手动触发不执行任何作业
     if: github.repository == 'continew-org/continew-admin'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -44,13 +44,12 @@ jobs:
       - name: Detect changed paths
         id: changes
         env:
-          BEFORE_SHA: ${{ github.event.before }}
           SIMULATE: ${{ inputs.simulate }}
           SIMULATE_PATHS: ${{ inputs.simulate_paths }}
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
-        # 部署分流必须由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）；
-        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 误传清单属歧义输入，
-        # 直接快速失败，真实事件路径行为不变
+        # 部署分流必须由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）；
+        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 时传 simulate_paths
+        # 属歧义输入，直接快速失败
         run: |
           set -eo pipefail
           if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
@@ -58,15 +57,11 @@ jobs:
             exit 1
           elif [ -n "$SIMULATE_PATHS" ]; then
             printf '%s\n' "$SIMULATE_PATHS" | tr ' \t' '\n' | sed '/^$/d' | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
-          elif [ "$GITHUB_EVENT_NAME" = 'push' ] && [ -n "$BEFORE_SHA" ] \
-            && [ "$BEFORE_SHA" != '0000000000000000000000000000000000000000' ] \
-            && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
-            git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
           else
-            # workflow_dispatch 未传模拟清单（含 simulate=true 演练，构建/部署动作由各
-            # 作业 if 的 simulate 守卫拦截；非 simulate 保持既有「dispatch 即部署」语义），
-            # 或 push 的 before 缺失/全零/不可达（新分支、force-push）：默认全跑
-            bash scripts/ci/detect-changes.sh --all >> "$GITHUB_OUTPUT"
+            # workflow_dispatch 未传模拟清单：simulate=true 时构建/部署动作由各作业
+            # if 的 simulate 守卫拦截（仅出路由决策），simulate=false 即正常部署；
+            # push/dispatch 的清单解析与兜底在编排层 scripts/ci/changed-files.sh
+            bash scripts/ci/changed-files.sh >> "$GITHUB_OUTPUT"
           fi
 
   deploy:
@@ -84,13 +79,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 2、打包（容器内构建：mvnw/pom 插件/注解处理器等构建期代码不触达宿主机，
-      #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）
+      #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）。
+      #    镜像按 digest 固定（对应 3.9-eclipse-temurin-25 标签，即 runner 当前实跑
+      #    版本），升级时显式更换
       - name: Build
         run: >
           docker run --rm
           --memory=6g --cpus=4
           -v "$PWD":/ws -v /root/.m2:/root/.m2 -w /ws
-          maven:3.9-eclipse-temurin-25
+          maven@sha256:93b8a14ea2f412782e4e842651273b4d903e35cc496284f178fbbe2d67d00976
           ./mvnw -B package
       # 3、同步到服务器部署目录（runner 与部署机同机，本地 rsync 即可）
       #    lib/ 与 bin/ 为纯构建产物，用 --delete 清理升级后遗留的旧依赖/旧 jar，
@@ -103,7 +100,7 @@ jobs:
           rsync -a --delete continew-server/target/app/bin/ ${{ secrets.SERVER_PATH }}/continew-admin/bin/
           rsync -a continew-server/target/app/config/ ${{ secrets.SERVER_PATH }}/continew-admin/config/
           rsync -a docker/continew-admin/Dockerfile ${{ secrets.SERVER_PATH }}/continew-admin/Dockerfile
-      # 5、启动
+      # 4、启动
       - name: Start
         run: |
           cd ${{ secrets.SERVER_PATH }}
@@ -124,7 +121,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
       # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）
+      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）。
+      # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
         run: >
           docker run --rm
@@ -133,7 +131,7 @@ jobs:
           -v "$PWD":/ws
           -v /root/.local/share/pnpm/store:/root/.local/share/pnpm/store
           -w /ws/continew-ui
-          node:22
+          node@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
           sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm build"
       - name: Upload dist artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
