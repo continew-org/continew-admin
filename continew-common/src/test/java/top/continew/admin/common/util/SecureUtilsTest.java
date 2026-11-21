@@ -27,7 +27,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import top.continew.admin.common.config.RsaProperties;
 import top.continew.starter.core.exception.BadRequestException;
 
 /**
@@ -66,8 +65,6 @@ class SecureUtilsTest {
         springUtilMock
             .when(() -> SpringUtil.getProperty("continew-starter.encrypt.field.public-key"))
             .thenReturn(publicKey);
-        // 触发静态块按桩值初始化
-        RsaProperties.PUBLIC_KEY.getBytes(java.nio.charset.StandardCharsets.UTF_8);
     }
 
     @AfterEach
@@ -79,7 +76,7 @@ class SecureUtilsTest {
     void shouldRoundTripDecryptAfterBase64() {
         // RSA.encrypt 输出是原始密文字节，前端实际传输的是 Base64 后的文本；
         // 解密入口按 Base64 解码，往返以「加密字节 → Base64 文本 → 解密」还原
-        byte[] encryptedBytes = SecureUtil.rsa(null, RsaProperties.PUBLIC_KEY)
+        byte[] encryptedBytes = SecureUtil.rsa(null, publicKey)
             .encrypt(PLAIN_TEXT, KeyType.PublicKey);
         String encryptedText = java.util.Base64.getEncoder().encodeToString(encryptedBytes);
 
@@ -139,7 +136,7 @@ class SecureUtilsTest {
      * @return Base64 编码的密文文本
      */
     private static String encryptToBase64Text(String plainText) {
-        byte[] encryptedBytes = SecureUtil.rsa(null, RsaProperties.PUBLIC_KEY)
+        byte[] encryptedBytes = SecureUtil.rsa(null, publicKey)
             .encrypt(plainText, KeyType.PublicKey);
         return java.util.Base64.getEncoder().encodeToString(encryptedBytes);
     }

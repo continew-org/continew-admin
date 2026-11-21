@@ -28,14 +28,23 @@ import cn.hutool.extra.spring.SpringUtil;
 public class RsaProperties {
 
     /**
-     * 私钥
+     * 获取 RSA 私钥
+     *
+     * @return 私钥（未配置时为 {@code null}）
+     * @since 5.0.0
      */
-    public static final String PRIVATE_KEY;
-    public static final String PUBLIC_KEY;
+    public static String privateKey() {
+        return SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
+    }
 
-    static {
-        PRIVATE_KEY = SpringUtil.getProperty("continew-starter.encrypt.field.private-key");
-        PUBLIC_KEY = SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
+    /**
+     * 获取 RSA 公钥
+     *
+     * @return 公钥（未配置时为 {@code null}）
+     * @since 5.0.0
+     */
+    public static String publicKey() {
+        return SpringUtil.getProperty("continew-starter.encrypt.field.public-key");
     }
 
     private RsaProperties() {

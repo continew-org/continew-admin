@@ -21,6 +21,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
+import lombok.extern.slf4j.Slf4j;
 import top.continew.admin.common.config.RsaProperties;
 import top.continew.admin.common.constant.RegexConstants;
 import top.continew.starter.core.util.ExceptionUtils;
@@ -32,6 +33,7 @@ import top.continew.starter.core.util.validation.ValidationUtils;
  * @author Charles7c
  * @since 1.0.0
  */
+@Slf4j
 public class SecureUtils {
 
     private SecureUtils() {
@@ -44,7 +46,7 @@ public class SecureUtils {
      * @return 加密后的内容
      */
     public static String encryptByRsaPublicKey(String data) {
-        String publicKey = RsaProperties.PUBLIC_KEY;
+        String publicKey = RsaProperties.publicKey();
         ValidationUtils.throwIfBlank(publicKey, "请配置 RSA 公钥");
         return encryptByRsaPublicKey(data, publicKey);
     }
@@ -68,7 +70,7 @@ public class SecureUtils {
      * @return 解密后的内容
      */
     public static String decryptByRsaPrivateKey(String data) {
-        String privateKey = RsaProperties.PRIVATE_KEY;
+        String privateKey = RsaProperties.privateKey();
         ValidationUtils.throwIfBlank(privateKey, "请配置 RSA 私钥");
         return decryptByRsaPrivateKey(data, privateKey);
     }
@@ -108,8 +110,9 @@ public class SecureUtils {
     public static String decryptPasswordByRsaPrivateKey(String encryptedPasswordByRsaPublicKey,
         String errorMsg,
         boolean isVerifyPattern) {
-        String rawPassword =
-            ExceptionUtils.exToNull(() -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey));
+        String rawPassword = ExceptionUtils.exToNull(
+            () -> decryptByRsaPrivateKey(encryptedPasswordByRsaPublicKey),
+            e -> log.error("RSA 解密失败", e));
         ValidationUtils.throwIfBlank(rawPassword, errorMsg);
         if (isVerifyPattern) {
             ValidationUtils.throwIf(!ReUtil
