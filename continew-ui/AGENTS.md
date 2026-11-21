@@ -1,10 +1,10 @@
 # continew-ui
 
-ContiNew Admin 前端（React 19 / Vite 8 / shadcn + Base UI / Tailwind 4）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
+ContiNew Admin 前端（React 19 / Vite 8 / shadcn/ui + Base UI / Tailwind 4）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
 
 ## 技术栈
 
-React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 / shadcn（base-nova 风格）/ zustand / zod / oxlint / oxfmt / vitest。
+React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 / shadcn/ui（base-nova 风格）/ zustand / zod / oxlint / oxfmt / vitest。
 
 - Node 版本锁定 `^22.0.0`（`package.json` 的 `engines`）；
 - pnpm 版本以 `package.json` 的 `packageManager` 字段为准，不要用全局 pnpm 绕过。
@@ -18,7 +18,7 @@ React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 
 | `src/lib/http.ts` | 请求封装：超时、错误提示、401 会话刷新、租户 ID 头注入 |
 | `src/navigation` | 后端菜单 → 侧栏/页签/面包屑映射，只认 `path` |
 | `src/stores` | zustand 全局状态（auth、preferences、tabs 等） |
-| `src/components/ui` | shadcn（base-nova）拷贝组件层，CLI 生成后按需定制 |
+| `src/components/ui` | shadcn/ui（base-nova）拷贝组件层，CLI 生成后按需定制 |
 | `src/components` | 业务组合组件（表格、抽屉、筛选行、删除确认等） |
 | `tests` | Vitest 单元测试 |
 

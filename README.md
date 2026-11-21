@@ -48,7 +48,7 @@
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn / Base UI & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
+当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn/ui / Base UI & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -177,7 +177,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://tanstack.com/router/latest" target="_blank">TanStack Router</a>                                                    | 1.170.46     | 全类型安全的文件路由方案，配合 TanStack Query 与 Table 构成数据层三件套。 |
 | <a href="https://tanstack.com/query/latest" target="_blank">TanStack Query</a>                                                      | 5.105.0      | 强大的异步状态管理，覆盖数据获取、缓存与失效重试。           |
 | <a href="https://tanstack.com/table/latest" target="_blank">TanStack Table</a>                                                      | 9.3.1        | 无头表格组件库，为列表页提供排序、筛选与分页能力。           |
-| <a href="https://ui.shadcn.com/" target="_blank">shadcn（base-nova）</a>                                                            | —            | 可拷贝、可定制的组件分发模式，底层基于 Base UI 与 Tailwind CSS。 |
+| <a href="https://ui.shadcn.com/" target="_blank">shadcn/ui</a>                                                                     | —            | 可拷贝、可定制的组件分发模式，本项目选用 base-nova 注册表，底层基于 Base UI 与 Tailwind CSS。 |
 | <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>                                                                 | 4.3.3        | 原子化 CSS 框架，通过工具类快速构建界面。                    |
 | <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 7.0.2        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
 | <a href="https://vite.dev/" target="_blank">Vite</a>                                                                              | 8.0.5        | 下一代的前端工具链，为开发提供极速响应。                     |
@@ -403,7 +403,7 @@ continew-admin
 │  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/Base UI + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
+├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/ui + Base UI + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
 ├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
 ├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
 ├─ .idea
