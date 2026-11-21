@@ -21,9 +21,21 @@
 
 ## 项目概述
 
-ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：本仓库为后端（Spring Boot 4.1.1 / Java 17 的 Maven 多模块工程），前端为独立仓库 `continew-admin-ui`（Vue3 & Arco Design & TS & Vite）。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
+ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端同仓：Java 后端（Spring Boot 4.1.1 / Java 17 的 Maven 多模块工程）加 `continew-ui/` 前端（React 19 / Vite 8），模块职责见下方「仓库地图」。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
 
 **当前版本**：5.0.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：构建基线 JDK 25（产物字节码 17） | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
+
+## 仓库地图
+
+| 目录 | 职责 |
+|:--|:--|
+| `continew-server` | 打包部署入口（启动类、通用 controller、Liquibase、配置文件） |
+| `continew-system` | 核心业务（认证、系统管理各功能） |
+| `continew-common` | 公共基类、工具、配置 |
+| `continew-plugin` | open / tenant / schedule / generator 可插拔插件 |
+| `continew-ui/` | 前端（React 19 / Vite 8 / TanStack Router·Query·Table / Tailwind 4 / pnpm），目录职责与硬约束见 [continew-ui/AGENTS.md](continew-ui/AGENTS.md) |
+
+自 5.x 起前端并入本仓，前后端同版本、同 tag 发布。4.x 及更早版本的前端在独立仓库 `continew-admin-ui`（Vue3 & Arco Design），已封版，仅维护分支接受修复，本仓文档不再展开 4.x。
 
 ## 核心架构
 
@@ -64,6 +76,19 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 | `validation` | 自定义校验注解/工具 |
 
 ## 构建与运行命令
+
+### 任务分流
+
+按改动类型选择先读的规范与必跑的检查（细节见后文对应小节）：
+
+| 改动类型 | 先读 | 必跑 |
+|:--|:--|:--|
+| 仅 `continew-ui/` | [continew-ui/AGENTS.md](continew-ui/AGENTS.md) | `pnpm fmt:check` / `lint` / `typecheck` / `test` / `build`（在 `continew-ui/` 下执行） |
+| 仅后端 Java | 本文「提交前门禁」 | `./mvnw verify` |
+| 跨端 | 两份 AGENTS.md | 两侧都跑 |
+| 仅文档 / 模板 / CI | — | 不跑门禁 |
+
+**跨端契约**：修改后端响应结构、权限码、菜单的 `component` / `path` 字段时，Maven 绿灯不能作为交付依据，必须核对 `continew-ui/` 的消费端（响应结构看 `src/lib/api`，菜单看 `src/navigation`，权限码判断看 `src/hooks/use-permission.ts`），并在同一 PR 中同步文档。
 
 ```bash
 # 完整构建（validate 阶段 Enforcer -> Spotless -> Checkstyle，编译 + 单元测试与集成测试，verify 阶段 SpotBugs）
@@ -184,7 +209,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 
 ## 文档（docs/）
 
-本仓库 `docs/` 目录是 ContiNew Admin（含前端 continew-admin-ui）官方文档的**唯一权威源**，经 [continew.top](https://github.com/continew-org/continew.top) 官网仓库构建时汇聚渲染为 `/docs/admin/*`。AI 智能体被指派编写或更新文档时在此目录工作，**开工前必须先读取 [`ocn-doc-writing/SKILL.md`](https://github.com/continew-org/continew.top/blob/main/.agents/skills/ocn-doc-writing/SKILL.md)**（continew.top 仓库，目录结构、frontmatter、链接策略、写作风格禁令的事实源全本），本文件只保留三条硬约束：
+本仓库 `docs/` 目录是 ContiNew Admin（含前端 continew-ui）官方文档的**唯一权威源**，经 [continew.top](https://github.com/continew-org/continew.top) 官网仓库构建时汇聚渲染为 `/docs/admin/*`。AI 智能体被指派编写或更新文档时在此目录工作，**开工前必须先读取 [`ocn-doc-writing/SKILL.md`](https://github.com/continew-org/continew.top/blob/main/.agents/skills/ocn-doc-writing/SKILL.md)**（continew.top 仓库，目录结构、frontmatter、链接策略、写作风格禁令的事实源全本），本文件只保留三条硬约束：
 
 - 修改功能代码（尤其接口、配置、行为）必须在**同一 PR** 中同步更新对应文档；纯文档改动无需跑 `./mvnw verify`。
 - 类名、配置键、默认值、URL 前缀、权限码、版本号必须以 **admin 源码的具体值**为准，禁止凭印象；示例场景去业务化。

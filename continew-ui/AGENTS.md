@@ -1,42 +1,51 @@
-# AGENTS.md
+# continew-ui
 
-## 工作原则
+ContiNew Admin 5.x 前端（React 19 / Vite 8）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
 
-### A. 硬闸（绝对，无例外）
+## 技术栈
 
-A1 中文回复。
-A2 绝不执行 rm / del / Remove-Item 等任何删除；删除一律改为"移动到回收站"；
-动软链接/硬链接/符号链接前必须先审查。
-A3 未经明确写入意图，不得写入/新建/修改任何文件（备份文件和临时测试脚本除外）。
-A4 不得查看或输出任何密钥、口令、令牌、隐私；确需时只引用环境变量名。
-A5 所有的修改必须提供英文的 Commit Msg。
-A6 所有需要安装的依赖提示安装命令，禁止自行安装。
-A7 禁止实现过度设计、过度防御的代码。
+React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 / shadcn（base-nova 风格）/ zustand / zod / oxlint / oxfmt / vitest。
 
-### B. 执行协议（每个动作前自检）
+- Node 版本锁定 `^22.0.0`（`package.json` 的 `engines`）；
+- pnpm 版本以 `package.json` 的 `packageManager` 字段为准，不要用全局 pnpm 绕过。
 
-B1 动手前先输出一行【目标】+【我准备读的最小文件清单】。
-B3 任何一次新增读取/搜索，必须能改变当前答案；不能改变 = 发散，禁止。
-B4 信息已足以回答就立即停止。禁止"再验证一下""顺手看一眼"式扩范围。
-B5 验证只能针对已给出的结论本身，不得引入新文件/新目录。
-B6 明确定义为发散的禁止清单：
-全目录/全项目 grep 或扫描；翻看与被问对象无关的相邻目录、旧快照、
-.imported/backup 文件、无关插件；重构、优化、美化、格式化。
+## 目录职责
 
-### C. 冲突裁决
+| 目录 | 职责 |
+|:--|:--|
+| `src/routes` | 页面（TanStack 文件路由，目录结构即 URL；`-` 前缀目录与 `()` 分组不进 URL） |
+| `src/lib/api` | 接口定义，按业务域分文件（`user.ts`、`role.ts` 等） |
+| `src/lib/http.ts` | 请求封装：超时、错误提示、401 会话刷新、租户 ID 头注入 |
+| `src/navigation` | 后端菜单 → 侧栏/页签/面包屑映射，只认 `path` |
+| `src/stores` | zustand 全局状态（auth、preferences、tabs 等） |
+| `src/components/ui` | shadcn（base-nova）拷贝组件层，CLI 生成后按需定制 |
+| `src/components` | 业务组合组件（表格、抽屉、筛选行、删除确认等） |
+| `tests` | Vitest 单元测试 |
 
-C1 "严谨/查证"与 B 冲突时以 B 为准：先停下问，再决定查不查。
-C2 优先级：A > 用户当轮直接指令 > B > 其余偏好。
-C3 拿不准是否在范围内：用一句话问，禁止猜着做。
+## 硬约束
 
-### D. 工程约束（与 A/B/C 并行，冲突时 A、C2 优先）
+- **不手改 `src/routeTree.gen.ts`**。TanStack Router 插件自动生成，改动 `src/routes` 后由 `pnpm dev` / `pnpm build` 重新生成，diff 随本次改动一起提交。
+- **新增页面**：在 `src/routes` 下建 `route.tsx`（`createFileRoute`），再到「系统管理 → 菜单」配置菜单，`path` 必须与路由文件的实际 URL 一致。菜单的 `component` 字段是 4.x 动态组件匹配的遗留，新 UI 的路由解析只认 `path`（`src/navigation/route-info.ts` 的 `findMenuByPath`），页面组件完全由文件路由决定。
+- **接口调用统一走 `src/lib/http.ts`**，不直接 `fetch`：超时、错误提示、401 刷新、租户 ID 头都在这一层。
+- **组件优先用 `src/components/ui` 已有组件**，不引入第二套 UI 库；图标统一用 `lucide-react`。
 
-D1 备份与清理：改动配置/环境/核心文件等重要文件前，先备份至项目根目录
-backups/；任务完成后及时清理本次产生的测试/临时文件。
-D2 子代理 review：完成复杂项目功能模块后、或交付给用户前，调用子代理对
-交付代码/实现做只读 review；review 属授权动作，读取范围以交付物及其
-直接依赖为界，不算 B3/B6 的发散。简单任务（改配置、单点文本修改）免 review。
-D3 查证义务：时效性、争议性、最新信息按需搜索查证，不凭直觉下结论；
-但 C1 仍优先——"这次要不要查"本身拿不准时先问，不自行扩大范围。
-D4 最短路径：以最小步骤、最少文件解决你明确提出的问题；不重构、不优化。
-D5 不猜测：结论必须有文件或命令证据；无证据就直说不知道。
+## 验证命令
+
+在 `continew-ui/` 下执行：
+
+```bash
+pnpm fmt:check    # 格式检查（oxfmt），不通过时执行 pnpm fmt 修复
+pnpm lint         # oxlint 静态检查
+pnpm typecheck    # tsc --noEmit
+pnpm test         # vitest run
+pnpm build        # 生产构建，同时重新生成 routeTree.gen.ts
+```
+
+oxfmt 会重排代码（含 JSX 折行），改动会波及你没动过的行。**提交前先跑 `pnpm fmt`**，避免把格式化噪声混进功能提交。
+
+## 示例：新增一个列表页
+
+1. 建 `src/routes/(main)/(app)/system/<name>/route.tsx`，`createFileRoute` 指向该路径并挂页面组件，私有组件放同级 `-components/`；
+2. 接口定义加到 `src/lib/api/<name>.ts`，请求经 `src/lib/http.ts` 发出；
+3. 跑 `pnpm dev` 生成路由，登录后在「系统管理 → 菜单」新增菜单，`path` 填路由 URL（如 `/system/user` 对应 `src/routes/(main)/(app)/system/user/`）；
+4. 跑上方五条验证命令。

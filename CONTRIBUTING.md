@@ -1,6 +1,6 @@
 # 贡献指南
 
-> 本指南适用于 OpenContiNew 社区旗下的 ContiNew 系列项目（ContiNew Admin / ContiNew Starter / ContiNew Admin UI 等），社区各项目通用。
+> 本指南适用于 OpenContiNew 社区旗下的 ContiNew 系列项目（ContiNew Admin / ContiNew Starter 等），社区各项目通用。
 
 感谢您对 ContiNew 开源项目的关注！无论是修复一个错别字、报告一个 Bug，还是实现一个新功能，每一份贡献都很有价值。
 
@@ -39,6 +39,8 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 |:-----|:-----|
 | JDK 17+ | Enforcer 下限为 JDK 17；官方构建基线为 JDK 25（CI 使用 Temurin 25），产物字节码为 Java 17 |
 | Maven 3.9+ | 推荐直接使用仓库内置的 `./mvnw`（Windows 为 `mvnw.cmd`），无需单独安装 |
+| Node 22 | 前端（`continew-ui/`）开发与构建要求 |
+| pnpm | 版本以 `continew-ui/package.json` 的 `packageManager` 字段为准 |
 | MySQL / PostgreSQL | 按需准备数据库，Liquibase 会在首次启动时自动初始化 |
 | Redis | 缓存、认证令牌等依赖 Redis |
 | IDE（可选） | IntelliJ IDEA，可导入项目提供的代码风格配置（见下） |
@@ -105,7 +107,15 @@ git checkout -b feat/your-feature upstream/dev
 
 ### 4. 开发与自测
 
-开发完成后，推送前请在本地执行：
+开发完成后，推送前按改动范围在本地执行对应检查（完整规则见 [AGENTS.md](AGENTS.md) 的「任务分流」一节）：
+
+**纯前端（仅 `continew-ui/`）**：在 `continew-ui/` 下执行：
+
+```bash
+pnpm fmt:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build
+```
+
+**纯后端（仅 Java 源码与 POM）**：执行：
 
 ```bash
 ./mvnw verify         # Windows 为 mvnw.cmd verify
@@ -116,6 +126,10 @@ git checkout -b feat/your-feature upstream/dev
 - 如果 Spotless 检查报红，执行 `./mvnw compile -Pformat` 自动修复格式，修复后请再执行一次正常构建确认通过；
 - License Header 由 Spotless 在检查阶段自动校验，新建文件请从现有文件复制头部或让 `-Pformat` 自动补全；
 - 请勿依赖 IDE 手工格式化，不同 IDE 的配置可能引入格式差异，请以 Spotless 检查结果为准。
+
+**跨端（前后端都有改动）**：两侧检查都要跑。后端响应结构、权限码、菜单的 `component` / `path` 字段发生变更时，请同步核对前端消费端（`continew-ui/src/lib/api`、`continew-ui/src/navigation`），不要以 Maven 构建通过作为唯一交付依据。
+
+前端提交前先跑 `pnpm fmt`（oxfmt 会重排代码，含 JSX 折行），避免把格式化噪声混进功能提交。仅文档 / CI / 模板改动不触发任何门禁。
 
 ### 5. 提交 Commit
 
@@ -130,7 +144,7 @@ git checkout -b feat/your-feature upstream/dev
 ```
 
 - **类型（type）**：说明变更性质。`feat` 表示新增功能，`fix` 表示 Bug 修复；其余常用类型：`docs`（文档）、`refactor`（重构）、`perf`（性能优化）、`test`（测试）、`style`（格式调整，不影响功能）、`build`（构建或依赖变更）、`ci`（CI 配置或脚本）、`chore`（其他杂项）、`revert`（回退提交）；
-- **作用域（scope）**：可选，表示变更影响的模块。可取值：`common` `system` `server` `plugin` `auth` `open` `tenant` `schedule` `generator` `docker`；
+- **作用域（scope）**：可选，表示变更影响的模块。可取值：`common` `system` `server` `plugin` `auth` `open` `tenant` `schedule` `generator` `docker` `ui`；
 - **描述（description）**：简短说明本次变更；
 - **破坏性变更（breaking change）**：在类型或作用域后追加 `!`（如 `feat!:`），或在脚注中以 `BREAKING CHANGE: <说明>` 标注（对应主版本）。
 
@@ -186,7 +200,7 @@ git push --force-with-lease
 
 - [ ] 一个 PR 只解决一个 Issue（只做一件事），不夹带无关改动
 - [ ] 代码遵循已有风格；注释只写当前代码的非显然约束，不复述实现、不写变更痕迹与修复叙事，符合阿里巴巴《Java 开发手册(黄山版)》
-- [ ] 本地 `./mvnw verify` 四道静态门禁与单元测试全部通过
+- [ ] 本地已按改动范围跑过对应检查：后端 `./mvnw verify` 四道静态门禁与单元测试全部通过；前端在 `continew-ui/` 下 `pnpm fmt:check` / `lint` / `typecheck` / `test` / `build` 全部通过（见「开发与自测」）
 - [ ] （可选）已在本地完成 AI 自检。安装 `ocr` CLI 后，在 AI 编码工具中调用 `open-code-review-delegate`；该检查为建议项，不阻塞合并
 - [ ] 如有行为变更，已同步更新相关文档（含 Liquibase 变更日志）
 - [ ] 按 PR 模板完整填写 Changelog 表格，并关联相关 Issue（Closes/Fixes/Resolves #<issue号>）
@@ -196,7 +210,7 @@ git push --force-with-lease
 ## 让 PR 更快被合并
 
 - **尽早签署 CLA**：不少首次贡献者因忽略 CLA 机器人评论而卡住，未签署 CLA 的 PR 无法合并；
-- **保证本地检查通过**：CI 未通过的 PR 不会被审查，推送前先在本地完整执行一遍 `./mvnw verify`；
+- **保证本地检查通过**：CI 未通过的 PR 不会被审查，推送前先在本地完整执行一遍对应范围的检查（见「开发与自测」）；
 - **保持改动聚焦且精简**：只做一件事的 PR 远比混杂无关改动的 PR 更容易审查，改动较大时请拆分为多个独立 PR；
 - **撰写清晰的描述**：说明改了*什么*以及*为什么*，描述务必与实际 diff 一致；如果开发过程中范围发生了变化，请在请求审查前更新描述；
 - **及时回应审查意见**：审查者提出修改意见后请尽快处理；如有不同意见，请说明理由而不是忽略评论。
