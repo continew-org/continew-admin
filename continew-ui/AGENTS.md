@@ -43,6 +43,8 @@ pnpm build        # 生产构建，同时重新生成 routeTree.gen.ts
 
 oxfmt 会重排代码（含 JSX 折行），改动会波及你没动过的行。**提交前先跑 `pnpm fmt`**，避免把格式化噪声混进功能提交。
 
+本文件不受格式检查约束：`.oxfmtrc.json` 的 `ignorePatterns` 已排除 `**/AGENTS.md`，修改它无需跑 `pnpm fmt`。
+
 ## 示例：新增一个列表页
 
 1. 建 `src/routes/(main)/(app)/system/<name>/route.tsx`，`createFileRoute` 指向该路径并挂页面组件，私有组件放同级 `-components/`；
