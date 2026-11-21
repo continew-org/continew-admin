@@ -21,17 +21,22 @@ import { cn } from 'cn'
 
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { sanitizeRichText } from '@/lib/sanitize'
 
 /** The typography shared by the editor surface and the read-only notice view. */
 export const RICH_TEXT_CONTENT_CLASS =
   'text-sm leading-relaxed text-foreground [&_blockquote]:my-2 [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_h1]:my-2 [&_h1]:text-xl [&_h1]:font-semibold [&_h2]:my-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h3]:my-1.5 [&_h3]:text-base [&_h3]:font-medium [&_hr]:my-3 [&_li]:my-0.5 [&_ol]:my-1.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:my-1.5 [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-5'
 
 export function RichTextContent({ html, className }: { html?: string | null; className?: string }) {
+  // Notice bodies come from the backend; sanitize before they reach dangerouslySetInnerHTML
+  // so a direct API write (bypassing the editor) can't inject scripts/handlers.
+  const safeHtml = React.useMemo(() => (html ? sanitizeRichText(html) : ''), [html])
+
   if (!html) {
     return <p className="text-sm text-muted-foreground">暂无内容</p>
   }
 
-  return <div className={cn(RICH_TEXT_CONTENT_CLASS, className)} dangerouslySetInnerHTML={{ __html: html }} />
+  return <div className={cn(RICH_TEXT_CONTENT_CLASS, className)} dangerouslySetInnerHTML={{ __html: safeHtml }} />
 }
 
 function ToolbarButton({
