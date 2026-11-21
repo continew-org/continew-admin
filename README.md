@@ -64,15 +64,6 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 | AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) |
 | Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) |
 
-## OpenContiNew 生态
-
-ContiNew 系列项目均由 OpenContiNew 开源社区维护，除本项目外还包括：
-
-| 项目 | 简介 |
-|:-----|:-----|
-| [ContiNew Starter](https://github.com/continew-org/continew-starter) | ContiNew Admin 的通用基础能力抽离形成的企业级 Starter 库，约定优于配置，开箱即用 |
-| [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui) | ContiNew Admin 前端适配项目 |
-
 ## 项目起源
 
 我热衷于做数据归档，归档后的数据可以提高学习/工作效率，为记忆“减负”，在持续的数据归档中，优质的“沉淀”会带来非匀速、跨越式的学习/工作体验。**数据归档是一件需要持续去做的事情**。
