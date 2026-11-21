@@ -48,7 +48,7 @@
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn/ui / Base UI & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
+当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn/ui & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -403,7 +403,7 @@ continew-admin
 │  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/ui + Base UI + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
+├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/ui + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
 ├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
 ├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
 ├─ .idea
