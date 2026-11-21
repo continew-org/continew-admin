@@ -1,6 +1,6 @@
 # continew-ui
 
-ContiNew Admin 5.x 前端（React 19 / Vite 8）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
+ContiNew Admin 前端（React 19 / Vite 8）。全仓分流、跨端契约与后端门禁见[根 AGENTS.md](../AGENTS.md)；本文件只写前端目录内「看代码看不出来、且容易做错」的事。
 
 ## 技术栈
 
@@ -25,7 +25,7 @@ React 19 / Vite 8 / TypeScript / TanStack Router · Query · Table / Tailwind 4 
 ## 硬约束
 
 - **不手改 `src/routeTree.gen.ts`**。TanStack Router 插件自动生成，改动 `src/routes` 后由 `pnpm dev` / `pnpm build` 重新生成，diff 随本次改动一起提交。
-- **新增页面**：在 `src/routes` 下建 `route.tsx`（`createFileRoute`），再到「系统管理 → 菜单」配置菜单，`path` 必须与路由文件的实际 URL 一致。菜单的 `component` 字段是 4.x 动态组件匹配的遗留，新 UI 的路由解析只认 `path`（`src/navigation/route-info.ts` 的 `findMenuByPath`），页面组件完全由文件路由决定。
+- **新增页面**：在 `src/routes` 下建 `route.tsx`（`createFileRoute`），再到「系统管理 → 菜单」配置菜单，`path` 必须与路由文件的实际 URL 一致。菜单的 `component` 字段不参与路由解析，路由解析只认 `path`（`src/navigation/route-info.ts` 的 `findMenuByPath`），页面组件完全由文件路由决定。
 - **接口调用统一走 `src/lib/http.ts`**，不直接 `fetch`：超时、错误提示、401 刷新、租户 ID 头都在这一层。
 - **组件优先用 `src/components/ui` 已有组件**，不引入第二套 UI 库；图标统一用 `lucide-react`。
 

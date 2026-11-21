@@ -35,7 +35,7 @@ body:
     id: version
     attributes:
       label: ContiNew Admin 版本
-      description: 产生问题的版本号，并说明是否涉及前端页面
+      description: 产生问题的版本号
       placeholder: 例如：5.0.0-SNAPSHOT
     validations:
       required: true

@@ -21,7 +21,7 @@
 
 ## 项目概述
 
-ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端同仓：Java 后端（Spring Boot 4.1.1 / Java 17 的 Maven 多模块工程）加 `continew-ui/` 前端（React 19 / Vite 8），模块职责见下方「仓库地图」。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
+ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租户中后台管理系统框架，前后端分离：后端为 Spring Boot 4.1.1 / Java 17 的 Maven 多模块工程，前端为 `continew-ui/`（React 19 / Vite 8），代码同仓托管，模块职责见下方「仓库地图」。**这是一个可运行的应用项目**（启动类 `top.continew.admin.ContiNewAdminApplication`，位于 continew-server 模块，默认 dev 环境端口 8000），而非类库。
 
 **当前版本**：5.0.0-SNAPSHOT（`${revision}` 统一管理） | **主分支**：`dev` | **Java**：构建基线 JDK 25（产物字节码 17） | **构建**：Maven 3.9.16（`./mvnw`，Windows 为 `mvnw.cmd`）
 
@@ -35,7 +35,7 @@ ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租
 | `continew-plugin` | open / tenant / schedule / generator 可插拔插件 |
 | `continew-ui/` | 前端（React 19 / Vite 8 / TanStack Router·Query·Table / Tailwind 4 / pnpm），目录职责与硬约束见 [continew-ui/AGENTS.md](continew-ui/AGENTS.md) |
 
-自 5.x 起前端并入本仓，前后端同版本、同 tag 发布。4.x 及更早版本的前端在独立仓库 `continew-admin-ui`（Vue3 & Arco Design），已封版，仅维护分支接受修复，本仓文档不再展开 4.x。
+前端与后端同版本、同 tag 发布。
 
 ## 核心架构
 

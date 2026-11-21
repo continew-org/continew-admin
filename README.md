@@ -56,15 +56,13 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 ## 项目源码
 
-自 5.x 起前后端同仓，前端源码位于本仓库 `continew-ui/` 目录。
+前端源码位于本仓库 `continew-ui/` 目录，与后端同版本发布。
 
-|         | 仓库（前后端同仓）                                           |
+|         | 仓库                                                         |
 | :------ | :----------------------------------------------------------- |
 | GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) |
 | AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) |
 | Gitee   | [continew/continew-admin](https://gitee.com/continew/continew-admin) |
-
-> 4.x 及更早版本的前端在独立仓库 `continew-admin-ui`（Vue3 & Arco Design），已封版，仅维护分支接受修复；4.x 文档见 [4.2.x 分支](https://github.com/continew-org/continew-admin/tree/4.2.x/docs)。
 
 ## OpenContiNew 生态
 
@@ -73,7 +71,7 @@ ContiNew 系列项目均由 OpenContiNew 开源社区维护，除本项目外还
 | 项目 | 简介 |
 |:-----|:-----|
 | [ContiNew Starter](https://github.com/continew-org/continew-starter) | ContiNew Admin 的通用基础能力抽离形成的企业级 Starter 库，约定优于配置，开箱即用 |
-| [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui) | ContiNew Admin 4.x 前端适配项目（已封版，仅维护分支接受修复；5.x 前端已并入本仓 `continew-ui/`） |
+| [ContiNew Admin UI](https://github.com/continew-org/continew-admin-ui) | ContiNew Admin 前端适配项目 |
 
 ## 项目起源
 
