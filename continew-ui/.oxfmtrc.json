@@ -11,5 +11,5 @@
     "functions": ["clsx", "cn"],
     "preserveWhitespace": false
   },
-  "ignorePatterns": ["node_modules", "dist", "**/routeTree.gen.ts"]
+  "ignorePatterns": ["node_modules", "dist", "**/routeTree.gen.ts", "**/AGENTS.md"]
 }
