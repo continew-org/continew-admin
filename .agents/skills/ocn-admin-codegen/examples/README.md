@@ -67,7 +67,7 @@ MySQL 行插在 `db/changelog/mysql/plugin/` 目录的最后一个 include 之�
 1. 按映射表把文件放回真实路径（后端 Java 9 个 + 前端 6 个 + SQL 3 份），并在 `continew-ui/src/lib/query-keys.ts` 追加上方的 `demoKeys`；
 2. 按「master.yaml 登记」一节追加 include；
 3. 后端：`./mvnw verify`——四道静态门禁 + 单测；被 Spotless 拦时先 `./mvnw compile -Pformat` 自动修复再重跑；
-4. 前端：`cd continew-ui && pnpm check`——fmt/lint/typecheck/test/build；格式问题先 `pnpm fmt`；`routeTree.gen.ts` 由 `pnpm dev`/`pnpm build` 自动生成，不要手改；
+4. 前端：`cd continew-ui && pnpm fmt && pnpm build && pnpm check`——新路由先由 build 写入 `src/routeTree.gen.ts` 再跑 check（typecheck 依赖该文件）；check 含 fmt:check/lint/typecheck/test/build；不要手改 `routeTree.gen.ts`；
 5. 起后端 + 前端，确认菜单已入树（菜单 SQL 已由 Liquibase 执行，或手工执行后授权 admin），列表可打开、新增/修改/删除走得通，`ext_config` 保存后重新打开详情值不丢。
 
 ## 样例要点（与常见失败清单对照）
