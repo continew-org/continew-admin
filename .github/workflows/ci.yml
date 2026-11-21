@@ -25,6 +25,7 @@ jobs:
       backend: ${{ steps.changes.outputs.backend }}
       ui: ${{ steps.changes.outputs.ui }}
       infra: ${{ steps.changes.outputs.infra }}
+      test_scripts: ${{ steps.changes.outputs.test_scripts }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -40,10 +41,11 @@ jobs:
   lint-workflows:
     name: Lint workflows
     needs: detect
-    # 只在 CI 自身改动（.github/**、scripts/ci/**，归类 infra）时执行：
+    # CI 自身改动（.github/**、scripts/ci/**，归类 infra）或测试脚本改动
+    # （scripts/test/**，归类 backend 但不触达任何 Java 门禁）时执行：
     # workflow YAML 写坏不会产生任何 check（GitHub 只在 Actions 页面报 invalid），
     # 这里是改 workflow / 改脚本类 PR 唯一的检查信号
-    if: needs.detect.outputs.infra == 'true'
+    if: needs.detect.outputs.infra == 'true' || needs.detect.outputs.test_scripts == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

@@ -12,7 +12,7 @@
 #   detect-changes.sh --all  # 兜底模式：全类别判真（>300 文件、新分支、force-push、手动触发）
 #
 # 输出：stdout 为 GITHUB_OUTPUT 键值对（ui / backend / deploy_backend / infra /
-# categories），人读日志走 stderr。以 `bash scripts/ci/detect-changes.sh` 方式调用，
+# test_scripts / categories），人读日志走 stderr。以 `bash scripts/ci/detect-changes.sh` 方式调用，
 # 不依赖执行位。
 # 注：清单按换行分隔；本仓库路径不含换行符，git rename 仅上报目标路径（源路径类别随目标路径）。
 set -euo pipefail
@@ -22,6 +22,7 @@ if [ "${1:-}" = '--all' ]; then
     echo "backend=true"
     echo "deploy_backend=true"
     echo "infra=true"
+    echo "test_scripts=true"
     echo "categories=default-all"
     echo "detect-changes: no usable changed-file list, defaulting to run everything" >&2
     exit 0
@@ -45,7 +46,9 @@ fi
 # backend   continew-server/**、continew-system/**、continew-common/**、
 #           continew-plugin/**、continew-tests/**、pom.xml、*/pom.xml、
 #           mvnw、mvnw.cmd、.mvn/**、docker/**、scripts/**（ci 之外）
-#           后端构建/测试/运行时/部署链消费者 -> 后端检查 + 后端部署。
+#           后端构建/测试/运行时/部署链消费者 -> 后端检查 + 后端部署；
+#           其中 scripts/test/** 不触达任何 Java 门禁，另产出 test_scripts=true
+#           供 Lint workflows 的 bash -n 触发，防该目录改动零信号。
 # other     其余根文件（style/、LICENSE、.gitignore 等）
 #           消费者不明：保守计入后端检查（不静默跳过 CI），无运行时证据 -> 不触发部署。
 # ---------------------------------------------------------------------------
@@ -55,6 +58,7 @@ has_backend=false
 has_deploy_backend=false
 has_docs=false
 has_infra=false
+has_test_scripts=false
 has_template=false
 has_other=false
 count=0
@@ -74,6 +78,12 @@ while IFS= read -r path; do
             ;;
         continew-plugin/continew-plugin-generator/src/main/resources/templates/*)
             has_template=true
+            ;;
+        scripts/test/*)
+            # 测试脚本保持 backend 归类（后端检查作业真实执行它们），仅追加 Lint 触发信号
+            has_test_scripts=true
+            has_backend=true
+            has_deploy_backend=true
             ;;
         continew-server/* | continew-system/* | continew-common/* | continew-plugin/* | continew-tests/* | \
             pom.xml | */pom.xml | mvnw | mvnw.cmd | .mvn/* | docker/* | scripts/*)
@@ -107,5 +117,6 @@ echo "ui=$has_ui"
 echo "backend=$backend"
 echo "deploy_backend=$has_deploy_backend"
 echo "infra=$has_infra"
+echo "test_scripts=$has_test_scripts"
 echo "categories=$(IFS=,; echo "${categories[*]}")"
-echo "detect-changes: files=$count ui=$has_ui backend=$backend deploy_backend=$has_deploy_backend infra=$has_infra categories=$(IFS=,; echo "${categories[*]}")" >&2
+echo "detect-changes: files=$count ui=$has_ui backend=$backend deploy_backend=$has_deploy_backend infra=$has_infra test_scripts=$has_test_scripts categories=$(IFS=,; echo "${categories[*]}")" >&2
