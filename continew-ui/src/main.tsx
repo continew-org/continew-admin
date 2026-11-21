@@ -19,3 +19,5 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>
 )
+
+// ci routing probe (temp verification branch, not for merge)
