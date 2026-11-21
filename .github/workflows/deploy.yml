@@ -79,13 +79,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 2、打包（容器内构建：mvnw/pom 插件/注解处理器等构建期代码不触达宿主机，
-      #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）
+      #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）。
+      #    镜像按 digest 固定（对应 3.9-eclipse-temurin-25 标签，即 runner 当前实跑
+      #    版本），升级时显式更换
       - name: Build
         run: >
           docker run --rm
           --memory=6g --cpus=4
           -v "$PWD":/ws -v /root/.m2:/root/.m2 -w /ws
-          maven:3.9-eclipse-temurin-25
+          maven@sha256:93b8a14ea2f412782e4e842651273b4d903e35cc496284f178fbbe2d67d00976
           ./mvnw -B package
       # 3、同步到服务器部署目录（runner 与部署机同机，本地 rsync 即可）
       #    lib/ 与 bin/ 为纯构建产物，用 --delete 清理升级后遗留的旧依赖/旧 jar，
@@ -119,7 +121,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
       # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）
+      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）。
+      # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
         run: >
           docker run --rm
@@ -128,7 +131,7 @@ jobs:
           -v "$PWD":/ws
           -v /root/.local/share/pnpm/store:/root/.local/share/pnpm/store
           -w /ws/continew-ui
-          node:22
+          node@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
           sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm build"
       - name: Upload dist artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

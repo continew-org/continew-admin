@@ -54,8 +54,9 @@ jobs:
       - name: Lint workflow files
         # -shellcheck= 关闭内嵌脚本检查：镜像内置的 shellcheck 会对存量 run 块报
         # 大量历史告警，与本步骤目标（workflow 语法/表达式/schema）无关；
-        # 脚本语法由下一步 bash -n 覆盖
-        run: docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint:1.7.12 -shellcheck=
+        # 脚本语法由下一步 bash -n 覆盖。
+        # 镜像按 digest 固定（对应 1.7.12 标签），与 action 按 SHA pin 同一纪律，升级时显式更换
+        run: docker run --rm -v "$PWD":/repo -w /repo rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -shellcheck=
       - name: Check shell script syntax
         run: |
           for f in scripts/ci/*.sh scripts/test/*.sh; do
