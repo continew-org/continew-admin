@@ -12,7 +12,7 @@ on:
         type: boolean
         default: false
       simulate_paths:
-        description: 'simulate=true 时的模拟改动路径清单（空格或换行分隔）'
+        description: 'simulate=true 时的模拟改动路径清单（空格或换行分隔）；simulate=false 时传入将使工作流失败'
         type: string
         default: ''
 
@@ -45,20 +45,26 @@ jobs:
         id: changes
         env:
           BEFORE_SHA: ${{ github.event.before }}
+          SIMULATE: ${{ inputs.simulate }}
           SIMULATE_PATHS: ${{ inputs.simulate_paths }}
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
         # 部署分流必须由 job 级 diff 判定完成（scripts/ci/detect-changes.sh）；
-        # simulate 清单仅在 Dry-Run 时替代 diff，真实事件路径行为不变
+        # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 误传清单属歧义输入，
+        # 直接快速失败，真实事件路径行为不变
         run: |
           set -eo pipefail
-          if [ -n "$SIMULATE_PATHS" ]; then
+          if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
+            echo '::error::simulate_paths 仅支持 simulate=true（Dry-Run）：演练请设 simulate=true 走模拟清单，真实部署请留空 simulate_paths'
+            exit 1
+          elif [ -n "$SIMULATE_PATHS" ]; then
             printf '%s\n' "$SIMULATE_PATHS" | tr ' \t' '\n' | sed '/^$/d' | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
           elif [ "$GITHUB_EVENT_NAME" = 'push' ] && [ -n "$BEFORE_SHA" ] \
             && [ "$BEFORE_SHA" != '0000000000000000000000000000000000000000' ] \
             && git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null; then
             git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
           else
-            # workflow_dispatch 非 simulate（保持既有「dispatch 即部署」语义），
+            # workflow_dispatch 未传模拟清单（含 simulate=true 演练，构建/部署动作由各
+            # 作业 if 的 simulate 守卫拦截；非 simulate 保持既有「dispatch 即部署」语义），
             # 或 push 的 before 缺失/全零/不可达（新分支、force-push）：默认全跑
             bash scripts/ci/detect-changes.sh --all >> "$GITHUB_OUTPUT"
           fi
