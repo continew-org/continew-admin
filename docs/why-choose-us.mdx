@@ -1,12 +1,12 @@
 ---
 title: 为什么选 ContiNew Admin
-description: 来自维护者原话的十条选型理由：长期稳定、甄选技术栈、Starter 组件、CRUD 套件、代码生成器、开发体验、代码规范、工程化实践、业务脚手架与质量安全。
+description: 来自维护者原话的九条选型理由：长期稳定、甄选技术栈、Starter 组件、CRUD 套件、开发体验、代码规范、工程化实践、业务脚手架与质量安全。
 icon: Scale
 ---
 
 **AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
 
-以下十条理由来自维护者的持续实践，并随版本演进不断兑现。
+以下九条理由来自维护者的持续实践，并随版本演进不断兑现。
 
 ## 1. 长期稳定
 
@@ -33,11 +33,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 完整说明见 [CRUD 开发](/docs/admin/development/backend/crud)。
 
-## 5. 代码生成器
-
-同步提供了代码生成器，配套前后端代码生成模板。数据表设计完成后，简单配置即可生成前后端 80% 的代码，包括 CRUD API、权限控制、参数校验、接口文档等内容。若业务不复杂，甚至能覆盖 95% 的代码量。详见[代码生成](/docs/admin/manual/generator)。
-
-## 6. 提升开发体验
+## 5. 提升开发体验
 
 持续优化并适配各类能提升开发体验的组件。
 
@@ -48,11 +44,11 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
 - 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新。
 
-## 7. Almost 最佳后端规范
+## 6. Almost 最佳后端规范
 
 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范，前端代码同样采用严格的 ESLint、StyleLint 等检查。优秀的设计带来极高的代码复用率！开发时，你会有一种“无需多写，理应如此”的流畅感。
 
-## 8. 卓越工程化实践
+## 7. 卓越工程化实践
 
 后端采用模块化工程结构，集成了统一版本管理、编译时自动代码格式化等插件。提供自定义打包部署配置（配置文件、第三方依赖与主程序分离），以及全套环境和应用的 Docker Compose 部署脚本，详见[部署](/docs/admin/reference/deployment)。
 
@@ -60,13 +56,13 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 我们还进行了全局 Lombok 配置，继承场景默认自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`，无需手动添加。同时主动禁用了部分 Lombok 注解（如 `@Val`、`@Log4j` 等），避免“又菜又爱玩”的 partner 滥用。
 
-## 9. 全能业务脚手架
+## 8. 全能业务脚手架
 
 支持 **SaaS 租户架构**，基于 RBAC 的权限控制与通用数据权限管理。精心设计的 UI 界面与色彩主题，兼具美观与实用性。内置丰富的通用业务解决方案：第三方登录、邮箱/短信服务（含生产级漏洞处理方案）、个人中心、用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、通知公告等，逻辑闭环，开箱即用，详见[功能手册](/docs/admin/manual/system)。
 
 > 优秀的中后台框架不仅提供组件集成与配置，封装好用的工具，更应提供通用基础业务设计及解决方案，为初创团队减负。
 
-## 10. 质量与安全并重
+## 9. 质量与安全并重
 
 我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案，已披露漏洞的处理情况见[安全通告](/docs/admin/reference/security)。
 

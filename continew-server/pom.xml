@@ -41,12 +41,6 @@
             <artifactId>continew-plugin-schedule</artifactId>
         </dependency>
 
-        <!-- 代码生成器插件 -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>continew-plugin-generator</artifactId>
-        </dependency>
-
         <!-- ContiNew Starter 链路追踪模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>

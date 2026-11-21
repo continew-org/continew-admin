@@ -14,7 +14,7 @@ ContiNew Admin 前后端同仓库。后端是 Maven 多模块工程，前端在�
 | `continew-server` | 打包部署入口：启动类 `top.continew.admin.ContiNewAdminApplication`、通用 Controller（验证码、工作台）、Liquibase 脚本、全部环境配置文件。dev 端口 8000，prod 端口 18000 |
 | `continew-system` | 核心业务：`auth`（系统认证）+ `system`（部门、角色、用户、菜单、字典、文件、公告、系统配置等） |
 | `continew-common` | 公共基类、工具与配置：CRUD 基类（`base`）、MyBatis、接口文档、Excel、全局异常（`config` 下对应子包） |
-| `continew-plugin` | 可插拔插件：`continew-plugin-open`（能力开放 AK/SK）、`continew-plugin-tenant`（多租户）、`continew-plugin-schedule`（任务调度）、`continew-plugin-generator`（代码生成器） |
+| `continew-plugin` | 可插拔插件：`continew-plugin-open`（能力开放 AK/SK）、`continew-plugin-tenant`（多租户）、`continew-plugin-schedule`（任务调度） |
 
 整体目录骨架如下。
 
@@ -28,7 +28,7 @@ continew-admin
 │     │  ├─ job（定时任务，如 NoticePublishJob）
 │     │  └─ ContiNewAdminApplication.java
 │     └─ resources
-│        ├─ config（application.yml、application-dev.yml、application-prod.yml、application-generator.yml）
+│        ├─ config（application.yml、application-dev.yml、application-prod.yml）
 │        ├─ db/changelog（mysql/ 与 postgresql/ 脚本、db.changelog-master.yaml）
 │        ├─ templates（邮件等模板）
 │        ├─ banner.txt
@@ -42,8 +42,7 @@ continew-admin
 ├─ continew-plugin
 │  ├─ continew-plugin-open
 │  ├─ continew-plugin-tenant
-│  ├─ continew-plugin-schedule
-│  └─ continew-plugin-generator（resources/templates 下放 backend/ 与 frontend/ 代码生成 .ftl 模板）
+│  └─ continew-plugin-schedule
 ├─ continew-common
 │  └─ src/main/java/top/continew/admin/common
 │     ├─ api（公共业务 API 接口）

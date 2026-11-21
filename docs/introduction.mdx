@@ -37,7 +37,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 中后台项目的重复工作集中在权限模型、认证会话、文件存储、日志审计、任务调度这些横切能力上。ContiNew Admin 给出一套已经组合好且经过生产验证的默认实现，让新项目的起点是业务代码，而不是脚手架代码。
 
-已经内置并开箱可用的功能包括用户、角色、菜单、部门、字典、参数配置、通知公告、文件管理（回收站与分片上传）、存储配置、短信配置、客户端配置、在线用户、登录与操作日志、多租户与租户套餐、AK/SK 能力开放、任务调度、代码生成。功能清单与使用方式见[功能手册](/docs/admin/manual/system)。
+已经内置并开箱可用的功能包括用户、角色、菜单、部门、字典、参数配置、通知公告、文件管理（回收站与分片上传）、存储配置、短信配置、客户端配置、在线用户、登录与操作日志、多租户与租户套餐、AK/SK 能力开放、任务调度。功能清单与使用方式见[功能手册](/docs/admin/manual/system)。
 
 ## 核心特性
 
@@ -49,9 +49,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 **CRUD 套件**：Controller 标注 `@CrudRequestMapping` 并继承 `BaseController`，`BaseController.preHandle` 按 API 类型自动生成并校验权限码。例如 `POST /system/user` 自动要求 `system:user:create` 权限，无需手写鉴权注解。该套件由 ContiNew Starter 提供，完整说明见 [CRUD 套件文档](/docs/starter/modules/extension/crud)。
 
-**可插拔插件**：能力开放（AK/SK 签名）、多租户、任务调度（Snail Job）、代码生成器四个功能以 `continew-plugin` 下的独立模块交付，可按需引入或裁剪。任务调度默认关闭（`snail-job.enabled: false`），生产配置默认开启。
-
-**代码生成器**：连接数据库表生成后端 Controller/Service/Mapper/Entity 等 11 个模板与前端列表页、新增弹窗、详情抽屉等 4 个模板，产物与现有分层约定一致，生成后即可参与 CRUD 权限体系。
+**可插拔插件**：能力开放（AK/SK 签名）、多租户、任务调度（Snail Job）三个功能以 `continew-plugin` 下的独立模块交付，可按需引入或裁剪。任务调度默认关闭（`snail-job.enabled: false`），生产配置默认开启。
 
 ## 技术栈基线
 

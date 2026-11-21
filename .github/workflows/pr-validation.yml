@@ -43,7 +43,6 @@ jobs:
             open
             tenant
             schedule
-            generator
             docker
             ui
           requireScope: false

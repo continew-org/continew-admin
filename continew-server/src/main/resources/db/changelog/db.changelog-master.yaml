@@ -10,7 +10,7 @@ databaseChangeLog:
   - include:
       file: db/changelog/mysql/plugin/plugin_schedule.sql
   - include:
-      file: db/changelog/mysql/plugin/plugin_generator.sql
+      file: db/changelog/mysql/plugin/plugin_generator_removal.sql
 # PostgreSQL
 #  - include:
 #      file: db/changelog/postgresql/main_table.sql
@@ -23,4 +23,4 @@ databaseChangeLog:
 #  - include:
 #      file: db/changelog/postgresql/plugin/plugin_schedule.sql
 #  - include:
-#      file: db/changelog/postgresql/plugin/plugin_generator.sql
+#      file: db/changelog/postgresql/plugin/plugin_generator_removal.sql

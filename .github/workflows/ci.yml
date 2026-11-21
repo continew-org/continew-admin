@@ -272,8 +272,8 @@ jobs:
               per_page: 100,
             });
 
-            // open 与 generator 插件已退出测试范围，不参与判定。
-            const excluded = /^continew-plugin\/continew-plugin-(open|generator)\//;
+            // open 插件已退出测试范围，不参与判定。
+            const excluded = /^continew-plugin\/continew-plugin-open\//;
             const production = files
               .filter(f => /\/src\/main\/java\/.*\.java$/.test(f.filename))
               .filter(f => !excluded.test(f.filename))

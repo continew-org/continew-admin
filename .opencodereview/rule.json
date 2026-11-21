@@ -13,7 +13,7 @@
   "rules": [
     {
       "path": "**/src/main/java/**/*.java",
-      "rule": "本项目是 ContiNew Admin 应用项目，基于 ContiNew Starter。格式、License Header、@author、内联全限定名等已由 Spotless/Checkstyle 强制，不要重复报告。重点检查只有语义审查能发现的问题：\n1. 类级 Javadoc 的 @since 必须取当前形态首次发布的版本号（如 5.0.0），禁止写日期。\n2. 配置项遵循「框架级配置项归 starter，配置值归 admin」：框架级键使用 continew-starter.* 并引用 starter 的 PropertiesConstants；admin 自身配置使用业务前缀（如 captcha、generator、auth.password）。\n3. Lombok 约定：继承场景的 @EqualsAndHashCode/@ToString 由 lombok.config 自动补 callSuper，不要手工重复；禁止 @val、@Log4j、@Log4j2，日志统一用 @Slf4j。\n4. 修改接口、配置或行为时，必须在同一 PR 同步更新 docs/ 下对应文档。\n5. 语义级检查：事务边界与回滚、权限注解、数据权限与多租户隔离是否可能被绕过、API 兼容性变更、@Deprecated 标注是否规范。",
+      "rule": "本项目是 ContiNew Admin 应用项目，基于 ContiNew Starter。格式、License Header、@author、内联全限定名等已由 Spotless/Checkstyle 强制，不要重复报告。重点检查只有语义审查能发现的问题：\n1. 类级 Javadoc 的 @since 必须取当前形态首次发布的版本号（如 5.0.0），禁止写日期。\n2. 配置项遵循「框架级配置项归 starter，配置值归 admin」：框架级键使用 continew-starter.* 并引用 starter 的 PropertiesConstants；admin 自身配置使用业务前缀（如 captcha、auth.password）。\n3. Lombok 约定：继承场景的 @EqualsAndHashCode/@ToString 由 lombok.config 自动补 callSuper，不要手工重复；禁止 @val、@Log4j、@Log4j2，日志统一用 @Slf4j。\n4. 修改接口、配置或行为时，必须在同一 PR 同步更新 docs/ 下对应文档。\n5. 语义级检查：事务边界与回滚、权限注解、数据权限与多租户隔离是否可能被绕过、API 兼容性变更、@Deprecated 标注是否规范。",
       "merge_system_rule": true
     },
     {

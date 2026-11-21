@@ -67,12 +67,11 @@ Liquibase 脚本放进 `continew-server` 的 `db/changelog/mysql` 与 `db/change
 
 ## ignore-tables 白名单
 
-全租户共享的表加进 `continew-starter.tenant.ignore-tables`，拦截器对这些表不拼租户条件。`application.yml` 已内置的名单按用途分四类。
+全租户共享的表加进 `continew-starter.tenant.ignore-tables`，拦截器对这些表不拼租户条件。`application.yml` 已内置的名单按用途分三类。
 
 | 类别 | 表 |
 |:-----|:---|
 | 租户自身 | `tenant`、`tenant_package`、`tenant_package_menu` |
-| 代码生成 | `gen_config`、`gen_field_config` |
 | 全局配置 | `sys_menu`、`sys_dict`、`sys_dict_item`、`sys_option`、`sys_storage`、`sys_sms_config`、`sys_sms_log`、`sys_client` |
 | 能力开放 | `sys_app`（注：`sys_app` 实体含 `tenant_id` 但在白名单中，由插件自行控制租户语义） |
 

@@ -11,7 +11,7 @@ description: 套餐管理页面维护套餐与菜单的关联关系，套餐是�
 
 ## 菜单授权
 
-套餐表单中的菜单树来自 `GET /tenant/package/menu/tree`，权限码 `tenant:package:list`。这棵树在系统全量菜单的基础上剔除了 `continew-starter.tenant.ignore-menus` 配置的菜单 ID，ContiNew Admin 默认剔除菜单管理、字典管理、系统配置、短信日志、租户管理、能力开放、任务调度、开发工具等平台级菜单，保证租户侧只能拿到业务可用的功能子集。
+套餐表单中的菜单树来自 `GET /tenant/package/menu/tree`，权限码 `tenant:package:list`。这棵树在系统全量菜单的基础上剔除了 `continew-starter.tenant.ignore-menus` 配置的菜单 ID，ContiNew Admin 默认剔除菜单管理、字典管理、系统配置、短信日志、租户管理、能力开放、任务调度等平台级菜单，保证租户侧只能拿到业务可用的功能子集。
 
 勾选结果按「菜单选择是否父子节点关联」字段决定树控件的联动行为，保存时 `PackageMenuService` 将勾选的菜单 ID 全量写入 `tenant_package_menu`。
 
