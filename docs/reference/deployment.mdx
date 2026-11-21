@@ -197,12 +197,11 @@ location / {
 
 ## 切换到 PostgreSQL
 
-新项目直接选择 PostgreSQL 时，需要改四处，只改 `database-id` 不够：
+新项目直接选择 PostgreSQL 时，需要改三处，只改 `database-id` 不够：
 
 1. `application.yml` 的 `mybatis-plus.database-id` 改为 `pgsql`（分页方言靠它区分）；
 2. 数据源 URL 与驱动：`jdbc:postgresql://host:5432/db`，驱动 `org.postgresql.Driver`，`application-prod.yml` 与 `application-dev.yml` 都要改；
-3. Liquibase 的 `db.changelog-master.yaml` 把 MySQL 的 include 切到 PostgreSQL 的 include，两份脚本在 `db/changelog/mysql` 与 `db/changelog/postgresql`；
-4. 代码生成器的类型映射按 PostgreSQL 方言提供（`application-generator.yml` 已内置 `int2` / `int4` / `int8` 等映射）。
+3. Liquibase 的 `db.changelog-master.yaml` 把 MySQL 的 include 切到 PostgreSQL 的 include，两份脚本在 `db/changelog/mysql` 与 `db/changelog/postgresql`。
 
 <Callout type="info">
 已有 MySQL 库迁移到 PostgreSQL 属于数据迁移，不在文档范围。建库字符集建议 UTF8，排序规则与 MySQL 场景保持一致再校验分页与排序行为。

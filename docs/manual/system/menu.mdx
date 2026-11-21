@@ -50,7 +50,7 @@ description: 目录、菜单、按钮三级资源的维护，动态路由的生�
 按钮类型（`type = 3`）的 `permission` 字段是后端接口鉴权的依据。CRUD 类接口由 `BaseController.preHandle` 按「模块：资源：动作」自动生成权限码，例如 `POST /system/user` 要求 `system:user:create`。前端按钮经 `usePermission` 的 `hasPermission` 做条件渲染裁剪，无权限时不渲染，用法见[权限控制](/docs/admin/development/frontend/permission)。
 
 <Callout type="info">
-新增业务模块时，代码生成器会同时产出菜单 SQL（含按钮权限标识），在菜单管理中执行或手工录入后即可挂到角色上。按钮权限标识建议与后端权限码保持一致，避免前后端两张皮。
+新增业务模块时，在菜单管理中录入目录、页面与按钮菜单（按钮的 `permission` 填权限标识）后即可挂到角色上。按钮权限标识建议与后端权限码保持一致，避免前后端两张皮。
 </Callout>
 
 ## 清除缓存

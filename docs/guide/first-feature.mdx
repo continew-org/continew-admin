@@ -1,21 +1,14 @@
 ---
 title: 正式开发
-description: 以岗位管理为完整案例，从建表到页面可用走一遍基于框架的业务开发：建模块、建表、代码生成、菜单授权、验证。
+description: 以岗位管理为完整案例，从建表到页面可用走一遍基于框架的业务开发：建表、后端实现、前端实现、菜单授权、验证。
 icon: Hammer
 ---
 
-读完[快速开始](/docs/admin)并成功登录之后，本页带你完整开发第一个业务功能。案例是「岗位管理」，流程与任何真实业务资源一致：建表 → 代码生成 → 前后端产物落位 → 菜单与按钮授权 → 页面验证。走完这一条线，你就能回答「在 ContiNew Admin 里加一个业务功能，从哪开始、到哪结束」。
+读完[快速开始](/docs/admin)并成功登录之后，本页带你完整开发第一个业务功能。案例是「岗位管理」，流程与任何真实业务资源一致：建表 → 后端实现 → 前端实现 → 菜单与按钮授权 → 页面验证。走完这一条线，你就能回答「在 ContiNew Admin 里加一个业务功能，从哪开始、到哪结束」。
 
 每一步都给出验收点。建议先照做把岗位管理跑通，再开始做自己的功能；第一次定制就失败的话，很难分清是框架问题还是自己的改法问题。
 
-## 方式选择：代码生成还是手写
-
-框架内置代码生成器，读取表结构后产出前后端整套 CRUD 代码（15 个模板）与菜单 SQL。两条路都通：
-
-- **代码生成**：标准单表 CRUD 场景推荐，样板代码全免，生成后再补业务逻辑与调整样式；
-- **手写**：需要理解每个类的职责时走一遍，写完再对照生成产物校验理解。
-
-下面的流程以代码生成为主线，每个环节同时说明手写时对应的文件，两类需求都覆盖。CRUD 套件的机制细节（API 类型、权限码推导）见[CRUD 开发](/docs/admin/development/backend/crud)。
+框架的约定一句话概括：后端继承 CRUD 套件基类后，接口与权限码自动生成；前端目录即路由，菜单由后端按角色下发。机制细节见[CRUD 开发](/docs/admin/development/backend/crud)与[路由与页签](/docs/admin/development/frontend/route)。
 
 ## 第 1 步：建表
 
@@ -43,64 +36,108 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岗位表';
 ```
 
-字段注释会成为生成代码的类注释与文档描述，认真写。走正式变更管理时，把建表语句加入 `continew-server/src/main/resources/db/changelog/mysql` 并在 `db.changelog-master.yaml` 登记；仓库约定数据库结构变更同时提供 MySQL 与 PostgreSQL 两套 SQL（见 AGENTS.md）。上面的 DDL 是 MySQL 方言，PostgreSQL 版本需另写到 `db/changelog/postgresql`。`db.changelog-master.yaml` 默认启用 MySQL includes；选择 PostgreSQL 部署时按[部署](/docs/admin/reference/deployment#切换到-postgresql)的步骤切换 includes。
+字段注释会成为响应对象的接口文档描述，认真写。写完把建表语句纳入 Liquibase 变更管理：在 `continew-server/src/main/resources/db/changelog/mysql/` 下新建 changeset 文件（如 `biz_post.sql`），并在 `db.changelog-master.yaml` 登记。仓库约定数据库结构变更同时提供 MySQL 与 PostgreSQL 两套 SQL，PostgreSQL 版本写到 `db/changelog/postgresql/`（写法对照同目录既有脚本）。**只新增 changeset，不要修改存量 changeset**——Liquibase 按 checksum 校验已执行的记录，改动会导致启动失败。`db.changelog-master.yaml` 默认启用 MySQL includes；选择 PostgreSQL 部署时按[部署](/docs/admin/reference/deployment#切换到-postgresql)的步骤切换 includes。
 
 <Callout type="warn">
 表名带 `tenant_id` 列即纳入行级租户隔离（继承 `TenantBaseDO` 的实体自动带出）。不需要租户隔离的公共表，要把表名加入 `continew-starter.tenant.ignore-tables` 白名单，机制见[多租户接入](/docs/admin/development/backend/tenant)。
 </Callout>
 
-## 第 2 步：代码生成
+## 第 2 步：后端实现
 
-启动前后端并登录后，进入「开发工具 → 代码生成」。
+后端代码放 `continew-system` 模块的 `top.continew.admin.system` 包下（业务域不同就选对应模块），按分层子包落位：`model/entity`、`model/query`、`model/req`、`model/resp`、`mapper`、`service`（含 `impl`）、`controller`。完整形态可对照公告模块（`NoticeController`、`NoticeDO`、`NoticeServiceImpl` 等），下面按产出顺序走一遍。
 
-<Steps>
-<Step>
-
-列表中找到 `sys_post`，点「配置」。在配置页补全生成信息：模块名、包名、业务名、作者、表前缀（`sys_`，用于推导类名 `Post`）。字段配置页逐列调整：勾选是否进列表/表单/查询区、选择表单类型（输入框、开关等 12 种）与查询方式（等于、LIKE 等 14 种），字典字段绑定字典编码。
-
-</Step>
-<Step>
-
-点「生成」。产物共 15 个模板（FreeMarker）：
-
-- 后端 11 个：Controller / Service / ServiceImpl / Mapper / MapperXml / Entity / Req / Resp / DetailResp / Query / 菜单 SQL；
-- 前端 4 个：API 封装（`src/apis`）、列表页、新增弹窗、详情抽屉（`src/views`）。
-
-也可以点「下载」拿 zip，评审或跨机交付时用下载更稳妥；「生成」按 `user.dir` 相对路径直接落盘，要求后端以工程根目录为工作目录启动。
-
-</Step>
-<Step>
-
-把产物放到正确位置。后端文件按配置的模块与包名落位（如放进 `continew-system` 的对应子包）；前端 `api.ts` 放 `src/apis/<模块>/` 并在聚合出口透传，页面放 `src/views/<模块>/post/`。新生成的页面组件路径形如 `post/index`，后续配菜单要用。
-
-</Step>
-</Steps>
-
-<Callout type="info">
-生成器产出的是标准骨架，复杂页面（联动、布局）生成后参考 `src/views/system/user` 等成熟页面调整。手写路线对应的文件与[CRUD 开发](/docs/admin/development/backend/crud)的「新增一个资源」五步一致。
-</Callout>
-
-## 第 3 步：菜单与按钮授权
+新增的 Java 文件要带 Apache-2.0 License Header，类注释含 `@author`（署名使用者本人）与 `@since`（取 `5.0.0`），这些由 Spotless 与 Checkstyle 门禁强制，规范见根目录 AGENTS.md。
 
 <Steps>
 <Step>
 
-执行生成的菜单 SQL（或手工在「系统管理 → 菜单管理」录入）：一条目录/菜单记录（组件路径填 `post/index`，规则见[菜单管理](/docs/admin/manual/system/menu)），若干按钮记录（`permission` 填 `system:post:create` 这类权限码，与后端自动生成的保持一致）。
+写实体。`model/entity/PostDO.java` 继承 common 的 `BaseDO`，类上标 `@Data` 与 `@TableName(value = "sys_post", autoResultMap = true)`。JSON 列字段要同时加 `@TableField(typeHandler = JacksonTypeHandler.class)`——`autoResultMap` 漏了会导致该字段读出来恒为 null。写法对照 `NoticeDO` 的 `noticeUsers` 字段。
 
 </Step>
 <Step>
 
-清菜单缓存。角色-菜单关联结果缓存在 Redis，菜单管理页点「清除缓存」（`DELETE /system/menu/cache`）。
+写查询、请求与响应三个模型。
+
+- `model/query/PostQuery.java`：只放可筛选字段，实现 `Serializable`，`@Schema` 注解补接口文档（对照 `NoticeQuery`）；
+- `model/req/PostReq.java`：校验注解齐全（`@NotBlank`、`@NotNull`、`@Length` 等），长度约束与建表 DDL 一致（对照 `NoticeReq`）；
+- `model/resp/PostResp.java` 与 `PostDetailResp.java`：Resp 继承 common 的 `BaseResp` 放列表字段，DetailResp 继承 Resp 补详情字段（对照 `NoticeResp` 与 `NoticeDetailResp`）。
 
 </Step>
 <Step>
 
-把新菜单授权给目标角色（角色管理 → 修改权限），刷新页面即可看到入口。动态路由由后端按角色过滤下发，前端不做二次拦截。
+写 Mapper。`mapper/PostMapper.java` 继承 starter 的 `BaseMapper<PostDO>` 即可满足单表 CRUD；有联表或自定义查询时再声明方法，并在 `continew-system/src/main/resources/mapper/PostMapper.xml` 同步写 XML（对照 `NoticeMapper` 的 `selectNoticePage`）。接口声明了方法而 XML 缺失时，运行期才会报字段找不到。
+
+</Step>
+<Step>
+
+写 Service。接口 `service/PostService.java` 继承 `BaseService<PostResp, PostDetailResp, PostQuery, PostReq>`；实现类 `service/impl/PostServiceImpl.java` 继承 `BaseServiceImpl<PostMapper, PostDO, PostResp, PostDetailResp, PostQuery, PostReq>`，类上加 `@Service` 与 `@RequiredArgsConstructor`，日志统一用 `@Slf4j`（对照 `NoticeService` 与 `NoticeServiceImpl`）。`BaseServiceImpl` 已内置 Crane4j 数据填充，响应对象上的填充注解开箱即用。
+
+</Step>
+<Step>
+
+写控制器。继承 `BaseController<S, L, D, Q, C>` 五个泛型依次是 Service、列表响应、详情响应、查询条件、请求参数，类上标注 `@CrudRequestMapping`。
+
+```java
+@Tag(name = "岗位管理 API")
+@RestController
+@CrudRequestMapping(value = "/system/post",
+    api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})
+public class PostController extends BaseController<PostService, PostResp, PostDetailResp, PostQuery, PostReq> {
+}
+```
+
+只写空类体：CRUD 接口由基类按 `api` 声明自动生成，权限码按路径推导（`POST /system/post` 要求 `system:post:create`），不要手写鉴权注解。资源特有的接口再在同一个控制器里追加，见[CRUD 开发](/docs/admin/development/backend/crud)的自定义接口一节。
+
+写完执行 `./mvnw compile` 快速确认编译通过（完整门禁 `./mvnw verify` 放到最后统一跑）。
 
 </Step>
 </Steps>
 
-## 第 4 步：验证
+## 第 3 步：前端实现
+
+前端页面在 `continew-ui/src/routes/(main)/(app)/system/post/` 下开发。TanStack 文件路由约定「目录即 URL」：目录 `system/post` 对应路由 `/system/post`，`src/routeTree.gen.ts` 由 `pnpm dev` / `pnpm build` 自动生成，**不要手改**。
+
+<Steps>
+<Step>
+
+封装 API。新建 `continew-ui/src/lib/api/post.ts`：从 `@/lib/http` 导入 `http`，导出 `PostResp`、`PostDetailResp`、`PostPageQuery`、`PostReq` 四个类型与 `listPosts`、`getPost`、`createPost`、`updatePost`、`deletePosts` 五个函数，写法对照 `notice.ts`（`deletePosts` 走 `http.del`，`body` 传 `{ ids: [...] }`）。不要绕过封装直接 `fetch`。
+
+</Step>
+<Step>
+
+写页面组件。对照 `system/notice` 的既有形态建同级 `-components/` 目录：
+
+- `route.tsx`：`createFileRoute('/(main)/(app)/system/post')({ component: PostList })`，组件从 `-components/` 导入；
+- `-components/post-columns.tsx`：TanStack Table 列定义；
+- `-components/post-list.tsx`：列表页，用 `useListTable` 管理分页与筛选，`DataTable` 出表格；
+- `-components/post-form-drawer.tsx`、`post-delete-dialog.tsx`：新增/编辑抽屉与删除确认。
+
+组件只用 `src/components/ui`（shadcn/ui）与 `src/components` 的现成业务组件，图标用 `lucide-react`，不引第二套 UI 库；表格列、筛选行、删除确认优先复用现有业务组件，不要从头写。
+
+</Step>
+</Steps>
+
+## 第 4 步：菜单与按钮授权
+
+<Steps>
+<Step>
+
+登录后在「系统管理 → 菜单管理」录入菜单：目录（类型 1）与页面菜单（类型 2），页面菜单的 `path` 填前端路由 URL（如 `/system/post`），规则见[菜单管理](/docs/admin/manual/system/menu)。按钮菜单（类型 3）的 `permission` 填后端推导出的权限码（`system:post:create`、`system:post:update`、`system:post:delete` 等），要与权限码推导规则逐字一致。
+
+</Step>
+<Step>
+
+菜单或角色调整未即时生效时，点菜单管理页的「清除缓存」（`DELETE /system/menu/cache`）。
+
+</Step>
+<Step>
+
+在「角色管理 → 修改权限」把新菜单授给目标角色，刷新页面即可看到入口。动态路由由后端按角色过滤下发，前端不做二次拦截。
+
+</Step>
+</Steps>
+
+## 第 5 步：验证
 
 进入「岗位管理」页面，依次验证：
 
@@ -108,20 +145,24 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
 2. 新增一条岗位并能在列表看到（`POST /system/post`，`system:post:create`）；
 3. 用一个未授权该菜单的测试账号登录，确认看不到入口、直调接口返回无权限。
 
-到这一步功能就算完整落地了。之后再把包名、模块名、品牌元素改成你自己的项目信息；改完跑一遍 `./mvnw verify`（后端四道门禁）与 `pnpm lint && pnpm typecheck && pnpm build`（前端三道门禁）确认没有被定制破坏。
+到这一步功能就算完整落地了。之后再把包名、模块名、品牌元素改成你自己的项目信息；改完跑一遍 `./mvnw verify`（后端静态门禁与单元测试）与 `cd continew-ui && pnpm check`（前端格式、lint、类型、测试与构建）确认没有被定制破坏。
 
 ## 常见卡点
 
 | 症状 | 原因与处理 |
 |:-----|:-----------|
-| 生成页看不到刚建的表 | 表在 `generator.excludeTables` 排除清单里，或连的库不对；默认只排除 `DATABASECHANGELOG*` 与生成器自身表 |
-| 菜单配了，页面白屏 | 组件路径漏了 `/index`，对照[路由与页签](/docs/admin/development/frontend/route)的映射规则修正 |
+| 菜单配了，页面白屏 | 菜单 `path` 与 `routes` 目录对应的 URL 不一致，对照[路由与页签](/docs/admin/development/frontend/route)的映射规则修正 |
 | 接口全部 403 | 按钮权限码与后端推导不一致，见[CRUD 开发](/docs/admin/development/backend/crud)的权限码生成规则 |
+| 启动报 Liquibase checksum 不匹配 | 改了存量 changeset 而不是新增 |
+| JSON 列字段读出恒为 null | 实体 `@TableName` 漏了 `autoResultMap = true` |
+| PostgreSQL 环境建表失败 | 只写了 `db/changelog/mysql/` 一份 SQL |
 | 前端构建类型报错 | `pnpm typecheck` 定位；对照仓库同版本页面修，不要用 `@ts-ignore` 绕过 |
 
 ## 相关源码
 
-- [GeneratorController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-plugin/continew-plugin-generator/src/main/java/top/continew/admin/generator/controller/GeneratorController.java)：生成 API 与落盘逻辑
-- [templates/backend](https://github.com/continew-org/continew-admin/tree/dev/continew-plugin/continew-plugin-generator/src/main/resources/templates/backend) / [templates/frontend](https://github.com/continew-org/continew-admin/tree/dev/continew-plugin/continew-plugin-generator/src/main/resources/templates/frontend)：15 个模板
-- [application-generator.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-generator.yml)：模板登记与类型映射
-- [continew-ui/src/routes/(main)/(app)/system/user](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/routes/(main)/(app)/system/user)：成熟列表页参考
+- [NoticeController.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/controller/NoticeController.java)：CRUD 控制器范例
+- [NoticeDO.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/model/entity/NoticeDO.java)：实体与 JSON 列字段写法范例
+- [NoticeServiceImpl.java](https://github.com/continew-org/continew-admin/blob/dev/continew-system/src/main/java/top/continew/admin/system/service/impl/NoticeServiceImpl.java)：Service 实现范例
+- [main_table.sql](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/db/changelog/mysql/main_table.sql)：建表语句与公共字段约定参考
+- [continew-ui/src/routes/(main)/(app)/system/notice](https://github.com/continew-org/continew-admin/tree/dev/continew-ui/src/routes/(main)/(app)/system/notice)：前端列表页参考
+- [continew-ui/src/lib/api/notice.ts](https://github.com/continew-org/continew-admin/blob/dev/continew-ui/src/lib/api/notice.ts)：前端 API 封装参考

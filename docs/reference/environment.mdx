@@ -9,14 +9,12 @@ ContiNew Admin 的配置分两侧。后端在 `continew-server/src/main/resource
 
 ### 配置文件组织
 
-`application.yml` 放环境无关的通用配置，`application-dev.yml` 与 `application-prod.yml` 放环境差异配置，`application-generator.yml` 放代码生成器配置。启用的 profile 由 `spring.profiles.active` 决定，默认经环境变量 `PROFILES_ACTIVE` 注入，未设置时回退到 `dev`。
+`application.yml` 放环境无关的通用配置，`application-dev.yml` 与 `application-prod.yml` 放环境差异配置。启用的 profile 由 `spring.profiles.active` 决定，默认经环境变量 `PROFILES_ACTIVE` 注入，未设置时回退到 `dev`。
 
 ```yaml
 spring:
   profiles:
     active: ${PROFILES_ACTIVE:dev}
-    include:
-      - generator
 ```
 
 端口不写死在通用配置里。dev 为 `8000`，prod 为 `18000`。
