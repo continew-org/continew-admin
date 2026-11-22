@@ -1,5 +1,16 @@
-# ContiNew Admin 多租户中后台管理框架
+<div align="center">
+  <img src="continew-ui/public/logo.svg" width="72" alt="ContiNew Admin" />
+</div>
 
+<div align="center">
+
+# ContiNew Admin
+
+**持续迭代优化的前后端分离多租户中后台管理系统框架，开箱即用，持续提供舒适的开发体验。**
+
+</div>
+
+<div align="center">
 <a href="https://github.com/continew-org/continew-admin" title="Current Version" target="_blank">
 <img src="https://img.shields.io/badge/SNAPSHOT-v5.0.0-%23ff3f59.svg" alt="Current Version" />
 </a>
@@ -10,17 +21,34 @@
 <img src="https://img.shields.io/badge/Spring Boot-4.1.1-%236CB52D.svg?logo=Spring-Boot" alt="Spring Boot" />
 </a>
 <a href="https://github.com/continew-org/continew-admin" title="Open JDK" target="_blank">
-<img src="https://img.shields.io/badge/Open JDK-17-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
+<img src="https://img.shields.io/badge/Open JDK-25-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
+</a>
+<a href="https://react.dev/" title="React" target="_blank">
+<img src="https://img.shields.io/badge/React-19.3.1-20232A.svg?logo=react&logoColor=61DAFB" alt="React" />
+</a>
+<a href="https://tailwindcss.com/" title="Tailwind CSS" target="_blank">
+<img src="https://img.shields.io/badge/Tailwind%20CSS-4.3.3-06B6D4.svg?logo=tailwindcss&logoColor=fff" alt="Tailwind CSS" />
+</a>
+<br/>
+<a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">
+<img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
 <a href="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml" title="CI" target="_blank">
 <img src="https://github.com/continew-org/continew-admin/actions/workflows/ci.yml/badge.svg?branch=dev" alt="CI" />
 </a>
-<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar" target="_blank">
-<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=alert_status" alt="Sonar" />
+<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Quality Gate" target="_blank">
+<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=alert_status" alt="Sonar Quality Gate" />
 </a>
-<a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">
-<img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
+<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Coverage" target="_blank">
+<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=coverage" alt="Sonar Coverage" />
 </a>
+<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Security Rating" target="_blank">
+<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=security_rating" alt="Sonar Security Rating" />
+</a>
+<a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Maintainability Rating" target="_blank">
+<img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=sqale_rating" alt="Sonar Maintainability Rating" />
+</a>
+<br/>
 <a href="https://github.com/continew-org/continew-admin" title="GitHub Stars" target="_blank">
 <img src="https://img.shields.io/github/stars/continew-org/continew-admin?style=social" alt="GitHub Stars" />
 </a>
@@ -39,16 +67,25 @@
 <a href="https://gitee.com/continew/continew-admin" title="Gitee Forks" target="_blank">
 <img src="https://gitee.com/continew/continew-admin/badge/fork.svg?theme=dark" alt="Gitee Forks" />
 </a>
+</div>
+
+<div align="center">
 
 📚 [在线文档](https://continew.top/docs/admin) | 🚀 [演示地址](https://continew.top/demo) | 💬 [提交 Issue](https://github.com/continew-org/continew-admin/issues)
 
+</div>
+
+<div align="center">
+  <img src=".image/screenshot-dashboard.png" alt="ContiNew Admin 仪表盘（浅色 / 深色主题）" width="100%" />
+</div>
+
 ## 简介
 
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
+**AI 编程纪元，从 ContiNew & AI Native Coding 开始优雅编码。**
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot 4（Java 17）、React 19 & TanStack Router · Query · Table & shadcn/ui & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosId、JustAuth、Crane4j、Spring Doc、Hutool 等。
+当前前端采用 React 19 & shadcn/ui & Tailwind CSS（配合 TanStack Router · Query · Table 与 Vite），后端采用 Spring Boot 4（Java 17+，构建基线 JDK 25）& ContiNew Starter，更多组件见下方[核心技术栈](#核心技术栈)。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -58,7 +95,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 前端源码位于本仓库 `continew-ui/` 目录，与后端同版本发布。
 
-|         | 仓库                                                         |
+| 开源平台 | 仓库                                                         |
 | :------ | :----------------------------------------------------------- |
 | GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) |
 | AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) |
@@ -81,20 +118,20 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，但一些优秀的实践需要花时间持续进行沉淀，只要我没跳出这个圈子，我还是需要一直去做好程序归档。“种一棵树最好的时间是十年前，其次是现在”，最终，我选择在业余时间更加正视这件事，从头归档沉淀，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。并且这次我选择了开源，我希望它不仅仅能吸收我的需求和沉淀，而是依托开源协作模式，及时发现更多的问题，接受更多的可能性，沉淀更优秀的思考，设计。
 
+进入 AI 编程时代，有人说现在已经用不上固定脚手架了，用 AI 很快就能写一个。我认为：对，也不对。对的是，AI 让“人人都有自己的脚手架”变得真正可行，实现和维护都不再是负担，只不过有些人开源、有些人闭源维护而已；不对在哪？——AI 时代，一个好的底座反而更加重要。ContiNew 在 AI 编程时代将立足 AI Native Coding：让 AI 助手基于这套优雅的规范与底座，“写出”更优质的代码。
+
 ## 为什么选我们？
 
 > [!TIP]
 > 更为完整的图文描述请查阅[《在线文档》](https://continew.top/docs/admin/why-choose-us)。
 
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
+**1. 长期稳定：** 自 2022 年 12 月创建、2023 年 3 月发布 v1.0.0，持续迭代优化至今，完整版本记录见 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
 
-**1.长期稳定：** 自 2022 年 12 月 8 日创建，2023 年 3 月 26 日发布 v1.0.0，至今持续迭代优化，完整版本发布记录见 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
+**2. 甄选技术栈：** 从流行度、成熟度与发展潜力多维度深度调研甄选，紧跟时代持续升级，不为尝鲜而尝鲜。
 
-**2.甄选技术栈：** ContiNew（Continue New） 项目致力于持续迭代优化，确保技术栈紧跟时代。在技术选型时，我们进行了深度广泛的调研，从流行度、成熟度和发展潜力等多维度精心挑选技术栈。
+**3. Starter 组件：** 基础能力沉淀为 [ContiNew Starter](https://github.com/continew-org/continew-starter) 并[发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)，任意 Spring Boot Web 项目皆可直接复用。
 
-**3.Starter 组件：** 从 v2.1.0 版本开始，我们将后端基础组件及各框架集成配置抽取并封装到 ContiNew Starter 项目中，极大降低上手和升级难度。且 **[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)**，你可以在任意项目中直接引入所需依赖使用。即使你不使用完整的中后台框架，这些能让你搭项目框架更快、更爽、更省力的 Starter 组件，难道不香吗？
-
-**4.CRUD 套件：** 封装通用增删改查套件，适配后端各分层架构，几分钟即可提供一套完整的 CRUD API，包括新增、修改、批量删除、查询详情、分页列表、全部列表、树型列表、Excel 导出，甚至是字典列表（用于下拉选项场景）。所有 API 均可根据实际需求灵活开放或扩展。
+**4. CRUD 套件：** 一个注解声明 API 集合，几分钟生成一套完整增删改查接口，树型列表、Excel 导出、字典列表等皆可按需声明开放。
 
 ```java
 @Tag(name = "部门管理 API")
@@ -103,70 +140,55 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
-**5.AI 技能集：** 仓库内置 Agent 技能目录（`.agents/skills/`），各 AI 编程助手共用同一事实源，按技能以仓库既定规范完成开发动作，人机协作同守一套工程约定。当前提供 ocn-admin-codegen 脚手架技能：从业务描述引导设计建表或按既有数据表，经问答确认范围与字段映射后，在前后端双端生成一套配套的增删改查模块（后端 CRUD 套件全套文件、前端路由与页面组件、Liquibase 双份建表 SQL 与菜单 SQL），产物开箱即符合仓库分层与权限约定。技能系列持续扩充中：移除租户、切换数据库为 PostgreSQL、开发前清理（改包名、清理单元测试等）等场景技能已在规划。
+**5. AI 技能集：** 仓库内置 Agent 技能目录（`.agents/skills/`），各 AI 编程助手共用同一事实源、同守一套工程约定，脚手架技能可双端生成开箱即用的增删改查模块。
 
-**6.提升开发体验：** 持续优化并适配各类能提升开发体验的组件。
+**6. 提升开发体验：** 数据填充、SpEL 参数校验、SQL 性能分析、链路追踪、多级缓存（Caffeine + Redis）等通用方案开箱自带。
 
-- ContiNew Starter 组件集合：针对 Spring 基础配置、通用解决方案及流行框架进行深度封装，改善你开发每个 Spring Boot Web 项目的体验（包含时间日期及枚举参数自动转换、默认线程池、跨域、加密、脱敏、限流、幂等、License、日志、异常及响应通用解决方案等）；
-- Crane4j 数据填充组件：减少因单个字段（如用户名）而产生的联表查询；
-- SpEL Validator：基于 SpEL 表达式的参数校验，强化复杂场景下的参数验证（如：当某字段为特定值时，另一字段不能为空）；
-- P6Spy SQL 性能分析：开发期间可方便地监控 SQL 执行性能；
-- Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
-- 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新；
+**7. Almost 最佳规范：** 后端严格遵循阿里巴巴 Java 编码规范，Enforcer、Spotless、Checkstyle、SpotBugs 四道静态门禁随构建执行；前端 oxlint + oxfmt 门禁同样齐备。
 
-**7.Almost 最佳后端规范：** 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范，前端代码采用 oxlint 静态检查与 oxfmt 格式化门禁。优秀的设计带来极高的代码复用率！开发时，你会有一种“无需多写，理应如此”的流畅感。
+**8. 卓越工程化实践：** 模块化工程、`${revision}` 统一版本管理、瘦包/胖包一键切换、配置外置部署、全套 Docker Compose 部署脚本。
 
-**8.卓越工程化实践：** 后端采用模块化工程结构，集成了统一版本管理、编译时自动代码格式化等插件。提供自定义打包部署配置（配置文件、第三方依赖与主程序分离），以及全套环境和应用的 Docker Compose 部署脚本。
+**9. 全能业务脚手架：** SaaS 多租户、基于 RBAC 的功能权限与数据权限，认证、消息、文件、公告、系统配置等通用业务开箱即用。
 
-为减少新项目开发的改造成本，我们持续深度聚合项目品牌配置，通过简单的配置和结构修改，即可快速启动你的专属项目。
-
-我们还进行了全局 Lombok 配置，继承场景默认自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`，无需手动添加。同时主动禁用了部分 Lombok 注解（如 `@Val`、`@Log4j` 等），避免“又菜又爱玩”的 partner 滥用。
-
-**9.全能业务脚手架：** 支持 **SaaS 租户架构**，基于 RBAC 的权限控制与通用数据权限管理。精心设计的 UI 界面与色彩主题，兼具美观与实用性。内置丰富的通用业务解决方案：第三方登录、邮箱/短信服务（含生产级漏洞处理方案）、个人中心、用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、通知公告等，逻辑闭环，开箱即用。
-
-> 优秀的中后台框架不仅提供组件集成与配置，封装好用的工具，更应提供通用基础业务设计及解决方案，为初创团队减负。
-
-**10.质量与安全并重：** 我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案。
-
-许多项目在开发或交付过程中需满足 Sonarqube 等质量指标，使用 ContiNew Admin 框架，让你从一开始就站在高质量的起点。
+**10. 质量与安全并重：** CI 集成 SonarCloud 静态扫描与 Open Code Review AI 评审，数据库字段加密、JSON 脱敏、RSA 密码加密传输等安全方案开箱自带。
 
 ---
 
-由于篇幅有限，且项目正处于高速发展期，更多功能正在持续开发中，敬请关注仓库或加入交流群了解最新动态。至于统一异常处理、错误处理、基础线程池配置（默认线程参数、线程上下文支持异步传递）等基础特性，这里不再赘述，更多细节优化欢迎克隆代码体验。
+由于篇幅有限，且项目正处于高速发展期，更多功能正在持续开发中，敬请关注仓库或加入交流群了解最新动态。统一异常处理、错误处理、基础线程池配置（默认线程参数、线程上下文支持异步传递）等基础特性不再赘述，更多细节优化欢迎克隆代码体验。
 > Talk is cheap, show the code.
 
-##  系统功能
+## 系统功能
 
 > [!TIP]
 > 更多功能和优化正在赶来💦，最新项目计划、进展请查看 [开发计划](https://continew.top/docs/admin/reference/plan) 和 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
 > 功能不会用？请查看 [功能手册](https://continew.top/docs/admin/manual/system)。
 
-- 仪表盘：提供工作台、分析页，工作台提供功能快捷导航入口、最新公告、动态；分析页提供全面数据可视化能力
-- 个人中心：支持基础信息修改、密码修改、邮箱绑定、手机号绑定（并提供行为验证码、短信限流等安全处理）、第三方账号绑定/解绑（微信登录）、头像裁剪上传
-- 消息中心：提供站内信消息统一查看、标记已读、全部已读、删除等功能（目前仅支持系统通知消息）、提供个人公告查看
+- 仪表盘：汇总核心指标总览、访问趋势、多维分布图表与最新公告，登录后首页直达
+- 个人中心：基础信息修改、密码修改、邮箱/手机号更换（含行为验证码、短信限流等安全处理）、第三方账号绑定/解绑（微信登录）、头像上传
+- 消息中心：站内信统一查阅，支持未读统计、标记已读、删除，消息类型含系统消息与安全消息
 - 用户管理：管理系统用户，包含新增、修改、删除、导入、导出、重置密码、分配角色等功能
-- 角色管理：管理系统用户的功能权限及数据权限，包含新增、修改、删除、分配角色等功能
-- 菜单管理：管理系统菜单及按钮权限，支持多级菜单，动态路由，包含新增、修改、删除等功能
-- 部门管理：管理系统组织架构，包含新增、修改、删除、导出等功能，以树形列表进行展示
-- 通知公告：管理系统公告，支持通知范围（所有人、指定用户）、通知方式（系统消息、登录弹窗）、定时发送、置顶设置
-- 文件管理：管理系统文件及文件夹，支持回收站、上传/分片上传、下载、预览（目前支持图片、音视频、PDF、Word、Excel、PPT）、重命名、切换视图（列表、网格）等功能
-- 字典管理：管理系统公用数据字典，例如：消息类型。支持字典标签背景色和排序等配置
+- 角色管理：管理系统用户的功能权限及数据权限，支持分配用户
+- 菜单管理：管理系统菜单及按钮权限，支持多级菜单，动态路由
+- 部门管理：管理系统组织架构，以树形列表展示，支持导出
+- 通知公告：管理系统公告，支持通知范围（所有人、指定用户）、通知方式（系统消息、登录弹窗）、定时发布、置顶设置
+- 文件管理：管理系统文件及文件夹，支持回收站、上传/分片上传、下载、预览（图片、音视频、PDF、Office 文档）、重命名、切换视图（列表、网格）
+- 字典管理：管理系统公用数据字典，例如：消息类型，支持字典标签背景色和排序等配置
 - 系统配置：
   - 网站配置：提供修改系统标题、Logo、favicon、版权信息等基础配置功能，以方便用户系统与其自身品牌形象保持一致
-  - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`密码重复次数`、`密码错误锁定账号次数、时间` 等
+  - 安全配置：提供密码策略修改，支持丰富的密码策略设定，包括但不限于 `密码有效期`、`历史密码重复校验次数`、`密码错误锁定账号次数、时间` 等
   - 登录配置：提供验证码开关等登录相关配置
   - 邮件配置：提供系统发件箱配置，也支持通过配置文件指定
-  - 短信配置：提供系统短信服务配置，也支持通过配置文件指定
-  - 存储配置：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储
-  - 客户端配置：多端（PC端、小程序端等）认证管理，可设置不同的 token 有效期，支持可轮换的 Refresh Token 双令牌会话
-- 在线用户：管理当前登录用户，可一键踢除下线
-- 日志管理：管理系统登录日志、操作日志，支持查看日志详情，包含请求头、响应头等报文信息
-- 短信日志：管理系统短信发送日志，支持删除、导出 
-- 应用管理：管理第三方系统应用 AK、SK，包含新增、修改、删除、查看密钥、重置密钥等功能，支持设置密钥有效期
+  - 短信配置：提供系统短信厂商配置与负载均衡，也支持通过配置文件指定
+  - 存储配置：管理文件存储配置，支持本地存储、兼容 S3 协议对象存储，保存即生效
+  - 客户端配置：多端（PC 端、小程序端等）认证管理，可按端设置不同的 token 有效期，支持可轮换的 Refresh Token 双令牌会话
+- 在线用户：管理当前登录用户，可一键强退下线
+- 日志管理：管理系统登录日志、操作日志，支持查看日志详情（包含请求头、响应头等报文信息）与导出
+- 短信日志：管理系统短信发送日志，支持删除、导出
+- 应用管理：管理第三方应用 AK/SK 密钥对，包含新增、修改、删除、查看密钥、重置密钥等功能，支持设置密钥有效期，凭签名调用开放接口
 - 租户管理：管理租户信息，包含新增、修改、删除、分配角色等功能
-- 租户套餐：管理租户套餐信息，包含新增、修改、删除、查看等功能
-- 任务管理：管理系统定时任务，包含新增、修改、删除、执行功能，支持 Cron（可配置式生成 Cron 表达式） 和固定频率
-- 任务日志：管理定时任务执行日志，包含停止、重试指定批次等功能
+- 租户套餐：管理租户套餐信息及其菜单权限范围
+- 任务管理：基于 Snail Job 的分布式任务调度，支持 Cron（内置常用表达式快捷选择）与固定间隔，支持一键执行
+- 任务日志：管理定时任务执行日志，支持停止、重试
 
 ## 核心技术栈
 
@@ -178,10 +200,10 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://tanstack.com/table/latest" target="_blank">TanStack Table</a>                                                      | 9.3.1        | 无头表格组件库，为列表页提供排序、筛选与分页能力。           |
 | <a href="https://ui.shadcn.com/" target="_blank">shadcn/ui</a>                                                                     | —            | 可拷贝、可定制的组件分发模式，本项目选用 base-nova 注册表，底层基于 Base UI 与 Tailwind CSS。 |
 | <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>                                                                 | 4.3.3        | 原子化 CSS 框架，通过工具类快速构建界面。                    |
-| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 7.0.2        | TypeScript 是微软开发的一个开源的编程语言，通过在 JavaScript 的基础上添加静态类型定义构建而成。 |
+| <a href="https://www.typescriptlang.org/zh/" target="_blank">TypeScript</a>                                                       | 7.0.2        | 微软开源的编程语言，在 JavaScript 基础上添加静态类型定义。   |
 | <a href="https://vite.dev/" target="_blank">Vite</a>                                                                              | 8.0.5        | 下一代的前端工具链，为开发提供极速响应。                     |
-| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 3.0.0 | ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。 |
-| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 4.1.1        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念，使开发人员不再需要定义样板化的配置。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
+| [ContiNew Starter](https://github.com/continew-org/continew-starter)                                                              | 3.0.0 | 经过企业实践优化的依赖包与配置封装集合（如 MyBatis-Plus、Sa-Token），统一供给第三方依赖版本，减少手动引入与配置成本。 |
+| <a href="https://spring.io/projects/spring-boot" target="_blank">Spring Boot</a>                                                  | 4.1.1        | 简化 Spring 应用的初始搭建和开发过程，基于“约定优于配置”的理念。（Spring Boot 3.0 开始，要求 Java 17 作为最低版本） |
 | <a href="https://tomcat.apache.org/" target="_blank">Tomcat</a>                                                                   | 11.0.24      | 采用 Java 开发的 Servlet 容器，Spring Boot 4 起内置并作为默认 Web 服务器。 |
 | <a href="https://sa-token.dev33.cn/" target="_blank">Sa-Token + JWT</a>                                                           | 1.46.0       | 轻量级 Java 权限认证框架，让鉴权变得简单、优雅。             |
 | <a href="https://baomidou.com/" target="_blank">MyBatis Plus</a>                                                                  | 3.5.17       | MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率。 |
@@ -192,20 +214,20 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://github.com/p6spy/p6spy" target="_blank">P6Spy</a>                                                                | 3.9.1        | SQL 性能分析组件。                                           |
 | <a href="https://github.com/liquibase/liquibase" target="_blank">Liquibase</a>                                                    | 5.0.3        | 用于管理数据库版本，跟踪、管理和应用数据库变化。             |
 | <a href="https://github.com/ben-manes/caffeine" target="_blank">Caffeine</a>                                                       | 3.2.0        | 高性能 Java 本地缓存库，作为本项目多级缓存的 L1（本地）缓存。 |
-| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 4.8.0        | 不仅仅是一个 Redis Java 客户端，Redisson 充分的利用了 Redis 键值数据库提供的一系列优势，为使用者提供了一系列具有分布式特性的常用工具：分布式锁、限流器等。 |
+| <a href="https://github.com/redisson/redisson/wiki/Redisson%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D" target="_blank">Redisson</a>     | 4.8.0        | 不仅仅是一个 Redis Java 客户端，还提供分布式锁、限流器等具有分布式特性的常用工具。 |
 | <a href="https://redis.io/" target="_blank">Redis</a>                                                                             | 7.2.17       | 高性能的 key-value 数据库。                                  |
 | [Snail Job](https://snailjob.opensnail.com/)                                                                                      | 1.10.0       | 灵活，可靠和快速的分布式任务重试和分布式任务调度平台。       |
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.3.5        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a>                                                                      | 1.16.7       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://github.com/fast-excel/fastexcel" target="_blank">Fast Excel</a>                                                  | 1.3.0        | （由原 EasyExcel 作者创建的新项目）一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)                                                                        | 1.4.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
+| [AJ-Captcha](https://github.com/anji-plus/captcha)                                                                                | 1.4.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
 | Easy Captcha                                                                                                                      | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
-| [Crane4j](https://createsequence.gitee.io/crane4j-doc/#/)                                                                         | 2.10.0       | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
+| [Crane4j](https://crane4j.cn/)                                                                                                    | 2.10.0       | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
 | [SpEL Validator](https://spel-validator.sticki.cn/)                                                                               | 0.7.0        | 基于 SpEL 的 jakarta.validation-api 扩展增强包。             |
 | [CosID](https://cosid.ahoo.me/guide/getting-started.html)                                                                         | 4.0.2        | 旨在提供通用、灵活、高性能的分布式 ID 生成器。               |
 | <a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>                                                                | 1.5.0        | 现代化 API 文档 UI 工具，全面替代 Swagger UI。 |
 | [OpenFeign](https://springdoc.cn/spring-cloud-openfeign/)                                                                         | 2025.1.3     | Spring Cloud OpenFeign 是一种基于 Spring Cloud 的声明式 REST 客户端，它简化了与 HTTP 服务交互的过程。 |
-| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.47       | 小而全的 Java 工具类库，通过静态方法封装，降低相关 API 的学习成本，提高工作效率，使 Java 拥有函数式语言般的优雅，让 Java 语言也可以“甜甜的”。 |
+| <a href="https://www.hutool.cn/" target="_blank">Hutool</a>                                                                       | 5.8.47       | 小而全的 Java 工具类库，降低相关 API 的学习成本，让 Java 拥有函数式语言般的优雅，也可以“甜甜的”。 |
 | <a href="https://projectlombok.org/" target="_blank">Lombok</a>                                                                   | 1.18.46      | 在 Java 开发过程中用注解的方式，简化了 JavaBean 的编写，避免了冗余和样板式代码，让编写的类更加简洁。 |
 
 ## 快速开始
@@ -219,8 +241,9 @@ git clone https://github.com/continew-org/continew-admin.git
 
 # 2.在 IDE（IntelliJ IDEA/Eclipse）中打开后端项目
 
-# 3.修改配置文件中的数据源配置信息、Redis 配置信息、邮件配置信息等
-# [3.也可以在 IntelliJ IDEA 中直接配置程序启动环境变量（DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）]
+# 3.修改配置文件中的数据源、Redis、邮件等配置信息
+#   也可以在 IDE 中直接配置程序启动环境变量
+#   （DB_HOST、DB_PORT、DB_USER、DB_PWD、DB_NAME；REDIS_HOST、REDIS_PORT、REDIS_PWD、REDIS_DB）
 
 # 4.启动程序
 # 启动成功，在控制台末尾会输出 ContiNew Admin service started successfully.
@@ -232,7 +255,7 @@ corepack enable
 pnpm install
 pnpm dev
 # corepack 按 package.json 的 packageManager 取用锁定的 pnpm 版本
-# 浏览器访问 http://localhost:5173，开发环境经 /api 代理连接本地后端，无需额外配置
+# 浏览器访问 http://localhost:5173，开发环境经 /api 代理连接本地后端（默认 http://localhost:8000），无需额外配置
 ```
 
 ## 项目结构
@@ -249,19 +272,19 @@ continew-admin
 │  │  │  │  ├─ config （配置）
 │  │  │  │  │  ├─ log（操作日志配置）
 │  │  │  │  │  └─ satoken（SaToken 认证配置）
-│  │  │  │  ├─ controller（通用 API）
+│  │  │  │  ├─ controller（通用 API，例如：验证码、仪表盘）
 │  │  │  │  ├─ job （定时任务）
 │  │  │  │  └─ ContiNewAdminApplication.java（ContiNew Admin 启动程序）
 │  │  │  └─ resources
 │  │  │     ├─ config（核心配置目录）
+│  │  │     │  ├─ application.yml（通用配置文件）
 │  │  │     │  ├─ application-dev.yml（开发环境配置文件）
-│  │  │     │  ├─ application-prod.yml（生产环境配置文件）
-│  │  │     │  └─ application.yml（通用配置文件）
+│  │  │     │  └─ application-prod.yml（生产环境配置文件）
 │  │  │     ├─ db/changelog（Liquibase 数据脚本配置目录）
 │  │  │     │  ├─ mysql（MySQL 数据库初始 SQL 脚本目录）
 │  │  │     │  ├─ postgresql（PostgreSQL 数据库初始 SQL 脚本目录）
 │  │  │     │  └─ db.changelog-master.yaml（Liquibase 变更记录文件）
-│  │  │     ├─ templates（模板配置目录，例如：邮件模板）
+│  │  │     ├─ templates（模板配置目录，例如：邮件模板、导入模板）
 │  │  │     ├─ banner.txt（Banner 配置文件）
 │  │  │     └─ logback-spring.xml（日志配置文件）
 │  │  └─ test（测试相关代码目录）
@@ -273,13 +296,13 @@ continew-admin
 │  │  │  │  ├─ auth（系统认证相关业务）
 │  │  │  │  │  ├─ controller（系统认证相关 API）
 │  │  │  │  │  ├─ service（系统认证相关业务接口及实现类）
+│  │  │  │  │  ├─ handler（系统认证相关登录处理器）
 │  │  │  │  │  ├─ model（系统认证相关模型）
 │  │  │  │  │  │  ├─ query（系统认证相关查询条件）
 │  │  │  │  │  │  ├─ req（系统认证相关请求参数（Request））
 │  │  │  │  │  │  └─ resp（系统认证相关响应参数（Response））
 │  │  │  │  │  ├─ enums（系统认证相关枚举）
 │  │  │  │  │  ├─ constant（系统认证相关常量）
-│  │  │  │  │  ├─ handler（系统认证相关处理器）
 │  │  │  │  │  └─ config（系统认证相关配置）
 │  │  │  │  └─ system（系统管理相关业务）
 │  │  │  │     ├─ api（系统管理相关公共业务 API 实现）
@@ -301,7 +324,7 @@ continew-admin
 │  │  │     └─ mapper（系统管理相关 Mapper XML 文件目录）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
-├─ continew-plugin（插件模块，存放能力开放、租户等扩展模块，后续会进行插件化改造）
+├─ continew-plugin（插件模块，存放能力开放、租户、任务调度等扩展模块，后续会进行插件化改造）
 │  ├─ continew-plugin-open（能力开放插件模块）
 │  │  ├─ src
 │  │  │  ├─ main/java/top/continew/admin/open
@@ -313,9 +336,9 @@ continew-admin
 │  │  │  │  │  ├─ query（能力开放相关查询条件）
 │  │  │  │  │  ├─ req（能力开放相关请求参数（Request））
 │  │  │  │  │  └─ resp（能力开放相关响应参数（Response））
-│  │  │  │  ├─ util（能力开放相关工具类）
-│  │  │  │  ├─ handler（能力开放相关处理器）
 │  │  │  │  ├─ sign（能力开放相关 API 参数签名算法）
+│  │  │  │  ├─ handler（能力开放相关处理器）
+│  │  │  │  ├─ util（能力开放相关工具类）
 │  │  │  │  └─ config（能力开放相关配置）
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
@@ -355,10 +378,10 @@ continew-admin
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  └─ pom.xml
-├─ continew-common（公共模块，存放公共工具类，公共配置等）
+├─ continew-common（公共模块，存放公共基类、公共工具类、公共配置等）
 │  ├─ src
 │  │  ├─ main/java/top/continew/admin/common
-│  │  │  ├─ api（公共业务 API）
+│  │  │  ├─ api（公共业务 API 定义）
 │  │  │  ├─ base（公共基类）
 │  │  │  │  ├─ controller（控制器基类）
 │  │  │  │  ├─ mapper（Mapper 接口基类）
@@ -371,24 +394,27 @@ continew-admin
 │  │  │  │  └─ req（公共请求参数（Request））
 │  │  │  ├─ context（公共上下文）
 │  │  │  ├─ enums（公共枚举）
+│  │  │  ├─ exception（公共异常）
 │  │  │  ├─ constant（公共常量类）
 │  │  │  ├─ util（公共工具类）
 │  │  │  └─ config（公共配置）
 │  │  │    ├─ crud（CRUD 配置）
 │  │  │    ├─ mybatis（MyBatis Plus 配置）
-│  │  │    ├─ websocket（Websocket 配置）
 │  │  │    ├─ doc（接口文档配置）
 │  │  │    ├─ excel（Excel 配置）
 │  │  │    └─ exception（全局异常处理）
 │  │  └─ test（测试相关代码目录）
 │  └─ pom.xml
+├─ continew-tests（集中测试模块，依赖所有被测模块，存放上下文加载等集成测试）
 ├─ continew-ui（前端模块，React 19 + Vite 8 + TanStack + shadcn/ui + Tailwind CSS + pnpm，目录职责见 continew-ui/AGENTS.md）
+├─ docs（官方文档源目录，经官网构建渲染为 /docs/admin/*）
 ├─ .github（GitHub 相关配置目录：工作流、Issue/PR 模板）
-├─ .agents（Agent 技能目录，供 AI 编程智能体使用）
+├─ .agents（Agent 技能目录，供各 AI 编程智能体共用）
 ├─ .idea
 │  └─ icon.png（IDEA 项目图标，实际开发时直接删除）
 ├─ .image（截图目录，实际开发时直接删除）
 ├─ .mvn（Maven Wrapper 配置目录）
+├─ scripts（CI 与测试辅助脚本目录）
 ├─ style（代码风格配置目录：Spotless/Checkstyle/IDEA 配置等，详见 style/STYLE.md）
 ├─ .gitignore（Git 忽略文件相关配置文件）
 ├─ docker（项目部署相关配置目录，实际开发时可备份后直接删除）
@@ -447,16 +473,16 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 感谢参与贡献的每一位小伙伴🥰
 
 <a href="https://github.com/continew-org/continew-admin/graphs/contributors">
-  <img src="https://opencollective.com/continew-admin/contributors.svg?width=890&button=false" alt="contributors" />
+  <img src="https://contrib.rocks/image?repo=continew-org/continew-admin" alt="contributors" />
 </a>
 
 ### 特别鸣谢
 
-- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 提供的 <a href="https://jb.gg/OpenSourceSupport" target="_blank">非商业开源软件开发授权</a> 
-- 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a>、<a href="https://github.com/ben-manes/caffeine" target="_blank">Caffeine</a>、<a href="https://github.com/opengoofy/crane4j" target="_blank">Crane4j</a>、<a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等开源组件作者为国内开源世界作出的贡献
-- 感谢项目使用或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
+- 感谢 <a href="https://www.jetbrains.com/" target="_blank">JetBrains</a> 为本项目提供的 <a href="https://jb.gg/OpenSourceSupport" target="_blank">非商业开源软件开发授权</a>
+- 感谢 <a href="https://github.com/baomidou/mybatis-plus" target="_blank">MyBatis Plus</a>、<a href="https://github.com/dromara/sa-token" target="_blank">Sa-Token</a>、<a href="https://github.com/ben-manes/caffeine" target="_blank">Caffeine</a>、<a href="https://github.com/opengoofy/crane4j" target="_blank">Crane4j</a>、<a href="https://nextdoc4j.top/" target="_blank">NextDoc4j</a>、<a href="https://github.com/dromara/hutool" target="_blank">Hutool</a> 等核心开源组件作者，为国内开源生态作出的贡献
+- 感谢项目使用到或未使用到的每一款开源组件，致敬各位开源先驱 :fire:
 
 ## License
 
 - 遵循 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" target="_blank">Apache-2.0</a> 开源许可协议
-- Copyright © 2022-present <a href="https://charles7c.top" target="_blank">Charles7c</a>
+- Copyright © 2022-present <a href="https://github.com/Charles7c" target="_blank">Charles7c</a>

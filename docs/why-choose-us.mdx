@@ -4,21 +4,27 @@ description: 来自维护者原话的十条选型理由：长期稳定、甄选�
 icon: Scale
 ---
 
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
+**AI 编程纪元，从 ContiNew & AI Native Coding 开始优雅编码。**
 
 以下十条理由来自维护者的持续实践，并随版本演进不断兑现。
 
 ## 1. 长期稳定
 
-自 2022 年 12 月 8 日创建，2023 年 3 月 26 日发布 v1.0.0，此后保持稳定的迭代节奏，累计发布数十个大版本，完整历史见 [CHANGELOG.md（更新日志）](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)与各仓库 Releases。
+自 2022 年 12 月 8 日创建，2023 年 3 月 26 日发布 v1.0.0，此后保持稳定的迭代节奏，累计发布数十个大版本。每个版本均提供[升级指南](/docs/admin/guide/upgrade)与数据库变更脚本，历史版本持续发布维护分支修复，完整历史见 [CHANGELOG.md（更新日志）](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)与各仓库 Releases。
+
+对使用者而言，「长期稳定」意味着两件事：踩过的坑已被修掉并沉淀进文档；今天接入的框架，明天依然有人维护。
 
 ## 2. 甄选技术栈
 
-ContiNew（Continue New）项目致力于持续迭代优化，确保技术栈紧跟时代。在技术选型时，我们进行了深度广泛的调研，从流行度、成熟度和发展潜力等多维度精心挑选技术栈。当前基线见[项目介绍](/docs/admin/introduction#技术栈基线)。
+ContiNew（Continue New）项目致力于持续迭代优化，确保技术栈紧跟时代。在技术选型时，我们进行了深度广泛的调研，从流行度、成熟度和发展潜力等多维度精心挑选技术栈，不为尝鲜而尝鲜。
+
+后端第三方依赖版本统一由父 POM ContiNew Starter 的依赖管理供给，前端版本取自 `continew-ui/package.json` 的声明值，全部基线在[项目介绍](/docs/admin/introduction#技术栈基线)中以表格形式公开，逐项可查。
 
 ## 3. Starter 组件
 
-从 v2.1.0 版本开始，我们将后端基础组件及各框架集成配置抽取并封装到 [ContiNew Starter](/docs/starter) 项目中，极大降低上手和升级难度。且**[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)**，你可以在任意项目中直接引入所需依赖使用。即使你不使用完整的中后台框架，这些能让你搭项目框架更快、更爽、更省力的 Starter 组件，难道不香吗？
+从 v2.1.0 版本开始，我们将后端基础组件及各框架集成配置抽取并封装到 [ContiNew Starter](/docs/starter) 项目中，Admin 只做业务实现，框架集成、通用解决方案全部下沉到 Starter。依赖升级只需更换 Starter parent 版本，极大降低上手和升级难度。
+
+且**[已发布至 Maven 中央仓库](https://central.sonatype.com/search?q=continew-starter&namespace=top.continew)**，你可以在任意项目中直接引入所需依赖使用，缓存、认证、存储、任务调度、数据权限等模块均可独立取用。即使你不使用完整的中后台框架，这些能让你搭项目框架更快、更爽、更省力的 Starter 组件，难道不香吗？
 
 ## 4. CRUD 套件
 
@@ -31,46 +37,52 @@ ContiNew（Continue New）项目致力于持续迭代优化，确保技术栈紧
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
-完整说明见 [CRUD 开发](/docs/admin/development/backend/crud)。
+一个注解声明 API 集合，权限码自动生成校验（如 `system:dept:create`），配合前端页面即成完整功能。完整说明见 [CRUD 开发](/docs/admin/development/backend/crud)。
 
 ## 5. AI 技能集
 
-仓库内置 Agent 技能目录（[`.agents/skills/`](https://github.com/continew-org/continew-admin/tree/dev/.agents/skills)），各 AI 编程助手共用同一事实源，按技能以仓库既定规范完成开发动作，人机协作同守一套工程约定。当前提供 ocn-admin-codegen 脚手架技能：从业务描述引导设计建表或按既有数据表，经问答确认范围与字段映射后，在前后端双端生成一套配套的增删改查模块（后端 CRUD 套件全套文件、前端路由与页面组件、Liquibase 双份建表 SQL 与菜单 SQL），产物开箱即符合仓库分层与权限约定。
+仓库内置 Agent 技能目录（[`.agents/skills/`](https://github.com/continew-org/continew-admin/tree/dev/.agents/skills)），各 AI 编程助手（DeepSeek Harness、Claude Code、Codex 等）共用同一事实源，人机协作同守一套工程约定，AI 按技能以仓库既定规范完成开发动作，产物直接过仓库门禁。
+
+当前提供 ocn-admin-codegen 脚手架技能：从业务描述引导设计建表或按既有数据表，经问答确认范围与字段映射后，在前后端双端生成一套配套的增删改查模块（后端 CRUD 套件全套文件、前端路由与页面组件、Liquibase 双份建表 SQL 与菜单 SQL），产物开箱即符合仓库分层与权限约定。
 
 技能系列持续扩充中：移除租户、切换数据库为 PostgreSQL、开发前清理（改包名、清理单元测试等）等场景技能已在规划。
 
 ## 6. 提升开发体验
 
-持续优化并适配各类能提升开发体验的组件。
+持续优化并适配各类能提升开发体验的组件，把「每个项目都要重新配一遍」的通用方案变成开箱自带。
 
 - ContiNew Starter 组件集合：针对 Spring 基础配置、通用解决方案及流行框架进行深度封装，改善你开发每个 Spring Boot Web 项目的体验（包含时间日期及枚举参数自动转换、默认线程池、跨域、加密、脱敏、限流、幂等、License、日志、异常及响应通用解决方案等）；
-- Crane4j 数据填充组件：减少因单个字段（如用户名）而产生的联表查询；
+- Crane4j 数据填充组件：基于注解完成数据映射，减少因单个字段（如用户名）而产生的联表查询；
 - SpEL Validator：基于 SpEL 表达式的参数校验，强化复杂场景下的参数验证（如：当某字段为特定值时，另一字段不能为空）；
 - P6Spy SQL 性能分析：开发期间可方便地监控 SQL 执行性能；
 - Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
 - 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新。
 
-## 7. Almost 最佳后端规范
+## 7. Almost 最佳规范
 
-后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范，前端代码同样采用严格的 ESLint、StyleLint 等检查。优秀的设计带来极高的代码复用率！开发时，你会有一种“无需多写，理应如此”的流畅感。
+后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范。构建链内置 Enforcer（环境与依赖合规）、Spotless（代码格式）、Checkstyle（代码规范）、SpotBugs（字节码缺陷）四道静态门禁，任一不通过即构建失败，详见[后端测试与门禁](/docs/admin/development/backend/testing)；前端代码采用 oxlint 静态检查与 oxfmt 格式化门禁。
+
+优秀的设计带来极高的代码复用率！开发时，你会有一种「无需多写，理应如此」的流畅感。
 
 ## 8. 卓越工程化实践
 
-后端采用模块化工程结构，集成了统一版本管理、编译时自动代码格式化等插件。提供自定义打包部署配置（配置文件、第三方依赖与主程序分离），以及全套环境和应用的 Docker Compose 部署脚本，详见[部署](/docs/admin/reference/deployment)。
+后端采用模块化工程结构，`${revision}` 统一管理版本，集成了编译时自动代码格式化等插件。提供自定义打包部署配置（配置文件、第三方依赖与主程序分离的瘦包，与打入全部依赖的胖包一键切换），以及全套环境和应用的 Docker Compose 部署脚本，详见[部署](/docs/admin/reference/deployment)。
 
 为减少新项目开发的改造成本，我们持续深度聚合项目品牌配置，通过简单的配置和结构修改，即可快速启动你的专属项目。
 
-我们还进行了全局 Lombok 配置，继承场景默认自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`，无需手动添加。同时主动禁用了部分 Lombok 注解（如 `@Val`、`@Log4j` 等），避免“又菜又爱玩”的 partner 滥用。
+我们还进行了全局 Lombok 配置，继承场景默认自动应用 `@EqualsAndHashCode(callSuper = true)` 和 `@ToString(callSuper = true)`，无需手动添加。同时主动禁用了部分 Lombok 注解（如 `@Val`、`@Log4j` 等），避免「又菜又爱玩」的 partner 滥用。
 
 ## 9. 全能业务脚手架
 
-支持 **SaaS 租户架构**，基于 RBAC 的权限控制与通用数据权限管理。精心设计的 UI 界面与色彩主题，兼具美观与实用性。内置丰富的通用业务解决方案：第三方登录、邮箱/短信服务（含生产级漏洞处理方案）、个人中心、用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、通知公告等，逻辑闭环，开箱即用，详见[功能手册](/docs/admin/manual/system)。
+支持 **SaaS 租户架构**（行级隔离，默认租户 `0`），基于 RBAC 的权限控制与通用数据权限管理。精心设计的 UI 界面与色彩主题，兼具美观与实用性。内置丰富的通用业务解决方案：第三方登录（JustAuth）、邮箱/短信服务（含生产级漏洞处理方案）、个人中心、用户管理、角色管理、组织管理、系统配置、系统日志、消息中心、通知公告、能力开放（AK/SK）、任务调度等，逻辑闭环，开箱即用，详见[功能手册](/docs/admin/manual/system)。
 
 > 优秀的中后台框架不仅提供组件集成与配置，封装好用的工具，更应提供通用基础业务设计及解决方案，为初创团队减负。
 
 ## 10. 质量与安全并重
 
-我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险。封装了数据库字段加密、JSON 脱敏、XSS 过滤等工具，提供全方位的安全解决方案，已披露漏洞的处理情况见[安全通告](/docs/admin/reference/security)。
+我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。维护者定期人工跟踪 CVE 漏洞情报，及时解决潜在风险，已披露漏洞的处理情况见[安全通告](/docs/admin/reference/security)。
+
+安全能力贯穿代码层：数据库敏感字段经 `@FieldEncrypt` 自动加解密，响应 JSON 经 `@JsonMask` 按类型脱敏（手机号、邮箱等），登录密码经 RSA 公钥加密传输、后端私钥解密。提供全方位的安全解决方案。
 
 许多项目在开发或交付过程中需满足 SonarQube 等质量指标，使用 ContiNew Admin 框架，让你从一开始就站在高质量的起点。
 
