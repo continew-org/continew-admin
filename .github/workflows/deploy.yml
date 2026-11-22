@@ -158,7 +158,7 @@ jobs:
           UI: ${{ needs.detect.outputs.ui }}
           DEPLOY_BACKEND: ${{ needs.detect.outputs.deploy_backend }}
           CATEGORIES: ${{ needs.detect.outputs.categories }}
-        # 纯文档/模板/infra-only 变更时部署作业中性 Skipped，决策依据在此留档
+        # 纯文档/infra-only 变更时部署作业中性 Skipped，决策依据在此留档
         run: |
           backend_action='跳过'
           [ "$DEPLOY_BACKEND" = 'true' ] && backend_action='执行'

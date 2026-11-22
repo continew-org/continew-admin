@@ -40,16 +40,13 @@ fi
 #           脚本本身的正确性由 detect 作业失败兜底，无需借后端检查回归。
 # ui        continew-ui/**
 #           前端产物唯一来源 -> ci.yml 的 UI checks 与部署侧 Build UI dist 的消费者。
-# template  continew-plugin/continew-plugin-generator/src/main/resources/templates/**
-#           生成器模板：随 jar 打包，计入后端检查以保构建完整；
-#           但仅服务代码生成、不改变服务运行时行为 -> 不触发部署。
 # backend   continew-server/**、continew-system/**、continew-common/**、
 #           continew-plugin/**、continew-tests/**、pom.xml、*/pom.xml、
 #           mvnw、mvnw.cmd、.mvn/**、docker/**、scripts/**（ci 之外）
 #           后端构建/测试/运行时/部署链消费者 -> 后端检查 + 后端部署；
 #           其中 scripts/test/** 不触达 Java 门禁、不改变服务运行时行为 ->
 #           计入后端检查（脚本由后端检查作业真实执行）并产出 test_scripts=true
-#           供 Lint workflows 的 bash -n 触发，但不触发部署（同 template 逻辑）。
+#           供 Lint workflows 的 bash -n 触发，但不触发部署。
 # other     其余根文件（style/、LICENSE、.gitignore 等）
 #           消费者不明：保守计入后端检查（不静默跳过 CI），无运行时证据 -> 不触发部署。
 # ---------------------------------------------------------------------------
@@ -60,7 +57,6 @@ has_deploy_backend=false
 has_docs=false
 has_infra=false
 has_test_scripts=false
-has_template=false
 has_other=false
 count=0
 while IFS= read -r path; do
@@ -77,12 +73,9 @@ while IFS= read -r path; do
         continew-ui/*)
             has_ui=true
             ;;
-        continew-plugin/continew-plugin-generator/src/main/resources/templates/*)
-            has_template=true
-            ;;
         scripts/test/*)
             # 测试脚本由后端检查作业真实执行，保持 backend 归类；但不改变服务运行时
-            # 行为，不触发部署（同 template 类别逻辑）
+            # 行为，不触发部署
             has_test_scripts=true
             has_backend=true
             ;;
@@ -98,14 +91,13 @@ while IFS= read -r path; do
 done
 
 backend=false
-if [ "$has_backend" = true ] || [ "$has_template" = true ] || [ "$has_other" = true ]; then
+if [ "$has_backend" = true ] || [ "$has_other" = true ]; then
     backend=true
 fi
 
 categories=()
 [ "$has_ui" = true ] && categories+=(ui)
 [ "$has_backend" = true ] && categories+=(backend)
-[ "$has_template" = true ] && categories+=(template)
 [ "$has_docs" = true ] && categories+=(docs)
 [ "$has_infra" = true ] && categories+=(infra)
 [ "$has_other" = true ] && categories+=(other)

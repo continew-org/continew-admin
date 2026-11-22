@@ -32,7 +32,7 @@ ContiNew Admin（Continue New Admin）是基于 ContiNew Starter 构建的多租
 | `continew-server` | 打包部署入口（启动类、通用 controller、Liquibase、配置文件） |
 | `continew-system` | 核心业务（认证、系统管理各功能） |
 | `continew-common` | 公共基类、工具、配置 |
-| `continew-plugin` | open / tenant / schedule / generator 可插拔插件 |
+| `continew-plugin` | open / tenant / schedule 可插拔插件 |
 | `continew-ui/` | 前端（React 19 / Vite 8 / TanStack Router·Query·Table / shadcn/ui / Tailwind 4 / pnpm），目录职责与硬约束见 [continew-ui/AGENTS.md](continew-ui/AGENTS.md) |
 
 前端与后端同版本、同 tag 发布。
@@ -46,7 +46,7 @@ Maven 多模块工程，根 `pom.xml` 用 `flatten-maven-plugin` 统一 `${revis
 | `continew-server` | 打包部署入口（启动类 + 通用 controller + Liquibase + 配置文件） |
 | `continew-system` | 核心业务：auth（系统认证）、system（部门/角色/用户/菜单/字典/文件/公告/系统配置等） |
 | `continew-common` | 公共基类、工具、配置（CRUD/MyBatis/Websocket/Doc/Excel/Exception） |
-| `continew-plugin` | 独立可插拔插件：open（能力开放 AK/SK）、tenant（多租户 SaaS）、schedule（任务调度）、generator（代码生成器） |
+| `continew-plugin` | 独立可插拔插件：open（能力开放 AK/SK）、tenant（多租户 SaaS）、schedule（任务调度） |
 
 ### 关键机制
 

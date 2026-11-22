@@ -43,8 +43,6 @@ spring:
   profiles:
     # 启用的环境
     active: ${PROFILES_ACTIVE:dev}
-    include:
-      - generator
   main:
     # 允许定义重名的 bean 对象覆盖原有的 bean
     allow-bean-definition-overriding: true
@@ -207,8 +205,6 @@ continew-starter.tenant:
     - tenant # 租户表
     - tenant_package # 租户套餐表
     - tenant_package_menu # 租户套餐与菜单关联表
-    - gen_config # 代码生成配置表
-    - gen_field_config # 代码生成字段配置表
     - sys_menu # 菜单表
     - sys_dict # 字典表
     - sys_dict_item # 字典项表
@@ -228,7 +224,6 @@ continew-starter.tenant:
     - 3000 # 租户管理
     - 7000 # 能力开放
     - 8000 # 任务调度
-    - 9000 # 开发工具
 
 --- ### 限流器配置
 continew-starter.rate-limiter:

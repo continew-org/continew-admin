@@ -4,14 +4,13 @@ description: 了解 ContiNew Admin 配置文件的组织方式、环境变量注
 icon: Settings
 ---
 
-ContiNew Admin 后端的配置文件全部位于 `continew-server` 模块的 `src/main/resources/config/` 目录，共四份。本页只回答三个问题：配置怎么分文件、环境变量怎么注入、某个配置该归谁管。具体配置块的含义与取值去对应的任务页查，不在这里复述。
+ContiNew Admin 后端的配置文件全部位于 `continew-server` 模块的 `src/main/resources/config/` 目录，共三份。本页只回答三个问题：配置怎么分文件、环境变量怎么注入、某个配置该归谁管。具体配置块的含义与取值去对应的任务页查，不在这里复述。
 
 | 文件 | 激活方式 | 内容 |
 |:-----|:---------|:-----|
 | `application.yml` | 始终加载 | 通用配置，不含端口与凭据 |
 | `application-dev.yml` | 默认 profile（`PROFILES_ACTIVE` 缺省为 `dev`） | 本地开发，端口 8000，凭据带示例默认值 |
 | `application-prod.yml` | `PROFILES_ACTIVE=prod` | 生产环境，端口 18000，凭据无默认值 |
-| `application-generator.yml` | `spring.profiles.include: generator` 固定引入 | 代码生成器排除表与类型映射 |
 
 ## dev 与 prod 的差异
 
@@ -38,14 +37,14 @@ dev 预置了字段加密的示例 RSA 密钥对与 AES 密钥，仅供本地联
 
 ## 新增环境 profile
 
-需要测试环境这类新 profile 时，复制 `application-dev.yml` 为 `application-test.yml`，改端口与连接信息，然后以 `PROFILES_ACTIVE=test` 启动。多 profile 可逗号分隔组合激活（`generator` 已由 include 固定引入，无需重复写）。
+需要测试环境这类新 profile 时，复制 `application-dev.yml` 为 `application-test.yml`，改端口与连接信息，然后以 `PROFILES_ACTIVE=test` 启动。多 profile 可逗号分隔组合激活。
 
 ## 配置项归属原则
 
 项目里的配置键分属两个层面，写新功能时按下表决定配置放哪里：
 
 - **框架级配置键**（`continew-starter.*`、`sa-token.*`、`mybatis-plus.*` 等）由 ContiNew Starter 定义，全部可选项与默认值见[配置项参考](/docs/starter/reference/properties)。Admin 文档只说明 Admin 给这些键填的值，不重复定义。
-- **应用级配置键**（`application.*`、`avatar.*`、`captcha.*`、`generator.*` 等）由 Admin 自身定义，直接在对应 `application-*.yml` 中维护。
+- **应用级配置键**（`application.*`、`avatar.*`、`captcha.*` 等）由 Admin 自身定义，直接在对应 `application-*.yml` 中维护。
 - **页面上维护的运行时配置**（网站、安全、登录、邮件、短信、存储、客户端）优先用「系统管理 → 系统配置」页面管理，不写进配置文件。配置文件里的 `spring.mail` 与 `sms` 块与页面配置二选一，实际开发时注释或删除另一方，避免两处漂移。见[系统配置](/docs/admin/manual/system/option)。
 
 ## 哪里查具体配置
@@ -64,4 +63,3 @@ dev 预置了字段加密的示例 RSA 密钥对与 AES 密钥，仅供本地联
 - [continew-server/src/main/resources/config/application.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application.yml)
 - [continew-server/src/main/resources/config/application-dev.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-dev.yml)
 - [continew-server/src/main/resources/config/application-prod.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-prod.yml)
-- [continew-server/src/main/resources/config/application-generator.yml](https://github.com/continew-org/continew-admin/blob/dev/continew-server/src/main/resources/config/application-generator.yml)

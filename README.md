@@ -103,7 +103,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 public class DeptController extends BaseController<DeptService, DeptResp, DeptDetailResp, DeptQuery, DeptReq> {}
 ```
 
-**5.代码生成器：** 同步提供了代码生成器，配套前后端代码生成模板。数据表设计完成后，简单配置即可生成前后端 80% 的代码，包括 CRUD API、权限控制、参数校验、接口文档等内容。若业务不复杂，甚至能覆盖 95% 的代码量。
+**5.AI 技能集：** 仓库内置 Agent 技能目录（`.agents/skills/`），各 AI 编程助手共用同一事实源，按技能以仓库既定规范完成开发动作，人机协作同守一套工程约定。当前提供 ocn-admin-codegen 脚手架技能：从业务描述引导设计建表或按既有数据表，经问答确认范围与字段映射后，在前后端双端生成一套配套的增删改查模块（后端 CRUD 套件全套文件、前端路由与页面组件、Liquibase 双份建表 SQL 与菜单 SQL），产物开箱即符合仓库分层与权限约定。技能系列持续扩充中：移除租户、切换数据库为 PostgreSQL、开发前清理（改包名、清理单元测试等）等场景技能已在规划。
 
 **6.提升开发体验：** 持续优化并适配各类能提升开发体验的组件。
 
@@ -167,7 +167,6 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - 租户套餐：管理租户套餐信息，包含新增、修改、删除、查看等功能
 - 任务管理：管理系统定时任务，包含新增、修改、删除、执行功能，支持 Cron（可配置式生成 Cron 表达式） 和固定频率
 - 任务日志：管理定时任务执行日志，包含停止、重试指定批次等功能
-- 代码生成：提供根据数据库表自动生成相应的前后端 CRUD 代码的功能，支持同步最新表结构及代码生成预览
 
 ## 核心技术栈
 
@@ -342,7 +341,7 @@ continew-admin
 │  │  ├─ src
 │  │  │  ├─ main/java/top/continew/admin/schedule
 │  │  │  │  ├─ controller（任务调度相关 API）
-│  │  │  │  ├─ service（代码生成器相关业务接口及实现类）
+│  │  │  │  ├─ service（任务调度相关业务接口及实现类）
 │  │  │  │  ├─ api（任务调度中心相关 Feign API）
 │  │  │  │  ├─ model（任务调度相关模型）
 │  │  │  │  │  ├─ query（任务调度相关查询条件）
@@ -353,26 +352,6 @@ continew-admin
 │  │  │  │  ├─ exception（任务调度相关异常）
 │  │  │  │  ├─ annotation（任务调度相关注解）
 │  │  │  │  └─ config（任务调度相关配置）
-│  │  │  └─ test（测试相关代码目录）
-│  │  └─ pom.xml
-│  ├─ continew-plugin-generator（代码生成器插件模块）
-│  │  ├─ src
-│  │  │  ├─ main
-│  │  │  │  ├─ java/top/continew/admin/generator
-│  │  │  │  │  ├─ controller（代码生成器相关 API）
-│  │  │  │  │  ├─ service（代码生成器相关业务接口及实现类）
-│  │  │  │  │  ├─ mapper（代码生成器相关 Mapper）
-│  │  │  │  │  ├─ model（代码生成器相关模型）
-│  │  │  │  │  │  ├─ entity（代码生成器相关实体）
-│  │  │  │  │  │  ├─ query（代码生成器相关查询条件）
-│  │  │  │  │  │  ├─ req（代码生成器相关请求参数（Request））
-│  │  │  │  │  │  └─ resp（代码生成器相关响应参数（Response））
-│  │  │  │  │  ├─ enums（代码生成器相关枚举）
-│  │  │  │  │  └─ config（代码生成器相关配置）
-│  │  │  │  └─ resources
-│  │  │  │     └─ templates（代码生成相关模板目录）
-│  │  │  │       ├─ backend（后端模板目录）
-│  │  │  │       └─ frontend（前端模板目录）
 │  │  │  └─ test（测试相关代码目录）
 │  │  └─ pom.xml
 │  └─ pom.xml
