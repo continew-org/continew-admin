@@ -167,11 +167,15 @@ jobs:
           rsync -a --delete "$WEB_DIR/" "$SNAP/"
           echo "快照：$SNAP（$(du -sh "$SNAP" | cut -f1)）" >> "$GITHUB_STEP_SUMMARY"
 
-          # 2、落新资源：不带 --delete。旧哈希资源仍在场，index.html 由 rsync
-          #    的「临时文件 + rename」替换，这是用户可见的唯一切换点
-          rsync -a continew-ui/dist/ "$WEB_DIR/"
+          # 2、落新资源：不带 --delete，且排除 index.html。旧哈希资源仍在场，
+          #    新 index.html 引用的 chunk 必须先全部到位，入口才能切换
+          rsync -a --exclude '/index.html' continew-ui/dist/ "$WEB_DIR/"
 
-          # 3、清理上一版残留：此时 index.html 已指向新资源
+          # 3、切换入口：单独只传 index.html。此时它引用的资源已全部落盘，
+          #    入口由 rsync 的临时文件 + rename 完成替换，是唯一可见切换点
+          rsync -a continew-ui/dist/index.html "$WEB_DIR/index.html"
+
+          # 4、清理上一版残留：此时 index.html 已指向新资源
           rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
 
           # 4、只保留最近 3 份自动快照。轮转只认本步骤生成的命名
@@ -189,7 +193,9 @@ jobs:
           fi
           echo "- 保留快照：$(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d -name 'web-*' -printf '%f\n' | sort -r | tr '\n' ' ')" >> "$GITHUB_STEP_SUMMARY"
 
-      # 发布后自检：文件真的落位、页面标记正确。失败即让整个作业红，不留「静默发布」
+      # 发布后自检：入口与它引用的资源都必须真实存在。
+      # SPA 的 try_files 会把缺失资源回落成 200 + index.html，所以这里不能只验 HTTP 状态，
+      # 必须直接检查文件系统上 index.html 引用的每个 assets/ 资源都在位
       - name: Verify published site
         env:
           SERVER_PATH: ${{ secrets.SERVER_PATH }}
@@ -200,7 +206,21 @@ jobs:
           test -d "$WEB_DIR/assets"
           # 产物挂载点必须是 id="root"：发布落位失败时 index.html 仍是旧内容，此处直接让作业红
           test "$(grep -c 'id="root"' "$WEB_DIR/index.html")" = '1'
-          echo "index.html bytes=$(stat -c%s "$WEB_DIR/index.html") assets=$(find "$WEB_DIR/assets" -maxdepth 1 -type f | wc -l)" >> "$GITHUB_STEP_SUMMARY"
+
+          # 逐个校验 index.html 引用的本地资源，任一缺失即红
+          missing=0
+          while IFS= read -r ref; do
+            [ -n "$ref" ] || continue
+            if [ ! -f "$WEB_DIR$ref" ]; then
+              echo "::error::index.html 引用的资源缺失：$ref"
+              missing=$((missing + 1))
+            fi
+          done < <(grep -oE '(src|href)="/[^"]+"' "$WEB_DIR/index.html" \
+            | sed -E 's/^(src|href)="//; s/"$//' \
+            | grep -vE '^(https?:)?//' | sort -u)
+          [ "$missing" -eq 0 ] || { echo "::error::缺失 $missing 个资源，发布未完成"; exit 1; }
+
+          echo "- index.html bytes=$(stat -c%s "$WEB_DIR/index.html") assets=$(find "$WEB_DIR/assets" -maxdepth 1 -type f | wc -l)" >> "$GITHUB_STEP_SUMMARY"
 
   decision:
     name: Deploy routing decision
