@@ -24,10 +24,10 @@
 <img src="https://img.shields.io/badge/Open JDK-25-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
 </a>
 <a href="https://react.dev/" title="React" target="_blank">
-<img src="https://img.shields.io/badge/React-19.3.1-%2361DAFB.svg?logo=react&logoColor=000" alt="React" />
+<img src="https://img.shields.io/badge/React-19.3.1-20232A.svg?logo=react&logoColor=61DAFB" alt="React" />
 </a>
 <a href="https://tailwindcss.com/" title="Tailwind CSS" target="_blank">
-<img src="https://img.shields.io/badge/Tailwind%20CSS-4.3.3-%2338BDF8.svg?logo=tailwindcss&logoColor=000" alt="Tailwind CSS" />
+<img src="https://img.shields.io/badge/Tailwind%20CSS-4.3.3-06B6D4.svg?logo=tailwindcss&logoColor=fff" alt="Tailwind CSS" />
 </a>
 <br/>
 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">
@@ -471,7 +471,7 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 感谢参与贡献的每一位小伙伴🥰
 
 <a href="https://github.com/continew-org/continew-admin/graphs/contributors">
-  <img src="https://opencollective.com/continew-admin/contributors.svg?width=890&button=false" alt="contributors" />
+  <img src="https://contrib.rocks/image?repo=continew-org/continew-admin" alt="contributors" />
 </a>
 
 ### 特别鸣谢
