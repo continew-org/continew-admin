@@ -15,6 +15,15 @@ on:
         description: 'simulate=true 时的模拟改动路径清单（空格或换行分隔）；simulate=false 时传入将使工作流失败'
         type: string
         default: ''
+      deploy_target:
+        description: '手动部署目标（仅 workflow_dispatch 生效，push 触发忽略）：不选则按改动分流'
+        type: choice
+        options:
+          - auto
+          - ui
+          - backend
+          - both
+        default: auto
 
 permissions:
   contents: read
@@ -46,15 +55,42 @@ jobs:
         env:
           SIMULATE: ${{ inputs.simulate }}
           SIMULATE_PATHS: ${{ inputs.simulate_paths }}
+          DEPLOY_TARGET: ${{ inputs.deploy_target }}
         # 工作流级不做任何 paths 过滤：>300 文件时 GitHub 会跳过 paths 匹配，
         # 部署分流必须由 job 级 diff 判定完成（scripts/ci/changed-files.sh -> detect-changes.sh）；
         # simulate 清单仅在 Dry-Run 时替代 diff；simulate=false 时传 simulate_paths
-        # 属歧义输入，直接快速失败
+        # 属歧义输入，直接快速失败。
+        # deploy_target 用于手动指定部署范围：workflow_dispatch 没有 diff 基线，
+        # changed-files.sh 会降级成全类别放行（连带重建后端），指定目标即可避开
         run: |
           set -eo pipefail
-          if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
-            echo '::error::simulate_paths 仅支持 simulate=true（Dry-Run）：演练请设 simulate=true 走模拟清单，真实部署请留空 simulate_paths'
+          target=${DEPLOY_TARGET:-auto}
+
+          if [ "$target" != 'auto' ] && [ -n "$SIMULATE_PATHS" ]; then
+            echo '::error::deploy_target 与 simulate_paths 不能同时使用：手动指定部署目标时不需要模拟改动清单'
             exit 1
+          fi
+
+          if [ "$target" != 'auto' ]; then
+            # 手动指定目标：不解析 diff，直接给出分流结论。
+            # push 触发时 inputs.deploy_target 为空，落到下方 auto 分支，原逻辑不受影响
+            case "$target" in
+              ui)
+                ui=true; deploy_backend=false ;;
+              backend)
+                ui=false; deploy_backend=true ;;
+              both)
+                ui=true; deploy_backend=true ;;
+              *)
+                echo "::error::未知的 deploy_target：$target"
+                exit 1
+                ;;
+            esac
+            {
+              echo "ui=$ui"
+              echo "deploy_backend=$deploy_backend"
+              echo "categories=manual-$target"
+            } >> "$GITHUB_OUTPUT"
           elif [ -n "$SIMULATE_PATHS" ]; then
             printf '%s\n' "$SIMULATE_PATHS" | tr ' \t' '\n' | sed '/^$/d' | bash scripts/ci/detect-changes.sh >> "$GITHUB_OUTPUT"
           else
@@ -236,6 +272,7 @@ jobs:
       - name: Write routing decision
         env:
           SIMULATE: ${{ inputs.simulate }}
+          DEPLOY_TARGET: ${{ inputs.deploy_target }}
           UI: ${{ needs.detect.outputs.ui }}
           DEPLOY_BACKEND: ${{ needs.detect.outputs.deploy_backend }}
           CATEGORIES: ${{ needs.detect.outputs.categories }}
@@ -247,9 +284,12 @@ jobs:
           [ "$UI" = 'true' ] && ui_action='执行'
           mode='真实'
           [ "$SIMULATE" = 'true' ] && mode='Dry-Run（simulate）：以下为模拟路由，未执行任何构建/部署动作'
+          target_note='按改动分流'
+          [ -n "$DEPLOY_TARGET" ] && [ "$DEPLOY_TARGET" != 'auto' ] && target_note="手动指定（$DEPLOY_TARGET）"
           {
             echo '## 部署分流决策'
             echo "- 模式：$mode"
+            echo "- 分流依据：$target_note"
             echo "- 改动类别：$CATEGORIES"
             echo "- 后端部署（Deploy server）：$backend_action"
             echo "- UI 构建与发布（Build UI dist）：$ui_action"
