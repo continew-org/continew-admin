@@ -5,7 +5,6 @@ import { SimpleIcon } from '@/components/simple-icon'
 import { Button } from '@/components/ui/button'
 
 /** Where to send people for help with this project. */
-// Versioned URLs on purpose: the version-less docs root is pinned to the archived 4.x line.
 const DOCS_URL = 'https://continew.top/docs/admin/5.x'
 const REPOSITORY_URL = 'https://github.com/continew-org/continew-admin'
 
