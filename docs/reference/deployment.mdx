@@ -170,7 +170,7 @@ MySQL 与 Redis 配了健康检查，后端会等两者就绪后启动。首次�
 
 后端站点（`api.continew.top`）把请求反代到 `upstream admin-server`（`172.17.0.1:18000`），三个要点：
 
-- `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作。新前端暂未接入 WebSocket（站内信通知未实现），该转发为后端 WebSocket 端点与旧前端场景保留；
+- `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作。前端登录后由 `MessageSocket`（`continew-ui/src/layouts/message-effects.tsx`）常驻连接该端点，收到推送就刷新站内信角标与列表；断线 5 秒后自动重连，token 在每次重连时重新读取，会话刷新后仍能接上。后端的 `continew-starter.messaging.websocket.allowed-origins` 取自 `application.url`，换域名时这个值要一并改，否则握手被跨域校验拒绝；
 - `X-Forwarded-For` 显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
 - `client_max_body_size 100m`，要大于等于后端 `spring.servlet.multipart` 的 20MB 上限，分片上传场景按需再调大。
 
