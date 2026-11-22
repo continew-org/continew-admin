@@ -4,7 +4,7 @@ description: 来自维护者原话的十条选型理由：长期稳定、甄选�
 icon: Scale
 ---
 
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
+**AI 编程纪元，从 ContiNew & AI Native Coding 开始优雅编码。**
 
 以下十条理由来自维护者的持续实践，并随版本演进不断兑现。
 
@@ -58,7 +58,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 - Micrometer Tracing 链路追踪：在繁杂的日志中快速定位某次请求的完整日志；
 - 多级缓存（Caffeine + Redis）：通过 Spring Cache 注解或 `CacheUtils` 实现方法级缓存，支持本地/远程两级缓存、集群 L1 失效广播与定时刷新。
 
-## 7. Almost 最佳后端规范
+## 7. Almost 最佳规范
 
 后端严格遵循阿里巴巴 Java 编码规范，注释覆盖率 > 45%，接口参数示例 100%。代码分层清晰，变量与方法命名统一规范。构建链内置 Enforcer（环境与依赖合规）、Spotless（代码格式）、Checkstyle（代码规范）、SpotBugs（字节码缺陷）四道静态门禁，任一不通过即构建失败，详见[后端测试与门禁](/docs/admin/development/backend/testing)；前端代码采用 oxlint 静态检查与 oxfmt 格式化门禁。
 
@@ -80,7 +80,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 ## 10. 质量与安全并重
 
-我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。定期扫描 CVE 漏洞，及时解决潜在风险，已披露漏洞的处理情况见[安全通告](/docs/admin/reference/security)。
+我们高度重视项目质量与安全，CI 已集成 SonarCloud 静态扫描与 Open Code Review AI 评审，提交 PR 即自动扫描与评审质量问题。维护者定期人工跟踪 CVE 漏洞情报，及时解决潜在风险，已披露漏洞的处理情况见[安全通告](/docs/admin/reference/security)。
 
 安全能力贯穿代码层：数据库敏感字段经 `@FieldEncrypt` 自动加解密，响应 JSON 经 `@JsonMask` 按类型脱敏（手机号、邮箱等），登录密码经 RSA 公钥加密传输、后端私钥解密。提供全方位的安全解决方案。
 

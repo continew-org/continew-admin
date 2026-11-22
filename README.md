@@ -2,9 +2,13 @@
   <img src="continew-ui/public/logo.svg" width="72" alt="ContiNew Admin" />
 </div>
 
+<div align="center">
+
 # ContiNew Admin
 
 **持续迭代优化的前后端分离多租户中后台管理系统框架，开箱即用，持续提供舒适的开发体验。**
+
+</div>
 
 <div align="center">
 <a href="https://github.com/continew-org/continew-admin" title="Current Version" target="_blank">
@@ -19,6 +23,13 @@
 <a href="https://github.com/continew-org/continew-admin" title="Open JDK" target="_blank">
 <img src="https://img.shields.io/badge/Open JDK-25-%236CB52D.svg?logo=OpenJDK&logoColor=FFF" alt="Open JDK" />
 </a>
+<a href="https://react.dev/" title="React" target="_blank">
+<img src="https://img.shields.io/badge/React-19.3.1-%2361DAFB.svg?logo=react&logoColor=000" alt="React" />
+</a>
+<a href="https://tailwindcss.com/" title="Tailwind CSS" target="_blank">
+<img src="https://img.shields.io/badge/Tailwind%20CSS-4.3.3-%2338BDF8.svg?logo=tailwindcss&logoColor=000" alt="Tailwind CSS" />
+</a>
+<br/>
 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" title="License" target="_blank">
 <img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License" />
 </a>
@@ -31,13 +42,13 @@
 <a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Coverage" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=coverage" alt="Sonar Coverage" />
 </a>
-<br/>
 <a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Security Rating" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=security_rating" alt="Sonar Security Rating" />
 </a>
 <a href="https://sonarcloud.io/summary/new_code?id=continew-org_continew-admin" title="Sonar Maintainability Rating" target="_blank">
 <img src="https://sonarcloud.io/api/project_badges/measure?project=continew-org_continew-admin&metric=sqale_rating" alt="Sonar Maintainability Rating" />
 </a>
+<br/>
 <a href="https://github.com/continew-org/continew-admin" title="GitHub Stars" target="_blank">
 <img src="https://img.shields.io/github/stars/continew-org/continew-admin?style=social" alt="GitHub Stars" />
 </a>
@@ -68,11 +79,11 @@
 
 ## 简介
 
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
+**AI 编程纪元，从 ContiNew & AI Native Coding 开始优雅编码。**
 
 ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与代码细节的 **高质量多租户中后台** 管理系统框架。开箱即用，持续迭代优化，持续提供舒适的开发体验。
 
-当前采用的技术栈：Spring Boot 4（Java 17+，构建基线 JDK 25）、React 19 & TanStack Router · Query · Table & shadcn/ui & Tailwind CSS & TS & Vite、Sa-Token、MyBatis Plus、Redisson、Caffeine、FastExcel、CosID、JustAuth、Crane4j、NextDoc4j、Hutool 等。
+当前前端采用 React 19 & shadcn/ui & Tailwind CSS（配合 TanStack Router · Query · Table 与 Vite），后端采用 Spring Boot 4（Java 17+，构建基线 JDK 25）& ContiNew Starter，更多组件见下方[核心技术栈](#核心技术栈)。
 
 我们始终坚信好的产品必然是反复打磨出来的，而在工作中我们受限于客户需求、开发周期等因素，无法深度打磨、重构我们的代码，这也是架构腐烂的根源。所以，我们希望能在业余时间，通过开源社区的力量来打磨出一个好的产品，一个好的实践，一个好的生态。
 
@@ -82,7 +93,7 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 前端源码位于本仓库 `continew-ui/` 目录，与后端同版本发布。
 
-|         | 仓库                                                         |
+| 开源平台 | 仓库                                                         |
 | :------ | :----------------------------------------------------------- |
 | GitHub  | [continew-org/continew-admin](https://github.com/continew-org/continew-admin) |
 | AtomGit | [continew/continew-admin](https://atomgit.com/continew/continew-admin) |
@@ -90,16 +101,27 @@ ContiNew Admin（Continue New Admin），页面现代美观，且专注设计与
 
 ## 项目起源
 
-我们热衷于做数据归档——归档让优质的“沉淀”为记忆“减负”，带来非匀速、跨越式的学习与工作效率提升，**数据归档是一件需要持续去做的事情**。从写下第一行代码起，刷过的算法题、踩过的坑、沉淀的配置与“如诗”的代码片段，逐渐聚合成一个个雏形程序，也就是后来的 **程序框架/脚手架**。
+我热衷于做数据归档，归档后的数据可以提高学习/工作效率，为记忆“减负”，在持续的数据归档中，优质的“沉淀”会带来非匀速、跨越式的学习/工作体验。**数据归档是一件需要持续去做的事情**。
 
-工作中的想法与设计总要优先向交付让路，而优秀的实践需要花时间持续沉淀。于是我们选择在业余时间从头归档、从添加每一个依赖开始认真打磨，并希望它持续迭代优化、演进，所以我们把它命名为 **ContiNew（Continue New）**。同时我们选择开源：依托开源协作模式，及时发现更多问题，接受更多可能性，沉淀更优秀的思考与设计。
+从接触程序代码的第一天，我的程序数据归档也随之开始了，刷过的算法题、笔记、对接各种组件的配置文件，甚至于一些亮眼的样式设计、“如诗”的代码片段。这些数据的沉淀丰富了我的解决方案，提高了我的编程效率，逐渐为各种场景落实成了一个个雏形程序。再后来，我意识到，我归档的这些雏形程序，有一个更为妥贴的名称：**程序框架/脚手架**。
+
+技术的发展，导致这些雏形程序的生命周期很是短暂，它们有别于我归档的其他数据，有时由于工作的原因，没有时间很好的去沉淀它们，在使用时变得越来越不顺手。所以，某段时间，我放弃了维护，而是去采用一些更为成熟的框架。
+
+不过，在陆续几年使用了一些成熟框架后，我前后遇到了一些困难：
+
+1. 代码洁癖想要找到一个**扩展性佳，代码规范良好，开发体验舒适**的框架很不容易，总是差些什么
+2. 项目上手困难或是基础版功能不全，需要的全在专业版，亦或者代码阅读性差，文档收费
+3. 部分解决方案缺失，已有解决方案也过于偏向样板化，无法形成良好的逻辑闭环
+4. 好不容易找到一些相较合适的，没过多久，部分作者可能暂时没法对外发“电”了，随着了解深入，很多 Bug 或新技术趋势还是需要自己研究解决
+
+在工作中，很多想法/设计受限于客户需求、开发工期，必须优先以交付为导向，但一些优秀的实践需要花时间持续进行沉淀，只要我没跳出这个圈子，我还是需要一直去做好程序归档。“种一棵树最好的时间是十年前，其次是现在”，最终，我选择在业余时间更加正视这件事，从头归档沉淀，从添加每一个依赖开始，我希望它能持续的迭代优化、演进，所以我把它命名为 **ContiNew（Continue New）**。并且这次我选择了开源，我希望它不仅仅能吸收我的需求和沉淀，而是依托开源协作模式，及时发现更多的问题，接受更多的可能性，沉淀更优秀的思考，设计。
+
+进入 AI 编程时代，有人说 AI 时代很快就能写出一个脚手架，但我始终认为，**AI 时代一个好的底座反而更重要**。AI 生成的代码质量，取决于它所学习的规范与所依附的底座；而且人人拥有自己的脚手架也变得更容易实现和维护了，只不过有些人开源、有些人闭源维护而已。ContiNew 项目正是奔着 AI Native Coding 而去：让 AI 助手基于这套优雅的规范与底座，“写出”更优质的代码。
 
 ## 为什么选我们？
 
 > [!TIP]
 > 更为完整的图文描述请查阅[《在线文档》](https://continew.top/docs/admin/why-choose-us)。
-
-**AI 编程纪元已经开启，基于 ContiNew 项目开发，让 AI 助手“学习”更优雅的代码规范，“写出”更优质的代码。**
 
 **1. 长期稳定：** 自 2022 年 12 月创建、2023 年 3 月发布 v1.0.0，持续迭代优化至今，完整版本记录见 [更新日志](https://github.com/continew-org/continew-admin/blob/dev/CHANGELOG.md)。
 
@@ -120,7 +142,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 **6. 提升开发体验：** 数据填充、SpEL 参数校验、SQL 性能分析、链路追踪、多级缓存（Caffeine + Redis）等通用方案开箱自带。
 
-**7. Almost 最佳后端规范：** 严格遵循阿里巴巴 Java 编码规范，Enforcer、Spotless、Checkstyle、SpotBugs 四道静态门禁随构建执行，前端采用 oxlint + oxfmt 门禁。
+**7. Almost 最佳规范：** 后端严格遵循阿里巴巴 Java 编码规范，Enforcer、Spotless、Checkstyle、SpotBugs 四道静态门禁随构建执行；前端 oxlint + oxfmt 门禁同样齐备。
 
 **8. 卓越工程化实践：** 模块化工程、`${revision}` 统一版本管理、瘦包/胖包一键切换、配置外置部署、全套 Docker Compose 部署脚本。
 
@@ -196,7 +218,7 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 | <a href="https://sms4j.com/" target="_blank">SMS4J</a>                                                                            | 3.3.5        | 短信聚合框架，轻松集成多家短信服务，解决接入多个短信 SDK 的繁琐流程。 |
 | <a href="https://justauth.cn/" target="_blank">Just Auth</a>                                                                      | 1.16.7       | 开箱即用的整合第三方登录的开源组件，脱离繁琐的第三方登录 SDK，让登录变得 So easy！ |
 | <a href="https://github.com/fast-excel/fastexcel" target="_blank">Fast Excel</a>                                                  | 1.3.0        | （由原 EasyExcel 作者创建的新项目）一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具。 |
-| [AJ-Captcha](https://ajcaptcha.beliefteam.cn/captcha-doc/)                                                                        | 1.4.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
+| [AJ-Captcha](https://github.com/anji-plus/captcha)                                                                                | 1.4.0        | Java 行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式。 |
 | Easy Captcha                                                                                                                      | 1.6.2        | Java 图形验证码，支持 gif、中文、算术等类型，可用于 Java Web、JavaSE 等项目。 |
 | [Crane4j](https://crane4j.cn/)                                                                                                    | 2.10.0       | 一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架。 |
 | [SpEL Validator](https://spel-validator.sticki.cn/)                                                                               | 0.7.0        | 基于 SpEL 的 jakarta.validation-api 扩展增强包。             |
@@ -461,4 +483,4 @@ ContiNew 系列项目采用清晰的分支策略，确保开发与维护有序�
 ## License
 
 - 遵循 <a href="https://github.com/continew-org/continew-admin/blob/dev/LICENSE" target="_blank">Apache-2.0</a> 开源许可协议
-- Copyright © 2022-present Charles7c
+- Copyright © 2022-present <a href="https://github.com/Charles7c" target="_blank">Charles7c</a>
