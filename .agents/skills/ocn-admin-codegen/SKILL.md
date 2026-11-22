@@ -1,21 +1,32 @@
 ---
 name: ocn-admin-codegen
 description: >
-  continew-admin 业务模块脚手架技能：按建表 DDL 在前后端双端生成一套配套的增删改查模块——
-  后端 BaseDO / BaseController / CrudRequestMapping 体系 8 个文件 + 前端 TanStack Router 路由与组件 +
-  Liquibase mysql/postgresql 双份建表 SQL + sys_menu 菜单 SQL。
-  用户说"加个 CRUD"、"新增业务模块"、"按这张表生成代码"、"生成一套增删改查"、"建个管理页面"，
-  或给出建表 SQL 并要求配套后端 + 前端 + 菜单时使用。
+  continew-admin 业务模块脚手架技能：从业务描述引导设计数据表（含建表确认门），或直接按既有表，
+  在前后端双端生成一套配套的增删改查模块——后端 BaseDO / BaseController / CrudRequestMapping 体系 9 个文件 +
+  前端 TanStack Router 路由与组件 + Liquibase mysql/postgresql 双份建表 SQL + sys_menu 菜单 SQL，
+  含 query-keys / master.yaml / 租户白名单等集成点登记。全程选择题问答确认入口、位置、范围、API 集与字段映射，
+  生成后自带双端构建自验证。用户说"加个 CRUD"、"新增业务模块"、"按这张表生成一套"、"建个管理页面"、
+  "给 XX 做增删改查"，或只给一段业务描述就想落库建表并配套页面时使用。
   专用于 continew-admin 仓库：技能绑的是本仓分层约定（BaseDO / BaseController / CrudRequestMapping），
   换仓库不成立。
 ---
 
 # continew-admin 业务模块脚手架
 
-给一张建表 DDL 和业务名，按本仓分层约定产出一套可跑通的增删改查模块：后端 8 个文件、
-前端路由与组件、双份 Liquibase 建表 SQL、菜单 SQL。生成完必须跑通第 7 节的自验证才能交付。
+双入口（业务引导建表 / 既有表）、问答式决策、P0-P6 全链路产出、自验证不过不交付。
 
-## 1. 前置：先读再写（硬性）
+## 1. 设计原则
+
+- **事实源是当前代码，不是模板**：动手前实读第 2 节清单，import 与注解照抄现状。模板化工具最大的坑是
+  模板与框架演进脱节（4.x→5.x 分层写法与前端整套都换过血），本技能靠「读现状」根治，不靠背规范。
+- **决策权在用户，节奏靠默认值**：范围、位置、API 集、字段映射一律问答确认；每轮给推荐默认，用户点选即可。
+- **全链路一次到位**：代码文件只是产物的一半，`query-keys.ts`、`master.yaml`、菜单 SQL、租户白名单这些
+  集成点同批补齐——漏一步集成点就是白屏、403 或启动失败。
+- **过不了自验证不交付**：能自己跑构建就跑，红了自己修；修两轮仍红就停下如实报告，不把失败说成环境问题。
+
+取舍依据（旧版脚手架生成器的弊端逐项对照）见 `references/design-notes.md`，演进本技能前先读它。
+
+## 2. 前置：先读再写（硬性）
 
 开工前必须实际读取以下文件，把真实 import 与注解抄进产物，不要凭记忆生成：
 
@@ -31,12 +42,39 @@ description: >
 
 读不到就停，报告缺哪个文件，不要凭猜测继续。
 
-## 2. 输入
+## 3. 交互协议（问答式，先问后动笔）
 
-需要三样：建表 DDL（或已存在的表名）、业务中文名、权限前缀（如 `system:goods` 或 `biz:goods`）。
-缺 DDL 且表不存在时，先按第 6 节的规范给出建表语句让用户确认，不要自己拍字段。
+用 AskUserQuestion（或所在智能体等效的多选问答机制），中文提问；每轮最多 4 问；先扫一遍用户请求里
+已明确的项，只问缺口，已答过的不重复问。用户一句「都按推荐来」即后续轮次全走推荐，只保留确认门。
+全程不超过 3 轮问答 + 各确认门。
 
-## 3. 命名推导表（逐项算，不要意译）
+**第一轮（范围四问，用户没说清就必问）：**
+
+| 问题 | 选项（★ = 推荐默认） |
+|:--|:--|
+| 入口模式 | ★业务引导建表（只有业务描述）；已有表（用户给表名 / DDL / 数据库连接走 dbx 读取） |
+| 放置位置 | ★continew-system 对应业务子包；新建插件模块（continew-plugin 下，需两处 POM 注册）；自定义域 |
+| 生成范围 | ★双端全套（后端 + 前端 + 建表 SQL + 菜单）；仅后端；仅前端；双端不含菜单 |
+| CRUD API 集 | ★PAGE/GET/CREATE/UPDATE/BATCH_DELETE 标准五件套；追加 EXPORT；追加 TREE 等（以源码 Api 枚举实际值为准） |
+
+**模式 A 第二轮（建表确认门）**：按 `references/table-design.md` 把业务描述整理成表设计草案
+（实体拆分、列与类型、标准列、索引、租户、字典联动），产出 MySQL/PostgreSQL 双份 DDL，
+问答确认：「按此建表」/「调整（说明改哪）」/「重来」。**未确认不写任何文件。**
+
+**模式 B 第二轮（读表）**：有数据库连接工具（如 dbx MCP）时直接 describe；否则让用户贴
+`SHOW CREATE TABLE` 或 DDL。对照 `references/table-design.md` 的类型映射产出字段映射推荐表。
+
+**字段映射轮（两种模式都要，生成前最后一问）**：先展示推荐映射表（列 → Java 类型 / Query / Resp /
+表单组件 / 校验注解），再问：
+
+| 问题 | 选项 |
+|:--|:--|
+| 筛选字段（多选） | 从推荐映射里选进 Query 的列（推荐项已按列类型与业务语义预选） |
+| 表单弹层 | ★抽屉（与 system/notice 一致）；对话框 |
+| 菜单挂载点 | ★挂「系统管理」既有目录；新建目录；不入菜单（跳过菜单 SQL） |
+| 范围与 API 集复核 | 第一轮答案有变在此改；无变化选「按前述」 |
+
+## 4. 命名推导表（逐项算，不要意译）
 
 | 输入 | 产物 | 规则 |
 |:--|:--|:--|
@@ -51,74 +89,29 @@ description: >
 权限码推导规则以 AGENTS.md「关键机制 → CRUD 套件」段为准：`BaseController.preHandle` 根据 API 类型
 自动生成并校验权限码（如 `POST /system/user` → `system:user:create`）。不要在代码里手写鉴权注解。
 
-## 4. 后端产出清单（8 个文件）
+## 5. 工作流（按阶段读参考文档，顺序固定）
 
-放在 `continew-system/src/main/java/top/continew/admin/system/`（或按业务域选模块）：
+| 阶段 | 动作 | 必读 |
+|:--|:--|:--|
+| P0 问需求 | 第 3 节交互协议，问完再动笔 | — |
+| P1 定表 | 模式 A 设计并过确认门 / 模式 B 解析既有表 | `references/table-design.md` |
+| P2 后端 | 9 个 Java 文件按清单落位 | `references/backend.md` |
+| P3 前端 | route + `-components/` + api + query-keys 登记 | `references/frontend.md` |
+| P4 数据与菜单 | 双份 Liquibase 变更集 + master.yaml + 菜单 SQL + 租户白名单 | `references/sql-and-menu.md` |
+| P5 自验证 | 双端构建 + 实跑 + 交付 grep | `references/verification.md` |
+| P6 交付 | 交付说明（格式见 verification.md），明示 CRUD 之外需人工设计的部分 | — |
 
-1. `model/entity/<X>DO.java` —— extends `BaseDO`，`@TableName("<table>")`，`@Data`；
-   **JSON 列字段必须同时加 `@TableField(typeHandler = JacksonTypeHandler.class)` 与
-   `@TableName(..., autoResultMap = true)`**（漏后者会导致读出来恒为 null，消息删除接口踩过这个坑）
-2. `model/query/<X>Query.java` —— 只放可筛选字段，implements `Serializable`；
-   分页不放进 Query：PAGE 接口的分页参数 `PageQuery` 由 CRUD 套件作为独立方法参数注入
-   （参照 NoticeQuery 与 OnlineUserController.page 的真实签名，不要让 Query 继承 PageQuery）
-3. `model/req/<X>Req.java` —— 校验注解齐全（@NotBlank/@NotNull/@Size），与 DDL 长度一致
-4. `model/resp/<X>Resp.java` 与 `<X>DetailResp.java` —— Resp 放列表字段，DetailResp 继承并加详情字段
-5. `mapper/<X>Mapper.java` —— extends `BaseMapper<<X>DO>`；有联表/自定义查询时再加 XML
-6. `service/<X>Service.java` + `service/impl/<X>ServiceImpl.java` —— extends BaseService 体系：
-   接口 extends `BaseService<<X>Resp, <X>DetailResp, <X>Query, <X>Req>`（必要时加 `IService<<X>DO>`），
-   实现类 extends `BaseServiceImpl<<X>Mapper, <X>DO, <X>Resp, <X>DetailResp, <X>Query, <X>Req>>` 并 implements 接口；
-   类上加 `@Service`、`@RequiredArgsConstructor`，日志用 `@Slf4j`
-7. `controller/<X>Controller.java` ——
-   `@CrudRequestMapping(value = "/system/goods", api = {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.BATCH_DELETE})`
-   extends `BaseController<<X>Service, <X>Resp, <X>DetailResp, <X>Query, <X>Req>`
-   **只写空类体**：CRUD 接口由基类生成，不要在子类里重复声明
-8. 有联表查询时放 `continew-system/src/main/resources/mapper/<X>Mapper.xml`
+P1-P4 中发现前面的决策要改（如 DDL 改列），回头同步所有受影响产物，不要只改一处。
 
-注释与署名规则（与 AGENTS.md 一致，这两条最常被违反）：
-- 类级必须有 `@author`（署使用者本人）与 `@since`（5.0.0）；方法级不写 `@author`
-- 注释只写当前代码的非显然约束，不写「本方法用于…」这类复述
-- 新增 Java 文件必须带 Apache-2.0 License Header，否则 Spotless 会拦
+## 6. 全局硬约束
 
-## 5. 前端产出清单
+- 新 Java 文件必带 Apache-2.0 License Header（Spotless 会拦）；`@author` 署使用者本人，`@since` 5.0.0；方法级不署名
+- 注释只写当前代码的非显然约束；变更历史进 commit message，修复原因进 PR 正文，不混进代码注释
+- **不改任何已有 Liquibase changeset**（checksum 失配即启动失败），只新增
+- 第三方依赖版本不硬编码（starter 统一管理）；内部模块依赖 groupId 用 `${project.groupId}`
+- 本技能文件与产物的行文避开已退役功能的字面量（PR #318 验收 grep 口径），新增参考文档时同样遵守
 
-- `src/routes/(main)/(app)/<module>/<name>/route.tsx`：
-  `createFileRoute('/(main)/(app)/system/goods')({ component: GoodsList })`
-  **目录结构即 URL**，不要手改 `src/routeTree.gen.ts`（由 pnpm dev/build 生成）
-- 同级 `-components/`：`<name>-columns.tsx` / `<name>-list.tsx` / `<name>-form-drawer.tsx` /
-  `<name>-delete-dialog.tsx`，命名照抄 `system/notice` 的既有形态
-- `src/lib/api/<name>.ts`：从 `@/lib/http` 导入 http，导出 `<X>Resp` / `<X>DetailResp` / `<X>PageQuery` / `<X>Req`
-  四个类型 + page/get/create/update/delete 五个函数；**不要直接 fetch**
-- 组件只用 `src/components/ui` 与 `src/components` 现成的，不引第二套 UI 库；图标用 lucide-react
-- 表格列定义、筛选行、删除确认都复用现有业务组件，不要从头写
-
-## 6. 数据库与菜单（两步都不可省）
-
-a) Liquibase：`mysql/` 与 `postgresql/` **两份 SQL 同步提供**，并在
-   `continew-server/src/main/resources/db/changelog/db.changelog-master.yaml` 登记。
-   新建表写成新的 changeset 文件（如 `mysql/<domain>/<name>.sql`），**不要改已有 changeset**（checksum 会失配）。
-   表结构必须含 create_user/create_time/update_user/update_time/deleted 五列 + deleted 的索引条件，
-   与 `main_table.sql`（`continew-server/src/main/resources/db/changelog/mysql/` 与
-   `continew-server/src/main/resources/db/changelog/postgresql/` 下的同名文件）现有写法一致
-   （`deleted bigint NOT NULL DEFAULT 0`，注释「是否已删除（0：否；id：是）」）。
-   业务表默认参与租户隔离；**若该表不参与，必须登记到 `continew-starter.tenant.ignore-tables`**，并在 PR 说明理由。
-
-b) 菜单数据：生成 sys_menu 的 INSERT SQL（目录 type=1 / 页面 type=2 / 按钮 type=3），
-   页面菜单的 path 填前端路由 URL（如 `/system/goods`），**component 字段不参与新前端路由解析，
-   填与不填都不影响页面渲染，但为兼容旧约定仍按 `<module>/<name>/index` 填**。
-   按钮菜单的 permission 必须与第 3 节推导的权限码逐字一致。
-
-## 7. 自验证（不过不交付）
-
-生成完依次执行，全绿才能报告完成：
-1. `./mvnw verify` —— 四道门禁 + 单测；被 Spotless 拦时先 `./mvnw compile -Pformat` 再重跑
-2. `cd continew-ui && pnpm fmt && pnpm build && pnpm check` —— 新路由先由 build 写入 src/routeTree.gen.ts 再跑 check（typecheck 依赖该文件）；check 含 fmt:check/lint/typecheck/test/build
-3. 起后端 + 前端，登录后在「系统管理 → 菜单」挂上新菜单、授给 admin，确认列表能打开、增删改走得通
-4. 把三步的输出（关键行）贴进交付说明
-
-任一步红了：自己修。修两轮仍红就停下来，报告「哪一步、什么错、我判断的原因」，
-**不要交付红的产物，也不要把失败说成「环境问题」**。
-
-## 8. 常见失败清单（写进 Skill 的最后一节）
+## 7. 常见失败清单（生成时就对照避坑）
 
 | 症状 | 原因 |
 |:--|:--|
@@ -134,5 +127,7 @@ b) 菜单数据：生成 sys_menu 的 INSERT SQL（目录 type=1 / 页面 type=2
 
 ## 配套样例
 
-本目录 `examples/` 下有一套按本 Skill 全流程产出的完整样例（后端 8 文件 + 前端 route/-components/api +
-双份 Liquibase 建表 SQL + 菜单 SQL），照抄此例可跑通；样例的生成过程与验证记录见 `examples/README.md`。
+`examples/` 下有一套按本技能 P0-P6 产出的完整样例（入口 = 已有表 biz_demo）：
+后端 9 文件 + 前端 route/-components/api + 双份 Liquibase 建表 SQL + 菜单 SQL，照抄可跑通；
+生成过程与验证记录见 `examples/README.md`。模式 A 产出的 DDL 应与样例 biz_demo 同构
+（五审计列 + deleted 索引条件 + 可选 tenant_id）。
