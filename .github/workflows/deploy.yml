@@ -121,7 +121,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
       # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）。
+      # 产物由下面的 Publish UI dist 同步到演示站点。
       # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
         run: >
@@ -140,6 +140,87 @@ jobs:
           path: continew-ui/dist/
           if-no-files-found: error
           retention-days: 14
+      # 发布到演示站点：先快照上一版 -> 落新资源（不删旧）-> 原子替换 index.html
+      # -> 清理上一版残留 -> 自检。三步顺序不可调换。
+      - name: Publish UI dist
+        env:
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        run: |
+          set -euo pipefail
+          WEB_DIR="$SERVER_PATH/continew-admin/web"
+          SNAP_ROOT="$SERVER_PATH/backups/web"
+          SNAP="$SNAP_ROOT/web-$(date -u +%Y%m%dT%H%M%SZ)"
+
+          # 写入前先确认真实目录：软链会被容器按 inode 挂载，写进去容器看不到
+          [ -d "$WEB_DIR" ] && [ ! -L "$WEB_DIR" ] || {
+            echo "::error::$WEB_DIR 不存在或不是真实目录（不得为软链），已中止发布"
+            exit 1
+          }
+          case "$SNAP_ROOT" in
+            */backups/web) ;;
+            *) echo "::error::快照根目录异常：$SNAP_ROOT"; exit 1 ;;
+          esac
+
+          mkdir -p "$SNAP_ROOT"
+          # 1、快照上一版（精确副本）
+          #    快照必须落在 web/ 之外：放在 web/ 内会被下一步的 --delete 清掉
+          rsync -a --delete "$WEB_DIR/" "$SNAP/"
+          echo "快照：$SNAP（$(du -sh "$SNAP" | cut -f1)）" >> "$GITHUB_STEP_SUMMARY"
+
+          # 2、落新资源：不带 --delete，且排除 index.html。旧哈希资源仍在场，
+          #    新 index.html 引用的 chunk 必须先全部到位，入口才能切换
+          rsync -a --exclude '/index.html' continew-ui/dist/ "$WEB_DIR/"
+
+          # 3、切换入口：单独只传 index.html。此时它引用的资源已全部落盘，
+          #    入口由 rsync 的临时文件 + rename 完成替换，是唯一可见切换点
+          rsync -a continew-ui/dist/index.html "$WEB_DIR/index.html"
+
+          # 4、清理上一版残留：此时 index.html 已指向新资源
+          rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
+
+          # 4、只保留最近 3 份自动快照。轮转只认本步骤生成的命名
+          #    （web-<14 位时间戳>Z），其余目录一律豁免：手工建的基线快照
+          #    是回滚到切换前版本的唯一副本，不能被日常发布清掉。
+          #    删除项写入 Job Summary 以便审计
+          mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d \
+            -regextype posix-extended -regex '.*/web-[0-9]{8}T[0-9]{6}Z' \
+            -printf '%f\n' | sort -r)
+          if [ "${#snaps[@]}" -gt 3 ]; then
+            for old in "${snaps[@]:3}"; do
+              echo "- 清理旧快照：$old" >> "$GITHUB_STEP_SUMMARY"
+              rm -rf "$SNAP_ROOT/$old"
+            done
+          fi
+          echo "- 保留快照：$(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d -name 'web-*' -printf '%f\n' | sort -r | tr '\n' ' ')" >> "$GITHUB_STEP_SUMMARY"
+
+      # 发布后自检：入口与它引用的资源都必须真实存在。
+      # SPA 的 try_files 会把缺失资源回落成 200 + index.html，所以这里不能只验 HTTP 状态，
+      # 必须直接检查文件系统上 index.html 引用的每个 assets/ 资源都在位
+      - name: Verify published site
+        env:
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        run: |
+          set -euo pipefail
+          WEB_DIR="$SERVER_PATH/continew-admin/web"
+          test -f "$WEB_DIR/index.html"
+          test -d "$WEB_DIR/assets"
+          # 产物挂载点必须是 id="root"：发布落位失败时 index.html 仍是旧内容，此处直接让作业红
+          test "$(grep -c 'id="root"' "$WEB_DIR/index.html")" = '1'
+
+          # 逐个校验 index.html 引用的本地资源，任一缺失即红
+          missing=0
+          while IFS= read -r ref; do
+            [ -n "$ref" ] || continue
+            if [ ! -f "$WEB_DIR$ref" ]; then
+              echo "::error::index.html 引用的资源缺失：$ref"
+              missing=$((missing + 1))
+            fi
+          done < <(grep -oE '(src|href)="/[^"]+"' "$WEB_DIR/index.html" \
+            | sed -E 's/^(src|href)="//; s/"$//' \
+            | grep -vE '^(https?:)?//' | sort -u)
+          [ "$missing" -eq 0 ] || { echo "::error::缺失 $missing 个资源，发布未完成"; exit 1; }
+
+          echo "- index.html bytes=$(stat -c%s "$WEB_DIR/index.html") assets=$(find "$WEB_DIR/assets" -maxdepth 1 -type f | wc -l)" >> "$GITHUB_STEP_SUMMARY"
 
   decision:
     name: Deploy routing decision
@@ -171,5 +252,5 @@ jobs:
             echo "- 模式：$mode"
             echo "- 改动类别：$CATEGORIES"
             echo "- 后端部署（Deploy server）：$backend_action"
-            echo "- UI dist 构建（Build UI dist）：$ui_action"
+            echo "- UI 构建与发布（Build UI dist）：$ui_action"
           } >> "$GITHUB_STEP_SUMMARY"
