@@ -174,10 +174,13 @@ jobs:
           # 3、清理上一版残留：此时 index.html 已指向新资源
           rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
 
-          # 4、只保留最近 3 份自动快照；带 -manual 后缀的手工基线不参与轮转，
+          # 4、只保留最近 3 份自动快照。轮转只认本步骤生成的命名
+          #    （web-<14 位时间戳>Z），其余目录一律豁免：手工建的基线快照
+          #    是回滚到切换前版本的唯一副本，不能被日常发布清掉。
           #    删除项写入 Job Summary 以便审计
           mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d \
-            -name 'web-*' ! -name '*-manual' -printf '%f\n' | sort -r)
+            -regextype posix-extended -regex '.*/web-[0-9]{8}T[0-9]{6}Z' \
+            -printf '%f\n' | sort -r)
           if [ "${#snaps[@]}" -gt 3 ]; then
             for old in "${snaps[@]:3}"; do
               echo "- 清理旧快照：$old" >> "$GITHUB_STEP_SUMMARY"
