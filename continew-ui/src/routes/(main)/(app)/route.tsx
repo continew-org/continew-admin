@@ -1,12 +1,10 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { AppShell } from '@/components/app-shell'
-import { PagePending } from '@/components/app-shell/page-pending'
+import { BaseLayout, loadBaseLayout, PagePending } from '@/layouts'
 import { QueryState } from '@/components/query-state'
 import { ensureMenuLoaded } from '@/hooks/use-menu'
 import { requireAuth } from '@/lib/auth-guard'
 import { requireRouteAccess } from '@/lib/route-access'
-import { loadAppShell } from '@/lib/shell-preferences'
 import { NotFound } from '@/routes/-components/not-found'
 import { useAuthStore } from '@/stores/auth/auth-provider'
 
@@ -20,16 +18,16 @@ export const Route = createFileRoute('/(main)/(app)')({
     requireAuth({ location })
     requireRouteAccess(location.pathname, matches, routes)
   },
-  loader: loadAppShell,
+  loader: loadBaseLayout,
   component: AppLayout,
   notFoundComponent: NotFound
 })
 
 function AppLayout() {
   return (
-    <AppShell {...Route.useLoaderData()}>
+    <BaseLayout {...Route.useLoaderData()}>
       <AuthenticatedOutlet />
-    </AppShell>
+    </BaseLayout>
   )
 }
 
@@ -60,5 +58,12 @@ function AuthenticatedOutlet() {
     return <PagePending />
   }
 
-  return <QueryState state="error" title="用户信息加载失败" className="min-h-svh" onRetry={() => void loadUser()} />
+  return (
+    <QueryState
+      state="error"
+      title="用户信息加载失败"
+      className="min-h-[calc(100dvh-8rem)]"
+      onRetry={() => void loadUser()}
+    />
+  )
 }

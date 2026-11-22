@@ -29,7 +29,9 @@ export default defineConfig(({ mode }) => {
         [VITE_API_PREFIX]: {
           target: VITE_API_BASE_URL,
           changeOrigin: true,
-          rewrite: path => path.replace(VITE_API_PREFIX, '')
+          rewrite: path => path.replace(VITE_API_PREFIX, ''),
+          // The message socket lives under the API prefix, so proxy upgrades too.
+          ws: true
         }
       }
     },

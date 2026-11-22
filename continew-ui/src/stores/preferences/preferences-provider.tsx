@@ -1,70 +1,19 @@
 import { createContext, use, useEffect, useState } from 'react'
 
+import { AnimateUIProvider } from '@animate-ui/react/provider'
+
 import { type StoreApi, useStore } from 'zustand'
 
-import { getClientCookie } from '@/lib/cookie'
-import { getLocalStorageValue } from '@/lib/local-storage'
-import {
-  PREFERENCE_DEFAULTS,
-  PREFERENCE_KEYS,
-  PREFERENCE_REGISTRY,
-  type PreferenceKey,
-  type PreferenceValueMap,
-  getPreferenceStorageKey,
-  parsePreference
-} from '@/lib/preferences/preferences-config'
+import type { PreferenceValueMap } from '@/lib/preferences/preferences-config'
 import { applyThemeMode, subscribeToSystemTheme } from '@/lib/preferences/theme-utils'
 
 import { createPreferencesStore, type PreferencesState } from './preferences-store'
 
 const PreferencesStoreContext = createContext<StoreApi<PreferencesState> | null>(null)
 
-function readDomPreference<K extends PreferenceKey>(key: K): PreferenceValueMap[K] {
-  const definition = PREFERENCE_REGISTRY[key]
-  const root = document.documentElement
-
-  if (definition.attribute) {
-    return parsePreference(key, root.getAttribute(definition.attribute))
-  }
-
-  if (definition.cssVar) {
-    const name = Array.isArray(definition.cssVar) ? definition.cssVar[0] : definition.cssVar
-    return parsePreference(key, window.getComputedStyle(root).getPropertyValue(name))
-  }
-
-  // JS-only preferences (boolean/text) have no DOM target, so read the stored value directly.
-  const storageKey = getPreferenceStorageKey(key)
-  const raw =
-    definition.persistence === 'localStorage'
-      ? getLocalStorageValue(storageKey)
-      : definition.persistence === 'client-cookie'
-        ? getClientCookie(storageKey)
-        : null
-
-  return parsePreference(key, raw)
-}
-
-function readDomPreferences(): PreferenceValueMap {
-  const values = { ...PREFERENCE_DEFAULTS }
-
-  function assignPreference<K extends PreferenceKey>(key: K) {
-    values[key] = readDomPreference(key)
-  }
-
-  for (const key of PREFERENCE_KEYS) assignPreference(key)
-  return values
-}
-
 export function PreferencesStoreProvider({ children }: { children: React.ReactNode }) {
   const [store] = useState<StoreApi<PreferencesState>>(() => createPreferencesStore())
-
-  useEffect(() => {
-    store.setState({
-      values: readDomPreferences(),
-      resolvedThemeMode: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-      isSynced: true
-    })
-  }, [store])
+  const animationEnable = useStore(store, state => state.values.animation_enable)
 
   useEffect(() => {
     let unsubscribeMedia: (() => void) | undefined
@@ -94,7 +43,23 @@ export function PreferencesStoreProvider({ children }: { children: React.ReactNo
     }
   }, [store])
 
-  return <PreferencesStoreContext.Provider value={store}>{children}</PreferencesStoreContext.Provider>
+  return (
+    <PreferencesStoreContext.Provider value={store}>
+      <AnimateUIProvider reducedMotion={animationEnable ? 'user' : 'always'}>{children}</AnimateUIProvider>
+    </PreferencesStoreContext.Provider>
+  )
+}
+
+/** The store itself, for event handlers that read the latest values without subscribing. */
+export function usePreferencesStoreApi() {
+  const store = use(PreferencesStoreContext)
+  if (!store) throw new Error('Missing PreferencesStoreProvider')
+  return store
+}
+
+/** Subscribes to one preference; unrelated preference changes do not re-render the caller. */
+export function usePreference<K extends keyof PreferenceValueMap>(key: K): PreferenceValueMap[K] {
+  return usePreferencesStore(state => state.values[key])
 }
 
 export function usePreferencesStore<T>(selector: (state: PreferencesState) => T): T {

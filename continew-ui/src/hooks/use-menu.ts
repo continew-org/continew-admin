@@ -7,11 +7,11 @@ import type { RouteResp } from '@/lib/api/types'
 import { ApiError } from '@/lib/http'
 import { getAccessToken } from '@/lib/auth-session'
 import { getCachedMenu, setCachedMenu } from '@/lib/menu-cache'
-import { queryClient } from '@/lib/query-client'
+import { DEFAULT_STALE_TIME_MS, queryClient } from '@/lib/query-client'
 import { toMenuGroups } from '@/navigation/menu'
 import { useAuthStore } from '@/stores/auth/auth-provider'
 
-/** The menu only changes when the signed-in user or its roles change. */
+/** Shared menu data for sidebar rendering and navigation permission checks. */
 export const MENU_QUERY_KEY = ['auth', 'menu'] as const
 
 export const menuQueryOptions = queryOptions({
@@ -21,7 +21,9 @@ export const menuQueryOptions = queryOptions({
     setCachedMenu(routes)
     return routes
   },
-  initialData: () => getCachedMenu() ?? undefined
+  staleTime: DEFAULT_STALE_TIME_MS,
+  initialData: () => getCachedMenu() ?? undefined,
+  initialDataUpdatedAt: 0
 })
 
 export function useMenuRoutes() {
@@ -36,8 +38,8 @@ export function useMenuRoutes() {
  * Ensures menu data is present before the shell renders and returns it.
  *
  * If cached menu data already exists (from memory or localStorage), this resolves
- * immediately (0ms) so the shell mounts without delay. In the background, it
- * triggers a revalidation to keep data fresh without holding up the UI.
+ * immediately so the shell mounts without delay. Stale data revalidates in the
+ * background; fresh in-memory data is reused without another request.
  *
  * Only when there is no cached data at all (first login/cold start) will it await
  * the network request to prevent flashing empty static menus.
@@ -46,14 +48,14 @@ export async function ensureMenuLoaded(): Promise<RouteResp[]> {
   const cached = queryClient.getQueryData<RouteResp[]>(MENU_QUERY_KEY) ?? getCachedMenu()
   if (cached) {
     if (!queryClient.getQueryData(MENU_QUERY_KEY)) {
-      queryClient.setQueryData(MENU_QUERY_KEY, cached)
+      queryClient.setQueryData(MENU_QUERY_KEY, cached, { updatedAt: 0 })
     }
-    void queryClient.query({ ...menuQueryOptions, staleTime: 0 }).catch(() => {})
+    void queryClient.query(menuQueryOptions).catch(() => {})
     return cached
   }
 
   try {
-    return await queryClient.query({ ...menuQueryOptions, staleTime: 'static' })
+    return await queryClient.query(menuQueryOptions)
   } catch (error) {
     if (!(error instanceof ApiError) && !(error instanceof CancelledError)) {
       throw error

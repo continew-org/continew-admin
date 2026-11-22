@@ -1,74 +1,90 @@
 /* Accent colours stay orthogonal to light/dark: they only override the brand tokens. */
 
-/* Blue: a full theme, so it overrides the neutral tokens as well as the brand ones. */
+/* Arco blue is also the pre-boot default; an explicit neutral theme keeps the globals.css palette.
+   Official palette: https://github.com/arco-design/arco-design/blob/main/components/style/theme/color/compiled-colors.less
+   Semantic tokens: https://github.com/arco-design/arco-design/blob/main/components/style/theme/global.less */
+:root:not([data-theme-color]),
 :root[data-theme-color='blue'] {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.3211 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.3211 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.3211 0 0);
-  --primary: oklch(0.6231 0.188 259.8145);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.967 0.0029 264.5419);
-  --secondary-foreground: oklch(0.4461 0.0263 256.8018);
-  --muted: oklch(0.9846 0.0017 247.8389);
-  --muted-foreground: oklch(0.551 0.0234 264.3637);
-  --accent: oklch(0.9514 0.025 236.8242);
-  --accent-foreground: oklch(0.3791 0.1378 265.5222);
-  --destructive: oklch(0.6368 0.2078 25.3313);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9276 0.0058 264.5313);
-  --input: oklch(0.9276 0.0058 264.5313);
-  --ring: oklch(0.6231 0.188 259.8145);
-  --chart-1: oklch(0.6231 0.188 259.8145);
-  --chart-2: oklch(0.5461 0.2152 262.8809);
-  --chart-3: oklch(0.4882 0.2172 264.3763);
-  --chart-4: oklch(0.4244 0.1809 265.6377);
-  --chart-5: oklch(0.3791 0.1378 265.5222);
-  --sidebar: oklch(0.9846 0.0017 247.8389);
-  --sidebar-foreground: oklch(0.3211 0 0);
-  --sidebar-primary: oklch(0.6231 0.188 259.8145);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.9514 0.025 236.8242);
-  --sidebar-accent-foreground: oklch(0.3791 0.1378 265.5222);
-  --sidebar-border: oklch(0.9276 0.0058 264.5313);
-  --sidebar-ring: oklch(0.6231 0.188 259.8145);
+  --background: #ffffff;
+  --foreground: #1d2129;
+  --card: #ffffff;
+  --card-foreground: #1d2129;
+  --popover: #ffffff;
+  --popover-foreground: #1d2129;
+  --primary: #165dff;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f3f5;
+  --secondary-foreground: #4e5969;
+  --muted: #f7f8fa;
+  --muted-foreground: #86909c;
+  --accent: #e8f3ff;
+  --accent-foreground: #165dff;
+  --destructive: #f53f3f;
+  --destructive-foreground: #ffffff;
+  --border: #e5e6eb;
+  --input: #e5e6eb;
+  --ring: #165dff;
+  --chart-1: #165dff;
+  --chart-2: #0e42d2;
+  --chart-3: #072ca6;
+  --chart-4: #031a79;
+  --chart-5: #000d4d;
+  --status-success: #00b42a;
+  --status-success-foreground: #009a29;
+  --status-warning: #ff7d00;
+  --status-warning-foreground: #d25f00;
+  --status-info: #165dff;
+  --status-info-foreground: #0e42d2;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1d2129;
+  --sidebar-primary: #165dff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e8f3ff;
+  --sidebar-accent-foreground: #165dff;
+  --sidebar-border: #e5e6eb;
+  --sidebar-ring: #165dff;
 }
 
+.dark:root:not([data-theme-color]),
 .dark:root[data-theme-color='blue'] {
-  --background: oklch(0.2046 0 0);
-  --foreground: oklch(0.9219 0 0);
-  --card: oklch(0.2686 0 0);
-  --card-foreground: oklch(0.9219 0 0);
-  --popover: oklch(0.2686 0 0);
-  --popover-foreground: oklch(0.9219 0 0);
-  --primary: oklch(0.6231 0.188 259.8145);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.3351 0 0);
-  --secondary-foreground: oklch(0.9219 0 0);
-  --muted: oklch(0.2393 0 0);
-  --muted-foreground: oklch(0.7155 0 0);
-  --accent: oklch(0.3791 0.1378 265.5222);
-  --accent-foreground: oklch(0.8823 0.0571 254.1284);
-  --destructive: oklch(0.6368 0.2078 25.3313);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.3715 0 0);
-  --input: oklch(0.3715 0 0);
-  --ring: oklch(0.6231 0.188 259.8145);
-  --chart-1: oklch(0.7137 0.1434 254.624);
-  --chart-2: oklch(0.6231 0.188 259.8145);
-  --chart-3: oklch(0.5461 0.2152 262.8809);
-  --chart-4: oklch(0.4882 0.2172 264.3763);
-  --chart-5: oklch(0.4244 0.1809 265.6377);
-  --sidebar: oklch(0.2046 0 0);
-  --sidebar-foreground: oklch(0.9219 0 0);
-  --sidebar-primary: oklch(0.6231 0.188 259.8145);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.3791 0.1378 265.5222);
-  --sidebar-accent-foreground: oklch(0.8823 0.0571 254.1284);
-  --sidebar-border: oklch(0.3715 0 0);
-  --sidebar-ring: oklch(0.6231 0.188 259.8145);
+  --background: #17171a;
+  --foreground: rgb(255 255 255 / 90%);
+  --card: #232324;
+  --card-foreground: rgb(255 255 255 / 90%);
+  --popover: #373739;
+  --popover-foreground: rgb(255 255 255 / 90%);
+  --primary: #3c7eff;
+  --primary-foreground: rgb(255 255 255 / 90%);
+  --secondary: rgb(223 223 223 / 8%);
+  --secondary-foreground: rgb(255 255 255 / 70%);
+  --muted: rgb(255 255 255 / 4%);
+  --muted-foreground: rgb(255 255 255 / 50%);
+  --accent: rgb(60 126 255 / 20%);
+  --accent-foreground: #3c7eff;
+  --destructive: #f76965;
+  --destructive-foreground: rgb(255 255 255 / 90%);
+  --border: #333335;
+  --input: #333335;
+  --ring: #3c7eff;
+  --chart-1: #3c7eff;
+  --chart-2: #689fff;
+  --chart-3: #93beff;
+  --chart-4: #bedaff;
+  --chart-5: #eaf4ff;
+  --status-success: #27c346;
+  --status-success-foreground: #50d266;
+  --status-warning: #ff9626;
+  --status-warning-foreground: #ffb357;
+  --status-info: #3c7eff;
+  --status-info-foreground: #689fff;
+  --sidebar: #232324;
+  --sidebar-foreground: rgb(255 255 255 / 90%);
+  --sidebar-primary: #3c7eff;
+  --sidebar-primary-foreground: rgb(255 255 255 / 90%);
+  --sidebar-accent: rgb(60 126 255 / 20%);
+  --sidebar-accent-foreground: #3c7eff;
+  --sidebar-border: #333335;
+  --sidebar-ring: #3c7eff;
 }
 
 /* Tianqing / 天青 (perpetuity): a full theme, so it overrides the neutral tokens as well as the brand ones. */

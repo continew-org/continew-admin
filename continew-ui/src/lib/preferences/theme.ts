@@ -7,7 +7,7 @@ export const THEME_COLOR_OPTIONS = [
   {
     value: 'blue',
     label: '霁蓝',
-    primary: { light: 'oklch(0.6231 0.188 259.8145)', dark: 'oklch(0.6231 0.188 259.8145)' }
+    primary: { light: '#165dff', dark: '#3c7eff' }
   },
   {
     value: 'default',

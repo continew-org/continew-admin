@@ -1,6 +1,6 @@
 import { createRouter } from '@tanstack/react-router'
 
-import { PagePending } from '@/components/app-shell/page-pending'
+import { PagePending } from '@/layouts/page-pending'
 
 import { routeTree } from './routeTree.gen'
 

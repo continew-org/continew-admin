@@ -8,17 +8,26 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EMPTY_PLACEHOLDER } from '@/lib/constants'
 
+import { useUserNoticeDetail } from '@/routes/(main)/(app)/user/message/-components/use-messages'
+
 import { useNoticeDetail } from './use-notice-detail'
 
 interface NoticeViewDrawerProps {
   readonly noticeId: string | number | null
   readonly open: boolean
   readonly onClose: () => void
+  /**
+   * `manage` uses the notice-management endpoint; `self` reads through `/user/message/notice`
+   * so the message center works for users without that permission.
+   */
+  readonly source?: 'manage' | 'self'
 }
 
 /** The reader view: title, publisher, publish time, then the body. */
-export function NoticeViewDrawer({ noticeId, open, onClose }: NoticeViewDrawerProps) {
-  const detailQuery = useNoticeDetail(noticeId, { enabled: open })
+export function NoticeViewDrawer({ noticeId, open, onClose, source = 'manage' }: NoticeViewDrawerProps) {
+  const manageQuery = useNoticeDetail(source === 'manage' ? noticeId : null, { enabled: open })
+  const selfQuery = useUserNoticeDetail(source === 'self' ? noticeId : null, { enabled: open })
+  const detailQuery = source === 'self' ? selfQuery : manageQuery
   const detail = detailQuery.data
 
   return (

@@ -166,6 +166,28 @@ export function isPathAllowed(nodes: readonly RouteResp[], pathname: string) {
   return path in STATIC_ROUTE_TITLES || Boolean(findMenuByPath(nodes, path))
 }
 
+/**
+ * Classic tree menu: every labelled group becomes a collapsible parent holding its pages,
+ * after the loose pages. The sidebar renders one sub level, so nested pages are lifted up.
+ */
+export function toMenuTree(groups: readonly MenuGroup[]): MenuGroup[] {
+  const items = groups.flatMap<MenuItem>(group =>
+    group.label
+      ? [
+          {
+            id: group.id,
+            title: group.label,
+            url: '',
+            icon: group.icon,
+            subItems: group.items.flatMap(item => (item.subItems?.length ? item.subItems : [item]))
+          }
+        ]
+      : group.items
+  )
+
+  return [{ id: 'tree', items }]
+}
+
 export function toMenuRoots(groups: readonly MenuGroup[]): MenuRoot[] {
   return groups.flatMap(group => {
     if (group.label) {

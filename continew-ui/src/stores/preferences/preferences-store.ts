@@ -7,54 +7,64 @@ import {
   type PreferenceKey,
   type PreferenceValueMap
 } from '@/lib/preferences/preferences-config'
-import { persistPreference } from '@/lib/preferences/preferences-storage'
+import { persistPreference, readStoredPreferences } from '@/lib/preferences/preferences-storage'
 import type { ResolvedThemeMode } from '@/lib/preferences/theme'
 
 export type PreferencesState = {
   values: PreferenceValueMap
   resolvedThemeMode: ResolvedThemeMode
-  isSynced: boolean
   setPreference: <K extends PreferenceKey>(key: K, value: PreferenceValueMap[K]) => void
+  /** Applies several values at once, so subscribers re-render a single time. */
+  setPreferences: (patch: Partial<PreferenceValueMap>) => void
   resetPreferences: () => void
 }
 
-export const createPreferencesStore = () => {
-  const values: PreferenceValueMap = { ...PREFERENCE_DEFAULTS }
+function applyAndPersist<K extends PreferenceKey>(key: K, value: PreferenceValueMap[K]) {
+  const resolved = applyPreference(key, value)
+  persistPreference(key, value)
+  return resolved
+}
 
-  return createStore<PreferencesState>()(set => ({
+export const createPreferencesStore = () => {
+  const values = readStoredPreferences()
+
+  // The boot script normally writes these to <html> before the first paint. If it failed (it
+  // always sets data-theme-mode), apply everything once here so the session still matches.
+  if (!document.documentElement.hasAttribute('data-theme-mode')) {
+    for (const key of PREFERENCE_KEYS) applyPreference(key, values[key])
+  }
+
+  return createStore<PreferencesState>()((set, get) => ({
     values,
-    resolvedThemeMode: values.theme_mode === 'dark' ? 'dark' : 'light',
-    isSynced: false,
+    resolvedThemeMode: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
 
     setPreference: (key, value) => {
-      const resolvedThemeMode = applyPreference(key, value)
+      if (get().values[key] === value) return
+      get().setPreferences({ [key]: value } as Partial<PreferenceValueMap>)
+    },
 
-      set(state => ({
-        values: {
-          ...state.values,
-          [key]: value
-        } as PreferenceValueMap,
+    setPreferences: patch => {
+      const current = get().values
+      let resolvedThemeMode: ResolvedThemeMode | undefined
+
+      function update<K extends PreferenceKey>(key: K) {
+        const value = patch[key] as PreferenceValueMap[K]
+        if (value === undefined || value === current[key]) return
+        resolvedThemeMode = applyAndPersist(key, value) ?? resolvedThemeMode
+      }
+
+      for (const key of Object.keys(patch) as PreferenceKey[]) update(key)
+
+      set({
+        values: { ...current, ...patch },
         ...(resolvedThemeMode ? { resolvedThemeMode } : {})
-      }))
-
-      void persistPreference(key, value)
+      })
     },
 
     resetPreferences: () => {
-      let resolvedThemeMode: ResolvedThemeMode = 'light'
-
-      for (const key of PREFERENCE_KEYS) {
-        const value = PREFERENCE_DEFAULTS[key]
-        const resolved = applyPreference(key, value)
-
-        if (resolved) resolvedThemeMode = resolved
-        void persistPreference(key, value)
-      }
-
-      set({
-        values: { ...PREFERENCE_DEFAULTS },
-        resolvedThemeMode
-      })
+      get().setPreferences(
+        Object.fromEntries(PREFERENCE_KEYS.map(key => [key, PREFERENCE_DEFAULTS[key]])) as PreferenceValueMap
+      )
     }
   }))
 }

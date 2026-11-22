@@ -10,7 +10,12 @@ import {
   setTenantId
 } from './auth-session'
 
-const BASE_URL = (import.meta.env.VITE_API_PREFIX || import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
+/** Base used for the WebSocket endpoint, which does not share the `http` client. */
+export const API_BASE_URL = (import.meta.env.VITE_API_PREFIX || import.meta.env.VITE_API_BASE_URL || '').replace(
+  /\/+$/,
+  ''
+)
+const BASE_URL = API_BASE_URL
 const REQUEST_TIMEOUT_MS = 30_000
 
 const LOGIN_PATH = '/auth/login'
@@ -237,14 +242,18 @@ async function renewSession(generation: number) {
   assertGeneration(generation)
 }
 
-async function throwSessionExpired(response: Response, generation: number, silent = false): Promise<never> {
+async function throwSessionExpired(response: Response, generation: number): Promise<never> {
   assertGeneration(generation)
 
   const payload = await readPayload<unknown>(response)
   const message = messageOf(payload, SESSION_EXPIRED_MESSAGE)
 
+  // The session-expired handler already toasts once; the thrown error is pre-marked
+  // `notified` so fail()/reportError() suppress the second toast downstream.
   handleSessionExpired(generation, message)
-  throw fail(message, { status: 401 }, silent)
+  const error = new ApiError(message, { status: 401 })
+  error.notified = true
+  throw error
 }
 
 async function send<T>(
@@ -283,7 +292,7 @@ async function send<T>(
 
   if (response.status === 401) {
     if (skipAuthRefresh || path === REFRESH_PATH || isRetry || !getAccessToken()) {
-      return throwSessionExpired(response, generation, silent)
+      return throwSessionExpired(response, generation)
     }
 
     await renewSession(generation)
