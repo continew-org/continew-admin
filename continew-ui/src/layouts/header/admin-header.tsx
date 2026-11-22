@@ -125,11 +125,11 @@ export const AdminHeader = React.memo(function AdminHeader({
 
       <div className="flex shrink-0 items-center gap-1.5">
         {w.search && <SearchTrigger />}
+        <GithubHelp />
         {w.refresh && <RefreshButton />}
         {w.notification && <NotificationButton />}
         {showPreferences && <PreferencesButton />}
         {w.lock && <LockScreenButton />}
-        <GithubHelp />
         {w.theme && <ThemeSwitcher />}
         {w.fullscreen && <FullscreenToggle />}
         <UserMenu showPreferences={!showPreferences} />

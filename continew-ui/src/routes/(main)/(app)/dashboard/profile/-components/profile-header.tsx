@@ -47,9 +47,10 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
   }
 
   return (
-    <div className="flex flex-col gap-5 px-4 lg:flex-row lg:items-end lg:justify-between">
+    // The page opts out of the shell padding, so the header brings its own top spacing.
+    <div className="flex flex-col gap-5 px-4 pt-5 lg:flex-row lg:items-end lg:justify-between">
       <div className="flex min-w-0 items-center gap-4">
-        <div className="group relative size-16 shrink-0 sm:size-20">
+        <div className="group relative size-14 shrink-0 sm:size-16">
           <Input
             ref={fileRef}
             type="file"
@@ -70,7 +71,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           >
             <Avatar className="size-full">
               {profile.avatar ? <AvatarImage alt={profile.name} src={profile.avatar} /> : null}
-              <AvatarFallback>{profile.initials}</AvatarFallback>
+              <AvatarFallback className="text-lg font-medium sm:text-xl">{profile.initials}</AvatarFallback>
             </Avatar>
             <span
               className={cn(
