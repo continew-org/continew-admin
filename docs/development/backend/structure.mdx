@@ -82,13 +82,14 @@ continew-ui
 ├─ components.json    # shadcn CLI 配置（base-nova 风格、lucide 图标、@/ 别名）
 ├─ tests              # 单元测试（vitest，tests/*.test.ts）
 └─ src
-   ├─ components      # 业务组件（data-table、entity-drawer、dept-tree-select 等）+ ui/（shadcn/ui 拷贝源码）+ app-shell/（布局壳）
+   ├─ components      # 业务组件（data-table、entity-drawer、dept-tree-select 等）+ ui/（shadcn/ui 拷贝源码）
    ├─ hooks           # 组合式函数（use-list-table、use-menu、use-permission、use-export 等）
+   ├─ layouts         # 布局壳（BaseLayout）、头部、侧栏、页签栏、设置面板与页面效果
    ├─ lib             # 基础库：http（请求封装）、auth-session（会话）、route-access（路由守卫）、permission、
    │                  #   query-client / query-keys（查询缓存）、api/（按后端模块分文件）、preferences/（外观偏好）
    ├─ navigation      # 菜单树到侧边栏分组的转换、菜单图标解析、静态路由标题
    ├─ routes          # TanStack 文件路由：目录即路由表，业务页 <模块>/route.tsx + -components/ 私有组件
-   ├─ stores          # zustand 仓库（auth、tabs、preferences、shell）
+   ├─ stores          # zustand 仓库（auth、tabs、preferences）
    ├─ styles          # Tailwind CSS 入口与主题变量（globals.css、theme-colors.css）
    ├─ scripts         # 偏好/主题首帧注入脚本（theme-boot-script.ts）
    ├─ router.tsx      # Router 实例

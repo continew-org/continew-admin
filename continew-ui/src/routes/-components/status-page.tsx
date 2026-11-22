@@ -15,7 +15,7 @@ interface StatusPageProps {
 /**
  * Full-page layout for the 404, error, and 403 screens.
  *
- * These screens render outside AppShell, so viewport height is the page height.
+ * These screens render outside BaseLayout, so viewport height is the page height.
  */
 export function StatusPage({ icon: Icon, iconClassName, title, description, actions, children }: StatusPageProps) {
   return (

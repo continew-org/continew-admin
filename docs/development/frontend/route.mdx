@@ -13,7 +13,7 @@ description: 讲解 TanStack 文件路由的目录约定、后端菜单的加载
 |:-----|:-----|
 | `__root.tsx` | 根路由：挂载认证、外观偏好 Provider 与全局 Toaster，统一 404 与错误页 |
 | `(external)/index.tsx` | 根路径重定向到 `/dashboard` |
-| `(main)/(app)/route.tsx` | 登录后业务区的布局路由：守卫、菜单加载、`AppShell` 都在这一层 |
+| `(main)/(app)/route.tsx` | 登录后业务区的布局路由：守卫、菜单加载、`BaseLayout` 都在这一层 |
 | `(main)/(app)/<模块>/route.tsx` | 业务页面，如 `system/user/route.tsx` |
 | `(main)/(app)/$.tsx` | 兜底占位页：菜单里有、前端还没有对应页面时显示 |
 | `(main)/auth/` | 登录页（登录前可达） |
