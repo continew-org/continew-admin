@@ -121,7 +121,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
       # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 仅产出 dist artifact，不同步公开网页（公开站切流属后续批次）。
+      # 仅产出 dist artifact，随后由 Publish UI dist 同步到演示站点。
       # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
         run: >
@@ -140,6 +140,63 @@ jobs:
           path: continew-ui/dist/
           if-no-files-found: error
           retention-days: 14
+      # 发布到演示站点：先快照上一版 -> 落新资源（不删旧）-> 原子替换 index.html
+      # -> 清理上一版残留 -> 自检。三步顺序不可调换。
+      - name: Publish UI dist
+        env:
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        run: |
+          set -euo pipefail
+          WEB_DIR="$SERVER_PATH/continew-admin/web"
+          SNAP_ROOT="$SERVER_PATH/backups/web"
+          SNAP="$SNAP_ROOT/web-$(date -u +%Y%m%dT%H%M%SZ)"
+
+          # 写入前先确认真实目录：软链会被容器按 inode 挂载，写进去容器看不到
+          [ -d "$WEB_DIR" ] && [ ! -L "$WEB_DIR" ] || {
+            echo "::error::$WEB_DIR 不存在或不是真实目录（不得为软链），已中止发布"
+            exit 1
+          }
+          case "$SNAP_ROOT" in
+            */backups/web) ;;
+            *) echo "::error::快照根目录异常：$SNAP_ROOT"; exit 1 ;;
+          esac
+
+          mkdir -p "$SNAP_ROOT"
+          # 1、快照上一版（精确副本）
+          #    快照必须落在 web/ 之外：放在 web/ 内会被下一步的 --delete 清掉
+          rsync -a --delete "$WEB_DIR/" "$SNAP/"
+          echo "快照：$SNAP（$(du -sh "$SNAP" | cut -f1)）" >> "$GITHUB_STEP_SUMMARY"
+
+          # 2、落新资源：不带 --delete。旧哈希资源仍在场，index.html 由 rsync
+          #    的「临时文件 + rename」替换，这是用户可见的唯一切换点
+          rsync -a continew-ui/dist/ "$WEB_DIR/"
+
+          # 3、清理上一版残留：此时 index.html 已指向新资源
+          rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
+
+          # 4、只保留最近 5 份快照；删除项写入 Job Summary 以便审计
+          mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d -name 'web-*' -printf '%f\n' | sort -r)
+          if [ "${#snaps[@]}" -gt 5 ]; then
+            for old in "${snaps[@]:5}"; do
+              echo "- 清理旧快照：$old" >> "$GITHUB_STEP_SUMMARY"
+              rm -rf "$SNAP_ROOT/$old"
+            done
+          fi
+          echo "- 保留快照：$(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d -name 'web-*' -printf '%f\n' | sort -r | tr '\n' ' ')" >> "$GITHUB_STEP_SUMMARY"
+
+      # 发布后自检：文件真的落位、页面标记正确。失败即让整个作业红，不留「静默发布」
+      - name: Verify published site
+        env:
+          SERVER_PATH: ${{ secrets.SERVER_PATH }}
+        run: |
+          set -euo pipefail
+          WEB_DIR="$SERVER_PATH/continew-admin/web"
+          test -f "$WEB_DIR/index.html"
+          test -d "$WEB_DIR/assets"
+          # 5.x 挂载点（4.x 用 id="app"）；两个计数必须为 1 和 0
+          test "$(grep -c 'id="root"' "$WEB_DIR/index.html")" = '1'
+          test "$(grep -c 'id="app"' "$WEB_DIR/index.html")" = '0'
+          echo "index.html bytes=$(stat -c%s "$WEB_DIR/index.html") assets=$(find "$WEB_DIR/assets" -maxdepth 1 -type f | wc -l)" >> "$GITHUB_STEP_SUMMARY"
 
   decision:
     name: Deploy routing decision
@@ -171,5 +228,5 @@ jobs:
             echo "- 模式：$mode"
             echo "- 改动类别：$CATEGORIES"
             echo "- 后端部署（Deploy server）：$backend_action"
-            echo "- UI dist 构建（Build UI dist）：$ui_action"
+            echo "- UI 构建与发布（Build UI dist）：$ui_action"
           } >> "$GITHUB_STEP_SUMMARY"
