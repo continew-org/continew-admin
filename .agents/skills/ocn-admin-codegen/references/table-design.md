@@ -33,7 +33,7 @@
 - 表名前缀：系统域 `sys_` / 业务域 `biz_`（与样例 biz_demo 同口径）；列名小写下划线，Java 属性小驼峰
 - DB 类型 → Java 类型：`varchar`→String、`int`→Integer、`bigint`→Long、`datetime`→LocalDateTime、
   `date`→LocalDate、`time`→LocalTime、`decimal`→BigDecimal、`text`→String、
-  `tinyint` 状态列→Integer 或枚举（状态枚举见仓库既有 enums 写法）、
+  `tinyint` 状态列→Integer 或枚举（是否枚举化以仓库既有 Req/DO 真实用法为准，不凭本技能文本）、
   `json`→String（DO 上加 `@TableField(typeHandler = JacksonTypeHandler.class)` 并在
   `@TableName` 开 `autoResultMap = true`，成对出现，缺后者读取恒为 null）
 - 列注释写业务含义与枚举取值（如「状态（1：启用；2：禁用）」），Req 的校验注解长度与列长度一致
@@ -48,7 +48,8 @@
 产出双份 DDL（MySQL 反引号 / PostgreSQL 双引号且类型对齐，方言差异参照
 `examples/db/mysql/demo/biz_demo.sql` 与 `examples/db/postgresql/demo/biz_demo.sql`），
 外加一张「列 → 类型 / 必填 / 默认 / 注释」的简表。AskUserQuestion 确认：
-「按此建表」/「调整（用户说明改哪）」/「重来」。确认后建表 SQL 进 P4（sql-and-menu.md），
+「按此建表」/「调整（用户说明改哪，改后重出草案再过门）」/「重来」。确认的是表结构草案，
+Liquibase 变更集文件按 sql-and-menu.md 的格式在 P4 另产；建表 SQL 进 P4，
 列定义进 P2/P3；**此后改列必须回头同步 Resp/Req/前端列定义，不要只改 SQL**。
 
 ## 模式 B：既有表解析

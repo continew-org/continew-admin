@@ -39,40 +39,48 @@ description: >
 - `continew-system/src/main/java/top/continew/admin/system/model/entity/NoticeDO.java`
 - `continew-ui/src/routes/(main)/(app)/system/notice/route.tsx` 与其 `-components/` 目录
 - `continew-ui/src/lib/api/notice.ts`
+- `continew-server/src/main/resources/db/changelog/mysql/main_table.sql` 与
+  `postgresql/main_table.sql`（模式 A 照抄标准列写法用）
 
 读不到就停，报告缺哪个文件，不要凭猜测继续。
 
 ## 3. 交互协议（问答式，先问后动笔）
 
-用 AskUserQuestion（或所在智能体等效的多选问答机制），中文提问；每轮最多 4 问；先扫一遍用户请求里
-已明确的项，只问缺口，已答过的不重复问。用户一句「都按推荐来」即后续轮次全走推荐，只保留确认门。
-全程不超过 3 轮问答 + 各确认门。
+用 AskUserQuestion（或所在智能体等效的多选问答机制），中文提问。两条铁律：**只问有决策增量的问题**——
+先扫一遍用户请求里已明确的项，已明确的不再问；**每问给 ★ 推荐默认**——用户点选即可，一句「都按推荐来」
+则后续全走推荐，只保留确认门。每轮最多 4 问（AskUserQuestion 的上限，等效机制按各自上限）；
+普通问答全程 ≤3 轮，确认门及其调整重试不计入。
 
-**第一轮（范围四问，用户没说清就必问）：**
+**入口判定（多数时候不用问）**：请求里带了表名 / DDL → 直接模式 B；只有业务描述 → 直接模式 A；
+两者皆无（如只说「做个管理页面」）→ 第一轮补问业务对象与入口。
+
+**第一轮（范围三问 + 条件入口问）：**
 
 | 问题 | 选项（★ = 推荐默认） |
 |:--|:--|
-| 入口模式 | ★业务引导建表（只有业务描述）；已有表（用户给表名 / DDL / 数据库连接走 dbx 读取） |
-| 放置位置 | ★continew-system 对应业务子包；新建插件模块（continew-plugin 下，需两处 POM 注册）；自定义域 |
+| 放置位置（决定权限域与子包） | ★continew-system（权限前缀默认 `system:<name>`）；新建插件模块（continew-plugin 下，需两处 POM 注册，前缀默认 `<插件域>:<name>`）；自定义域（说明前缀） |
 | 生成范围 | ★双端全套（后端 + 前端 + 建表 SQL + 菜单）；仅后端；仅前端；双端不含菜单 |
-| CRUD API 集 | ★PAGE/GET/CREATE/UPDATE/BATCH_DELETE 标准五件套；追加 EXPORT；追加 TREE 等（以源码 Api 枚举实际值为准） |
+| CRUD API 集 | ★PAGE/GET/CREATE/UPDATE/BATCH_DELETE 标准五件套；追加 EXPORT；追加 TREE 等（取值以既有 Controller 用法为准，见 references/backend.md） |
+| （仅无实体信息时问）入口与业务对象 | ★描述业务，由我引导建表（模式 A）；已有表（贴 DDL / 表名，模式 B） |
 
 **模式 A 第二轮（建表确认门）**：按 `references/table-design.md` 把业务描述整理成表设计草案
 （实体拆分、列与类型、标准列、索引、租户、字典联动），产出 MySQL/PostgreSQL 双份 DDL，
-问答确认：「按此建表」/「调整（说明改哪）」/「重来」。**未确认不写任何文件。**
+问答确认：「按此建表」/「调整（说明改哪，改后重出草案再过门）」/「重来」。**未确认不写任何文件。**
 
 **模式 B 第二轮（读表）**：有数据库连接工具（如 dbx MCP）时直接 describe；否则让用户贴
 `SHOW CREATE TABLE` 或 DDL。对照 `references/table-design.md` 的类型映射产出字段映射推荐表。
 
 **字段映射轮（两种模式都要，生成前最后一问）**：先展示推荐映射表（列 → Java 类型 / Query / Resp /
-表单组件 / 校验注解），再问：
+表单组件 / 校验注解，筛选列已按列类型与业务语义预选），再问：
 
 | 问题 | 选项 |
 |:--|:--|
-| 筛选字段（多选） | 从推荐映射里选进 Query 的列（推荐项已按列类型与业务语义预选） |
+| 筛选字段 | ★按预选（映射表打勾列）；清空筛选（仅保留分页）；增删列在 Other 里写「去掉 X / 加 Y」（列多时以此增删，不逐列问） |
 | 表单弹层 | ★抽屉（与 system/notice 一致）；对话框 |
-| 菜单挂载点 | ★挂「系统管理」既有目录；新建目录；不入菜单（跳过菜单 SQL） |
-| 范围与 API 集复核 | 第一轮答案有变在此改；无变化选「按前述」 |
+| 菜单挂载点 | ★挂「系统管理」既有目录；新建目录（目录菜单本身也是一条 sys_menu，P4 一并产出）；不入菜单（跳过菜单 SQL） |
+| 权限前缀与业务名回显 | ★按推荐（`system:<name>` + 从描述提炼的业务名，Tag/菜单标题用）；在 Other 里改 |
+
+字段映射轮的选项是终值：与第一轮冲突时以本轮为准。
 
 ## 4. 命名推导表（逐项算，不要意译）
 
@@ -109,7 +117,8 @@ P1-P4 中发现前面的决策要改（如 DDL 改列），回头同步所有受
 - 注释只写当前代码的非显然约束；变更历史进 commit message，修复原因进 PR 正文，不混进代码注释
 - **不改任何已有 Liquibase changeset**（checksum 失配即启动失败），只新增
 - 第三方依赖版本不硬编码（starter 统一管理）；内部模块依赖 groupId 用 `${project.groupId}`
-- 本技能文件与产物的行文避开已退役功能的字面量（PR #318 验收 grep 口径），新增参考文档时同样遵守
+- 产物先留在工作区，不经用户确认不 commit、不推送
+- 产物与文档不提及已退役的旧脚手架工具（本技能前身）；字面量级验收口径属仓库维护约束，见 references/design-notes.md
 
 ## 7. 常见失败清单（生成时就对照避坑）
 

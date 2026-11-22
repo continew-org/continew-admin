@@ -1,6 +1,7 @@
 # P3 前端产出（route + `-components/` + api + query-keys）
 
-生成范围含前端时才进入本阶段（第一轮问答「仅后端」则跳过）。形态照抄 `system/notice` 既有页面。
+生成范围含前端时才进入本阶段（第一轮问答「仅后端」则跳过）。落笔前对照 `examples/frontend/`
+与 `system/notice` 既有页面——前者是本技能验证过的产物，后者是活的仓库现状。
 
 ## 路由与组件
 

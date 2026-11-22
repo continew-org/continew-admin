@@ -1,5 +1,7 @@
 # P2 后端产出（9 个 Java 文件）
 
+落笔前对照 `examples/backend/` 下的同名形态文件——它是本技能唯一一套端到端验证过的产物。
+
 ## 放置模块（第一轮问答的「放置位置」落地）
 
 - **默认**：`continew-system` 的对应业务子包，路径
@@ -20,29 +22,30 @@
    分页不放进 Query：PAGE 接口的分页参数 `PageQuery` 由 CRUD 套件作为独立方法参数注入
    （参照 NoticeQuery 与 OnlineUserController.page 的真实签名，不要让 Query 继承 PageQuery）
 3. `model/req/<X>Req.java` —— 校验注解齐全（@NotBlank/@NotNull/@Size），与 DDL 长度一致；
-   复杂场景可加 SpEL Validator（`@SpelValidate`，照仓库既有用法）
+   复杂场景加 SpEL 校验 `@SpelValid`（`cn.sticki.spel.validator.jakarta.SpelValid`，用法照
+   `ClientReq`/`NoticeReq`）
 4. `model/resp/<X>Resp.java` 与 `<X>DetailResp.java` —— Resp 放列表字段，DetailResp 继承
    `BaseDetailResp` 并加详情字段（形态照 UserDetailResp/NoticeDetailResp）
 5. `mapper/<X>Mapper.java` —— extends `BaseMapper<<X>DO>`；有联表/自定义查询时再加
    `continew-system/src/main/resources/mapper/<X>Mapper.xml`（接口方法与 XML 语句成对出现）
 6. `service/<X>Service.java` + `service/impl/<X>ServiceImpl.java` —— extends BaseService 体系：
-   接口 extends `BaseService<<X>Resp, <X>DetailResp, <X>Query, <X>Req>`（必要时加 `IService<<X>DO>`），
-   实现类 extends `BaseServiceImpl<<X>Mapper, <X>DO, <X>Resp, <X>DetailResp, <X>Query, <X>Req>>`
+   接口 extends `BaseService<<X>Resp, <X>DetailResp, <X>Query, <X>Req>`；实现类要用 MyBatis-Plus
+   通用方法（list/getById 等）时接口再加 `IService<<X>DO>`（NoticeService/DeptService 加了，
+   样例 DemoService 未加），实现类 extends `BaseServiceImpl<<X>Mapper, <X>DO, <X>Resp, <X>DetailResp, <X>Query, <X>Req>>`
    并 implements 接口；类上加 `@Service`、`@RequiredArgsConstructor`，日志用 `@Slf4j`
 7. `controller/<X>Controller.java` ——
    `@CrudRequestMapping(value = "/system/goods", api = {...用户选定的 Api 集...})`
    extends `BaseController<<X>Service, <X>Resp, <X>DetailResp, <X>Query, <X>Req>`
    **只写空类体**：CRUD 接口由基类生成，不要在子类里重复声明
 
-## 硬规则（最常被违反的三条）
+## 署名、注释与 License
 
-- 类级必须有 `@author`（署使用者本人）与 `@since`（5.0.0）；方法级不写 `@author`
-- 注释只写当前代码的非显然约束，不写「本方法用于…」这类复述
-- 新增 Java 文件必须带 Apache-2.0 License Header，否则 Spotless 会拦
+全局硬规则见 SKILL.md §6（`@author`/`@since`/注释纪律/License Header，Spotless 会拦缺头的文件）。
 
 ## 交付前自查
 
-- Api 集与第一轮问答一致；Api 里没有 export 就不造导出相关产物
-- Query 字段与字段映射轮的「筛选字段」多选结果逐字一致
-- JSON 列的 typeHandler 与 autoResultMap 成对；树形列表需 `Api.TREE` 时确认表有 `parent_id`
-  且 Service 走树形组装（参照既有树形模块）
+- Api 集与第一轮问答一致；Api 取值照既有 Controller 用法（NoticeController 标准五件套、
+  DeptController 含 TREE/TREE_DICT/EXPORT），不要凭记忆列全；没选 export 就不造导出相关产物
+- Query 字段与字段映射轮确认的筛选列逐字一致
+- JSON 列的 typeHandler 与 autoResultMap 成对
+- 选了 TREE 而表无 `parent_id`：回 P1 补列再生成，不要硬生成；树形组装参照既有树形模块
