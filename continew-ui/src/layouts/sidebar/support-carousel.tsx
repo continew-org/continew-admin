@@ -23,7 +23,7 @@ interface SponsorFeed {
 
 const SPONSOR_BASE = 'https://continew.top'
 
-/** Always-available fallback promo image, shown before (and if) the sponsor feed loads. */
+/** Always-available fallback promo images, shown before (and if) the sponsor feed loads. */
 const STATIC_ITEMS: readonly PromoItem[] = [
   {
     name: '公众号',
@@ -55,7 +55,7 @@ function sponsorsToItems(feed: SponsorFeed | null): PromoItem[] {
 
 /**
  * A small auto-cycling promo carousel for the sidebar footer: the real sponsors from
- * continew.top's sponsor.json (special + platinum), followed by the fallback promo image. Only the
+ * continew.top's sponsor.json (special + platinum), followed by the fallback promo images. Only the
  * image changes — no "Slide x of y" counter and no scale effect on the neighbours.
  */
 export function SupportCarousel() {
