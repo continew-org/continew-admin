@@ -30,7 +30,8 @@ description: >
 
 - **三平台 release 内容一致**：GitHub / Gitee / AtomGit 都放同一份 CHANGELOG 段。
 - 发版后 dev 保持 `<revision>=${NEW_VERSION}`（不回 SNAPSHOT）；下个开发周期开始时由用户手动
-  `build: 更新项目版本号至<major>.<minor+1>.0-SNAPSHOT`，README 徽章同时改回 SNAPSHOT。
+  `build: 更新项目版本号至<major>.<minor+1>.0-SNAPSHOT`，README 徽章与 `continew-ui/package.json`
+  的 version 同时改回 SNAPSHOT。
 - **维护分支修复必须即时合回 dev**：维护分支（x.y.x）上合入的每个 fix，合并时立即 cherry-pick
   （或按 dev 现状重写）到 dev，不要攒到发版前。
 - **CHANGELOG 只认用户校对版**：用户校对时删掉的条目，发版全程不得再补回（三平台 release body
@@ -47,12 +48,14 @@ description: >
 | `<revision>` 是 SNAPSHOT | `grep '<revision>[0-9.]*-SNAPSHOT' pom.xml` | 手动改 pom |
 | 父 POM 是已发布的 starter 正式版 | `grep -A4 '<parent>' pom.xml` 确认 version 无 `-SNAPSHOT`，且该版本已发布（对照本地 continew-starter 仓库 tag 或 Maven Central） | 等 starter 发版后再发 admin |
 | application.yml 版本一致 | `grep 'version:' continew-server/src/main/resources/config/application.yml` 应为 `${NEW_VERSION}-SNAPSHOT` | 同步改 |
+| package.json 版本一致 | `grep '"version"' continew-ui/package.json` 应为 `"${NEW_VERSION}-SNAPSHOT"` | 同步改 |
 | 上一个发布 tag 已 fetch 且有提交 | `git fetch origin --tags`，取最新发布 tag 为 ${PREV_TAG}，`git log ${PREV_TAG}..HEAD --oneline` | 区间空则停；网络失败（GitHub 连接重置时有发生）换代理重试 |
 | 三远端 dev 同步状态 | `git ls-remote origin/gitee/atomgit refs/heads/dev` | 记录差异，第 4 步补推 |
 | 门禁全过 | `./mvnw verify` | 先修到全过（Enforcer → Spotless → Checkstyle → 单测 → SpotBugs，见 AGENTS.md） |
 
-> 发版文件只有 4 类：`CHANGELOG.md` / `README.md` / `pom.xml` /
-> `continew-server/src/main/resources/config/application.yml`（外加可选的 docs 版本字样，见第 2 步）。
+> 发版文件只有 5 类：`CHANGELOG.md` / `README.md` / `pom.xml` /
+> `continew-server/src/main/resources/config/application.yml` / `continew-ui/package.json`
+> （外加可选的 docs 版本字样，见第 2 步）。
 > 不检查：origin/dev 领先落后、GPG、Central 凭证（应用项目无 deploy 步骤）。
 
 通过后展示并确认：
@@ -99,6 +102,9 @@ version 的变化推导，不全靠 `build(dependencies):` 前缀。
 
 同时改（都并入发版文件）：
 
+- **continew-ui/package.json**：`"version": "${NEW_VERSION}-SNAPSHOT"` →
+  `"version": "${NEW_VERSION}"`（只改 version 字段，不动 packageManager / engines；
+  该字段当前无代码消费，改动不影响 pnpm-lock.yaml）
 - **README 徽章**：`badge/SNAPSHOT-v${NEW_VERSION}` → `badge/RELEASE-v${NEW_VERSION}`。
 - **README 功能列表**：本周期有用户可感知的新特性时同步措辞（v4.1.0 先例：回收站、分片上传入列）。
 - **docs 版本字样**（4 处 `4.2.0-SNAPSHOT` → `4.2.0`，纯文档改动不触发门禁，可并入发版 commit）：
@@ -109,7 +115,7 @@ version 的变化推导，不全靠 `build(dependencies):` 前缀。
 
 ### 3. release commit
 
-- `git add` 上述 4 类发版文件（README、docs 有改动才加）→ `git commit -m "release: v${NEW_VERSION}"`。
+- `git add` 上述 5 类发版文件（README、docs 有改动才加）→ `git commit -m "release: v${NEW_VERSION}"`。
 
 ### 4. tag + push（一次确认）
 
@@ -188,5 +194,6 @@ git checkout dev
     前端 `continew-ui/` 与后端同版本同 tag，部署按 `scripts/ci/detect-changes.sh` 的改动路由分流，
     无需单独发版
   - 下个开发周期开始时，在 dev 手动 commit: "build: 更新项目版本号至<major>.<minor+1>.0-SNAPSHOT"，
-    并把 README 徽章改回 SNAPSHOT-v<major>.<minor+1>.0
+    并把 README 徽章改回 SNAPSHOT-v<major>.<minor+1>.0，`continew-ui/package.json` 的 version
+    同步改回 `<major>.<minor+1>.0-SNAPSHOT`
 ```
