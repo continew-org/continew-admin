@@ -253,6 +253,104 @@ jobs:
         if: always()
         run: bash scripts/test/down.sh
 
+  e2e:
+    # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
+    name: E2E tests
+    needs: detect
+    # 仅 pull_request 触发：E2E 面向合并前验证，与 api-test 同理。
+    # E2E 资产全在 continew-ui/ 下只归 ui，但 up.sh/docker（backend + test_scripts）与
+    # CI 自身（infra）的改动同样影响本链路，触发条件取四输出之或而非照抄 backend。
+    if: >-
+      github.event_name == 'pull_request' &&
+      (needs.detect.outputs.ui == 'true' ||
+      needs.detect.outputs.backend == 'true' ||
+      needs.detect.outputs.infra == 'true' ||
+      needs.detect.outputs.test_scripts == 'true')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Remove repository mirrors
+        # 与 api-test 同形：托管 runner 上国内镜像不稳定，改用 Maven Central。
+        # 必须在 setup-java 之前执行：Maven 缓存键按此刻磁盘上的 POM 内容计算
+        run: |
+          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
+          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
+
+      - name: Set up JDK 25
+        # 与 api-test 同 pinned 版本；瘦包由 up.sh 内的 ./mvnw package 现构建
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          java-version: 25
+          distribution: temurin
+          cache: maven
+          # 本作业只在 pull_request 运行，缓存一律只读；写入方只有 dev 上的 Backend checks / Sonar analysis
+          cache-read-only: true
+
+      - name: Enable corepack and pin pnpm
+        # 与 ui 作业同形：pnpm 版本按 package.json 的 packageManager 字段固定，
+        # 不固定会让 setup-node 的缓存探测解析到内置旧默认版本，store 路径漂移导致缓存恒未命中
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          corepack enable
+          corepack install -g "$(node -p "require('./package.json').packageManager")"
+        working-directory: continew-ui
+
+      - name: Set up Node 22
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: continew-ui/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: continew-ui
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright chromium
+        # --with-deps 一并安装 chromium 的系统依赖（apt）；浏览器版本由锁文件内的 @playwright/test 决定
+        working-directory: continew-ui
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start test environment
+        # up.sh：探测空闲端口 -> mvnw package 瘦包 -> compose 启 MySQL/Redis/应用 -> 健康检查 -> 关闭验证码
+        run: bash scripts/test/up.sh
+
+      - name: Resolve backend port
+        id: app-port
+        # APP_PORT 由 up.sh 探测后写入 docker/test/.ports.env（脚本生成，内容仅注释行 + 键值，可直接 source）
+        run: |
+          source docker/test/.ports.env
+          echo "app_port=${APP_PORT}" >> "$GITHUB_OUTPUT"
+
+      - name: Run E2E tests
+        working-directory: continew-ui
+        env:
+          # 地址契约：浏览器访问前端 dev server（E2E_BASE_URL 缺省 localhost:5173，strictPort），
+          # 该变量是 /api 代理指向的后端地址；playwright.config.ts 对同值有 .ports.env 兜底读取，
+          # 作业层显式注入保持与本地自验证相同的运行形态
+          VITE_API_BASE_URL: http://127.0.0.1:${{ steps.app-port.outputs.app_port }}
+        run: pnpm e2e
+
+      - name: Upload failure artifacts
+        # trace/截图按 retain-on-failure / only-on-failure 落在 continew-ui/test-results/，
+        # 成功运行不产出失败产物，failure() 恰好表达「仅失败时上传」
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: e2e-failure-artifacts-pr-${{ github.event.pull_request.number }}
+          path: continew-ui/test-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop test environment
+        # always()：失败也清理容器与数据卷，防 runner 残留；up 未执行时幂等无害
+        if: always()
+        run: bash scripts/test/down.sh
+
   advisory:
     # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
     name: Test change advisory

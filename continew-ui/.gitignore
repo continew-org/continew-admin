@@ -7,3 +7,8 @@ dist
 todos.json
 
 backups
+
+# Playwright E2E：报告与产物不入库；.auth/ 内是含令牌的 storageState，严禁入库
+playwright-report/
+test-results/
+e2e/.auth/
