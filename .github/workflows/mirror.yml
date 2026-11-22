@@ -11,9 +11,17 @@ name: Mirror
 # secrets：GITEE_USER/GITEE_TOKEN、ATOMGIT_USER/ATOMGIT_TOKEN；缺哪组就跳过哪个平台。
 
 on:
-  # 不用 branches 过滤：镜像的是白名单内的全部分支，且各仓库默认分支不同，
-  # 写成 branches: [main] 在 dev 仓会静默不触发。
+  # 分支白名单在此与下方 shell 各写一份，改一处必须同步另一处。特性分支起 run 会取消
+  # 正在同步的 dev 镜像（所有 run 共用 concurrency 组 mirror 且 cancel-in-progress）。
+  # 镜像失败后只在下一次白名单分支 push、打标签或手动 dispatch 时重试。
+  # 标签用 ** 而非 *：* 不跨 /，含斜杠的标签名匹配不到。
   push:
+    branches:
+      - dev
+      - main
+      - '[0-9]*.x'
+    tags:
+      - '**'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -51,7 +59,9 @@ jobs:
         run: |
           set -euo pipefail
           # refspec 不支持 [0-9] 字符类；逐分支写死 refspec 时，仓库缺某个分支会让整次 push 失败，
-          # 所以白名单在 shell 里判定，推送用全量 glob。
+          # 所以白名单在 shell 里判定，推送用全量 glob。同样的 pattern 在 shell 里 * 跨 /、
+          # 在触发层不跨，两者不等价：触发层过滤只作用于 push 事件，workflow_dispatch 不受约束，
+          # 且 clone 也会带下非白名单分支，所以这里必须再判一次。
           while read -r b; do
             case "$b" in
               main|dev|[0-9]*.x) ;;
