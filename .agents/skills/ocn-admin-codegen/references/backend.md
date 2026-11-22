@@ -4,6 +4,8 @@
 
 ## 放置模块（第一轮问答的「放置位置」落地）
 
+- 包名换算见 SKILL.md §2：package 声明与 import 按「BaseDO 实际父包」推导，
+  样例与本文件里的 `top.continew.admin` 只是本仓当前值
 - **默认**：`continew-system` 的对应业务子包，路径
   `continew-system/src/main/java/top/continew/admin/system/<domain>/`（domain 如 `goods`、`demo`）
 - **新建插件模块**（continew-plugin 下）：按 AGENTS.md 要求——根 POM `<modules>` 与根 POM

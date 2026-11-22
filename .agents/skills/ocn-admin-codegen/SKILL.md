@@ -28,6 +28,12 @@ description: >
 
 ## 2. 前置：先读再写（硬性）
 
+**包名与模块名换算（改过包名的仓也能用）**：本技能与样例里的 `top.continew.admin` 及
+`continew-common`/`continew-system` 等模块目录名，都是本仓当前值的示例——脚手架用户很可能全局改过。
+一切以实际仓为准：BaseDO.java 的实际父包就是 base-package（可与
+`continew-server/src/main/resources/config/application.yml` 的 `application.base-package` 交叉核对），
+BaseDO 所在模块目录就是公共模块；下方路径与产物的 package 声明、import 按实际值换算书写，不照抄字面量。
+
 开工前必须实际读取以下文件，把真实 import 与注解抄进产物，不要凭记忆生成：
 
 - `continew-common/src/main/java/top/continew/admin/common/base/model/entity/BaseDO.java`
@@ -42,7 +48,7 @@ description: >
 - `continew-server/src/main/resources/db/changelog/mysql/main_table.sql` 与
   `postgresql/main_table.sql`（模式 A 照抄标准列写法用）
 
-读不到就停，报告缺哪个文件，不要凭猜测继续。
+换算后仍读不到就停，报告缺哪个文件，不要凭猜测继续。
 
 ## 3. 交互协议（问答式，先问后动笔）
 

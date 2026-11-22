@@ -1,6 +1,6 @@
 # ocn-admin-codegen 配套样例：示例管理（biz_demo）
 
-照抄此例可跑通：把下表文件放回真实路径、登记 Liquibase 变更集与菜单 SQL，再跑通 `./mvnw verify` 与 `pnpm check`，登录后即可在「系统管理 → 示例管理」完成增删改查。本样例对应技能 P0 问答的「已有表」入口——输入即下方三要素；「业务引导建表」入口产出的 DDL 也应与本样例 biz_demo 同构（五审计列 + deleted 索引条件 + 可选 tenant_id）。
+照抄此例可跑通：把下表文件放回真实路径、登记 Liquibase 变更集与菜单 SQL，再跑通 `./mvnw verify` 与 `pnpm check`，登录后即可在「系统管理 → 示例管理」完成增删改查。样例包名与映射表路径按本仓当前值书写（base-package `top.continew.admin`、业务模块 `continew-system`）——全局改过包名/模块名的仓，先按 SKILL.md §2 的换算规则以实际值替换 `top/continew/admin` 与模块前缀，再放置文件。本样例对应技能 P0 问答的「已有表」入口——输入即下方三要素；「业务引导建表」入口产出的 DDL 也应与本样例 biz_demo 同构（五审计列 + deleted 索引条件 + 可选 tenant_id）。
 
 ## 输入三要素
 
