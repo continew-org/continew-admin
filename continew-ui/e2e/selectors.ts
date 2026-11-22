@@ -13,7 +13,7 @@ import type { Locator, Page } from '@playwright/test'
  * | [data-slot="sidebar"]                           | 侧栏容器（ui/sidebar.tsx）                       | 菜单断言收窄到侧栏，避免命中面包屑等同名文本 |
  * | [data-slot="card-title"]                        | 列表页卡片标题（ui/card.tsx CardTitle，div 无 role） | 页面主体业务标题；无 heading role，data-slot 是其唯一语义钩子 |
  * | [data-slot="table-body"]                        | 表格主体（ui/table.tsx TableBody）               | 行数断言收窄到 tbody，其内用 role=row 语义统计 |
- * | [data-slot="app-header"] 下的 [data-slot="dropdown-menu-trigger"] | 头部用户菜单触发器（admin-header.tsx > UserMenu） | 需求例外 a：触发器是 DropdownMenuTrigger 包 Avatar，没有 aria-label，AvatarImage 的 alt 也不是触发器可访问名，只能按需求经头部容器向下定位；Avatar 包装组件的 props 展开会把组件库的 data-slot="avatar" 覆盖成触发器自身的 data-slot，头部内 dropdown-menu-trigger 仅此一处 |
+ * | [data-slot="app-header"] 下的 [data-slot="dropdown-menu-trigger"] | 头部用户菜单触发器（admin-header.tsx > UserMenu） | 触发器是 DropdownMenuTrigger 包 Avatar，没有 aria-label，AvatarImage 的 alt 也不是触发器可访问名，只能经头部容器向下定位；Avatar 包装组件的 props 展开会把组件库的 data-slot="avatar" 覆盖成触发器自身的 data-slot，头部内 dropdown-menu-trigger 仅此一处 |
  * | getByRole('menuitem', { name: '登出系统' })      | 用户下拉菜单的登出项                              | 可访问名即菜单文本（子串匹配兼容快捷键提示） |
  */
 
@@ -50,7 +50,7 @@ export function tableBodyRows(page: Page): Locator {
   return tableBody(page).getByRole('row')
 }
 
-/** 需求选择器纪律第 5 条例外 a：触发器无 aria-label，经头部容器向下定位（见顶部清单）。 */
+/** 触发器是 DropdownMenuTrigger 包 Avatar、无 aria-label（AvatarImage 的 alt 不算触发器可访问名），只能经头部容器向下定位（见顶部清单）。 */
 export function userMenuTrigger(page: Page): Locator {
   return page.locator('[data-slot="app-header"]').locator('[data-slot="dropdown-menu-trigger"]')
 }

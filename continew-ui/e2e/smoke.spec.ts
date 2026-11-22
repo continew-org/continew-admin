@@ -94,7 +94,7 @@ test.describe('只读流程（共享认证态）', () => {
     await expect(listCardTitle(page)).toHaveText(menuTitle as string)
     await expect(page.getByRole('table')).toBeVisible()
 
-    // 深层路径直接 reload：URL 不变、主体重新渲染、对应菜单链接存在且处于选中态（只断 URL 不算通过）
+    // 深层路径直接 reload：URL 不变、主体重新渲染、对应菜单链接存在且处于选中态
     await page.reload()
     await expect(listCardTitle(page)).toHaveText(menuTitle as string)
     await expect(page).toHaveURL(/\/system\/notice$/)
@@ -151,7 +151,7 @@ test.describe('流程五：登出', () => {
   test('登出回登录页，再访问受保护路由被挡回', async ({ page }) => {
     await loginViaUi(page)
 
-    // 头部用户菜单触发器定位见 selectors.ts（需求例外 a）
+    // 头部用户菜单触发器无 aria-label，锚点理由见 selectors.ts
     await userMenuTrigger(page).click()
     const logoutResponsePromise = page.waitForResponse(
       r => isApiPath(r.url(), LOGOUT_API) && r.request().method() === 'POST'
