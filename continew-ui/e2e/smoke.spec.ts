@@ -23,6 +23,7 @@ const MENU_API = '/api/auth/user/route'
 const NOTICE_LIST_API = '/api/system/notice'
 const USER_INFO_API = '/api/auth/user/info'
 const REFRESH_API = '/api/auth/refresh'
+const LOGOUT_API = '/api/auth/logout'
 
 test.describe('流程一：登录', () => {
   test('登录成功进入首页，侧栏渲染当前账号有权限的菜单', async ({ page }) => {
@@ -152,7 +153,16 @@ test.describe('流程五：登出', () => {
 
     // 头部用户菜单触发器定位见 selectors.ts（需求例外 a）
     await userMenuTrigger(page).click()
+    const logoutResponsePromise = page.waitForResponse(
+      r => isApiPath(r.url(), LOGOUT_API) && r.request().method() === 'POST'
+    )
     await userMenuLogoutItem(page).click()
+
+    // 登出请求由前端 fire-and-forget 发出且错误被吞掉（auth-store），只有等响应才能证明服务端撤销了会话
+    const logoutResponse = await logoutResponsePromise
+    expect(logoutResponse.ok()).toBeTruthy()
+    const logoutPayload = (await logoutResponse.json()) as ApiEnvelope<unknown>
+    expect(logoutPayload.success).toBe(true)
 
     await expect(page).toHaveURL(/\/auth\/login/)
 
