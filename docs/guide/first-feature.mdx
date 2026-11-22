@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
 
 - `model/query/PostQuery.java`：只放可筛选字段，实现 `Serializable`，`@Schema` 注解补接口文档（对照 `NoticeQuery`）；
 - `model/req/PostReq.java`：校验注解齐全（`@NotBlank`、`@NotNull`、`@Length` 等），长度约束与建表 DDL 一致（对照 `NoticeReq`）；
-- `model/resp/PostResp.java` 与 `PostDetailResp.java`：Resp 继承 common 的 `BaseResp` 放列表字段，DetailResp 继承 Resp 补详情字段（对照 `NoticeResp` 与 `NoticeDetailResp`）。
+- `model/resp/PostResp.java` 与 `PostDetailResp.java`：Resp 继承 common 的 `BaseResp` 放列表字段；DetailResp 继承 `BaseDetailResp` 并重复列表字段，再补详情字段（对照 `NoticeResp` 与 `NoticeDetailResp`）。
 
 </Step>
 <Step>
