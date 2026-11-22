@@ -145,4 +145,4 @@ P1-P4 中发现前面的决策要改（如 DDL 改列），回头同步所有受
 `examples/` 下有一套按本技能 P0-P6 产出的完整样例（入口 = 已有表 biz_demo）：
 后端 9 文件 + 前端 route/-components/api + 双份 Liquibase 建表 SQL + 菜单 SQL，照抄可跑通；
 生成过程与验证记录见 `examples/README.md`。模式 A 产出的 DDL 应与样例 biz_demo 同构
-（五审计列 + deleted 索引条件 + 可选 tenant_id）。
+（审计五列 + tenant_id，deleted 与 tenant_id 均带索引；业务表默认参与租户隔离，不参与的登记 ignore-tables）。

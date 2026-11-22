@@ -12,11 +12,13 @@ CREATE TABLE IF NOT EXISTS "biz_demo" (
     "create_time" timestamp   NOT NULL,
     "update_user" int8        DEFAULT NULL,
     "update_time" timestamp   DEFAULT NULL,
+    "tenant_id"   int8        NOT NULL DEFAULT 0,
     "deleted"     int8        NOT NULL DEFAULT 0,
     PRIMARY KEY ("id")
 );
 CREATE INDEX "idx_demo_create_user" ON "biz_demo" ("create_user");
 CREATE INDEX "idx_demo_update_user" ON "biz_demo" ("update_user");
+CREATE INDEX "idx_demo_tenant_id"   ON "biz_demo" ("tenant_id");
 CREATE INDEX "idx_demo_deleted"     ON "biz_demo" ("deleted");
 COMMENT ON COLUMN "biz_demo"."id"          IS 'ID';
 COMMENT ON COLUMN "biz_demo"."name"        IS '名称';
@@ -27,5 +29,6 @@ COMMENT ON COLUMN "biz_demo"."create_user" IS '创建人';
 COMMENT ON COLUMN "biz_demo"."create_time" IS '创建时间';
 COMMENT ON COLUMN "biz_demo"."update_user" IS '修改人';
 COMMENT ON COLUMN "biz_demo"."update_time" IS '修改时间';
+COMMENT ON COLUMN "biz_demo"."tenant_id"   IS '租户ID';
 COMMENT ON COLUMN "biz_demo"."deleted"     IS '是否已删除（0：否；id：是）';
 COMMENT ON TABLE  "biz_demo"               IS '示例表';

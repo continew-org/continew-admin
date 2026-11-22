@@ -25,8 +25,10 @@
   （`deleted bigint NOT NULL DEFAULT 0`，注释「是否已删除（0：否；id：是）」+ deleted 索引条件），
   精确 DDL 照抄 `continew-server/src/main/resources/db/changelog/mysql/main_table.sql` 与
   `postgresql/main_table.sql` 的既有写法，不要凭记忆写
-- `tenant_id bigint NOT NULL DEFAULT 0`：业务表默认参与租户隔离时必加；
-  不参与的表必须登记 `continew-starter.tenant.ignore-tables` 并在 PR 说明理由（见 sql-and-menu.md）
+- `tenant_id`：业务表默认必须有——行级隔离按**表名**白名单拼 `tenant_id` 条件、不检查列是否存在，
+  缺列又未登记白名单的表运行期 SQL 直接报错；确实不参与隔离的才登记
+  `continew-starter.tenant.ignore-tables` 并在 PR 说明理由（见 sql-and-menu.md）；
+  写法照 plugin_tenant.sql 的 ALTER 段（列注释「租户ID」，DEFAULT 0），main_table.sql 无此列
 
 ### 3. 命名与类型映射
 
@@ -40,7 +42,8 @@
 
 ### 4. 索引与约束
 
-- 唯一约束列（编码/编号类）加唯一索引；`create_user` / `update_user` / `tenant_id` 照 main_table.sql 建 `idx_`
+- 唯一约束列（编码/编号类）加唯一索引；`create_user` / `update_user` 照 main_table.sql 建 `idx_`，
+  `tenant_id` 照 plugin_tenant.sql 的 ALTER 段建 `idx_tenant_id`
 - 高频筛选列按业务语义加索引，宁缺勿滥，说清每条索引服务的查询
 
 ### 5. 模式 A 确认门

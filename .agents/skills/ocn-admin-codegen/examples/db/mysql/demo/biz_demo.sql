@@ -12,9 +12,11 @@ CREATE TABLE IF NOT EXISTS `biz_demo` (
     `create_time` datetime    NOT NULL            COMMENT '创建时间',
     `update_user` bigint      DEFAULT NULL        COMMENT '修改人',
     `update_time` datetime    DEFAULT NULL        COMMENT '修改时间',
+    `tenant_id`   bigint      NOT NULL DEFAULT 0  COMMENT '租户ID',
     `deleted`     bigint      NOT NULL DEFAULT 0  COMMENT '是否已删除（0：否；id：是）',
     PRIMARY KEY (`id`),
     INDEX `idx_create_user`(`create_user`),
     INDEX `idx_update_user`(`update_user`),
+    INDEX `idx_tenant_id`(`tenant_id`),
     INDEX `idx_deleted`(`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='示例表';

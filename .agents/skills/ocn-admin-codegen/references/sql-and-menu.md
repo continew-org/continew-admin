@@ -9,8 +9,10 @@
 - `mysql/` 与 `postgresql/` **两份 SQL 同步提供**，目录
   `continew-server/src/main/resources/db/changelog/{mysql,postgresql}/<domain>/<name>.sql`
 - 新建表写成**新的 changeset 文件**，**不要改已有 changeset**（checksum 会失配，启动即失败）
-- 表结构含五审计列 + deleted 索引条件，与 `main_table.sql`（`mysql/` 与 `postgresql/` 下同名文件）
-  现有写法一致；方言差异（反引号 vs 双引号、类型对齐）参照 `examples/db/` 两份 biz_demo.sql
+- 表结构含审计五列与 `tenant_id`（业务表默认参与租户隔离），`deleted` 与 `tenant_id` 带索引；
+  审计列写法与 `main_table.sql`（`mysql/` 与 `postgresql/` 下同名文件）一致，
+  `tenant_id` 写法照 `plugin_tenant.sql` 的 ALTER 段（main_table.sql 无此列）；
+  方言差异（反引号 vs 双引号、类型对齐）参照 `examples/db/` 两份 biz_demo.sql
 - 在 `continew-server/src/main/resources/db/changelog/db.changelog-master.yaml` 登记 include：
   MySQL 行插在 MySQL 段最后一个 include 之后真实生效；PostgreSQL 段当前整段处于注释状态，
   PG 行按注释风格插入（保持现状，不擅自启用）
@@ -26,16 +28,17 @@
   填与不填都不影响页面渲染，但为兼容旧约定仍按 `<module>/<name>/index` 填**
 - 按钮菜单的 permission 必须与 SKILL.md §4 推导的权限码逐字一致；
   Api 集里没有的（如未选 EXPORT）不造对应按钮
-- 菜单 ID 段位：整段自拟（样例用 4000-4005），存量已占用：1000-2055（系统与监控）、
-  3000-3025（能力开放）、7000-7018（任务调度）、8000-8023（多租户）；
-  9000 段为已退役模块的历史段位勿复用；与库内数据冲突时整段换号
+- 菜单 ID 段位：整段自拟（样例用 4000-4005），存量已占用：1000-2053（系统与监控）、
+  3000-3025（多租户）、7000-7018（能力开放）、8000-8023（任务调度）；
+  9000-9014 为历史清退段位，已释放可复用；与库内数据冲突时整段换号
 - 挂载既有目录时先查该目录的真实 ID（`sys_menu` 存量数据或 main_data.sql），不要猜 1000 之外的值
 - 菜单 SQL 不含角色授权：实跑阶段在「菜单管理 → 角色授权」给目标角色勾选，
   或按需补 `sys_role_menu` 的 INSERT（样例验证走的是实跑时手工授权 admin）
 
 ## 3. 租户白名单
 
-- 业务表默认参与租户隔离（模式 A 建表带 `tenant_id`），无需登记
+- 业务表默认必须有 `tenant_id` 并参与租户隔离，无需登记
 - **不参与隔离的表必须登记 `continew-starter.tenant.ignore-tables`**
-  （`continew-server/src/main/resources/config/application.yml`），并在交付说明里写明理由；
-  漏登记会导致多租户环境查询串租户或直接报错
+  （`continew-server/src/main/resources/config/application.yml`），并在交付说明里写明理由
+- 行级隔离按**表名**白名单拼 `tenant_id` 条件、不检查列是否存在（`DefaultTenantLineHandler.ignoreTable`
+  只看上下文忽略、隔离级别、白名单三处）：漏建列又未登记白名单的表运行期 SQL 直接报错，不是静默跳过
