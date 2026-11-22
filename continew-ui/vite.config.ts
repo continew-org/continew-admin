@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 
+import { BAIDU_ANALYTICS_PLACEHOLDER, buildBaiduAnalyticsScript } from './src/scripts/baidu-analytics-script'
 import { buildThemeBootScript } from './src/scripts/theme-boot-script'
 
 function themeBootPlugin(): Plugin {
@@ -14,9 +15,18 @@ function themeBootPlugin(): Plugin {
   }
 }
 
+function baiduAnalyticsPlugin(analyticsId: string | undefined): Plugin {
+  return {
+    name: 'continew:baidu-analytics',
+    transformIndexHtml(html) {
+      return html.replace(BAIDU_ANALYTICS_PLACEHOLDER, () => buildBaiduAnalyticsScript(analyticsId))
+    }
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd()) as ImportMetaEnv
-  const { VITE_API_BASE_URL, VITE_API_PREFIX, VITE_APP_PORT, VITE_BASE_PATH } = env
+  const { VITE_API_BASE_URL, VITE_API_PREFIX, VITE_APP_PORT, VITE_BASE_PATH, VITE_BAIDU_ANALYTICS_ID } = env
 
   return {
     base: VITE_BASE_PATH || '/',
@@ -35,6 +45,12 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
-    plugins: [themeBootPlugin(), tanstackRouter({ target: 'react', autoCodeSplitting: true }), react(), tailwindcss()]
+    plugins: [
+      themeBootPlugin(),
+      baiduAnalyticsPlugin(VITE_BAIDU_ANALYTICS_ID),
+      tanstackRouter({ target: 'react', autoCodeSplitting: true }),
+      react(),
+      tailwindcss()
+    ]
   }
 })
