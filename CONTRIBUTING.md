@@ -177,6 +177,8 @@ git push origin feat/your-feature
 
 在所在代码托管平台上向 **dev** 分支创建 Pull Request，并按 [PR 模板](.github/PULL_REQUEST_TEMPLATE.md) 填写说明信息（参考[已合并的 PR](https://github.com/continew-org/continew-admin/pulls?q=is%3Apr+is%3Amerged) 有助于提高合并率）。
 
+PR 正文同样由 CI 按模板自动校验（`PR Validation / Validate PR body`）：段名、勾选与 Changelog 等结构化要素不符合模板时检查会失败，机器人会评论给出修复指引，编辑正文保存后自动重跑；自由文本段只校验非空，不判内容质量。
+
 ### 8. 签署 CLA
 
 提交 PR 后，所在平台的 CLA 校验机器人会提示签署 [CLA（贡献者许可协议）](CLA.md)（GitHub、AtomGit、Gitee 等主流代码托管平台均已支持，按机器人提示点击同意即可）。请确保 commit 使用的邮箱与您在对应代码托管平台账号绑定的邮箱一致。

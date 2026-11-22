@@ -63,6 +63,12 @@ jobs:
             [ -e "$f" ] || continue
             bash -n "$f"
           done
+      - name: Check PR body validation contract
+        # 模板-规则机器契约回归：测的是从 pr-validation.yml 提取的真实字节（validate-pr-body
+        # 的 inline JS），不是测试内置的规则副本；模板改版与校验规则不同步时本步失败。
+        # 同步要求见 AGENTS.md「PR 模板与校验规则是机器契约」。
+        # 纯 node 零第三方依赖，托管 runner 预装 node，无需 setup-node。
+        run: node scripts/ci/test-pr-body-validation.js
 
   build:
     # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置

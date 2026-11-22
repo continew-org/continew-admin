@@ -18,6 +18,7 @@
   Assisted-by: DeepSeek Harness
   ```
 - 贡献流程一律**遵循 [CONTRIBUTING.md](./CONTRIBUTING.md)**。
+- **PR 模板与校验规则是机器契约**：修改 `.github/PULL_REQUEST_TEMPLATE.md`（增删段名、checkbox 项、Changelog 表格列）时，必须在**同一 PR** 同步 `.github/workflows/pr-validation.yml` 中 `validate-pr-body` 的规则集（EXPECTED_SECTIONS 段名清单、Changelog 表格列序、checkbox 相关规则），漏同步会使全部 PR 的正文校验失败；规则或模板改动须保持 `Lint workflows` 中 PR 正文校验回归通过。
 
 ## 项目概述
 
