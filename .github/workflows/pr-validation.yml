@@ -139,3 +139,230 @@ jobs:
             core.setFailed(
               `${unlinked.length} 个提交的作者邮箱未绑定 GitHub 账号，修复方式见 PR 评论。`
             );
+
+  validate-pr-body:
+    # 灰度期有意不登记分支保护 required：check 可红但不阻塞合并；
+    # 显示名即未来分支保护登记的 required check 名，不可随意改名
+    name: Validate PR body
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # 失败评论与幂等更新需要 pull-requests: write（同 check-commit-authors，
+    # 该权限面已在本仓 fork PR 上验证可行）
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Validate PR body against template
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            // ===== 校验核心 =====
+            // 规则集锚定 .github/PULL_REQUEST_TEMPLATE.md 的结构要素，两者是机器契约：
+            // 模板改版（段名/checkbox 数/表格列）必须同步本段规则并复跑回归，见 AGENTS.md。
+            const EXPECTED_SECTIONS = [
+              '变更类型',
+              '影响范围',
+              '破坏性变更',
+              '变更目的',
+              '解决方案',
+              '测试情况',
+              'Changelog',
+              '提交前确认',
+            ];
+
+            // 剥 fenced code block：作者可能在自由文本段贴模板示例/日志，其中的 ## 与 checkbox 不参与判定
+            function stripFences(text) {
+              const out = [];
+              let inFence = false;
+              for (const line of text.split('\n')) {
+                if (/^\s*(```|~~~)/.test(line)) {
+                  inFence = !inFence;
+                  continue;
+                }
+                if (!inFence) out.push(line);
+              }
+              return out.join('\n');
+            }
+
+            // 按 ## 标题切段（### 不算段边界；标题精确匹配，剥首尾空白）
+            function splitSections(body) {
+              const sections = {};
+              let current = null;
+              for (const line of body.split('\n')) {
+                const m = line.match(/^## (.*?)\s*$/);
+                if (m) {
+                  current = m[1].trim();
+                  if (!(current in sections)) sections[current] = [];
+                } else if (current) {
+                  sections[current].push(line);
+                }
+              }
+              return sections;
+            }
+
+            function sectionText(sections, name) {
+              return (sections[name] || []).join('\n').trim();
+            }
+
+            // 段内 checkbox 行计数（模板用 `- [ ]`，容忍 `* [ ]`；blockquote 前缀不算）
+            function checkboxStats(text) {
+              const all = text.match(/^\s*[-*] \[( |x|X)\]/gm) || [];
+              const checked = text.match(/^\s*[-*] \[(x|X)\]/gm) || [];
+              return { total: all.length, checked: checked.length };
+            }
+
+            function validatePrBody(rawBody) {
+              const violations = []; // 阻塞级：check 失败（灰度期不设 required 时不阻塞合并）
+              const advisories = []; // 提醒级：仅进评论/summary，不影响 check 结论
+              const add = (list, rule, message) => list.push({ rule, message });
+
+              // 预处理：先剥 fenced block，再剥 HTML 注释（实测模板注释保留在 body 中，属提示文字）
+              const body = stripFences(rawBody || '').replace(/<!--[\s\S]*?-->/g, '');
+              const sections = splitSections(body);
+
+              // R1 段落完整性（blocking）：8 个模板段全部存在
+              for (const name of EXPECTED_SECTIONS) {
+                if (!(name in sections)) {
+                  add(violations, 'R1-段落完整性', `缺少段落「## ${name}」。请按 PR 模板补全（模板见 .github/PULL_REQUEST_TEMPLATE.md，创建 PR 时可先点 Preview 侧栏的模板按钮）。`);
+                }
+              }
+
+              // R2 变更类型至少勾选一项（blocking）
+              const cbType = checkboxStats(sectionText(sections, '变更类型'));
+              if ('变更类型' in sections && cbType.checked === 0) {
+                add(violations, 'R2-变更类型未勾选', '「## 变更类型」段没有任何勾选项。请在 7 个选项中勾选本 PR 的变更类型。');
+              }
+
+              // R3 变更类型互斥（提醒级）：多选理由是否成立无法机判；若转阻塞级，把下方 add 目标换成 violations
+              if ('变更类型' in sections && cbType.checked > 1) {
+                add(advisories, 'R3-变更类型互斥', `「## 变更类型」勾选了 ${cbType.checked} 项。模板约定只选择一种类型；如确属多类型混合变更，建议拆分为多个 PR，或在「变更目的」中说明多选理由（人工复核）。`);
+              }
+
+              // R4 影响范围至少勾选一项（blocking）
+              const cbScope = checkboxStats(sectionText(sections, '影响范围'));
+              if ('影响范围' in sections && cbScope.checked === 0) {
+                add(violations, 'R4-影响范围未勾选', '「## 影响范围」段没有任何勾选项。请勾选后端 / 前端 / 跨端 / 文档模板 CI 中的一项或多项。');
+              }
+
+              // R5 破坏性变更联动（blocking）：勾选破坏性变更时变更目的必须非空
+              const cbBreaking = checkboxStats(sectionText(sections, '破坏性变更'));
+              if ('破坏性变更' in sections && cbBreaking.checked > 0 && sectionText(sections, '变更目的') === '') {
+                add(violations, 'R5-破坏性变更联动', '已勾选破坏性变更，但「## 变更目的」段为空。按模板要求，需在变更目的中说明影响与迁移方式。');
+              }
+
+              // R6 自由文本段非空（blocking）：剥注释剥 fence 后仅空白即判空
+              for (const name of ['变更目的', '解决方案', '测试情况']) {
+                if (name in sections && sectionText(sections, name) === '') {
+                  add(violations, `R6-${name}为空`, `「## ${name}」段没有实质内容。请删除段内残留的提示注释并填写实际内容。`);
+                }
+              }
+
+              // R7 Changelog 表格（blocking）：表格存在且至少一行数据行的 Changelog 列非空
+              if ('Changelog' in sections) {
+                const text = sectionText(sections, 'Changelog');
+                const rows = text.split('\n').filter(l => l.trim().startsWith('|'));
+                const sepIdx = rows.findIndex(l => /^\|[\s:|-]+\|?\s*$/.test(l.trim()));
+                if (rows.length < 3 || sepIdx < 1 || sepIdx >= rows.length - 1) {
+                  add(violations, 'R7-Changelog表格', '「## Changelog」段缺少有效的 Changelog 表格（表头 + 分隔行 + 数据行）。请按模板补全。');
+                } else {
+                  const dataRows = rows.slice(sepIdx + 1);
+                  const filled = dataRows.some(l => {
+                    const cells = l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+                    return cells.length >= 2 && cells[1] !== '' && cells[1] !== '—';
+                  });
+                  if (!filled) {
+                    add(violations, 'R7-Changelog表格', '「## Changelog」表格没有填写任何数据行（Changelog 列全空）。请填写本次变更的 changelog 说明。');
+                  }
+                  // Related issues 列允许留空或占位「—」，不强制必须关联 issue；
+                  // 列内出现裸关键词（无 # 引用）或关键词后缺号 → blocking；
+                  // 裸词检查只限本列：列语义就是 issue 引用，不与正文散文冲突
+                  const badKeywordCell = dataRows.some(l => {
+                    const cells = l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+                    if (cells.length < 3) return false;
+                    const col = cells[2];
+                    if (!/\b(close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b/i.test(col)) return false;
+                    return !/\b(close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#\d+\b/i.test(col);
+                  });
+                  if (badKeywordCell) {
+                    add(violations, 'R8-关联issue关键词', 'Changelog 表 Related issues 列的 Closes/Fixes/Resolves 关键词没有关联到具体 issue，请补全为「Closes #<issue号>」格式，否则合并时不会自动关闭对应 Issue；无关联 issue 时请留空或写「—」。');
+                  }
+                }
+              }
+
+              // R8 全文级关键词合法性（blocking）：正文任何位置写了关键词 + # 但没带数字。
+              // 裸关键词（无 #）在正文散文中常见（如英文 "fixes the bug"），全文级不查，只在 Related issues 列查
+              const malformedKeyword = /\b(close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(?!\d)/i.test(body);
+              if (malformedKeyword) {
+                add(violations, 'R8-关联issue关键词', '正文中出现「Closes/Fixes/Resolves #」但后面没有 issue 号。请补全为「Closes #<issue号>」格式（GitHub 原生关闭词），或删除该关键词。');
+              }
+
+              // R9 提交前确认段（blocking 弱）：段存在且至少 1 个 checkbox；
+              // 勾选状态不机判（自我声明真伪不可判定；条件性项可合法留空）
+              if ('提交前确认' in sections) {
+                const cbConfirm = checkboxStats(sectionText(sections, '提交前确认'));
+                if (cbConfirm.total === 0) {
+                  add(violations, 'R9-提交前确认', '「## 提交前确认」段的确认项被全部删除。请按模板恢复确认项清单。');
+                }
+              }
+
+              return { violations, advisories };
+            }
+
+            // ===== 评论包装 =====
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const { violations, advisories } = validatePrBody(context.payload.pull_request.body);
+
+            const marker = '<!-- pr-validation-body-check -->';
+            // 全量分页：评论超一页时 marker 评论可能不在首页，漏查会导致重复建评
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+
+            // marker 定位历史评论后 update/create 二选一，通过/失败分支共用：
+            // 同 PR 始终只保留一条本校验评论，重复触发走更新不新增（同 email check 先例）
+            async function upsertComment(commentBody) {
+              const call = existing
+                ? github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: commentBody })
+                : github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body: commentBody });
+              await call;
+            }
+
+            if (violations.length === 0) {
+              // 通过：advisories 仅评论提示不 setFailed；无提醒且无历史失败评论时不动任何评论（不刷屏）
+              for (const a of advisories) core.info(`提醒（不影响结论）：${a.rule}——${a.message}`);
+              if (existing || advisories.length > 0) {
+                const bodyLines = [marker, '### ✅ PR 正文校验已通过', ''];
+                if (existing) bodyLines.push('历史违规已修复，本评论由校验自动更新。', '');
+                if (advisories.length > 0) {
+                  bodyLines.push('以下为提醒级事项，不影响合并：', '',
+                    advisories.map(a => `- **${a.rule}**：${a.message}`).join('\n'), '');
+                }
+                await upsertComment(bodyLines.join('\n'));
+              }
+              core.info('PR 正文符合模板要求。');
+              return;
+            }
+
+            // 失败：只引用段名/规则名/计数，不回贴 body 原文（防作者在 body 注入 markdown 污染评论）
+            const failureItems = violations.map(v => `- **${v.rule}**：${v.message}`).join('\n');
+            const body = [
+              marker,
+              '### ⚠️ PR 正文校验未通过',
+              '',
+              `以下 ${violations.length} 处不符合 [PR 模板](https://github.com/continew-org/continew-admin/blob/dev/.github/PULL_REQUEST_TEMPLATE.md) 要求：`,
+              '',
+              failureItems,
+            ];
+            if (advisories.length > 0) {
+              body.push('', '---', '', '**提醒级事项（不影响本检查结论）：**', '', advisories.map(a => `- **${a.rule}**：${a.message}`).join('\n'));
+            }
+            body.push('', '**修复方式：** 编辑 PR 正文（PR 首页右下 Edit），按上述条目补全后保存；推送/编辑后本校验会自动重新运行。');
+            await upsertComment(body.join('\n'));
+
+            core.setFailed(
+              `${violations.length} 处正文不符合 PR 模板要求，修复方式见 PR 评论。`
+            );
