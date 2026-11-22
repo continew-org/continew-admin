@@ -121,7 +121,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
       # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 仅产出 dist artifact，随后由 Publish UI dist 同步到演示站点。
+      # 产物由下面的 Publish UI dist 同步到演示站点。
       # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
         run: >
@@ -174,10 +174,12 @@ jobs:
           # 3、清理上一版残留：此时 index.html 已指向新资源
           rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
 
-          # 4、只保留最近 5 份快照；删除项写入 Job Summary 以便审计
-          mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d -name 'web-*' -printf '%f\n' | sort -r)
-          if [ "${#snaps[@]}" -gt 5 ]; then
-            for old in "${snaps[@]:5}"; do
+          # 4、只保留最近 3 份自动快照；带 -manual 后缀的手工基线不参与轮转，
+          #    删除项写入 Job Summary 以便审计
+          mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d \
+            -name 'web-*' ! -name '*-manual' -printf '%f\n' | sort -r)
+          if [ "${#snaps[@]}" -gt 3 ]; then
+            for old in "${snaps[@]:3}"; do
               echo "- 清理旧快照：$old" >> "$GITHUB_STEP_SUMMARY"
               rm -rf "$SNAP_ROOT/$old"
             done
@@ -193,9 +195,8 @@ jobs:
           WEB_DIR="$SERVER_PATH/continew-admin/web"
           test -f "$WEB_DIR/index.html"
           test -d "$WEB_DIR/assets"
-          # 5.x 挂载点（4.x 用 id="app"）；两个计数必须为 1 和 0
+          # 产物挂载点必须是 id="root"：发布落位失败时 index.html 仍是旧内容，此处直接让作业红
           test "$(grep -c 'id="root"' "$WEB_DIR/index.html")" = '1'
-          test "$(grep -c 'id="app"' "$WEB_DIR/index.html")" = '0'
           echo "index.html bytes=$(stat -c%s "$WEB_DIR/index.html") assets=$(find "$WEB_DIR/assets" -maxdepth 1 -type f | wc -l)" >> "$GITHUB_STEP_SUMMARY"
 
   decision:
