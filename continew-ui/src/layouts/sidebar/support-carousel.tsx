@@ -29,11 +29,6 @@ const STATIC_ITEMS: readonly PromoItem[] = [
     name: '公众号',
     img: `${SPONSOR_BASE}/images/home/join-group.webp`,
     url: SPONSOR_BASE
-  },
-  {
-    name: '赞助',
-    img: `${SPONSOR_BASE}/images/qrcode/wxpay.webp`,
-    url: `${SPONSOR_BASE}/sponsor`
   }
 ]
 
@@ -60,7 +55,7 @@ function sponsorsToItems(feed: SponsorFeed | null): PromoItem[] {
 
 /**
  * A small auto-cycling promo carousel for the sidebar footer: the real sponsors from
- * continew.top's sponsor.json (special + platinum), followed by two fallback promo images. Only the
+ * continew.top's sponsor.json (special + platinum), followed by the fallback promo images. Only the
  * image changes — no "Slide x of y" counter and no scale effect on the neighbours.
  */
 export function SupportCarousel() {
@@ -120,7 +115,7 @@ export function SupportCarousel() {
               rel="noreferrer"
               className="flex min-w-0 flex-[0_0_100%] items-center justify-center bg-background"
             >
-              <img src={item.img} alt={item.name} loading="lazy" className="h-[120px] w-full object-contain" />
+              <img src={item.img} alt={item.name} loading="lazy" className="aspect-[16/9] w-full object-contain" />
             </a>
           ))}
         </div>
