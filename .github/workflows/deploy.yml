@@ -156,14 +156,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
-      # 不注入 job secrets；pnpm store 挂载复用依赖缓存（类比 /root/.m2）。
-      # 产物由下面的 Publish UI dist 同步到演示站点。
+      # 只注入构建期需要的站点标识（VITE_* 会烧进产物，本身即公开信息）。
+      # pnpm store 挂载复用依赖缓存（类比 /root/.m2）。产物由下面的 Publish UI dist 同步到演示站点。
       # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
       - name: Build UI dist
+        env:
+          # 站点统计 ID 由部署方通过 secret 提供；未配置时留空、不注入统计脚本
+          BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
         run: >
           docker run --rm
           --memory=4g --cpus=4
           -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+          -e VITE_BAIDU_ANALYTICS_ID="$BAIDU_ANALYTICS_ID"
           -v "$PWD":/ws
           -v /root/.local/share/pnpm/store:/root/.local/share/pnpm/store
           -w /ws/continew-ui
