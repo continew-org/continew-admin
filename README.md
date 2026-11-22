@@ -75,7 +75,9 @@
 
 </div>
 
-<!-- TODO: 此处放产品工作台全貌截图 .image/screenshot-dashboard.png，等 5.x 演示环境就绪后实拍替换 -->
+<div align="center">
+  <img src=".image/screenshot-dashboard.png" alt="ContiNew Admin 仪表盘（浅色 / 深色主题）" width="100%" />
+</div>
 
 ## 简介
 
