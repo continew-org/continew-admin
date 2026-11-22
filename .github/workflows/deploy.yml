@@ -183,6 +183,9 @@ jobs:
           SERVER_PATH: ${{ secrets.SERVER_PATH }}
         run: |
           set -euo pipefail
+          # secret 取值可能是未展开的 ~/...；env 注入后引号内不会展开波浪号，
+          # 必须显式展开，否则守卫会把存在的目录判成不存在
+          SERVER_PATH="${SERVER_PATH/#\~/$HOME}"
           WEB_DIR="$SERVER_PATH/continew-admin/web"
           SNAP_ROOT="$SERVER_PATH/backups/web"
           SNAP="$SNAP_ROOT/web-$(date -u +%Y%m%dT%H%M%SZ)"
@@ -237,6 +240,7 @@ jobs:
           SERVER_PATH: ${{ secrets.SERVER_PATH }}
         run: |
           set -euo pipefail
+          SERVER_PATH="${SERVER_PATH/#\~/$HOME}"
           WEB_DIR="$SERVER_PATH/continew-admin/web"
           test -f "$WEB_DIR/index.html"
           test -d "$WEB_DIR/assets"
