@@ -38,6 +38,7 @@ concurrency:
 
 jobs:
   mirror:
+    name: Mirror
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
@@ -46,7 +47,7 @@ jobs:
       GIT_TERMINAL_PROMPT: '0'
       MIRROR_STRICT: ${{ vars.MIRROR_STRICT }}
     steps:
-      - name: 克隆 GitHub 侧仓库
+      - name: Clone source
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -55,7 +56,7 @@ jobs:
           git clone --bare \
             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo.git
 
-      - name: 过滤镜像分支
+      - name: Filter branches
         run: |
           set -euo pipefail
           # refspec 不支持 [0-9] 字符类；逐分支写死 refspec 时，仓库缺某个分支会让整次 push 失败，
@@ -69,7 +70,7 @@ jobs:
             esac
           done < <(git -C repo.git for-each-ref --format='%(refname:short)' refs/heads/)
 
-      - name: 镜像到 Gitee 与 AtomGit
+      - name: Push mirrors
         env:
           GITEE_USER: ${{ secrets.GITEE_USER }}
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}

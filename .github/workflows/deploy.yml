@@ -1,4 +1,4 @@
-name: Deploy Server
+name: Deploy
 
 on:
   # 推送时执行
@@ -30,7 +30,7 @@ permissions:
 
 # 部署不可中途取消（避免容器重建被打断），连续触发时排队执行
 concurrency:
-  group: deploy-server
+  group: deploy
   cancel-in-progress: false
 
 jobs:
@@ -101,7 +101,7 @@ jobs:
           fi
 
   deploy:
-    name: Deploy server
+    name: Deploy Server
     needs: detect
     # simulate Dry-Run 下，所有触达 secrets/容器/部署目录的作业一律不执行（作业级守卫）
     if: >-
@@ -118,7 +118,7 @@ jobs:
       #    不挂 docker.sock、不注入 job secrets；/root/.m2 挂载复用依赖缓存）。
       #    镜像按 digest 固定（对应 3.9-eclipse-temurin-25 标签，即 runner 当前实跑
       #    版本），升级时显式更换
-      - name: Build
+      - name: Build Server
         run: >
           docker run --rm
           --memory=6g --cpus=4
@@ -144,7 +144,7 @@ jobs:
           docker images | grep none | awk '{print $3}' | xargs -r docker rmi
 
   build-ui:
-    name: Build UI dist
+    name: Deploy UI
     needs: detect
     if: >-
       github.repository == 'continew-org/continew-admin'
@@ -159,7 +159,7 @@ jobs:
       # 只注入构建期需要的站点标识（VITE_* 会烧进产物，本身即公开信息）。
       # pnpm store 挂载复用依赖缓存（类比 /root/.m2）。产物由下面的 Publish UI dist 同步到演示站点。
       # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
-      - name: Build UI dist
+      - name: Build UI
         env:
           # 站点统计 ID 由部署方通过 secret 提供；未配置时留空、不注入统计脚本
           BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
@@ -289,6 +289,6 @@ jobs:
             echo "- 模式：$mode"
             echo "- 分流依据：$target_note"
             echo "- 改动类别：$CATEGORIES"
-            echo "- 后端部署（Deploy server）：$backend_action"
-            echo "- UI 构建与发布（Build UI dist）：$ui_action"
+            echo "- 后端部署（Deploy Server）：$backend_action"
+            echo "- UI 构建与发布（Deploy UI）：$ui_action"
           } >> "$GITHUB_STEP_SUMMARY"
