@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Highlight as SidebarHighlight } from '@animate-ui/react/primitives/sidebar'
+import { Highlight } from '@animate-ui/react/primitives/sidebar'
+import { AnimateUIProvider } from '@animate-ui/react/provider'
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -338,6 +339,18 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
   )
 }
 
+// The hover surface glides between items; at the library tempo it trails the pointer on a fast
+// sweep, so the sidebar runs it twice as fast.
+const SIDEBAR_HIGHLIGHT_TEMPO = 0.5
+
+function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
+  return (
+    <AnimateUIProvider tempo={SIDEBAR_HIGHLIGHT_TEMPO}>
+      <Highlight {...props} />
+    </AnimateUIProvider>
+  )
+}
+
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <SidebarHighlight
@@ -658,6 +671,7 @@ export {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarHighlight,
   SidebarInput,
   SidebarInset,
   SidebarMenu,
