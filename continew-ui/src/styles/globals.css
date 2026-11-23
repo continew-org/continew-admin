@@ -446,3 +446,8 @@
   pointer-events: none;
   background-repeat: repeat;
 }
+
+/* The active sidebar item keeps its own fill hidden while a copy glides in from the previous item. */
+[data-sidebar-glide-target]::before {
+  visibility: hidden;
+}

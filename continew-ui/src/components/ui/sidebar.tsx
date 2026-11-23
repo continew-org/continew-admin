@@ -1,6 +1,12 @@
 import * as React from 'react'
 import { Highlight } from '@animate-ui/react/primitives/sidebar'
-import { AnimateUIProvider } from '@animate-ui/react/provider'
+import {
+  type CssTiming,
+  motionTokens,
+  toCssTiming,
+  useShouldReduceMotion,
+  useTempoTransition
+} from '@animate-ui/react/utils/motion'
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -339,18 +345,96 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
   )
 }
 
-// The hover surface glides between items; at the library tempo it trails the pointer on a fast
-// sweep. Shorter than 0.5 the glide is over in two or three frames and reads as dropped frames.
-const SIDEBAR_HOVER_TEMPO = 0.5
+const MENU_ITEM_SELECTOR = '[data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]'
 
-function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
-  return (
-    <AnimateUIProvider tempo={SIDEBAR_HOVER_TEMPO}>
-      <Highlight {...props} />
-    </AnimateUIProvider>
-  )
+/**
+ * The active item paints its own fill, so a page change made outside the sidebar (tab bar,
+ * breadcrumb, browser history) would make the fill jump. A copy of it glides in from the previous
+ * item instead. An item the pointer or keyboard is on already shows the hover or focus surface,
+ * so those changes are left alone.
+ */
+function useActiveItemGlide(timing: CssTiming | null) {
+  const timingRef = React.useRef(timing)
+  React.useLayoutEffect(() => {
+    timingRef.current = timing
+  })
+  // `Highlight` merges this ref without forwarding a returned cleanup, so detaching arrives as a
+  // call with `null` and the previous root is torn down here.
+  const teardownRef = React.useRef<(() => void) | null>(null)
+
+  return React.useCallback((root: HTMLDivElement | null) => {
+    teardownRef.current?.()
+    teardownRef.current = null
+    if (!root) return
+
+    let glide: { animation: Animation; copy: HTMLElement } | null = null
+    const observer = new MutationObserver(records => {
+      let from: Element | null = null
+      let to: HTMLElement | null = null
+      for (const record of records) {
+        const item = record.target
+        if (!(item instanceof HTMLElement) || !item.matches(MENU_ITEM_SELECTOR)) continue
+        if (item.hasAttribute('data-active')) to = item
+        else if (record.oldValue !== null) from = item
+      }
+
+      const timing = timingRef.current
+      if (!timing || !from || !to || to.matches(':hover, :focus-visible')) return
+
+      // A glide still in flight starts the next one from where its copy is now.
+      const start = (glide?.copy ?? from).getBoundingClientRect()
+      glide?.animation.cancel()
+      const end = to.getBoundingClientRect()
+      const host = to.parentElement
+      // An item inside a closed group has no box to glide from or to.
+      if (!host || !start.width || !start.height || !end.width || !end.height) return
+
+      const fill = getComputedStyle(to, '::before')
+      const copy = document.createElement('span')
+      copy.setAttribute('aria-hidden', 'true')
+      copy.style.cssText = `position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;width:${end.width}px;height:${end.height}px;border-radius:${fill.borderRadius};background-color:${fill.backgroundColor}`
+      host.append(copy)
+      const base = (copy.offsetParent ?? host).getBoundingClientRect()
+      copy.style.left = `${end.left - base.left}px`
+      copy.style.top = `${end.top - base.top}px`
+
+      to.setAttribute('data-sidebar-glide-target', '')
+      const animation = copy.animate(
+        [
+          {
+            transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
+          },
+          { transform: 'none' }
+        ],
+        timing
+      )
+      const current = { animation, copy }
+      glide = current
+      const settle = () => {
+        copy.remove()
+        to.removeAttribute('data-sidebar-glide-target')
+        if (glide === current) glide = null
+      }
+      animation.onfinish = settle
+      animation.oncancel = settle
+    })
+    observer.observe(root, { subtree: true, attributeFilter: ['data-active'], attributeOldValue: true })
+
+    teardownRef.current = () => {
+      observer.disconnect()
+      glide?.animation.cancel()
+    }
+  }, [])
 }
 
+/** The active glide follows no pointer, so it keeps the library tempo to stay visible. */
+function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
+  const reduce = useShouldReduceMotion()
+  const timing = toCssTiming(useTempoTransition(motionTokens.spring.highlight))
+  const ref = useActiveItemGlide(reduce ? null : timing)
+
+  return <Highlight {...props} ref={ref} />
+}
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <SidebarHighlight
