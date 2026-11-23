@@ -94,7 +94,10 @@ export function DataTable<TRow extends RowData>({
                     // replaces, the top one just inside the cell where the scroll port cannot clip it.
                     isSticky &&
                       cn(
-                        'sticky top-0 z-10',
+                        // A sticky cell must paint an opaque fill of its own: `--muted` is translucent
+                        // in the dark palette, so scrolled rows would bleed through the header. Keep
+                        // the muted tint by stacking it over the opaque card colour underneath.
+                        'sticky top-0 z-10 bg-[linear-gradient(var(--muted),var(--muted)),linear-gradient(var(--card),var(--card))]',
                         "before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-border before:content-['']",
                         "after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-border after:content-['']"
                       )
