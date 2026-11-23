@@ -340,12 +340,12 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
 }
 
 // The hover surface glides between items; at the library tempo it trails the pointer on a fast
-// sweep. 0.3 still leaves about four frames of glide at 60 Hz; any faster and it reads as a jump.
-const SIDEBAR_HIGHLIGHT_TEMPO = 0.3
+// sweep. Shorter than 0.5 the glide is over in two or three frames and reads as dropped frames.
+const SIDEBAR_HOVER_TEMPO = 0.5
 
 function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
   return (
-    <AnimateUIProvider tempo={SIDEBAR_HIGHLIGHT_TEMPO}>
+    <AnimateUIProvider tempo={SIDEBAR_HOVER_TEMPO}>
       <Highlight {...props} />
     </AnimateUIProvider>
   )
