@@ -1,11 +1,11 @@
 import * as React from 'react'
 
-import { Highlight as SidebarHighlight } from '@animate-ui/react/primitives/sidebar'
 import { cn } from 'cn'
 import { Pin, PinOff } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 
 import { Button } from '@/components/ui/button'
+import { SidebarHighlight } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import type { MenuGroup, MenuItem } from '@/navigation/menu'
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider'
