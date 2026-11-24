@@ -70,6 +70,10 @@ jobs:
             echo '::error::deploy_target 与 simulate_paths 不能同时使用：手动指定部署目标时不需要模拟改动清单'
             exit 1
           fi
+          if [ -n "$SIMULATE_PATHS" ] && [ "$SIMULATE" != 'true' ]; then
+            echo '::error::simulate_paths 仅在 simulate=true 时可用'
+            exit 1
+          fi
 
           if [ "$target" != 'auto' ]; then
             # 手动指定目标：不解析 diff，直接给出分流结论。
@@ -143,49 +147,100 @@ jobs:
           docker-compose up --force-recreate --build -d continew-server
           docker images | grep none | awk '{print $3}' | xargs -r docker rmi
 
-  build-ui:
-    name: Deploy UI
+  package-ui:
+    name: Build UI artifact
     needs: detect
     if: >-
       github.repository == 'continew-org/continew-admin'
       && inputs.simulate != true
       && needs.detect.outputs.ui == 'true'
-    runs-on: self-hosted
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: continew-ui
+    outputs:
+      artifact_id: ${{ steps.upload-dist.outputs.artifact-id }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      # 容器内构建（与后端 Build 同风格）：构建期代码不触达宿主机，不挂 docker.sock、
-      # 只注入构建期需要的站点标识（VITE_* 会烧进产物，本身即公开信息）。
-      # pnpm store 挂载复用依赖缓存（类比 /root/.m2）。产物由下面的 Publish UI dist 同步到演示站点。
-      # 镜像按 digest 固定（对应 node:22 标签，即 runner 当前实跑版本），升级时显式更换
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Enable corepack and pin pnpm
+        # setup-node 从仓库根目录探测 pnpm store，须先用项目的版本覆盖 Corepack 默认版本。
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          corepack enable
+          corepack install -g "$(node -p "require('./package.json').packageManager")"
+      - name: Set up Node 22
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: continew-ui/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Build UI
         env:
-          # 站点统计 ID 由部署方通过 secret 提供；未配置时留空、不注入统计脚本
-          BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
-        run: >
-          docker run --rm
-          --memory=4g --cpus=4
-          -e COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-          -e VITE_BAIDU_ANALYTICS_ID="$BAIDU_ANALYTICS_ID"
-          -v "$PWD":/ws
-          -v /root/.local/share/pnpm/store:/root/.local/share/pnpm/store
-          -w /ws/continew-ui
-          node@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
-          sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm build"
+          # 未配置时不注入统计脚本；VITE_* 会写入公开产物。
+          VITE_BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
+        run: pnpm build
       - name: Upload dist artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        id: upload-dist
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: continew-ui-dist
+          # 同一个 run 全量重跑时，不覆盖前一次构建的产物。
+          name: continew-ui-dist-${{ github.run_attempt }}
           path: continew-ui/dist/
           if-no-files-found: error
           retention-days: 14
+
+  build-ui:
+    name: Deploy UI
+    needs: [detect, package-ui]
+    if: >-
+      github.repository == 'continew-org/continew-admin'
+      && inputs.simulate != true
+      && needs.detect.outputs.ui == 'true'
+      && needs.package-ui.result == 'success'
+    runs-on: self-hosted
+    timeout-minutes: 30
+    steps:
+      - name: Prepare artifact directory
+        id: ui-dist
+        shell: bash
+        env:
+          ARTIFACT_ID: ${{ needs.package-ui.outputs.artifact_id }}
+        run: |
+          # 空 ID 会让下载 Action 退回全量下载；没有精确 ID 时禁止发布。
+          if [[ ! "$ARTIFACT_ID" =~ ^[1-9][0-9]*$ ]]; then
+            echo '::error::构建未返回有效的 UI artifact ID，已中止发布'
+            exit 1
+          fi
+          artifact_dir=$(mktemp -d -- "$RUNNER_TEMP/continew-ui-dist-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT.XXXXXXXX")
+          # rsync -a 会同步源根目录权限；只同步 0755 子目录，临时父目录保持私有。
+          mkdir -m 0755 -- "$artifact_dir/dist"
+          printf 'path=%s\n' "$artifact_dir/dist" >> "$GITHUB_OUTPUT"
+      - name: Download exact UI artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          # 不传 token 或 run-id：仅从当前 Deploy run 按 ID 读取，失败重跑可沿用成功构建的 ID。
+          artifact-ids: ${{ needs.package-ui.outputs.artifact_id }}
+          path: ${{ steps.ui-dist.outputs.path }}
+          digest-mismatch: error
       # 发布到演示站点：快照上一版 -> 落新资源 -> 切换入口 -> 清理上一版残留 -> 自检
       - name: Publish UI dist
         env:
           SERVER_PATH: ${{ secrets.SERVER_PATH }}
+          UI_DIST: ${{ steps.ui-dist.outputs.path }}
         run: |
           set -euo pipefail
+          [ -f "$UI_DIST/index.html" ] && [ -d "$UI_DIST/assets" ] || {
+            echo '::error::UI artifact 缺少 index.html 或 assets/，已中止发布'
+            exit 1
+          }
           # secret 可能写成未展开的 ~/...，引号内的波浪号不会展开
           SERVER_PATH="${SERVER_PATH/#\~/$HOME}"
           WEB_DIR="$SERVER_PATH/continew-admin/web"
@@ -208,13 +263,13 @@ jobs:
           echo "快照：$SNAP（$(du -sh "$SNAP" | cut -f1)）" >> "$GITHUB_STEP_SUMMARY"
 
           # 2、落新资源：排除 index.html。入口引用的 chunk 必须先全部到位
-          rsync -a --exclude '/index.html' continew-ui/dist/ "$WEB_DIR/"
+          rsync -a --exclude '/index.html' "$UI_DIST/" "$WEB_DIR/"
 
           # 3、切换入口：单独传 index.html，此时它引用的资源已全部落盘
-          rsync -a continew-ui/dist/index.html "$WEB_DIR/index.html"
+          rsync -a "$UI_DIST/index.html" "$WEB_DIR/index.html"
 
           # 4、清理上一版残留：此时 index.html 已指向新资源
-          rsync -a --delete continew-ui/dist/ "$WEB_DIR/"
+          rsync -a --delete "$UI_DIST/" "$WEB_DIR/"
 
           # 5、只轮转本步骤生成的命名（web-<14 位时间戳>Z），手工建的基线快照不参与
           mapfile -t snaps < <(find "$SNAP_ROOT" -maxdepth 1 -mindepth 1 -type d \

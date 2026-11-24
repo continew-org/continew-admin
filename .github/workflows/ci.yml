@@ -69,6 +69,8 @@ jobs:
         # 同步要求见 AGENTS.md「PR 模板与校验规则是机器契约」。
         # 纯 node 零第三方依赖，托管 runner 预装 node，无需 setup-node。
         run: node scripts/ci/test-pr-body-validation.js
+      - name: Check workflow execution contracts
+        run: node scripts/ci/test-workflow-execution.js
 
   build:
     # job 显示名即分支保护登记的 required check 名，改动需同步仓库设置
@@ -188,7 +190,7 @@ jobs:
         run: pnpm build
       - name: Upload dist artifact
         # dist 仅作为构建成功后的产物上传，不进缓存、不同步公开网页
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: continew-ui-dist-${{ github.event.pull_request.number || github.sha }}
           path: continew-ui/dist/
@@ -241,7 +243,7 @@ jobs:
         # 托管 runner 无 full-test.yml 的本地归档限制，用 upload-artifact 归档供失败诊断。
         # always()：L3 失败也归档。
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: l3-surefire-reports-pr-${{ github.event.pull_request.number }}
           path: continew-tests/target/surefire-reports/
@@ -311,9 +313,34 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright chromium
-        # --with-deps 一并安装 chromium 的系统依赖（apt）；浏览器版本由锁文件内的 @playwright/test 决定
         working-directory: continew-ui
-        run: pnpm exec playwright install --with-deps chromium
+        run: |
+          set -euo pipefail
+          # 配置未指定 channel，默认只用锁文件对应的 Chromium headless shell。
+          pnpm exec playwright install --only-shell chromium
+
+          probe_chromium() {
+            node <<'NODE'
+          const { chromium } = require('@playwright/test');
+          chromium.launch({ headless: true, timeout: 30_000 })
+            .then(browser => browser.close())
+            .catch(error => { console.error(error); process.exitCode = 1; });
+          NODE
+          }
+
+          probe_status=0
+          probe_output=$(probe_chromium 2>&1) || probe_status=$?
+          if [ -n "$probe_output" ]; then
+            printf '%s\n' "$probe_output" >&2
+          fi
+          [ "$probe_status" -ne 0 ] || exit 0
+          # 下载错误或非系统依赖的启动错误不能用 apt 修复。
+          if ! grep -Eq 'Host system is missing dependencies|error while loading shared libraries: .*: cannot open shared object file' <<< "$probe_output"; then
+            exit "$probe_status"
+          fi
+          echo '::notice::Chromium 启动缺少系统依赖，安装依赖后重试'
+          pnpm exec playwright install-deps chromium
+          probe_chromium
 
       - name: Start test environment
         # up.sh：探测空闲端口 -> mvnw package 瘦包 -> compose 启 MySQL/Redis/应用 -> 健康检查 -> 关闭验证码
@@ -339,7 +366,7 @@ jobs:
         # trace/截图按 retain-on-failure / only-on-failure 落在 continew-ui/test-results/，
         # 成功运行不产出失败产物，failure() 恰好表达「仅失败时上传」
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: e2e-failure-artifacts-pr-${{ github.event.pull_request.number }}
           path: continew-ui/test-results/

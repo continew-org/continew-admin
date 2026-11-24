@@ -8,7 +8,8 @@ name: OCR Review
 #   secret    OCR_LLM_URL             LLM API 端点
 #   secret    OCR_LLM_AUTH_TOKEN      LLM API 认证 token
 #   secret    OCR_LLM_MODEL           模型名（也可配在 variables，二者皆有时 secrets 优先）
-#   secret    OCR_LLM_USE_ANTHROPIC   'true' 走 Anthropic 协议；缺省或其他值走 OpenAI 兼容协议
+#   secret    OCR_LLM_USE_ANTHROPIC   true/1/yes 走 Anthropic 协议；缺省走 OpenAI 兼容协议
+#   variable  OCR_REASONING_EFFORT    可选，仅 OpenAI 兼容端点支持：minimal/low/medium/high/max
 #   variable  OCR_USE_GITHUB_APP      'true' 时以 GitHub App 身份发布评论
 #   secret    CR_BOT_APP_CLIENT_ID    App Client ID（App：OpenContiNew CodeReview Bot）
 #   secret    CR_BOT_APP_PRIVATE_KEY  App 私钥（.pem 全文，含首尾标记行）
@@ -65,9 +66,10 @@ jobs:
       # ocr 的 npm 启动器会后台自更新（npm i -g 覆盖安装），替换 bin 链接的瞬间
       # /usr/local/bin/ocr 会悬空，同一 job 后续的 ocr 调用直接失败，CI 里必须禁用。
       OCR_NO_UPDATE: '1'
-      # 推理深度（low/medium/high/xhigh/max），默认发送 thinking:disabled，
-      # 端点不接受该值时需在此显式指定；评审请求与诊断探针共用此值
-      # OCR_REASONING_EFFORT: 'low'
+      # 空串会被上游归一化为 anthropic，必须显式给 false 才走 OpenAI 兼容协议
+      OCR_LLM_USE_ANTHROPIC: ${{ secrets.OCR_LLM_USE_ANTHROPIC || vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+      # 仅 OpenAI 兼容端点支持；未配置时不发送，合法值为 minimal/low/medium/high/max
+      OCR_REASONING_EFFORT: ${{ vars.OCR_REASONING_EFFORT }}
     # 评论触发仅限维护者发送 /continew-code-review 或 @continew-code-review
     if: |
       github.event_name == 'pull_request_target'
@@ -86,6 +88,16 @@ jobs:
         )
       )
     steps:
+      - name: Resolve OCR protocol
+        id: ocr-config
+        shell: bash
+        run: |
+          # 与上游 action 的协议别名一致；未配置时由 job env 显式传入 false。
+          case "${OCR_LLM_USE_ANTHROPIC,,}" in
+            ''|true|1|yes) printf 'use_anthropic=true\n' ;;
+            *) printf 'use_anthropic=false\n' ;;
+          esac >> "$GITHUB_OUTPUT"
+
       - name: Get PR context
         id: pr-context
         if: github.event_name == 'issue_comment'
@@ -111,14 +123,14 @@ jobs:
           private-key: ${{ secrets.CR_BOT_APP_PRIVATE_KEY }}
 
       - name: Run OpenCodeReview
+        id: ocr
         uses: alibaba/open-code-review@375f64cd6f67a48a135da83cfcf59c52669a09cb # v1.13.3
         with:
           ocr_version: '1.13.3'
           llm_url: ${{ secrets.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
           llm_model: ${{ secrets.OCR_LLM_MODEL || vars.OCR_LLM_MODEL }}
-          # 空串会被上游归一化为 anthropic，必须显式给 false 才走 OpenAI 兼容协议
-          llm_use_anthropic: ${{ secrets.OCR_LLM_USE_ANTHROPIC || vars.OCR_LLM_USE_ANTHROPIC || 'false' }}
+          llm_use_anthropic: ${{ steps.ocr-config.outputs.use_anthropic }}
           # 单请求默认 300s 会掐断推理端点的慢响应，放宽到 600
           llm_timeout: '600'
           # 单文件/并发任务的评审预算默认 15 分钟，单请求放宽后同步抬高，避免长评审被截断
@@ -138,11 +150,33 @@ jobs:
           effort: 'low'
           # medium 及以下级别的发现从行内评论路由到 PR 摘要，减少 GitHub API 调用与评论噪音
           route_severity_below: 'medium'
-          llm_extra_body: '{"reasoning_effort": "${{ env.OCR_REASONING_EFFORT }}"}'
-          # 失败/取消时也上传原始输出，便于排错
-          upload_artifacts: 'true'
+          # 使用空对象覆盖 action 默认的 thinking 字段，保持最小请求体与探针一致
+          llm_extra_body: '{}'
+          llm_reasoning_effort: ${{ steps.ocr-config.outputs.use_anthropic == 'false' && env.OCR_REASONING_EFFORT || '' }}
+          # 在调用方归档，避免执行 composite 内固定的旧版上传 Action。
+          upload_artifacts: 'false'
           base_ref: ${{ steps.pr-context.outputs.base_ref }}
           head_sha: ${{ steps.pr-context.outputs.head_sha }}
+
+      - name: Check OCR diagnostic files
+        id: ocr-diagnostics
+        if: always() && steps.ocr.outcome != '' && steps.ocr.outcome != 'skipped'
+        shell: bash
+        run: |
+          if test -f /tmp/ocr-result.json || test -f /tmp/ocr-stderr.log; then
+            printf 'present=true\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload review artifacts
+        if: always() && steps.ocr-diagnostics.outputs.present == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ocr-review-result-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            /tmp/ocr-result.json
+            /tmp/ocr-stderr.log
+          if-no-files-found: warn
+          # 与 composite 一致，使用仓库的默认保留期。
 
       # 评审失败时直接探测 LLM 端点，打印 HTTP 状态与响应体：上游 ocr 只给
       # "provider request failed"，看不到 400 的具体原因。
@@ -153,8 +187,11 @@ jobs:
           DIAG_URL: ${{ secrets.OCR_LLM_URL }}
           DIAG_TOKEN: ${{ secrets.OCR_LLM_AUTH_TOKEN }}
           DIAG_MODEL: ${{ secrets.OCR_LLM_MODEL || vars.OCR_LLM_MODEL }}
+          DIAG_USE_ANTHROPIC: ${{ steps.ocr-config.outputs.use_anthropic }}
         run: |
           set +e
+          # 探针仅构造 OpenAI 兼容请求。
+          [[ "$DIAG_USE_ANTHROPIC" == 'false' ]] || exit 0
           # 只打印协议与主机，完整 URL 可能带 query 凭据
           echo "endpoint host: $(printf '%s' "$DIAG_URL" | sed -E 's#^(https?://[^/]+).*#\1#')"
           echo "model: $DIAG_MODEL"
@@ -169,6 +206,11 @@ jobs:
             head -c 800 /tmp/llm-probe.txt
             echo
           }
-          # 裸请求与实际下发参数对照，后者必须与上面的 llm_extra_body 一致
+          # 仅对上游 action 接受的显式档位发出对照探针，使用同样的小写值。
           probe "minimal" ""
-          probe "with-reasoning-effort" ",\"reasoning_effort\":\"$OCR_REASONING_EFFORT\""
+          reasoning_effort=${OCR_REASONING_EFFORT,,}
+          case "$reasoning_effort" in
+            minimal|low|medium|high|max)
+              probe "with-reasoning-effort" ",\"reasoning_effort\":\"$reasoning_effort\""
+              ;;
+          esac
