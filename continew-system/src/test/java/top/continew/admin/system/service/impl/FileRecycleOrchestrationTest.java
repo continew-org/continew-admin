@@ -81,6 +81,8 @@ class FileRecycleOrchestrationTest {
         fileMapper = mock(FileMapper.class);
         storageService = mock(StorageService.class);
         fileStorageService = mock(FileStorageService.class);
+        when(fileStorageService.file(anyString(), anyString())).thenCallRealMethod();
+        when(fileStorageService.files(anyString(), anyList())).thenCallRealMethod();
         fileRecycleService = new FileRecycleServiceImpl(fileMapper, storageService,
             fileStorageService);
         userContextHolderMock = mockStatic(UserContextHolder.class);

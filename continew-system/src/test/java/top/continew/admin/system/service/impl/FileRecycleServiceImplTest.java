@@ -19,6 +19,7 @@ package top.continew.admin.system.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -88,6 +89,7 @@ class FileRecycleServiceImplTest {
         FileMapper fileMapper = mock(FileMapper.class);
         StorageService storageService = mock(StorageService.class);
         FileStorageService fileStorageService = mock(FileStorageService.class);
+        stubFileOperations(fileStorageService);
         FileRecycleServiceImpl recycleService =
             new FileRecycleServiceImpl(fileMapper, storageService, fileStorageService);
 
@@ -128,6 +130,7 @@ class FileRecycleServiceImplTest {
         FileMapper fileMapper = mock(FileMapper.class);
         StorageService storageService = mock(StorageService.class);
         FileStorageService fileStorageService = mock(FileStorageService.class);
+        stubFileOperations(fileStorageService);
         FileRecycleServiceImpl recycleService =
             new FileRecycleServiceImpl(fileMapper, storageService, fileStorageService);
 
@@ -163,6 +166,7 @@ class FileRecycleServiceImplTest {
         FileMapper fileMapper = mock(FileMapper.class);
         StorageService storageService = mock(StorageService.class);
         FileStorageService fileStorageService = mock(FileStorageService.class);
+        stubFileOperations(fileStorageService);
         FileRecycleServiceImpl recycleService =
             new FileRecycleServiceImpl(fileMapper, storageService, fileStorageService);
 
@@ -192,6 +196,16 @@ class FileRecycleServiceImplTest {
             .capture());
         assertEquals(500, captor.getAllValues().get(0).size());
         assertEquals(100, captor.getAllValues().get(1).size());
+    }
+
+    /**
+     * 让 file()/files() 链式入口走真实委托，断言落在底层存储方法参数上
+     *
+     * @param fileStorageService 存储服务 Mock
+     */
+    private void stubFileOperations(FileStorageService fileStorageService) {
+        when(fileStorageService.file(anyString(), anyString())).thenCallRealMethod();
+        when(fileStorageService.files(anyString(), anyList())).thenCallRealMethod();
     }
 
     /**

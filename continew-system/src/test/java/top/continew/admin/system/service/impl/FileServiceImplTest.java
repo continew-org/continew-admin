@@ -56,6 +56,7 @@ class FileServiceImplTest {
     @Test
     void shouldNotMoveBatchMainFileAsThumbnail() throws Exception {
         FileStorageService storageService = mock(FileStorageService.class);
+        when(storageService.file(anyString(), anyString())).thenCallRealMethod();
         FileServiceImpl fileService = new FileServiceImpl(storageService);
         StorageDO storage = new StorageDO();
         storage.setId(1L);
@@ -367,6 +368,7 @@ class FileServiceImplTest {
 
     private FileServiceImpl newFileService(FileStorageService fileStorageService,
         StorageService storageService) throws Exception {
+        when(fileStorageService.file(anyString(), anyString())).thenCallRealMethod();
         FileServiceImpl fileService = new FileServiceImpl(fileStorageService);
         Field storageField = FileServiceImpl.class.getDeclaredField("storageService");
         storageField.setAccessible(true);

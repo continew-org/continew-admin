@@ -862,11 +862,12 @@ public class FileServiceImpl
         } else if (Boolean.TRUE.equals(storage.getRecycleBinEnabled())) {
             // 移动到回收站目录
             String targetPath = normalizeStoragePath(storage.getRecycleBinPath() + sourcePath);
-            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-                .getBucketName(), sourcePath, targetPath);
+            fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage.getCode())
+                .moveTo(targetPath);
         } else {
             // 删除文件
-            fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
+            fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage.getCode())
+                .delete();
         }
         // 缩略图随主文件一并处理；若缩略图路径就是本批某条记录的主路径，交给主文件操作，
         // 避免先被当作缩略图移走/删除后主文件操作失败
@@ -912,10 +913,10 @@ public class FileServiceImpl
         String thumbnailPath = normalizeStoragePath(thumbnailDbPath);
         String targetPath = normalizeStoragePath(storage.getRecycleBinPath() + thumbnailPath);
         try {
-            if (fileStorageService
-                .exists(storage.getCode(), storage.getBucketName(), thumbnailPath)) {
-                fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-                    .getBucketName(), thumbnailPath, targetPath);
+            if (fileStorageService.file(storage.getBucketName(), thumbnailPath)
+                .platform(storage.getCode()).exists()) {
+                fileStorageService.file(storage.getBucketName(), thumbnailPath)
+                    .platform(storage.getCode()).moveTo(targetPath);
             }
         } catch (Exception e) {
             log.warn("缩略图 [{}] 移入回收站失败", thumbnailPath, e);
@@ -944,7 +945,8 @@ public class FileServiceImpl
         }
         String thumbnailPath = normalizeStoragePath(thumbnailDbPath);
         try {
-            fileStorageService.delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
+            fileStorageService.file(storage.getBucketName(), thumbnailPath).platform(storage
+                .getCode()).delete();
         } catch (Exception e) {
             log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
         }
