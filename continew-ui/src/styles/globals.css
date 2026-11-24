@@ -305,9 +305,14 @@
 }
 
 /* Plain navigation: square, full-bleed menu items. */
-:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-button'],
-:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-sub-button'],
-:root[data-navigation-style='plain'] [data-slot='sidebar'] [data-sidebar='menu-button']::before {
+:root[data-navigation-style='plain']
+  :is([data-slot='sidebar'], [data-slot='mixed-sidebar-sub'])
+  :is(
+    [data-sidebar='menu-button'],
+    [data-sidebar='menu-sub-button'],
+    [data-sidebar='menu-button']::before,
+    [data-sidebar='menu-sub-button']::before
+  ) {
   border-radius: 0;
 }
 
@@ -447,7 +452,14 @@
   background-repeat: repeat;
 }
 
-/* The active sidebar item keeps its own fill hidden while a copy glides in from the previous item. */
-[data-sidebar-glide-target]::before {
+/* The active sidebar item keeps its own fill hidden while a gliding or hover surface covers it. */
+[data-sidebar-glide-target]::before,
+[data-sidebar-hover-target]::before {
   visibility: hidden;
+}
+
+/* SidebarHighlight paints hover with one shared pill, so items inside it drop their own hover fill. */
+[data-sidebar-hover-surface] [data-sidebar='menu-button']:hover,
+[data-sidebar-hover-surface] [data-sidebar='menu-sub-button']:hover {
+  background-color: transparent;
 }

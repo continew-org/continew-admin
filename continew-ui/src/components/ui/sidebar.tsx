@@ -346,6 +346,7 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
 }
 
 const MENU_ITEM_SELECTOR = '[data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]'
+const DISABLED_ITEM_SELECTOR = ':disabled, [aria-disabled="true"], [data-disabled]'
 
 /**
  * Places an absolutely-positioned `copy` over `to`'s box inside `to`'s host, optionally gliding
@@ -465,11 +466,29 @@ function useHoverSurface(reduce: boolean) {
     teardownRef.current = null
     if (!root) return
 
-    const accent = getComputedStyle(root).getPropertyValue('--sidebar-accent')
-    const radiusOf = new WeakMap<HTMLElement, string>()
+    let radiusOf = new WeakMap<HTMLElement, string>()
+    const radiusObserver = new MutationObserver(() => {
+      radiusOf = new WeakMap()
+    })
+    radiusObserver.observe(document.documentElement, {
+      attributeFilter: ['data-radius', 'data-navigation-style']
+    })
     let surface: HTMLElement | null = null
     let glide: Animation | null = null
     let fade: Animation | null = null
+    let hoverTarget: HTMLElement | null = null
+
+    const clearHoverTarget = () => {
+      hoverTarget?.removeAttribute('data-sidebar-hover-target')
+      hoverTarget = null
+    }
+
+    const setHoverTarget = (to: HTMLElement) => {
+      if (hoverTarget === to) return
+      clearHoverTarget()
+      to.setAttribute('data-sidebar-hover-target', '')
+      hoverTarget = to
+    }
 
     const glideTo = (to: HTMLElement) => {
       const host = to.parentElement
@@ -479,10 +498,12 @@ function useHoverSurface(reduce: boolean) {
       if (!end.width || !end.height) return
       fade?.cancel()
       fade = null
+      clearHoverTarget()
       if (!surface) {
         surface = document.createElement('span')
         surface.setAttribute('aria-hidden', 'true')
-        surface.style.cssText = 'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0'
+        surface.style.cssText =
+          'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;background-color:var(--sidebar-accent)'
       }
       let radius = radiusOf.get(to)
       if (radius === undefined) {
@@ -490,23 +511,34 @@ function useHoverSurface(reduce: boolean) {
         radiusOf.set(to, radius)
       }
       surface.style.borderRadius = radius
-      surface.style.backgroundColor = accent
       surface.style.opacity = '1'
       glide?.cancel()
-      glide = glideCopy(
+      const animation = glideCopy(
         surface,
         reduceRef.current ? null : (start ?? null),
         to,
         reduceRef.current ? null : { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
       )
+      glide = animation
+      if (!animation) {
+        setHoverTarget(to)
+        return
+      }
+      animation.onfinish = () => {
+        if (glide === animation && current === to) {
+          setHoverTarget(to)
+        }
+      }
     }
 
-    const fadeOut = () => {
+    const fadeOut = (leaving: HTMLElement | null) => {
       glide?.cancel()
       glide = null
+      clearHoverTarget()
       const el = surface
       if (!el) return
-      if (reduceRef.current) {
+      // Active items keep their own ::before fill, so drop the hover pill immediately instead of fading over it.
+      if (reduceRef.current || leaving?.hasAttribute('data-active')) {
         surface = null
         el.remove()
         return
@@ -522,22 +554,33 @@ function useHoverSurface(reduce: boolean) {
     let current: HTMLElement | null = null
     const over = (event: PointerEvent) => {
       const item = (event.target as Element).closest?.(MENU_ITEM_SELECTOR)
-      if (!(item instanceof HTMLElement) || item === current) return
+      if (!(item instanceof HTMLElement) || item.matches(DISABLED_ITEM_SELECTOR)) {
+        if (current) {
+          const prev = current
+          current = null
+          fadeOut(prev)
+        }
+        return
+      }
+      if (item === current) return
       current = item
       glideTo(item)
     }
     const out = (event: PointerEvent) => {
       const next = (event.relatedTarget as Element | null)?.closest?.(MENU_ITEM_SELECTOR)
-      if (next) return
+      if (next && !next.matches(DISABLED_ITEM_SELECTOR)) return
+      const prev = current
       current = null
-      fadeOut()
+      fadeOut(prev)
     }
 
     root.addEventListener('pointerover', over)
     root.addEventListener('pointerout', out)
     teardownRef.current = () => {
+      radiusObserver.disconnect()
       root.removeEventListener('pointerover', over)
       root.removeEventListener('pointerout', out)
+      clearHoverTarget()
       glide?.cancel()
       fade?.cancel()
       surface?.remove()
@@ -559,7 +602,7 @@ function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
     [glideRef, surfaceRef]
   )
 
-  return <Highlight animateOnHover={false} {...props} ref={ref} />
+  return <Highlight animateOnHover={false} data-sidebar-hover-surface="" {...props} ref={ref} />
 }
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
