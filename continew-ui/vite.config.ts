@@ -45,6 +45,22 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
+    build: {
+      rolldownOptions: {
+        output: {
+          codeSplitting: {
+            groups: [
+              {
+                // Group lucide-react's per-icon modules into one chunk so `icon-picker` does not
+                // fan out ~1,900 individual icon requests when opened alongside `lucide-react/dynamic`.
+                name: 'lucide-icons',
+                test: /node_modules[\\/]lucide-react[\\/]dist[\\/]esm[\\/]icons[\\/]/
+              }
+            ]
+          }
+        }
+      }
+    },
     plugins: [
       themeBootPlugin(),
       baiduAnalyticsPlugin(VITE_BAIDU_ANALYTICS_ID),
