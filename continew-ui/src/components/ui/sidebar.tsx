@@ -427,13 +427,112 @@ function useActiveItemGlide(timing: CssTiming | null) {
   }, [])
 }
 
+/**
+ * The library paints its hover surface through a React-mounted copy per item, so a fast pointer
+ * sweep commits one render plus a forced layout for every item crossed. A single shared pill moved
+ * with WAAPI keeps the same look without touching React per hover.
+ */
+function useHoverSurface() {
+  const teardownRef = React.useRef<(() => void) | null>(null)
+
+  return React.useCallback((root: HTMLDivElement | null) => {
+    teardownRef.current?.()
+    teardownRef.current = null
+    if (!root) return
+
+    let surface: HTMLElement | null = null
+    let glide: Animation | null = null
+    let fade: Animation | null = null
+
+    const glideTo = (to: HTMLElement) => {
+      const host = to.parentElement
+      if (!host) return
+      const start = surface?.getBoundingClientRect()
+      const end = to.getBoundingClientRect()
+      if (!end.width || !end.height) return
+      fade?.cancel()
+      fade = null
+      if (!surface) {
+        surface = document.createElement('span')
+        surface.setAttribute('aria-hidden', 'true')
+        surface.style.cssText = 'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0'
+      }
+      host.append(surface)
+      const base = (surface.offsetParent ?? host).getBoundingClientRect()
+      surface.style.left = `${end.left - base.left}px`
+      surface.style.top = `${end.top - base.top}px`
+      surface.style.width = `${end.width}px`
+      surface.style.height = `${end.height}px`
+      surface.style.borderRadius = getComputedStyle(to).borderRadius
+      surface.style.backgroundColor = getComputedStyle(root).getPropertyValue('--sidebar-accent')
+      surface.style.opacity = '1'
+      glide?.cancel()
+      if (!start || !start.width || !start.height) return
+      glide = surface.animate(
+        [
+          {
+            transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
+          },
+          { transform: 'none' }
+        ],
+        { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
+      )
+    }
+
+    const fadeOut = () => {
+      glide?.cancel()
+      glide = null
+      const el = surface
+      if (!el) return
+      fade?.cancel()
+      fade = el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, fill: 'forwards' })
+      fade.onfinish = () => {
+        if (surface === el) surface = null
+        el.remove()
+      }
+    }
+
+    let current: HTMLElement | null = null
+    const over = (event: PointerEvent) => {
+      const item = (event.target as Element).closest?.(MENU_ITEM_SELECTOR)
+      if (!(item instanceof HTMLElement) || item === current) return
+      current = item
+      glideTo(item)
+    }
+    const out = (event: PointerEvent) => {
+      const next = (event.relatedTarget as Element | null)?.closest?.(MENU_ITEM_SELECTOR)
+      if (next) return
+      current = null
+      fadeOut()
+    }
+
+    root.addEventListener('pointerover', over)
+    root.addEventListener('pointerout', out)
+    teardownRef.current = () => {
+      root.removeEventListener('pointerover', over)
+      root.removeEventListener('pointerout', out)
+      glide?.cancel()
+      fade?.cancel()
+      surface?.remove()
+    }
+  }, [])
+}
+
 /** The active glide follows no pointer, so it keeps the library tempo to stay visible. */
 function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
   const reduce = useShouldReduceMotion()
   const timing = toCssTiming(useTempoTransition(motionTokens.spring.highlight))
-  const ref = useActiveItemGlide(reduce ? null : timing)
+  const glideRef = useActiveItemGlide(reduce ? null : timing)
+  const surfaceRef = useHoverSurface()
+  const ref = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      glideRef(node)
+      surfaceRef(node)
+    },
+    [glideRef, surfaceRef]
+  )
 
-  return <Highlight {...props} ref={ref} />
+  return <Highlight animateOnHover={false} {...props} ref={ref} />
 }
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
