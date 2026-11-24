@@ -137,7 +137,7 @@ export function initMultipartUpload(body: MultipartUploadCreateReq, signal?: Abo
   return http.post<MultipartUploadCreateResp>('/system/multipart-upload/init', body, { signal })
 }
 
-/** `path` 传 init 返回的存储文件路径；分片 body 只含该分片的字节。 */
+/** `path` 为后端仍要求的 HTTP 参数；会话内已存路径时优先会话值（`blankToDefault(sessionPath, path)`），仅会话缺失时用传入值。 */
 export function uploadMultipartPart(
   uploadId: string,
   partNumber: number,
@@ -153,8 +153,21 @@ export function uploadMultipartPart(
   })
 }
 
+/**
+ * 合并完成的文件信息。后端返回 `FileDO` JSON（字段多于列表项 `FileResp`，且不包含
+ * `url`/`storageName` 等填充字段）；上传流程当前不消费返回体，声明最小字段集供调用方参考。
+ */
+export interface MultipartUploadCompleteResp {
+  id: string | number
+  originalName: string
+  size: number
+  path: string
+}
+
 export function completeMultipartUpload(uploadId: string, signal?: AbortSignal) {
-  return http.get<unknown>(`/system/multipart-upload/complete/${encodeURIComponent(uploadId)}`, { signal })
+  return http.get<MultipartUploadCompleteResp>(`/system/multipart-upload/complete/${encodeURIComponent(uploadId)}`, {
+    signal
+  })
 }
 
 /** 中止分片会话并清理已传分片；cancel 请求自身失败时静默，不影响原错误向上抛。 */

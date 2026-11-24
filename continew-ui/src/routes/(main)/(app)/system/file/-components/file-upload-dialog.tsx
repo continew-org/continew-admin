@@ -40,6 +40,11 @@ export function FileUploadDialog({ open, parentPath, onClose, onUploaded }: File
   const [error, setError] = React.useState<string | null>(null)
   const [progress, setProgress] = React.useState<ManagedUploadProgress | null>(null)
   const [currentName, setCurrentName] = React.useState('')
+  // null 时 Progress 为 indeterminate 态（hashing/direct/completing 无字节进度）
+  const percent =
+    progress?.phase === 'uploading' && progress.totalBytes > 0
+      ? (progress.uploadedBytes / progress.totalBytes) * 100
+      : null
 
   React.useEffect(() => {
     if (!open) {
@@ -212,18 +217,9 @@ export function FileUploadDialog({ open, parentPath, onClose, onUploaded }: File
                       ? `正在合并 ${currentName}`
                       : currentName}
                 </span>
-                {progress.phase === 'uploading' && progress.totalBytes > 0 ? (
-                  <span className="shrink-0">{Math.floor((progress.uploadedBytes / progress.totalBytes) * 100)}%</span>
-                ) : null}
+                {percent !== null ? <span className="shrink-0">{Math.floor(percent)}%</span> : null}
               </div>
-              <Progress
-                aria-label={`${currentName} 上传进度`}
-                value={
-                  progress.phase === 'uploading' && progress.totalBytes > 0
-                    ? (progress.uploadedBytes / progress.totalBytes) * 100
-                    : null
-                }
-              />
+              <Progress aria-label={`${currentName} 上传进度`} value={percent} />
             </div>
           ) : null}
 

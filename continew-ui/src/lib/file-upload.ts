@@ -85,12 +85,18 @@ export function buildPartSlices(fileSize: number, partSize: number) {
   })
 }
 
-/** 分块读取文件计算 MD5；init 的 fileMd5 必填且用于断点续传会话匹配。signal 中止时随每块读取停止。 */
+/**
+ * 分块读取文件计算 MD5；init 的 fileMd5 必填且用于断点续传会话匹配。
+ * `spark.append` 为同步 CPU 密集计算，每块结束后让出宏任务并在下一块前复查 signal，
+ * 保证取消信号能穿插执行；不迁入 Worker，避免新增 worker 打包与 SparkMD5 兼容问题。
+ */
 export async function computeFileMd5(file: File, signal?: AbortSignal) {
   const spark = new SparkMD5.ArrayBuffer()
   for (let offset = 0; offset < file.size; offset += MD5_CHUNK_SIZE) {
     signal?.throwIfAborted()
     spark.append(await file.slice(offset, offset + MD5_CHUNK_SIZE).arrayBuffer())
+    // 让出主线程：渲染与 AbortSignal 处理插入到下一事件循环
+    await new Promise<void>(resolve => setTimeout(resolve, 0))
   }
   return spark.end()
 }
@@ -134,8 +140,12 @@ export async function uploadManagedFile(options: ManagedUploadOptions) {
     signal
   )
 
-  // partSize 以服务端会话为准（可能与配置的存储实例值不同源）；缺省回退配置值
+  // partSize 以服务端会话为准（可能与配置的存储实例值不同源）；缺省回退配置值。
+  // 二者均来自网络响应：非正整数视为后端契约违约，在发出任何分片前报错
   const partSize = session.partSize ?? config.multipartUploadPartSize
+  if (!Number.isSafeInteger(partSize) || partSize <= 0) {
+    throw new Error(`服务端返回的分片大小非法: ${partSize}`)
+  }
   const parts = buildPartSlices(file.size, partSize)
   const done = new Set(session.uploadedPartNumbers ?? [])
   let uploadedBytes = parts
