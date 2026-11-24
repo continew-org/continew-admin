@@ -466,17 +466,31 @@ function useHoverSurface(reduce: boolean) {
     teardownRef.current = null
     if (!root) return
 
-    let radiusOf = new WeakMap<HTMLElement, string>()
-    const radiusObserver = new MutationObserver(() => {
-      radiusOf = new WeakMap()
-    })
-    radiusObserver.observe(document.documentElement, {
-      attributeFilter: ['data-radius', 'data-navigation-style']
-    })
     let surface: HTMLElement | null = null
     let glide: Animation | null = null
     let fade: Animation | null = null
     let hoverTarget: HTMLElement | null = null
+    let current: HTMLElement | null = null
+    let radiusOf = new WeakMap<HTMLElement, string>()
+
+    const getRadius = (el: HTMLElement) => {
+      let radius = radiusOf.get(el)
+      if (radius === undefined) {
+        radius = getComputedStyle(el).borderRadius
+        radiusOf.set(el, radius)
+      }
+      return radius
+    }
+
+    const radiusObserver = new MutationObserver(() => {
+      radiusOf = new WeakMap()
+      if (surface && current?.isConnected) {
+        surface.style.borderRadius = getRadius(current)
+      }
+    })
+    radiusObserver.observe(document.documentElement, {
+      attributeFilter: ['data-radius', 'data-navigation-style']
+    })
 
     const clearHoverTarget = () => {
       hoverTarget?.removeAttribute('data-sidebar-hover-target')
@@ -505,12 +519,7 @@ function useHoverSurface(reduce: boolean) {
         surface.style.cssText =
           'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;background-color:var(--sidebar-accent)'
       }
-      let radius = radiusOf.get(to)
-      if (radius === undefined) {
-        radius = getComputedStyle(to).borderRadius
-        radiusOf.set(to, radius)
-      }
-      surface.style.borderRadius = radius
+      surface.style.borderRadius = getRadius(to)
       surface.style.opacity = '1'
       glide?.cancel()
       const animation = glideCopy(
@@ -524,11 +533,13 @@ function useHoverSurface(reduce: boolean) {
         setHoverTarget(to)
         return
       }
-      animation.onfinish = () => {
+      const settle = () => {
         if (glide === animation && current === to) {
           setHoverTarget(to)
         }
       }
+      animation.onfinish = settle
+      animation.oncancel = settle
     }
 
     const fadeOut = (leaving: HTMLElement | null) => {
@@ -551,7 +562,6 @@ function useHoverSurface(reduce: boolean) {
       }
     }
 
-    let current: HTMLElement | null = null
     const over = (event: PointerEvent) => {
       const item = (event.target as Element).closest?.(MENU_ITEM_SELECTOR)
       if (!(item instanceof HTMLElement) || item.matches(DISABLED_ITEM_SELECTOR)) {

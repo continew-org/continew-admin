@@ -317,12 +317,10 @@
 /* Plain navigation: square, full-bleed menu items. */
 :root[data-navigation-style='plain']
   :is([data-slot='sidebar'], [data-slot='mixed-sidebar-sub'])
-  :is(
-    [data-sidebar='menu-button'],
-    [data-sidebar='menu-sub-button'],
-    [data-sidebar='menu-button']::before,
-    [data-sidebar='menu-sub-button']::before
-  ) {
+  :is([data-sidebar='menu-button'], [data-sidebar='menu-sub-button']),
+:root[data-navigation-style='plain']
+  :is([data-slot='sidebar'], [data-slot='mixed-sidebar-sub'])
+  :is([data-sidebar='menu-button'], [data-sidebar='menu-sub-button'])::before {
   border-radius: 0;
 }
 
