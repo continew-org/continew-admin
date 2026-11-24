@@ -1,6 +1,12 @@
 import * as React from 'react'
 import { Highlight } from '@animate-ui/react/primitives/sidebar'
-import { AnimateUIProvider } from '@animate-ui/react/provider'
+import {
+  type CssTiming,
+  motionTokens,
+  toCssTiming,
+  useShouldReduceMotion,
+  useTempoTransition
+} from '@animate-ui/react/utils/motion'
 import { mergeProps } from '@base-ui/react/merge-props'
 import { useRender } from '@base-ui/react/use-render'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -339,18 +345,222 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
   )
 }
 
-// The hover surface glides between items; at the library tempo it trails the pointer on a fast
-// sweep. Shorter than 0.5 the glide is over in two or three frames and reads as dropped frames.
-const SIDEBAR_HOVER_TEMPO = 0.5
+const MENU_ITEM_SELECTOR = '[data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]'
 
-function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
-  return (
-    <AnimateUIProvider tempo={SIDEBAR_HOVER_TEMPO}>
-      <Highlight {...props} />
-    </AnimateUIProvider>
+/**
+ * Places an absolutely-positioned `copy` over `to`'s box inside `to`'s host, optionally gliding
+ * from `start`'s box first. Null `start` or `timing` positions without animating.
+ */
+function glideCopy(
+  copy: HTMLElement,
+  start: DOMRect | null,
+  to: HTMLElement,
+  timing: CssTiming | { duration: number; easing: string } | null
+): Animation | null {
+  const end = to.getBoundingClientRect()
+  const host = to.parentElement!
+  copy.style.width = `${end.width}px`
+  copy.style.height = `${end.height}px`
+  host.append(copy)
+  const base = (copy.offsetParent ?? host).getBoundingClientRect()
+  copy.style.left = `${end.left - base.left}px`
+  copy.style.top = `${end.top - base.top}px`
+  if (!timing || !start || !start.width || !start.height) return null
+  return copy.animate(
+    [
+      {
+        transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
+      },
+      { transform: 'none' }
+    ],
+    timing
   )
 }
 
+/**
+ * The active item paints its own fill, so a page change made outside the sidebar (tab bar,
+ * breadcrumb, browser history) would make the fill jump. A copy of it glides in from the previous
+ * item instead. An item the pointer or keyboard is on already shows the hover or focus surface,
+ * so those changes are left alone.
+ */
+function useActiveItemGlide(timing: CssTiming | null) {
+  const timingRef = React.useRef(timing)
+  React.useLayoutEffect(() => {
+    timingRef.current = timing
+  })
+  // `Highlight` merges this ref without forwarding a returned cleanup, so detaching arrives as a
+  // call with `null` and the previous root is torn down here.
+  const teardownRef = React.useRef<(() => void) | null>(null)
+
+  return React.useCallback((root: HTMLDivElement | null) => {
+    teardownRef.current?.()
+    teardownRef.current = null
+    if (!root) return
+
+    let glide: { animation: Animation; copy: HTMLElement } | null = null
+    const observer = new MutationObserver(records => {
+      let from: Element | null = null
+      let to: HTMLElement | null = null
+      for (const record of records) {
+        const item = record.target
+        if (!(item instanceof HTMLElement) || !item.matches(MENU_ITEM_SELECTOR)) continue
+        if (item.hasAttribute('data-active')) to = item
+        else if (record.oldValue !== null) from = item
+      }
+
+      const timing = timingRef.current
+      if (!timing || !from || !to || to.matches(':hover, :focus-visible')) return
+
+      // A glide still in flight starts the next one from where its copy is now.
+      const start = (glide?.copy ?? from).getBoundingClientRect()
+      glide?.animation.cancel()
+      const end = to.getBoundingClientRect()
+      const host = to.parentElement
+      // An item inside a closed group has no box to glide from or to.
+      if (!host || !start.width || !start.height || !end.width || !end.height) return
+
+      const fill = getComputedStyle(to, '::before')
+      const copy = document.createElement('span')
+      copy.setAttribute('aria-hidden', 'true')
+      copy.style.cssText = `position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;border-radius:${fill.borderRadius};background-color:${fill.backgroundColor}`
+      const animation = glideCopy(copy, start, to, timing)
+      if (!animation) {
+        copy.remove()
+        return
+      }
+      to.setAttribute('data-sidebar-glide-target', '')
+      const current = { animation, copy }
+      glide = current
+      const settle = () => {
+        copy.remove()
+        to.removeAttribute('data-sidebar-glide-target')
+        if (glide === current) glide = null
+      }
+      animation.onfinish = settle
+      animation.oncancel = settle
+    })
+    observer.observe(root, { subtree: true, attributeFilter: ['data-active'], attributeOldValue: true })
+
+    teardownRef.current = () => {
+      observer.disconnect()
+      glide?.animation.cancel()
+    }
+  }, [])
+}
+
+/**
+ * The library paints its hover surface through a React-mounted copy per item, so a fast pointer
+ * sweep commits one render plus a forced layout for every item crossed. A single shared pill moved
+ * with WAAPI keeps the same look without touching React per hover.
+ */
+function useHoverSurface(reduce: boolean) {
+  const reduceRef = React.useRef(reduce)
+  React.useLayoutEffect(() => {
+    reduceRef.current = reduce
+  })
+  const teardownRef = React.useRef<(() => void) | null>(null)
+
+  return React.useCallback((root: HTMLDivElement | null) => {
+    teardownRef.current?.()
+    teardownRef.current = null
+    if (!root) return
+
+    const accent = getComputedStyle(root).getPropertyValue('--sidebar-accent')
+    const radiusOf = new WeakMap<HTMLElement, string>()
+    let surface: HTMLElement | null = null
+    let glide: Animation | null = null
+    let fade: Animation | null = null
+
+    const glideTo = (to: HTMLElement) => {
+      const host = to.parentElement
+      if (!host) return
+      const start = surface?.getBoundingClientRect()
+      const end = to.getBoundingClientRect()
+      if (!end.width || !end.height) return
+      fade?.cancel()
+      fade = null
+      if (!surface) {
+        surface = document.createElement('span')
+        surface.setAttribute('aria-hidden', 'true')
+        surface.style.cssText = 'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0'
+      }
+      let radius = radiusOf.get(to)
+      if (radius === undefined) {
+        radius = getComputedStyle(to).borderRadius
+        radiusOf.set(to, radius)
+      }
+      surface.style.borderRadius = radius
+      surface.style.backgroundColor = accent
+      surface.style.opacity = '1'
+      glide?.cancel()
+      glide = glideCopy(
+        surface,
+        reduceRef.current ? null : (start ?? null),
+        to,
+        reduceRef.current ? null : { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
+      )
+    }
+
+    const fadeOut = () => {
+      glide?.cancel()
+      glide = null
+      const el = surface
+      if (!el) return
+      if (reduceRef.current) {
+        surface = null
+        el.remove()
+        return
+      }
+      fade?.cancel()
+      fade = el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, fill: 'forwards' })
+      fade.onfinish = () => {
+        if (surface === el) surface = null
+        el.remove()
+      }
+    }
+
+    let current: HTMLElement | null = null
+    const over = (event: PointerEvent) => {
+      const item = (event.target as Element).closest?.(MENU_ITEM_SELECTOR)
+      if (!(item instanceof HTMLElement) || item === current) return
+      current = item
+      glideTo(item)
+    }
+    const out = (event: PointerEvent) => {
+      const next = (event.relatedTarget as Element | null)?.closest?.(MENU_ITEM_SELECTOR)
+      if (next) return
+      current = null
+      fadeOut()
+    }
+
+    root.addEventListener('pointerover', over)
+    root.addEventListener('pointerout', out)
+    teardownRef.current = () => {
+      root.removeEventListener('pointerover', over)
+      root.removeEventListener('pointerout', out)
+      glide?.cancel()
+      fade?.cancel()
+      surface?.remove()
+    }
+  }, [])
+}
+
+/** The active glide follows no pointer, so it keeps the library tempo to stay visible. */
+function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
+  const reduce = useShouldReduceMotion()
+  const timing = toCssTiming(useTempoTransition(motionTokens.spring.highlight))
+  const glideRef = useActiveItemGlide(reduce ? null : timing)
+  const surfaceRef = useHoverSurface(reduce)
+  const ref = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      glideRef(node)
+      surfaceRef(node)
+    },
+    [glideRef, surfaceRef]
+  )
+
+  return <Highlight animateOnHover={false} {...props} ref={ref} />
+}
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <SidebarHighlight
@@ -451,7 +661,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn('group/menu-item relative', className)}
+      className={cn('group/menu-item relative isolate', className)}
       {...props}
     />
   )
@@ -624,7 +834,7 @@ function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>)
     <li
       data-slot="sidebar-menu-sub-item"
       data-sidebar="menu-sub-item"
-      className={cn('group/menu-sub-item relative', className)}
+      className={cn('group/menu-sub-item relative isolate', className)}
       {...props}
     />
   )
