@@ -535,7 +535,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn('group/menu-item relative', className)}
+      className={cn('group/menu-item relative isolate', className)}
       {...props}
     />
   )
@@ -708,7 +708,7 @@ function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>)
     <li
       data-slot="sidebar-menu-sub-item"
       data-sidebar="menu-sub-item"
-      className={cn('group/menu-sub-item relative', className)}
+      className={cn('group/menu-sub-item relative isolate', className)}
       {...props}
     />
   )
