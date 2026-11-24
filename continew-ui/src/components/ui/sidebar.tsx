@@ -348,6 +348,36 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
 const MENU_ITEM_SELECTOR = '[data-sidebar="menu-button"], [data-sidebar="menu-sub-button"]'
 
 /**
+ * Places an absolutely-positioned `copy` over `to`'s box inside `to`'s host, optionally gliding
+ * from `start`'s box first. Null `start` or `timing` positions without animating.
+ */
+function glideCopy(
+  copy: HTMLElement,
+  start: DOMRect | null,
+  to: HTMLElement,
+  timing: CssTiming | { duration: number; easing: string } | null
+): Animation | null {
+  const end = to.getBoundingClientRect()
+  const host = to.parentElement!
+  copy.style.width = `${end.width}px`
+  copy.style.height = `${end.height}px`
+  host.append(copy)
+  const base = (copy.offsetParent ?? host).getBoundingClientRect()
+  copy.style.left = `${end.left - base.left}px`
+  copy.style.top = `${end.top - base.top}px`
+  if (!timing || !start || !start.width || !start.height) return null
+  return copy.animate(
+    [
+      {
+        transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
+      },
+      { transform: 'none' }
+    ],
+    timing
+  )
+}
+
+/**
  * The active item paints its own fill, so a page change made outside the sidebar (tab bar,
  * breadcrumb, browser history) would make the fill jump. A copy of it glides in from the previous
  * item instead. An item the pointer or keyboard is on already shows the hover or focus surface,
@@ -392,22 +422,13 @@ function useActiveItemGlide(timing: CssTiming | null) {
       const fill = getComputedStyle(to, '::before')
       const copy = document.createElement('span')
       copy.setAttribute('aria-hidden', 'true')
-      copy.style.cssText = `position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;width:${end.width}px;height:${end.height}px;border-radius:${fill.borderRadius};background-color:${fill.backgroundColor}`
-      host.append(copy)
-      const base = (copy.offsetParent ?? host).getBoundingClientRect()
-      copy.style.left = `${end.left - base.left}px`
-      copy.style.top = `${end.top - base.top}px`
-
+      copy.style.cssText = `position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0;border-radius:${fill.borderRadius};background-color:${fill.backgroundColor}`
+      const animation = glideCopy(copy, start, to, timing)
+      if (!animation) {
+        copy.remove()
+        return
+      }
       to.setAttribute('data-sidebar-glide-target', '')
-      const animation = copy.animate(
-        [
-          {
-            transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
-          },
-          { transform: 'none' }
-        ],
-        timing
-      )
       const current = { animation, copy }
       glide = current
       const settle = () => {
@@ -463,12 +484,6 @@ function useHoverSurface(reduce: boolean) {
         surface.setAttribute('aria-hidden', 'true')
         surface.style.cssText = 'position:absolute;z-index:-1;pointer-events:none;transform-origin:0 0'
       }
-      host.append(surface)
-      const base = (surface.offsetParent ?? host).getBoundingClientRect()
-      surface.style.left = `${end.left - base.left}px`
-      surface.style.top = `${end.top - base.top}px`
-      surface.style.width = `${end.width}px`
-      surface.style.height = `${end.height}px`
       let radius = radiusOf.get(to)
       if (radius === undefined) {
         radius = getComputedStyle(to).borderRadius
@@ -478,15 +493,11 @@ function useHoverSurface(reduce: boolean) {
       surface.style.backgroundColor = accent
       surface.style.opacity = '1'
       glide?.cancel()
-      if (reduceRef.current || !start || !start.width || !start.height) return
-      glide = surface.animate(
-        [
-          {
-            transform: `translate(${start.left - end.left}px, ${start.top - end.top}px) scale(${start.width / end.width}, ${start.height / end.height})`
-          },
-          { transform: 'none' }
-        ],
-        { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
+      glide = glideCopy(
+        surface,
+        reduceRef.current ? null : (start ?? null),
+        to,
+        reduceRef.current ? null : { duration: 150, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
       )
     }
 
