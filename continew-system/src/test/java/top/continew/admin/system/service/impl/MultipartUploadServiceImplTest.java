@@ -160,6 +160,8 @@ class MultipartUploadServiceImplTest {
         // 落盘名为唯一 ID，不等于原始文件名
         assertNotNull(captor.getValue().getFileName());
         assertNotEquals("photo.png", captor.getValue().getFileName());
+        // 原始文件名透传给 Starter 会话键与展示名，避免同目录同内容不同名复用会话或完成时展示随机名
+        assertEquals("photo.png", captor.getValue().getOriginalFileName());
         verify(fileService).createParentDir(eq("upload"), any());
     }
 

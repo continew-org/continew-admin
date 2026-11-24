@@ -114,7 +114,9 @@ export const storageKeys = {
   lists: () => [...storageKeys.all, 'list'] as const,
   list: (query?: StorageQuery) => [...storageKeys.lists(), query] as const,
   details: () => [...storageKeys.all, 'detail'] as const,
-  detail: (id: string | number | null) => [...storageKeys.details(), id] as const
+  detail: (id: string | number | null) => [...storageKeys.details(), id] as const,
+  /** 默认存储生效的上传配置（阈值/分片大小）；存储增删改与设默认会失效 storageKeys.all。 */
+  uploadConfig: () => [...storageKeys.all, 'upload-config'] as const
 }
 
 export const clientKeys = {

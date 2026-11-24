@@ -68,15 +68,100 @@ export interface FileStatisticsResp {
   data?: FileStatisticsResp[] | null
 }
 
+/** `GET /system/file/upload/config/default`：默认存储生效的上传配置，阈值与分片大小单位均为字节。 */
+export interface FileUploadConfigResp {
+  storageId: number
+  storageName: string
+  storageCode: string
+  /** `StorageTypeEnum`：1 本地存储，2 对象存储 */
+  storageType: number
+  multipartUploadThreshold: number
+  multipartUploadPartSize: number
+  /** 仅本地存储返回，前端不使用 */
+  multipartTempDir?: string | null
+}
+
+/** `POST /system/multipart-upload/init` 请求体。fileMd5 必填，用于断点续传会话匹配。 */
+export interface MultipartUploadCreateReq {
+  fileName: string
+  fileSize: number
+  fileMd5: string
+  contentType?: string
+  parentPath?: string
+  metaData?: Record<string, string>
+}
+
+/** 分片初始化结果；`uploadedPartNumbers` 非空表示命中同 MD5 会话，可跳过已传分片。 */
+export interface MultipartUploadCreateResp {
+  fileId: string | null
+  uploadId: string
+  bucket: string | null
+  platform: string | null
+  fileName: string | null
+  originalFileName: string | null
+  fileMd5: string | null
+  fileSize: number | null
+  extension: string | null
+  contentType: string | null
+  type: string | null
+  parentPath: string | null
+  path: string
+  partSize: number | null
+  uploadedPartNumbers: number[] | null
+}
+
+export interface MultipartUploadPartResp {
+  partNumber: number
+  partETag: string | null
+  partSize: number
+  success: boolean
+  errorMessage: string | null
+}
+
 export function listFiles(query: FilePageQuery, signal?: AbortSignal) {
   return http.get<PageResp<FileResp>>('/system/file', { query, signal })
 }
 
-export function uploadFile(file: File, parentPath: string) {
+export function uploadFile(file: File, parentPath: string, signal?: AbortSignal) {
   const body = new FormData()
   body.append('file', file)
   body.append('parentPath', parentPath || '/')
-  return http.post<FileUploadResp>('/system/file/upload', body)
+  return http.post<FileUploadResp>('/system/file/upload', body, { signal })
+}
+
+export function getDefaultUploadConfig(signal?: AbortSignal) {
+  return http.get<FileUploadConfigResp>('/system/file/upload/config/default', { signal })
+}
+
+export function initMultipartUpload(body: MultipartUploadCreateReq, signal?: AbortSignal) {
+  return http.post<MultipartUploadCreateResp>('/system/multipart-upload/init', body, { signal })
+}
+
+/** `path` 传 init 返回的存储文件路径；分片 body 只含该分片的字节。 */
+export function uploadMultipartPart(
+  uploadId: string,
+  partNumber: number,
+  path: string,
+  chunk: Blob,
+  signal?: AbortSignal
+) {
+  const body = new FormData()
+  body.append('file', chunk)
+  return http.post<MultipartUploadPartResp>('/system/multipart-upload/part', body, {
+    query: { uploadId, partNumber, path },
+    signal
+  })
+}
+
+export function completeMultipartUpload(uploadId: string, signal?: AbortSignal) {
+  return http.get<unknown>(`/system/multipart-upload/complete/${encodeURIComponent(uploadId)}`, { signal })
+}
+
+/** 中止分片会话并清理已传分片；cancel 请求自身失败时静默，不影响原错误向上抛。 */
+export function cancelMultipartUpload(uploadId: string) {
+  return http.get<unknown>(`/system/multipart-upload/cancel/${encodeURIComponent(uploadId)}`, {
+    silent: true
+  })
 }
 
 export function updateFile(id: string | number, body: FileReq) {
