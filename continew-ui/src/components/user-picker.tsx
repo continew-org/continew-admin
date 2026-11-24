@@ -102,7 +102,7 @@ export function UserPicker({
         />
       </InputGroup>
 
-      <div className="max-h-72 min-h-48 overflow-y-auto overscroll-contain rounded-md border p-1 select-none">
+      <div className="max-h-72 min-h-48 overflow-y-auto overscroll-contain rounded-md border border-input p-1 select-none dark:bg-input/30">
         {query.isPending ? (
           <UserPickerSkeleton />
         ) : query.isError ? (

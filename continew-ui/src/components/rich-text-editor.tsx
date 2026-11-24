@@ -147,11 +147,16 @@ export function RichTextEditor({ value, onChange, disabled = false, invalid = fa
   }, [editor, disabled])
 
   if (!editor) {
-    return <div className="min-h-64 rounded-lg border" />
+    return <div className="min-h-64 rounded-lg border border-input dark:bg-input/30" />
   }
 
   return (
-    <div className={cn('overflow-hidden rounded-lg border bg-transparent', invalid && 'border-destructive')}>
+    <div
+      className={cn(
+        'overflow-hidden rounded-lg border border-input bg-transparent dark:bg-input/30',
+        invalid && 'border-destructive'
+      )}
+    >
       <div className="flex flex-wrap items-center gap-0.5 border-b p-1">
         <ToolbarButton
           label="撤销"
