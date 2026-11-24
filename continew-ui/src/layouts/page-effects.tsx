@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import { useIsFetching } from '@tanstack/react-query'
 import { useRouterState } from '@tanstack/react-router'
 import { useKeyPress } from 'ahooks'
 import NProgress from 'nprogress'
@@ -17,21 +18,24 @@ import { useShellStore } from './shell-store'
 NProgress.configure({ showSpinner: false, trickleSpeed: 120, minimum: 0.2 })
 
 /**
- * Top progress bar driven by the router: it starts when a navigation begins and finishes when
- * the new page is ready, so it shows real loading time instead of a fixed animation.
+ * Top progress bar driven by the router and TanStack Query: it starts when a navigation begins or
+ * when queries refetch (tab reload, toolbar refresh, post-mutation invalidation) and finishes when
+ * work completes, so it shows real loading time instead of a fixed animation.
  */
 export function RouteProgress() {
   const isLoading = useRouterState({ select: state => state.status === 'pending' })
+  const isFetching = useIsFetching() > 0
+  const busy = isLoading || isFetching
 
   React.useEffect(() => {
-    if (!isLoading) return
-    // Navigations that resolve within a frame (cached loaders) never show the bar.
+    if (!busy) return
+    // Work that resolves within a frame (cached loaders, fast refetches) never shows the bar.
     const timer = window.setTimeout(() => NProgress.start(), 80)
     return () => {
       window.clearTimeout(timer)
       NProgress.done()
     }
-  }, [isLoading])
+  }, [busy])
 
   React.useEffect(() => () => void NProgress.remove(), [])
 
