@@ -432,7 +432,11 @@ function useActiveItemGlide(timing: CssTiming | null) {
  * sweep commits one render plus a forced layout for every item crossed. A single shared pill moved
  * with WAAPI keeps the same look without touching React per hover.
  */
-function useHoverSurface() {
+function useHoverSurface(reduce: boolean) {
+  const reduceRef = React.useRef(reduce)
+  React.useLayoutEffect(() => {
+    reduceRef.current = reduce
+  })
   const teardownRef = React.useRef<(() => void) | null>(null)
 
   return React.useCallback((root: HTMLDivElement | null) => {
@@ -440,6 +444,8 @@ function useHoverSurface() {
     teardownRef.current = null
     if (!root) return
 
+    const accent = getComputedStyle(root).getPropertyValue('--sidebar-accent')
+    const radiusOf = new WeakMap<HTMLElement, string>()
     let surface: HTMLElement | null = null
     let glide: Animation | null = null
     let fade: Animation | null = null
@@ -463,11 +469,16 @@ function useHoverSurface() {
       surface.style.top = `${end.top - base.top}px`
       surface.style.width = `${end.width}px`
       surface.style.height = `${end.height}px`
-      surface.style.borderRadius = getComputedStyle(to).borderRadius
-      surface.style.backgroundColor = getComputedStyle(root).getPropertyValue('--sidebar-accent')
+      let radius = radiusOf.get(to)
+      if (radius === undefined) {
+        radius = getComputedStyle(to).borderRadius
+        radiusOf.set(to, radius)
+      }
+      surface.style.borderRadius = radius
+      surface.style.backgroundColor = accent
       surface.style.opacity = '1'
       glide?.cancel()
-      if (!start || !start.width || !start.height) return
+      if (reduceRef.current || !start || !start.width || !start.height) return
       glide = surface.animate(
         [
           {
@@ -484,6 +495,11 @@ function useHoverSurface() {
       glide = null
       const el = surface
       if (!el) return
+      if (reduceRef.current) {
+        surface = null
+        el.remove()
+        return
+      }
       fade?.cancel()
       fade = el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 100, fill: 'forwards' })
       fade.onfinish = () => {
@@ -523,7 +539,7 @@ function SidebarHighlight(props: React.ComponentProps<typeof Highlight>) {
   const reduce = useShouldReduceMotion()
   const timing = toCssTiming(useTempoTransition(motionTokens.spring.highlight))
   const glideRef = useActiveItemGlide(reduce ? null : timing)
-  const surfaceRef = useHoverSurface()
+  const surfaceRef = useHoverSurface(reduce)
   const ref = React.useCallback(
     (node: HTMLDivElement | null) => {
       glideRef(node)
