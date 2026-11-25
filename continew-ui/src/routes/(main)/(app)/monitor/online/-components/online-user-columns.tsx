@@ -42,11 +42,12 @@ function TimeCell({ value, estimated = false }: { value: string | null; estimate
 
 function StatusCell({ user }: { user: OnlineUserResp }) {
   const { idleExpired, online, idleExpireTime, sessionExpireTime } = user
-  const expiry = idleExpireTime
-    ? `闲置到期：${idleExpireTime}`
-    : sessionExpireTime
-      ? `绝对到期：${sessionExpireTime}`
-      : ''
+  const expiry = [
+    idleExpireTime && `闲置到期：${idleExpireTime}`,
+    sessionExpireTime && `绝对到期：${sessionExpireTime}`
+  ]
+    .filter(Boolean)
+    .join('；')
   if (idleExpired) {
     return (
       <Badge variant="destructive" title={['已闲置超时，待失效', expiry].filter(Boolean).join('；')}>
@@ -54,7 +55,7 @@ function StatusCell({ user }: { user: OnlineUserResp }) {
       </Badge>
     )
   }
-  if (online == null) return <span>{EMPTY_PLACEHOLDER}</span>
+  if (online === null || online === undefined) return <span>{EMPTY_PLACEHOLDER}</span>
   return (
     <Badge variant={online ? 'default' : 'secondary'} title={expiry || undefined}>
       {online ? '在线' : '闲置'}

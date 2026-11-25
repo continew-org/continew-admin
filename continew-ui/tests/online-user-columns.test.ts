@@ -91,7 +91,11 @@ describe('online session columns', () => {
       expect(html).toContain(value)
     expect(renderRow({ ...idle, online: true, idleExpired: true })).toContain('>闲置超时<')
   })
-  it('does not invent missing values, separators or an idle status', () => {
+  it('shows both deadlines in the status tooltip when the session expires before the idle deadline', () => {
+    const html = renderRow({ sessionExpireTime: '2026-11-25 09:30:00', idleExpireTime: '2026-11-25 10:10:11' })
+    expect(html).toContain('title="闲置到期：2026-11-25 10:10:11；绝对到期：2026-11-25 09:30:00"')
+  })
+  it.each([null, undefined])('does not invent missing values, separators or an idle status (%s)', online => {
     const html = renderRow({
       nickname: '',
       browser: '',
@@ -99,7 +103,7 @@ describe('online session columns', () => {
       address: '',
       lastActiveTime: null,
       activeTimeExact: false,
-      online: null
+      online
     })
     expect(html).toContain('>zhangsan<')
     expect(html.split(`>${EMPTY_PLACEHOLDER}<`)).toHaveLength(5)
