@@ -14,6 +14,8 @@ type OnlineUserColumn = ColumnDef<DataTableFeatures, OnlineUserResp>
 type TextColumnKey = 'ip' | 'address'
 
 interface OnlineUserColumnOptions {
+  readonly showStatus: boolean
+  readonly rowOffset: number
   /** The signed-in account may not hold `monitor:online:kickout`; the column is dropped then. */
   readonly canKickout: boolean
   /** The backend rejects kicking out the session that sends the request. */
@@ -92,8 +94,20 @@ function KickoutCell({
   )
 }
 
-export function createOnlineUserColumns({ canKickout, isCurrentSession, onKickout }: OnlineUserColumnOptions) {
+export function createOnlineUserColumns({
+  rowOffset,
+  showStatus,
+  canKickout,
+  isCurrentSession,
+  onKickout
+}: OnlineUserColumnOptions) {
   const columns: OnlineUserColumn[] = [
+    {
+      id: 'index',
+      header: '序号',
+      enableHiding: false,
+      cell: ({ row }) => <div>{rowOffset + row.index + 1}</div>
+    },
     {
       id: 'user',
       header: '用户',
@@ -117,13 +131,16 @@ export function createOnlineUserColumns({ canKickout, isCurrentSession, onKickou
       cell: ({ row }) => (
         <TimeCell value={row.original.lastActiveTime} estimated={row.original.activeTimeExact === false} />
       )
-    },
-    {
+    }
+  ]
+
+  if (showStatus) {
+    columns.push({
       id: 'status',
       header: '状态',
       cell: ({ row }) => <StatusCell user={row.original} />
-    }
-  ]
+    })
+  }
 
   if (canKickout) {
     columns.push({

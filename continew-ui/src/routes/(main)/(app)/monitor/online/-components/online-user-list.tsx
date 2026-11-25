@@ -8,6 +8,7 @@ import { ListPageCard } from '@/components/list-page-card'
 import { TableFillArea } from '@/components/table-fill-area'
 import { TableSearch } from '@/components/table-search'
 import { TableToolbar } from '@/components/table-toolbar'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useFullscreenTransition } from '@/hooks/use-fullscreen-transition'
 import { useListTable } from '@/hooks/use-list-table'
 import { usePermission } from '@/hooks/use-permission'
@@ -21,6 +22,7 @@ import { OnlineUserKickoutDialog } from './online-user-kickout-dialog'
 import { OnlineUserTable } from './online-user-table'
 
 export function OnlineUserList() {
+  const [view, setView] = React.useState<'online' | 'all'>('online')
   const [keyword, setKeyword] = React.useState('')
   const [loginTime, setLoginTime] = React.useState<DateRange | undefined>(createRecentDateRange)
   const [kickingUser, setKickingUser] = React.useState<OnlineUserResp | null>(null)
@@ -45,6 +47,7 @@ export function OnlineUserList() {
       const params: OnlineUserPageQuery = {
         page: pagination.pageIndex + 1,
         size: pagination.pageSize,
+        ...(view === 'online' && { online: true }),
         nickname: keyword || undefined,
         loginTime: toDateTimeRangeQuery(loginTime)
       }
@@ -53,15 +56,23 @@ export function OnlineUserList() {
         queryFn: (signal: AbortSignal) => listOnlineUsers(params, signal)
       }
     },
-    [keyword, loginTime]
+    [keyword, loginTime, view]
   )
 
   const buildColumns = React.useCallback(
-    () => createOnlineUserColumns({ canKickout, isCurrentSession, onKickout: handleKickout }),
-    [canKickout, isCurrentSession, handleKickout]
+    (rowOffset: number) =>
+      createOnlineUserColumns({
+        rowOffset,
+        showStatus: view === 'all',
+        canKickout,
+        isCurrentSession,
+        onKickout: handleKickout
+      }),
+    [canKickout, isCurrentSession, handleKickout, view]
   )
 
   const { query, table, resetPage, resetColumns } = useListTable<OnlineUserResp, PageResp<OnlineUserResp>>({
+    placeholderGroup: view,
     buildQuery,
     buildColumns,
     getRowId: row => row.sessionId
@@ -79,6 +90,23 @@ export function OnlineUserList() {
 
   const filters = (
     <>
+      <ToggleGroup
+        aria-label="会话范围"
+        className="col-span-2"
+        variant="outline"
+        size="sm"
+        spacing={0}
+        value={[view]}
+        onValueChange={([next]) => {
+          if (next === 'online' || next === 'all') {
+            setView(next)
+            resetPage()
+          }
+        }}
+      >
+        <ToggleGroupItem value="online">仅看在线</ToggleGroupItem>
+        <ToggleGroupItem value="all">全部会话</ToggleGroupItem>
+      </ToggleGroup>
       <TableSearch
         className="col-span-2 h-8 w-full sm:w-64"
         clearable

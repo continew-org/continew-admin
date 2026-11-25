@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import {
   type ColumnDef,
   type ColumnVisibilityState,
@@ -27,6 +27,8 @@ interface UseListTableOptions<TRow extends RowData, TData extends PageData<TRow>
   readonly buildColumns: (rowOffset: number) => ColumnDef<DataTableFeatures, TRow>[]
   readonly getRowId: (row: TRow) => string
   readonly initialColumnVisibility?: ColumnVisibilityState
+  /** Only reuse previous rows within the same view. */
+  readonly placeholderGroup?: string
   readonly pageSize?: number
   /** Delays the query, for a screen that must wait on a lookup before listing. */
   readonly enabled?: boolean
@@ -34,7 +36,7 @@ interface UseListTableOptions<TRow extends RowData, TData extends PageData<TRow>
 
 /**
  * The state wiring every paginated list screen shares: pagination, column visibility, the query
- * (with `keepPreviousData`), the page clamp and the table instance. Screens keep their own columns,
+ * (with previous-page placeholders), the page clamp and the table instance. Screens keep their own columns,
  * filters and toolbars, so only the repeated plumbing lives here.
  */
 export function useListTable<TRow extends RowData, TData extends PageData<TRow>>({
@@ -42,6 +44,7 @@ export function useListTable<TRow extends RowData, TData extends PageData<TRow>>
   buildColumns,
   getRowId,
   initialColumnVisibility = {},
+  placeholderGroup,
   pageSize = 10,
   enabled = true
 }: UseListTableOptions<TRow, TData>) {
@@ -53,7 +56,9 @@ export function useListTable<TRow extends RowData, TData extends PageData<TRow>>
   const query = useQuery({
     queryKey: request.queryKey,
     queryFn: ({ signal }) => request.queryFn(signal),
-    placeholderData: keepPreviousData,
+    meta: { placeholderGroup },
+    placeholderData: (previous, previousQuery) =>
+      previousQuery?.meta?.placeholderGroup === placeholderGroup ? previous : undefined,
     enabled
   })
 

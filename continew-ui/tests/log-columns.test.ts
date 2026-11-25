@@ -49,8 +49,12 @@ function renderRow(login: boolean, overrides: Partial<LogResp> = {}, canViewDeta
 describe.each([true, false])('log columns (login=%s)', login => {
   it('shows the joined identity, unmodified address and device', () => {
     const html = renderRow(login)
-    for (const value of ['>张三 zhangsan<', `>${log.address}<`, '>Chrome / Windows<']) expect(html).toContain(value)
+    for (const value of ['>张三 (zhangsan)<', `>${log.address}<`, '>Chrome / Windows<']) expect(html).toContain(value)
     expect(html.match(/data-column=/g)).toHaveLength(login ? 8 : 10)
+  })
+
+  it('shows identical names only once', () => {
+    expect(renderRow(login, { createUserString: 'zhangsan' })).toContain('>zhangsan<')
   })
 
   it('keeps either side without a dangling separator', () => {

@@ -76,6 +76,31 @@ test.describe('只读流程（共享认证态）', () => {
     await expect(page.getByText('数据加载失败')).toHaveCount(0)
   })
 
+  test('切换在线用户范围时使用服务端筛选并同步状态列', async ({ page }) => {
+    const waitForList = () =>
+      page.waitForResponse(r => isApiPath(r.url(), '/api/monitor/online') && r.request().method() === 'GET')
+    const onlineResponse = waitForList()
+    await page.goto('/monitor/online')
+    const online = await onlineResponse
+    expect(online.ok()).toBe(true)
+    const onlineParams = new URL(online.url()).searchParams
+    expect(onlineParams.get('online')).toBe('true')
+    const status = page.getByRole('columnheader', { name: '状态', exact: true })
+    await expect(status).toHaveCount(0)
+
+    const allResponse = waitForList()
+    await page.getByRole('button', { name: '全部会话' }).click()
+    const all = await allResponse
+    expect(all.ok()).toBe(true)
+    const allParams = new URL(all.url()).searchParams
+    expect(allParams.has('online')).toBe(false)
+    expect(allParams.get('page')).toBe('1')
+    expect(allParams.get('loginTime')).toBe(onlineParams.get('loginTime'))
+    await expect(status).toBeVisible()
+    await page.getByRole('button', { name: '仅看在线' }).click()
+    await expect(status).toHaveCount(0)
+  })
+
   test('流程四：深层路由刷新后仍正常渲染', async ({ page }) => {
     const menuResponsePromise = page.waitForResponse(
       r => isApiPath(r.url(), MENU_API) && r.request().method() === 'GET'
