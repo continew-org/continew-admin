@@ -96,10 +96,11 @@ public class ContiNewAdminApplication implements ApplicationRunner {
         if (!docProperties.isProduction()) {
             log.info("接口文档: {}/doc.html", baseUrl);
         }
+        log.info("正式开发: https://continew.top/docs/admin/5.x/guide/first-feature");
+        log.info("常见问题: https://continew.top/docs/admin/5.x/reference/faq");
         log.info("问题反馈: https://github.com/continew-org/continew-admin/issues");
-        log.info("常见问题: https://continew.top/docs/admin/reference/faq");
-        log.info("更新日志: https://continew.top/docs/admin/reference/changelog");
         log.info("ContiNew Admin: 持续迭代优化的，高质量多租户中后台管理系统框架");
+        log.info("AI 编程纪元，从 ContiNew & AI Native Coding 开始优雅编码");
         log.info("--------------------------------------------------------");
     }
 }

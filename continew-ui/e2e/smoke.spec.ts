@@ -76,6 +76,55 @@ test.describe('只读流程（共享认证态）', () => {
     await expect(page.getByText('数据加载失败')).toHaveCount(0)
   })
 
+  test('切换在线用户范围时使用服务端筛选并同步状态列', async ({ page }) => {
+    const loadError = page.getByText('数据加载失败', { exact: true })
+    const listAfter = async (action: () => Promise<unknown>) => {
+      const [response] = await Promise.all([
+        page.waitForResponse(r => isApiPath(r.url(), '/api/monitor/online') && r.request().method() === 'GET'),
+        action()
+      ])
+      expect(response.ok()).toBe(true)
+      const payload = (await response.json()) as ApiEnvelope<PageData<unknown>>
+      expect(payload.success, payload.msg).toBe(true)
+      const result = payload.data.total > 0 ? page.getByText(`共 ${payload.data.total} 条`) : page.getByText('暂无数据')
+      await expect(result).toBeVisible()
+      await expect(loadError).toHaveCount(0)
+      return new URL(response.url()).searchParams
+    }
+
+    const onlineParams = await listAfter(() => page.goto('/monitor/online'))
+    expect(onlineParams.get('online')).toBe('true')
+    const loginTime = onlineParams.get('loginTime') ?? ''
+    const fullDayRange = /^(\d{4}-\d{2}-\d{2}) 00:00:00,(\d{4}-\d{2}-\d{2}) 23:59:59$/
+    expect(loginTime).toMatch(fullDayRange)
+    const dateButton = page.getByRole('button', { name: loginTime.replace(fullDayRange, '$1 - $2'), exact: true })
+    const status = page.getByRole('columnheader', { name: '状态', exact: true })
+    await expect(dateButton).toBeVisible()
+    await expect(status).toHaveCount(0)
+
+    const keyword = 'adm'
+    const search = page.getByPlaceholder('搜索用户名、昵称')
+    const filteredParams = await listAfter(() => search.fill(keyword))
+    expect(filteredParams.get('online')).toBe('true')
+    expect(filteredParams.get('nickname')).toBe(keyword)
+    expect(filteredParams.get('loginTime')).toBe(loginTime)
+
+    const allParams = await listAfter(() => page.getByRole('button', { name: '全部会话' }).click())
+    expect(allParams.has('online')).toBe(false)
+    expect(allParams.get('page')).toBe('1')
+    expect(allParams.get('nickname')).toBe(keyword)
+    expect(allParams.get('loginTime')).toBe(loginTime)
+    await expect(search).toHaveValue(keyword)
+    await expect(dateButton).toBeVisible()
+    await expect(status).toBeVisible()
+
+    await page.getByRole('button', { name: '仅看在线' }).click()
+    await expect(status).toHaveCount(0)
+    await expect(search).toHaveValue(keyword)
+    await expect(dateButton).toBeVisible()
+    await expect(loadError).toHaveCount(0)
+  })
+
   test('流程四：深层路由刷新后仍正常渲染', async ({ page }) => {
     const menuResponsePromise = page.waitForResponse(
       r => isApiPath(r.url(), MENU_API) && r.request().method() === 'GET'

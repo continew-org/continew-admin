@@ -29,12 +29,18 @@ const session: OnlineUserResp = {
   sessionExpireTime: '2026-12-25 08:09:10'
 }
 
-function renderRow(overrides: Partial<OnlineUserResp> = {}, canKickout = true) {
+function renderRow(overrides: Partial<OnlineUserResp> = {}, canKickout = true, rowOffset = 0, showStatus = true) {
   function SessionRow() {
     const table = useTable({
       features: dataTableFeatures,
       data: [{ ...session, ...overrides }],
-      columns: createOnlineUserColumns({ canKickout, isCurrentSession: id => id === 'current', onKickout: vi.fn() })
+      columns: createOnlineUserColumns({
+        rowOffset,
+        showStatus,
+        canKickout,
+        isCurrentSession: id => id === 'current',
+        onKickout: vi.fn()
+      })
     })
     const headers = table
       .getHeaderGroups()[0]
@@ -54,9 +60,17 @@ function renderRow(overrides: Partial<OnlineUserResp> = {}, canKickout = true) {
 }
 
 describe('online session columns', () => {
-  it('shows eight compact columns in order and leaves the address intact', () => {
+  it('omits only status in the online view', () => {
+    const html = renderRow({ sessionId: 'other' }, true, 20, false)
+    expect(html).not.toContain('<th>状态</th>')
+    expect(html).toContain('<th>最近活跃</th>')
+    expect(html).toContain('aria-label="强退"')
+    expect(html).toContain('<td><div>21</div></td>')
+  })
+  it('shows nine compact columns in order and leaves the address intact', () => {
     const html = renderRow()
     expect([...html.matchAll(/<th>(.*?)<\/th>/g)].map(match => match[1].replace(/<[^>]+>/g, ''))).toEqual([
+      '序号',
       '用户',
       '登录 IP',
       'IP 归属地',
@@ -67,7 +81,7 @@ describe('online session columns', () => {
       '操作'
     ])
     for (const value of [
-      '张三 zhangsan',
+      '张三 (zhangsan)',
       session.address,
       'Chrome / Windows',
       '>11-25 08:09<',
@@ -78,6 +92,12 @@ describe('online session columns', () => {
     ])
       expect(html).toContain(value)
     expect(html).not.toContain('hidden-refresh')
+  })
+  it.each([
+    [0, 1],
+    [20, 21]
+  ])('numbers the first row at offset %i as %i', (offset, expected) => {
+    expect(renderRow({}, true, offset)).toContain(`<tbody><tr><td><div>${expected}</div></td>`)
   })
   it('marks estimated activity and explains idle expiry and timeout', () => {
     const idle = { activeTimeExact: false, online: false, idleExpireTime: '2026-11-25 10:10:11' }
