@@ -1,0 +1,32 @@
+---
+title: 移除演示站专用代码
+description: 百度统计与万维广告只在官方演示站的构建里启用，自建实例默认不加载；要从代码里彻底删除时按本页操作。
+---
+
+自建实例默认不启用百度统计和万维广告。只有准备从仓库里彻底删除这两段演示站专用代码时，才需要按本页操作。
+
+两者都由构建变量控制。`.github/workflows/deploy.yml` 构建演示站前端时注入 `VITE_BAIDU_ANALYTICS_ID` 与 `VITE_WWADS_UNIT_ID=359`；普通构建的 `continew-ui/.env.production` 里这两个变量为空，不注入统计脚本，也不渲染广告容器。
+
+## 移除百度统计
+
+1. 删除 `continew-ui/src/scripts/baidu-analytics-script.ts`。
+2. 移除 `continew-ui/vite.config.ts` 中的 `baiduAnalyticsPlugin` 定义、`plugins` 里的调用，以及文件顶部的 import。
+3. 删除 `continew-ui/index.html` 中的 `<!--baidu-analytics-->` 占位。
+4. 删除 `continew-ui/.env.production` 的 `VITE_BAIDU_ANALYTICS_ID`。
+5. 删除 `.github/workflows/deploy.yml` 中 `Build UI` 步骤的 `VITE_BAIDU_ANALYTICS_ID`。
+
+## 移除万维广告
+
+1. 移除侧栏挂载：`continew-ui/src/layouts/sidebar/admin-sidebar.tsx` 中删掉 `SidebarAd` 的导入，以及 `<SidebarFooter>` 里的 `<SidebarAd collapsible={collapsible} />`。
+2. 删除广告组件、可见性判定与用例：
+   - `continew-ui/src/layouts/sidebar/sidebar-ad.tsx`
+   - `continew-ui/src/layouts/sidebar/sidebar-ad-visibility.ts`
+   - `continew-ui/tests/sidebar-ad.test.ts`
+3. 删除 `continew-ui/.env.production` 的 `VITE_WWADS_UNIT_ID`。
+4. 删除 `continew-ui/src/vite-env.d.ts` 的 `VITE_WWADS_UNIT_ID` 声明。
+5. 移除 `continew-ui/vite.config.ts` 的单元 ID 校验。
+6. 删除 `.github/workflows/deploy.yml` 中 `Build UI` 步骤的 `VITE_WWADS_UNIT_ID: '359'`。
+
+最后在 `continew-ui` 下执行 `pnpm check`，格式、lint、类型、单测与构建都通过即完成。
+
+赞助轮播（`continew-ui/src/layouts/sidebar/support-carousel.tsx`）只是撤下了侧栏挂载，与广告无关，删除广告时不用动它。
