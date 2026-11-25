@@ -6,15 +6,13 @@ import type { DataTableFeatures } from '@/lib/data-table-features'
 
 /** One skeleton width per column id, so hidden columns cannot shift the placeholder shapes. */
 const SKELETON_WIDTHS: Record<string, string> = {
-  index: 'mx-auto w-6',
-  nickname: 'w-24',
-  username: 'w-24',
+  user: 'w-28',
   ip: 'w-24',
   address: 'w-32',
-  browser: 'w-20',
-  os: 'w-20',
+  device: 'w-32',
   loginTime: 'w-32',
-  lastRefreshTime: 'w-32',
+  lastActiveTime: 'w-32',
+  status: 'w-12',
   actions: 'mx-auto w-12'
 }
 

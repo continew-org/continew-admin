@@ -84,10 +84,10 @@ public class LoginLogExportResp implements Serializable {
     private String ip;
 
     /**
-     * 登录地点
+     * IP 归属地
      */
-    @Schema(description = "登录地点", example = "中国北京北京市")
-    @ExcelProperty(value = "登录地点")
+    @Schema(description = "IP 归属地", example = "中国北京北京市")
+    @ExcelProperty(value = "IP 归属地")
     private String address;
 
     /**

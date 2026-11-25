@@ -25,11 +25,12 @@ export interface LogResp {
   /** The exception message of a failed operation. */
   errorMsg: string | null
   createUserString: string | null
+  username: string | null
   createTime: string
 }
 
 /** `GET /system/log/{id}` adds the captured HTTP exchange. */
-export interface LogDetailResp extends LogResp {
+export interface LogDetailResp extends Omit<LogResp, 'username'> {
   traceId: string
   requestUrl: string
   requestMethod: string

@@ -146,7 +146,7 @@ export function LogDetailDrawer({ logId, open, onClose }: LogDetailDrawerProps) 
                 <TextDetail label="操作内容" value={detail.description} />
                 <TextDetail label="所属模块" value={detail.module} />
                 <TextDetail label="操作 IP" value={detail.ip} />
-                <TextDetail label="操作地点" value={detail.address} />
+                <TextDetail label="IP 归属地" value={detail.address} />
                 <TextDetail label="浏览器" value={detail.browser} />
                 <TextDetail label="终端系统" value={detail.os} />
                 <DetailField label="状态">
