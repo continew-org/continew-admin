@@ -25,23 +25,25 @@ continew-starter.log:
     - RESPONSE_BODY
 ```
 
-`sys_log` 表对应的实体 `LogDO` 包含以下字段：链路 ID（`traceId`，与请求头 `X-Trace-Id` 对应）、日志描述、所属模块、请求 URL 与方式、请求头与请求体、状态码、响应头与响应体、耗时（毫秒）、IP 与归属地、浏览器、操作系统、状态（成功或失败）、错误信息、创建人与创建时间。
+`sys_log` 表对应的实体 `LogDO` 包含以下字段：链路 ID（`traceId`，与请求头 `X-Trace-Id` 对应）、日志描述、所属模块、请求 URL 与方式、请求头与请求体、状态码、响应头与响应体、耗时（毫秒）、IP 与 IP 归属地、浏览器、操作系统、状态（成功或失败）、错误信息、创建人与创建时间。
 
 ## 查询与筛选
 
 两个页签共用 `GET /system/log` 接口，权限码 `monitor:log:list`。筛选条件在 `LogServiceImpl.buildQueryWrapper` 中组装。
 
 - 操作内容：同时模糊匹配日志描述与所属模块；
-- IP：同时模糊匹配 IP 与归属地；
+- IP：同时模糊匹配 IP 与 IP 归属地；
 - 操作人：同时模糊匹配用户名与昵称；
 - 状态：成功或失败精确匹配；
 - 操作时间：创建时间的起止区间。
+
+两个列表的「用户」列在同一行显示昵称和用户名，取自查询时关联到的账号。账号已删除或日志未关联账号时显示占位符，不推测当时的身份。「IP 归属地」保留日志记录的原文。「浏览器 / 系统」用 ` / ` 分隔两项；组合列只有一项时只显示该项，两项都缺失时显示占位符。
 
 点击单条日志的「详情」调用 `GET /system/log/{id}`，权限码 `monitor:log:get`，抽屉中展示请求与响应的完整报文，配合 `traceId` 可在应用日志中定位同一次请求的全部输出。
 
 ## 导出
 
-登录日志与操作日志各自提供导出接口：`GET /system/log/export/login` 与 `GET /system/log/export/operation`，权限码均为 `monitor:log:export`。导出基于 FastExcel，按当前筛选与排序条件生成 Excel 文件，导出字段分别由 `LoginLogExportResp` 与 `OperationLogExportResp` 定义。
+登录日志与操作日志各自提供导出接口：`GET /system/log/export/login` 与 `GET /system/log/export/operation`，权限码均为 `monitor:log:export`。导出基于 FastExcel，按当前筛选与排序条件生成 Excel 文件，导出字段分别由 `LoginLogExportResp` 与 `OperationLogExportResp` 定义。两种导出表中，`address` 列的表头均为「IP 归属地」。
 
 <Callout type="warn">
 日志包含请求体与响应体，可能夹带业务敏感数据。导出权限应只授予确有审计需要的角色；不需要全量报文的场景，可在方法级用 `@Log(excludes = {...})` 收窄记录范围。

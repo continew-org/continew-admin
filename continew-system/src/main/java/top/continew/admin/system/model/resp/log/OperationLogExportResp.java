@@ -91,10 +91,10 @@ public class OperationLogExportResp implements Serializable {
     private String ip;
 
     /**
-     * 操作地点
+     * IP 归属地
      */
-    @Schema(description = "操作地点", example = "中国北京北京市")
-    @ExcelProperty(value = "操作地点")
+    @Schema(description = "IP 归属地", example = "中国北京北京市")
+    @ExcelProperty(value = "IP 归属地")
     private String address;
 
     /**

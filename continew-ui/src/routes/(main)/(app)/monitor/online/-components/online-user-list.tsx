@@ -57,8 +57,7 @@ export function OnlineUserList() {
   )
 
   const buildColumns = React.useCallback(
-    (rowOffset: number) =>
-      createOnlineUserColumns({ rowOffset, canKickout, isCurrentSession, onKickout: handleKickout }),
+    () => createOnlineUserColumns({ canKickout, isCurrentSession, onKickout: handleKickout }),
     [canKickout, isCurrentSession, handleKickout]
   )
 

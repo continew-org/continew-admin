@@ -7,8 +7,10 @@ import type { DataTableFeatures } from '@/lib/data-table-features'
 
 import { LogStatusCell, TimeTakenCell } from './log-display'
 
+import { DeviceCell, UserCell } from '../../-components/monitor-cells'
+
 type LogColumn = ColumnDef<DataTableFeatures, LogResp>
-type TextColumnKey = 'createTime' | 'createUserString' | 'description' | 'ip' | 'address' | 'browser' | 'os'
+type TextColumnKey = 'createTime' | 'description' | 'ip' | 'address'
 
 /** Labels for the columns whose header is a node, which the hide-columns menu cannot read. */
 export const LOG_COLUMN_LABELS: Record<string, string> = {
@@ -32,6 +34,18 @@ function textColumn(key: TextColumnKey, header: string): LogColumn {
   }
 }
 
+const userColumn: LogColumn = {
+  id: 'user',
+  header: '用户',
+  cell: ({ row: { original } }) => <UserCell nickname={original.createUserString} username={original.username} />
+}
+
+const deviceColumn: LogColumn = {
+  id: 'device',
+  header: '浏览器 / 系统',
+  cell: ({ row: { original } }) => <DeviceCell browser={original.browser} os={original.os} />
+}
+
 function indexColumn(rowOffset: number): LogColumn {
   return {
     id: 'index',
@@ -53,13 +67,12 @@ export function createLoginLogColumns(rowOffset: number): LogColumn[] {
   return [
     indexColumn(rowOffset),
     textColumn('createTime', '登录时间'),
-    textColumn('createUserString', '用户昵称'),
+    userColumn,
     textColumn('description', '登录行为'),
     statusColumn(),
     textColumn('ip', '登录 IP'),
-    textColumn('address', '登录地点'),
-    textColumn('browser', '浏览器'),
-    textColumn('os', '终端系统')
+    textColumn('address', 'IP 归属地'),
+    deviceColumn
   ]
 }
 
@@ -82,7 +95,7 @@ export function createOperationLogColumns({ rowOffset, canViewDetail, onDetail }
           <TextCell value={row.original.createTime} />
         )
     },
-    textColumn('createUserString', '操作人'),
+    userColumn,
     textColumn('description', '操作内容'),
     {
       accessorKey: 'module',
@@ -95,13 +108,12 @@ export function createOperationLogColumns({ rowOffset, canViewDetail, onDetail }
     },
     statusColumn(),
     textColumn('ip', '操作 IP'),
-    textColumn('address', '操作地点'),
+    textColumn('address', 'IP 归属地'),
     {
       accessorKey: 'timeTaken',
       header: () => <div>耗时</div>,
       cell: ({ row }) => <TimeTakenCell timeTaken={row.original.timeTaken} />
     },
-    textColumn('browser', '浏览器'),
-    textColumn('os', '终端系统')
+    deviceColumn
   ]
 }
