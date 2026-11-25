@@ -28,6 +28,11 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd()) as ImportMetaEnv
   const { VITE_API_BASE_URL, VITE_API_PREFIX, VITE_APP_PORT, VITE_BASE_PATH, VITE_BAIDU_ANALYTICS_ID } = env
 
+  // Fail the build on a malformed id; the client only checks for emptiness.
+  if (env.VITE_WWADS_UNIT_ID && !/^\d+$/.test(env.VITE_WWADS_UNIT_ID)) {
+    throw new Error(`VITE_WWADS_UNIT_ID 只能是数字，当前值：${env.VITE_WWADS_UNIT_ID}`)
+  }
+
   return {
     base: VITE_BASE_PATH || '/',
     resolve: {

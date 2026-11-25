@@ -13,6 +13,8 @@ interface ImportMetaEnv {
   readonly VITE_APP_PORT: string
   /** Public path the app is served from, e.g. `/admin/` when deployed under a sub-path; defaults to `/`. */
   readonly VITE_BASE_PATH: string
+  /** WWAds unit id for the sidebar ad; absent in builds without ads. */
+  readonly VITE_WWADS_UNIT_ID?: string
 }
 
 interface ImportMeta {

@@ -18,7 +18,7 @@ import type { MenuGroup } from '@/navigation/menu'
 import { usePreferencesStore, usePreferencesStoreApi } from '@/stores/preferences/preferences-provider'
 
 import { NavMain } from './nav-main'
-import { SupportCarousel } from './support-carousel'
+import { SidebarAd } from './sidebar-ad'
 
 export function SidebarBrand() {
   const { title, logo } = useSiteOptions()
@@ -149,8 +149,8 @@ export const AdminSidebar = React.memo(function AdminSidebar({
       <SidebarContent className="scroll-fade-y">
         <NavMain items={groups} forceExpanded={expanded} />
       </SidebarContent>
-      <SidebarFooter>
-        <SupportCarousel />
+      <SidebarFooter className="shrink-0 p-0">
+        <SidebarAd collapsible={collapsible} />
       </SidebarFooter>
       {draggable && <SidebarResizeHandle />}
     </Sidebar>

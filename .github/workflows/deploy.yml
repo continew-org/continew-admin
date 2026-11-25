@@ -184,8 +184,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build UI
         env:
-          # 未配置时不注入统计脚本；VITE_* 会写入公开产物。
+          # 公开产物中的百度统计站点 ID 与万维广告单元 ID
           VITE_BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
+          VITE_WWADS_UNIT_ID: '359'
         run: pnpm build
       - name: Upload dist artifact
         id: upload-dist
