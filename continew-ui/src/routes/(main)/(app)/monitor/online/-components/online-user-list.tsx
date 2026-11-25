@@ -72,7 +72,7 @@ export function OnlineUserList() {
   )
 
   const { query, table, resetPage, resetColumns } = useListTable<OnlineUserResp, PageResp<OnlineUserResp>>({
-    placeholderGroup: view,
+    showPreviousRows: false,
     buildQuery,
     buildColumns,
     getRowId: row => row.sessionId
