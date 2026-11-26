@@ -92,6 +92,10 @@ continew-starter.web.cors:
   exposed-headers: '*'
 
 --- ### 日志配置
+## Starter 兜底异常日志
+continew-starter.web.response:
+  print-exception-in-global-advice: true
+
 ## API 请求/响应日志配置
 continew-starter.log:
   access-log:
