@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset 小熊:1
+-- changeset 小熊:1 dbms:postgresql
 -- comment 初始化租户插件数据表
 -- 初始化表结构
 CREATE TABLE IF NOT EXISTS "tenant" (
@@ -183,7 +183,7 @@ VALUES
 (3024, '修改', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:update', 4, 1, 1, NOW()),
 (3025, '删除', 3020, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'tenant:package:delete', 5, 1, 1, NOW());
 
--- changeset luoqiz:2
+-- changeset luoqiz:2 dbms:postgresql
 -- comment 调整租户关联表主键及用户角色唯一索引
 DROP INDEX IF EXISTS "idx_user_role_tenant_id";
 DROP INDEX IF EXISTS "idx_role_menu_tenant_id";

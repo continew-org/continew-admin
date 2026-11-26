@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='岗位表';
 ```
 
-字段注释会成为响应对象的接口文档描述，认真写。写完把建表语句纳入 Liquibase 变更管理：在 `continew-server/src/main/resources/db/changelog/mysql/` 下新建 changeset 文件（如 `biz_post.sql`），并在 `db.changelog-master.yaml` 登记。仓库约定数据库结构变更同时提供 MySQL 与 PostgreSQL 两套 SQL，PostgreSQL 版本写到 `db/changelog/postgresql/`（写法对照同目录既有脚本）。**只新增 changeset，不要修改存量 changeset**——Liquibase 按 checksum 校验已执行的记录，改动会导致启动失败。`db.changelog-master.yaml` 默认启用 MySQL includes；选择 PostgreSQL 部署时按[部署](/docs/admin/reference/deployment#切换到-postgresql)的步骤切换 includes。
+字段注释会成为响应对象的接口文档描述。将建表 SQL 分别放进 `continew-server/src/main/resources/db/changelog/mysql/` 和 `db/changelog/postgresql/` 下的新文件（如 `biz_post.sql`），并在 `db.changelog-master.yaml` 登记。每个 changeset 按对应数据库声明 `dbms:mysql` 或 `dbms:postgresql`。**只新增 changeset，保留已执行的 SQL 原文**，Liquibase 启动时会校验其 checksum。
 
 <Callout type="warn">
 表名带 `tenant_id` 列即纳入行级租户隔离（继承 `TenantBaseDO` 的实体自动带出）。不需要租户隔离的公共表，要把表名加入 `continew-starter.tenant.ignore-tables` 白名单，机制见[多租户接入](/docs/admin/development/backend/tenant)。
