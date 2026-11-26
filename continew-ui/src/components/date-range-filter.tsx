@@ -42,7 +42,7 @@ export function DateRangeFilter({ value, onChange, placeholder = '选择日期',
           <Button
             variant="outline"
             className={cn(
-              'max-w-full min-w-0 justify-start overflow-hidden border-input bg-transparent font-normal',
+              'max-w-full min-w-0 justify-start overflow-hidden border-control-border bg-transparent font-normal',
               className
             )}
           />

@@ -144,7 +144,7 @@ export function CheckableTree<T = Record<string, unknown>>({
       {/* Nodes list container with smooth native scrolling */}
       <div
         className={cn(
-          'overflow-auto overscroll-contain rounded-md border border-input bg-background/50 p-1.5 select-none',
+          'overflow-auto overscroll-contain rounded-md border border-control-border bg-background/50 p-1.5 select-none',
           treeContainerClassName || (fillHeight ? 'min-h-0 flex-1' : 'max-h-72 min-h-36')
         )}
       >
