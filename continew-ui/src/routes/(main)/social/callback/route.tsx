@@ -5,6 +5,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Loader2Icon } from 'lucide-react'
 
 import { toast } from '@/components/ui/toast'
+import { safeLocalHref } from '@/lib/route-access'
 import { useAuthStore } from '@/stores/auth/auth-provider'
 
 export const Route = createFileRoute('/(main)/social/callback')({
@@ -39,7 +40,7 @@ function SocialLoginCallback() {
     socialLogin({ ...rest, source })
       .then(() => {
         toast.add({ title: '登录成功', type: 'success' })
-        const target = typeof redirect === 'string' && redirect.startsWith('/') ? redirect : '/dashboard'
+        const target = safeLocalHref(redirect)
         return navigate({ href: target, replace: true })
       })
       .catch(error => {

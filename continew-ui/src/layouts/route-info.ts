@@ -15,10 +15,6 @@ export interface RouteInfo {
  * the menu fall back to a title generated from the last segment; unknown paths (404s) return null.
  */
 export function resolveRouteInfo(pathname: string, menuRoutes: readonly RouteResp[], router: RegisteredRouter) {
-  if (pathname === '/dashboard' || pathname === '/dashboard/') {
-    return { title: '仪表盘', icon: 'dashboard' }
-  }
-
   if (STATIC_ROUTE_TITLES[pathname]) {
     return { title: STATIC_ROUTE_TITLES[pathname], icon: STATIC_ROUTE_ICONS[pathname] ?? 'common' }
   }

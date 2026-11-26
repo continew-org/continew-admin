@@ -185,6 +185,7 @@ export const MENU_ICONS: Record<string, LucideIcon> = {
   'credit-card': CreditCard,
   dashboard: LayoutDashboard,
   database: Database,
+  desktop: Monitor,
   'dollar-sign': DollarSign,
   download: Download,
   email: Mail,

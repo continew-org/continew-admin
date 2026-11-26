@@ -21,6 +21,7 @@ export function DashboardTimeslot() {
   return (
     <ChartCard
       title="访问时段"
+      className="xl:*:data-[slot=card-content]:mt-auto"
       description="按两小时划分的访问分布"
       isPending={query.isPending}
       isError={query.isError}
@@ -38,10 +39,7 @@ export function DashboardModule() {
     queryFn: ({ signal }) => getDashboardModule(signal)
   })
 
-  const data = (query.data ?? []).map(item => ({
-    ...item,
-    name: item.name.length > 8 ? `${item.name.slice(0, 8)}…` : item.name
-  }))
+  const data = query.data ?? []
 
   return (
     <ChartCard

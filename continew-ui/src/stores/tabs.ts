@@ -10,14 +10,18 @@ export interface TabItem {
 }
 
 export const DEFAULT_PINNED_TAB: TabItem = {
-  id: '/dashboard',
-  title: '仪表盘',
-  path: '/dashboard',
+  id: '/dashboard/workplace',
+  title: '工作台',
+  path: '/dashboard/workplace',
   closable: false,
-  icon: 'dashboard'
+  icon: 'desktop'
 }
 
 const STORAGE_KEY = 'continew_in_header_tabs'
+/** Bumped when the pinned landing tab moves, so sessions restored from an older build are migrated. */
+const STORAGE_VERSION = 1
+/** The pinned tab before the workbench became the landing page. */
+const LEGACY_PINNED_PATH = '/dashboard'
 
 interface TabsState {
   tabs: TabItem[]
@@ -37,6 +41,23 @@ interface TabsState {
 }
 
 const keep = (tab: TabItem, paths: Set<string>) => !tab.closable || paths.has(tab.path)
+
+/** A stored tab is usable only when every field the shell reads on restore is present and well typed. */
+function isRestorableTab(tab: unknown): tab is TabItem {
+  if (typeof tab !== 'object' || tab === null) {
+    return false
+  }
+
+  const candidate = tab as Partial<TabItem>
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.path === 'string' &&
+    candidate.path.length > 0 &&
+    typeof candidate.title === 'string' &&
+    typeof candidate.closable === 'boolean' &&
+    (candidate.icon === null || candidate.icon === undefined || typeof candidate.icon === 'string')
+  )
+}
 
 /** Pinned tabs always sit in front of the closable ones. */
 const sortPinned = (tabs: TabItem[]) => [...tabs.filter(t => !t.closable), ...tabs.filter(t => t.closable)]
@@ -147,6 +168,31 @@ export const useTabsStore = create<TabsState>()(
     }),
     {
       name: STORAGE_KEY,
+      version: STORAGE_VERSION,
+      // Tabs restored from before the landing page moved still pin `/dashboard`, which now only
+      // redirects. Drop both the old and the new landing path, then pin the landing tab in front;
+      // everything else keeps its order.
+      migrate: (persisted: unknown) => {
+        const tabs = (persisted as { tabs?: unknown } | null)?.tabs
+        if (!Array.isArray(tabs)) {
+          return { tabs: [DEFAULT_PINNED_TAB] }
+        }
+
+        const seen = new Set<string>()
+        // `addTab` stores the raw pathname, so `/dashboard/` can outlive the redirect route.
+        const canonical = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path)
+        const kept = tabs.filter(isRestorableTab).filter(tab => {
+          const path = canonical(tab.path)
+          if (path === LEGACY_PINNED_PATH || path === DEFAULT_PINNED_TAB.path || seen.has(path)) {
+            return false
+          }
+
+          seen.add(path)
+          return true
+        })
+
+        return { tabs: [DEFAULT_PINNED_TAB, ...kept] }
+      },
       storage: createJSONStorage(() => sessionStorage),
       partialize: state => ({ tabs: state.tabs })
     }

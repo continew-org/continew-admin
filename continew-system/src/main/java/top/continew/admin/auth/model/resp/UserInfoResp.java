@@ -95,6 +95,19 @@ public class UserInfoResp implements Serializable {
     private String description;
 
     /**
+     * 当前会话登录 IP
+     */
+    @Schema(description = "当前会话登录 IP", example = "192.0.2.1", nullable = true)
+    private String loginIp;
+
+    /**
+     * 当前会话登录时间
+     */
+    @Schema(description = "当前会话登录时间", example = "2023-08-08 08:08:08", type = "string",
+        nullable = true)
+    private LocalDateTime loginTime;
+
+    /**
      * 最后一次修改密码时间
      */
     @Schema(description = "最后一次修改密码时间", example = "2023-08-08 08:08:08", type = "string")

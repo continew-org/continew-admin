@@ -16,6 +16,7 @@ import { HeaderMenu } from './header-menu'
 import { LockScreenButton, NotificationButton, PreferencesButton, RefreshButton, UserMenu } from './header-widgets'
 import { SearchTrigger } from './search-dialog'
 import { ThemeSwitcher } from './theme-switcher'
+import { HOME_PATH } from '@/navigation/route-titles'
 
 function HeaderBrand({ wide }: { wide: boolean }) {
   const { title, logo } = useSiteOptions()
@@ -32,7 +33,7 @@ function HeaderBrand({ wide }: { wide: boolean }) {
 
   return (
     <Link
-      to="/dashboard"
+      to={HOME_PATH}
       aria-label={title || '返回仪表盘'}
       className={cn(
         'flex shrink-0 items-center gap-2 overflow-hidden font-semibold',

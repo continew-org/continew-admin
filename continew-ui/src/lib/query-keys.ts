@@ -15,6 +15,7 @@ import type { SmsLogPageQuery } from '@/lib/api/sms-log'
 import type { StorageQuery } from '@/lib/api/storage'
 import type { TenantPageQuery } from '@/lib/api/tenant'
 import type { UserPageQuery } from '@/lib/api/user'
+import type { WorkbenchRange } from '@/lib/api/workbench'
 
 /** Hierarchical query-key factories: typed keys and predictable prefix invalidation. */
 export const userKeys = {
@@ -82,6 +83,17 @@ export const dashboardKeys = {
   module: () => [...dashboardKeys.all, 'module'] as const,
   os: () => [...dashboardKeys.all, 'os'] as const,
   browser: () => [...dashboardKeys.all, 'browser'] as const
+}
+
+/**
+ * Hub workbench data. Releases sit outside the range slot: the Hub does not filter them by
+ * period, so switching the chart range must not refetch them.
+ */
+export const workbenchKeys = {
+  all: ['workbench'] as const,
+  commits: (range: WorkbenchRange) => [...workbenchKeys.all, 'commits', range] as const,
+  stars: (range: WorkbenchRange) => [...workbenchKeys.all, 'stars', range] as const,
+  releases: () => [...workbenchKeys.all, 'releases'] as const
 }
 
 export const optionKeys = {

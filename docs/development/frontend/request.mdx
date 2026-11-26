@@ -45,6 +45,7 @@ export function deleteGoods(id: string | number) {
 |:-----|:-----|
 | `get` / `post` / `put` / `patch` / `del` | 常规请求，泛型标注响应类型，成功时已解包到 `data` 字段 |
 | `downloadFile` | 文件下载：解析 `Content-Disposition` 文件名，401 时先刷新再重试一次 |
+| `getRaw` | 匿名外部 GET，响应体即业务数据；不注入会话头、不刷新令牌，见下文「匿名外部服务」 |
 
 成功响应直接返回 `ApiResponse.data`，页面拿到的已经是业务数据；失败时抛 `ApiError`（`src/lib/http.ts:44`），携带 `code`（后端业务码）、`status`（HTTP 状态）与 `notified`（是否已弹过提示）三个字段。
 
@@ -88,6 +89,8 @@ Access Token 与租户 ID 存在 `src/lib/auth-session.ts` 的模块级变量里
 
 会话每次被替换或清空（`setSession` / `clearSession`），`authGeneration` 计数器加一。请求发起时记录当时的代次，响应回来后经 `assertGeneration` 比对，代次不一致说明期间用户重新登录或登出了，抛「登录状态已变更，请重试」（`SESSION_CHANGED`），避免旧请求的响应写进新会话。
 
+自 5.0.0 起，工作台欢迎区从认证 store 读取 `GET /auth/user/info` 返回的 `loginIp` 和 `loginTime`。后端用当前 Access Token 的 SID 查询会话，分别取登录 IP 和会话创建时间。刷新令牌不会改变这个时间；缺失的值在页面上显示为「—」。展示这两项不需要请求在线用户列表，也不需要在线用户管理权限。
+
 ## 401 处理与双令牌刷新
 
 请求收到 HTTP 401 时走刷新重试分支（`src/lib/http.ts:284`），流程如下。
@@ -125,6 +128,18 @@ HTTP 403 触发 `forbiddenHandler`（`src/lib/http.ts:293`），回调在 `auth-
 网络层失败提示「网络连接失败，请检查您的网络」。调用方主动取消的请求（React Query 换键或卸载时中止）原样抛出，不当网络故障弹提示。
 
 `downloadFile` 对失败的下载做了两步兜底：响应是 JSON 时按业务错误解析 `msg` 并抛出，避免错误被当文件吞掉；响应正常时从 `Content-Disposition` 解析文件名（兼容 `filename*=UTF-8''` 与带引号两种格式）。
+
+## 匿名外部服务
+
+工作台的 Hub 数据（近期提交、Star 趋势、更新日志）不是 Admin 自己的接口：它对匿名请求返回裸 JSON，不套 `{ success, data }`，也不认 Admin 的令牌。这类请求用 `src/lib/http.ts` 的 `getRaw(path, { baseUrl, query, signal, onResponse })`，不要自己写 `fetch`。
+
+`getRaw` 保留了超时、`AbortSignal` 叠加与静默失败三条约定，去掉了仅对 Admin 有意义的四件事：不注入 `Authorization` / `X-Tenant-Id`，`credentials: 'omit'`，401 不触发刷新，403 不跳无权限页。`onResponse` 回传原始 `Response`，用于读取 `X-Data-Source` 这类非响应体信息。工作台在面板下方统一列出返回 `X-Data-Source: mock` 的面板；三个 Hub 接口都没有返回 `mock` 时不显示「示例数据」。接口定义与类型在 `src/lib/api/workbench.ts`，服务地址只从 `VITE_WORKBENCH_HUB_URL` 读取。
+
+工作台的 Star 趋势请求 `GET /api/workbench/stars?range=6m&granularity=day`，按日绘制、按月标注横轴。请求 30 天的 Star 数据只传 `range=30d`。「近期提交」接口只传所选的 `range`（`30d` 或 `6m`），不接受 `granularity`；切换提交周期不会重新请求 Star 数据。
+
+Star 卡头显示最近一次完整采样的 `latest.totalStars`，悬停可查看精确总数与采样时间 `latest.sampledAt`。`latest` 为 `null` 或缺失时显示 `—`，实测为零时显示 `0`。日末历史记录以细线连接，缺测日断线；悬停在曲线上可查看当天的数值。图中按 `latest.sampledAt` 标出「最新实测」，不把日间读数写入历史。只有最新采样时显示一个点；没有可画的采样或历史记录时显示空态。
+
+贡献榜从 Hub 返回的 `authorId` 识别 GitHub 账号。只有形如 `github:<login>` 且登录名合法的标识才生成主页链接，点击头像或名称在新标签页打开。`unlinked` 和无法识别的标识只展示头像和名称，不根据显示名推断账号。
 
 ## TanStack Query 缓存约定
 

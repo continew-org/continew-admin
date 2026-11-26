@@ -5,6 +5,7 @@ import { TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { StatusPage } from './status-page'
+import { HOME_PATH } from '@/navigation/route-titles'
 
 export function RootError({ error, reset }: ErrorComponentProps) {
   return (
@@ -16,7 +17,7 @@ export function RootError({ error, reset }: ErrorComponentProps) {
       actions={
         <>
           <Button onClick={reset}>重试</Button>
-          <Button nativeButton={false} variant="outline" render={<Link to="/dashboard" replace />}>
+          <Button nativeButton={false} variant="outline" render={<Link to={HOME_PATH} replace />}>
             返回首页
           </Button>
         </>

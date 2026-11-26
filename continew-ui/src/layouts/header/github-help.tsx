@@ -4,9 +4,7 @@ import { siGithub } from 'simple-icons'
 import { SimpleIcon } from '@/components/simple-icon'
 import { Button } from '@/components/ui/button'
 
-/** Where to send people for help with this project. */
-const DOCS_URL = 'https://continew.top/docs/admin/5.x'
-const REPOSITORY_URL = 'https://github.com/continew-org/continew-admin'
+import { PROJECT_LINKS } from '@/navigation/route-titles'
 
 /** The help entry in the header toolbar: a GitHub icon that reveals the help links on hover. */
 export function GithubHelp() {
@@ -22,13 +20,18 @@ export function GithubHelp() {
               <p className="text-sm leading-none font-medium">需要帮助？</p>
               <p className="text-sm leading-relaxed text-muted-foreground">
                 {'遇到问题或有建议，请查阅'}
-                <a className="text-foreground hover:underline" href={DOCS_URL} target="_blank" rel="noreferrer">
+                <a
+                  className="text-foreground hover:underline"
+                  href={PROJECT_LINKS.docs}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   在线文档
                 </a>
                 {'，或到'}
                 <a
                   className="mx-1 inline-flex items-center gap-1 text-foreground hover:underline"
-                  href={`${REPOSITORY_URL}/issues`}
+                  href={`${PROJECT_LINKS.repository}/issues`}
                   target="_blank"
                   rel="noreferrer"
                 >

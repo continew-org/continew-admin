@@ -26,12 +26,31 @@ function baiduAnalyticsPlugin(analyticsId: string | undefined): Plugin {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd()) as ImportMetaEnv
-  const { VITE_API_BASE_URL, VITE_API_PREFIX, VITE_APP_PORT, VITE_BASE_PATH, VITE_BAIDU_ANALYTICS_ID } = env
+  const {
+    VITE_API_BASE_URL,
+    VITE_API_PREFIX,
+    VITE_APP_PORT,
+    VITE_BASE_PATH,
+    VITE_BAIDU_ANALYTICS_ID,
+    VITE_WORKBENCH_HUB_TARGET,
+    VITE_WORKBENCH_HUB_URL
+  } = env
 
   // Fail the build on a malformed id; the client only checks for emptiness.
   if (env.VITE_WWADS_UNIT_ID && !/^\d+$/.test(env.VITE_WWADS_UNIT_ID)) {
     throw new Error(`VITE_WWADS_UNIT_ID 只能是数字，当前值：${env.VITE_WWADS_UNIT_ID}`)
   }
+
+  // The public Hub rejects any request whose Referer is not on its allowlist, and a browser on
+  // the dev server sends `localhost`. A same-origin prefix therefore proxies to the Hub origin
+  // and rewrites the Referer; an absolute VITE_WORKBENCH_HUB_URL is called directly instead.
+  // `/` alone would proxy the whole dev site, and the client strips trailing slashes to `/` too,
+  // so it counts as unconfigured on both sides.
+  // Same normalization the client applies (trim, then strip trailing slashes), so the proxy and
+  // the request path always agree. The trailing slash stays on the proxy key so `/hub-preview`
+  // is not swept up by the `/hub` rule.
+  const rawHubPrefix = (VITE_WORKBENCH_HUB_URL ?? '').trim().replace(/\/+$/, '')
+  const hubPrefix = rawHubPrefix.startsWith('/') && rawHubPrefix.length > 1 ? `${rawHubPrefix}/` : null
 
   return {
     base: VITE_BASE_PATH || '/',
@@ -47,7 +66,28 @@ export default defineConfig(({ mode }) => {
           rewrite: path => path.replace(VITE_API_PREFIX, ''),
           // The message socket lives under the API prefix, so proxy upgrades too.
           ws: true
-        }
+        },
+        ...(hubPrefix &&
+          VITE_WORKBENCH_HUB_TARGET && {
+            [hubPrefix]: {
+              target: VITE_WORKBENCH_HUB_TARGET,
+              changeOrigin: true,
+              headers: { Referer: `${VITE_WORKBENCH_HUB_TARGET}/` },
+              // `getRaw` already sends no credentials; this also covers a hand-typed URL in the
+              // address bar, which the browser would otherwise decorate with this site's cookies.
+              // The reverse direction matters too: a hostless Set-Cookie is scoped to this origin
+              // and could overwrite the site's own session cookie.
+              configure: proxy => {
+                proxy.on('proxyReq', proxyRequest => {
+                  proxyRequest.removeHeader('cookie')
+                  proxyRequest.removeHeader('authorization')
+                })
+                proxy.on('proxyRes', proxyResponse => {
+                  proxyResponse.headers['set-cookie'] = undefined
+                })
+              }
+            }
+          })
       }
     },
     build: {

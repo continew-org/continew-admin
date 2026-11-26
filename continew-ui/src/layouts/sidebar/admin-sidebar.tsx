@@ -19,6 +19,7 @@ import { usePreferencesStore, usePreferencesStoreApi } from '@/stores/preference
 
 import { NavMain } from './nav-main'
 import { SidebarAd } from './sidebar-ad'
+import { HOME_PATH } from '@/navigation/route-titles'
 
 export function SidebarBrand() {
   const { title, logo } = useSiteOptions()
@@ -28,7 +29,7 @@ export function SidebarBrand() {
       <SidebarMenuItem>
         <SidebarMenuButton
           className="h-10 p-1 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:p-0! hover:bg-transparent active:bg-transparent"
-          render={<Link to="/dashboard" aria-label={title || '返回仪表盘'} />}
+          render={<Link to={HOME_PATH} aria-label={title || '返回仪表盘'} />}
         >
           <img src={logo} alt="" className="size-8 shrink-0 object-contain" />
           <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">{title}</span>

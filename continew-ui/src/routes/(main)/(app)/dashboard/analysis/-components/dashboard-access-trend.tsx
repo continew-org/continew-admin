@@ -14,8 +14,8 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import {
   dashboardKeys,
   getDashboardAccessTrend,
@@ -23,10 +23,12 @@ import {
   type DashboardAccessTrendResp
 } from '@/lib/api/dashboard'
 
-const RANGE_ITEMS = [
-  { value: '7', label: '近 7 天' },
-  { value: '30', label: '近 30 天' }
-] as const
+import { dashboardChartColor } from '../../-chart-color'
+
+const RANGE_ITEMS: readonly { value: DashboardRange; label: string }[] = [
+  { value: 7, label: '近 7 天' },
+  { value: 30, label: '近 30 天' }
+]
 
 const chartConfig = {
   pvCount: {
@@ -35,7 +37,7 @@ const chartConfig = {
   },
   ipCount: {
     label: '独立 IP',
-    color: 'var(--chart-2)'
+    color: dashboardChartColor(1)
   }
 } satisfies ChartConfig
 
@@ -52,30 +54,37 @@ export function DashboardAccessTrend() {
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle className="leading-none">访问趋势</CardTitle>
+        <CardTitle>
+          <h2>访问趋势</h2>
+        </CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">访问量与独立 IP 的按日走势</span>
           <span className="@[540px]/card:hidden">按日访问走势</span>
         </CardDescription>
         <CardAction>
-          <Select
-            items={RANGE_ITEMS}
-            value={String(range)}
-            onValueChange={value => setRange(Number(value) as DashboardRange)}
+          <ToggleGroup
+            aria-label="访问趋势统计周期"
+            variant="outline"
+            size="sm"
+            spacing={0}
+            value={[String(range)]}
+            onValueChange={([next]) => {
+              const match = RANGE_ITEMS.find(item => String(item.value) === next)
+              if (match) {
+                setRange(match.value)
+              }
+            }}
           >
-            <SelectTrigger size="sm" className="w-28">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectGroup>
-                {RANGE_ITEMS.map(item => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+            {RANGE_ITEMS.map(item => (
+              <ToggleGroupItem
+                key={item.value}
+                value={String(item.value)}
+                className="aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+              >
+                {item.label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </CardAction>
       </CardHeader>
 

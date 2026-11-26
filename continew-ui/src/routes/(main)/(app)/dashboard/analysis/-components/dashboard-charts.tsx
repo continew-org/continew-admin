@@ -9,7 +9,7 @@ import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } f
 import { Skeleton } from '@/components/ui/skeleton'
 import type { DashboardChartItem } from '@/lib/api/dashboard'
 
-const PIE_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)']
+import { dashboardChartColor } from '../../-chart-color'
 
 const valueConfig = {
   value: {
@@ -42,7 +42,9 @@ export function ChartCard({
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle>
+          <h2>{title}</h2>
+        </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -84,11 +86,11 @@ export function RankBarChart({ data, vertical = false, className }: RankBarChart
             <YAxis
               type="category"
               dataKey="name"
-              width={112}
+              width="auto"
               tickLine={false}
               axisLine={false}
               tickMargin={4}
-              tick={{ fontSize: 12 }}
+              tickFormatter={(name: string) => (name.length > 8 ? `${name.slice(0, 8)}…` : name)}
             />
           </>
         ) : (
@@ -97,7 +99,22 @@ export function RankBarChart({ data, vertical = false, className }: RankBarChart
             <YAxis type="number" hide />
           </>
         )}
-        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+        <ChartTooltip
+          cursor={false}
+          position={vertical ? { x: 0 } : undefined}
+          wrapperStyle={{ maxWidth: '100%' }}
+          content={({ active, payload, label }) => (
+            <div role="status">
+              <ChartTooltipContent
+                active={active}
+                payload={payload}
+                label={label}
+                indicator="line"
+                className="min-w-0 wrap-anywhere"
+              />
+            </div>
+          )}
+        />
         <Bar dataKey="value" fill="var(--color-value)" radius={radius} barSize={vertical ? 14 : 28} />
       </BarChart>
     </ChartContainer>
@@ -112,7 +129,7 @@ export function DistributionPieChart({ data, className }: { data: DashboardChart
           <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
           <Pie data={data} dataKey="value" nameKey="name" innerRadius={48} outerRadius={80} paddingAngle={2}>
             {data.map((item, index) => (
-              <Cell key={item.name} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+              <Cell key={item.name} fill={dashboardChartColor(index)} />
             ))}
           </Pie>
         </PieChart>
@@ -120,10 +137,7 @@ export function DistributionPieChart({ data, className }: { data: DashboardChart
       <div className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1">
         {data.map((item, index) => (
           <div key={item.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span
-              className="size-2 shrink-0 rounded-[2px]"
-              style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
-            />
+            <span className="size-2 shrink-0 rounded-[2px]" style={{ backgroundColor: dashboardChartColor(index) }} />
             <span className="max-w-24 truncate">{item.name}</span>
           </div>
         ))}

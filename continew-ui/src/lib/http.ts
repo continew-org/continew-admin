@@ -114,8 +114,8 @@ function assertGeneration(generation: number) {
   }
 }
 
-function buildUrl(path: string, query?: Query) {
-  const url = `${BASE_URL}${path}`
+function buildUrl(path: string, query?: Query, base = BASE_URL) {
+  const url = `${base}${path}`
 
   if (!query) {
     return url
@@ -254,6 +254,74 @@ async function throwSessionExpired(response: Response, generation: number): Prom
   const error = new ApiError(message, { status: 401 })
   error.notified = true
   throw error
+}
+
+/** Options of an external GET; `baseUrl` is the service origin, the path is appended to it. */
+export interface RawRequestOptions {
+  readonly baseUrl: string
+  readonly query?: Query
+  readonly signal?: AbortSignal
+  /** Exposes the X-Data-Source style hints the service sends alongside the body. */
+  readonly onResponse?: (response: Response) => void
+}
+
+/**
+ * Anonymous external GET: the response body is the payload itself.
+ *
+ * The Admin session never applies to another origin, so no Authorization / X-Tenant-Id header is
+ * sent, cookies are omitted, and a 401/403 is a plain failure here — refreshing would only touch
+ * a session this service does not know about. Timeout, AbortSignal merging and error reporting
+ * behave like the envelope path; errors stay silent because the caller renders its own error state.
+ */
+export async function getRaw<T>(path: string, options: RawRequestOptions): Promise<T> {
+  const { baseUrl, query, signal: callerSignal, onResponse } = options
+  const timeout = timeoutSignal()
+  const signal = callerSignal ? AbortSignal.any([callerSignal, timeout]) : timeout
+  const base = baseUrl.replace(/\/+$/, '')
+
+  let response: Response
+  try {
+    response = await fetch(buildUrl(path, query, base), { method: 'GET', credentials: 'omit', signal })
+  } catch (error) {
+    if (callerSignal?.aborted) {
+      throw error
+    }
+
+    if (timeout.aborted) {
+      throw fail(STATUS_MESSAGE[408] ?? NETWORK_ERROR_MESSAGE, { status: 408 }, true)
+    }
+
+    throw fail(NETWORK_ERROR_MESSAGE, {}, true)
+  }
+
+  onResponse?.(response)
+
+  // A failing response is reported by status: an HTML 502 or an empty 403 has no JSON body, and
+  // reading it first would turn a clear HTTP error into a parse error.
+  if (!response.ok) {
+    throw fail(STATUS_MESSAGE[response.status] ?? `请求失败（${response.status}）`, { status: response.status }, true)
+  }
+
+  // Reading the body is still cancellable: an abort or a timeout during the read must surface as
+  // such instead of being reported as a malformed body.
+  try {
+    return (await response.json()) as T
+  } catch (error) {
+    if (callerSignal?.aborted) {
+      throw error
+    }
+
+    if (timeout.aborted) {
+      throw fail(STATUS_MESSAGE[408] ?? NETWORK_ERROR_MESSAGE, { status: 408 }, true)
+    }
+
+    // A truncated stream rejects with a TypeError too; only a real parse failure is a format error.
+    if (error instanceof SyntaxError) {
+      throw fail(`响应格式异常（${response.status}）`, { status: response.status }, true)
+    }
+
+    throw fail(NETWORK_ERROR_MESSAGE, { status: response.status }, true)
+  }
 }
 
 async function send<T>(
