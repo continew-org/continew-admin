@@ -19,10 +19,13 @@ package top.continew.admin.common.config.mybatis;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserGlobal;
 import com.baomidou.mybatisplus.extension.parser.cache.JdkSerialCaffeineJsqlParseCache;
+import org.apache.ibatis.mapping.DatabaseIdProvider;
+import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,6 +42,16 @@ public class MybatisPlusConfiguration {
         JsqlParserGlobal
             .setJsqlParseCache(new JdkSerialCaffeineJsqlParseCache(cache -> cache.maximumSize(1024)
                 .expireAfterWrite(5, TimeUnit.SECONDS)));
+    }
+
+    @Bean
+    DatabaseIdProvider databaseIdProvider() {
+        Properties databaseIds = new Properties();
+        databaseIds.setProperty("MySQL", "mysql");
+        databaseIds.setProperty("PostgreSQL", "pgsql");
+        VendorDatabaseIdProvider provider = new VendorDatabaseIdProvider();
+        provider.setProperties(databaseIds);
+        return provider;
     }
 
     /**

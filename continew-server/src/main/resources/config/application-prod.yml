@@ -34,7 +34,6 @@ spring.datasource:
   #  # PostgreSQL 配置
   #  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
   #  username: ${DB_USER:postgres}
-  #  password: ${DB_PWD:123456}
   #  driver-class-name: org.postgresql.Driver
   # Hikari 连接池配置
   hikari:

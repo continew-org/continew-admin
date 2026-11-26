@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset charles7c:1
+-- changeset charles7c:1 dbms:mysql
 -- comment 移除代码生成器：清理菜单、按钮权限、租户套餐关联与数据表
 -- 子菜单（按钮权限）先删，再删页面与目录菜单；sys_role_menu 与 tenant_package_menu 关联一并清理
 DELETE FROM `sys_role_menu` WHERE `menu_id` IN (9000, 9010, 9011, 9012, 9013, 9014);

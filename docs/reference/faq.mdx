@@ -49,6 +49,12 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 
 确认 Redis 已启动且监听 6379；dev 默认密码 `123456`，本机无密码就把 `application-dev.yml` 中 `spring.data.redis.password` 一行注释掉；改了地址用 `REDIS_HOST`、`REDIS_PORT`、`REDIS_PWD`、`REDIS_DB` 覆盖。
 
+### 能打开登录页，提交后提示「服务器异常，请联系管理员」
+
+dev 环境会在后端终端记录未处理异常的堆栈，登录接口仍返回通用提示。若看到 `RedisException`，并且 `SET` 命令携带 `KEEPTTL` 时返回 `ERR syntax error`，检查后端连接的 Redis 版本。Redis 5 能建立连接，但不支持登录写入会话所用的 `KEEPTTL`。
+
+启动项目要求的 Redis 7.2 实例，通过 `REDIS_HOST`、`REDIS_PORT` 和 `REDIS_PWD` 指向该实例，再重启后端并登录验证。
+
 ### 启动报「Field 'xxx' doesn't have a default value」或表不存在
 
 原因多为旧库残留。Liquibase 按 `db/changelog/db.changelog-master.yaml` 管理变更，升级版本后旧库结构与新脚本冲突，或首次启动中断导致表没建全。

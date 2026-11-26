@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset kai:1
+-- changeset kai:1 dbms:mysql
 -- comment 初始化任务调度插件数据表
 -- 初始化默认菜单
 INSERT INTO `sys_menu`

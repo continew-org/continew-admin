@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset charles7c:1
+-- changeset charles7c:1 dbms:postgresql
 -- comment 初始化表数据
 -- 初始化默认菜单
 INSERT INTO "sys_menu"
@@ -293,6 +293,6 @@ INSERT INTO "sys_client"
 VALUES
 (1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'PC', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 1800, 86400, 1, 1, NOW());
 
--- changeset luoqiz:2
+-- changeset luoqiz:2 dbms:postgresql
 -- comment 清理已重编号下线的旧菜单（2020-2023）残留的角色菜单关联
 DELETE FROM "sys_role_menu" WHERE "menu_id" IN (2020, 2021, 2022, 2023);

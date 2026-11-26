@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset chengzi:1
+-- changeset chengzi:1 dbms:postgresql
 -- comment 初始化能力开放插件数据表
 -- 初始化表结构
 CREATE TABLE IF NOT EXISTS "sys_app" (

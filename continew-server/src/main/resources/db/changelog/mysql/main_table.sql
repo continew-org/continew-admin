@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset charles7c:1
+-- changeset charles7c:1 dbms:mysql
 -- comment 初始化表结构
 CREATE TABLE IF NOT EXISTS `sys_menu` (
     `id`          bigint       AUTO_INCREMENT              COMMENT 'ID',
@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `sys_sms_log`  (
     INDEX `idx_create_user`(`create_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='短信日志表';
 
--- changeset luoqiz:refresh-token-timeout-client-field-mysql
+-- changeset luoqiz:refresh-token-timeout-client-field-mysql dbms:mysql
 -- comment 客户端 Refresh Token 策略字段
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_timeout'
@@ -415,7 +415,7 @@ ALTER TABLE `sys_client`
     ADD COLUMN `refresh_token_timeout` bigint NOT NULL DEFAULT 2592000
         COMMENT 'Refresh Token 绝对有效期（单位：秒）';
 
--- changeset luoqiz:refresh-token-mode-client-field-mysql
+-- changeset luoqiz:refresh-token-mode-client-field-mysql dbms:mysql
 -- comment 客户端 Refresh Token 策略字段
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
@@ -423,7 +423,7 @@ ALTER TABLE `sys_client`
     ADD COLUMN `refresh_token_mode` varchar(16) NOT NULL DEFAULT 'COOKIE'
         COMMENT 'Refresh Token 传输模式（COOKIE：浏览器；BODY：App/小程序）';
 
--- changeset luoqiz:refresh-token-mode-by-client-type-mysql
+-- changeset luoqiz:refresh-token-mode-by-client-type-mysql dbms:mysql
 -- comment 存量 App/小程序客户端默认使用 BODY 传输 Refresh Token，避免升级后无法获取 Refresh Token
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:1 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_mode'
@@ -431,7 +431,7 @@ UPDATE `sys_client`
     SET `refresh_token_mode` = 'BODY'
     WHERE `client_type` IN ('ANDROID', 'XCX');
 
--- changeset luoqiz:refresh-token-idle-timeout-client-field-mysql
+-- changeset luoqiz:refresh-token-idle-timeout-client-field-mysql dbms:mysql
 -- comment 客户端 Refresh Token 闲置失效字段（0：不限制，沿用绝对有效期）
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'sys_client' AND column_name = 'refresh_token_idle_timeout'
@@ -439,13 +439,13 @@ ALTER TABLE `sys_client`
     ADD COLUMN `refresh_token_idle_timeout` bigint NOT NULL DEFAULT 0
         COMMENT 'Refresh Token 闲置失效（单位：秒，0：不限制）';
 
--- changeset luoqiz:file-path-index-mysql
+-- changeset luoqiz:file-path-index-mysql dbms:mysql
 -- comment 文件路径索引（URL 出口装配与按 path 精确删除均按 path 等值查询）
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'sys_file' AND index_name = 'idx_file_path'
 CREATE INDEX `idx_file_path` ON `sys_file` (`path`);
 
--- changeset luoqiz:file-thumbnail-index-mysql
+-- changeset luoqiz:file-thumbnail-index-mysql dbms:mysql
 -- comment 文件缩略图索引（回收站引用判定、缩略图共享保护与补偿清理均按 storage_id + thumbnail_name 查询）
 -- preconditions onFail:MARK_RAN
 -- precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = 'sys_file' AND index_name = 'idx_storage_thumbnail'

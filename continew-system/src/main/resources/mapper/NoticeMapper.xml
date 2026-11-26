@@ -71,7 +71,7 @@
                     AND JSON_CONTAINS(t1.notice_methods, CAST(#{noticeMethod} AS CHAR))
                 </when>
                 <when test="_databaseId == 'pgsql'">
-                    AND (t1.notice_methods::jsonb @> jsonb_build_array(#{noticeMethod}::text))
+                    AND (t1.notice_methods::jsonb @> jsonb_build_array(CAST(#{noticeMethod} AS integer)))
                 </when>
             </choose>
         </if>
