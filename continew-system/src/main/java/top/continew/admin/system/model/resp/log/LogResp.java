@@ -111,6 +111,12 @@ public class LogResp implements Serializable {
     private String createUserString;
 
     /**
+     * 用户名
+     */
+    @Schema(description = "用户名")
+    private String username;
+
+    /**
      * 创建时间
      */
     @Schema(description = "创建时间", example = "2023-08-08 08:08:08", type = "string")

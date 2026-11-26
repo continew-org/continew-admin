@@ -27,6 +27,8 @@ interface UseListTableOptions<TRow extends RowData, TData extends PageData<TRow>
   readonly buildColumns: (rowOffset: number) => ColumnDef<DataTableFeatures, TRow>[]
   readonly getRowId: (row: TRow) => string
   readonly initialColumnVisibility?: ColumnVisibilityState
+  /** Set to false when previous rows must not appear under the new query. */
+  readonly showPreviousRows?: boolean
   readonly pageSize?: number
   /** Delays the query, for a screen that must wait on a lookup before listing. */
   readonly enabled?: boolean
@@ -34,7 +36,7 @@ interface UseListTableOptions<TRow extends RowData, TData extends PageData<TRow>
 
 /**
  * The state wiring every paginated list screen shares: pagination, column visibility, the query
- * (with `keepPreviousData`), the page clamp and the table instance. Screens keep their own columns,
+ * (with previous-page placeholders), the page clamp and the table instance. Screens keep their own columns,
  * filters and toolbars, so only the repeated plumbing lives here.
  */
 export function useListTable<TRow extends RowData, TData extends PageData<TRow>>({
@@ -42,6 +44,7 @@ export function useListTable<TRow extends RowData, TData extends PageData<TRow>>
   buildColumns,
   getRowId,
   initialColumnVisibility = {},
+  showPreviousRows = true,
   pageSize = 10,
   enabled = true
 }: UseListTableOptions<TRow, TData>) {
@@ -53,7 +56,7 @@ export function useListTable<TRow extends RowData, TData extends PageData<TRow>>
   const query = useQuery({
     queryKey: request.queryKey,
     queryFn: ({ signal }) => request.queryFn(signal),
-    placeholderData: keepPreviousData,
+    placeholderData: showPreviousRows ? keepPreviousData : undefined,
     enabled
   })
 

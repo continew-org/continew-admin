@@ -22,6 +22,12 @@ export interface OnlineUserResp {
   os: string
   loginTime: string
   lastRefreshTime: string
+  lastActiveTime: string | null
+  activeTimeExact: boolean | null
+  sessionExpireTime: string | null
+  idleExpireTime: string | null
+  idleExpired: boolean | null
+  online: boolean | null
 }
 
 export type OnlineUserPageQuery = {
@@ -34,8 +40,8 @@ export type OnlineUserPageQuery = {
    * into its `List<LocalDateTime>` filter.
    */
   loginTime?: string
-  // The backend also filters by `clientId`; the screen follows the Vue client and offers
-  // only the two filters above.
+  clientId?: string
+  online?: boolean
 }
 
 /** One page of login sessions. */

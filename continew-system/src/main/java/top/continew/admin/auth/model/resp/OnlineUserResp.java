@@ -79,9 +79,9 @@ public class OnlineUserResp implements Serializable {
     private String ip;
 
     /**
-     * 登录地点
+     * IP 归属地
      */
-    @Schema(description = "登录地点", example = "中国北京北京市")
+    @Schema(description = "IP 归属地", example = "中国北京北京市")
     private String address;
 
     /**

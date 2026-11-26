@@ -45,8 +45,8 @@ const STATUS_OPTIONS = [
 ]
 
 const PLACEHOLDERS: Record<LogMode, { operator: string; ip: string; date: string }> = {
-  login: { operator: '搜索登录用户', ip: '搜索登录 IP 或地点', date: '登录时间' },
-  operation: { operator: '搜索操作人', ip: '搜索操作 IP 或地点', date: '操作时间' }
+  login: { operator: '搜索登录用户', ip: '搜索登录 IP 或 IP 归属地', date: '登录时间' },
+  operation: { operator: '搜索操作人', ip: '搜索操作 IP 或 IP 归属地', date: '操作时间' }
 }
 
 interface LogListProps {
