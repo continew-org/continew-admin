@@ -252,7 +252,9 @@ export function UserImportDrawer({ open, onClose }: UserImportDrawerProps) {
               }}
               className={cn(
                 'flex min-h-[280px] w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors',
-                isDragging ? 'border-primary bg-primary/5' : 'border-input hover:border-primary/60 hover:bg-muted/40',
+                isDragging
+                  ? 'border-primary bg-primary/5'
+                  : 'border-control-border hover:border-primary/60 hover:bg-muted/40',
                 busy && 'cursor-not-allowed opacity-60'
               )}
             >
