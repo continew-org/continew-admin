@@ -17,12 +17,16 @@
 package top.continew.admin.auth.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.beans.factory.ObjectProvider;
@@ -39,12 +43,16 @@ import top.continew.admin.auth.model.resp.RouteResp;
 import top.continew.admin.auth.model.resp.SocialAuthAuthorizeResp;
 import top.continew.admin.auth.model.resp.UserInfoResp;
 import top.continew.admin.auth.service.AuthService;
+import top.continew.admin.common.constant.GlobalConstants;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
 import top.continew.admin.system.enums.SocialSourceEnum;
 import top.continew.admin.system.model.resp.user.UserDetailResp;
 import top.continew.admin.system.service.UserService;
 import top.continew.starter.auth.justauth.AuthRequestFactory;
+import top.continew.starter.auth.refresh.token.api.AuthSessionConstants;
+import top.continew.starter.auth.refresh.token.model.SessionView;
+import top.continew.starter.auth.refresh.token.service.SessionQueryService;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.log.annotation.Log;
 import top.continew.starter.log.enums.Include;
@@ -53,6 +61,8 @@ import top.continew.starter.validation.constraints.EnumValue;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -66,11 +76,13 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final ObjectProvider<SessionQueryService> sessionQueryServiceProvider;
     // 第三方登录为可选能力，未启用时 Starter 不注册 AuthRequestFactory，故惰性获取
     private final ObjectProvider<AuthRequestFactory> authRequestFactoryProvider;
 
@@ -131,6 +143,7 @@ public class AuthController {
         userInfoResp.setPwdExpired(pwdExpireDays != null && pwdExpireDays == 0);
         userInfoResp.setPwdExpireDays(pwdExpireDays);
         userInfoResp.setPwdWarningDays(userContext.getPasswordExpirationWarningDays());
+        this.fillCurrentSession(userInfoResp);
         return userInfoResp;
     }
 
@@ -139,5 +152,40 @@ public class AuthController {
     @GetMapping("/user/route")
     public List<RouteResp> listRoute() {
         return authService.buildRouteTree(UserContextHolder.getUserId());
+    }
+
+    /**
+     * 填充本次会话的登录 IP 与时间，只用于欢迎区展示。
+     *
+     * <p>会话查询的每个环节都降级：服务未注册、SID 缺失或查询失败时保留已读取的用户资料与权限，
+     * 两个展示字段留空。日志不记录 SID 与异常原文，避免把可关联登录会话的标识或底层敏感信息写入。</p>
+     *
+     * @param userInfoResp 待填充的用户信息
+     */
+    private void fillCurrentSession(UserInfoResp userInfoResp) {
+        try {
+            SessionQueryService sessionQueryService = sessionQueryServiceProvider.getIfAvailable();
+            if (sessionQueryService == null) {
+                return;
+            }
+            String sessionId = Convert.toStr(StpUtil.getExtra(StpUtil.getTokenValue(),
+                AuthSessionConstants.SESSION_ID_CLAIM));
+            if (StrUtil.isBlank(sessionId)) {
+                return;
+            }
+            SessionView session = sessionQueryService.getSession(sessionId);
+            if (session != null) {
+                userInfoResp.setLoginIp(session.getIp());
+                if (session.getCreatedAt() > 0) {
+                    // 与其余业务时间保持同一时区，UTC 容器下才不会比登录时间早八小时。
+                    userInfoResp.setLoginTime(
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(session.getCreatedAt()),
+                            GlobalConstants.DEFAULT_ZONE_ID));
+                }
+            }
+        } catch (Exception e) {
+            // 异常原文由令牌解析器或会话存储提供，可能含令牌或带 SID 的存储键，只记录类型。
+            log.warn("读取当前会话登录信息失败：{}", e.getClass().getSimpleName());
+        }
     }
 }

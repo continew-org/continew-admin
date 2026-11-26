@@ -18,7 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useMenuRoutes } from '@/hooks/use-menu'
 import { findMenuTrail, toPathname } from '@/navigation/menu'
 import { resolveMenuIcon } from '@/navigation/menu-icons'
-import { formatSegmentTitle, STATIC_ROUTE_ICONS, STATIC_ROUTE_TITLES } from '@/navigation/route-titles'
+import { HOME_PATH, formatSegmentTitle, STATIC_ROUTE_ICONS, STATIC_ROUTE_TITLES } from '@/navigation/route-titles'
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider'
 
 export interface BreadcrumbItemData {
@@ -37,11 +37,11 @@ export function useBreadcrumbTrail(): BreadcrumbItemData[] {
     const homeItem: BreadcrumbItemData = {
       id: 'app-home',
       title: '首页',
-      url: '/dashboard'
+      url: HOME_PATH
     }
 
-    // Dashboard root: no breadcrumb needed on the home overview
-    if (pathname === '/dashboard' || pathname === '/dashboard/') {
+    // The home page itself has no trail: its only crumb would link to itself.
+    if (pathname === HOME_PATH || pathname === `${HOME_PATH}/`) {
       return []
     }
 

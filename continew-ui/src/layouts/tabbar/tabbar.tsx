@@ -37,7 +37,7 @@ import { useMenuRoutes } from '@/hooks/use-menu'
 import type { TabbarStyle } from '@/lib/preferences/layout'
 import { resolveMenuIcon } from '@/navigation/menu-icons'
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider'
-import { type TabItem, useTabsStore } from '@/stores/tabs'
+import { DEFAULT_PINNED_TAB, type TabItem, useTabsStore } from '@/stores/tabs'
 
 import { resolveRouteInfo, usePathname } from '../route-info'
 import { useShellStore } from '../shell-store'
@@ -78,7 +78,7 @@ function useTabActions() {
     }
     const ensureActiveTab = () => {
       const { tabs } = useTabsStore.getState()
-      if (!tabs.some(tab => tab.path === pathname)) go(tabs.at(-1)?.path ?? '/dashboard')
+      if (!tabs.some(tab => tab.path === pathname)) go(tabs.at(-1)?.path ?? DEFAULT_PINNED_TAB.path)
     }
 
     return {
@@ -139,7 +139,7 @@ function TabMenuItems({
   const hasClosableLeft = tabs.slice(0, index).some(t => t.closable)
   const hasClosableRight = tabs.slice(index + 1).some(t => t.closable)
   const hasOthers = tabs.some(t => t.closable && t.path !== tab.path)
-  const canPin = tab.path !== '/dashboard'
+  const canPin = tab.path !== DEFAULT_PINNED_TAB.path
 
   return (
     <>
@@ -253,7 +253,7 @@ const Tab = React.memo(function Tab({
             <span className="sr-only">关闭 {tab.title}</span>
           </button>
         ) : (
-          tab.path !== '/dashboard' && <Pin className="size-3 shrink-0 opacity-50" />
+          tab.path !== DEFAULT_PINNED_TAB.path && <Pin className="size-3 shrink-0 opacity-50" />
         )}
       </ContextMenuTrigger>
       <ContextMenuContent className="min-w-36">
@@ -318,7 +318,7 @@ export function Tabbar() {
     useTabsStore
       .getState()
       .addTab(
-        { path: pathname, title: info.title, icon: info.icon, closable: pathname !== '/dashboard' },
+        { path: pathname, title: info.title, icon: info.icon, closable: pathname !== DEFAULT_PINNED_TAB.path },
         prefs.maxCount
       )
   }, [pathname, menuRoutes, router, prefs.maxCount])

@@ -29,4 +29,14 @@ description: 百度统计与万维广告只在官方演示站的构建里启用�
 
 最后在 `continew-ui` 下执行 `pnpm check`，格式、lint、类型、单测与构建都通过即完成。
 
-赞助轮播（`continew-ui/src/layouts/sidebar/support-carousel.tsx`）只是撤下了侧栏挂载，与广告无关，删除广告时不用动它。
+工作台公告前的赞助横幅由 `continew-ui/src/routes/(main)/(app)/dashboard/workplace/-components/workbench-sponsors.tsx` 渲染，移除万维广告时保留它。横幅从官网 `sponsor.json` 读取有图片的当前伙伴，与公众号图片轮播；没有伙伴横幅时只展示公众号图片。
+
+## 移除工作台的 Hub 数据区
+
+工作台的近期提交、Star 趋势与更新日志来自独立的 ContiNew Hub 服务，由 `VITE_WORKBENCH_HUB_URL` 控制；置空（`.env.production` 的默认值）时，工作台只显示一处数据源提示，不请求 Hub。公告、发布记录链接与赞助轮播仍可用。要彻底删掉 Hub 接入：
+
+1. 从 `workplace/route.tsx` 移除 Hub 配置判断、统计区、更新日志与周期切换状态，保留欢迎区、公告、发布记录链接与赞助轮播。
+2. 删除 `dashboard/workplace/-components/` 下的 `workbench-activity.tsx`、`workbench-stars.tsx`、`workbench-releases.tsx`、`workbench-queries.ts`，以及 `continew-ui/src/lib/api/workbench.ts` 和 `src/lib/query-keys.ts` 的 `workbenchKeys`。赞助轮播仍使用 `workbench-data.ts` 的 `safeHttpUrl` 和 `src/lib/http.ts` 的 `getRaw`，这两处保留；清理 `workbench-data.ts` 中仅供 Hub 使用的类型和函数。
+3. 删除 `continew-ui/.env.development` 的 `VITE_WORKBENCH_HUB_URL` / `VITE_WORKBENCH_HUB_TARGET`、`.env.production` 的 `VITE_WORKBENCH_HUB_URL`，以及 `src/vite-env.d.ts` 里对应的两条声明。
+4. 移除 `continew-ui/vite.config.ts` 的 `hubPrefix` 计算与 `/hub` 代理项。
+5. 移除 `continew-ui/tests/workbench.test.ts`、`continew-ui/tests/workbench-panels.test.ts` 与 `continew-ui/e2e/workbench.spec.ts` 中依赖 Hub 的用例，保留链接校验与公告用例。

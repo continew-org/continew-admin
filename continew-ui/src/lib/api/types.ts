@@ -72,6 +72,8 @@ export interface UserInfoResp {
   phone: string
   avatar: string | null
   description: string
+  loginIp?: string | null
+  loginTime?: string | null
   pwdResetTime: string
   pwdExpired: boolean
   createTime: string

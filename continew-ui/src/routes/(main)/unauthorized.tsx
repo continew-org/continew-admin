@@ -4,6 +4,7 @@ import { Lock } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { StatusPage } from '@/routes/-components/status-page'
+import { HOME_PATH } from '@/navigation/route-titles'
 
 /** Shown when an API call is rejected with 403; the HTTP layer navigates here. */
 export const Route = createFileRoute('/(main)/unauthorized')({
@@ -17,7 +18,7 @@ function UnauthorizedPage() {
       title="无访问权限"
       description="您没有权限访问该页面。如认为这是错误，请联系系统管理员。"
       actions={
-        <Button nativeButton={false} render={<Link to="/dashboard" />}>
+        <Button nativeButton={false} render={<Link to={HOME_PATH} />}>
           返回首页
         </Button>
       }

@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { RouteResp } from '@/lib/api/types'
 
 import { resolveMenuIcon } from './menu-icons'
-import { STATIC_ROUTE_TITLES } from './route-titles'
+import { ANALYSIS_PATH, DASHBOARD_PATH, HOME_PATH, STATIC_ROUTE_ICONS, STATIC_ROUTE_TITLES } from './route-titles'
 
 export interface MenuItem {
   id: string
@@ -72,32 +72,29 @@ function toMenuSubItems(nodes: readonly RouteResp[]): MenuItem[] {
   })
 }
 
-/**
- * Menu entries the app owns instead of the backend.
- *
- * `/dashboard` is a static route: it exists for every signed-in user, so it must not
- * depend on a `sys_menu` record or on the current user's permissions.
- */
-export const STATIC_MENU_ITEMS: readonly MenuItem[] = [
-  {
-    id: 'app-dashboard',
-    title: '仪表盘',
-    url: '/dashboard',
-    icon: resolveMenuIcon('dashboard')
-  }
-]
+/** The dashboard is a top-level directory for every signed-in user, independent of `sys_menu`. */
+const DASHBOARD_GROUP: MenuGroup = {
+  id: 'app-dashboard',
+  label: STATIC_ROUTE_TITLES[DASHBOARD_PATH],
+  icon: resolveMenuIcon(STATIC_ROUTE_ICONS[DASHBOARD_PATH]),
+  items: [HOME_PATH, ANALYSIS_PATH].map(url => ({
+    id: 'app' + url.replaceAll('/', '-'),
+    title: STATIC_ROUTE_TITLES[url],
+    url,
+    icon: resolveMenuIcon(STATIC_ROUTE_ICONS[url])
+  }))
+}
 
 /**
  * Converts the backend menu tree into sidebar groups.
  *
  * A top-level directory becomes a labelled group, a menu becomes a link item, and a
  * directory nested inside a group becomes a collapsible parent item. Menus that sit
- * at the top level are collected into an unlabelled group in front of the rest, and
- * the app-owned static items are merged into that same group so they stay on top.
+ * at the top level are collected into an unlabelled group before the backend directories.
  */
 export function toMenuGroups(nodes: readonly RouteResp[]): MenuGroup[] {
   const groups: MenuGroup[] = []
-  const looseItems: MenuItem[] = [...STATIC_MENU_ITEMS]
+  const looseItems: MenuItem[] = []
 
   for (const node of nodes.filter(isVisible)) {
     if (node.type === TYPE_MENU || !node.children?.length) {
@@ -122,7 +119,7 @@ export function toMenuGroups(nodes: readonly RouteResp[]): MenuGroup[] {
     groups.unshift({ id: 'root', items: looseItems })
   }
 
-  return groups
+  return [DASHBOARD_GROUP, ...groups]
 }
 
 /** Finds the full trail of menu entries leading to a pathname, for breadcrumb navigation. */

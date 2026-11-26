@@ -110,10 +110,14 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 | `VITE_CLIENT_ID` | 登录时上报的客户端 ID，对应后端「客户端配置」 | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 |
 | `VITE_APP_RSA_PUBLIC_KEY` | 登录密码 RSA 加密公钥，须与后端 `FIELD_ENCRYPT_PUBLIC_KEY` 同密钥对 | 内置与后端 dev 配对的示例公钥 | 同左，生产换密钥对时构建前替换 |
 | `VITE_BASE_PATH` | 部署子路径 base（如 `/admin/`），缺省 `/` | 不设置 | 不设置 |
+| `VITE_WORKBENCH_HUB_URL` | 工作台 Hub 数据的 Web 根地址（提交、Star、更新日志）；置空则这三块不渲染数据、不发请求 | `/hub`（经 dev 代理） | 空（公开 Hub 有 Referer 白名单） |
+| `VITE_WORKBENCH_HUB_TARGET` | 仅 dev：`/hub` 前缀的代理目标，代理会把 Referer 改写成该地址以过 Hub 白名单 | `https://admin.continew.top` | 不使用 |
 
 ### 变量在代码里的落点
 
 `VITE_API_PREFIX` 与 `VITE_API_BASE_URL` 决定 HTTP 封装的请求基址（`continew-ui/src/lib/http.ts`）：`VITE_API_PREFIX` 优先，未设置时回退 `VITE_API_BASE_URL`。dev 由 `vite.config.ts` 的 `server.proxy` 把前缀代理到 `VITE_API_BASE_URL` 并去掉前缀；生产构建没有代理，`.env.production` 不设 `VITE_API_PREFIX`，请求按完整 URL 直连后端域名。`VITE_CLIENT_ID` 在 `continew-ui/src/stores/auth/auth-store.ts` 的登录与第三方登录请求里作为 `clientId` 上报。
+
+`VITE_WORKBENCH_HUB_URL` 由 `continew-ui/src/lib/api/workbench.ts` 读取，请求经 `src/lib/http.ts` 的 `getRaw` 发出。这是匿名外部 GET：不注入 `Authorization` 与 `X-Tenant-Id`，不参与 401 刷新与 403 跳转，30 秒超时与调用方 `AbortSignal` 仍生效。写相对路径（如 `/hub`）时浏览器走同源，只有 dev 代理会把它转发到 `VITE_WORKBENCH_HUB_TARGET`；生产环境要么留空，要么配成允许本站 Referer 的 Hub 地址。
 
 <Callout type="info">
 `VITE_CLIENT_ID` 必须与后端「系统管理 → 系统配置 → 客户端配置」里某条客户端记录的 ID 一致，否则登录时会匹配不到客户端策略。默认值对应初始脚本里的 PC 端配置。

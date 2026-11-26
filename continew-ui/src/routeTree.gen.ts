@@ -18,7 +18,9 @@ import { Route as mainAuthLoginRouteRouteImport } from './routes/(main)/auth/log
 import { Route as mainSocialCallbackRouteRouteImport } from './routes/(main)/social/callback/route'
 import { Route as mainappDashboardIndexRouteImport } from './routes/(main)/(app)/dashboard/index'
 import { Route as mainappDashboardSplatRouteImport } from './routes/(main)/(app)/dashboard/$'
+import { Route as mainappDashboardAnalysisRouteRouteImport } from './routes/(main)/(app)/dashboard/analysis/route'
 import { Route as mainappDashboardProfileRouteRouteImport } from './routes/(main)/(app)/dashboard/profile/route'
+import { Route as mainappDashboardWorkplaceRouteRouteImport } from './routes/(main)/(app)/dashboard/workplace/route'
 import { Route as mainappMonitorLogRouteRouteImport } from './routes/(main)/(app)/monitor/log/route'
 import { Route as mainappMonitorOnlineRouteRouteImport } from './routes/(main)/(app)/monitor/online/route'
 import { Route as mainappOpenAppRouteRouteImport } from './routes/(main)/(app)/open/app/route'
@@ -81,10 +83,22 @@ const mainappDashboardSplatRoute = mainappDashboardSplatRouteImport.update({
   path: '/dashboard/$',
   getParentRoute: () => mainappRouteRoute,
 } as any)
+const mainappDashboardAnalysisRouteRoute =
+  mainappDashboardAnalysisRouteRouteImport.update({
+    id: '/dashboard/analysis',
+    path: '/dashboard/analysis',
+    getParentRoute: () => mainappRouteRoute,
+  } as any)
 const mainappDashboardProfileRouteRoute =
   mainappDashboardProfileRouteRouteImport.update({
     id: '/dashboard/profile',
     path: '/dashboard/profile',
+    getParentRoute: () => mainappRouteRoute,
+  } as any)
+const mainappDashboardWorkplaceRouteRoute =
+  mainappDashboardWorkplaceRouteRouteImport.update({
+    id: '/dashboard/workplace',
+    path: '/dashboard/workplace',
     getParentRoute: () => mainappRouteRoute,
   } as any)
 const mainappMonitorLogRouteRoute = mainappMonitorLogRouteRouteImport.update({
@@ -186,7 +200,9 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof mainAuthLoginRouteRoute
   '/social/callback': typeof mainSocialCallbackRouteRoute
   '/$': typeof mainappSplatRoute
+  '/dashboard/analysis': typeof mainappDashboardAnalysisRouteRoute
   '/dashboard/profile': typeof mainappDashboardProfileRouteRoute
+  '/dashboard/workplace': typeof mainappDashboardWorkplaceRouteRoute
   '/monitor/log': typeof mainappMonitorLogRouteRoute
   '/monitor/online': typeof mainappMonitorOnlineRouteRoute
   '/open/app': typeof mainappOpenAppRouteRoute
@@ -214,7 +230,9 @@ export interface FileRoutesByTo {
   '/auth/login': typeof mainAuthLoginRouteRoute
   '/social/callback': typeof mainSocialCallbackRouteRoute
   '/$': typeof mainappSplatRoute
+  '/dashboard/analysis': typeof mainappDashboardAnalysisRouteRoute
   '/dashboard/profile': typeof mainappDashboardProfileRouteRoute
+  '/dashboard/workplace': typeof mainappDashboardWorkplaceRouteRoute
   '/monitor/log': typeof mainappMonitorLogRouteRoute
   '/monitor/online': typeof mainappMonitorOnlineRouteRoute
   '/open/app': typeof mainappOpenAppRouteRoute
@@ -244,7 +262,9 @@ export interface FileRoutesById {
   '/(main)/auth/login': typeof mainAuthLoginRouteRoute
   '/(main)/social/callback': typeof mainSocialCallbackRouteRoute
   '/(main)/(app)/$': typeof mainappSplatRoute
+  '/(main)/(app)/dashboard/analysis': typeof mainappDashboardAnalysisRouteRoute
   '/(main)/(app)/dashboard/profile': typeof mainappDashboardProfileRouteRoute
+  '/(main)/(app)/dashboard/workplace': typeof mainappDashboardWorkplaceRouteRoute
   '/(main)/(app)/monitor/log': typeof mainappMonitorLogRouteRoute
   '/(main)/(app)/monitor/online': typeof mainappMonitorOnlineRouteRoute
   '/(main)/(app)/open/app': typeof mainappOpenAppRouteRoute
@@ -274,7 +294,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/social/callback'
     | '/$'
+    | '/dashboard/analysis'
     | '/dashboard/profile'
+    | '/dashboard/workplace'
     | '/monitor/log'
     | '/monitor/online'
     | '/open/app'
@@ -302,7 +324,9 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/social/callback'
     | '/$'
+    | '/dashboard/analysis'
     | '/dashboard/profile'
+    | '/dashboard/workplace'
     | '/monitor/log'
     | '/monitor/online'
     | '/open/app'
@@ -331,7 +355,9 @@ export interface FileRouteTypes {
     | '/(main)/auth/login'
     | '/(main)/social/callback'
     | '/(main)/(app)/$'
+    | '/(main)/(app)/dashboard/analysis'
     | '/(main)/(app)/dashboard/profile'
+    | '/(main)/(app)/dashboard/workplace'
     | '/(main)/(app)/monitor/log'
     | '/(main)/(app)/monitor/online'
     | '/(main)/(app)/open/app'
@@ -426,11 +452,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof mainappDashboardSplatRouteImport
       parentRoute: typeof mainappRouteRoute
     }
+    '/(main)/(app)/dashboard/analysis': {
+      id: '/(main)/(app)/dashboard/analysis'
+      path: '/dashboard/analysis'
+      fullPath: '/dashboard/analysis'
+      preLoaderRoute: typeof mainappDashboardAnalysisRouteRouteImport
+      parentRoute: typeof mainappRouteRoute
+    }
     '/(main)/(app)/dashboard/profile': {
       id: '/(main)/(app)/dashboard/profile'
       path: '/dashboard/profile'
       fullPath: '/dashboard/profile'
       preLoaderRoute: typeof mainappDashboardProfileRouteRouteImport
+      parentRoute: typeof mainappRouteRoute
+    }
+    '/(main)/(app)/dashboard/workplace': {
+      id: '/(main)/(app)/dashboard/workplace'
+      path: '/dashboard/workplace'
+      fullPath: '/dashboard/workplace'
+      preLoaderRoute: typeof mainappDashboardWorkplaceRouteRouteImport
       parentRoute: typeof mainappRouteRoute
     }
     '/(main)/(app)/monitor/log': {
@@ -557,7 +597,9 @@ declare module '@tanstack/react-router' {
 
 interface mainappRouteRouteChildren {
   mainappSplatRoute: typeof mainappSplatRoute
+  mainappDashboardAnalysisRouteRoute: typeof mainappDashboardAnalysisRouteRoute
   mainappDashboardProfileRouteRoute: typeof mainappDashboardProfileRouteRoute
+  mainappDashboardWorkplaceRouteRoute: typeof mainappDashboardWorkplaceRouteRoute
   mainappMonitorLogRouteRoute: typeof mainappMonitorLogRouteRoute
   mainappMonitorOnlineRouteRoute: typeof mainappMonitorOnlineRouteRoute
   mainappOpenAppRouteRoute: typeof mainappOpenAppRouteRoute
@@ -581,7 +623,9 @@ interface mainappRouteRouteChildren {
 
 const mainappRouteRouteChildren: mainappRouteRouteChildren = {
   mainappSplatRoute: mainappSplatRoute,
+  mainappDashboardAnalysisRouteRoute: mainappDashboardAnalysisRouteRoute,
   mainappDashboardProfileRouteRoute: mainappDashboardProfileRouteRoute,
+  mainappDashboardWorkplaceRouteRoute: mainappDashboardWorkplaceRouteRoute,
   mainappMonitorLogRouteRoute: mainappMonitorLogRouteRoute,
   mainappMonitorOnlineRouteRoute: mainappMonitorOnlineRouteRoute,
   mainappOpenAppRouteRoute: mainappOpenAppRouteRoute,

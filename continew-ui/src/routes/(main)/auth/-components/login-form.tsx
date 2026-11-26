@@ -14,8 +14,10 @@ import { useCaptcha } from '@/hooks/use-captcha'
 import { useAuthStore } from '@/stores/auth/auth-provider'
 
 import { CaptchaImage } from './captcha-image'
+import { safeLocalHref } from '@/lib/route-access'
+import { HOME_PATH } from '@/navigation/route-titles'
 
-const DEFAULT_REDIRECT = '/dashboard'
+const DEFAULT_REDIRECT = HOME_PATH
 
 const formSchema = z.object({
   tenantCode: z.string().optional(),
@@ -79,7 +81,7 @@ export function LoginForm({ redirectTo }: { readonly redirectTo?: string }) {
       toast.add({ title: '登录成功', type: 'success' })
 
       // `href` keeps any query string that was part of the requested URL.
-      await navigate({ href: redirectTo?.startsWith('/') ? redirectTo : DEFAULT_REDIRECT, replace: true })
+      await navigate({ href: safeLocalHref(redirectTo, DEFAULT_REDIRECT), replace: true })
     }
   })
 

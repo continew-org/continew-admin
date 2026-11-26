@@ -3,7 +3,7 @@ title: 路由与页签
 description: 讲解 TanStack 文件路由的目录约定、后端菜单的加载与访问守卫、占位页机制与页签栏的行为。
 ---
 
-新增一个业务页面、或菜单配好了却打不开时，读这页。路由由 TanStack Router 的文件路由承担：`src/routes/` 目录即路由表，Vite 插件（`vite.config.ts` 的 `tanstackRouter`）把目录结构编译成 `src/routeTree.gen.ts`。菜单数据完全由后端下发，前端目录决定「路径怎么对应组件」，后端菜单决定「用户能看到什么」。
+新增一个业务页面、或菜单配好了却打不开时，读这页。路由由 TanStack Router 的文件路由承担：`src/routes/` 目录即路由表，Vite 插件（`vite.config.ts` 的 `tanstackRouter`）把目录结构编译成 `src/routeTree.gen.ts`。前端目录决定路径对应的组件。仪表盘对所有登录用户可见，业务菜单由后端按权限下发。
 
 ## 路由目录
 
@@ -12,7 +12,7 @@ description: 讲解 TanStack 文件路由的目录约定、后端菜单的加载
 | 路径 | 内容 |
 |:-----|:-----|
 | `__root.tsx` | 根路由：挂载认证、外观偏好 Provider 与全局 Toaster，统一 404 与错误页 |
-| `(external)/index.tsx` | 根路径重定向到 `/dashboard` |
+| `(external)/index.tsx` | 根路径重定向到 `/dashboard`，再由 `/dashboard` 转到工作台 |
 | `(main)/(app)/route.tsx` | 登录后业务区的布局路由：守卫、菜单加载、`BaseLayout` 都在这一层 |
 | `(main)/(app)/<模块>/route.tsx` | 业务页面，如 `system/user/route.tsx` |
 | `(main)/(app)/$.tsx` | 兜底占位页：菜单里有、前端还没有对应页面时显示 |
@@ -21,7 +21,7 @@ description: 讲解 TanStack 文件路由的目录约定、后端菜单的加载
 | `(main)/unauthorized.tsx` | 无权限页 |
 | `routes/-components/` | 跨路由共享的路由级组件（404、错误页、状态页），不参与路由 |
 
-业务模块按后端功能域分目录：`dashboard`、`monitor`（log、online）、`open/app`、`schedule`（job、log）、`system`（config、dept、dict、file、menu、notice、role、sms、user）、`tenant`（management、package）。每个页面目录里，`route.tsx` 是路由入口，页面私有组件放同目录的 `-components/`，横线前缀的目录不参与路由。
+业务模块按后端功能域分目录：`dashboard`（workplace、analysis、profile）、`monitor`（log、online）、`open/app`、`schedule`（job、log）、`system`（config、dept、dict、file、menu、notice、role、sms、user）、`tenant`（management、package）。每个页面目录里，`route.tsx` 是路由入口，页面私有组件放同目录的 `-components/`，横线前缀的目录不参与路由。
 
 页面文件本身很薄，组件放 `-components/` 里（`src/routes/(main)/(app)/system/user/route.tsx`）：
 
@@ -56,7 +56,9 @@ export const Route = createFileRoute('/(main)/(app)/system/user')({
 2. **菜单加载**：`ensureMenuLoaded` 等菜单就绪。菜单决定「这个用户有哪些页面」，必须先于页面渲染落定；菜单请求期间会话过期的话，第二步的 `requireAuth` 会再次兜底。
 3. **访问控制**：`requireRouteAccess`（`src/lib/route-access.ts`）核对当前路径是否在菜单里。菜单由后端按权限过滤过，不在菜单里等于没权限，跳 `/unauthorized`。两种情况放行：`$` 兜底路由自己处理未知路径；菜单为空也放行（菜单接口偶发失败时不能把所有用户锁在门外，让页面自己的请求去回答 403）。
 
-侧边栏的分组由 `src/navigation/menu.ts` 的 `toMenuGroups` 转换：顶级目录变标签组，菜单变链接项，更深的目录拍平成一层子项；类型 3（按钮）与 `isHidden` 节点不出现在侧边栏。应用自有的静态入口（`/dashboard`，`STATIC_MENU_ITEMS`）不依赖 `sys_menu` 记录，始终排在最前。菜单节点还带 `isExternal`（外链新开标签页）与 `redirect`（占位页直接跳转）字段。
+`src/navigation/menu.ts` 的 `toMenuGroups` 把仪表盘放在后台菜单之前。它是应用自带的一级目录，包含工作台和分析页，不需要配置 `sys_menu`。在默认的「侧边导航」和「垂直」布局中，仪表盘和后台一级目录都显示为分组标题，页面链接列在标题下；切到「经典」布局，一级目录可以展开、收起。水平菜单和双列菜单也使用相同的一级目录。
+
+后台的顶级独立页面归入无标题组，嵌套目录最多保留一层子项；类型 3（按钮）与 `isHidden` 节点不出现在侧边栏。菜单节点还带 `isExternal`（外链新开标签页）与 `redirect`（占位页直接跳转）字段。
 
 <Callout type="info">
 菜单里隐藏（`isHidden`）的节点不出现在侧边栏，但只要在菜单树里就仍然可以访问。访问控制看的是「菜单树里有没有」，与显不显示无关。
@@ -64,7 +66,7 @@ export const Route = createFileRoute('/(main)/(app)/system/user')({
 
 ## 页签
 
-页签状态在 zustand store `src/stores/tabs.ts`，默认持久化到 sessionStorage（键 `continew_in_header_tabs`，外观偏好 `tabbar_persist` 关闭时停止写入并清空）。`/dashboard` 是固定页签，不可关闭。
+页签状态在 zustand store `src/stores/tabs.ts`，默认持久化到 sessionStorage（键 `continew_in_header_tabs`，外观偏好 `tabbar_persist` 关闭时停止写入并清空）。`/dashboard/workplace` 是固定页签，不可关闭；`/dashboard` 只做一次重定向，不单独成页签。
 
 核心行为：
 
