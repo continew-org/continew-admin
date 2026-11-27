@@ -17,7 +17,7 @@ interface ImportMetaEnv {
   readonly VITE_WWADS_UNIT_ID?: string
   /**
    * Web root of the ContiNew Hub workbench API. An absolute URL is called directly; a path
-   * (e.g. `/hub`) is served same-origin, which only the dev proxy does. Empty hides the panels.
+   * (e.g. `/hub`) is served same-origin. Empty disables Hub requests.
    */
   readonly VITE_WORKBENCH_HUB_URL?: string
   /** Dev-only proxy target behind a path `VITE_WORKBENCH_HUB_URL`; unused in builds. */

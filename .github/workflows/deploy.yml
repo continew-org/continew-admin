@@ -187,6 +187,7 @@ jobs:
           # 公开产物中的百度统计站点 ID 与万维广告单元 ID
           VITE_BAIDU_ANALYTICS_ID: ${{ secrets.BAIDU_ANALYTICS_ID }}
           VITE_WWADS_UNIT_ID: '359'
+          VITE_WORKBENCH_HUB_URL: /hub
         run: pnpm build
       - name: Upload dist artifact
         id: upload-dist

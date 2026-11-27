@@ -14,24 +14,27 @@ function readWorkflow(name) {
     return fs.readFileSync(path.join(repoRoot, '.github', 'workflows', `${name}.yml`), 'utf8');
 }
 
-// 只提取具名步骤的字面量块，不在 fixture 里复制生产脚本。
-function stepBlock(workflow, stepName, key) {
+const indent = line => line.match(/^ */)[0].length;
+
+function indentedBody(lines, start) {
+    const end = lines.findIndex((line, index) => index > start &&
+        line.trim() !== '' && indent(line) <= indent(lines[start]));
+    return lines.slice(start + 1, end === -1 ? lines.length : end);
+}
+
+function stepLines(workflow, stepName) {
     const lines = workflow.split(/\r?\n/);
     const start = lines.findIndex(line => line.trim() === `- name: ${stepName}`);
     assert.notEqual(start, -1, `缺少工作流步骤：${stepName}`);
-    const indent = line => line.match(/^ */)[0].length;
-    const end = lines.findIndex((line, index) => index > start &&
-        line.trim() !== '' && indent(line) <= indent(lines[start]));
-    const step = lines.slice(start + 1, end === -1 ? lines.length : end);
+    return indentedBody(lines, start);
+}
+
+// 只提取具名步骤的字面量块，不在 fixture 里复制生产脚本。
+function stepBlock(workflow, stepName, key) {
+    const step = stepLines(workflow, stepName);
     const block = step.findIndex(line => line.trim() === `${key}: |`);
     assert.notEqual(block, -1, `步骤 ${stepName} 缺少 ${key}: |`);
-    const body = [];
-    for (const line of step.slice(block + 1)) {
-        if (line.trim() !== '' && indent(line) <= indent(step[block])) {
-            break;
-        }
-        body.push(line);
-    }
+    const body = indentedBody(step, block);
     const content = body.filter(line => line.trim() !== '');
     assert.ok(content.length, `步骤 ${stepName} 的 ${key} 为空`);
     const base = Math.min(...content.map(indent));
@@ -428,6 +431,37 @@ const prepareUi = stepBlock(deployUi, 'Prepare artifact directory', 'run');
 const publishUi = stepBlock(deployUi, 'Publish UI dist', 'run');
 const verifyUi = stepBlock(deployUi, 'Verify published site', 'run');
 
+function assertBuildUi(job) {
+    const buildUi = stepLines(job, 'Build UI');
+    const env = buildUi.indexOf('        env:');
+    assert.notEqual(env, -1, 'Build UI 缺少 env');
+    const hubUrl = /^ {10}VITE_WORKBENCH_HUB_URL:\s+(['"]?)\/hub\1\s*$/;
+    assert.ok(indentedBody(buildUi, env).some(line => hubUrl.test(line)), 'Build UI 缺少 Hub 地址');
+    assert.ok(buildUi.includes('        run: pnpm build'), 'Build UI 缺少构建命令');
+}
+
+test('Deploy UI 的 Hub 地址接受裸值及成对引号', () => {
+    const job = value => ['      - name: Build UI', '        env:',
+        `          VITE_WORKBENCH_HUB_URL: ${value}`, '        run: pnpm build'].join('\n');
+    for (const value of ['/hub', "'/hub'", '"/hub"']) {
+        assertBuildUi(job(value));
+    }
+    for (const value of ["'/hub", '"/hub-preview"']) {
+        assert.throws(() => assertBuildUi(job(value)), /缺少 Hub 地址/);
+    }
+});
+
+test('Deploy UI 不接受相邻未命名步骤中的 Hub 配置或构建命令', () => {
+    const header = '      - name: Build UI';
+    const env = '        env:\n          VITE_WORKBENCH_HUB_URL: /hub';
+    const run = '        run: pnpm build';
+    const misplacedEnv = [header, run, '      - run: pnpm test', env];
+    const misplacedRun = [header, env, '        run: pnpm test', '      - shell: bash', run];
+    for (const lines of [misplacedEnv, misplacedRun]) {
+        assert.throws(() => assertBuildUi(lines.join('\n')), assert.AssertionError);
+    }
+});
+
 test('Deploy UI 托管构建固定事件 SHA、演示变量和锁文件', () => {
     assert.match(packageUi, /^    runs-on: ubuntu-24\.04$/m);
     assert.match(packageUi, /^          ref: \$\{\{ github\.sha \}\}$/m);
@@ -437,7 +471,7 @@ test('Deploy UI 托管构建固定事件 SHA、演示变量和锁文件', () => 
     assert.match(packageUi, /^          node-version: 22$/m);
     assert.match(packageUi, /^          cache-dependency-path: continew-ui\/pnpm-lock\.yaml$/m);
     assert.match(packageUi, /^        run: pnpm install --frozen-lockfile$/m);
-    assert.match(packageUi, /^        run: pnpm build$/m);
+    assertBuildUi(packageUi);
     assert.match(packageUi, /^      artifact_id: \$\{\{ steps\.upload-dist\.outputs\.artifact-id \}\}$/m);
     assert.match(packageUi, /^          name: continew-ui-dist-\$\{\{ github\.run_attempt \}\}$/m);
 });

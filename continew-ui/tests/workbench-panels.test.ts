@@ -2,8 +2,9 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueriesObserver, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import { dashboardKeys } from '@/lib/api/dashboard'
 import type {
   WorkbenchCommitBucket,
   WorkbenchReleasesResp,
@@ -13,6 +14,11 @@ import type {
 import { workbenchKeys } from '@/lib/query-keys'
 import { Route } from '@/routes/(main)/(app)/dashboard/workplace/route'
 
+import {
+  commitsQueryOptions,
+  releasesQueryOptions,
+  starsQueryOptions
+} from '@/routes/(main)/(app)/dashboard/workplace/-components/workbench-queries'
 import { WorkbenchWelcome } from '@/routes/(main)/(app)/dashboard/workplace/-components/workbench-welcome'
 import { WorkbenchSponsors } from '@/routes/(main)/(app)/dashboard/workplace/-components/workbench-sponsors'
 
@@ -22,9 +28,12 @@ function renderSponsors(feed: unknown): string {
   return renderToStaticMarkup(createElement(QueryClientProvider, { client }, createElement(WorkbenchSponsors)))
 }
 
+const hub = vi.hoisted(() => ({ enabled: true }))
 vi.mock('@/lib/api/workbench', async importOriginal => ({
   ...(await importOriginal<typeof import('@/lib/api/workbench')>()),
-  isWorkbenchEnabled: true
+  get isWorkbenchEnabled() {
+    return hub.enabled
+  }
 }))
 const { readUser } = vi.hoisted(() => ({
   readUser: vi.fn<() => { nickname: string; loginIp?: string | null; loginTime?: string | null }>(() => ({
@@ -64,11 +73,65 @@ function renderWorkbench({
     data: { range: '6m', granularity: 'day', partialBuckets: [], buckets: stars, latest }
   })
   client.setQueryData(workbenchKeys.releases(), { source: sources[2], data: { updatedAt: null, items } })
+  return renderPage(client)
+}
+
+function renderPage(client: QueryClient): string {
   const Page = Route.options.component!
   return renderToStaticMarkup(createElement(QueryClientProvider, { client }, createElement(Page)))
 }
 
 describe('workbench panels', () => {
+  it('keeps all five cards in reading order without Hub requests, loading placeholders or invented counts', () => {
+    hub.enabled = false
+    const client = new QueryClient()
+    client.setQueryData(dashboardKeys.notices(), [])
+    const fetch = vi.fn(() => Promise.reject(new Error('unexpected Hub request')))
+    vi.stubGlobal('fetch', fetch)
+    try {
+      const markup = renderPage(client)
+      expect([...markup.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(([, title]) => title)).toEqual([
+        '近期提交',
+        'Star 趋势',
+        '更新日志',
+        '赞助与支持',
+        '最新公告'
+      ])
+      expect(markup).not.toMatch(/data-slot="skeleton"|未启用仓库统计|合计 0 次|0 位贡献者|重新加载/)
+      expect(markup).toContain('全部版本')
+      // Server rendering does not start requests; subscribing exercises the same queries on mount.
+      const queries = new QueriesObserver(client, [
+        commitsQueryOptions('30d'),
+        starsQueryOptions('6m'),
+        releasesQueryOptions()
+      ])
+      const unsubscribe = queries.subscribe(() => undefined)
+      try {
+        expect(queries.getCurrentResult().map(result => result.fetchStatus)).toEqual(['idle', 'idle', 'idle'])
+        expect(fetch).not.toHaveBeenCalled()
+      } finally {
+        unsubscribe()
+      }
+    } finally {
+      hub.enabled = true
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('offers a retry for each failed Hub card without replacing the notice or sponsor content', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, retryOnMount: false } } })
+    for (const queryKey of [workbenchKeys.commits('30d'), workbenchKeys.stars('6m'), workbenchKeys.releases()]) {
+      await expect(
+        client.fetchQuery({ queryKey, queryFn: () => Promise.reject(new Error('offline')) })
+      ).rejects.toThrow('offline')
+    }
+    client.setQueryData(dashboardKeys.notices(), [{ id: '1', title: '系统维护通知' }])
+    const markup = renderPage(client)
+    expect(markup.match(/重新加载/g)).toHaveLength(3)
+    expect(markup).toContain('系统维护通知')
+    expect(markup).toContain('alt="公众号"')
+  })
+
   it('uses active banners without repeating compatibility entries or showing historical partners', () => {
     const banner = { name: '风铃云信息科技', img: 'aeoliancloud/banner.webp' }
     const markup = renderSponsors({

@@ -76,11 +76,7 @@ export interface HubResponse<T> {
   source: string | null
 }
 
-/**
- * Hub web root: `/hub` in development (same-origin through the Vite proxy, which rewrites the
- * Referer for the Hub's allowlist), an absolute URL in production. Empty in builds without a Hub,
- * which hides the Hub panels instead of firing requests that could only fail.
- */
+/** Hub web root: a same-origin path or an absolute URL. Empty disables Hub requests. */
 export const WORKBENCH_HUB_BASE = (import.meta.env.VITE_WORKBENCH_HUB_URL ?? '').trim().replace(/\/+$/, '')
 
 export const isWorkbenchEnabled = WORKBENCH_HUB_BASE.length > 0

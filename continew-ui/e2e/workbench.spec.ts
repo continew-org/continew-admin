@@ -96,6 +96,96 @@ test('公告列表不预取详情，点击只读取所选公告的用户端详�
   expect(requests).toEqual(['/api/user/message/notice/902'])
 })
 
+test('Hub 失败后卡片不换列，重试只更新所选卡片', async ({ page }) => {
+  let recover = false
+  let starTotal: number | null = null
+  const requests: string[] = []
+  await page.route('**/api/dashboard/notice', route => route.fulfill({ json: { success: true, data: [] } }))
+  await page.route('**/api/workbench/**', route => {
+    const path = new URL(route.request().url()).pathname
+    requests.push(path)
+    if (starTotal !== null && path.endsWith('/stars')) {
+      return route.fulfill({
+        json: {
+          range: '6m',
+          granularity: 'day',
+          partialBuckets: [],
+          latest: { totalStars: starTotal, sampledAt: '2026-11-26T08:00:00+08:00' },
+          buckets: [{ periodStart: '2026-11-25', totalStars: starTotal }]
+        }
+      })
+    }
+    if (recover && path.endsWith('/releases')) {
+      return route.fulfill({ json: { updatedAt: null, items: [] } })
+    }
+    return route.fulfill({ status: 503, body: '' })
+  })
+  await page.goto('/dashboard/workplace')
+  const card = (name: string) =>
+    page.locator('[data-slot="card"]').filter({ has: page.getByRole('heading', { name, exact: true }) })
+  const activity = card('近期提交')
+  const stars = card('Star 趋势')
+  const releases = card('更新日志')
+  const sponsors = page.getByRole('region', { name: '赞助与支持' })
+  const notices = card('最新公告')
+  const panels = [activity, stars, releases, sponsors, notices]
+  const positions = () =>
+    Promise.all(
+      panels.map(panel =>
+        panel.evaluate(el => {
+          const content = el.closest('[data-slot="app-content"]')!.getBoundingClientRect()
+          const { left, top, right, bottom } = el.getBoundingClientRect()
+          return {
+            left: left - content.left,
+            top: top - content.top,
+            right: right - content.left,
+            bottom: bottom - content.top
+          }
+        })
+      )
+    )
+  for (const panel of [activity, stars, releases]) {
+    await expect(panel.getByRole('button', { name: '重新加载' })).toBeVisible()
+  }
+  await expect(notices.getByText('暂无公告')).toBeVisible()
+  const [a, s, r, sponsor, notice] = await positions()
+  expect(s.left).toBe(a.left)
+  expect(s.top).toBeGreaterThan(a.bottom)
+  expect(r.left).toBeGreaterThan(a.right)
+  expect(r.top).toBe(a.top)
+  expect(sponsor.left).toBe(r.left)
+  expect(sponsor.top).toBeGreaterThan(r.bottom)
+  expect(notice.left).toBe(r.left)
+  expect(notice.top).toBeGreaterThan(sponsor.bottom)
+
+  const beforeRetry = requests.length
+  recover = true
+  await releases.getByRole('button', { name: '重新加载' }).click()
+  await expect(releases.getByText('暂无正式版本')).toBeVisible()
+  await expect(activity.getByRole('button', { name: '重新加载' })).toBeVisible()
+  await expect(stars.getByRole('button', { name: '重新加载' })).toBeVisible()
+  expect(requests.slice(beforeRetry)).toEqual([expect.stringMatching(/\/api\/workbench\/releases$/)])
+  expect(await positions()).toEqual([a, s, r, sponsor, notice])
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  const mobile = await positions()
+  for (let index = 1; index < mobile.length; index++) {
+    expect(mobile[index].top).toBeGreaterThan(mobile[index - 1].bottom)
+  }
+
+  starTotal = 141
+  await stars.getByRole('button', { name: '重新加载' }).click()
+  await expect(stars.getByText('141', { exact: true })).toBeVisible()
+  await expect.poll(positions).toEqual(mobile)
+
+  starTotal = 987_654_321
+  await page.reload()
+  await expect(stars.getByText('987.7M', { exact: true })).toBeVisible()
+  await expect(notices.getByText('暂无公告')).toBeVisible()
+  await expect(releases.getByText('暂无正式版本')).toBeVisible()
+  await expect.poll(positions).toEqual(mobile)
+})
+
 test('没有历史日末记录时仍绘制独立的最新实测点', async ({ page }) => {
   await page.route('**/api/workbench/stars?*', route =>
     route.fulfill({

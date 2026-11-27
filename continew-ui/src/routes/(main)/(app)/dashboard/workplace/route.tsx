@@ -3,11 +3,7 @@ import * as React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ExternalLink, Info } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { isWorkbenchEnabled, type WorkbenchRange } from '@/lib/api/workbench'
-import { PROJECT_LINKS } from '@/navigation/route-titles'
+import type { WorkbenchRange } from '@/lib/api/workbench'
 
 import { WorkbenchActivity } from './-components/workbench-activity'
 import { WorkbenchNotices } from './-components/workbench-notices'
@@ -17,11 +13,7 @@ import { WorkbenchSponsors } from './-components/workbench-sponsors'
 import { WorkbenchStars } from './-components/workbench-stars'
 import { WorkbenchWelcome } from './-components/workbench-welcome'
 
-/**
- * The workbench: the landing page after sign-in. The Hub panels need `VITE_WORKBENCH_HUB_URL`;
- * the notice panel and the sponsor carousel come from the Admin API and continew.top, so they
- * keep working when the Hub is not configured.
- */
+/** Without `VITE_WORKBENCH_HUB_URL`, the Hub cards stay in place and make no Hub requests. */
 export const Route = createFileRoute('/(main)/(app)/dashboard/workplace')({
   component: Page
 })
@@ -31,35 +23,12 @@ function Page() {
     <div className="@container/main flex flex-col gap-4 md:gap-6">
       <WorkbenchWelcome />
 
-      {isWorkbenchEnabled ? (
-        <HubPanels />
-      ) : (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-lg border bg-muted/30 px-3 py-2">
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Info aria-hidden className="size-4 shrink-0" />
-              此工作台未启用仓库统计与更新日志。
-            </p>
-            <Button
-              variant="link"
-              size="sm"
-              nativeButton={false}
-              render={<a href={PROJECT_LINKS.releases} target="_blank" rel="noreferrer" />}
-            >
-              查看发布记录 <ExternalLink />
-            </Button>
-          </div>
-          <div className="grid min-w-0 items-start gap-4 @[44rem]/main:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
-            <WorkbenchSponsors />
-            <WorkbenchNotices />
-          </div>
-        </>
-      )}
+      <WorkbenchPanels />
     </div>
   )
 }
 
-function HubPanels() {
+function WorkbenchPanels() {
   const [range, setRange] = React.useState<WorkbenchRange>('30d')
   const commits = useQuery(commitsQueryOptions(range))
   const stars = useQuery(starsQueryOptions('6m'))
