@@ -118,7 +118,12 @@ export async function serveWorkbenchData(page: Page, baseURL: string) {
         granularity: range === '6m' ? 'month' : 'day',
         buckets: periods.map((periodStart, index) => ({
           periodStart,
-          authors: [{ authorId: 'qa', displayName: '贡献者甲', avatarUrl: null, count: index === 0 ? 7 : 3 }]
+          authors: (index === 0 ? ['甲', '乙', '丙', '丁', '戊'] : ['甲']).map((name, i) => ({
+            authorId: `qa-${i}`,
+            displayName: `贡献者${name}`,
+            avatarUrl: null,
+            count: i === 0 ? 3 : 1
+          }))
         }))
       }
     })
@@ -163,7 +168,7 @@ export async function serveAnalysisData(page: Page, baseURL: string) {
     'analysis/module': modules,
     'analysis/timeslot': [{ name: '08:00-10:00', value: 12 }],
     'analysis/geo': [{ name: '江苏', value: 14 }],
-    'analysis/os': [{ name: 'Linux', value: 18 }],
+    'analysis/os': ['Linux', 'Windows', 'Android', 'iOS', 'macOS'].map((name, i) => ({ name, value: 18 - i })),
     'analysis/browser': [{ name: 'Firefox', value: 13 }],
     'analysis/overview/pv': { total: 9876, today: 78, growth: 5, dataList: [] },
     'analysis/overview/ip': { total: 1852, today: 24, growth: 2, dataList: [] }

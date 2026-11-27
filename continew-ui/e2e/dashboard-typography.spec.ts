@@ -61,6 +61,76 @@ async function expectNoHorizontalOverflow(page: Page) {
     .toBeLessThanOrEqual(1) // CSSOM scroll widths are rounded to whole pixels.
 }
 
+const lightBlueHex = ['#165dff', '#4080ff', '#6aa1ff', '#94bfff', '#bedaff']
+const lightBlue = lightBlueHex.map(hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`)
+
+async function expectRootPalette(root: Locator) {
+  for (const [index, color] of lightBlueHex.entries()) {
+    await expect(root).toHaveCSS(`--chart-${index + 1}`, color)
+  }
+}
+
+async function expectPalette(marks: Locator, property: 'backgroundColor' | 'fill') {
+  await expect
+    .poll(() => marks.evaluateAll((nodes, prop) => nodes.map(node => getComputedStyle(node)[prop]), property))
+    .toEqual(lightBlue)
+}
+
+test('工作台浅色霁蓝的五段提交柱由按钮蓝逐级变浅', async ({ page, baseURL }) => {
+  await serveWorkbenchData(page, baseURL!)
+  await page.emulateMedia({ colorScheme: 'light' })
+  await openDashboard(page, 'workplace', 16)
+
+  const activity = page.getByRole('region', { name: '近期提交', exact: true })
+  const segments = activity.getByTitle('2026-10-01｜7 次提交').locator('span > span')
+  await expect(activity.getByRole('button', { name: '近 30 天' })).toHaveCSS('background-color', lightBlue[0])
+  const root = page.locator('html')
+  await expect(root).toHaveAttribute('data-theme-color', 'blue')
+  await expectRootPalette(root)
+  await expectPalette(segments, 'backgroundColor')
+  await root.evaluate(el => el.removeAttribute('data-theme-color'))
+  await expectRootPalette(root)
+  await expectPalette(segments, 'backgroundColor')
+})
+
+for (const [theme, mode, secondShade] of [
+  ['blue', 'dark', 'rgb(104, 159, 255)'],
+  ['default', 'light', 'oklch(0.556 0 0)']
+] as const) {
+  test(`工作台 ${theme}/${mode} 保留主题本身的第二档柱色`, async ({ page, baseURL }) => {
+    await page.context().addCookies([
+      { url: baseURL!, name: 'theme_color', value: theme },
+      { url: baseURL!, name: 'theme_mode', value: mode }
+    ])
+    await serveWorkbenchData(page, baseURL!)
+    await openDashboard(page, 'workplace', 16)
+    await expect(page.locator('html')).toHaveAttribute('data-theme-color', theme)
+    const segments = page.getByTitle('2026-10-01｜7 次提交').locator('span > span')
+    await expect(segments.nth(1)).toHaveCSS('background-color', secondShade)
+  })
+}
+
+test('分析页浅色霁蓝的扇区、趋势线与各自图例同色', async ({ page, baseURL }) => {
+  await serveAnalysisData(page, baseURL!)
+  await page.emulateMedia({ colorScheme: 'light' })
+  await openDashboard(page, 'analysis', 16)
+
+  const os = card(page, '终端分布')
+  await expectPalette(os.locator('path.recharts-sector'), 'fill')
+  await expectPalette(os.locator('span[style*="background-color"]'), 'backgroundColor')
+  const trend = card(page, '访问趋势')
+  for (const [index, [curve, label]] of [
+    ['area', '访问量'],
+    ['line', '独立 IP']
+  ].entries()) {
+    await expect(trend.locator(`path.recharts-${curve}-curve`)).toHaveCSS('stroke', lightBlue[index])
+    await expect(trend.getByText(label, { exact: true }).locator('> div')).toHaveCSS(
+      'background-color',
+      lightBlue[index]
+    )
+  }
+})
+
 for (const width of [390, 1280]) {
   test.describe(`${width}px 视口`, () => {
     test.use({ viewport: { width, height: 900 } })

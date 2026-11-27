@@ -50,6 +50,8 @@ description: 讲解 BaseLayout 布局、外观偏好（preferences）体系、�
 
 配套的外观开关：灰度模式（`data-color-gray`，`filter: grayscale(1)`）与色弱模式（`data-color-weak`，`filter: grayscale(1) contrast(0.9) saturate(0.6)`）可叠加（`src/styles/globals.css:264`）；圆角偏好按基础值的比例缩放（0 到 1）；字号偏好（14 到 20px）驱动整套 rem 字号体系。动画基础样式来自 `tw-animate-css`。
 
+全系统图表共用 `--chart-1` 至 `--chart-5`。浅色霁蓝（默认主题）的第一档 `#165DFF` 最深，后四档逐级变浅。图表系列和图例使用对应档位；深色模式和其他主题有各自的图表色阶。
+
 仪表盘的坐标轴沿用 `ChartContainer` 的 `text-xs`（`0.75rem`），手绘提交图的刻度也取这个字号。扩展排行图时，只在坐标轴的 `tickFormatter` 中缩短名称，给提示框保留原名。
 
 ## 设置面板
