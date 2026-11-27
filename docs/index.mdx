@@ -34,11 +34,13 @@ CREATE DATABASE continew_admin DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_gen
 <Steps>
 <Step>
 
-克隆后端仓库。正式做业务开发建议使用最新稳定版 tag（见 [GitHub Releases](https://github.com/continew-org/continew-admin/releases)）；想跟进未发布能力再用 dev 分支，跟进前的风险评估见[升级指南](/docs/admin/guide/upgrade)。
+克隆后端仓库。4.x 系列已归档，发布止于 v4.2.0，之后的修复进入 `4.2.x` 维护分支；不带 `-b` 直接克隆拿到的是默认 dev 分支，属于 5.x 开发线（React 前端、前后端同仓），与本文档的操作步骤不对应。
 
 ```bash
-git clone https://github.com/continew-org/continew-admin.git
+git clone -b 4.2.x https://github.com/continew-org/continew-admin.git
 ```
+
+需要完全固定的代码基线时改克隆 tag：`git clone -b v4.2.0 https://github.com/continew-org/continew-admin.git`。注意 v4.2.0 不含发布后的修复（如第三方登录未启用时 prod 启动失败的问题），长期项目以 `4.2.x` 分支为准，升级决策见[升级指南](/docs/admin/guide/upgrade)。
 
 </Step>
 <Step>
@@ -76,15 +78,15 @@ IDEA 用户在运行配置的 Environment variables 里追加即可。Redis 没�
 
 ## 前端启动
 
-前端是独立仓库 continew-admin-ui，基于 Vue 3 + Vite。
+前端是独立仓库 continew-admin-ui，基于 Vue 3 + Vite。该仓库已随 4.x 一起归档（5.x 前端并入后端主仓库重写），`4.2.x` 分支是它的维护线，内容与后端配套。
 
 <Steps>
 <Step>
 
-克隆并安装依赖：
+克隆 `4.2.x` 分支并安装依赖：
 
 ```bash
-git clone https://github.com/continew-org/continew-admin-ui.git
+git clone -b 4.2.x https://github.com/continew-org/continew-admin-ui.git
 cd continew-admin-ui
 pnpm install
 ```
