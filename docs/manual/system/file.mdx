@@ -30,7 +30,7 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 | `size` | 大小（字节） |
 | `parent_path` / `path` | 上级目录与完整路径，默认按 `/yyyy/MM/dd` 归档 |
 | `type` | 类型（0：目录；1：其他；2：图片；3：文档；4：视频；5：音频），按扩展名归入 `FileTypeEnum` |
-| `sha256` | 文件哈希，秒传检测的依据 |
+| `sha256` | 文件哈希，`/system/file/check` 秒传检测的依据 |
 | `thumbnail_*` | 图片缩略图信息 |
 | `storage_id` | 所属存储，关联 `sys_storage` |
 
@@ -52,17 +52,19 @@ description: 文件的上传、预览、分片上传、秒传与回收站，以�
 
 ## 秒传与分片上传
 
-前端上传前先调 `GET /system/file/check?fileHash=xxx` 提交 SHA256，命中已有文件时直接复用记录，不再传输内容。
+`GET /system/file/check?fileHash=xxx` 提供按 SHA256 的秒传检测，命中已有文件时直接复用记录；文件管理页面上传当前不调用它，秒传能力预留给其他上传入口。
 
 大文件走分片上传，接口前缀为 `/system/multipart-upload`，对应 `MultipartUploadController`，自 4.1.0 起同时支持本地与 S3 存储。
 
 <Steps>
-  <Step>`POST /system/multipart-upload/init` 初始化，返回 `uploadId`。</Step>
-  <Step>`POST /system/multipart-upload/part` 逐片上传，携带 `uploadId` 与分片编号。</Step>
+  <Step>`POST /system/multipart-upload/init` 初始化，提交文件名、大小与文件 MD5，返回 `uploadId` 与分片大小。</Step>
+  <Step>`POST /system/multipart-upload/part` 逐片上传，携带 `uploadId`、分片编号与存储路径。</Step>
   <Step>`GET /system/multipart-upload/complete/{uploadId}` 合并分片，生成文件记录。</Step>
 </Steps>
 
-中途放弃可调 `GET /system/multipart-upload/cancel/{uploadId}` 清理缓存与临时分片。是否触发分片以及分片大小由默认存储的「分片上传阈值」与「分片上传大小」决定（默认 10MB 阈值、5MB 分片），配置见[存储管理](./storage)。前端大文件上传使用 `MultipartUpload` 组件，进度经 `GET /system/file/upload/progress/{uploadTaskId}` 轮询。
+中途放弃可调 `GET /system/multipart-upload/cancel/{uploadId}` 清理缓存与临时分片。是否触发分片以及分片大小由默认存储的「分片上传阈值」与「分片上传大小」决定（默认 10MB 阈值、5MB 分片），配置见[存储管理](./storage)。上传对话框启动时先调 `GET /system/file/upload/config/default` 取生效配置：小于阈值走 `POST /system/file/upload` 直传，达到阈值按上方流程分片上传。
+
+分片上传按（存储、bucket、文件 MD5、原始文件名、目录）匹配会话：网络中断等失败后重新选择同一文件，`init` 返回同一 `uploadId` 与已传分片编号，未传分片续传即可完成。合并请求发出后结果未确认的（响应超时或中断）不会自动重传，请刷新列表核对文件是否已生成，再决定是否重新上传。
 
 ## 预览与统计
 

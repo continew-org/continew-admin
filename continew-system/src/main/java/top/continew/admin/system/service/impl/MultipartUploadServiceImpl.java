@@ -95,6 +95,7 @@ public class MultipartUploadServiceImpl implements MultipartUploadService {
         storageReq.setPlatform(storage.getCode());
         storageReq.setBucket(storage.getBucketName());
         storageReq.setFileName(storedFileName);
+        storageReq.setOriginalFileName(originalFileName);
         storageReq.setFileSize(createReq.getFileSize());
         storageReq.setFileMd5(createReq.getFileMd5());
         storageReq.setContentType(createReq.getContentType());

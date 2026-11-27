@@ -101,11 +101,11 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         // 后续还原，避免其因源文件被取走而失败
         if (this.isReferencedInRecycleBin(storage, file.getPath(), file.getId())) {
             log.warn("回收站主文件 [{}] 仍被其他回收记录引用，采用复制而非移动", sourcePath);
-            fileStorageService.copy(storage.getCode(), storage.getBucketName(), storage
-                .getBucketName(), sourcePath, targetPath);
+            fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage.getCode())
+                .copyTo(targetPath);
         } else {
-            fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-                .getBucketName(), sourcePath, targetPath);
+            fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage.getCode())
+                .moveTo(targetPath);
         }
         // 缩略图随主文件一并移回原目录
         this.moveThumbnailBack(file, storage);
@@ -130,14 +130,15 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         String targetPath = normalizeStoragePath(file.getThumbnailPath());
         String sourcePath = normalizeStoragePath(storage.getRecycleBinPath() + targetPath);
         try {
-            if (fileStorageService.exists(storage.getCode(), storage.getBucketName(), sourcePath)) {
+            if (fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage
+                .getCode()).exists()) {
                 if (this.isReferencedInRecycleBin(storage, file.getThumbnailPath(), file.getId())) {
                     log.warn("回收站缩略图 [{}] 仍被其他回收记录引用，采用复制而非移动", sourcePath);
-                    fileStorageService.copy(storage.getCode(), storage.getBucketName(), storage
-                        .getBucketName(), sourcePath, targetPath);
+                    fileStorageService.file(storage.getBucketName(), sourcePath)
+                        .platform(storage.getCode()).copyTo(targetPath);
                 } else {
-                    fileStorageService.move(storage.getCode(), storage.getBucketName(), storage
-                        .getBucketName(), sourcePath, targetPath);
+                    fileStorageService.file(storage.getBucketName(), sourcePath)
+                        .platform(storage.getCode()).moveTo(targetPath);
                 }
             }
         } catch (Exception e) {
@@ -163,7 +164,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
         if (this.isReferencedInRecycleBin(storage, file.getPath(), file.getId())) {
             log.warn("回收站主文件 [{}] 仍被其他回收记录引用，跳过删除", sourcePath);
         } else {
-            fileStorageService.delete(storage.getCode(), storage.getBucketName(), sourcePath);
+            fileStorageService.file(storage.getBucketName(), sourcePath).platform(storage.getCode())
+                .delete();
         }
         // 缩略图随主文件一并删除（附属文件，失败仅告警，不阻断主文件删除）；
         // 缩略图路径可能同时是其他回收记录的主文件路径（同批删除时只移动一次），
@@ -175,8 +177,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
                 log.warn("回收站缩略图 [{}] 仍被其他回收记录引用，跳过删除", thumbnailPath);
             } else {
                 try {
-                    fileStorageService
-                        .delete(storage.getCode(), storage.getBucketName(), thumbnailPath);
+                    fileStorageService.file(storage.getBucketName(), thumbnailPath)
+                        .platform(storage.getCode()).delete();
                 } catch (Exception e) {
                     log.warn("缩略图 [{}] 删除失败", thumbnailPath, e);
                 }
@@ -238,7 +240,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
             if (referenced) {
                 return;
             }
-            fileStorageService.delete(storage.getCode(), storage.getBucketName(), originalPath);
+            fileStorageService.file(storage.getBucketName(), originalPath).platform(storage
+                .getCode()).delete();
         } catch (Exception e) {
             log.warn("原目录缩略图 [{}] 补偿清理失败", originalPath, e);
         }
@@ -298,8 +301,8 @@ public class FileRecycleServiceImpl implements FileRecycleService {
                     List<String> paths = new ArrayList<>(deletePaths);
                     for (int i = 0; i < paths.size(); i += STORAGE_PATH_QUERY_BATCH_SIZE) {
                         int end = Math.min(i + STORAGE_PATH_QUERY_BATCH_SIZE, paths.size());
-                        fileStorageService.batchDelete(storage.getCode(), storage.getBucketName(),
-                            paths.subList(i, end));
+                        fileStorageService.files(storage.getBucketName(), paths.subList(i, end))
+                            .platform(storage.getCode()).delete();
                     }
                 }
             }

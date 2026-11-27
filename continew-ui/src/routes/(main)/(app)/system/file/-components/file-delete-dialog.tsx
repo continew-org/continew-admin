@@ -19,9 +19,15 @@ export function FileDeleteDialog({ file, open, onClose, onCompleted }: FileDelet
       onClose={onClose}
       title={shownFile?.type === 0 ? '删除文件夹' : '删除文件'}
       description={
-        shownFile
-          ? `是否确定删除${shownFile.type === 0 ? '文件夹' : '文件'}「${shownFile.originalName}」？`
-          : '是否确定删除该项？'
+        shownFile ? (
+          <>
+            是否确定删除{shownFile.type === 0 ? '文件夹' : '文件'}「
+            <span className="min-w-0 break-all">{shownFile.originalName}</span>
+            」？
+          </>
+        ) : (
+          '是否确定删除该项？'
+        )
       }
       disabled={!file}
       action={async () => {
