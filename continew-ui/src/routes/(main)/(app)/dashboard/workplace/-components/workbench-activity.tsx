@@ -39,9 +39,11 @@ const RANGE_ITEMS = [
 
 function WorkbenchRangeSwitch({
   range,
+  disabled,
   onChange
 }: {
   readonly range: WorkbenchRange
+  readonly disabled: boolean
   readonly onChange: (range: WorkbenchRange) => void
 }) {
   return (
@@ -50,6 +52,7 @@ function WorkbenchRangeSwitch({
       variant="outline"
       size="sm"
       spacing={0}
+      disabled={disabled}
       value={[range]}
       onValueChange={([next]) => {
         if (next === '30d' || next === '6m') {
@@ -131,9 +134,14 @@ export function WorkbenchActivity({
           </CardTitle>
           <CardDescription>Open ContiNew 仓库更新热度</CardDescription>
         </div>
-        <WorkbenchRangeSwitch range={range} onChange={onRangeChange} />
+        <WorkbenchRangeSwitch range={range} disabled={!query.isEnabled} onChange={onRangeChange} />
       </CardHeader>
-      <ActivityBody key={range} range={range} query={query} />
+      <CardContent
+        key={range}
+        className="grid grid-cols-1 grid-rows-[repeat(2,minmax(16rem,auto))] gap-4 @[35rem]/activity:grid-cols-[minmax(0,2.2fr)_minmax(14.5rem,1fr)] @[35rem]/activity:grid-rows-[minmax(16rem,auto)] @[35rem]/activity:gap-5"
+      >
+        <ActivityBody range={range} query={query} />
+      </CardContent>
     </Card>
   )
 }
@@ -163,167 +171,162 @@ function ActivityBody({ range, query }: ActivityProps) {
   const selectBar = (periodStart: string) => setSelectedStart(current => (current === periodStart ? null : periodStart))
   const selectHint = range === '6m' ? '选择月份，查看当月贡献榜。' : '选择日期，查看当天贡献榜。'
 
+  if (!query.isEnabled) {
+    return <QueryState state="empty" className="col-span-full row-span-full" title="暂无提交统计" />
+  }
+  if (query.isPending) {
+    return <Skeleton className="col-span-full row-span-full" />
+  }
+  if (query.isError) {
+    return <QueryState state="error" className="col-span-full row-span-full" onRetry={() => void query.refetch()} />
+  }
+  if (bars.length === 0) {
+    return <QueryState state="empty" className="col-span-full row-span-full" title="暂无提交数据" />
+  }
+
   return (
-    <CardContent className="grid grid-cols-1 grid-rows-[repeat(2,minmax(16rem,auto))] gap-4 @[35rem]/activity:grid-cols-[minmax(0,2.2fr)_minmax(14.5rem,1fr)] @[35rem]/activity:grid-rows-[minmax(16rem,auto)] @[35rem]/activity:gap-5">
-      {query.isPending ? (
-        <Skeleton className="col-span-full row-span-full" />
-      ) : query.isError ? (
-        <QueryState state="error" className="col-span-full row-span-full" onRetry={() => void query.refetch()} />
-      ) : bars.length === 0 ? (
-        <QueryState state="empty" className="col-span-full row-span-full" title="暂无提交数据" />
-      ) : (
-        <>
-          <div className="flex min-w-0 flex-col">
-            <div className="flex items-baseline justify-between gap-2">
-              <h3 className="text-sm font-medium">{range === '6m' ? '每月提交次数' : '每日提交次数'}</h3>
-              <span className="text-xs text-muted-foreground tabular-nums">
-                {windowHasData ? `${windowPartial ? '已知小计' : '合计'} ${windowTotal} 次` : '暂无可用提交明细'}
-              </span>
-            </div>
+    <>
+      <div className="flex min-w-0 flex-col">
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-sm font-medium">{range === '6m' ? '每月提交次数' : '每日提交次数'}</h3>
+          <span className="text-xs text-muted-foreground tabular-nums">
+            {windowHasData ? `${windowPartial ? '已知小计' : '合计'} ${windowTotal} 次` : '暂无可用提交明细'}
+          </span>
+        </div>
 
-            <div className="flex gap-1.5 pt-4 @[35rem]/activity:mt-auto">
-              <div className="relative h-40 w-7 shrink-0 text-xs text-muted-foreground tabular-nums">
-                {/* Both gridline values sit on their lines, so the top one never leans into the heading. */}
-                <span className="absolute top-0 right-0 -translate-y-1/2">{axis.max}</span>
-                <span className="absolute top-1/2 right-0 -translate-y-1/2">{axis.half}</span>
-                <span className="absolute top-full right-0 -translate-y-1/2">0</span>
-              </div>
-
-              <div className="@container/plot min-w-0 flex-1">
-                <div className="relative h-40 border-b">
-                  <div className="absolute inset-x-0 top-1/2 border-t border-dashed opacity-60" />
-                  <div
-                    className="grid h-full grid-rows-1"
-                    style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}
-                  >
-                    {bars.map(bar => {
-                      const active = bar.periodStart === selectedStart
-                      const height = (bar.total / axis.max) * 100
-                      const missing = bar.partial && bar.authors.length === 0
-                      const summary = missing
-                        ? '暂无可用提交明细'
-                        : `${bar.partial ? '已知小计 ' : ''}${bar.total} 次提交`
-
-                      return (
-                        <button
-                          key={bar.periodStart}
-                          type="button"
-                          aria-pressed={active}
-                          onClick={() => selectBar(bar.periodStart)}
-                          title={`${bar.periodStart}｜${summary}`}
-                          className={cn(
-                            'group relative flex h-full min-w-0 flex-col justify-end px-0.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
-                            range === '6m' && 'items-center *:max-w-[min(60%,2rem)]',
-                            active ? 'bg-primary/10' : 'hover:bg-muted/60'
-                          )}
-                        >
-                          {missing && (
-                            <span
-                              aria-hidden
-                              className="mb-0.5 w-full border-b-2 border-dashed border-muted-foreground"
-                            />
-                          )}
-                          <span
-                            className={cn(
-                              'flex w-full flex-col-reverse overflow-hidden rounded-t-xs',
-                              bar.partial && 'opacity-50'
-                            )}
-                            style={{ height: `${height}%` }}
-                          >
-                            {bar.authors.map(author => (
-                              <span
-                                key={author.authorId}
-                                className="w-full"
-                                // A flex-grow share of the bar's height, so segments split by count.
-                                style={{
-                                  flexGrow: author.count,
-                                  flexBasis: 0,
-                                  backgroundColor: shades.get(author.authorId)
-                                }}
-                              />
-                            ))}
-                          </span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                <div
-                  className="mt-1 grid text-xs whitespace-nowrap text-muted-foreground"
-                  style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}
-                >
-                  {bars.map((bar, index) => (
-                    <span
-                      key={bar.periodStart}
-                      className={cn(
-                        'w-max justify-self-center',
-                        range === '30d' &&
-                          index % 14 !== 0 &&
-                          index !== bars.length - 1 &&
-                          '@max-[16rem]/plot:invisible',
-                        range === '30d' && index === 0 && 'justify-self-start',
-                        range === '30d' && index === bars.length - 1 && 'justify-self-end'
-                      )}
-                    >
-                      {labels.has(bar.periodStart) ? bar.label : null}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <p className="mt-2 text-xs text-muted-foreground">
-              {windowPartial ? '部分提交数据不完整，合计仅含已记录的提交。' : selectHint}
-            </p>
+        <div className="flex gap-1.5 pt-4 @[35rem]/activity:mt-auto">
+          <div className="relative h-40 w-7 shrink-0 text-xs text-muted-foreground tabular-nums">
+            {/* Both gridline values sit on their lines, so the top one never leans into the heading. */}
+            <span className="absolute top-0 right-0 -translate-y-1/2">{axis.max}</span>
+            <span className="absolute top-1/2 right-0 -translate-y-1/2">{axis.half}</span>
+            <span className="absolute top-full right-0 -translate-y-1/2">0</span>
           </div>
 
-          <section
-            aria-label="贡献榜"
-            className="flex h-64 min-w-0 flex-col border-t pt-3 @[35rem]/activity:border-t-0 @[35rem]/activity:border-l @[35rem]/activity:pt-0 @[35rem]/activity:pl-5"
-          >
-            <div className="flex min-h-6 items-baseline justify-between gap-1">
-              <h3 className="shrink-0 -translate-x-px text-sm font-medium">贡献榜</h3>
-              {hasDetail && (
-                <p className="min-w-0 text-right text-xs wrap-anywhere text-muted-foreground tabular-nums">
-                  {`${partial ? '已知 ' : ''}${leaderboard.total} 次提交 · ${leaderboard.contributors} 位贡献者`}
-                </p>
-              )}
-            </div>
-            {(selected || partial) && (
-              <div className="mt-1 flex min-h-6 items-center gap-1 text-xs text-muted-foreground">
-                {selected && <span className="truncate">{selected.label}</span>}
-                {partial && <Badge variant="secondary">部分数据</Badge>}
-                {selected && (
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="ml-auto text-muted-foreground"
-                    onClick={() => setSelectedStart(null)}
-                  >
-                    <RotateCcw />
-                    重置筛选
-                  </Button>
-                )}
-              </div>
-            )}
+          <div className="@container/plot min-w-0 flex-1">
+            <div className="relative h-40 border-b">
+              <div className="absolute inset-x-0 top-1/2 border-t border-dashed opacity-60" />
+              <div
+                className="grid h-full grid-rows-1"
+                style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}
+              >
+                {bars.map(bar => {
+                  const active = bar.periodStart === selectedStart
+                  const height = (bar.total / axis.max) * 100
+                  const missing = bar.partial && bar.authors.length === 0
+                  const summary = missing ? '暂无可用提交明细' : `${bar.partial ? '已知小计 ' : ''}${bar.total} 次提交`
 
-            <div className="mt-2 min-h-0 flex-1 [scrollbar-gutter:stable] overflow-y-auto">
-              {leaderboard.rows.length === 0 ? (
-                <p className="flex min-h-8 items-center text-xs text-muted-foreground">
-                  {partial ? '该周期暂无可用提交明细' : '该周期没有提交'}
-                </p>
-              ) : (
-                <ol>
-                  {leaderboard.rows.map(author => (
-                    <AuthorRow key={author.authorId} author={author} />
-                  ))}
-                </ol>
-              )}
+                  return (
+                    <button
+                      key={bar.periodStart}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => selectBar(bar.periodStart)}
+                      title={`${bar.periodStart}｜${summary}`}
+                      className={cn(
+                        'group relative flex h-full min-w-0 flex-col justify-end px-0.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+                        range === '6m' && 'items-center *:max-w-[min(60%,2rem)]',
+                        active ? 'bg-primary/10' : 'hover:bg-muted/60'
+                      )}
+                    >
+                      {missing && (
+                        <span aria-hidden className="mb-0.5 w-full border-b-2 border-dashed border-muted-foreground" />
+                      )}
+                      <span
+                        className={cn(
+                          'flex w-full flex-col-reverse overflow-hidden rounded-t-xs',
+                          bar.partial && 'opacity-50'
+                        )}
+                        style={{ height: `${height}%` }}
+                      >
+                        {bar.authors.map(author => (
+                          <span
+                            key={author.authorId}
+                            className="w-full"
+                            // A flex-grow share of the bar's height, so segments split by count.
+                            style={{
+                              flexGrow: author.count,
+                              flexBasis: 0,
+                              backgroundColor: shades.get(author.authorId)
+                            }}
+                          />
+                        ))}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </section>
-        </>
-      )}
-    </CardContent>
+
+            <div
+              className="mt-1 grid text-xs whitespace-nowrap text-muted-foreground"
+              style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}
+            >
+              {bars.map((bar, index) => (
+                <span
+                  key={bar.periodStart}
+                  className={cn(
+                    'w-max justify-self-center',
+                    range === '30d' && index % 14 !== 0 && index !== bars.length - 1 && '@max-[16rem]/plot:invisible',
+                    range === '30d' && index === 0 && 'justify-self-start',
+                    range === '30d' && index === bars.length - 1 && 'justify-self-end'
+                  )}
+                >
+                  {labels.has(bar.periodStart) ? bar.label : null}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-2 text-xs text-muted-foreground">
+          {windowPartial ? '部分提交数据不完整，合计仅含已记录的提交。' : selectHint}
+        </p>
+      </div>
+
+      <section
+        aria-label="贡献榜"
+        className="flex h-64 min-w-0 flex-col border-t pt-3 @[35rem]/activity:border-t-0 @[35rem]/activity:border-l @[35rem]/activity:pt-0 @[35rem]/activity:pl-5"
+      >
+        <div className="flex min-h-6 items-baseline justify-between gap-1">
+          <h3 className="shrink-0 -translate-x-px text-sm font-medium">贡献榜</h3>
+          {hasDetail && (
+            <p className="min-w-0 text-right text-xs wrap-anywhere text-muted-foreground tabular-nums">
+              {`${partial ? '已知 ' : ''}${leaderboard.total} 次提交 · ${leaderboard.contributors} 位贡献者`}
+            </p>
+          )}
+        </div>
+        {(selected || partial) && (
+          <div className="mt-1 flex min-h-6 items-center gap-1 text-xs text-muted-foreground">
+            {selected && <span className="truncate">{selected.label}</span>}
+            {partial && <Badge variant="secondary">部分数据</Badge>}
+            {selected && (
+              <Button
+                variant="ghost"
+                size="xs"
+                className="ml-auto text-muted-foreground"
+                onClick={() => setSelectedStart(null)}
+              >
+                <RotateCcw />
+                重置筛选
+              </Button>
+            )}
+          </div>
+        )}
+
+        <div className="mt-2 min-h-0 flex-1 [scrollbar-gutter:stable] overflow-y-auto">
+          {leaderboard.rows.length === 0 ? (
+            <p className="flex min-h-8 items-center text-xs text-muted-foreground">
+              {partial ? '该周期暂无可用提交明细' : '该周期没有提交'}
+            </p>
+          ) : (
+            <ol>
+              {leaderboard.rows.map(author => (
+                <AuthorRow key={author.authorId} author={author} />
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
+    </>
   )
 }
