@@ -45,7 +45,9 @@ public class DeptController extends BaseController<DeptService, DeptResp, DeptDe
 
 当前提供 ocn-admin-codegen 脚手架技能：从业务描述引导设计建表或按既有数据表，经问答确认范围与字段映射后，在前后端双端生成一套配套的增删改查模块（后端 CRUD 套件全套文件、前端路由与页面组件、Liquibase 双份建表 SQL 与菜单 SQL），产物开箱即符合仓库分层与权限约定。
 
-技能系列持续扩充中：移除租户、切换数据库为 PostgreSQL、开发前清理（改包名、清理单元测试等）等场景技能已在规划。
+另有 ocn-admin-mysql2pgsql 切库技能：把目标 profile 的 MySQL 配置切换为 PostgreSQL，只改配置层（JDBC、MyBatis 方言、Liquibase 入口、运行时驱动），不修改任何业务 SQL。附一个只读扫描器，按 `MUST` / `WARN` / `INFO` 分级列出接入点，并核对凭据沿用与 prod 隔离。
+
+技能系列持续扩充中：移除租户、开发前清理（改包名、清理单元测试等）等场景技能已在规划。
 
 ## 6. 提升开发体验
 

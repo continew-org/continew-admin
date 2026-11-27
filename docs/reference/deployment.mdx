@@ -197,11 +197,22 @@ location / {
 
 ## 切换到 PostgreSQL
 
-新项目直接选择 PostgreSQL 时，需要改三处，只改 `database-id` 不够：
+新项目直接选择 PostgreSQL 时，需要改四处，只改 `database-id` 不够：
 
-1. `application.yml` 的 `mybatis-plus.database-id` 改为 `pgsql`（分页方言靠它区分）；
-2. 数据源 URL 与驱动：`jdbc:postgresql://host:5432/db`，驱动 `org.postgresql.Driver`，`application-prod.yml` 与 `application-dev.yml` 都要改；
-3. Liquibase 的 `db.changelog-master.yaml` 把 MySQL 的 include 切到 PostgreSQL 的 include，两份脚本在 `db/changelog/mysql` 与 `db/changelog/postgresql`。
+1. `mybatis-plus.database-id` 改为 `pgsql`，分页插件的 `db-type` 同步改为 `POSTGRE_SQL`（注意枚举值是 `POSTGRE_SQL`，不是 `POSTGRESQL`）；
+2. 数据源 URL 与驱动：`jdbc:postgresql://host:5432/db`，驱动 `org.postgresql.Driver`；PG 的 URL 必须带 `stringtype=unspecified`，否则写 JSON、枚举、字符串列时会报类型不匹配。dev 用 P6Spy 时写成 `jdbc:p6spy:postgresql://...` 并保留 `com.p6spy.engine.spy.P6SpyDriver`；
+3. Liquibase 的 `db.changelog-master.yaml` 把 MySQL 的 include 切到 PostgreSQL 的 include，两份脚本在 `db/changelog/mysql` 与 `db/changelog/postgresql`。include 必须是根 `databaseChangeLog` 的直接子项；写进 `changeSet` 里的 include 不会被 Liquibase 执行，`sqlFile` 也会改用外层 changeSet 的身份，不能替代 include；
+4. 驱动依赖：`continew-common/pom.xml` 换成 `org.postgresql:postgresql`。若还有环境连 MySQL，两个驱动都要留；只改完 POM 不重新安装 `continew-common`，运行期仍会用旧制品，表现为 `Unable to find a driver that accepts jdbc:postgresql://...`，报错却包在 mapper 装配链路里。
+
+另外核对 schema：Liquibase 默认复用业务数据源，但 `spring.liquibase.default-schema` 与 URL 的 `currentSchema` 都会被单独的配置项改写。迁移建表落在的 schema 与业务查询使用的 schema 不一致时，表建出来了却查不到；`default-schema` 与业务 URL 的 `currentSchema`（缺省 `public`）必须一致。
+
+<Callout type="info">
+只切某一个 profile（例如只切 dev、prod 保持 MySQL）时，`application.yml` 里的 `database-id` 与 `db-type` 由所有 profile 共享。要让 prod 不受影响，需要在各 profile 里分别显式覆盖这两项，并让 dev 使用独立的 Liquibase 入口，而不是改动共享的 `db.changelog-master.yaml`。
+</Callout>
+
+<Callout type="info">
+可用 `.agents/skills/ocn-admin-mysql2pgsql` 技能按上述步骤切换：它只改配置层，不动任何业务 SQL，扫描器会按 `MUST` / `WARN` / `INFO` 列出待改接入点并核对凭据沿用。
+</Callout>
 
 <Callout type="info">
 已有 MySQL 库迁移到 PostgreSQL 属于数据迁移，不在文档范围。建库字符集建议 UTF8，排序规则与 MySQL 场景保持一致再校验分页与排序行为。
